@@ -189,6 +189,7 @@ fieldSet:disabled .badge > a {
 .form-label {
   background: var(--clr-neutral-200);
   border-inline-end: 1px solid var(--clr-neutral-300);
+  font-size: 1em;
   > .btn{
     padding-block-start: 0;
     &:first-of-type {
@@ -441,7 +442,6 @@ fieldSet:disabled .badge > a {
 
 .field-set:has(.field-set) {
   padding: 0;
-  border-block-end: 0;
 }
 
 // input elements in box titles, should be mostly search/filter inputs

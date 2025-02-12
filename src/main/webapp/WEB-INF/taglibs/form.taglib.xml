@@ -6,7 +6,7 @@
     version="2.0">
     <namespace>http://goobi.io/form</namespace>
     <tag>
-        <tag-name>fieldSet</tag-name>
+´        <tag-name>fieldset</tag-name>
         <source>form/fieldSet.xhtml</source>
         <attribute>
             <description>A passthrough attribute for additional HTML classes</description>
@@ -16,7 +16,7 @@
         </attribute>
     </tag>
     <tag>
-        <tag-name>fieldSet-content</tag-name>
+        <tag-name>fieldset-content</tag-name>
         <source>form/fieldSet-content.xhtml</source>
         <attribute>
             <description>A passthrough attribute for additional HTML classes</description>
@@ -46,6 +46,18 @@
         </attribute>
         <attribute>
             <description>Determine whether the field contains a form-group component</description>
+            <name>group</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>The label to be displayed for this component</description>
+            <name>label</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Determine whether the label should be displayed as required</description>
             <name>required</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
@@ -63,6 +75,12 @@
         <attribute>
             <description>Determine whether the label should be displayed as required</description>
             <name>required</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>Determine whether the corresponding field contains a form-group component, resulting in producing either a label or legend HTML element</description>
+            <name>group</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
         </attribute>

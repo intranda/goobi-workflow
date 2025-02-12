@@ -24,116 +24,94 @@
 			title="#{myPageTitle}"
 			icon="fa-edit">
 
-			<form:field>
-				<form:label required="true">
-					#{msgs.nachname}
-				</form:label>
-				<form:input>
-					<h:inputText
-						id="lastname"
-						styleClass="form-control"
-						field="#{BenutzerverwaltungForm.myClass.nachname}" />
-					<form:help>#{msgs.helpEmail}</form:help>
-					<h:message for="lastname" showDetail="true" styleClass="help-inline text-danger" />
-				</form:input>
+			<form:field
+				label="#{msgs.nachname}"
+				required="true"
+				help="#{msgs.helpNachname}">
+				<h:inputText
+					id="lastname"
+					styleClass="form-control"
+					field="#{BenutzerverwaltungForm.myClass.nachname}" />
+				<form:message target="lastname" />
 			</form:field>
-			<form:field>
-				<form:label>
-					#{msgs.vorname}
-				</form:label>
-				<form:input>
-					<h:inputText
-						id="firstname"
-						styleClass="form-control"
-						field="#{BenutzerverwaltungForm.myClass.vorname}" />
-					<form:help>#{msgs.helpVorname}</form:help>
-					<form:message target="firstname" />
-				</form:input>
+			<form:field
+				label="#{msgs.vorname}"
+				help="#{msgs.helpVorname}">
+				<h:inputText
+					id="firstname"
+					styleClass="form-control"
+					field="#{BenutzerverwaltungForm.myClass.vorname}" />
+				<form:message target="firstname" />
 			</form:field>
-			<form:field>
-				<form:label>
-					#{msgs.dashboard}
-				</form:label>
-				<form:input>
-					<h:selectOneMenu
-						id="dashboard"
-						styleClass="form-select"
-						field="#{BenutzerverwaltungForm.myClass.dashboardPlugin}">
-						<f:selectItem itemLabel="#{msgs.bitteAuswaehlen}" itemValue="" />
-						<f:selectItems value="#{BenutzerverwaltungForm.myClass.availableDashboards}" />
-					</h:selectOneMenu>
-					<form:help>#{msgs.helpUserDashboard}</form:help>
-					<form:message target="dashboard" />
-				</form:input>
+			<form:field
+				label="#{msgs.dashboard}"
+				help="#{msgs.helpUserDashboard}">
+				<h:selectOneMenu
+					id="dashboard"
+					styleClass="form-select"
+					field="#{BenutzerverwaltungForm.myClass.dashboardPlugin}">
+					<f:selectItem itemLabel="#{msgs.bitteAuswaehlen}" itemValue="" />
+					<f:selectItems value="#{BenutzerverwaltungForm.myClass.availableDashboards}" />
+				</h:selectOneMenu>
+				<form:message target="dashboard" />
 			</form:field>
-			<form:field>
-				<form:label>
-					#{msgs.istAktiv}
-				</form:label>
-				<form:input>
-					<h:selectBooleanCheckbox
-						id="isActive"
-						styleClass="form-check-input"
-						field="#{BenutzerverwaltungForm.myClass.active}" />
-					<form:help>#{msgs.helpIstAktiv}</form:help>
-					<form:message target="isActive" />
-				</form:input>
+			<form:field
+				group="true"
+				label="#{msgs.istAktiv}"
+				help="#{msgs.helpIstAktiv}">
+				<h:selectBooleanCheckbox
+					id="isActive"
+					styleClass="form-check-input"
+					field="#{BenutzerverwaltungForm.myClass.active}" />
+				<form:message target="isActive" />
 			</form:field>
-			<form:field>
-				<form:label>
-					#{msgs.user_config_customCss}
-				</form:label>
-				<form:input>
-					<h:inputTextarea
-						id="customCss"
-						styleClass="form-control"
-						field="#{LoginForm.myBenutzer.customCss}"
-						rows="8" />
-					<form:help>#{msgs.help_user_config_customCss}</form:help>
-					<form:message target="customCss" />
-				</form:input>
+			<form:field
+				label="#{msgs.user_config_customCss}"
+				help="#{msgs.help_user_config_customCss}">
+				<h:inputTextarea
+					id="customCss"
+					styleClass="form-control"
+					field="#{LoginForm.myBenutzer.customCss}"
+					rows="8" />
+				<form:message target="customCss" />
 			</form:field>
-			<form:field>
-				<form:label>
-					#{msgs.defaultSortOrder}
-				</form:label>
-				<form:input>
-					<h:selectOneRadio
-						id="processDefaultSortOrderVertical"
-						value="#{LoginForm.myBenutzer.processListDefaultSortOrder}"
-						styleClass="select-radio select-radio-vertical">
-						<f:selectItem
-							itemLabel="#{msgs.defaultSortFieldAsc}"
-							itemValue="Asc" />
-						<f:selectItem
-							itemLabel="#{msgs.defaultSortFieldDesc}"
-							itemValue="Desc" />
-					</h:selectOneRadio>
-				</form:input>
+			<form:field
+				group="true"
+				label="#{msgs.defaultSortOrder}"
+				help="#{msgs.helpDefaultSortOrder}">
+				<h:selectOneRadio
+					id="processDefaultSortOrderVertical"
+					value="#{LoginForm.myBenutzer.processListDefaultSortOrder}"
+					styleClass="select-radio select-radio-vertical">
+					<f:selectItem
+						itemLabel="#{msgs.defaultSortFieldAsc}"
+						itemValue="Asc" />
+					<f:selectItem
+						itemLabel="#{msgs.defaultSortFieldDesc}"
+						itemValue="Desc" />
+				</h:selectOneRadio>
 			</form:field>
-			<form:field>
-				<form:label>
-					#{msgs.defaultSortOrder}
-				</form:label>
-				<form:input>
-					<h:selectOneRadio
-						id="processDefaultSortOrderHorizontal"
-						value="#{LoginForm.myBenutzer.processListDefaultSortOrder}"
-						styleClass="select-radio select-radio-horizontal">
-						<f:selectItem
-							itemLabel="#{msgs.defaultSortFieldAsc}"
-							itemValue="Asc" />
-						<f:selectItem
-							itemLabel="#{msgs.defaultSortFieldDesc}"
-							itemValue="Desc" />
-					</h:selectOneRadio>
-				</form:input>
+			<form:field
+				group="true"
+				label="#{msgs.defaultSortOrder}"
+				help="#{msgs.helpDefaultSortOrder}">
+				<h:selectOneRadio
+					id="processDefaultSortOrderHorizontal"
+					value="#{LoginForm.myBenutzer.processListDefaultSortOrder}"
+					styleClass="select-radio select-radio-horizontal">
+					<f:selectItem
+						itemLabel="#{msgs.defaultSortFieldAsc}"
+						itemValue="Asc" />
+					<f:selectItem
+						itemLabel="#{msgs.defaultSortFieldDesc}"
+						itemValue="Desc" />
+				</h:selectOneRadio>
 			</form:field>
-			<form:field group="true">
-				<form:label>
-					#{msgs.usergroup_assignedRoles}
-				</form:label>
-				<form:input>
+			<form:field
+				group="true"
+				label="#{msgs.usergroup_assignedRoles}"
+				help="#{msgs.helpUserRoles}">
+				<span>
 					<ui:repeat
 						var="var"
 						value="#{['Value 1', 'Value 2', 'Value 3']}">
@@ -145,45 +123,90 @@
 								value="-1" />
 						</h:outputText>
 					</ui:repeat>
-					<form:help>
-						#{msgs.helpUserRoles}
-					</form:help>
-				</form:input>
+				</span>
 			</form:field>
-			<form:field group="true">
-				<form:label>
-					#{msgs.name}
-				</form:label>
-				<form:input-group>
-					<h:inputText
-						id="manualFieldC"
-						styleClass="form-control form__input"
-						value="#{LoginForm.myBenutzer.vorname}"
-						required="true"
-						readonly="false"
-						tabindex="0">
-						<c:if test="false">
-							<f:passThroughAttribute
-								name="data-gw-focus-on-load"
-								value="false" />
-						</c:if>
-					</h:inputText>
-					<h:inputText
-						id="manualFieldD"
-						styleClass="form-control form__input"
-						value="#{LoginForm.myBenutzer.nachname}"
-						required="true"
-						readonly="false"
-						tabindex="0">
-						<c:if test="false">
-							<f:passThroughAttribute
-								name="data-gw-focus-on-load"
-								value="false" />
-						</c:if>
-					</h:inputText>
-				</form:input-group>
+			<form:field
+				group="true"
+				label="#{msgs.name}"
+				help="#{msgs.helpName}">
+				<h:inputText
+					id="manualFieldC"
+					styleClass="form-control form__input"
+					value="#{LoginForm.myBenutzer.vorname}"
+					required="true"
+					readonly="false"
+					tabindex="0">
+					<f:passThroughAttribute
+						name="aria-label"
+						value="#{msgs.vorname}" />
+					<c:if test="false">
+						<f:passThroughAttribute
+							name="data-gw-focus-on-load"
+							value="false" />
+					</c:if>
+				</h:inputText>
+				<h:inputText
+					id="manualFieldD"
+					styleClass="form-control form__input"
+					value="#{LoginForm.myBenutzer.nachname}"
+					required="true"
+					readonly="false"
+					tabindex="0">
+					<f:passThroughAttribute
+						name="aria-label"
+						value="#{msgs.nachname}" />
+					<c:if test="false">
+						<f:passThroughAttribute
+							name="data-gw-focus-on-load"
+							value="false" />
+					</c:if>
+				</h:inputText>
 			</form:field>
-
+			<form:fieldset
+				label="#{msgs.benutzer}">
+				<form:field
+					label="#{msgs.nachname}"
+					help="#{msgs.helpNachname}">
+					<h:inputText
+						id="lastnameInFieldset"
+						styleClass="form-control"
+						field="#{BenutzerverwaltungForm.myClass.nachname}" />
+					<form:message target="lastnameInFieldset" />
+				</form:field>
+				<form:field
+					label="#{msgs.vorname}"
+					help="#{msgs.helpVorname}">
+					<h:inputText
+						id="firstnameInFieldset"
+						styleClass="form-control"
+						field="#{BenutzerverwaltungForm.myClass.vorname}" />
+					<form:message target="lastnameInFieldset" />
+				</form:field>
+			</form:fieldset>
+			<form:fieldset
+				label="#{msgs.benutzer}">
+				<form:fieldset
+					label="#{msgs.name}">
+					<form:field
+						label="#{msgs.nachname}"
+						help="#{msgs.helpNachname}">
+						<h:inputText
+							id="lastnameInStackedFieldset"
+							styleClass="form-control"
+							field="#{BenutzerverwaltungForm.myClass.nachname}" />
+						<form:message target="lastnameInFieldset" />
+					</form:field>
+					<form:field
+						label="#{msgs.vorname}"
+						help="#{msgs.helpVorname}">
+						<h:inputText
+							id="firstnameInStackedFieldset"
+							styleClass="form-control"
+							field="#{BenutzerverwaltungForm.myClass.vorname}" />
+						<form:message target="lastnameInFieldset" />
+					</form:field>
+				</form:fieldset>
+			</form:fieldset>
 			<div class="box__actions">
 
 				<!-- Cancel -->
@@ -252,116 +275,94 @@
 	title=&quot;#{myPageTitle}&quot;
 	icon=&quot;fa-edit&quot;&gt;
 
-	&lt;form:field&gt;
-		&lt;form:label required=&quot;true&quot;&gt;
-			#{msgs.nachname}
-		&lt;/form:label&gt;
-		&lt;form:input&gt;
-			&lt;h:inputText
-				id=&quot;lastname&quot;
-				styleClass=&quot;form-control&quot;
-				field=&quot;#{BenutzerverwaltungForm.myClass.nachname}&quot; /&gt;
-			&lt;form:help&gt;#{msgs.helpEmail}&lt;/form:help&gt;
-			&lt;h:message for=&quot;lastname&quot; showDetail=&quot;true&quot; styleClass=&quot;help-inline text-danger&quot; /&gt;
-		&lt;/form:input&gt;
+	&lt;form:field
+		label=&quot;#{msgs.nachname}&quot;
+		required=&quot;true&quot;
+		help=&quot;#{msgs.helpNachname}&quot;&gt;
+		&lt;h:inputText
+			id=&quot;lastname&quot;
+			styleClass=&quot;form-control&quot;
+			field=&quot;#{BenutzerverwaltungForm.myClass.nachname}&quot; /&gt;
+		&lt;form:message target=&quot;lastname&quot; /&gt;
 	&lt;/form:field&gt;
-	&lt;form:field&gt;
-		&lt;form:label&gt;
-			#{msgs.vorname}
-		&lt;/form:label&gt;
-		&lt;form:input&gt;
-			&lt;h:inputText
-				id=&quot;firstname&quot;
-				styleClass=&quot;form-control&quot;
-				field=&quot;#{BenutzerverwaltungForm.myClass.vorname}&quot; /&gt;
-			&lt;form:help&gt;#{msgs.helpVorname}&lt;/form:help&gt;
-			&lt;form:message target=&quot;firstname&quot; /&gt;
-		&lt;/form:input&gt;
+	&lt;form:field
+		label=&quot;#{msgs.vorname}&quot;
+		help=&quot;#{msgs.helpVorname}&quot;&gt;
+		&lt;h:inputText
+			id=&quot;firstname&quot;
+			styleClass=&quot;form-control&quot;
+			field=&quot;#{BenutzerverwaltungForm.myClass.vorname}&quot; /&gt;
+		&lt;form:message target=&quot;firstname&quot; /&gt;
 	&lt;/form:field&gt;
-	&lt;form:field&gt;
-		&lt;form:label&gt;
-			#{msgs.dashboard}
-		&lt;/form:label&gt;
-		&lt;form:input&gt;
-			&lt;h:selectOneMenu
-				id=&quot;dashboard&quot;
-				styleClass=&quot;form-select&quot;
-				field=&quot;#{BenutzerverwaltungForm.myClass.dashboardPlugin}&quot;&gt;
-				&lt;f:selectItem itemLabel=&quot;#{msgs.bitteAuswaehlen}&quot; itemValue=&quot;&quot; /&gt;
-				&lt;f:selectItems value=&quot;#{BenutzerverwaltungForm.myClass.availableDashboards}&quot; /&gt;
-			&lt;/h:selectOneMenu&gt;
-			&lt;form:help&gt;#{msgs.helpUserDashboard}&lt;/form:help&gt;
-			&lt;form:message target=&quot;dashboard&quot; /&gt;
-		&lt;/form:input&gt;
+	&lt;form:field
+		label=&quot;#{msgs.dashboard}&quot;
+		help=&quot;#{msgs.helpUserDashboard}&quot;&gt;
+		&lt;h:selectOneMenu
+			id=&quot;dashboard&quot;
+			styleClass=&quot;form-select&quot;
+			field=&quot;#{BenutzerverwaltungForm.myClass.dashboardPlugin}&quot;&gt;
+			&lt;f:selectItem itemLabel=&quot;#{msgs.bitteAuswaehlen}&quot; itemValue=&quot;&quot; /&gt;
+			&lt;f:selectItems value=&quot;#{BenutzerverwaltungForm.myClass.availableDashboards}&quot; /&gt;
+		&lt;/h:selectOneMenu&gt;
+		&lt;form:message target=&quot;dashboard&quot; /&gt;
 	&lt;/form:field&gt;
-	&lt;form:field&gt;
-		&lt;form:label&gt;
-			#{msgs.istAktiv}
-		&lt;/form:label&gt;
-		&lt;form:input&gt;
-			&lt;h:selectBooleanCheckbox
-				id=&quot;isActive&quot;
-				styleClass=&quot;form-check-input&quot;
-				field=&quot;#{BenutzerverwaltungForm.myClass.active}&quot; /&gt;
-			&lt;form:help&gt;#{msgs.helpIstAktiv}&lt;/form:help&gt;
-			&lt;form:message target=&quot;isActive&quot; /&gt;
-		&lt;/form:input&gt;
+	&lt;form:field
+		group=&quot;true&quot;
+		label=&quot;#{msgs.istAktiv}&quot;
+		help=&quot;#{msgs.helpIstAktiv}&quot;&gt;
+		&lt;h:selectBooleanCheckbox
+			id=&quot;isActive&quot;
+			styleClass=&quot;form-check-input&quot;
+			field=&quot;#{BenutzerverwaltungForm.myClass.active}&quot; /&gt;
+		&lt;form:message target=&quot;isActive&quot; /&gt;
 	&lt;/form:field&gt;
-	&lt;form:field&gt;
-		&lt;form:label&gt;
-			#{msgs.user_config_customCss}
-		&lt;/form:label&gt;
-		&lt;form:input&gt;
-			&lt;h:inputTextarea
-				id=&quot;customCss&quot;
-				styleClass=&quot;form-control&quot;
-				field=&quot;#{LoginForm.myBenutzer.customCss}&quot;
-				rows=&quot;8&quot; /&gt;
-			&lt;form:help&gt;#{msgs.help_user_config_customCss}&lt;/form:help&gt;
-			&lt;form:message target=&quot;customCss&quot; /&gt;
-		&lt;/form:input&gt;
+	&lt;form:field
+		label=&quot;#{msgs.user_config_customCss}&quot;
+		help=&quot;#{msgs.help_user_config_customCss}&quot;&gt;
+		&lt;h:inputTextarea
+			id=&quot;customCss&quot;
+			styleClass=&quot;form-control&quot;
+			field=&quot;#{LoginForm.myBenutzer.customCss}&quot;
+			rows=&quot;8&quot; /&gt;
+		&lt;form:message target=&quot;customCss&quot; /&gt;
 	&lt;/form:field&gt;
-	&lt;form:field&gt;
-		&lt;form:label&gt;
-			#{msgs.defaultSortOrder}
-		&lt;/form:label&gt;
-		&lt;form:input&gt;
-			&lt;h:selectOneRadio
-				id=&quot;processDefaultSortOrderVertical&quot;
-				value=&quot;#{LoginForm.myBenutzer.processListDefaultSortOrder}&quot;
-				styleClass=&quot;select-radio select-radio-vertical&quot;&gt;
-				&lt;f:selectItem
-					itemLabel=&quot;#{msgs.defaultSortFieldAsc}&quot;
-					itemValue=&quot;Asc&quot; /&gt;
-				&lt;f:selectItem
-					itemLabel=&quot;#{msgs.defaultSortFieldDesc}&quot;
-					itemValue=&quot;Desc&quot; /&gt;
-			&lt;/h:selectOneRadio&gt;
-		&lt;/form:input&gt;
+	&lt;form:field
+		group=&quot;true&quot;
+		label=&quot;#{msgs.defaultSortOrder}&quot;
+		help=&quot;#{msgs.helpDefaultSortOrder}&quot;&gt;
+		&lt;h:selectOneRadio
+			id=&quot;processDefaultSortOrderVertical&quot;
+			value=&quot;#{LoginForm.myBenutzer.processListDefaultSortOrder}&quot;
+			styleClass=&quot;select-radio select-radio-vertical&quot;&gt;
+			&lt;f:selectItem
+				itemLabel=&quot;#{msgs.defaultSortFieldAsc}&quot;
+				itemValue=&quot;Asc&quot; /&gt;
+			&lt;f:selectItem
+				itemLabel=&quot;#{msgs.defaultSortFieldDesc}&quot;
+				itemValue=&quot;Desc&quot; /&gt;
+		&lt;/h:selectOneRadio&gt;
 	&lt;/form:field&gt;
-	&lt;form:field&gt;
-		&lt;form:label&gt;
-			#{msgs.defaultSortOrder}
-		&lt;/form:label&gt;
-		&lt;form:input&gt;
-			&lt;h:selectOneRadio
-				id=&quot;processDefaultSortOrderHorizontal&quot;
-				value=&quot;#{LoginForm.myBenutzer.processListDefaultSortOrder}&quot;
-				styleClass=&quot;select-radio select-radio-horizontal&quot;&gt;
-				&lt;f:selectItem
-					itemLabel=&quot;#{msgs.defaultSortFieldAsc}&quot;
-					itemValue=&quot;Asc&quot; /&gt;
-				&lt;f:selectItem
-					itemLabel=&quot;#{msgs.defaultSortFieldDesc}&quot;
-					itemValue=&quot;Desc&quot; /&gt;
-			&lt;/h:selectOneRadio&gt;
-		&lt;/form:input&gt;
+	&lt;form:field
+		group=&quot;true&quot;
+		label=&quot;#{msgs.defaultSortOrder}&quot;
+		help=&quot;#{msgs.helpDefaultSortOrder}&quot;&gt;
+		&lt;h:selectOneRadio
+			id=&quot;processDefaultSortOrderHorizontal&quot;
+			value=&quot;#{LoginForm.myBenutzer.processListDefaultSortOrder}&quot;
+			styleClass=&quot;select-radio select-radio-horizontal&quot;&gt;
+			&lt;f:selectItem
+				itemLabel=&quot;#{msgs.defaultSortFieldAsc}&quot;
+				itemValue=&quot;Asc&quot; /&gt;
+			&lt;f:selectItem
+				itemLabel=&quot;#{msgs.defaultSortFieldDesc}&quot;
+				itemValue=&quot;Desc&quot; /&gt;
+		&lt;/h:selectOneRadio&gt;
 	&lt;/form:field&gt;
-	&lt;form:field group=&quot;true&quot;&gt;
-		&lt;form:label&gt;
-			#{msgs.usergroup_assignedRoles}
-		&lt;/form:label&gt;
-		&lt;form:input&gt;
+	&lt;form:field
+		group=&quot;true&quot;
+		label=&quot;#{msgs.usergroup_assignedRoles}&quot;
+		help=&quot;#{msgs.helpUserRoles}&quot;&gt;
+		&lt;span&gt;
 			&lt;ui:repeat
 				var=&quot;var&quot;
 				value=&quot;#{['Value 1', 'Value 2', 'Value 3']}&quot;&gt;
@@ -373,44 +374,90 @@
 						value=&quot;-1&quot; /&gt;
 				&lt;/h:outputText&gt;
 			&lt;/ui:repeat&gt;
-			&lt;form:help&gt;
-				#{msgs.helpUserRoles}
-			&lt;/form:help&gt;
-		&lt;/form:input&gt;
+		&lt;/span&gt;
 	&lt;/form:field&gt;
-	&lt;form:field group=&quot;true&quot;&gt;
-		&lt;form:label&gt;
-			#{msgs.name}
-		&lt;/form:label&gt;
-		&lt;form:input-group&gt;
-			&lt;h:inputText
-				id=&quot;manualFieldC&quot;
-				styleClass=&quot;form-control form__input&quot;
-				value=&quot;#{LoginForm.myBenutzer.vorname}&quot;
-				required=&quot;true&quot;
-				readonly=&quot;false&quot;
-				tabindex=&quot;0&quot;&gt;
-				&lt;c:if test=&quot;false&quot;&gt;
-					&lt;f:passThroughAttribute
-						name=&quot;data-gw-focus-on-load&quot;
-						value=&quot;false&quot; /&gt;
-				&lt;/c:if&gt;
-			&lt;/h:inputText&gt;
-			&lt;h:inputText
-				id=&quot;manualFieldD&quot;
-				styleClass=&quot;form-control form__input&quot;
-				value=&quot;#{LoginForm.myBenutzer.nachname}&quot;
-				required=&quot;true&quot;
-				readonly=&quot;false&quot;
-				tabindex=&quot;0&quot;&gt;
-				&lt;c:if test=&quot;false&quot;&gt;
-					&lt;f:passThroughAttribute
-						name=&quot;data-gw-focus-on-load&quot;
-						value=&quot;false&quot; /&gt;
-				&lt;/c:if&gt;
-			&lt;/h:inputText&gt;
-		&lt;/form:input-group&gt;
+	&lt;form:field
+		group=&quot;true&quot;
+		label=&quot;#{msgs.name}&quot;
+		help=&quot;#{msgs.helpName}&quot;&gt;
+		&lt;h:inputText
+			id=&quot;manualFieldC&quot;
+			styleClass=&quot;form-control form__input&quot;
+			value=&quot;#{LoginForm.myBenutzer.vorname}&quot;
+			required=&quot;true&quot;
+			readonly=&quot;false&quot;
+			tabindex=&quot;0&quot;&gt;
+			&lt;f:passThroughAttribute
+				name=&quot;aria-label&quot;
+				value=&quot;#{msgs.vorname}&quot; /&gt;
+			&lt;c:if test=&quot;false&quot;&gt;
+				&lt;f:passThroughAttribute
+					name=&quot;data-gw-focus-on-load&quot;
+					value=&quot;false&quot; /&gt;
+			&lt;/c:if&gt;
+		&lt;/h:inputText&gt;
+		&lt;h:inputText
+			id=&quot;manualFieldD&quot;
+			styleClass=&quot;form-control form__input&quot;
+			value=&quot;#{LoginForm.myBenutzer.nachname}&quot;
+			required=&quot;true&quot;
+			readonly=&quot;false&quot;
+			tabindex=&quot;0&quot;&gt;
+			&lt;f:passThroughAttribute
+				name=&quot;aria-label&quot;
+				value=&quot;#{msgs.nachname}&quot; /&gt;
+			&lt;c:if test=&quot;false&quot;&gt;
+				&lt;f:passThroughAttribute
+					name=&quot;data-gw-focus-on-load&quot;
+					value=&quot;false&quot; /&gt;
+			&lt;/c:if&gt;
+		&lt;/h:inputText&gt;
 	&lt;/form:field&gt;
+	&lt;form:fieldset
+		label=&quot;#{msgs.benutzer}&quot;&gt;
+		&lt;form:field
+			label=&quot;#{msgs.nachname}&quot;
+			help=&quot;#{msgs.helpNachname}&quot;&gt;
+			&lt;h:inputText
+				id=&quot;lastnameInFieldset&quot;
+				styleClass=&quot;form-control&quot;
+				field=&quot;#{BenutzerverwaltungForm.myClass.nachname}&quot; /&gt;
+			&lt;form:message target=&quot;lastnameInFieldset&quot; /&gt;
+		&lt;/form:field&gt;
+		&lt;form:field
+			label=&quot;#{msgs.vorname}&quot;
+			help=&quot;#{msgs.helpVorname}&quot;&gt;
+			&lt;h:inputText
+				id=&quot;firstnameInFieldset&quot;
+				styleClass=&quot;form-control&quot;
+				field=&quot;#{BenutzerverwaltungForm.myClass.vorname}&quot; /&gt;
+			&lt;form:message target=&quot;lastnameInFieldset&quot; /&gt;
+		&lt;/form:field&gt;
+	&lt;/form:fieldset&gt;
+	&lt;form:fieldset
+		label=&quot;#{msgs.benutzer}&quot;&gt;
+		&lt;form:fieldset
+			label=&quot;#{msgs.name}&quot;&gt;
+			&lt;form:field
+				label=&quot;#{msgs.nachname}&quot;
+				help=&quot;#{msgs.helpNachname}&quot;&gt;
+				&lt;h:inputText
+					id=&quot;lastnameInStackedFieldset&quot;
+					styleClass=&quot;form-control&quot;
+					field=&quot;#{BenutzerverwaltungForm.myClass.nachname}&quot; /&gt;
+				&lt;form:message target=&quot;lastnameInFieldset&quot; /&gt;
+			&lt;/form:field&gt;
+			&lt;form:field
+				label=&quot;#{msgs.vorname}&quot;
+				help=&quot;#{msgs.helpVorname}&quot;&gt;
+				&lt;h:inputText
+					id=&quot;firstnameInStackedFieldset&quot;
+					styleClass=&quot;form-control&quot;
+					field=&quot;#{BenutzerverwaltungForm.myClass.vorname}&quot; /&gt;
+				&lt;form:message target=&quot;lastnameInFieldset&quot; /&gt;
+			&lt;/form:field&gt;
+		&lt;/form:fieldset&gt;
+	&lt;/form:fieldset&gt;
 
 
 	&lt;div class=&quot;box__actions&quot;&gt;

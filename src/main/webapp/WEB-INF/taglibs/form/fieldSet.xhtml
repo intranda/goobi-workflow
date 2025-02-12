@@ -1,5 +1,8 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
-    <fieldSet class="field-set #{styleClass}">
-        <ui:insert />
-    </fieldSet>
+    <fieldset class="field-set #{styleClass}">
+        <legend class="field-set-legend">#{label}</legend>
+        <div class="field-set-content #{styleClass}">
+            <ui:insert />
+        </div>
+    </fieldset>
 </ui:composition>
