@@ -246,7 +246,21 @@
 
 		</intranda:box>
 		<!-- // REGULAR FORM -->
-
+		<div>
+			<h2 class="h4">What to use?</h2>
+			<p>
+				Use <code>&lt;form:field&gt;</code> for any field that contains a single input element.
+			</p>
+			<p>
+				Use <code>&lt;form:field group="true"&gt;</code> for any field that contains one if the following input types: radio, checkboxes.
+				Also use this for multiple input elements in one field (see the "Assigned rights" as well as the following "Name" field above).
+				This will produce the field as a HTML fieldset, as well as the provided label as a HTML legend instead of a HTML label, to improve accessibility.
+			</p>
+			<p>
+				Use <code>&lt;form:fieldset&gt;</code> for any field that contains multiple grouped, distinct input elements.
+				Fieldsets may be nested, as shown above.
+			</p>
+		</div>
 		<!-- CODE -->
 		<div class="accordion-item mt-3">
 			<h2 class="accordion-header">
