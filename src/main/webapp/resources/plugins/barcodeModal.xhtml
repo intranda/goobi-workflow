@@ -96,13 +96,16 @@
                             <!-- Barcode page -->
                             <h:panelGroup rendered="#{cc.attrs.plugin.showConfig == false}">
                                 <h:panelGroup rendered="#{cc.attrs.plugin.activeFormats.size() > 0}">
-                                    <ul class="p-0" role="list">
-                                        <ui:repeat value="#{cc.attrs.plugin.activeFormats}" var="format">
-                                            <li class="alert alert-secondary bg-white">
-                                                <h:outputText value="#{format.description}"/>
-                                            </li>
-                                        </ui:repeat>
-                                    </ul>
+                                    <form:field
+                                        label="#{cc.attrs.plugin.activeFormats.size() > 1 ? msgs.plugin_footer_barcodeScanner_activeFormats : msgs.plugin_footer_barcodeScanner_activeFormat}">
+                                        <ul role="list" class="p-0 m-0">
+                                            <ui:repeat value="#{cc.attrs.plugin.activeFormats}" var="format">
+                                                <li>
+                                                    <h:outputText value="#{format.description}"/>
+                                                </li>
+                                            </ui:repeat>
+                                        </ul>
+                                    </form:field>
                                 </h:panelGroup>
                                 <form:field
                                     label="#{msgs.plugin_footer_barcodeScanner_barcode}">
