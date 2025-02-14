@@ -22,7 +22,11 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.Batch;
@@ -205,6 +209,26 @@ public class ProcessManager implements IManager, Serializable {
         return new ArrayList<>();
     }
 
+    /**
+     * 
+     * Returns a list of all batches, for which the search filter finds at least one process.
+     * 
+     * @param filter search filter. Leave it blank to return all batches
+     * @param start position in case of a paginated list, set to null or 0 in case you need all entries
+     * @param count number of entries in a paginated list, set to null in case you need all entries
+     * @param institution limit the result to Batches within an institution. Set to null, if limitation is not needed
+     * @return
+     */
+
+    public static List<Batch> getBatches(String filter, Integer start, Integer count, Institution institution) {
+        try {
+            return ProcessMysqlHelper.getBatches(filter, start, count, institution);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return new ArrayList<>();
+    }
+
     public static Batch getBatchById(int id) {
 
         try {
@@ -330,7 +354,7 @@ public class ProcessManager implements IManager, Serializable {
         JournalManager.deleteJournalEntry(entry);
     }
 
-    public static final ResultSetHandler<Process> resultSetToProcessHandler = new ResultSetHandler<Process>() {
+    public static final ResultSetHandler<Process> resultSetToProcessHandler = new ResultSetHandler<>() {
         @Override
         public Process handle(ResultSet rs) throws SQLException {
             try {
@@ -348,7 +372,7 @@ public class ProcessManager implements IManager, Serializable {
         }
     };
 
-    public static ResultSetHandler<List<Process>> resultSetToProcessListHandler = new ResultSetHandler<List<Process>>() {
+    public static ResultSetHandler<List<Process>> resultSetToProcessListHandler = new ResultSetHandler<>() {
         @Override
         public List<Process> handle(ResultSet rs) throws SQLException {
             List<Process> answer = new ArrayList<>();

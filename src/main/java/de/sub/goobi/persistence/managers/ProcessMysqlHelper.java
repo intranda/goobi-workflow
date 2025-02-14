@@ -553,6 +553,33 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
+    static List<Batch> getBatches(String filter, Integer start, Integer count, Institution institution) throws SQLException {
+        StringBuilder sql = new StringBuilder("SELECT * FROM batches where batchID in (");
+
+        sql.append("SELECT batchID FROM prozesse left join batches on prozesse.batchId = batches.id ");
+        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        if (institution != null) {
+            sql.append("and projekte.institution_id = ");
+            sql.append(institution.getId());
+        }
+        if (filter != null && !filter.isEmpty()) {
+            sql.append(" WHERE " + filter);
+        }
+        sql.append(" ) ");
+        if (start != null && count != null) {
+            sql.append(" LIMIT " + start + ", " + count);
+        }
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql.toString(), resultSetToBatchListHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static List runSQL(String sql) throws SQLException {
         Connection connection = null;
