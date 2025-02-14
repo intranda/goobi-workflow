@@ -22,10 +22,10 @@
         <div class="modal" id="pluginModal#{cc.attrs.plugin.id}">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header bg-action text-white justify-content-between">
+                    <div jsf:id="modalHeader" class="modal-header #{cc.attrs.plugin.showConfig == true ? 'bg-action' : 'bg-primary-400'} text-white justify-content-between">
                         <h3 class="modal-title h6">
                             <span class="fa fa-barcode me-2" aria-hidden="true" />
-                            <span jsf:id="modalTitle">
+                            <span>
                                 #{cc.attrs.plugin.showConfig == false ?
                                     msgs.plugin_footer_barcodeScanner_scanBarcode
                                     : msgs.plugin_footer_barcodeScanner_configureBarcode}
@@ -56,7 +56,7 @@
                                             itemValue="#{barcode}"
                                         />
                                         <f:ajax
-                                            render="@form :#{cc.clientId}:modalTitle"
+                                            render="@form :#{cc.clientId}:modalHeader"
                                             onevent="(data) => {
                                                 if (data.status === 'success') {
                                                     showBarcode();
@@ -76,7 +76,7 @@
                                                 styleClass="form-control"
                                             >
                                                 <f:ajax
-                                                    render="@form :#{cc.clientId}:modalTitle"
+                                                    render="@form :#{cc.clientId}:modalHeader"
                                                     onevent="(data) => {
                                                         if (data.status === 'success') {
                                                             showBarcode();
@@ -125,10 +125,10 @@
                                 <f:setPropertyActionListener
                                         target="#{cc.attrs.plugin.showConfig}"
                                         value="#{not cc.attrs.plugin.showConfig}" />
-                                <f:ajax render="@form :#{cc.clientId}:modalTitle" execute="@form" />
+                                <f:ajax render="@form :#{cc.clientId}:modalHeader" execute="@form" />
                             </button>
                             <h:commandButton
-                                    styleClass="btn btn-action"
+                                    styleClass="btn btn-primary"
                                     action="#{cc.attrs.plugin.scan()}"
                                     value="#{msgs.plugin_footer_barcodeScanner_scan}"
                                     rendered="#{cc.attrs.plugin.showConfig == false}"
