@@ -117,15 +117,19 @@ public class EDTFValidatorTest {
 
     @Test
     public void testLevel1ExtendedInterval() {
+        // Open end time interval
         assertTrue(validator.isValid("1985-04-12/.."));
         assertTrue(validator.isValid("1985-04/.."));
         assertTrue(validator.isValid("1985/.."));
+        //  Open start time interval
         assertTrue(validator.isValid("../1985-04-12"));
         assertTrue(validator.isValid("../1985-04"));
         assertTrue(validator.isValid("../1985"));
+        // Time interval with unknown end
         assertTrue(validator.isValid("1985-04-12/"));
         assertTrue(validator.isValid("1985-04/"));
         assertTrue(validator.isValid("1985/"));
+        // Time interval with unknown start
         assertTrue(validator.isValid("/1985-04-12"));
         assertTrue(validator.isValid("/1985-04"));
         assertTrue(validator.isValid("/1985"));
@@ -133,20 +137,32 @@ public class EDTFValidatorTest {
 
     @Test
     public void testLevel2SetRepresentation() {
+        // One of the years 1667, 1668, 1670, 1671, 1672
         assertTrue(validator.isValid("[1667,1668,1670,1671,1672]"));
         assertTrue(validator.isValid("[1667,1668,1670..1672]"));
+        // December 3, 1760; or some earlier date
         assertTrue(validator.isValid("[..1760-12-03]"));
+        // December 1760, or some later month
         assertTrue(validator.isValid("[1760-12..]"));
+        // January or February of 1760 or December 1760 or some later month
         assertTrue(validator.isValid("[1760-01,1760-02,1760-12..]"));
+        //  Either the year 1667 or the month December of 1760.
         assertTrue(validator.isValid("[1667,1760-12]"));
+        //  The year 1984 or an earlier year
         assertTrue(validator.isValid("[..1984]"));
+        //  All of the years 1667, 1668, 1670, 1671, 1672
         assertTrue(validator.isValid("{1667,1668,1670..1672}"));
+        // The year 1960 and the month December of 1961.
         assertTrue(validator.isValid("{1960,1961-12}"));
+        //  The year 1984 and all earlier years
         assertTrue(validator.isValid("{..1984}"));
     }
 
     @Test
     public void testLevel2Interval() {
+        // An interval in June 2004 beginning approximately the first and ending approximately the 20th
+        assertTrue(validator.isValid("2004-06-~01/2004-06-~20"));
+        //  An interval beginning on an unspecified day in June 2004 and ending July 3.
         assertTrue(validator.isValid("2004-06-XX/2004-07-03"));
     }
 }
