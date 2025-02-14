@@ -4,7 +4,6 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -55,8 +54,8 @@
                     <span
                         class="fa fa-lg fa-trash-o"
                         aria-hidden="true" />
-                    <x:updateActionListener
-                        property="#{Metadaten.currentCorporate}"
+                    <f:setPropertyActionListener
+                        target="#{Metadaten.currentCorporate}"
                         value="#{cc.attrs.corporate.corporate}" />
                     <f:passThroughAttribute
                         name="data-toggle"
@@ -81,8 +80,8 @@
                     <span
                         class="fa fa-lg fa-copy"
                         aria-hidden="true" />
-                    <x:updateActionListener
-                        property="#{Metadaten.currentCorporate}"
+                    <f:setPropertyActionListener
+                        target="#{Metadaten.currentCorporate}"
                         value="#{cc.attrs.corporate.corporate}" />
                     <f:passThroughAttribute
                         name="data-toggle"
