@@ -4,6 +4,10 @@
     --bs-modal-header-padding: 1em;
 }
 
+.modal-header {
+    justify-content: space-between;
+}
+
 .button-modal-close .fa {
     margin: 0 10px 0 5px;
     color: var(--section-color-text);
