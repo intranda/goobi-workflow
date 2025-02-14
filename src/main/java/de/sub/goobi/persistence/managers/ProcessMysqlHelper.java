@@ -554,7 +554,7 @@ class ProcessMysqlHelper implements Serializable {
     }
 
     static List<Batch> getBatches(String filter, Integer start, Integer count, Institution institution) throws SQLException {
-        StringBuilder sql = new StringBuilder("SELECT * FROM batches where batchID in (");
+        StringBuilder sql = new StringBuilder("SELECT * FROM batches where id in (");
 
         sql.append("SELECT batchID FROM prozesse left join batches on prozesse.batchId = batches.id ");
         sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
