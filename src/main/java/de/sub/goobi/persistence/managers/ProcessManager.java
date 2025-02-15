@@ -220,7 +220,7 @@ public class ProcessManager implements IManager, Serializable {
      * @return
      */
 
-    public static List<Batch> getBatches(String filter, Integer start, Integer count, Institution institution) {
+    public static List<Batch> getBatchesWithFilter(String filter, Integer start, Integer count, Institution institution) {
         try {
             return ProcessMysqlHelper.getBatches(filter, start, count, institution);
         } catch (SQLException e) {
