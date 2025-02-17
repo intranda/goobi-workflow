@@ -6,7 +6,7 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/templatePG/templatePG.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+    
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -149,21 +149,8 @@
                         id="journal2"
                         enctype="multipart/form-data"
                         prependId="false">
-
-                        <ui:include src="templatePG/includes/journal.xhtml">
-                            <ui:param
-                                name="showBigButton"
-                                value="true" />
-                            <ui:param
-                                name="showFolderSelection"
-                                value="false" />
-                            <ui:param
-                                name="showImageComments"
-                                value="true" />
-                            <ui:param
-                                name="bean"
-                                value="#{AktuelleSchritteForm.batchHelper.currentStep.prozess}" />
-                        </ui:include>
+<intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="true" bean="#{AktuelleSchritteForm.batchHelper.currentStep.prozess}" /> 
+                 
 
                     </h:form>
                 </div>

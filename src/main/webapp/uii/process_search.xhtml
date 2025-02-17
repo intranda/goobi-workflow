@@ -6,7 +6,7 @@
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+	
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -47,7 +47,7 @@
 
 
 							<!-- LIST OF SEARCH ROWS -->
-							<x:dataList
+							<ui:repeat
 								value="#{SearchForm.rowList}"
 								var="row"
 								id="rowList">
@@ -334,15 +334,15 @@
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
-											<x:updateActionListener
-												property="#{SearchForm.currentRow}"
+											<f:setPropertyActionListener
+												target="#{SearchForm.currentRow}"
 												value="#{row}" />
 										</button>
 									<!-- // PLUS AND MINUS BUTTONS -->
 
 									</div>
 								</div>
-							</x:dataList>
+							</ui:repeat>
 							<!-- // LIST OF SEARCH ROWS -->
 
 
@@ -372,13 +372,13 @@
 
 							<!-- BUTTONS -->
 							<div class="form-actions">
-								<a
+								<button
 									jsf:id="cancel"
 									class="btn btn-blank me-2"
 									jsf:immediate="true"
 									jsf:action="#{SearchForm.resetFilter}">
 									<h:outputText value="#{msgs.clear}" />
-								</a>
+								</button>
 
 								<button
 									class="btn btn-primary-400 search-button"

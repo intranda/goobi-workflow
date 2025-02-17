@@ -4,7 +4,6 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -16,7 +15,6 @@
         <composite:attribute name="help" />
         <composite:attribute name="fieldStyle" default="form-select"/>
         <composite:attribute name="style" />
-        <composite:attribute name="var" default="var" />
         <composite:attribute name="itemValue" default="#{var.itemValue}" />
         <composite:attribute name="itemLabel" default="#{var.itemLabel}" />
         <composite:attribute name="displayLabel" default="true" />
@@ -29,7 +27,6 @@
         <composite:attribute name="focusOnLoad" default="false" />
         <composite:attribute name="execute" default="@this" />
         <composite:attribute name="render" default="@form" />
-
         <composite:attribute name="hidePleaseSelectMessage" default="false" />
         <composite:attribute name="onfocus" default="" />
 
@@ -66,10 +63,10 @@
                 disabled="#{cc.attrs.readonly}">
                 <f:ajax execute="#{cc.attrs.execute}" render="#{cc.attrs.render}" event="change" />
                 <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="#{cc.attrs.hidePleaseSelectMessage}" />
-                <f:selectItems value="#{cc.attrs.selectItems}" var="#{cc.attrs.var}" itemLabel="#{cc.attrs.itemLabel}" itemValue="#{cc.attrs.itemValue}" />
+                <f:selectItems value="#{cc.attrs.selectItems}" var="var" itemLabel="#{cc.attrs.itemLabel}" itemValue="#{cc.attrs.itemValue}" />
             </h:selectOneMenu>
 
-            <x:dataList
+            <ui:repeat
                 value="#{cc.attrs.field.allSelectedValues}"
                 var="selection">
                 <h:commandLink action="#{cc.attrs.field.removeSelectedValue(selection)}" title="#{msgs.removeSelectedItem}" pt:data-toggle="tooltip">
@@ -80,7 +77,7 @@
                         execute="#{cc.attrs.execute}"
                         render="#{cc.attrs.render}" />
                 </h:commandLink>
-            </x:dataList>
+            </ui:repeat>
 
             <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline text-danger" />
             <!-- Help messages, inline + warning -->

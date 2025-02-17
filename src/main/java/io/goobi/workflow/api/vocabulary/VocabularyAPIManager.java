@@ -1,24 +1,25 @@
 package io.goobi.workflow.api.vocabulary;
 
-import de.sub.goobi.config.ConfigurationHelper;
-import io.goobi.vocabulary.monitoring.MonitoringResult;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
-
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.IOUtils;
+
+import de.sub.goobi.config.ConfigurationHelper;
+import io.goobi.vocabulary.monitoring.MonitoringResult;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class VocabularyAPIManager {
@@ -56,7 +57,8 @@ public class VocabularyAPIManager {
             return;
         }
         if (!versionIsAtLeast(MIN_REQUIRED_VERSION, version)) {
-            throw new IllegalStateException("Vocabulary server doesn't meet required minimum version! minimum version=" + MIN_REQUIRED_VERSION + ", current version=" + version);
+            throw new IllegalStateException("Vocabulary server doesn't meet required minimum version! minimum version=" + MIN_REQUIRED_VERSION
+                    + ", current version=" + version);
         }
     }
 

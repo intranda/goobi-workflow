@@ -70,12 +70,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.CRC32;
 
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import jakarta.xml.bind.annotation.adapters.HexBinaryAdapter;
 import lombok.extern.log4j.Log4j2;
 
 /**

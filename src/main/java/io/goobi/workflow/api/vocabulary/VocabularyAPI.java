@@ -1,12 +1,12 @@
 package io.goobi.workflow.api.vocabulary;
 
+import java.util.List;
+
 import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
 import io.goobi.workflow.api.vocabulary.helper.CachedLookup;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
-
-import javax.servlet.http.Part;
-import java.util.List;
+import jakarta.servlet.http.Part;
 
 public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
     private static final String COMMON_ENDPOINT = "/api/v1/vocabularies";

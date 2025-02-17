@@ -1,0 +1,28 @@
+<ui:composition
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <header role="banner" aria-label="page-header">
+        <!-- SKIP LINK MARKUP -->
+        <span class="outer-skip-link">
+            <a class="skip-main sr-only" href="#main-content" tabindex="0">#{msgs.skipMainContent}</a>
+        </span>
+        <nav aria-label="navigation" id="navigation" class="navbar navbar-expand-lg">
+            <div class="container-fluid justify-content-between flex-nowrap">
+                <h:form id="menu" styleClass="flex-grow-1 d-flex flex-nowrap">
+                    <!-- Goobi-Workflow-Logo -->
+                    <a
+                        aria-label="#{msgs.returnHome}"
+                        class="my-auto"
+                        href="index.xhtml"
+                        id="brand">
+                        <img src="templatePG/img/goobi/goobi_eyes.svg" alt="" width="30" height="24" aria-hidden="true" />
+                    </a>
+                    <ui:insert />
+                </h:form>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+</ui:composition>

@@ -31,19 +31,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
-
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.metadaten.Image;
 import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.Context;
 import lombok.extern.log4j.Log4j2;
 
-@javax.ws.rs.Path("/tmp/image/{foldername}/{filename}")
+@jakarta.ws.rs.Path("/tmp/image/{foldername}/{filename}")
 @ContentServerBinding
 @Log4j2
 public class TempImageResource extends AbstractImageResource {
@@ -84,6 +83,6 @@ public class TempImageResource extends AbstractImageResource {
 
     @Override
     public String getGoobiURIPrefix() {
-        return TempImageResource.class.getAnnotation(javax.ws.rs.Path.class).value();
+        return TempImageResource.class.getAnnotation(jakarta.ws.rs.Path.class).value();
     }
 }

@@ -334,7 +334,7 @@ $(document).ready(function () {
     }
 
     // page manipulation on ajax calls
-    jsf.ajax.addOnEvent(function(data) {
+    faces.ajax.addOnEvent(function(data) {
         var ajaxstatus = data.status;
 
         switch (ajaxstatus) {

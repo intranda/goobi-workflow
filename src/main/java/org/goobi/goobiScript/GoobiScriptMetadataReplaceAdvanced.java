@@ -1,19 +1,19 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -53,7 +53,6 @@ public class GoobiScriptMetadataReplaceAdvanced extends AbstractIGoobiScript imp
     // action:metadataReplace field:DocLanguage search:deutschTop replace:deutschNewTop position:top
     // action:metadataReplace field:DocLanguage search:deutschChild replace:deutschNewChild position:child
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String FIELD = "field";
     private static final String VALUE = "value";
     private static final String NORMDATA_VALUE = "authorityValue";
@@ -93,30 +92,28 @@ public class GoobiScriptMetadataReplaceAdvanced extends AbstractIGoobiScript imp
 
         String missingParameter = "Missing parameter: ";
         if (StringUtils.isBlank(parameters.get(FIELD))) {
-            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, FIELD);
+            Helper.setFehlerMeldungUntranslated(missingParameter, FIELD);
             return Collections.emptyList();
         }
 
         if (StringUtils.isBlank(parameters.get(VALUE))) {
-            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, VALUE);
+            Helper.setFehlerMeldungUntranslated(missingParameter, VALUE);
             return Collections.emptyList();
         }
         String searchValue = parameters.get(VALUE);
         if (!searchValue.startsWith("s/") || !searchValue.endsWith("/g")) {
-            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD,
-                    "Invalid parameter, this is not a regular expression, use 's/old value/new value/g' ", VALUE);
+            Helper.setFehlerMeldungUntranslated(                    "Invalid parameter, this is not a regular expression, use 's/old value/new value/g' ", VALUE);
             return Collections.emptyList();
         }
 
         String normdataValue = parameters.get(NORMDATA_VALUE);
         if (StringUtils.isNotBlank(normdataValue) && (!normdataValue.startsWith("s/") || !normdataValue.endsWith("/g"))) {
-            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD,
-                    "Invalid parameter, this is not a regular expression, use 's/old value/new value/g' ", NORMDATA_VALUE);
+            Helper.setFehlerMeldungUntranslated("Invalid parameter, this is not a regular expression, use 's/old value/new value/g' ", NORMDATA_VALUE);
             return Collections.emptyList();
         }
 
         if (StringUtils.isBlank(parameters.get(POSITION))) {
-            Helper.setFehlerMeldungUntranslated(GOOBI_SCRIPTFIELD, missingParameter, POSITION);
+            Helper.setFehlerMeldungUntranslated(missingParameter, POSITION);
             return Collections.emptyList();
         }
 
@@ -243,7 +240,7 @@ public class GoobiScriptMetadataReplaceAdvanced extends AbstractIGoobiScript imp
 
     /**
      * Method to replace a string in a given metadata from a {@link DocStruct}
-     * 
+     *
      * @param dsList as List of structural elements to use
      * @param field the metadata field that is used
      * @param search a partial string to be replaced

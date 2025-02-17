@@ -101,7 +101,7 @@
                                                         data-bs-dismiss="modal">#{msgs.abbrechen}
                                                     </button>
                                                     <!-- <button> will not work with method references, <a> or <h:commandButton> do work however!!! -->
-                                                    <a
+                                                    <button
                                                         jsf:id="deleteButton"
                                                         class="btn btn-hot"
                                                         jsf:action="#{vocabularyRecordsBean.deleteRecord(vocabularyRecordsBean.currentRecord)}"
@@ -114,7 +114,7 @@
                                                                 <h:outputText value="#{msgs.vocabularyManager_deleteRecord}"/>
                                                             </span>
                                                         </span>
-                                                    </a>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -170,14 +170,14 @@
                             </label>
                         </div>
                         <!-- Cancel -->
-                        <a
+                        <button
                                 class="btn btn-blank"
                                 jsf:id="abbrechen"
                                 type="cancel"
                                 jsf:action="#{vocabularyRecordsBean.load(vocabularyRecordsBean.vocabulary)}"
                                 jsf:immediate="true">
                             <h:outputText value="#{msgs.abbrechen}"/>
-                        </a>
+                        </button>
                         <!-- Save -->
                         <button
                                 class="btn btn-success"

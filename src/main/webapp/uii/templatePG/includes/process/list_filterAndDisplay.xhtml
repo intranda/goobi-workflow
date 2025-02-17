@@ -4,7 +4,7 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+    
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -60,8 +60,8 @@
                   <span>
                     <h:outputText value="#{msgs.auswahlboxen}" />
                   </span>
-                  <x:updateActionListener
-                    property="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" />
                 </button>
               </li>
@@ -75,8 +75,8 @@
                   <span>
                     <h:outputText value="#{msgs.id}" />
                   </span>
-                  <x:updateActionListener
-                    property="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}"
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processId']}" />
                 </button>
               </li>
@@ -90,8 +90,8 @@
                   <span>
                     <h:outputText value="#{msgs.thumbnail}" />
                   </span>
-                  <x:updateActionListener
-                    property="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}"
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}" />
                 </button>
               </li>
@@ -106,8 +106,8 @@
                   <span>
                     <h:outputText value="#{msgs.metadatadetails}" />
                   </span>
-                  <x:updateActionListener
-                    property="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}"
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}" />
                 </button>
               </li>
@@ -122,8 +122,8 @@
                   <span>
                     <h:outputText value="#{msgs.regelsatz}" />
                   </span>
-                  <x:updateActionListener
-                    property="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}" />
                 </button>
               </li>
@@ -137,8 +137,8 @@
                   <span>
                     <h:outputText value="#{msgs.batch}" />
                   </span>
-                  <x:updateActionListener
-                    property="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}"
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['batchId']}" />
                 </button>
               </li>
@@ -152,8 +152,8 @@
                   <span>
                     <h:outputText value="#{msgs.vorgangsdatum}" />
                   </span>
-                  <x:updateActionListener
-                    property="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processDate']}" />
                 </button>
               </li>
@@ -167,8 +167,8 @@
                   <span>
                     <h:outputText value="#{msgs.sperrungen}" />
                   </span>
-                  <x:updateActionListener
-                    property="#{ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['lockings']}" />
                 </button>
               </li>
@@ -182,8 +182,8 @@
                   <span>
                     <h:outputText value="#{msgs.ausgelagerung}" />
                   </span>
-                  <x:updateActionListener
-                    property="#{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}" />
                 </button>
               </li>
@@ -198,8 +198,8 @@
                   <span>
                     <h:outputText value="#{msgs.NumberOfImages}" />
                   </span>
-                  <x:updateActionListener
-                    property="#{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}" />
                 </button>
               </li>
@@ -241,8 +241,8 @@
                                 <span>
                                   <h:outputText value="#{msgs.showClosedProcesses}" />
                                 </span>
-                                <x:updateActionListener
-                                  property="#{ProzessverwaltungForm.showClosedProcesses}"
+                                <f:setPropertyActionListener
+                                  target="#{ProzessverwaltungForm.showClosedProcesses}"
                                   value="#{not ProzessverwaltungForm.showClosedProcesses}" />
                                 </button>
                             </li>
@@ -258,8 +258,8 @@
                               <span>
                                 <h:outputText value="#{msgs.showArchivedProjects}" />
                               </span>
-                              <x:updateActionListener
-                                property="#{ProzessverwaltungForm.showArchivedProjects}"
+                              <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.showArchivedProjects}"
                                 value="#{not ProzessverwaltungForm.showArchivedProjects}" />
                             </button>
                             </li>

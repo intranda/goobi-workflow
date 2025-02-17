@@ -6,7 +6,6 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/templatePG/templatePG.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -148,296 +147,289 @@
 
                         </intranda:boxTitle>
 
-                            <div class="tab-content">
+                        <div class="tab-content">
 
-                                <div class="#{institutionBean.displayMode eq ''?'tab-pane active':'tab-pane'}">
+                            <div class="#{institutionBean.displayMode eq ''?'tab-pane active':'tab-pane'}">
 
-                                    <intranda:formInputTextAjax
-                                        id="title"
-                                        label="#{msgs.institution_shortName}"
-                                        field="#{institutionBean.institution.shortName}"
-                                        help="#{msgs.institution_help_shortName}"
-                                        name="title"
-                                        render="@form" />
-                                    <intranda:formInputTextAjax
-                                        id="longTitle"
-                                        name="longTitle"
-                                        label="#{msgs.institution_longName}"
-                                        field="#{institutionBean.institution.longName}"
-                                        help="#{msgs.institution_help_longName}"
-                                        render="@form" />
+                                <intranda:formInputTextAjax
+                                    id="title"
+                                    label="#{msgs.institution_shortName}"
+                                    field="#{institutionBean.institution.shortName}"
+                                    help="#{msgs.institution_help_shortName}"
+                                    name="title"
+                                    render="@form" />
+                                <intranda:formInputTextAjax
+                                    id="longTitle"
+                                    name="longTitle"
+                                    label="#{msgs.institution_longName}"
+                                    field="#{institutionBean.institution.longName}"
+                                    help="#{msgs.institution_help_longName}"
+                                    render="@form" />
 
-                                    <intranda:formInputCheckBoxAjax
-                                        id="checkAllRulesets"
-                                        label="#{msgs.institution_allowAllRulesets}"
-                                        field="#{institutionBean.institution.allowAllRulesets}"
-                                        help="#{msgs.help_institution_allowAllRulesets}"
-                                        name="checkAllRulesets"
-                                        ajaxEvent="change"
-                                        ajaxRender="@form"
+                                <intranda:formInputCheckBoxAjax
+                                    id="checkAllRulesets"
+                                    label="#{msgs.institution_allowAllRulesets}"
+                                    field="#{institutionBean.institution.allowAllRulesets}"
+                                    help="#{msgs.help_institution_allowAllRulesets}"
+                                    name="checkAllRulesets"
+                                    ajaxEvent="change"
+                                    ajaxRender="@form"
+                                    style="border-bottom:1px solid #ddd;" />
+                                <intranda:formInputCheckBoxAjax
+                                    id="checkAllDockets"
+                                    label="#{msgs.institution_allowAllDockets}"
+                                    field="#{institutionBean.institution.allowAllDockets}"
+                                    help="#{msgs.help_institution_allowAllDockets}"
+                                    name="checkAllDockets"
+                                    ajaxEvent="change"
+                                    ajaxRender="@form"
+                                    style="border-bottom:1px solid #ddd;" />
+                                <intranda:formInputCheckBoxAjax
+                                    id="checkAllAuthentications"
+                                    label="#{msgs.institution_allowAllAuthentications}"
+                                    field="#{institutionBean.institution.allowAllAuthentications}"
+                                    help="#{msgs.help_institution_allowAllAuthentications}"
+                                    name="checkAllAuthentications"
+                                    ajaxEvent="change"
+                                    ajaxRender="@form"
+                                    style="border-bottom:1px solid #ddd;" />
+                                <intranda:formInputCheckBoxAjax
+                                    id="checkAllowAllPlugins"
+                                    label="#{msgs.institution_allowAllPlugins}"
+                                    field="#{institutionBean.institution.allowAllPlugins}"
+                                    help="#{msgs.help_institution_allowAllPlugins}"
+                                    name="checkAllowAllPlugins"
+                                    ajaxEvent="change"
+                                    ajaxRender="@form"
+                                    style="border-bottom:1px solid #ddd;" />
+
+                            </div>
+
+
+                            <h:panelGroup
+                                layout="block"
+                                styleClass="#{institutionBean.displayMode eq 'tab2'?'tab-pane active':'tab-pane'}">
+                                <ui:repeat
+                                    value="#{institutionBean.institution.allowedRulesets}"
+                                    var="item">
+
+                                    <intranda:formInputCheckBox
+                                        id="a#{item.object_name}"
+                                        name="a#{item.object_name}"
+                                        label="#{item.object_name}"
+                                        field="#{item.selected}"
+                                        help="#{msgs.helpSelectRuleset}"
                                         style="border-bottom:1px solid #ddd;" />
-                                    <intranda:formInputCheckBoxAjax
-                                        id="checkAllDockets"
-                                        label="#{msgs.institution_allowAllDockets}"
-                                        field="#{institutionBean.institution.allowAllDockets}"
-                                        help="#{msgs.help_institution_allowAllDockets}"
-                                        name="checkAllDockets"
-                                        ajaxEvent="change"
-                                        ajaxRender="@form"
+                                </ui:repeat>
+                            </h:panelGroup>
+
+                            <h:panelGroup
+                                layout="block"
+                                styleClass="#{institutionBean.displayMode eq 'tab3'?'tab-pane active':'tab-pane'}">
+                                <ui:repeat
+                                    value="#{institutionBean.institution.allowedDockets}"
+                                    var="item">
+                                    <intranda:formInputCheckBox
+                                        id="a#{item.object_name}"
+                                        name="a#{item.object_name}"
+                                        label="#{item.object_name}"
+                                        field="#{item.selected}"
+                                        help="#{msgs.helpSelectDocket}"
                                         style="border-bottom:1px solid #ddd;" />
-                                    <intranda:formInputCheckBoxAjax
-                                        id="checkAllAuthentications"
-                                        label="#{msgs.institution_allowAllAuthentications}"
-                                        field="#{institutionBean.institution.allowAllAuthentications}"
-                                        help="#{msgs.help_institution_allowAllAuthentications}"
-                                        name="checkAllAuthentications"
-                                        ajaxEvent="change"
-                                        ajaxRender="@form"
+                                </ui:repeat>
+                            </h:panelGroup>
+
+                            <h:panelGroup
+                                layout="block"
+                                styleClass="#{institutionBean.displayMode eq 'tab4'?'tab-pane active':'tab-pane'}">
+                                <ui:repeat
+                                    value="#{institutionBean.institution.allowedAuthentications}"
+                                    var="item"
+                                    varStatus="varStatus">
+                                    <intranda:formInputCheckBox
+                                        id="a#{item.object_name}"
+                                        name="a#{item.object_name}"
+                                        label="#{item.object_name}"
+                                        field="#{item.selected}"
+                                        help="#{msgs.helpSelectAuthentication}"
                                         style="border-bottom:1px solid #ddd;" />
-                                    <intranda:formInputCheckBoxAjax
-                                        id="checkAllowAllPlugins"
-                                        label="#{msgs.institution_allowAllPlugins}"
-                                        field="#{institutionBean.institution.allowAllPlugins}"
-                                        help="#{msgs.help_institution_allowAllPlugins}"
-                                        name="checkAllowAllPlugins"
-                                        ajaxEvent="change"
-                                        ajaxRender="@form"
-                                        style="border-bottom:1px solid #ddd;" />
+                                </ui:repeat>
+                            </h:panelGroup>
 
-                                </div>
+                            <h:panelGroup
+                                layout="block"
+                                styleClass="#{institutionBean.displayMode eq 'tab5'?'tab-pane active':'tab-pane'}">
 
-
-                                <h:panelGroup
-                                    layout="block"
-                                    styleClass="#{institutionBean.displayMode eq 'tab2'?'tab-pane active':'tab-pane'}">
-                                    <x:dataList
-                                        value="#{institutionBean.institution.allowedRulesets}"
-                                        var="item">
-
-                                        <intranda:formInputCheckBox
-                                            id="a#{item.object_name}"
-                                            name="a#{item.object_name}"
-                                            label="#{item.object_name}"
-                                            field="#{item.selected}"
-                                            help="#{msgs.helpSelectRuleset}"
-                                            style="border-bottom:1px solid #ddd;" />
-                                    </x:dataList>
-                                </h:panelGroup>
-
-                                <h:panelGroup
-                                    layout="block"
-                                    styleClass="#{institutionBean.displayMode eq 'tab3'?'tab-pane active':'tab-pane'}">
-                                    <x:dataList
-                                        value="#{institutionBean.institution.allowedDockets}"
-                                        var="item">
-                                        <intranda:formInputCheckBox
-                                            id="a#{item.object_name}"
-                                            name="a#{item.object_name}"
-                                            label="#{item.object_name}"
-                                            field="#{item.selected}"
-                                            help="#{msgs.helpSelectDocket}"
-                                            style="border-bottom:1px solid #ddd;" />
-                                    </x:dataList>
-                                </h:panelGroup>
-
-                                <h:panelGroup
-                                    layout="block"
-                                    styleClass="#{institutionBean.displayMode eq 'tab4'?'tab-pane active':'tab-pane'}">
-                                    <x:dataList
-                                        value="#{institutionBean.institution.allowedAuthentications}"
+                                <ui:fragment rendered="#{not institutionBean.institution.allowedAdministrationPlugins.isEmpty()}">
+                                    <h3 class="heading-3">#{msgs.instituiton_administrationPlugin}</h3>
+                                    <ui:repeat
+                                        value="#{institutionBean.institution.allowedAdministrationPlugins}"
                                         var="item"
                                         varStatus="varStatus">
                                         <intranda:formInputCheckBox
                                             id="a#{item.object_name}"
                                             name="a#{item.object_name}"
-                                            label="#{item.object_name}"
+                                            label="#{msgs[item.object_name]}"
                                             field="#{item.selected}"
-                                            help="#{msgs.helpSelectAuthentication}"
-                                            style="border-bottom:1px solid #ddd;" />
-                                    </x:dataList>
-                                </h:panelGroup>
-
-                                <h:panelGroup
-                                    layout="block"
-                                    styleClass="#{institutionBean.displayMode eq 'tab5'?'tab-pane active':'tab-pane'}">
-
-                                    <ui:fragment rendered="#{not institutionBean.institution.allowedAdministrationPlugins.isEmpty()}">
-                                        <h3 class="heading-3">
-                                            #{msgs.instituiton_administrationPlugin}
-                                        </h3>
-                                        <ui:repeat
-                                            value="#{institutionBean.institution.allowedAdministrationPlugins}"
-                                            var="item"
-                                            varStatus="varStatus">
-                                            <intranda:formInputCheckBox
-                                                id="a#{item.object_name}"
-                                                name="a#{item.object_name}"
-                                                label="#{msgs[item.object_name]}"
-                                                field="#{item.selected}"
-                                                help="#{msgs.helpSelectPlugin}"
-                                                style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
-                                        </ui:repeat>
-                                    </ui:fragment>
+                                            help="#{msgs.helpSelectPlugin}"
+                                            style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
+                                    </ui:repeat>
+                                </ui:fragment>
 
 
-                                    <ui:fragment rendered="#{not institutionBean.institution.allowedWorkflowPlugins.isEmpty()}">
-                                        <h3 class="heading-3">
-                                            #{msgs.instituiton_workflowPlugin}
-                                        </h3>
-                                        <ui:repeat
-                                            value="#{institutionBean.institution.allowedWorkflowPlugins}"
-                                            var="item"
-                                            varStatus="varStatus">
-                                            <intranda:formInputCheckBox
-                                                id="a#{item.object_name}"
-                                                name="a#{item.object_name}"
-                                                label="#{msgs[item.object_name]}"
-                                                field="#{item.selected}"
-                                                help="#{msgs.helpSelectPlugin}"
-                                                style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
-                                        </ui:repeat>
-                                    </ui:fragment>
+                                <ui:fragment rendered="#{not institutionBean.institution.allowedWorkflowPlugins.isEmpty()}">
+                                    <h3 class="heading-3">#{msgs.instituiton_workflowPlugin}</h3>
+                                    <ui:repeat
+                                        value="#{institutionBean.institution.allowedWorkflowPlugins}"
+                                        var="item"
+                                        varStatus="varStatus">
+                                        <intranda:formInputCheckBox
+                                            id="a#{item.object_name}"
+                                            name="a#{item.object_name}"
+                                            label="#{msgs[item.object_name]}"
+                                            field="#{item.selected}"
+                                            help="#{msgs.helpSelectPlugin}"
+                                            style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
+                                    </ui:repeat>
+                                </ui:fragment>
 
-                                    <ui:fragment rendered="#{not institutionBean.institution.allowedStatisticsPlugins.isEmpty()}">
-                                        <h3 class="heading-3">
-                                            #{msgs.instituiton_statisticsPlugin}
-                                        </h3>
-                                        <ui:repeat
-                                            var="item"
-                                            value="#{institutionBean.institution.allowedStatisticsPlugins}"
-                                            varStatus="varStatus">
-                                            <intranda:formInputCheckBox
-                                                id="a#{item.object_name}"
-                                                name="a#{item.object_name}"
-                                                label="#{msgs[item.object_name]}"
-                                                field="#{item.selected}"
-                                                help="#{msgs.helpSelectPlugin}"
-                                                style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
-                                        </ui:repeat>
-                                    </ui:fragment>
+                                <ui:fragment rendered="#{not institutionBean.institution.allowedStatisticsPlugins.isEmpty()}">
+                                    <h3 class="heading-3">#{msgs.instituiton_statisticsPlugin}</h3>
+                                    <ui:repeat
+                                        var="item"
+                                        value="#{institutionBean.institution.allowedStatisticsPlugins}"
+                                        varStatus="varStatus">
+                                        <intranda:formInputCheckBox
+                                            id="a#{item.object_name}"
+                                            name="a#{item.object_name}"
+                                            label="#{msgs[item.object_name]}"
+                                            field="#{item.selected}"
+                                            help="#{msgs.helpSelectPlugin}"
+                                            style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
+                                    </ui:repeat>
+                                </ui:fragment>
 
-                                    <ui:fragment rendered="#{not institutionBean.institution.allowedDashboardPlugins.isEmpty()}">
-                                        <h3 class="heading-3">
-                                            #{msgs.instituiton_dashboardPlugin}
-                                        </h3>
-                                        <ui:repeat
-                                            value="#{institutionBean.institution.allowedDashboardPlugins}"
-                                            var="item"
-                                            varStatus="varStatus">
-                                            <intranda:formInputCheckBox
-                                                id="a#{item.object_name}"
-                                                name="a#{item.object_name}"
-                                                label="#{msgs[item.object_name]}"
-                                                field="#{item.selected}"
-                                                help="#{msgs.helpSelectPlugin}"
-                                                style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
-                                        </ui:repeat>
-                                    </ui:fragment>
+                                <ui:fragment rendered="#{not institutionBean.institution.allowedDashboardPlugins.isEmpty()}">
+                                    <h3 class="heading-3">#{msgs.instituiton_dashboardPlugin}</h3>
+                                    <ui:repeat
+                                        value="#{institutionBean.institution.allowedDashboardPlugins}"
+                                        var="item"
+                                        varStatus="varStatus">
+                                        <intranda:formInputCheckBox
+                                            id="a#{item.object_name}"
+                                            name="a#{item.object_name}"
+                                            label="#{msgs[item.object_name]}"
+                                            field="#{item.selected}"
+                                            help="#{msgs.helpSelectPlugin}"
+                                            style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
+                                    </ui:repeat>
+                                </ui:fragment>
 
-                                </h:panelGroup>
+                            </h:panelGroup>
 
 
-                            </div>
+                        </div>
 
-                            <div class="box__actions">
+                        <div class="box__actions">
 
-                                <!-- Cancel -->
-                                <a
-                                    class="btn btn-blank"
-                                    jsf:id="cancel"
-                                    type="submit"
-                                    jsf:action="#{institutionBean.FilterKein}"
-                                    jsf:immediate="true">
-                                    <h:outputText value="#{msgs.abbrechen}" />
-                                </a>
+                            <!-- Cancel -->
+                            <button
+                                class="btn btn-blank"
+                                jsf:id="cancel"
+                                type="submit"
+                                jsf:action="#{institutionBean.FilterKein}"
+                                jsf:immediate="true">
+                                <h:outputText value="#{msgs.abbrechen}" />
+                            </button>
 
-                                <!-- Save -->
+                            <!-- Save -->
+                            <button
+                                class="btn btn-success submitOnEnter"
+                                jsf:id="absenden"
+                                type="submit"
+                                jsf:action="#{institutionBean.Speichern}">
+                                <span class="fa fa-save" />
+                                <span>
+                                    <h:outputText value="#{msgs.speichern}" />
+                                </span>
+                            </button>
+
+                            <ui:fragment rendered="#{institutionBean.institution.id != null}">
                                 <button
-                                    class="btn btn-success submitOnEnter"
-                                    jsf:id="absenden"
-                                    type="submit"
-                                    jsf:action="#{institutionBean.Speichern}">
-                                    <span class="fa fa-save" />
+                                    id="delete"
+                                    type="button"
+                                    class="btn btn-hot trigger-delete"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal">
+                                    <span class="fa fa-trash-o" />
                                     <span>
-                                        <h:outputText value="#{msgs.speichern}" />
+                                        <h:outputText value="#{msgs.loeschen}" />
                                     </span>
                                 </button>
 
-                                <ui:fragment rendered="#{institutionBean.institution.id != null}">
-                                    <button
-                                        id="delete"
-                                        type="button"
-                                        class="btn btn-hot trigger-delete"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal">
-                                        <span class="fa fa-trash-o" />
-                                        <span>
-                                            <h:outputText value="#{msgs.loeschen}" />
-                                        </span>
-                                    </button>
-
+                                <div
+                                    class="modal fade"
+                                    id="deleteModal"
+                                    tabindex="-1"
+                                    role="dialog"
+                                    aria-labelledby="myModalLabel">
                                     <div
-                                        class="modal fade"
-                                        id="deleteModal"
-                                        tabindex="-1"
-                                        role="dialog"
-                                        aria-labelledby="myModalLabel">
-                                        <div
-                                            class="modal-dialog"
-                                            role="document">
-                                            <div class="modal-content">
+                                        class="modal-dialog"
+                                        role="document">
+                                        <div class="modal-content">
 
-                                                <div class="modal-header bg-primary text-white">
-                                                    <h4 class="modal-title" id="myModalLabel">
+                                            <div class="modal-header bg-primary text-white">
+                                                <h4
+                                                    class="modal-title"
+                                                    id="myModalLabel">
+                                                    <h:outputText value="#{msgs.loeschen}" />
+                                                </h4>
+                                                <button
+                                                    type="button"
+                                                    class="btn text-white"
+                                                    title="#{msgs.cancel}"
+                                                    data-bs-dismiss="modal">
+                                                    <span class="fa fa-times" />
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button
+                                                    class="btn btn-blank"
+                                                    data-bs-dismiss="modal"
+                                                    aria-hidden="true">#{msgs.abbrechen}</button>
+                                                <button
+                                                    jsf:id="confirmDelete"
+                                                    class="btn btn-danger"
+                                                    jsf:action="#{institutionBean.Loeschen}">
+                                                    <span class="fa fa-trash-o margin-right-5" />
+                                                    <span>
                                                         <h:outputText value="#{msgs.loeschen}" />
-                                                    </h4>
-                                                    <button type="button" class="btn text-white"
-                                                        title="#{msgs.cancel}" data-bs-dismiss="modal">
-                                                        <span class="fa fa-times" />
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button
-                                                        class="btn btn-blank"
-                                                        data-bs-dismiss="modal"
-                                                        aria-hidden="true">#{msgs.abbrechen}</button>
-                                                    <button
-                                                        jsf:id="confirmDelete"
-                                                        class="btn btn-danger"
-                                                        jsf:action="#{institutionBean.Loeschen}">
-                                                        <span class="fa fa-trash-o margin-right-5" />
-                                                        <span>
-                                                        <h:outputText value="#{msgs.loeschen}" />
-                                                        </span>
-                                                    </button>
-                                                </div>
+                                                    </span>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
-                                </ui:fragment>
-                            </div>
+                                </div>
+                            </ui:fragment>
+                        </div>
                     </intranda:box>
                 </div>
 
 
                 <!-- JOURNAL -->
                 <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-md-12 col-lg-6'} d-flex flex-column mb-4">
-                    <ui:include src="templatePG/includes/journal.xhtml">
-                        <ui:param
-                            name="showBigButton"
-                            value="true" />
-                        <ui:param
-                            name="showFolderSelection"
-                            value="false" />
-                        <ui:param
-                            name="bean"
-                            value="#{institutionBean.institution}" />
-                    </ui:include>
+                    <ui:fragment rendered="#{institutionBean.institution.id != null}">
+                        <intranda:journal
+                            showBigButton="false"
+                            showFolderSelection="false"
+                            showImageComments="false"
+                            bean="#{institutionBean.institution}" />
+                    </ui:fragment>
                 </div>
-                 <!-- // JOURNAL -->
+                <!-- // JOURNAL -->
 
             </div>
         </h:form>

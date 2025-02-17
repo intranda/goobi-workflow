@@ -1,0 +1,217 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <!-- GEONAMES MODAL -->
+        <div
+            class="modal fade modal__geonames"
+            id="geonamesSearchBox"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="geonamesSearchBoxLabel"
+            aria-hidden="true">
+            <div
+                class="modal-dialog"
+                role="document">
+                <h:panelGroup
+                    id="geonamesModalContent"
+                    layout="block"
+                    styleClass="modal-content">
+                    <div class="modal-header">
+                        <h5
+                            class="modal-title"
+                            id="geonamesSearchBoxLabel">#{msgs.NORM_geonamesSearch}</h5>
+
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                            <h:outputText
+                                value="&amp;times;"
+                                escape="false" />
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <h:outputText
+                                value="#{msgs.NORM_helpGeonamesSearch}"
+                                escape="false" />
+                        </p>
+
+                        <div class="row">
+                            <!-- GEONAMES SEARCH INPUT -->
+                            <div class="col-10">
+                                <h:inputText
+                                    id="geonamesSearch"
+                                    styleClass="form-control"
+                                    onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'geonamesSearchAction')"
+                                    value="#{Metadaten.geonamesSearchValue}" />
+
+                                <h:message
+                                    for="geonamesSearch"
+                                    showDetail="true"
+                                    styleClass="help-inline font-danger" />
+                            </div>
+
+                            <!-- GEONAMES SEARCH ACTION -->
+                            <div class="col-2 text-right">
+                                <button
+                                	jsf:id="geonamesSearchButton"
+                                    class="btn btn--white btn--loader"
+                                    jsf:action="#{Metadaten.search}">
+                                    <i
+                                        class="fa fa-search"
+                                        aria-hidden="true"></i>
+                                        #{msgs.search}
+                                        <span
+                                        class="btn-ajax-loader"
+                                        aria-hidden="true">
+                                        <img
+                                            src="template/img/goobi/ajaxloader2.gif"
+                                            alt="Ajax Button Loader" />
+                                    </span>
+                                    <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                    <f:ajax
+                                        execute="@form"
+                                        render="geonamesList" />
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- GEONAMES LIST -->
+                        <h:panelGroup id="geonamesList">
+                            <h:message
+                                for="geonamesList"
+                                showDetail="true"
+                                styleClass="help-inline font-danger" />
+
+                            <h:panelGroup
+                                layout="block"
+                                styleClass="modal__geonames-list scrollable"
+                                rendered="#{Metadaten.currentMetadataToPerformSearch.resultList ne null and Metadaten.currentMetadataToPerformSearch.resultList.size() != 0}">
+                                <ui:repeat
+                                    value="#{Metadaten.currentMetadataToPerformSearch.resultList}"
+                                    var="geonames">
+                                    <div class="form-group form-group--flex">
+                                        <div class="row justify-content-between">
+                                            <div class="col-10">
+                                                <div class="row">
+                                                    <!-- GEONAME ID -->
+                                                    <ui:fragment rendered="#{geonames.geoNameId !=''}">
+                                                        <div class="col-4">
+                                                            <h:outputText value="#{msgs.geoNameId}" />
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <h:outputText value="#{geonames.geoNameId}" />
+                                                        </div>
+                                                    </ui:fragment>
+
+                                                    <!-- GEONAME -->
+                                                    <ui:fragment rendered="#{geonames.name !=''}">
+                                                        <div class="col-4">
+                                                            <h:outputText value="#{msgs.name}" />
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <h:outputText value="#{geonames.name}" />
+                                                        </div>
+                                                    </ui:fragment>
+
+                                                    <!-- GEONAME ALTERNATE NAMES -->
+                                                    <ui:fragment rendered="#{geonames.alternateNames !=''}">
+                                                        <div class="col-4">
+                                                            <h:outputText value="#{msgs.alternateNames}" />
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <h:outputText value="#{geonames.alternateNames}" />
+                                                        </div>
+                                                    </ui:fragment>
+
+                                                    <!-- GEONAME COUNTRY NAME -->
+                                                    <ui:fragment rendered="#{geonames.countryName !=''}">
+                                                        <div class="col-4">
+                                                            <h:outputText value="#{msgs.countryName}" />
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <h:outputText value="#{msgs[geonames.countryName]}" />
+                                                        </div>
+                                                    </ui:fragment>
+
+                                                    <!-- GEONAME LATITUDE -->
+                                                    <ui:fragment rendered="#{geonames.latitude !=''}">
+                                                        <div class="col-4">
+                                                            <h:outputText value="#{msgs.latitude}" />
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <h:outputText value="#{geonames.latitude}" />
+                                                        </div>
+                                                    </ui:fragment>
+
+                                                    <!-- GEONAME LONGITUDE -->
+                                                    <ui:fragment rendered="#{geonames.longitude !=''}">
+                                                        <div class="col-4">
+                                                            <h:outputText value="#{msgs.longitude}" />
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <h:outputText value="#{geonames.longitude}" />
+                                                        </div>
+                                                    </ui:fragment>
+
+                                                    <!-- GEONAME POPULATION -->
+                                                    <ui:fragment rendered="#{geonames.population !=''}">
+                                                        <div class="col-4">
+                                                            <h:outputText value="#{msgs.population}" />
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <h:outputText value="#{geonames.population}" />
+                                                        </div>
+                                                    </ui:fragment>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-2 text-right">
+                                                <button
+                                                    onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
+                                                	jsf:id="check"
+                                                    class="btn btn--icon-green greenCheckButton"
+                                                    jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+                                                    <f:setPropertyActionListener
+                                                        value="#{geonames}"
+                                                        target="#{Metadaten.currentMetadataToPerformSearch.currentToponym}" />
+                                                    <f:setPropertyActionListener
+                                                        value=""
+                                                        target="#{Metadaten.geonamesSearchValue}" />
+                                                    <i
+                                                        class="fa fa-check"
+                                                        aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr />
+                                </ui:repeat>
+                            </h:panelGroup>
+
+                            <h:outputText
+                                value="#{msgs.NORM_noHits}"
+                                rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}" />
+                        </h:panelGroup>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+    </composite:implementation>
+</ui:composition>

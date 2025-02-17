@@ -23,14 +23,13 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-
 import org.easymock.EasyMock;
 import org.junit.Test;
 
 import de.sub.goobi.AbstractTest;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 public class BasicAuthenticationFilterTest extends AbstractTest {
 

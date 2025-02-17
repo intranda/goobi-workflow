@@ -2,21 +2,21 @@ package org.goobi.managedbeans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -52,15 +52,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
@@ -166,7 +158,15 @@ import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import io.goobi.workflow.xslt.XsltPreparatorDocket;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.jms.JMSException;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -408,7 +408,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     /**
      * needed for ExtendedSearch
-     * 
+     *
      * @return
      */
     public boolean getInitialize() {
@@ -1289,9 +1289,9 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     /*
      * =======================================================
-     * 
+     *
      * Auswahl mittels Selectboxen
-     * 
+     *
      * ========================================================
      */
 
@@ -1731,7 +1731,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         if (this.parsedGoobiScripts != null) {
             this.renderHitNumberImage();
         } else {
-            Helper.setFehlerMeldung("goobiScriptfield", "", "Can't parse GoobiScript. Please check your Syntax. Only valid YAML is allowed.");
+            Helper.setFehlerMeldung("", "Can't parse GoobiScript. Please check your Syntax. Only valid YAML is allowed.");
         }
     }
 
@@ -1748,12 +1748,12 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     /**
      * runs the current GoobiScript in the correct mode ("page", "hits" or "selection")
-     * 
+     *
      * @return
      */
     public String runGoobiScript() {
         if (!checkSecurityResult()) {
-            Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
+            Helper.setFehlerMeldung("", "GoobiScript_wrong_answer");
             return "";
         } else {
             resetHitsCount();
@@ -1779,7 +1779,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     /**
      * Logs the started goobi scripts on the DEBUG level in the log4j log. The output contains information about the executing user, the entered
      * script and the list of ids of all affected processes.
-     * 
+     *
      * @param processIds The list of ids of affected processes
      */
     private void logGoobiScriptExecution(List<Integer> processIds) {
@@ -1797,7 +1797,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     /**
      * Return a list of all visible GoobiScript commands with their action name and the sample call
-     * 
+     *
      * @return the list of GoobiScripts
      */
     public List<StringPair> getAllGoobiScripts() {
@@ -1913,7 +1913,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     /**
      * ist called via jsp at the end of building a chart in include file Prozesse_Liste_Statistik.jsp and resets the statistics so that with the next
      * reload a chart is not shown anymore
-     * 
+     *
      * @author Wulf
      */
     public String getResetStatistic() {
@@ -2611,7 +2611,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     /**
      * generate a list of all available process templates
-     * 
+     *
      * @return
      */
 
@@ -2683,7 +2683,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     /**
      * Check if the current element is not the last element of the filtered list
-     * 
+     *
      * @return
      */
 
@@ -2703,7 +2703,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     /**
      * Check if current process is not the first element of filtered list
-     * 
+     *
      * @return
      */
 
@@ -2722,7 +2722,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     /**
      * Navigate to the next element of the filtered list
-     * 
+     *
      */
 
     public void nextEntry() {
@@ -2748,7 +2748,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     /**
      * Navigate to the previous element of the filtered list
-     * 
+     *
      */
 
     public void previousEntry() {

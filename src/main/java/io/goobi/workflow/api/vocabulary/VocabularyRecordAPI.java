@@ -2,10 +2,14 @@ package io.goobi.workflow.api.vocabulary;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.faces.model.SelectItem;
 
 import io.goobi.vocabulary.exception.VocabularyException;
 import io.goobi.vocabulary.exchange.FieldInstance;
@@ -17,6 +21,7 @@ import io.goobi.workflow.api.vocabulary.helper.CachedLookup;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import io.goobi.workflow.api.vocabulary.helper.RecordListRequest;
+import jakarta.faces.model.SelectItem;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -95,7 +100,8 @@ public class VocabularyRecordAPI {
         this.restApi = new RESTAPI(address);
         this.singleLookupCache = new CachedLookup<>(id -> new ExtendedVocabularyRecord(restApi.get(INSTANCE_ENDPOINT, VocabularyRecord.class, id)));
         this.listLookupCache = new CachedLookup<>(req -> {
-            VocabularyRecordPageResult result = restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + req.getUrlParams(), VocabularyRecordPageResult.class, req.getVocabularyId());
+            VocabularyRecordPageResult result =
+                    restApi.get(IN_VOCABULARY_RECORDS_ENDPOINT + req.getUrlParams(), VocabularyRecordPageResult.class, req.getVocabularyId());
             result.getContent().forEach(r -> this.singleLookupCache.update(r.getId(), r));
             return result;
         });

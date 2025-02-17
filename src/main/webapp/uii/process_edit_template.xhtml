@@ -6,7 +6,7 @@
 	template="/uii/templatePG/templatePG.html"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+	
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
@@ -86,8 +86,8 @@
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
-								<x:updateActionListener
-									property="#{ProzessverwaltungForm.modusBearbeiten}"
+								<f:setPropertyActionListener
+									target="#{ProzessverwaltungForm.modusBearbeiten}"
 									value="vorlage" />
 							</button>
 							<button
@@ -148,8 +148,8 @@
 							jsf:action="#{NavigationForm.Reload}"
 							jsf:rendered="#{ProzessverwaltungForm.myProzess.id != null}">
 							<h:outputText value="#{msgs.abbrechen}" />
-							<x:updateActionListener
-								property="#{ProzessverwaltungForm.modusBearbeiten}"
+							<f:setPropertyActionListener
+								target="#{ProzessverwaltungForm.modusBearbeiten}"
 								value="" />
 						</button>
 
@@ -163,8 +163,8 @@
 							<span>
 								<h:outputText value="#{msgs.speichern}" />
 							</span>
-							<x:updateActionListener
-								property="#{ProzessverwaltungForm.modusBearbeiten}"
+							<f:setPropertyActionListener
+								target="#{ProzessverwaltungForm.modusBearbeiten}"
 								value="" />
 						</button>
 					</div>
@@ -201,8 +201,8 @@
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
-								<x:updateActionListener
-									property="#{ProzessverwaltungForm.modusBearbeiten}"
+								<f:setPropertyActionListener
+									target="#{ProzessverwaltungForm.modusBearbeiten}"
 									value="vorlageeigenschaft" />
 							</button>
 						</div>
@@ -251,11 +251,11 @@
 													jsf:action="process_edit_template"
 													title="#{msgs.bearbeiten}">
 													<span class="fa fa-pencil" />
-													<x:updateActionListener
-														property="#{ProzessverwaltungForm.myVorlageEigenschaft}"
+													<f:setPropertyActionListener
+														target="#{ProzessverwaltungForm.myVorlageEigenschaft}"
 														value="#{item}" />
-													<x:updateActionListener
-														property="#{ProzessverwaltungForm.modusBearbeiten}"
+													<f:setPropertyActionListener
+														target="#{ProzessverwaltungForm.modusBearbeiten}"
 														value="vorlageeigenschaft" />
 												</button>
 											</div>
@@ -309,8 +309,8 @@
 							jsf:immediate="true"
 							jsf:action="#{NavigationForm.Reload}">
 							<h:outputText value="#{msgs.abbrechen}" />
-							<x:updateActionListener
-								property="#{ProzessverwaltungForm.modusBearbeiten}"
+							<f:setPropertyActionListener
+								target="#{ProzessverwaltungForm.modusBearbeiten}"
 								value="" />
 						</button>
 
@@ -324,8 +324,8 @@
 							<span>
 								<h:outputText value="#{msgs.speichern}" />
 							</span>
-							<x:updateActionListener
-								property="#{ProzessverwaltungForm.modusBearbeiten}"
+							<f:setPropertyActionListener
+								target="#{ProzessverwaltungForm.modusBearbeiten}"
 								value="" />
 						</button>
 
@@ -340,8 +340,8 @@
 							<span>
 								<h:outputText value="#{msgs.loeschen}" />
 							</span>
-							<x:updateActionListener
-								property="#{ProzessverwaltungForm.modusBearbeiten}"
+							<f:setPropertyActionListener
+								target="#{ProzessverwaltungForm.modusBearbeiten}"
 								value="" />
 						</button>
 					</div>

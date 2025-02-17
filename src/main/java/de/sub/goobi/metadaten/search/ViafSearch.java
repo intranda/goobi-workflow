@@ -31,8 +31,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
-
 import org.apache.commons.lang3.StringUtils;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
@@ -43,6 +41,7 @@ import de.intranda.digiverso.normdataimporter.model.ViafSearchParameter;
 import de.intranda.digiverso.normdataimporter.model.ViafSearchRequest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import jakarta.faces.model.SelectItem;
 import lombok.Data;
 import ugh.dl.Corporate;
 import ugh.dl.Metadata;

@@ -1,0 +1,41 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:o="http://omnifaces.org/ui">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <h:form id="structureform" prependId="false" style="height: auto;">
+            <div id="structdata" class="structdata">
+                <h:panelGroup rendered="#{not Metadaten.modusStrukturelementVerschieben and not Metadaten.modusCopyDocstructFromOtherProcess}">
+                    <!-- NEW STRUCTURE ELEMENT -->
+                    <ui:include src="structdata/inc_me_structdata-newElement.xhtml" />
+
+                    <!-- SHOW PERSON OF CURRENT ELEMENT -->
+                    <ui:include src="structdata/inc_me_structdata-showPerson.xhtml" />
+
+                    <!-- METADATA OF CURRENT ELEMENT -->
+                    <ui:include src="structdata/inc_me_structdata-metadata.xhtml" />
+
+                    <!-- CHANGE STRUCTURE ELEMENT -->
+                    <ui:include src="structdata/inc_me_structdata-changeStructure.xhtml" />
+
+                    <!-- PAGE ASSIGNMENT -->
+                    <ui:include src="structdata/inc_me_structdata-pageAssignment.xhtml" />
+
+                </h:panelGroup>
+                    <!-- MOVE ELEMENT -->
+                    <ui:include src="structdata/inc_me_structdata-moveElement.xhtml" />
+
+                    <!-- COPY OTHER PROCESS -->
+                    <ui:include src="structdata/inc_me_structdata-copyOtherProcess.xhtml" />
+            </div>
+        </h:form>
+    </composite:implementation>
+</ui:composition>

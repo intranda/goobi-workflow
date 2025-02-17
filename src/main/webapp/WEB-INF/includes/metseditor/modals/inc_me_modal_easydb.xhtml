@@ -1,0 +1,200 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <!-- easydb MODAL -->
+        <div
+            class="modal fade modal__easydb"
+            id="easydbSearchBox"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="easydbSearchBoxLabel"
+            aria-hidden="true">
+            <div
+                class="modal-dialog"
+                role="document">
+
+                <h:panelGroup
+                    id="easydbModalContent"
+                    layout="block"
+                    styleClass="modal-content">
+                    <div class="modal-header">
+                        <h5
+                            class="modal-title"
+                            id="easydbSearchBoxLabel">#{msgs.NORM_easydbSearch}</h5>
+
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                            <h:outputText
+                                value="&amp;times;"
+                                escape="false" />
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <h:outputText
+                                value="#{msgs.NORM_helpEasydbSearch}"
+                                escape="false" />
+                        </p>
+
+                        <div class="row">
+                            <!-- easydb SEARCH INPUT -->
+                            <div class="col-10">
+                                <!-- TODO: display object type, search type and search fields -->
+                                <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'easydb'}">
+                                    <h:inputText
+                                        id="easydbSearch"
+                                        styleClass="form-control"
+                                        onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'easydbSearchAction')"
+                                        value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchValue}" />
+                                </c:if>
+                                <h:message
+                                    for="easydbSearch"
+                                    showDetail="true"
+                                    styleClass="help-inline font-danger" />
+                            </div>
+
+                            <!-- easydb SEARCH ACTION -->
+                            <div class="col-2 text-right">
+                                <div class="text-right">
+                                    <button
+                                        jsf:id="easyDbSearch"
+                                        class="btn btn--white btn--loader"
+                                        jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}">
+                                        <i
+                                            class="fa fa-search"
+                                            aria-hidden="true"></i>
+                                        #{msgs.search}
+                                        <span
+                                            class="btn-ajax-loader"
+                                            aria-hidden="true">
+                                            <img
+                                                src="template/img/goobi/ajaxloader2.gif"
+                                                alt="Ajax Button Loader" />
+                                        </span>
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:ajax
+                                            execute="@form"
+                                            render="easydbList" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- easydb LIST -->
+                        <h:panelGroup id="easydbList">
+                            <h:message
+                                for="easydbList"
+                                showDetail="true"
+                                styleClass="help-inline font-danger" />
+                            <h:panelGroup
+                                layout="block"
+                                styleClass="modal__geonames-list scrollable"
+                                rendered="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchResponse != null}">
+
+                                <ui:repeat
+                                    rendered="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchResponse != null}"
+                                    value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchResponse.convertedObjects}"
+                                    var="easydb">
+                                    <div class="form-group form-group">
+
+                                        <div class="row justify-content-between">
+                                            <div class="col-10">
+                                                <div class="row">
+                                                    <ui:repeat
+                                                        var="metadata"
+                                                        value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.displayableFields}">
+
+                                                        <div class="col-4">
+                                                            <h:outputText value="#{msgs[metadata]}" />
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <h:outputText value="#{easydb.metadata[metadata]}" />
+                                                        </div>
+
+                                                    </ui:repeat>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-2 text-right">
+                                                <button
+                                                    onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
+                                                    jsf:id="easyDbbutton3"
+                                                    class="btn btn--icon-green btn__bottom greenCheckButton"
+                                                    jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+                                                    <i
+                                                        class="fa fa-check"
+                                                        aria-hidden="true"></i>
+                                                    <f:setPropertyActionListener
+                                                        value="#{easydb}"
+                                                        target="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.selectedRecord}" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr />
+                                </ui:repeat>
+
+                                <h:panelGroup
+                                    layout="block"
+                                    rendered="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.showPagination}"
+                                    styleClass="dataTables_paginate">
+                                    <div class="pull-right">
+                                        <nav
+                                            class="image__navigation"
+                                            role="navigation">
+                                            <ul class="clean">
+                                                <li class="no-hover">
+                                                    <h:commandLink
+                                                        styleClass="btn btn--icon btn--icon-blue"
+                                                        action="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.previous}">
+                                                        <span class="fa fa-angle-left" />
+                                                        <f:ajax render="easydbList" />
+                                                    </h:commandLink>
+                                                </li>
+                                                <li class="no-hover">
+                                                    <h:outputText
+                                                        styleClass="margin-sides-10"
+                                                        value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.currentPage} #{msgs.von} #{Metadaten.currentMetadataToPerformSearch.easydbSearch.maxPage}" />
+                                                </li>
+                                                <li class="no-hover">
+                                                    <h:commandLink
+                                                        styleClass="btn btn--icon btn--icon-blue"
+                                                        id="navigate_right"
+                                                        action="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.next}">
+                                                        <span class="fa fa-angle-right" />
+                                                        <f:ajax render="easydbList" />
+                                                    </h:commandLink>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </h:panelGroup>
+
+                            </h:panelGroup>
+                            <h:outputText
+                                value="#{msgs.NORM_noHits}"
+                                rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}" />
+                        </h:panelGroup>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+    </composite:implementation>
+</ui:composition>

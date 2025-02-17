@@ -31,8 +31,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Ruleset;
 
@@ -43,6 +41,7 @@ import de.sub.goobi.helper.StorageProviderInterface;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -67,7 +66,7 @@ public class RulesetBean extends BasicBean implements Serializable {
     public String Speichern() {
 
         // JSF returns this.myRegelsatz.datei = "true" (as non-null string) if no file is selected in the drop down menu
-        boolean isNoFileSelected = this.myRegelsatz.getDatei() == null || this.myRegelsatz.getDatei().equals("null");
+        boolean isNoFileSelected = this.myRegelsatz.getDatei() == null || "null".equals(this.myRegelsatz.getDatei());
 
         if (isNoFileSelected) {
             Helper.setFehlerMeldung("RulesetNotSpecified");

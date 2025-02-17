@@ -28,11 +28,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
-
 import org.junit.Test;
 
 import de.sub.goobi.AbstractTest;
+import jakarta.faces.model.SelectItem;
 
 public class AdditionalFieldTest extends AbstractTest {
 

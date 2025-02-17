@@ -2,7 +2,7 @@ let configFileEditor;
 let debug = false;
 
 const initConfigFileEditor = function initConfigFileEditor() {
-	let configFileTextArea = document.getElementById("configFileEditor");
+	let configFileTextArea = document.getElementById("configFileEditorForm:contentbox:configFileEditor");
 	if (configFileTextArea) {
 		let type = "xml";
 		let typeElement = document.getElementById("currentConfigFileType");
@@ -24,7 +24,7 @@ const initConfigFileEditor = function initConfigFileEditor() {
 		document.addEventListener('DOMContentLoaded', function() {
 			stickyBoxes();
 		});
-		jsf.ajax.addOnEvent( function( data ) {
+		faces.ajax.addOnEvent( function( data ) {
 				if (data.status === "success"){
 				stickyBoxes();
 			}

@@ -1,266 +1,263 @@
 <ui:composition
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:o="http://omnifaces.org/ui"
-	xmlns:of="http://omnifaces.org/functions"
-	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
-	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:p="http://primefaces.org/ui">
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/templatePG/templatePG.html"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:p="http://primefaces.org/ui">
 
-	<ui:param
-		name="myPageTitle"
-		value="#{msgs.MassImport}" />
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.MassImport}" />
 
-	<ui:define name="breadcrumb">
-		<intranda:breadcrumb
-			id="id2"
-			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-			action="index"
-			navId="a0" />
-		<intranda:breadcrumb
-			id="templates"
-			label="#{msgs.prozessvorlagen}"
-			action="process_all"
-			navId="a1" />
-		<intranda:breadcrumb
-			id="mass"
-			label="#{msgs.MassImport}"
-			action="process_import_1" />
-		<intranda:breadcrumb
-			id="templateName"
-			label="#{MassImportForm.template.titel}"
-			action="process_import_1"
-			noSeparator="#{true}" />
-	</ui:define>
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="id2"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="templates"
+            label="#{msgs.prozessvorlagen}"
+            action="process_all"
+            navId="a1" />
+        <intranda:breadcrumb
+            id="mass"
+            label="#{msgs.MassImport}"
+            action="process_import_1" />
+        <intranda:breadcrumb
+            id="templateName"
+            label="#{MassImportForm.template.titel}"
+            action="process_import_1"
+            noSeparator="#{true}" />
+    </ui:define>
 
-	<ui:define name="content">
-
+    <ui:define name="content">
 
 
-		<h:form
-			enctype="multipart/form-data"
-			prependId="false"
-			id="myform">
 
-			<!-- UGLY PROGRESSBAR PART -->
-			<h:panelGroup
-				style="display: none"
-				id="progressPanel">
-				<p:commandButton
-					value="Start"
-					onclick="PF('pbAjax').start();"
-					type="button"
-					widgetVar="startButton2"
-					id="progressbutton"
-					style="display: none;" />
-				<p:progressBar
-					id="primefacesprogressbar"
-					widgetVar="pbAjax"
-					ajax="true"
-					value="#{MassImportForm.progress}"
-					labelTemplate="{value}%"
-					styleClass="animated mb-3"
-					global="false">
-					<p:ajax
-						event="complete"
-						listener="#{MassImportForm.onComplete}" />
-				</p:progressBar>
+        <h:form
+            enctype="multipart/form-data"
+            prependId="false"
+            id="myform">
 
-			</h:panelGroup>
-			<script type="text/javascript">
-				function displayProgressBar() {
-					var element = document.getElementById('progressPanel');
-					if (element.style.display == 'block') {
-						element.style.display = 'none';
-					} else {
-						element.style.display = 'block';
-					}
-					document.getElementById('progressbutton').click();
-				}
+            <!-- UGLY PROGRESSBAR PART -->
+            <h:panelGroup
+                style="display: none"
+                id="progressPanel">
+                <p:commandButton
+                    value="Start"
+                    onclick="PF('pbAjax').start();"
+                    type="button"
+                    widgetVar="startButton2"
+                    id="progressbutton"
+                    style="display: none;" />
+                <p:progressBar
+                    id="primefacesprogressbar"
+                    widgetVar="pbAjax"
+                    ajax="true"
+                    value="#{MassImportForm.progress}"
+                    labelTemplate="{value}%"
+                    styleClass="animated mb-3"
+                    global="false">
+                    <p:ajax
+                        event="complete"
+                        listener="#{MassImportForm.onComplete}" />
+                </p:progressBar>
 
-				function start() {
-					window['progress'] = setInterval(function() {
-						var pbClient = PF('pbClient'), oldValue = pbClient
-								.getValue(), newValue = oldValue + 10;
+            </h:panelGroup>
+            <script type="text/javascript">
+													function displayProgressBar() {
+														var element = document
+																.getElementById('progressPanel');
+														if (element.style.display == 'block') {
+															element.style.display = 'none';
+														} else {
+															element.style.display = 'block';
+														}
+														document
+																.getElementById(
+																		'progressbutton')
+																.click();
+													}
 
-						pbClient.setValue(pbClient.getValue() + 10);
+													function start() {
+														window['progress'] = setInterval(
+																function() {
+																	var pbClient = PF('pbClient'), oldValue = pbClient
+																			.getValue(), newValue = oldValue + 10;
 
-						if (newValue === 100) {
-							clearInterval(window['progress']);
+																	pbClient
+																			.setValue(pbClient
+																					.getValue() + 10);
 
-						}
-					}, 1000);
-				}
-			</script>
-			<!-- // UGLY PROGRESSBAR PART -->
+																	if (newValue === 100) {
+																		clearInterval(window['progress']);
 
-
-			<main class="row">
-				<div class="col-12">
-
-					<!-- BOX -->
-					<intranda:box
-						boxType="action"
-						boxForm="true"
-						boxPadding="false"
-						boxTitle="false">
-
-						<!-- TABS -->
-						<intranda:boxTitle
-							title="#{msgs.MassImport}"
-							icon="fa-cloud-download">
-							<ul class="tabs">
-								<!-- TAB 1 -->
-								<ui:fragment
-									rendered="#{MassImportForm.hasUsablePluginsForRecords}">
-									<li
-										class="tab #{NavigationForm.activeImportTab == 'recordImport'?'active':''}">
-										<h:commandLink
-											id="tab1"
-											action="{NavigationForm.Reload}"
-											value="#{msgs.recordImport}">
-											<f:setPropertyActionListener
-												target="#{NavigationForm.activeImportTab}"
-												value="recordImport" />
-											<f:ajax
-												render=":myform"
-												execute=":myform" />
-										</h:commandLink>
-									</li>
-								</ui:fragment>
-								<!-- // TAB 1 -->
-
-								<!-- TAB 2 -->
-								<ui:fragment rendered="#{MassImportForm.hasUsablePluginsForIDs}">
-									<li
-										class="tab #{NavigationForm.activeImportTab == 'idImport'?'active':''}">
-										<h:commandLink
-											id="tab2"
-											action="{NavigationForm.Reload}"
-											value="#{msgs.idImport}">
-											<f:setPropertyActionListener
-												target="#{NavigationForm.activeImportTab}"
-												value="idImport" />
-											<f:ajax
-												render=":myform"
-												execute=":myform" />
-										</h:commandLink>
-									</li>
-								</ui:fragment>
-								<!-- // TAB 2 -->
-
-								<!-- TAB 3 -->
-								<ui:fragment
-									rendered="#{MassImportForm.hasUsablePluginsForFiles}">
-									<li
-										class="tab #{NavigationForm.activeImportTab == 'uploadImport'?'active':''}">
-										<h:commandLink
-											id="tab3"
-											action="{NavigationForm.Reload}"
-											value="#{msgs.uploadImport}">
-											<f:setPropertyActionListener
-												target="#{NavigationForm.activeImportTab}"
-												value="uploadImport" />
-											<f:ajax
-												render=":myform"
-												execute=":myform" />
-										</h:commandLink>
-									</li>
-								</ui:fragment>
-								<!-- // TAB 3 -->
-
-								<!-- TAB 4 -->
-								<ui:fragment
-									rendered="#{MassImportForm.hasUsablePluginsForFolder}">
-									<li
-										class="tab #{NavigationForm.activeImportTab == 'folder'?'active':''}">
-										<h:commandLink
-											id="tab4"
-											action="{NavigationForm.Reload}"
-											value="#{msgs.folderImport}">
-											<f:setPropertyActionListener
-												target="#{NavigationForm.activeImportTab}"
-												value="folder" />
-											<f:ajax
-												render=":myform"
-												execute=":myform" />
-										</h:commandLink>
-									</li>
-								</ui:fragment>
-								<!-- // TAB 4 -->
-
-							</ul>
-						</intranda:boxTitle>
-						<!-- // TABS -->
+																	}
+																}, 1000);
+													}
+												</script>
+            <!-- // UGLY PROGRESSBAR PART -->
 
 
-						<!-- TAB CONTENT -->
-						<div class="tab-content">
+            <main class="row">
+                <div class="col-12">
 
-							<!-- TAB CONTENT 1 -->
-							<h:panelGroup
-								layout="block"
-								rendered="#{NavigationForm.activeImportTab == 'recordImport'}">
+                    <!-- BOX -->
+                    <intranda:box
+                        boxType="action"
+                        boxForm="true"
+                        boxPadding="false"
+                        boxTitle="false">
 
-								<intranda:formOutputText
-									label="#{msgs.project}"
-									field="#{MassImportForm.template.projekt.titel}"
-									name="project" />
+                        <!-- TABS -->
+                        <intranda:boxTitle
+                            title="#{msgs.MassImport}"
+                            icon="fa-cloud-download">
+                            <ul class="tabs">
+                                <!-- TAB 1 -->
+                                <ui:fragment rendered="#{MassImportForm.hasUsablePluginsForRecords}">
+                                    <li class="tab #{NavigationForm.activeImportTab == 'recordImport'?'active':''}">
+                                        <h:commandLink
+                                            id="tab1"
+                                            action="{NavigationForm.Reload}"
+                                            value="#{msgs.recordImport}">
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.activeImportTab}"
+                                                value="recordImport" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
+                                        </h:commandLink>
+                                    </li>
+                                </ui:fragment>
+                                <!-- // TAB 1 -->
 
-								<intranda:formOutputText
-									label="#{msgs.prozessvorlage}"
-									field="#{MassImportForm.template.titel}"
-									name="prozessvorlage" />
+                                <!-- TAB 2 -->
+                                <ui:fragment rendered="#{MassImportForm.hasUsablePluginsForIDs}">
+                                    <li class="tab #{NavigationForm.activeImportTab == 'idImport'?'active':''}">
+                                        <h:commandLink
+                                            id="tab2"
+                                            action="{NavigationForm.Reload}"
+                                            value="#{msgs.idImport}">
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.activeImportTab}"
+                                                value="idImport" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
+                                        </h:commandLink>
+                                    </li>
+                                </ui:fragment>
+                                <!-- // TAB 2 -->
 
-								<intranda:formInputDropDownAjax
-									id="plugin"
-									ajaxEvent="change"
-									ajaxRender="@form"
-									label="#{msgs.importplugin}"
-									field="#{MassImportForm.currentPlugin}"
-									help="#{msgs.help_import_ImportPlugin}"
-									name="firsttab_plugins"
-									selectItems="#{MassImportForm.usablePluginsForRecords}"
-									required="true"
-									var="step"
-									itemLabel="#{step}"
-									itemValue="#{step}"
-									hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
+                                <!-- TAB 3 -->
+                                <ui:fragment rendered="#{MassImportForm.hasUsablePluginsForFiles}">
+                                    <li class="tab #{NavigationForm.activeImportTab == 'uploadImport'?'active':''}">
+                                        <h:commandLink
+                                            id="tab3"
+                                            action="{NavigationForm.Reload}"
+                                            value="#{msgs.uploadImport}">
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.activeImportTab}"
+                                                value="uploadImport" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
+                                        </h:commandLink>
+                                    </li>
+                                </ui:fragment>
+                                <!-- // TAB 3 -->
 
-								<intranda:formInputSelectMany
-									id="collections"
-									label="#{msgs.digitaleKollektionen}"
-									field="#{MassImportForm.digitalCollections}"
-									help="#{msgs.help_import_DigitalCollection}"
-									name="firsttab_digitaleKollektionen"
-									selectItems="#{MassImportForm.possibleDigitalCollection}"
-									required="false"
-									var="step"
-									itemLabel="#{step}"
-									itemValue="#{step}" />
+                                <!-- TAB 4 -->
+                                <ui:fragment rendered="#{MassImportForm.hasUsablePluginsForFolder}">
+                                    <li class="tab #{NavigationForm.activeImportTab == 'folder'?'active':''}">
+                                        <h:commandLink
+                                            id="tab4"
+                                            action="{NavigationForm.Reload}"
+                                            value="#{msgs.folderImport}">
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.activeImportTab}"
+                                                value="folder" />
+                                            <f:ajax
+                                                render=":myform"
+                                                execute=":myform" />
+                                        </h:commandLink>
+                                    </li>
+                                </ui:fragment>
+                                <!-- // TAB 4 -->
 
-								<intranda:formInputTextArea
-									id="records"
-									label="#{msgs.records}"
-									field="#{MassImportForm.records}"
-									help="#{msgs.help_import_Records}"
-									name="firsttab_records"
-									required="false" />
-
-							</h:panelGroup>
-							<!-- // TAB CONTENT 1 -->
+                            </ul>
+                        </intranda:boxTitle>
+                        <!-- // TABS -->
 
 
-							<!-- TAB CONTENT 2 -->
-							<h:panelGroup
-								layout="block"
-								rendered="#{NavigationForm.activeImportTab == 'idImport'}">
+                        <!-- TAB CONTENT -->
+                        <div class="tab-content">
 
+                            <!-- TAB CONTENT 1 -->
+                            <h:panelGroup
+                                layout="block"
+                                rendered="#{NavigationForm.activeImportTab == 'recordImport'}">
+
+                                <intranda:formOutputText
+                                    label="#{msgs.project}"
+                                    field="#{MassImportForm.template.projekt.titel}"
+                                    name="project" />
+
+                                <intranda:formOutputText
+                                    label="#{msgs.prozessvorlage}"
+                                    field="#{MassImportForm.template.titel}"
+                                    name="prozessvorlage" />
+
+                                <intranda:formInputDropDownAjax
+                                    id="plugin"
+                                    ajaxEvent="change"
+                                    ajaxRender="@form"
+                                    label="#{msgs.importplugin}"
+                                    field="#{MassImportForm.currentPlugin}"
+                                    help="#{msgs.help_import_ImportPlugin}"
+                                    name="firsttab_plugins"
+                                    selectItems="#{MassImportForm.usablePluginsForRecords}"
+                                    required="true"
+                                    itemLabel="#{var}"
+                                    itemValue="#{var}"
+                                    hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
+
+
+                                <intranda:formInputSelectManyChildren
+                                    id="collections"
+                                    label="#{msgs.digitaleKollektionen}"
+                                    field="#{MassImportForm.digitalCollections}"
+                                    help="#{msgs.help_import_DigitalCollection}"
+                                    name="third_digitaleKollektionen"
+                                    required="false">
+                                    <f:selectItems value="#{MassImportForm.possibleDigitalCollection}" />
+                                </intranda:formInputSelectManyChildren>
+
+                                <intranda:formInputTextArea
+                                    id="records"
+                                    label="#{msgs.records}"
+                                    field="#{MassImportForm.records}"
+                                    help="#{msgs.help_import_Records}"
+                                    name="firsttab_records"
+                                    required="false" />
+
+                            </h:panelGroup>
+                            <!-- // TAB CONTENT 1 -->
+
+
+                            <!-- TAB CONTENT 2 -->
+                            <h:panelGroup
+                                layout="block"
+                                rendered="#{NavigationForm.activeImportTab == 'idImport'}">
+                              
 								<intranda:formOutputText
 									label="#{msgs.project}"
 									field="#{MassImportForm.template.projekt.titel}"
@@ -281,22 +278,19 @@
 									name="secondtab_plugins"
 									selectItems="#{MassImportForm.usablePluginsForIDs}"
 									required="true"
-									var="step"
-									itemLabel="#{step}"
-									itemValue="#{step}"
+                                    itemLabel="#{var}"
+                                    itemValue="#{var}"
 									hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
 
-								<intranda:formInputSelectMany
-									id="collections2"
-									label="#{msgs.digitaleKollektionen}"
-									field="#{MassImportForm.digitalCollections}"
-									help="#{msgs.help_import_DigitalCollection}"
-									name="secondtab_digitaleKollektionen"
-									selectItems="#{MassImportForm.possibleDigitalCollection}"
-									required="false"
-									var="step"
-									itemLabel="#{step}"
-									itemValue="#{step}" />
+                                <intranda:formInputSelectManyChildren
+                                    id="collections2"
+                                    label="#{msgs.digitaleKollektionen}"
+                                    field="#{MassImportForm.digitalCollections}"
+                                    help="#{msgs.help_import_DigitalCollection}"
+                                    name="third_digitaleKollektionen"
+                                    required="false">
+                                    <f:selectItems value="#{MassImportForm.possibleDigitalCollection}" />
+                                </intranda:formInputSelectManyChildren>
 
 								<intranda:formInputTextArea
 									id="listOfIds"
@@ -306,101 +300,100 @@
 									name="secondtab_ids"
 									required="false" />
 
-							</h:panelGroup>
-							<!-- // TAB CONTENT 2 -->
+                            </h:panelGroup>
+                            <!-- // TAB CONTENT 2 -->
 
 
-							<!-- TAB CONTENT 3 -->
-							<h:panelGroup
-								layout="block"
-								rendered="#{NavigationForm.activeImportTab == 'uploadImport'}">
+                            <!-- TAB CONTENT 3 -->
+                            <h:panelGroup
+                                layout="block"
+                                rendered="#{NavigationForm.activeImportTab == 'uploadImport'}">
+                                <intranda:formOutputText
+                                    label="#{msgs.project}"
+                                    field="#{MassImportForm.template.projekt.titel}"
+                                    name="third_project" />
 
-								<intranda:formOutputText
-									label="#{msgs.project}"
-									field="#{MassImportForm.template.projekt.titel}"
-									name="third_project" />
+                                <intranda:formOutputText
+                                    label="#{msgs.prozessvorlage}"
+                                    field="#{MassImportForm.template.titel}"
+                                    name="third_prozessvorlage" />
 
-								<intranda:formOutputText
-									label="#{msgs.prozessvorlage}"
-									field="#{MassImportForm.template.titel}"
-									name="third_prozessvorlage" />
+                                <intranda:formInputDropDownAjax
+                                    id="plugin3"
+                                    ajaxEvent="change"
+                                    ajaxRender="@form"
+                                    label="#{msgs.importplugin}"
+                                    field="#{MassImportForm.currentPlugin}"
+                                    help="#{msgs.help_import_ImportPlugin}"
+                                    name="third_plugins"
+                                    selectItems="#{MassImportForm.usablePluginsForFiles}"
+                                    required="true"
+                                    itemLabel="#{var}"
+                                    itemValue="#{var}"
+                                    hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
 
-								<intranda:formInputDropDownAjax
-									id="plugin3"
-									ajaxEvent="change"
-									ajaxRender="@form"
-									label="#{msgs.importplugin}"
-									field="#{MassImportForm.currentPlugin}"
-									help="#{msgs.help_import_ImportPlugin}"
-									name="third_plugins"
-									selectItems="#{MassImportForm.usablePluginsForFiles}"
-									required="true"
-									var="step"
-									itemLabel="#{step}"
-									itemValue="#{step}"
-									hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
-
-								<intranda:formInputSelectMany
-									id="collections3"
-									label="#{msgs.digitaleKollektionen}"
-									field="#{MassImportForm.digitalCollections}"
-									help="#{msgs.help_import_DigitalCollection}"
-									name="third_digitaleKollektionen"
-									selectItems="#{MassImportForm.possibleDigitalCollection}"
-									required="false"
-									var="step"
-									itemLabel="#{step}"
-									itemValue="#{step}" />
+                                <intranda:formInputSelectManyChildren
+                                    id="collections3"
+                                    label="#{msgs.digitaleKollektionen}"
+                                    field="#{MassImportForm.digitalCollections}"
+                                    help="#{msgs.help_import_DigitalCollection}"
+                                    name="third_digitaleKollektionen"
+                                    required="false">
+                                    <f:selectItems value="#{MassImportForm.possibleDigitalCollection}" />
+                                </intranda:formInputSelectManyChildren>
 
 
-								<!-- FILE UPLOAD -->
-								<div class="row">
+                                <!-- FILE UPLOAD -->
+                                <div class="row">
 
-									<!-- LABEL -->
-									<div class="col-12 col-md-3">
-										<intranda:formLabel label="#{msgs.uploadImport}"
-											labelFor="thirdtab_fileupload3" labelRequired="true"/>
-									</div>
-									<!-- // LABEL -->
+                                    <!-- LABEL -->
+                                    <div class="col-12 col-md-3">
+                                        <intranda:formLabel
+                                            label="#{msgs.uploadImport}"
+                                            labelFor="thirdtab_fileupload3"
+                                            labelRequired="true" />
+                                    </div>
+                                    <!-- // LABEL -->
 
-									<!-- INPUT -->
-									<div class="col-12 col-md-9">
-										<h:inputFile
-											id="thirdtab_fileupload3"
-											value="#{MassImportForm.uploadedFile}"
-											storage="file"
-											styleClass="form-control"
-											required="false">
-											<f:ajax
-												listener="#{MassImportForm.uploadFile}"
-												render="thirdtab_fileupload3_message" />
-										</h:inputFile>
+                                    <!-- INPUT -->
+                                    <div class="col-12 col-md-9">
+                                        <h:inputFile
+                                            id="thirdtab_fileupload3"
+                                            value="#{MassImportForm.uploadedFile}"
+                                            storage="file"
+                                            styleClass="form-control"
+                                            required="false">
+                                            <f:ajax
+                                                listener="#{MassImportForm.uploadFile}"
+                                                render="thirdtab_fileupload3_message" />
+                                        </h:inputFile>
 
-										<h:panelGroup id="thirdtab_fileupload3_message">
-											<h:outputText
-												rendered="#{MassImportForm.uploadedFile != null}"
-												value="#{msgs.uploadSuccessful}"
-												styleClass="alert alert-info d-block mt-3 mb-1" />
-										</h:panelGroup>
+                                        <h:panelGroup id="thirdtab_fileupload3_message">
+                                            <h:outputText
+                                                rendered="#{MassImportForm.uploadedFile != null}"
+                                                value="#{msgs.uploadSuccessful}"
+                                                styleClass="alert alert-info d-block mt-3 mb-1" />
+                                        </h:panelGroup>
 
-										<!-- Help messages, inline + warning -->
-										<intranda:formHelp content="#{msgs.help_import_FileUpload}" msgFor="thirdtab_fileupload3" />
+                                        <!-- Help messages, inline + warning -->
+                                        <intranda:formHelp
+                                            content="#{msgs.help_import_FileUpload}"
+                                            msgFor="thirdtab_fileupload3" />
 
-									</div>
-									<!-- // INPUT -->
+                                    </div>
+                                    <!-- // INPUT -->
 
-								</div>
-								<!-- FILE UPLOAD -->
+                                </div>
+                                <!-- FILE UPLOAD -->
 
-							</h:panelGroup>
-							<!-- // TAB CONTENT 3 -->
+                            </h:panelGroup>
+                            <!-- // TAB CONTENT 3 -->
 
 
-							<!-- TAB CONTENT 4 -->
-							<h:panelGroup
-								layout="block"
-								rendered="#{NavigationForm.activeImportTab == 'folder'}">
-
+                            <!-- TAB CONTENT 4 -->
+                            <h:panelGroup
+                                layout="block"
+                                rendered="#{NavigationForm.activeImportTab == 'folder'}">
 								<intranda:formOutputText
 									label="#{msgs.project}"
 									field="#{MassImportForm.template.projekt.titel}"
@@ -421,94 +414,90 @@
 									name="firsttab_plugins"
 									selectItems="#{MassImportForm.usablePluginsForFolder}"
 									required="true"
-									var="step"
-									itemLabel="#{step}"
-									itemValue="#{step}"
+                                    itemLabel="#{var}"
+                                    itemValue="#{var}"
 									hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFolder.size() gt 1 ? 'false' : 'true'}" />
 
-								<intranda:formInputSelectMany
-									id="collections4"
-									label="#{msgs.digitaleKollektionen}"
-									field="#{MassImportForm.digitalCollections}"
-									help="#{msgs.help_import_DigitalCollection}"
-									name="forth_digitaleKollektionen"
-									selectItems="#{MassImportForm.possibleDigitalCollection}"
-									required="false"
-									var="step"
-									itemLabel="#{step}"
-									itemValue="#{step}" />
+                                <intranda:formInputSelectManyChildren
+                                    id="collections4"
+                                    label="#{msgs.digitaleKollektionen}"
+                                    field="#{MassImportForm.digitalCollections}"
+                                    help="#{msgs.help_import_DigitalCollection}"
+                                    name="third_digitaleKollektionen"
+                                    required="false">
+                                    <f:selectItems value="#{MassImportForm.possibleDigitalCollection}" />
+                                </intranda:formInputSelectManyChildren>
 
 								<h:panelGroup id="plugin_data">
-									<intranda:formInputSelectMany
+									<intranda:formInputSelectManyChildren
 										id="files"
 										label="#{msgs.dateien}"
 										field="#{MassImportForm.selectedFilenames}"
 										help="#{msgs.help_import_Files}"
 										name="forthtab_filenames"
 										selectItems="#{MassImportForm.allFilenames}"
-										required="false"
-										itemLabel="#{file}"
-										itemValue="#{file}"
-										var="file" />
+										required="false">
+                                        <f:selectItems value="#{MassImportForm.possibleDigitalCollection}" var="file" itemLabel="#{file}" itemValue="#{file}" />
+                                        </intranda:formInputSelectManyChildren>
 								</h:panelGroup>
-							</h:panelGroup>
-							<!-- // TAB CONTENT 4 -->
+                            </h:panelGroup>
+                            <!-- // TAB CONTENT 4 -->
 
 
-                            <ui:include src="templatePG/includes/process/processcreation_properties.xhtml" >
-                             <ui:param
-                                        name="properties"
-                                        value="#{MassImportForm.configuredProperties}" />
+                            <ui:include src="templatePG/includes/process/processcreation_properties.xhtml">
+                                <ui:param
+                                    name="properties"
+                                    value="#{MassImportForm.configuredProperties}" />
 
                             </ui:include>
-						</div>
-						<!-- // TAB CONTENT -->
+                        </div>
+                        <!-- // TAB CONTENT -->
 
 
-						<!-- BUTTONS -->
-						<div class="box__actions">
+                        <!-- BUTTONS -->
+                        <div class="box__actions">
 
-							<!-- Cancel -->
-							<a
-								jsf:id="link_blank"
-								class="btn btn-blank"
-								jsf:immediate="true"
-								jsf:action="process_all">
-								<h:outputText value="#{msgs.abbrechen}" />
-							</a>
+                            <!-- Cancel -->
+                            <button
+                                jsf:id="link_blank"
+                                class="btn btn-blank"
+                                jsf:immediate="true"
+                                jsf:action="process_all">
+                                <h:outputText value="#{msgs.abbrechen}" />
+                            </button>
 
-							<!-- Save -->
-							<button
-								class="btn btn-success"
-								jsf:id="absenden"
-								type="submit"
-								jsf:rendered="#{!MassImportForm.hasNextPage}"
-								jsf:action="#{MassImportForm.convertData}"
-								onclick="goobiWorkflowJS.progress.displayProgressBar()">
-								<span class="fa fa-save" />
-								<span>#{msgs.speichern}</span>
-							</button>
+                            <!-- Save -->
+                            <button
+                                class="btn btn-success"
+                                jsf:id="absenden"
+                                type="submit"
+                                jsf:rendered="#{!MassImportForm.hasNextPage}"
+                                jsf:action="#{MassImportForm.convertData}"
+                                onclick="goobiWorkflowJS.progress.displayProgressBar()">
+                                <span class="fa fa-save" />
+                                <span>#{msgs.speichern}</span>
+                            </button>
 
-							<!-- next page -->
-							<button
-								class="btn btn-primary-400"
-								jsf:id="next"
-								type="submit"
-								jsf:rendered="#{MassImportForm.hasNextPage}"
-								jsf:action="#{MassImportForm.nextPage}">
-								<span class="fa fa-arrow-circle-o-right" />
-								<span>#{msgs.weiter}</span>
-							</button>
+                            <!-- next page -->
+                            <button
+                                class="btn btn-primary-400"
+                                jsf:id="next"
+                                type="submit"
+                                jsf:rendered="#{MassImportForm.hasNextPage}"
+                                jsf:action="#{MassImportForm.nextPage}">
+                                <span class="fa fa-arrow-circle-o-right" />
+                                <span>#{msgs.weiter}</span>
+                            </button>
 
-						</div>
-						<!-- // BUTTONS -->
+                        </div>
+                        <!-- // BUTTONS -->
 
-					</intranda:box>
-					<!-- // BOX -->
-				</div>
+                    </intranda:box>
+                    <!-- // BOX -->
+                </div>
 
-			</main>
-		</h:form>
-	</ui:define>
+            </main>
+        </h:form>
+    </ui:define>
 
 </ui:composition>

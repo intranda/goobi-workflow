@@ -29,14 +29,13 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.persistence.managers.InstitutionManager;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 

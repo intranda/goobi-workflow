@@ -29,12 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -42,6 +36,11 @@ import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang3.StringUtils;
 
 import de.sub.goobi.helper.Helper;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Metadata;
@@ -148,7 +147,7 @@ public class EasyDBSearch {
                     List<Object> in = new ArrayList<>();
                     if (!esf.getOverrideValueList().isEmpty()) {
                         for (String val : esf.getOverrideValueList()) {
-                            if (esf.getFieldType().equalsIgnoreCase(NUMERIC)) {
+                            if (NUMERIC.equalsIgnoreCase(esf.getFieldType())) {
                                 if (StringUtils.isNumeric(val)) {
                                     in.add(Integer.valueOf(val));
                                 } else {
@@ -159,7 +158,7 @@ public class EasyDBSearch {
                             }
                         }
 
-                    } else if (esf.getFieldType().equalsIgnoreCase(NUMERIC)) {
+                    } else if (NUMERIC.equalsIgnoreCase(esf.getFieldType())) {
                         if (StringUtils.isNumeric(searchValue)) {
                             in.add(Integer.valueOf(searchValue));
                         } else {

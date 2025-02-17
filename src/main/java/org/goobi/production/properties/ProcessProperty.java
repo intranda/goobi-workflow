@@ -1,5 +1,26 @@
 package org.goobi.production.properties;
 
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+import org.goobi.beans.Processproperty;
+import org.goobi.beans.Step;
+import org.goobi.managedbeans.FormInputMultiSelectBean;
+import org.goobi.managedbeans.FormInputMultiSelectHelper;
+import org.goobi.production.cli.helper.StringPair;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -28,30 +49,10 @@ package org.goobi.production.properties;
 
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import jakarta.faces.model.SelectItem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.goobi.beans.Processproperty;
-import org.goobi.beans.Step;
-import org.goobi.managedbeans.FormInputMultiSelectBean;
-import org.goobi.managedbeans.FormInputMultiSelectHelper;
-import org.goobi.production.cli.helper.StringPair;
-
-import javax.faces.model.SelectItem;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 public class ProcessProperty implements IProperty, Serializable {
@@ -118,7 +119,8 @@ public class ProcessProperty implements IProperty, Serializable {
         this.workflows = new ArrayList<>();
         this.showStepConditions = new ArrayList<>();
         this.normalSelectionBean = new FormInputMultiSelectHelper(() -> this.possibleValues, this::getSelectedValues, this::setSelectedValues);
-        this.vocabularySelectionBean = new FormInputMultiSelectHelper(() -> this.possibleValues, this::getSelectedVocabularyRecords, this::setSelectedValues);
+        this.vocabularySelectionBean =
+                new FormInputMultiSelectHelper(() -> this.possibleValues, this::getSelectedVocabularyRecords, this::setSelectedValues);
     }
 
     /*
@@ -237,8 +239,7 @@ public class ProcessProperty implements IProperty, Serializable {
         return new LinkedList<>(
                 getValueList().stream()
                         .map(value -> new SelectItem(value, value))
-                        .toList()
-        );
+                        .toList());
     }
 
     public List<String> getMultiVocabularyReferenceList() {
@@ -267,8 +268,7 @@ public class ProcessProperty implements IProperty, Serializable {
         return new LinkedList<>(
                 getValueList().stream()
                         .map(ref -> new SelectItem(ref, readVocabularyMainValueForRecord(ref)))
-                        .toList()
-        );
+                        .toList());
     }
 
     private void setSelectedValues(List<SelectItem> selectItems) {

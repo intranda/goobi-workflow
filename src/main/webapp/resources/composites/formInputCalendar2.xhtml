@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:c="http://java.sun.com/jsp/jstl/core"  xmlns:p="http://primefaces.org/ui">
 
     <composite:interface>
@@ -31,12 +31,6 @@
 				</h:panelGroup>
 			</div>
             <p:calendar id="#{cc.attrs.name}" value="#{cc.attrs.field}"  />
-<!--             <x:inputText styleClass="input-medium datepick" id="#{cc.attrs.name}" value="#{cc.attrs.field}" required="#{cc.attrs.required}" /> -->
-
-<!--             <x:inputCalendar styleClass="input-medium datepick" id="#{cc.attrs.name}" value="#{cc.attrs.field}" required="#{cc.attrs.required}" -->
-<!--                 renderAsPopup="#{cc.attrs.renderAsPopup}" renderPopupButtonAsImage="#{cc.attrs.renderPopupButtonAsImage}" -->
-<!--                 popupTodayString="#{msgs.heute}" popupWeekString="#{msgs.kw}" popupButtonImageUrl="#{cc.attrs.popupButtonImageUrl}" -->
-<!--                 imageLocation="#{cc.attrs.imageLocation}" /> -->
             <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
 		</div>
 

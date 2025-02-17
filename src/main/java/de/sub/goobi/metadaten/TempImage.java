@@ -29,11 +29,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.ws.rs.core.UriBuilder;
-
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
 import de.unigoettingen.sub.commons.contentlib.imagelib.transform.Scale;
+import jakarta.ws.rs.core.UriBuilder;
 
 public class TempImage extends Image {
 

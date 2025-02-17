@@ -4,7 +4,7 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+	
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
@@ -84,11 +84,11 @@
 													aria-label="#{msgs.process_changeTemplate}"
 													class="dropdown-item">
 													<h:outputText value="#{template.titel}" />
-													<x:updateActionListener
-														property="#{ProzessverwaltungForm.template}"
+													<f:setPropertyActionListener
+														target="#{ProzessverwaltungForm.template}"
 														value="#{template}" />
-													<x:updateActionListener
-														property="#{ProzessverwaltungForm.processToChange}"
+													<f:setPropertyActionListener
+														target="#{ProzessverwaltungForm.processToChange}"
 														value="#{ProzessverwaltungForm.myProzess}" />
 													<f:passThroughAttribute
 														name="data-toggle"
@@ -107,15 +107,15 @@
 					<div class="gw-table gw-table-fixed">
 
 						<div class="gw-table__wrapper">
-							<x:dataTable
+							<h:dataTable
 								styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
 								id="steps"
 								var="item"
 								value="#{ProzessverwaltungForm.myProzess.schritteList}">
 
 								<!-- ORDER -->
-								<x:column
-									id="ordercolumn" headerstyleClass="gw-table-fixed__sizeXXS">
+								<h:column
+									id="ordercolumn" headerClass="gw-table-fixed__sizeXXS">
 									<f:facet name="header">
 										<h:outputText value="#{msgs.nr}" />
 									</f:facet>
@@ -135,8 +135,8 @@
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
-											<x:updateActionListener
-												property="#{ProzessverwaltungForm.mySchritt}"
+											<f:setPropertyActionListener
+												target="#{ProzessverwaltungForm.mySchritt}"
 												value="#{item}" />
 											<f:ajax render="@form" />
 										</button>
@@ -152,8 +152,8 @@
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
-											<x:updateActionListener
-												property="#{ProzessverwaltungForm.mySchritt}"
+											<f:setPropertyActionListener
+												target="#{ProzessverwaltungForm.mySchritt}"
 												value="#{item}" />
 											<f:ajax render="@form" />
 										</button>
@@ -169,8 +169,8 @@
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
-											<x:updateActionListener
-												property="#{ProzessverwaltungForm.mySchritt}"
+											<f:setPropertyActionListener
+												target="#{ProzessverwaltungForm.mySchritt}"
 												value="#{item}" />
 											<f:ajax render="@form" />
 										</button>
@@ -186,13 +186,13 @@
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
-											<x:updateActionListener
-												property="#{ProzessverwaltungForm.mySchritt}"
+											<f:setPropertyActionListener
+												target="#{ProzessverwaltungForm.mySchritt}"
 												value="#{item}" />
 											<f:ajax render="@form" />
 										</button>
 									</div>
-								</x:column>
+								</h:column>
 								<!-- // ORDER -->
 
 								<!-- +++++++++++++++++  alle Eigenschaften auflisten - mit CSS ++++++++++++++++++++++++ -->
@@ -214,9 +214,9 @@
 												<i
 													class="fa fa-angle-down #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
 											</h:panelGroup>
-											<x:updateActionListener
+											<f:setPropertyActionListener
 												value="#{item.panelAusgeklappt?false:true}"
-												property="#{item.panelAusgeklappt}" />
+												target="#{item.panelAusgeklappt}" />
 											<f:ajax render="possibleActions1" />
 											<h:panelGroup rendered="#{item.typAutomatisch}">
 												<i
@@ -471,7 +471,7 @@
 														value="#{msgs.usergroup_assignedRoles}:"
 														rendered="#{not empty item.benutzergruppen}" />
 													<h:panelGroup rendered="#{not empty item.benutzergruppen}">
-														<x:dataList
+														<ui:repeat
 															value="#{item.benutzergruppen}"
 															var="group"
 															rowCountVar="count"
@@ -480,7 +480,7 @@
 															<h:outputText
 																value=", "
 																rendered="#{index lt count-1}"></h:outputText>
-														</x:dataList>
+														</ui:repeat>
 													</h:panelGroup>
 												</h:panelGrid>
 
@@ -491,7 +491,7 @@
 								</h:column>
 								<!-- +++++++++++++++++  // alle Eigenschaften auflisten mit CSS ++++++++++++++++++++++++ -->
 
-								<x:column headerstyleClass="gw-table-fixed__sizeXXS">
+								<h:column headerClass="gw-table-fixed__sizeXXS">
 									<f:facet name="header">
 										<h:outputText value="#{msgs.status}" />
 									</f:facet>
@@ -575,8 +575,8 @@
 										aria-label="#{msgs.statusRunterSetzen}"
 										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
 										<span class="fa fa-chevron-left font-light" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.mySchrittReload}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
 										<f:passThroughAttribute
 											name="data-toggle"
@@ -597,8 +597,8 @@
 										aria-label="#{msgs.statusHoeherSetzen}"
 										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
 										<span class="fa fa-chevron-right font-light" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.mySchrittReload}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
 										<f:passThroughAttribute
 											name="data-toggle"
@@ -608,9 +608,9 @@
 									</button>
 
 
-								</x:column>
+								</h:column>
 
-								<x:column headerstyleClass="gw-table-fixed__sizeXXS"
+								<h:column headerClass="gw-table-fixed__sizeXXS"
 									rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
 									<f:facet name="header">
 										<h:outputText value="#{msgs.auswahl}" />
@@ -626,11 +626,11 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.mySchrittReload}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.modusBearbeiten}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.modusBearbeiten}"
 											value="" />
 									</button>
 
@@ -646,11 +646,11 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<x:updateActionListener
-											property="#{NavigationForm.uiStatus.pluginSimulation}"
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.pluginSimulation}"
 											value="#{true}" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.mySchrittReload}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
 									</button>
 
@@ -693,15 +693,15 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.mySchritt}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchritt}"
 											value="#{item}" />
 										<span class="fa fa-globe" />
 									</button>
 
-								</x:column>
+								</h:column>
 
-							</x:dataTable>
+							</h:dataTable>
 						</div>
 					</div>
 				</intranda:box>

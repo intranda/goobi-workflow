@@ -2,6 +2,9 @@ package org.goobi.production;
 
 import java.sql.SQLException;
 
+import de.sub.goobi.persistence.managers.DatabaseVersion;
+import de.sub.goobi.persistence.managers.MySQLHelper;
+import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -20,12 +23,8 @@ import java.sql.SQLException;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
-import de.sub.goobi.persistence.managers.DatabaseVersion;
-import de.sub.goobi.persistence.managers.MySQLHelper;
-import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -61,7 +60,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                     + DatabaseVersion.EXPECTED_VERSION);
             DatabaseVersion.updateDatabase(currentVersion);
         }
-
 
         if (!DatabaseVersion.checkIfColumnExists("mq_results", "objects")) {
             try {
@@ -116,7 +114,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 sb = new StringBuilder();
                 sb.append("update mq_results set ticketName = ticketType where ticketName is null");
                 DatabaseVersion.runSql(sb.toString());
-
 
                 sb = new StringBuilder();
                 sb.append("update mq_results set ticketName = scriptName where ticketName is null");

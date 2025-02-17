@@ -4,36 +4,39 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:of="http://omnifaces.org/functions"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    template="/uii/template/template_metseditor.html"
     xmlns:p="http://primefaces.org/ui"
     xmlns:o="http://omnifaces.org/ui"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
-
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    template="/uii/templatePG/template_metseditor.html"
+    >
+    <!--
+    template="/uii/templatePG/templatePG.html"
+        template="/uii/template/template_metseditor.html"
+-->
     <ui:param
         name="myPageTitle"
         value="#{Metadaten.myProzess.titel}" />
 
     <!-- METSEDITOR MENU -->
     <ui:define name="metseditorMenu">
-        <ui:include src="includes/metseditor/metseditor_menu.xhtml" />
+        <ui:include src="/WEB-INF/includes/metseditor/metseditor_menu.xhtml" />
     </ui:define>
 
     <!-- METSEDITOR MENU ACTIONS -->
     <ui:define name="metseditorPlugins">
-        <ui:include src="includes/metseditor/metseditor_menuPlugins.xhtml" />
+        <ui:include src="/WEB-INF/includes/metseditor/metseditor_menuPlugins.xhtml" />
     </ui:define>
     <!-- METSEDITOR MENU ACTIONS -->
     <ui:define name="metseditorMenuActions">
-        <ui:include src="includes/metseditor/metseditor_menuActions.xhtml" />
+        <ui:include src="/WEB-INF/includes/metseditor/metseditor_menuActions.xhtml" />
     </ui:define>
 
     <!-- METSEDITOR STRUCTURE -->
     <ui:define name="metseditorStructure">
-        <ui:include src="includes/metseditor/metseditor_structure.xhtml" />
+        <ui:include src="/WEB-INF/includes/metseditor/metseditor_structure.xhtml" />
     </ui:define>
 
     <!-- METSEDITOR CONTENT -->
@@ -76,34 +79,34 @@
                 value="#{Metadaten.myProzess.archivedImageFolders}"> #{folder}</ui:repeat>
         </div>
 
-        <ui:include src="includes/metseditor/metseditor_progress.xhtml" />
+        <ui:include src="/WEB-INF/includes/metseditor/metseditor_progress.xhtml" />
 
         <ui:fragment rendered="#{Metadaten.modusAnsicht == 'Paginierung'}">
-            <ui:include src="includes/metseditor/metseditor_pagination.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/metseditor_pagination.xhtml" />
         </ui:fragment>
         <ui:fragment rendered="#{Metadaten.modusAnsicht == 'Metadaten'}">
-            <ui:include src="includes/metseditor/metseditor_metadata.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/metseditor_metadata.xhtml" />
         </ui:fragment>
         <ui:fragment rendered="#{Metadaten.modusAnsicht == 'Strukturdaten'}">
-            <ui:include src="includes/metseditor/metseditor_structdata.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/metseditor_structdata.xhtml" />
         </ui:fragment>
         <ui:fragment rendered="#{Metadaten.modusAnsicht == 'File'}">
-            <ui:include src="includes/metseditor/metseditor_file.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/metseditor_file.xhtml" />
         </ui:fragment>
         <!-- MODALS -->
         <h:form
             id="normdataForm"
             prependId="false">
-            <ui:include src="includes/metseditor/modals/inc_me_modal_kulturnav.xhtml" />
-            <ui:include src="includes/metseditor/modals/inc_me_modal_dante.xhtml" />
-            <ui:include src="includes/metseditor/modals/inc_me_modal_easydb.xhtml" />
-            <ui:include src="includes/metseditor/modals/inc_me_modal_geonames.xhtml" />
-            <ui:include src="includes/metseditor/modals/inc_me_modal_gnd.xhtml" />
-            <ui:include src="includes/metseditor/modals/inc_me_modal_processSearch.xhtml" />
-            <ui:include src="includes/metseditor/modals/inc_me_modal_viaf.xhtml" />
-            <ui:include src="includes/metseditor/modals/inc_me_modal_vocabulary.xhtml" />
-            <ui:include src="includes/metseditor/modals/inc_me_modal_altoeditor.xhtml" />
-            <ui:include src="includes/metseditor/modals/inc_me_modal_resetPagination.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/modals/inc_me_modal_kulturnav.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/modals/inc_me_modal_dante.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/modals/inc_me_modal_easydb.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/modals/inc_me_modal_geonames.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/modals/inc_me_modal_gnd.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/modals/inc_me_modal_processSearch.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/modals/inc_me_modal_viaf.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/modals/inc_me_modal_vocabulary.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/modals/inc_me_modal_altoeditor.xhtml" />
+            <ui:include src="/WEB-INF/includes/metseditor/modals/inc_me_modal_resetPagination.xhtml" />
 
         </h:form>
         <c:forEach
@@ -119,7 +122,7 @@
 
     <!-- METSEDITOR IMAGE -->
     <ui:define name="metseditorImage">
-        <ui:include src="includes/metseditor/metseditor_image.xhtml" />
+        <ui:include src="/WEB-INF/includes/metseditor/metseditor_image.xhtml" />
     </ui:define>
 
 </ui:composition>

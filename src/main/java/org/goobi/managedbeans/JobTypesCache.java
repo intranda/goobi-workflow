@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
 import org.goobi.beans.JobType;
 import org.omnifaces.cdi.Startup;
 
@@ -40,6 +38,7 @@ import com.google.common.collect.ImmutableSet;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.StepManager;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 

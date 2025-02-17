@@ -6,7 +6,7 @@
     template="/uii/templatePG/templatePG.html"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+    
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
@@ -148,7 +148,7 @@
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}">
                                                 <i class="fa #{configFileEditorBean.isWritable(item) ? 'fa-pencil' : 'fa-eye'}"></i>
                                                 <f:ajax
-                                                    render="configFileEditorForm"
+                                                    render="@form"
                                                     onevent="function() { gwConfigEditor.init();}" />
                                             </button>
                                         </h:panelGroup>
@@ -271,8 +271,8 @@
                                                                 class="dropdown-item">
                                                                 <h:outputText value="#{backupFile.fileName}" />
 
-                                                                <x:updateActionListener
-                                                                    property="#{configFileEditorBean.selectedFile}"
+                                                                <f:setPropertyActionListener
+                                                                    target="#{configFileEditorBean.selectedFile}"
                                                                     value="#{backupFile}" />
                                                             </button>
                                                         </li>
@@ -303,14 +303,14 @@
                                         <span>
                                             <h:outputText value="#{msgs.save}" />
                                         </span>
-                                        <!--<f:ajax render="" />-->
+                                        <f:ajax render="@form" />
                                     </button>
                                 </div>
                                 <!-- Text editor -->
                                 <div
                                     id="configFileEditorBorder"
                                     class="border">
-                                    <x:inputTextarea
+                                    <h:inputTextarea
                                         id="configFileEditor"
                                         style="resize: none;"
                                         pt:aria-label="configFileEditor"

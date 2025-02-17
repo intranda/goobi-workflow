@@ -6,7 +6,6 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/templatePG/templatePG.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -662,7 +661,8 @@
 
                                 <ui:fragment
                                     rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and !intern.multiselect}">
-                                    <intranda:formInputDropDown2
+                                  
+                                    <intranda:formInputDropDown
                                         id="select"
                                         label="#{HelperForm.getTranslation ('import_', intern.titel)}"
                                         field="#{intern.wert}"
@@ -671,8 +671,8 @@
                                         selectItems="#{intern.selectList}"
                                         displayAsRequired="#{intern.required}"
                                         required="false" />
+                                        
                                 </ui:fragment>
-
                                 <ui:fragment
                                     rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and intern.multiselect}">
                                     <div class="row">
@@ -687,6 +687,7 @@
                                         <!-- // LABEL -->
 
                                         <div class="col-12 col-md-9">
+
                                             <h:selectManyListbox
                                                 styleClass="form-select"
                                                 value="#{intern.values}"
@@ -697,7 +698,6 @@
                                                     itemValue="{item}"
                                                     var="item" />
                                             </h:selectManyListbox>
-
                                             <!-- Help messages, inline + warning -->
                                             <intranda:formHelp
                                                 content="#{HelperForm.getTranslation ('help_import_', intern.titel)}"
@@ -792,7 +792,8 @@
                                 name="project" />
 
                             <h:panelGroup rendered="#{ProzesskopieForm.standardFields.preferences}">
-                                <intranda:formInputDropDown2
+
+                                <intranda:formInputDropDown
                                     id="ruleset"
                                     label="#{msgs.regelsatz}"
                                     field="#{ProzesskopieForm.rulesetSelection}"
@@ -800,23 +801,24 @@
                                     name="Regelsatz"
                                     selectItems="#{ProzesskopieForm.rulesetSelectionList}"
                                     required="true" />
+
                             </h:panelGroup>
                         </h:panelGroup>
 
                         <h:panelGroup rendered="#{ProzesskopieForm.standardFields.collections}">
-                            <intranda:formInputSelectMany
+                            <intranda:formInputSelectManyChildren
                                 id="collection"
                                 label="#{msgs.digitaleKollektionen}"
                                 field="#{ProzesskopieForm.digitalCollections}"
                                 help="#{msgs.help_import_DigitalCollection}"
                                 name="digitaleKollektionen"
                                 selectItems="#{ProzesskopieForm.possibleDigitalCollections}"
-                                required="true"
-                                var="step"
-                                itemLabel="#{step}"
-                                itemValue="#{step}" />
+                                required="true" >
+                                    <f:selectItems value="#{ProzesskopieForm.possibleDigitalCollections}" />
+                            </intranda:formInputSelectManyChildren>
 
                         </h:panelGroup>
+
                         <!-- TODO: docket -->
 
                         <h:panelGroup
@@ -882,7 +884,7 @@
                                             value="#{ProzesskopieForm.importantWikiField}"
                                             required="false"
                                             tabindex="1" />
-                                            #{msgs.process_log_file_priorityComment}
+                                        #{msgs.process_log_file_priorityComment}
                                     </label>
                                 </div>
                             </div>

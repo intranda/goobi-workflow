@@ -29,8 +29,6 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Docket;
 
@@ -40,6 +38,7 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 

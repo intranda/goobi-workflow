@@ -33,11 +33,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpServletRequest;
-
 import org.easymock.EasyMock;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
@@ -55,6 +50,10 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.mock.MockProcess;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.servlet.http.HttpServletRequest;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;

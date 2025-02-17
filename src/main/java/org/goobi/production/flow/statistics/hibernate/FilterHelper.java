@@ -41,7 +41,6 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 import lombok.extern.log4j.Log4j2;
-import net.sf.ehcache.search.expression.Criteria;
 
 /**
  * class provides methods used by implementations of IEvaluableFilter
@@ -625,7 +624,7 @@ public class FilterHelper {
     /**
      * Filter processes by Ids
      * 
-     * @param crit {@link Criteria} to extend
+     * @param crit to extend
      * @param tok part of filter string to use
      ****************************************************************************/
     protected static String filterIds(String tok, boolean negation) {
@@ -662,7 +661,7 @@ public class FilterHelper {
     /**
      * Filter processes by workpiece
      * 
-     * @param crit {@link Criteria} to extend
+     * @param crit to extend
      * @param tok part of filter string to use
      ****************************************************************************/
     protected static String filterWorkpiece(String tok, boolean negate) {

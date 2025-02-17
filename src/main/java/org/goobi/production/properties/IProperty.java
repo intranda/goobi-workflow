@@ -1,5 +1,8 @@
 package org.goobi.production.properties;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -25,9 +28,7 @@ package org.goobi.production.properties;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import javax.faces.model.SelectItem;
-import java.util.Date;
-import java.util.List;
+import jakarta.faces.model.SelectItem;
 
 public interface IProperty {
 

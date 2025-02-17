@@ -3,7 +3,7 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+	
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -33,7 +33,7 @@
 
 				<div class="margin-sides-10">
 					<!-- aktuelle Seite anzeigen -->
-					<x:outputText id="txtMoveTo1" forceId="true"
+					<h:outputText id="txtMoveTo1" forceId="true"
 						value="#{msgs.seite} #{cc.attrs.paginator.pageNumberCurrent} #{msgs.von} #{cc.attrs.paginator.pageNumberLast}"
 						onclick="document.getElementById('txtMoveTo2').style.display='inline';
 			       document.getElementById('txtMoveTo1').style.display='none';
@@ -41,15 +41,15 @@
 			       document.getElementById('txtMoveTo2').select();" />
 
 					<!-- Seite direkt anspringen -->
-					<x:inputText id="txtMoveTo2" forceId="true"
+					<h:inputText id="txtMoveTo2" forceId="true"
 						value="#{cc.attrs.paginator.txtMoveTo}" style="display:none;width:30px"
 						required="true"
 						onblur="document.getElementById('txtMoveTo2').style.display='none';document.getElementById('txtMoveTo1').style.display='inline';"
 						onkeypress="return submitEnter('cmdMoveTo',event)" />
-					<x:commandButton action="#{NavigationForm.Reload}" id="cmdMoveTo"
+					<h:commandButton action="#{NavigationForm.Reload}" id="cmdMoveTo"
 						forceId="true" value="go" style="display:none" >
 
-					</x:commandButton>
+					</h:commandButton>
 				</div>
 
 				<button class="btn btn-primary font-size-s navigator-next"

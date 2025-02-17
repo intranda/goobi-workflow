@@ -31,35 +31,35 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.MediaType;
-
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.unigoettingen.sub.commons.cache.ContentServerCacheManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerResource;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.MediaType;
 import lombok.extern.log4j.Log4j2;
 
-@javax.ws.rs.Path("/dummy/path/to/avoid/resource/configuration/errors")
+@jakarta.ws.rs.Path("/dummy/path/to/avoid/resource/configuration/errors")
 @Log4j2
 public abstract class AbstractImageResource extends ImageResource {
 
     protected AbstractImageResource(ContainerRequestContext context, HttpServletRequest request,
             HttpServletResponse response, String foldername, String filename) {
-        super(context, request, response, foldername, filename);
+        super(context, request, response, foldername, filename, ContentServerCacheManager.getInstance());
     }
 
     @GET
-    @javax.ws.rs.Path("/info.json")
+    @jakarta.ws.rs.Path("/info.json")
     @Operation(summary = "Returns information about an image", description = "Returns information about the image in JSON or JSONLD format")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad Request")

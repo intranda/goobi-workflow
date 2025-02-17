@@ -1,5 +1,21 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
+import static io.goobi.workflow.api.vocabulary.helper.ExtendedTranslationInstance.transformToThreeCharacterAbbreviation;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import org.goobi.managedbeans.FormInputMultiSelectBean;
+import org.goobi.managedbeans.FormInputMultiSelectHelper;
+
 import de.sub.goobi.forms.SpracheForm;
 import de.sub.goobi.helper.Helper;
 import io.goobi.vocabulary.exchange.FieldDefinition;
@@ -10,25 +26,9 @@ import io.goobi.vocabulary.exchange.TranslationDefinition;
 import io.goobi.vocabulary.exchange.TranslationInstance;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import jakarta.faces.model.SelectItem;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import org.goobi.managedbeans.FormInputMultiSelectBean;
-import org.goobi.managedbeans.FormInputMultiSelectHelper;
-
-import javax.faces.model.SelectItem;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-import static io.goobi.workflow.api.vocabulary.helper.ExtendedTranslationInstance.transformToThreeCharacterAbbreviation;
 
 @Getter
 @Log4j2
@@ -49,7 +49,8 @@ public class ExtendedFieldInstance extends FieldInstance {
     private List<SelectItem> selectableItems;
 
     private List<ExtendedVocabularyRecord> getAllRecords(Long vocabularyId) {
-        return VocabularyAPIManager.getInstance().vocabularyRecords()
+        return VocabularyAPIManager.getInstance()
+                .vocabularyRecords()
                 .getAllHierarchicalRecords(vocabularyId);
     }
 
@@ -70,11 +71,13 @@ public class ExtendedFieldInstance extends FieldInstance {
             this.type = typeResolver.apply(this.definition.getTypeId());
         }
         if (this.type != null) {
-            this.selectableItems = this.type.getSelectableValues().stream()
+            this.selectableItems = this.type.getSelectableValues()
+                    .stream()
                     .map(v -> new SelectItem(v, v))
                     .collect(Collectors.toList());
         } else if (this.definition.getReferenceVocabularyId() != null) {
-            this.selectableItems = recordsResolver.apply(this.definition.getReferenceVocabularyId()).stream()
+            this.selectableItems = recordsResolver.apply(this.definition.getReferenceVocabularyId())
+                    .stream()
                     .map(r -> new SelectItem(Long.toString(r.getId()), r.getSelectItemLabel()))
                     .collect(Collectors.toList());
         }
@@ -100,7 +103,7 @@ public class ExtendedFieldInstance extends FieldInstance {
         for (String selectedValue : getValues().stream()
                 .flatMap(v -> v.getTranslations().stream())
                 .map(TranslationInstance::getValue)
-                .filter(v -> !v.isBlank() && !v.equals("null"))
+                .filter(v -> !v.isBlank() && !"null".equals(v))
                 .collect(Collectors.toList())) {
             // TODO: Single selects are directly bound to value translations and might set "null"
             SelectItem item = this.selectableItems.stream()
@@ -173,7 +176,8 @@ public class ExtendedFieldInstance extends FieldInstance {
             try {
                 fieldValue.getTranslations().forEach(t -> t.setValue(String.valueOf(Integer.parseInt(value))));
             } catch (NumberFormatException e) {
-                recordsResolver.apply(this.definition.getReferenceVocabularyId()).stream()
+                recordsResolver.apply(this.definition.getReferenceVocabularyId())
+                        .stream()
                         .filter(r -> r.getMainValue().equals(value))
                         .findFirst()
                         .map(VocabularyRecord::getId)
@@ -183,35 +187,40 @@ public class ExtendedFieldInstance extends FieldInstance {
     }
 
     private String extractValue(FieldInstance field, String language) {
-        return field.getValues().stream()
+        return field.getValues()
+                .stream()
                 .map(
                         v -> {
-                            Optional<String> preferredLanguage = v.getTranslations().stream()
+                            Optional<String> preferredLanguage = v.getTranslations()
+                                    .stream()
                                     .filter(t -> language != null && language.equals(t.getLanguage()))
                                     .map(TranslationInstance::getValue)
                                     .findFirst();
                             if (preferredLanguage.isPresent() && !preferredLanguage.get().isBlank()) {
                                 return preferredLanguage.get();
                             }
-                            String fallbackLanguage = definition.getTranslationDefinitions().stream()
+                            String fallbackLanguage = definition.getTranslationDefinitions()
+                                    .stream()
                                     .filter(t -> Boolean.TRUE.equals(t.getFallback()))
                                     .map(TranslationDefinition::getLanguage)
                                     .findFirst()
                                     .orElse(null);
                             if (fallbackLanguage == null) {
-                                return v.getTranslations().stream()
+                                return v.getTranslations()
+                                        .stream()
                                         .filter(t -> t.getLanguage() == null)
                                         .map(TranslationInstance::getValue)
                                         .findFirst()
                                         .orElseThrow();
                             }
-                            return v.getTranslations().stream()
+                            return v.getTranslations()
+                                    .stream()
                                     .filter(t -> fallbackLanguage.equals(t.getLanguage()))
                                     .map(TranslationInstance::getValue)
                                     .findFirst()
                                     .orElseThrow();
-                        }
-                ).collect(Collectors.joining("|"));
+                        })
+                .collect(Collectors.joining("|"));
     }
 
     public List<ExtendedFieldValue> getExtendedValues() {

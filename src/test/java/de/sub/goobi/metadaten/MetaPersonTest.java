@@ -35,8 +35,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import javax.faces.model.SelectItem;
-
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.Before;
@@ -50,6 +48,7 @@ import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.mock.MockProcess;
+import jakarta.faces.model.SelectItem;
 import ugh.dl.DocStruct;
 import ugh.dl.MetadataType;
 import ugh.dl.NamePart;

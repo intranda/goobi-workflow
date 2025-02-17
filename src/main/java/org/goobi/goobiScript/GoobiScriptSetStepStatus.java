@@ -1,19 +1,19 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -89,13 +89,13 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
         String missingParameter = "Missing parameter: ";
         String steptitle = parameters.get(STEPTITLE);
         if (steptitle == null || "".equals(steptitle)) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
+            Helper.setFehlerMeldung(missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
         String status = parameters.get(STATUS);
         if (status == null || "".equals(status)) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STATUS);
+            Helper.setFehlerMeldung(missingParameter, STATUS);
             return new ArrayList<>();
         }
 
@@ -107,7 +107,7 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
             options.append(STATUS_NUMBER_DONE + "=" + STATUS_TEXT_DONE + ", ");
             options.append(STATUS_NUMBER_ERROR + "=" + STATUS_TEXT_ERROR + ", ");
             options.append(STATUS_NUMBER_DEACTIVATED + "=" + STATUS_TEXT_DEACTIVATED);
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Wrong status parameter: status ", "(possible: " + options.toString() + ")");
+            Helper.setFehlerMeldung("Wrong status parameter: status ", "(possible: " + options.toString() + ")");
             return new ArrayList<>();
         }
 

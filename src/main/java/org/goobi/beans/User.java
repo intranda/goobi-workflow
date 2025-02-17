@@ -39,8 +39,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.faces.model.SelectItem;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.api.mail.UserProjectConfiguration;
@@ -59,6 +57,7 @@ import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import jakarta.faces.model.SelectItem;
 import jgravatar.Gravatar;
 import jgravatar.GravatarRating;
 import lombok.Getter;
@@ -748,6 +747,16 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     @Override
     public Path getDownloadFolder() {
         return Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "user", login);
+    }
+
+    @Override
+    public String getUploadFolder() {
+        return getDownloadFolder().toString();
+    }
+
+    @Override
+    public void setUploadFolder(String uploadFolder) {
+        // do nothing
     }
 
     @Override

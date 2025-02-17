@@ -4,7 +4,7 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
@@ -19,7 +19,7 @@
 
         <div class="user">
             <div class="nav icon-nav">
-                <ui:fragment rendered="#{facesContext.getMessageList().size() > 0}">
+                <ui:fragment rendered="#{HelperForm.getFacesMessageList(null).size() > 0}">
                   <notification:area>
                     <notification:toggle />
                     <notification:messages>
@@ -35,7 +35,8 @@
                     aria-label="#{msgs.showHelpMessages}"
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
-                    data-goobi="handle-tooltip">
+                    data-goobi="handle-tooltip"
+                    style="width: 2.75rem;">
 
                     <span class="fa #{not NavigationForm.showHelp ? 'fa-question' : 'fa-question-circle'}" />
                     <f:setPropertyActionListener

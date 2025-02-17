@@ -4,7 +4,7 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+	
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -31,7 +31,7 @@
 					<div class="gw-table gw-table-fixed">
 						<div class="gw-table__wrapper">
 
-							<x:dataTable
+							<h:dataTable
 								styleClass="table table-bordered table-fixed table-hover"
 								var="item"
 								value="#{ProzessverwaltungForm.usergroupPaginator.list}"
@@ -49,8 +49,8 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.myBenutzergruppe}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.myBenutzergruppe}"
 											value="#{item}" />
 										<f:setPropertyActionListener
 											target="#{ProzessverwaltungForm.userDisplayMode}"
@@ -61,7 +61,7 @@
 										<h:outputText value="#{item.titel}" />
 									</span>
 								</h:column>
-							</x:dataTable>
+							</h:dataTable>
 						</div>
 					</div>
 					<div class="box__actions">
@@ -101,7 +101,7 @@
 					<div class="gw-table gw-table-fixed">
 						<div class="gw-table__wrapper">
 
-							<x:dataTable
+							<h:dataTable
 								styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
 								var="item"
 								value="#{ProzessverwaltungForm.userPaginator.list}"
@@ -119,8 +119,8 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.myBenutzer}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.myBenutzer}"
 											value="#{item}" />
 										<f:setPropertyActionListener
 											target="#{ProzessverwaltungForm.userDisplayMode}"
@@ -129,7 +129,7 @@
 									</button>
 									<h:outputText value="#{item.nachname}, #{item.vorname}" />
 								</h:column>
-							</x:dataTable>
+							</h:dataTable>
 						</div>
 					</div>
 					<div class="box__actions">
@@ -196,8 +196,8 @@
 												<f:passThroughAttribute
 													name="data-toggle"
 													value="tooltip" />
-												<x:updateActionListener
-													property="#{ProzessverwaltungForm.myBenutzergruppe}"
+												<f:setPropertyActionListener
+													target="#{ProzessverwaltungForm.myBenutzergruppe}"
 													value="#{item}" />
 												<f:ajax render=":myform" />
 											</button>
@@ -229,8 +229,8 @@
 												<f:passThroughAttribute
 													name="data-toggle"
 													value="tooltip" />
-												<x:updateActionListener
-													property="#{ProzessverwaltungForm.myBenutzer}"
+												<f:setPropertyActionListener
+													target="#{ProzessverwaltungForm.myBenutzer}"
 													value="#{item}" />
 												<f:ajax render=":myform" />
 											</button>

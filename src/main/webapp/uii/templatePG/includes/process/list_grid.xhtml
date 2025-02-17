@@ -5,7 +5,7 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+    
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
@@ -146,8 +146,8 @@
                                                 class="btn btn-blank">
                                                 <i
                                                     class="fa #{item.panelAusgeklappt?'fa-chevron-down':'fa-chevron-right'}" />
-                                                <x:updateActionListener
-                                                    property="#{item.panelAusgeklappt}"
+                                                <f:setPropertyActionListener
+                                                    target="#{item.panelAusgeklappt}"
                                                     value="#{not item.panelAusgeklappt}" />
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
@@ -167,7 +167,7 @@
                                 <h:panelGroup
                                     id="steptable"
                                     styleClass="d-block ps-3 pe-3">
-                                    <x:dataTable
+                                    <h:dataTable
                                         rendered="#{item.panelAusgeklappt}"
                                         styleClass="table table-hover table-bordered mb-3"
                                         id="grid_prozessdetails"
@@ -274,7 +274,7 @@
                                                 value="#{step.bearbeitungsstatusEnum.title}"
                                                 rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}" />
                                         </h:column>
-                                    </x:dataTable>
+                                    </h:dataTable>
                                 </h:panelGroup>
 
                             </div>

@@ -1,6 +1,5 @@
+// Generated from ExtendedDateTimeFormat.g4 by ANTLR 4.13.2
 package de.sub.goobi.validator;
-
-// Generated from ExtendedDateTimeFormat.g4 by ANTLR 4.13.0
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -934,6 +933,28 @@ public class ExtendedDateTimeFormatBaseListener implements ExtendedDateTimeForma
      */
     @Override
     public void exitAll_of_a_set(ExtendedDateTimeFormatParser.All_of_a_setContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The default implementation does nothing.
+     * </p>
+     */
+    @Override
+    public void enterExpression(ExtendedDateTimeFormatParser.ExpressionContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>
+     * The default implementation does nothing.
+     * </p>
+     */
+    @Override
+    public void exitExpression(ExtendedDateTimeFormatParser.ExpressionContext ctx) {
     }
 
     /**

@@ -28,13 +28,10 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.servlet.ServletConfig;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+import org.goobi.production.GoobiVersion;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,7 +47,13 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import io.swagger.v3.oas.models.security.SecurityScheme.Type;
 import io.swagger.v3.oas.models.servers.Server;
-import org.goobi.production.GoobiVersion;
+import jakarta.servlet.ServletConfig;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 
 /**
  * @author florian
@@ -69,6 +72,7 @@ public class OpenApiResource {
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
+    @JsonInclude(Include.NON_NULL)
     public OpenAPI getOpenApi() {
         String contextPath = servletConfig.getServletContext().getContextPath();
         return initSwagger(servletConfig, application, contextPath);
@@ -80,13 +84,13 @@ public class OpenApiResource {
             SwaggerConfiguration oasConfig = new SwaggerConfiguration()
                     .prettyPrint(true)
                     .readAllResources(false)
-
                     .resourcePackages(Stream.of("org.goobi.api.rest").collect(Collectors.toSet()));
 
             OpenAPI openApi = new JaxrsOpenApiContextBuilder<>()
                     .servletConfig(servletConfig)
                     .application(application)
                     .openApiConfiguration(oasConfig)
+
                     .buildContext(true)
                     .read();
 

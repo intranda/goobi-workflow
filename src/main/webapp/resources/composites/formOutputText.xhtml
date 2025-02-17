@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <composite:interface>
@@ -20,7 +20,7 @@
         <div class="form-group" style="#{cc.attrs.style}">
             <h:outputLabel for="#{cc.attrs.name}" styleClass="control-label #{cc.attrs.classLeft}" value="#{cc.attrs.label}" />
             <div class="#{cc.attrs.classRight}">
-                <x:outputText id="#{cc.attrs.name}" style="border:0px;" forceId="#{cc.attrs.forceId}" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}"/>
+                <h:outputText id="#{cc.attrs.name}" style="border:0px;" forceId="#{cc.attrs.forceId}" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}"/>
             	<intranda:formHelp content="#{cc.attrs.help}" />
             </div>
         </div>

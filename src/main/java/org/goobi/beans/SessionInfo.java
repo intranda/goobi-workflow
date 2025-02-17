@@ -26,10 +26,9 @@ package org.goobi.beans;
 
 import java.io.Serializable;
 
-import javax.servlet.http.HttpSession;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.Setter;
 

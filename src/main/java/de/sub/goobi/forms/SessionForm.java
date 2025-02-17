@@ -8,12 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.goobi.beans.Browser;
 import org.goobi.beans.SessionInfo;
 import org.goobi.beans.User;
@@ -24,6 +18,11 @@ import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;

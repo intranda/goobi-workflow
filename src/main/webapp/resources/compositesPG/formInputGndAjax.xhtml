@@ -4,7 +4,6 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -52,7 +51,7 @@
                 layout="block"
                 styleClass="#{cc.attrs.classRight} d-flex flex-column gap-1">
 
-                <x:inputText
+                <h:inputText
                     id="inputTextRO"
                     pt:aria-label="#{cc.attrs.label}"
                     styleClass="form-control form_field"
@@ -61,7 +60,7 @@
                     value="#{cc.attrs.field.value}"
                     tabindex="-1" />
 
-                <x:inputText
+                <h:inputText
                     id="gndid"
                     pt:aria-label="#{cc.attrs.label}"
                     styleClass="form-control form_field"
@@ -167,7 +166,7 @@
                                 </h:selectOneMenu>
                             </div>
                             <div class="col-12 col-md-8">
-                                <x:inputText
+                                <h:inputText
                                     id="gndSearchInput"
                                     pt:aria-label="#{msgs.suchbegriff}"
                                     styleClass="form-control"
@@ -195,12 +194,12 @@
                             id="gndSearchlist"
                             layout="block"
                             styleClass="modal-dialog-scrollable modal-results">
-                            <x:dataList
+                            <ui:repeat
                                 value="#{cc.attrs.field.dataList}"
                                 var="normdataList">
                                 <div class="row">
                                     <div class="col-11">
-                                        <x:dataList
+                                        <ui:repeat
                                             value="#{normdataList}"
                                             var="normdata">
                                             <div class="row border-0">
@@ -209,7 +208,7 @@
                                                 </div>
 
                                                 <div class="col-8 min-height-reset p-0">
-                                                    <x:dataList
+                                                    <ui:repeat
                                                         value="#{normdata.values}"
                                                         var="value">
                                                         <div class="row border-0">
@@ -229,10 +228,10 @@
                                                                     rendered="#{value.url == null}" />
                                                             </div>
                                                         </div>
-                                                    </x:dataList>
+                                                    </ui:repeat>
                                                 </div>
                                             </div>
-                                        </x:dataList>
+                                        </ui:repeat>
                                     </div>
 
                                     <div class="col-1">
@@ -261,7 +260,7 @@
                                         </button>
                                     </div>
                                 </div>
-                            </x:dataList>
+                            </ui:repeat>
                         </h:panelGroup>
                     </div>
                 </h:panelGroup>

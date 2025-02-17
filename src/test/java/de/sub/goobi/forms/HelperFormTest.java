@@ -34,11 +34,6 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.faces.application.Application;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Institution;
@@ -60,6 +55,10 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
+import jakarta.faces.application.Application;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, RulesetManager.class, DocketManager.class, Helper.class })

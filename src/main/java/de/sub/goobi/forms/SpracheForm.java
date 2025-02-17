@@ -33,16 +33,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.inject.Named;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Named;
 
 /**
  * The SpracheForm class serves to switch the displayed language for the current user in the running application

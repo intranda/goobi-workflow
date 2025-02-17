@@ -46,18 +46,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
-
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
@@ -68,6 +58,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.unigoettingen.sub.commons.cache.ContentServerCacheManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
@@ -84,8 +75,17 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.StreamingOutput;
 import lombok.extern.log4j.Log4j2;
-import spark.utils.StringUtils;
 
 /**
  * A IIIF image resource for goobi image urls
@@ -94,7 +94,7 @@ import spark.utils.StringUtils;
  *
  */
 
-@javax.ws.rs.Path("/process/image")
+@jakarta.ws.rs.Path("/process/image")
 @ContentServerBinding
 @Log4j2
 public class GoobiImageResource {
@@ -129,7 +129,7 @@ public class GoobiImageResource {
     private HttpServletResponse response;
 
     @GET
-    @javax.ws.rs.Path("/{process}/{folder}/{filename}/info.json")
+    @jakarta.ws.rs.Path("/{process}/{folder}/{filename}/info.json")
     @Operation(summary = "Returns information about an image", description = "Returns information about an image in JSON or JSONLD format")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "500", description = "Internal error")
@@ -176,7 +176,7 @@ public class GoobiImageResource {
     }
 
     @GET
-    @javax.ws.rs.Path("/{process}/{folder}/{filename}")
+    @jakarta.ws.rs.Path("/{process}/{folder}/{filename}")
     @Produces({ MediaType.APPLICATION_JSON, ContentServerResource.MEDIA_TYPE_APPLICATION_JSONLD })
     public Response redirectToCanonicalImageInfo() throws ContentLibException {
         try {
@@ -189,7 +189,7 @@ public class GoobiImageResource {
     }
 
     @GET
-    @javax.ws.rs.Path("/{process}/{folder}/{filename}/{region}/{size}/{rotation}/{quality}.{format}/{cacheCommand}")
+    @jakarta.ws.rs.Path("/{process}/{folder}/{filename}/{region}/{size}/{rotation}/{quality}.{format}/{cacheCommand}")
     @Produces({ MediaType.TEXT_PLAIN })
     @ContentServerImageInfoBinding
     public Boolean isInCache(@PathParam("process") String processIdString, @PathParam("folder") String folder, @PathParam("filename") String filename,
@@ -206,7 +206,7 @@ public class GoobiImageResource {
     }
 
     @GET
-    @javax.ws.rs.Path("/{process}/{folder}/{filename}/{pdfName}.pdf")
+    @jakarta.ws.rs.Path("/{process}/{folder}/{filename}/{pdfName}.pdf")
     @Produces("application/pdf")
     @ContentServerPdfBinding
     public StreamingOutput getPdf(@PathParam("process") String processIdString, @PathParam("folder") String folder,
@@ -215,7 +215,7 @@ public class GoobiImageResource {
     }
 
     @GET
-    @javax.ws.rs.Path("/{process}/{folder}/{filename}/{region}/{size}/{rotation}/{pdfName}.pdf")
+    @jakarta.ws.rs.Path("/{process}/{folder}/{filename}/{region}/{size}/{rotation}/{pdfName}.pdf")
     @Produces("application/pdf")
     @ContentServerPdfBinding
     public StreamingOutput getPdf(@PathParam("process") String processIdString, @PathParam("folder") String folder,
@@ -231,7 +231,7 @@ public class GoobiImageResource {
     }
 
     @GET
-    @javax.ws.rs.Path("/{process}/{folder}/{filename}/{region}/{size}/{rotation}/{quality}.{format}")
+    @jakarta.ws.rs.Path("/{process}/{folder}/{filename}/{region}/{size}/{rotation}/{quality}.{format}")
     @Produces({ "image/jpg", "image/png", "image/tif" })
     @ContentServerImageBinding
     public Response getImage(@PathParam("process") String processIdString, @PathParam("folder") String folder, @PathParam("filename") String filename,
@@ -248,7 +248,8 @@ public class GoobiImageResource {
 
     private ImageResource createImageResource(String processIdString, String folder, String filename)
             throws IllegalRequestException, ContentLibException {
-        ImageResource imageResource = new ImageResource(context, request, response, getFilename(folder), getFilename(filename));
+        ImageResource imageResource = new ImageResource(context, request, response, getFilename(folder), getFilename(filename),
+                ContentServerCacheManager.getInstance());
         Path processFolder = metadataFolderPath.resolve(getFilename(processIdString));
         imageResource.setResourceURI(createGoobiResourceURI(request, getFilename(processIdString), getFilename(folder), getFilename(filename)));
         imageResource.setImageURI(createGoobiImageURI(request, processFolder, getFilename(folder), getFilename(filename)));
@@ -651,7 +652,7 @@ public class GoobiImageResource {
     }
 
     public static String getGoobiURIPrefix() {
-        return GoobiImageResource.class.getAnnotation(javax.ws.rs.Path.class).value() + "/{process}/{folder}/{filename}";
+        return GoobiImageResource.class.getAnnotation(jakarta.ws.rs.Path.class).value() + "/{process}/{folder}/{filename}";
     }
 
     private void setImageSize(String uri, Dimension size) {
