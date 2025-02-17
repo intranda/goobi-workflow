@@ -103,6 +103,7 @@ public class EDTFValidatorTest {
         assertTrue(validator.isValid("2004-06~'"));
         // entire date (year-month-day) uncertain and approximate
         assertTrue(validator.isValid("2004-06-11%"));
+        assertTrue(validator.isValid("2004-06-~11"));
     }
 
     @Test
@@ -162,6 +163,7 @@ public class EDTFValidatorTest {
     public void testLevel2Interval() {
         // An interval in June 2004 beginning approximately the first and ending approximately the 20th
         assertTrue(validator.isValid("2004-06-01~/2004-06-20~"));
+        assertTrue(validator.isValid("2004-06-~01/2004-06-~20"));
         //  An interval beginning on an unspecified day in June 2004 and ending July 3.
         assertTrue(validator.isValid("2004-06-XX/2004-07-03"));
     }
