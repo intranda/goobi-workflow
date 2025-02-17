@@ -8,9 +8,6 @@ import java.util.List;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.goobi.vocabulary.exception.VocabularyException;
 import io.goobi.vocabulary.exchange.Vocabulary;
@@ -22,8 +19,6 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class VocabularyAPITest {
     private VocabularyAPI api;
 
