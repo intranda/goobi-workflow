@@ -18,7 +18,7 @@
 
         <div class="user">
             <div class="nav icon-nav">
-                <ui:fragment rendered="#{facesContext.getMessageList().size() > 1}">
+                <ui:fragment rendered="#{HelperForm.getFacesMessageList(null).size() > 0}">
                   <notification:area>
                     <notification:toggle />
                     <notification:messages>
