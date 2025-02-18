@@ -12,7 +12,7 @@
 
     <composite:implementation>
         <h:form id="meMenuActionsForm">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav flex-row">
                 <!-- PAGE TITLE -->
                 <li class="nav-item">
                     <span class="nav-link">
@@ -24,11 +24,8 @@
                 <ui:fragment rendered="#{LoginForm.myBenutzer.metsDisplayProcessID}">
                     <li class="nav-item">Goobi-ID: #{Metadaten.myProzess.id}</li>
                 </ui:fragment>
-
-                <li class="separator">
-                </li>
                 <ui:fragment rendered="#{Metadaten.showOcrButton}">
-                    <li class="nav-item">
+                    <li class="nav-item d-none d-md-block">
                             <!-- JS function is defined in uii/includes/metseditor/modals/inc_me_modal_altoeditor.xhtml -->
                         <button onclick="openAltoEditor()" type="button" aria-label="#{msgs.mets_editOcrForCurrentImage}" class="nav-link" title="#{msgs.mets_editOcrForCurrentImage}" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom">
                             <span class="fa fa-file-text-o fa-lg" aria-hidden="true"/>
@@ -36,7 +33,7 @@
 
                         </button>
                     </li>
-                    <li class="nav-item #{Metadaten.treeProperties.showOcr eq 'true' ? 'active' :''}">
+                    <li class="nav-item d-none d-md-block #{Metadaten.treeProperties.showOcr eq 'true' ? 'active' :''}">
                         <button jsf:id="ocrButton" aria-label="#{msgs.mets_showOcrForCurrentImage}" class="nav-link" jsf:action="#{NavigationForm.Reload}" title="#{msgs.mets_showOcrForCurrentImage}" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom">
                             <span class="fa fa-file-text-o fa-lg" aria-hidden="true"/>
                             <f:setPropertyActionListener value="true" target="#{Metadaten.treeProperties.showOcr}"/>
@@ -45,7 +42,7 @@
                     </li>
                 </ui:fragment>
                 <!-- TOGGLE IMAGE VIEW -->
-                <li class="nav-item #{Metadaten.treeProperties.showOcr ne 'true' and Metadaten.treeProperties.showThumbnails ne 'true' ? 'active' :''}">
+                <li class="nav-item d-none d-md-block #{Metadaten.treeProperties.showOcr ne 'true' and Metadaten.treeProperties.showThumbnails ne 'true' ? 'active' :''}">
                     <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" class="nav-link" jsf:id="showSinglePage" aria-label="#{msgs.mets_showImagesOne}" jsf:action="#{Metadaten.toggleImageView}" title="#{msgs.mets_showImagesOne}" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
@@ -55,7 +52,7 @@
                 </li>
 
                 <!-- TOGGLE IMAGE VIEW -->
-                <li class="nav-item #{Metadaten.treeProperties.showThumbnails ne '' ? 'active' :''}">
+                <li class="nav-item d-none d-md-block #{Metadaten.treeProperties.showThumbnails ne '' ? 'active' :''}">
                     <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" class="nav-link" jsf:id="showThumbnails" aria-label="#{msgs.mets_showImagesThumbs}" jsf:action="#{Metadaten.toggleImageView}" title="#{msgs.mets_showImagesThumbs}" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
                         <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
@@ -64,13 +61,8 @@
                         <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showOcr}"/>
                     </button>
                 </li>
-
-
-                <li class="separator"/>
-
-
                 <!-- VALIDATION -->
-                <li class="nav-item">
+                <li class="nav-item d-none d-md-block">
                     <button style="display: none" jsf:id="startValidationButton" jsf:action="#{Metadaten.Validate}">
                     </button>
 
@@ -85,7 +77,7 @@
                 </li>
 
                 <!-- CONFIGURATION -->
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown d-none d-md-block">
                     <button id="configDropdown" type="button" class="nav-link dropdown-toggle" aria-label="#{msgs.mets_configuration}" aria-expanded="false" data-bs-toggle="dropdown">
                         <span class="fa fa-cog fa-lg" aria-hidden="true"/>
                     </button>
@@ -198,7 +190,7 @@
 
                 <!-- SAVE -->
                 <c:if test="#{not Metadaten.nurLesenModus}">
-                    <li class="nav-item">
+                    <li class="nav-item d-none d-md-block">
                         <!-- This button and the hidden button below have to
                         work together to get the wanted effect here. This button
                         is responsible for FIRST UNFOCUSING the currently

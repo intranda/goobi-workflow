@@ -12,7 +12,11 @@
     <composite:interface />
 
     <composite:implementation>
-        <h:form id="meMenuPluginsForm" rendered="#{!Metadaten.extensions.isEmpty()}">
+        <h:form
+            id="meMenuPluginsForm"
+            rendered="#{!Metadaten.extensions.isEmpty()}"
+            layout="block"
+            styleClass="d-none d-md-block">
             <script>
                 function loadPlugin  (data, selector) {
                     console.log('run loadPlugin')
