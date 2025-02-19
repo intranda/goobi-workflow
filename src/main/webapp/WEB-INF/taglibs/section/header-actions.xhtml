@@ -1,8 +1,16 @@
 <ui:composition
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jstl/core"
 >
-    <h:form class="actions section-header-actions">
-        <ui:insert />
-    </h:form>
+    <c:if test="#{form eq true}">
+        <h:form class="actions section-header-actions">
+            <ui:insert />
+        </h:form>
+    </c:if>
+    <c:if test="#{form eq false or form eq null}">
+        <div class="actions section-header-actions">
+            <ui:insert />
+        </div>
+    </c:if>
 </ui:composition>

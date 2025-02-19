@@ -46,6 +46,12 @@
     <tag>
         <tag-name>header-actions</tag-name>
         <source>section/header-actions.xhtml</source>
+        <attribute>
+            <description>Determine whether the tag should produce a form element</description>
+            <name>form</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>body</tag-name>
