@@ -247,7 +247,11 @@
                     <ul class="dropdown-menu dropdown-menu-end">
                         <c:if test="#{not Metadaten.nurLesenModus}">
                             <li class="nav-item">
-                                <h:commandLink id="saveAndExit" action="#{Metadaten.XMLschreiben}" onclick="goobiWorkflowJS.displayProgressBar(); goobiWorkflowJS.meScrollPos.destroyScrollPos()" styleClass="dropdown-item">
+                                <h:commandLink
+                                    id="saveAndExit"
+                                    action="#{Metadaten.XMLschreiben}"
+                                    onclick="goobiWorkflowJS.displayProgressBar(); goobiWorkflowJS.meScrollPos.destroyScrollPos()"
+                                    styleClass="dropdown-item">
                                     <span class="fa fa-floppy-o" aria-hidden="true"/>
                                     #{msgs.speichernZurueck}
                                 </h:commandLink>
@@ -255,7 +259,12 @@
                         </c:if>
 
                         <li class="nav-item">
-                            <h:commandLink onclick="goobiWorkflowJS.meScrollPos.destroyScrollPos()" id="exitOnly" action="#{Metadaten.goZurueck}" rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}" styleClass="dropdown-item">
+                            <h:commandLink
+                                onclick="goobiWorkflowJS.meScrollPos.destroyScrollPos()"
+                                id="exitOnly"
+                                action="#{Metadaten.goZurueck}"
+                                rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}"
+                                styleClass="dropdown-item">
                                 <span class="fa fa-trash-o" aria-hidden="true"/>
                                 #{msgs.goBack}
                             </h:commandLink>
