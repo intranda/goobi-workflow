@@ -4,12 +4,12 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
 
     <display-name>Goobi</display-name>
-  
+
     <context-param>
         <param-name>jakarta.faces.FACELETS_SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
-  
+
     <context-param>
         <param-name>org.omnifaces.SOCKET_ENDPOINT_ENABLED</param-name>
         <param-value>true</param-value>
@@ -30,6 +30,7 @@
             /WEB-INF/taglibs/properties.taglib.xml;
             /WEB-INF/taglibs/section.taglib.xml;
             /WEB-INF/taglibs/table.taglib.xml;
+            /WEB-INF/taglibs/util.taglib.xml;
         </param-value>
     </context-param>
     <servlet>
@@ -79,7 +80,7 @@
         <filter-name>SecurityCheckFilter</filter-name>
         <url-pattern>*.xhtml</url-pattern>
     </filter-mapping>
-    <!-- 
+    <!--
     <filter>
         <filter-name>SparkFilter</filter-name>
         <filter-class>spark.servlet.SparkFilter</filter-class>
@@ -116,14 +117,14 @@
         <servlet-name>PluginServlet</servlet-name>
         <url-pattern>/ps</url-pattern>
     </servlet-mapping>
-    
+
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
-  
+
     <resource-ref>
         <res-ref-name>goobi</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
