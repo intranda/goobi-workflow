@@ -18,28 +18,24 @@
             id="geonamesSearchBox"
             tabindex="-1"
             role="dialog"
-            aria-labelledby="geonamesSearchBoxLabel"
-            aria-hidden="true">
+            aria-labelledby="geonamesSearchBoxLabel">
             <div
-                class="modal-dialog"
+                class="modal-dialog modal-lg modal-dialog-scrollable"
                 role="document">
                 <h:panelGroup
                     id="geonamesModalContent"
                     layout="block"
                     styleClass="modal-content">
-                    <div class="modal-header">
-                        <h5
+                    <div class="modal-header bg-primary text-white">
+                        <h4
                             class="modal-title"
-                            id="geonamesSearchBoxLabel">#{msgs.NORM_geonamesSearch}</h5>
-
+                            id="geonamesSearchBoxLabel">#{msgs.NORM_geonamesSearch}</h4>
                         <button
                             type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close">
-                            <h:outputText
-                                value="&amp;times;"
-                                escape="false" />
+                            class="btn text-white"
+                            title="#{msgs.cancel}"
+                            data-bs-dismiss="modal">
+                            <span class="fa fa-times" />
                         </button>
                     </div>
                     <div class="modal-body">
@@ -49,46 +45,46 @@
                                 escape="false" />
                         </p>
 
-                        <div class="row">
-                            <!-- GEONAMES SEARCH INPUT -->
-                            <div class="col-10">
-                                <h:inputText
-                                    id="geonamesSearch"
-                                    styleClass="form-control"
-                                    onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'geonamesSearchAction')"
-                                    value="#{Metadaten.geonamesSearchValue}" />
+                        <div class="input-group">
+                        <!-- GEONAMES SEARCH INPUT -->
+                            <h:inputText
+                                id="geonamesSearch"
+                                styleClass="form-control"
+                                onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'geonamesSearchAction')"
+                                value="#{Metadaten.geonamesSearchValue}" />
 
-                                <h:message
-                                    for="geonamesSearch"
-                                    showDetail="true"
-                                    styleClass="help-inline font-danger" />
-                            </div>
+                            <h:message
+                                for="geonamesSearch"
+                                showDetail="true"
+                                styleClass="help-inline font-danger" />
 
-                            <!-- GEONAMES SEARCH ACTION -->
-                            <div class="col-2 text-right">
-                                <button
-                                	jsf:id="geonamesSearchButton"
-                                    class="btn btn--white btn--loader"
-                                    jsf:action="#{Metadaten.search}">
-                                    <i
-                                        class="fa fa-search"
-                                        aria-hidden="true"></i>
-                                        #{msgs.search}
-                                        <span
-                                        class="btn-ajax-loader"
-                                        aria-hidden="true">
-                                        <img
-                                            src="template/img/goobi/ajaxloader2.gif"
-                                            alt="Ajax Button Loader" />
-                                    </span>
-                                    <f:passThroughAttribute
-                                        name="data-toggle"
-                                        value="tooltip" />
-                                    <f:ajax
-                                        execute="@form"
-                                        render="geonamesList" />
-                                </button>
-                            </div>
+                        <!-- GEONAMES SEARCH ACTION -->
+                            <button
+                                jsf:id="geonamesSearchButton"
+                                class="btn btn-blank"
+                                jsf:action="#{Metadaten.search}">
+                                <span
+                                    class="fa fa-search"
+                                    aria-hidden="true" />
+                                <span>
+                                    #{msgs.search}
+                                </span>
+                                <span
+                                    class="btn-ajax-loader"
+                                    aria-hidden="true"
+                                    id="ajaxLoader"
+                                    style="display: none;">
+                                    <img
+                                        src="template/img/goobi/ajaxloader2.gif"
+                                        alt="Ajax Button Loader" />
+                                </span>
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:ajax
+                                    execute="@form"
+                                    render="geonamesList" />
+                            </button>
                         </div>
 
                         <!-- GEONAMES LIST -->
@@ -185,7 +181,7 @@
                                                 <button
                                                     onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
                                                 	jsf:id="check"
-                                                    class="btn btn--icon-green greenCheckButton"
+                                                    class="btn btn-primary"
                                                     jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                     <f:setPropertyActionListener
                                                         value="#{geonames}"
@@ -193,9 +189,9 @@
                                                     <f:setPropertyActionListener
                                                         value=""
                                                         target="#{Metadaten.geonamesSearchValue}" />
-                                                    <i
+                                                    <span
                                                         class="fa fa-check"
-                                                        aria-hidden="true"></i>
+                                                        aria-hidden="true" />
                                                 </button>
                                             </div>
                                         </div>

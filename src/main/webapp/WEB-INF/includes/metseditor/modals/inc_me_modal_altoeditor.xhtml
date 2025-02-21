@@ -58,135 +58,135 @@
         <!-- process search modal #processesSearchBox -->
         <div
             id="altoEditBox"
-            class="modal fade modal__viaf"
+            class="modal fade"
             tabindex="-1"
             role="dialog"
-            aria-hidden="true">
+            aria-labelledby="altoEditorModalLabel">
             <div
-                class="modal-dialog xxl"
+                class="modal-dialog modal-lg"
                 role="document">
                 <h:panelGroup id="altoEditorModalContent" class="modal-content" layout="block">
-                    <div class="modal-header">
-                        <h3
-                            class="h5 m-0 modal-title">#{msgs.editAlto}</h3>
+                    <div class="modal-header bg-primary text-white">
+                        <h4
+                            id="altoEditorModalLabel"
+                            class="h5 m-0 modal-title">#{msgs.editAlto}</h4>
                         <button
                             type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close">
-                            <span aria-hidden="true">
-                                <h:outputText
-                                    value="&amp;times;"
-                                    escape="false" />
-                            </span>
+                            class="btn text-white"
+                            title="#{msgs.cancel}"
+                            data-bs-dismiss="modal">
+                            <span class="fa fa-times" />
                         </button>
                     </div>
                     <div class="modal-body">
                         <alto-editor></alto-editor>
-                        <div class="actions">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="image-navigation">
-                                        <button
-                                            jsf:action="#{Metadaten.imageLeftmost}"
-                                            jsf:id="imageFirstAltoEdit"
-                                            aria-label="#{msgs.firstImage}"
-                                            class="btn btn--icon btn--icon-gray"
-                                            title="#{Metadaten.pagesRTL?msgs.lastImage:msgs.firstImage}"
-                                            data-renderimage="true"
-                                            type="button"
-                                            >
-                                            <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
-                                            <i class="fa fa-angle-double-left" aria-hidden="true"></i>
-                                        </button>
-                                        <button
-                                            jsf:action="#{Metadaten.imageLeft2}"
-                                            jsf:id="prevImage2AltoEdit"
-                                            aria-label="#{msgs.previousImage}"
-                                            class="btn btn--icon btn--icon-gray"
-                                            title="#{msgs.mets_navigateTwoImagesLeft}"
-                                            data-renderimage="true"
-                                            type="button">
-                                            <i class="fa fa-angle-left" aria-hidden="true"></i>
-                                            <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
-                                        </button>
-                                        <button
-                                            jsf:action="#{Metadaten.imageLeft}"
-                                            jsf:id="prevImageAltoEdit"
-                                            type="button"
-                                            class="btn btn--icon-blue"
-                                            data-renderimage="true">
-                                            <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
-                                            <i class="fa fa-angle-left" aria-hidden="true"></i>
-                                            #{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}
-                                        </button>
-                                        <h:panelGroup id="altoEditAutocomplete">
-                                            <span id="altoEditorImageNumberInfo" onclick="altoEditorShowAutocomplete()">
-                                                #{msgs.mets_currentImage} #{Metadaten.imageIndex +1} #{msgs.von} #{Metadaten.sizeOfImageList}
-                                            </span>
-                                            <span style="display:none;" id="altoEditorAutocomplete">
-                                                <intranda:autocomplete
-                                                	name="pageAutocomplete"
-                                                	field="#{Metadaten.bildNummerGeheZuCompleteString}"
-                                                	renderimage="true"
-                                                	placeholder="bla"
-                                                	autocompletefunction="#{Metadaten.autocompleteJson}"
-                                                	afterselectaction="#{Metadaten.BildGeheZu}"
-                                                	execute=""
-                            						render="openseadragonform altoEditAutocomplete" />
-                                            </span>
-                                        </h:panelGroup>
-                                        <button
-                                            jsf:action="#{Metadaten.imageRight}"
-                                            jsf:id="nextImageAltoEdit"
-                                            type="button"
-                                            class="btn btn--icon-blue"
-                                            data-renderimage="true">
-                                            #{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}
-                                            <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
-                                            <i class="fa fa-angle-right" aria-hidden="true"></i>
-                                        </button>
-                                        <button
-                                            jsf:action="#{Metadaten.imageRight2}"
-                                            jsf:id="nextImage2AltoEdit"
-                                            aria-label="#{msgs.nextImage}"
-                                            class="btn btn--icon btn--icon-gray"
-                                            title="#{msgs.mets_navigateTwoImagesRight}"
-                                            data-renderimage="true"
-                                            type="button">
-                                            <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
-                                            <i class="fa fa-angle-right" aria-hidden="true"></i>
-                                        </button>
+                        <div class="mt-3 d-flex flex-nowrap justify-content-center gap-2">
+                            <button
+                                jsf:action="#{Metadaten.imageLeftmost}"
+                                jsf:id="imageFirstAltoEdit"
+                                aria-label="#{msgs.firstImage}"
+                                class="btn btn-blank"
+                                title="#{Metadaten.pagesRTL?msgs.lastImage:msgs.firstImage}"
+                                data-renderimage="true"
+                                type="button"
+                                >
+                                <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
+                                <span class="fa fa-angle-double-left" aria-hidden="true" />
+                            </button>
+                            <button
+                                jsf:action="#{Metadaten.imageLeft2}"
+                                jsf:id="prevImage2AltoEdit"
+                                aria-label="#{msgs.previousImage}"
+                                class="btn btn-blank"
+                                title="#{msgs.mets_navigateTwoImagesLeft}"
+                                data-renderimage="true"
+                                type="button">
+                                <span class="fa fa-angle-left" aria-hidden="true" />
+                                <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
+                            </button>
+                            <button
+                                jsf:action="#{Metadaten.imageLeft}"
+                                jsf:id="prevImageAltoEdit"
+                                type="button"
+                                class="btn btn--icon-blue"
+                                data-renderimage="true">
+                                <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
+                                <span class="fa fa-angle-left" aria-hidden="true" />
+                                #{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}
+                            </button>
+                            <h:panelGroup id="altoEditAutocomplete">
+                                <span id="altoEditorImageNumberInfo" onclick="altoEditorShowAutocomplete()">
+                                    #{msgs.mets_currentImage} #{Metadaten.imageIndex +1} #{msgs.von} #{Metadaten.sizeOfImageList}
+                                </span>
+                                <span style="display:none;" id="altoEditorAutocomplete">
+                                    <intranda:autocomplete
+                                        name="pageAutocomplete"
+                                        field="#{Metadaten.bildNummerGeheZuCompleteString}"
+                                        renderimage="true"
+                                        placeholder="bla"
+                                        autocompletefunction="#{Metadaten.autocompleteJson}"
+                                        afterselectaction="#{Metadaten.BildGeheZu}"
+                                        execute=""
+                                        render="openseadragonform altoEditAutocomplete" />
+                                </span>
+                            </h:panelGroup>
+                            <button
+                                jsf:action="#{Metadaten.imageRight}"
+                                jsf:id="nextImageAltoEdit"
+                                type="button"
+                                class="btn btn--icon-blue"
+                                data-renderimage="true">
+                                #{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}
+                                <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
+                                <span class="fa fa-angle-right" aria-hidden="true" />
+                            </button>
+                            <button
+                                jsf:action="#{Metadaten.imageRight2}"
+                                jsf:id="nextImage2AltoEdit"
+                                aria-label="#{msgs.nextImage}"
+                                class="btn btn-blank"
+                                title="#{msgs.mets_navigateTwoImagesRight}"
+                                data-renderimage="true"
+                                type="button">
+                                <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
+                                <span class="fa fa-angle-right" aria-hidden="true" />
+                            </button>
 
-                                    <!-- IMAGE LAST -->
-                                        <button
-                                            jsf:action="#{Metadaten.imageRightmost}"
-                                            jsf:id="imageLastAltoEdit"
-                                            onclick="document.querySelector('#imageLast').click()"
-                                            aria-label="#{msgs.lastImage}"
-                                            class="btn btn--icon btn--icon-gray"
-                                            title="#{Metadaten.pagesRTL?msgs.firstImage:msgs.lastImage}"
-                                            data-renderimage="true"
-                                            type="button">
-                                            <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
-                                            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="pull-right">
-                                        <h:panelGroup id="saveMessages" class="save-messages" pt:data-fadeoutmessages="true">
-                                            <h:inputText value="#{Metadaten.altoChanges}" id="altoChanges" style="display: none;"/>
-                                            <h:messages errorClass="alto-message-error" infoClass="alto-message-info" for="altoChanges" />
-                                        </h:panelGroup>
-                                        <button type="button" class="btn btn--icon-green" onclick="saveAltoResults()">
-                                            <span class="fa fa-floppy-o" />
-                                            #{msgs.save}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- IMAGE LAST -->
+                            <button
+                                jsf:action="#{Metadaten.imageRightmost}"
+                                jsf:id="imageLastAltoEdit"
+                                onclick="document.querySelector('#imageLast').click()"
+                                aria-label="#{msgs.lastImage}"
+                                class="btn btn-blank"
+                                title="#{Metadaten.pagesRTL?msgs.firstImage:msgs.lastImage}"
+                                data-renderimage="true"
+                                type="button">
+                                <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
+                                <span class="fa fa-angle-double-right" aria-hidden="true" />
+                            </button>
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <h:panelGroup
+                            id="saveMessages"
+                            class="save-messages"
+                            pt:data-fadeoutmessages="true">
+                            <h:inputText
+                                value="#{Metadaten.altoChanges}"
+                                id="altoChanges"
+                                style="display: none;"/>
+                            <h:messages
+                                errorClass="alto-message-error"
+                                infoClass="alto-message-info"
+                                for="altoChanges" />
+                        </h:panelGroup>
+                        <button type="button" class="btn btn-success" onclick="saveAltoResults()">
+                            <span class="fa fa-floppy-o" />
+                            <span>
+                                #{msgs.save}
+                            </span>
+                        </button>
                     </div>
                     <h:commandButton id="saveAltoChanges" action="#{Metadaten.saveAlto}" style="display: none;">
                         <f:ajax execute="altoChanges" render="saveMessages" onevent="altoSaveButtonCallback"/>

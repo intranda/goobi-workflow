@@ -7,7 +7,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface>
     </composite:interface>
@@ -21,167 +22,168 @@
             role="dialog"
             aria-labelledby="viafSearchBoxLabel"
             aria-hidden="true">
-            <div class="modal-dialog xxl" role="document">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
                <h:panelGroup
                     id="viafModalContent"
                     layout="block"
                     styleClass="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title" id="viafSearchBoxLabel">#{msgs.NORM_viafSearch}</h1>
-
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">
-                                <h:outputText value="&amp;times;" escape="false" />
-                            </span>
+                    <div class="modal-header bg-primary text-white">
+                        <h4 class="modal-title" id="viafSearchBoxLabel">#{msgs.NORM_viafSearch}</h4>
+                        <button
+                            type="button"
+                            class="btn text-white"
+                            title="#{msgs.cancel}"
+                            data-bs-dismiss="modal">
+                            <util:icon icon="times" />
                         </button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body flow">
                         <p>
                             <h:outputText value="#{msgs.NORM_helpViafSearch}" escape="false" />
                         </p>
                         <!-- VIAF SEARCH -->
-                        <h:panelGroup id="viaf_search">
+                        <h:panelGroup
+                            id="viaf_search"
+                            layout="block"
+                            styleClass="flow">
                             <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'viaf' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'person' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'corporate'}">
                                 <ui:repeat
                                     value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.searchParameterGroups}"
                                     var="group"
                                     varStatus="globStatus">
-                                    <div class="searchgroup__container">
+                                    <div class="border flow p-3">
                                         <button
                                         	jsf:id="removeGroup"
                                             aria-label="#{msgs.removeGroup}"
-                                            class="btn searchgroup__container-close"
+                                            class="btn btn-blank"
                                             jsf:action="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.deleteGroup(globStatus.index)}">
-                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                            <span class="fa fa-times" aria-hidden="true" />
                                             <f:ajax
                                                 execute=":normdataForm:viaf_search"
                                                 render=":normdataForm:viaf_search" />
                                         </button>
+                                        <div class="d-flex flex-column gap-2">
+                                            <ui:repeat var="filter" value="#{group.parameterList}" varStatus="status">
+                                                <div class="input-group">
+                                                    <h:selectOneMenu
+                                                        value="#{filter.searchField}"
+                                                        pt:aria-label="#{msgs.filter}"
+                                                        styleClass="form-select">
+                                                        <f:selectItems
+                                                            value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.searchFields}"
+                                                            itemLabel="#{item.label}"
+                                                            itemValue="#{item.value}"
+                                                            var="item" />
+                                                        <f:ajax
+                                                            execute="@this input_processes select_databases"
+                                                            render="input_processes select_databases" />
+                                                    </h:selectOneMenu>
+                                                    <h:selectOneMenu
+                                                        value="#{filter.operand}"
+                                                        pt:aria-label="#{msgs.operand}"
+                                                        styleClass="form-select flex-shrink-1">
+                                                        <f:selectItems value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.relations}" />
+                                                    </h:selectOneMenu>
+                                                    <ui:fragment rendered="#{filter.searchField != 'local.sources'}">
+                                                        <h:inputText
+                                                            id="input_processes"
+                                                            pt:aria-label="#{msgs.suchbegriff}"
+                                                            styleClass="form-control flex-grow-1"
+                                                            pt:dir="auto"
+                                                            value="#{filter.searchValue}" />
+                                                    </ui:fragment>
 
-                                        <ui:repeat var="filter" value="#{group.parameterList}" varStatus="status">
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    <div class="form-control form-control--select">
-                                                        <h:selectOneMenu value="#{filter.searchField}" pt:aria-label="#{msgs.filter}">
+                                                    <ui:fragment rendered="#{filter.searchField == 'local.sources'}">
+                                                        <h:selectOneMenu
+                                                            id="select_databases"
+                                                            value="#{filter.searchValue}"
+                                                            styleClass="form-select flex-grow-1">
                                                             <f:selectItems
-                                                                value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.searchFields}"
+                                                                value="#{Metadaten.currentMetadataToPerformSearch.searchSources}"
                                                                 itemLabel="#{item.label}"
                                                                 itemValue="#{item.value}"
                                                                 var="item" />
-                                                            <f:ajax
-                                                                execute="@this search_fields"
-                                                                render="search_fields" />
                                                         </h:selectOneMenu>
-                                                    </div>
-                                                </div>
-                                                <div class="col-1">
-                                                    <div class="form-control form-control--select">
-                                                        <h:selectOneMenu value="#{filter.operand}" pt:aria-label="#{msgs.operand}">
-                                                            <f:selectItems value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.relations}" />
-                                                        </h:selectOneMenu>
-                                                    </div>
-                                                </div>
-                                                <div class="col-8">
-                                                    <h:panelGroup id="search_fields">
-                                                        <ui:fragment rendered="#{filter.searchField != 'local.sources'}">
-                                                            <h:inputText
-                                                                id="input_processes"
-                                                                pt:aria-label="#{msgs.suchbegriff}"
-                                                                styleClass="form-control"
-                                                                pt:dir="auto"
-                                                                value="#{filter.searchValue}" />
-                                                        </ui:fragment>
-
-                                                        <ui:fragment rendered="#{filter.searchField == 'local.sources'}">
-                                                            <div class="form-control form-control--select">
-                                                                <h:selectOneMenu
-                                                                    id="select_databases"
-                                                                    value="#{filter.searchValue}">
-                                                                    <f:selectItems
-                                                                        value="#{Metadaten.currentMetadataToPerformSearch.searchSources}"
-                                                                        itemLabel="#{item.label}"
-                                                                        itemValue="#{item.value}"
-                                                                        var="item" />
-                                                            </h:selectOneMenu>
-                                                            </div>
-                                                        </ui:fragment>
-                                                    </h:panelGroup>
-                                                </div>
-                                                <div class="col-1 text-right">
+                                                    </ui:fragment>
                                                     <button
-                                                    	jsf:id="removeFilter"
+                                                        jsf:id="removeFilter"
                                                         aria-label="#{msgs.removeFilter}"
-                                                        class="btn btn--icon-light"
+                                                        class="btn btn-blank input-group-text"
                                                         jsf:action="#{group.deleteFilter(status.index)}">
-                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        <span class="fa fa-trash" aria-hidden="true" />
                                                         <f:ajax
                                                             execute=":normdataForm:viaf_search"
                                                             render=":normdataForm:viaf_search" />
                                                     </button>
                                                 </div>
-                                            </div>
-                                        </ui:repeat>
-
-                                        <div class="row">
-                                            <ui:fragment rendered="#{group.numFilters gt 1}">
-                                                <div class="col-8 group-conjunction">
-                                                    <strong>
-                                                        <h:outputText value="#{msgs.NORM_filterconjunction}:" />
-                                                    </strong>
-                                                    <h:selectOneRadio value="#{group.conjunctive}" styleClass="table__radio">
-                                                        <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
-                                                        <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
-                                                        <f:ajax />
-                                                    </h:selectOneRadio>
-                                                </div>
-                                            </ui:fragment>
-                                                <div class="#{group.numFilters gt 1 ? 'col-4' : 'col-12'} text-right" >
-                                                    <button jsf:id="newFilter" jsf:action="#{group.newFilter}" class="btn btn--link">
+                                            </ui:repeat>
+                                        </div>
+                                        <div>
+                                            <div class="d-flex justify-content-between">
+                                                <ui:fragment rendered="#{group.numFilters gt 1}">
+                                                    <div>
+                                                        <strong>
+                                                            <h:outputText value="#{msgs.NORM_filterconjunction}:" />
+                                                        </strong>
+                                                        <h:selectOneRadio value="#{group.conjunctive}" styleClass="table__radio">
+                                                            <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
+                                                            <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
+                                                            <f:ajax />
+                                                        </h:selectOneRadio>
+                                                    </div>
+                                                </ui:fragment>
+                                                <div class="my-auto ms-auto">
+                                                    <button
+                                                        jsf:id="newFilter"
+                                                        jsf:action="#{group.newFilter}"
+                                                        class="btn btn-blank">
                                                         #{msgs.NORM_newFilter}
                                                         <f:ajax
                                                             execute=":normdataForm:viaf_search"
                                                             render=":normdataForm:viaf_search" />
                                                     </button>
                                                 </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </ui:repeat>
 
                                 <!-- GROUP CONJUNCTION -->
                                 <div class="modal__viaf-conjunction">
-                                    <div class="row">
-                                        <ui:fragment rendered="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.numGroups gt 1}">
-                                            <div class="col-4">
-                                                <strong>#{msgs.NORM_groupconjunction}:</strong>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="d-flex gap-2 justify-content-between">
+                                            <ui:fragment rendered="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.numGroups gt 1}">
+                                                <div>
+                                                    <strong>#{msgs.NORM_groupconjunction}:</strong>
+
+                                                    <h:selectOneRadio
+                                                        styleClass="select-radio"
+                                                        value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.conjunctive}">
+                                                        <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
+                                                        <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
+                                                        <f:ajax />
+                                                    </h:selectOneRadio>
+                                                </div>
+                                            </ui:fragment>
+                                            <div>
+                                                <strong>#{msgs.NORM_authorityViafSortOrder}:</strong>
 
                                                 <h:selectOneRadio
                                                     styleClass="select-radio"
-                                                    value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.conjunctive}">
-                                                    <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
-                                                    <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
+                                                    value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.sorting}">
+                                                    <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_authorityViafSortOptionDefault}" />
+                                                    <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_authorityViafSortOptionHoldingCount}" />
                                                     <f:ajax />
                                                 </h:selectOneRadio>
+
+                                                <p>#{msgs.NORM_authorityViafSortOrderDescription}</p>
                                             </div>
-                                        </ui:fragment>
-
-                                        <div class="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.numGroups gt 1 ? 'col-4' : 'col-8'}">
-                                            <strong>#{msgs.NORM_authorityViafSortOrder}:</strong>
-
-                                            <h:selectOneRadio
-                                                styleClass="select-radio"
-                                                value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.sorting}">
-                                                <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_authorityViafSortOptionDefault}" />
-                                                <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_authorityViafSortOptionHoldingCount}" />
-                                                <f:ajax />
-                                            </h:selectOneRadio>
-
-                                            <p>#{msgs.NORM_authorityViafSortOrderDescription}</p>
                                         </div>
 
-                                        <div class="col-4 text-right">
+                                        <div class="my-auto ms-auto">
                                             <button
                                             	jsf:id="newGroup"
-                                                class="btn btn--link"
+                                                class="btn btn-blank"
                                                 jsf:action="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.newGroup}">
                                                 <f:ajax
                                                     execute=":normdataForm:viaf_search"
@@ -192,16 +194,14 @@
                                     </div>
                                 </div>
 
-                                <div class="text-right">
+                                <div class="d-flex justify-content-end">
                                     <button
                                     	jsf:id="viafSearch"
-                                        class="btn btn--white btn--loader"
+                                        class="btn btn-primary"
                                         jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}">
-                                        <i class="fa fa-search" aria-hidden="true"></i>
-                                        #{msgs.search}
-                                        <span class="btn-ajax-loader" aria-hidden="true">
-                                            <img src="template/img/goobi/ajaxloader2.gif" alt="Ajax Button Loader" />
-                                        </span>
+                                        <util:icon-text
+                                            icon="search"
+                                            text="#{msgs.search}" />
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                         <f:ajax execute="@form" render="viafResultList" />
                                     </button>
@@ -211,7 +211,7 @@
                     </div>
 
                     <!-- VIAF SEARCH LIST -->
-                    <h:panelGroup id="viafResultList">
+                    <h:panelGroup id="viafResultList" layout="block" styleClass="p-3">
                         <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'viaf' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'person' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'corporate'}">
                             <ui:fragment rendered="#{Metadaten.currentMetadataToPerformSearch.viafSearch.records.size() gt 0}">
                                 <div class="modal__viaf-list scrollable">

@@ -14,94 +14,91 @@
     <composite:implementation>
         <!-- GND MODAL -->
         <div
-            class="modal fade modal__gnd"
+            class="modal fade"
             id="gndSearchBox"
             tabindex="-1"
             role="dialog"
             aria-labelledby="gndSearchBoxLabel"
             aria-hidden="true">
             <div
-                class="modal-dialog"
+                class="modal-dialog modal-lg modal-dialog-scrollable"
                 role="document">
                  <h:panelGroup
                     id="gndModalContent"
                     layout="block"
                     styleClass="modal-content">
-                    <div class="modal-header">
-                        <h1
+                    <div class="modal-header bg-primary text-white">
+                        <h4
                             class="modal-title"
-                            id="gndSearchBoxLabel">#{msgs.NORM_gndSearch}</h1>
-
+                            id="gndSearchBoxLabel">#{msgs.NORM_gndSearch}</h4>
                         <button
                             type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close">
-                            <span aria-hidden="true">
-                                <h:outputText
-                                    value="&amp;times;"
-                                    escape="false" />
-                            </span>
+                            class="btn text-white"
+                            title="#{msgs.cancel}"
+                            data-bs-dismiss="modal">
+                            <span class="fa fa-times" />
                         </button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body flow">
                         <p>
                             <h:outputText
                                 value="#{msgs.NORM_helpGndSearch}"
                                 escape="false" />
                         </p>
 
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="form-control form-control--select" >
-                                    <h:selectOneMenu value="#{Metadaten.searchOption}" pt:aria-label="#{msgs.filter}">
-                                        <f:selectItem
-                                            itemLabel="#{msgs.NORM_identifier}"
-                                            itemValue="" />
-                                        <f:selectItem
-                                            itemLabel="#{msgs.NORM_person}"
-                                            itemValue="Tp*" />
-                                        <f:selectItem
-                                            itemLabel="#{msgs.NORM_organisation}"
-                                            itemValue="Tb*" />
-                                        <f:selectItem
-                                            itemLabel="#{msgs.NORM_keyword}"
-                                            itemValue="Ts*" />
-                                        <f:selectItem
-                                            itemLabel="#{msgs.NORM_geografika}"
-                                            itemValue="Tg*" />
-                                    </h:selectOneMenu>
-                                </div>
-                            </div>
-
-                            <div class="col-7">
-                                <h:inputText
-                                    id="gndSearchInput"
-                                    pt:aria-label="#{msgs.suchbegriff}"
-                                    styleClass="form-control"
-                                    onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'gndSearchAction')"
-                                    value="#{Metadaten.gndSearchValue}" />
-                            </div>
-                            <div class="col-2 text-right">
-                                    <button
-                                        jsf:id="gndSearchAction"
-                                        class="btn btn--white btn--loader"
-                                        jsf:action="#{Metadaten.search}">
-                                        <i class="fa fa-search" aria-hidden="true"></i>
-                                        #{msgs.search}
-                                        <span class="btn-ajax-loader" aria-hidden="true">
-                                            <img src="template/img/goobi/ajaxloader2.gif" alt="Ajax Button Loader" />
-                                        </span>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                       <f:ajax
-                                        execute="@form"
-                                        render="gndSearchlist" />
-                                    </button>
-                            </div>
+                        <div class="input-group">
+                            <h:selectOneMenu
+                                styleClass="form-select"
+                                value="#{Metadaten.searchOption}"
+                                pt:aria-label="#{msgs.filter}">
+                                <f:selectItem
+                                    itemLabel="#{msgs.NORM_identifier}"
+                                    itemValue="" />
+                                <f:selectItem
+                                    itemLabel="#{msgs.NORM_person}"
+                                    itemValue="Tp*" />
+                                <f:selectItem
+                                    itemLabel="#{msgs.NORM_organisation}"
+                                    itemValue="Tb*" />
+                                <f:selectItem
+                                    itemLabel="#{msgs.NORM_keyword}"
+                                    itemValue="Ts*" />
+                                <f:selectItem
+                                    itemLabel="#{msgs.NORM_geografika}"
+                                    itemValue="Tg*" />
+                            </h:selectOneMenu>
+                            <h:inputText
+                                id="gndSearchInput"
+                                pt:aria-label="#{msgs.suchbegriff}"
+                                styleClass="form-control"
+                                onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'gndSearchAction')"
+                                value="#{Metadaten.gndSearchValue}" />
+                            <button
+                                jsf:id="gndSearchAction"
+                                class="btn btn-blank"
+                                jsf:action="#{Metadaten.search}">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                                <span>
+                                    #{msgs.search}
+                                </span>
+                                <span
+                                    class="btn-ajax-loader"
+                                    aria-hidden="true"
+                                    id="ajaxLoader"
+                                    style="display: none;">
+                                    <img
+                                        src="template/img/goobi/ajaxloader2.gif"
+                                        alt="Ajax Button Loader" />
+                                </span>
+                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:ajax
+                                execute="@form"
+                                render="gndSearchlist" />
+                            </button>
                         </div>
 
 
-                        <h:panelGroup id="gndSearchlist">
+                        <h:panelGroup layout="block" id="gndSearchlist">
                             <div class="modal__gnd-list scrollable">
                                 <ui:repeat
                                     value="#{Metadaten.currentMetadataToPerformSearch.dataList}"
@@ -148,7 +145,7 @@
                                                 onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
                                             	jsf:id="check"
                                                 aria-label="#{msgs.selectFile}"
-                                                class="btn btn--icon-green greenCheckButton"
+                                                class="btn btn-primary"
                                                 jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                 <f:setPropertyActionListener
                                                     value="#{normdataList}"

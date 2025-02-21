@@ -21,27 +21,24 @@
             aria-labelledby="easydbSearchBoxLabel"
             aria-hidden="true">
             <div
-                class="modal-dialog"
+                class="modal-dialog modal-lg modal-dialog-scrollable"
                 role="document">
 
                 <h:panelGroup
                     id="easydbModalContent"
                     layout="block"
                     styleClass="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header bg-primary text-white">
                         <h5
                             class="modal-title"
                             id="easydbSearchBoxLabel">#{msgs.NORM_easydbSearch}</h5>
-
-                        <button
-                            type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close">
-                            <h:outputText
-                                value="&amp;times;"
-                                escape="false" />
-                        </button>
+                            <button
+                                type="button"
+                                class="btn text-white"
+                                title="#{msgs.cancel}"
+                                data-bs-dismiss="modal">
+                                <span class="fa fa-times" />
+                            </button>
                     </div>
                     <div class="modal-body">
                         <p>
@@ -69,15 +66,17 @@
 
                             <!-- easydb SEARCH ACTION -->
                             <div class="col-2 text-right">
-                                <div class="text-right">
+                                <div class="d-flex justify-content-end">
                                     <button
                                         jsf:id="easyDbSearch"
-                                        class="btn btn--white btn--loader"
+                                        class="btn btn-primary"
                                         jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}">
-                                        <i
+                                        <span
                                             class="fa fa-search"
-                                            aria-hidden="true"></i>
-                                        #{msgs.search}
+                                            aria-hidden="true" />
+                                        <span>
+                                            #{msgs.search}
+                                        </span>
                                         <span
                                             class="btn-ajax-loader"
                                             aria-hidden="true">

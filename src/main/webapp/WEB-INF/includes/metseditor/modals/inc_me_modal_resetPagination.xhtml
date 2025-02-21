@@ -22,15 +22,22 @@
 	           role="dialog"
 	           aria-labelledby="resetPagModalLabel">
 	           <div
-	               class="modal-dialog"
+	               class="modal-dialog modal-lg modal-dialog-scrollable"
 	               role="document">
 	               <div class="modal-content">
-	                   <div class="modal-header">
+	                   <div class="modal-header bg-primary text-white">
 	                       <h4
 	                           class="modal-title"
 	                           id="resetPagModalLabel">
 	                           <h:outputText value="#{msgs.mets_resetPagination}" />
 	                       </h4>
+						   <button
+							   type="button"
+							   class="btn text-white"
+							   title="#{msgs.cancel}"
+							   data-bs-dismiss="modal">
+							   <span class="fa fa-times" />
+						   </button>
 	                   </div>
 	                   <div class="modal-body">
 	                       <p>
@@ -47,7 +54,7 @@
 	                           class="btn btn--red"
 	                           jsf:id="confirmReset"
 	                           jsf:action="#{Metadaten.reloadPagination}">
-	                           <i class="fa fa-refresh" style="margin-right: 5px"></i>
+	                           <span class="fa fa-refresh" aria-hidden="true" />
 	                           <h:outputText value="#{msgs.mets_resetPagination}" />
 	                       </button>
 	                   </div>

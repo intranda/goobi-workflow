@@ -19,23 +19,21 @@
             tabindex="-1"
             role="dialog">
             <div
-                class="modal-dialog"
+                class="modal-dialog modal-lg modal-dialog-scrollable"
                 role="document">
                 <h:panelGroup
                     styleClass="modal-content"
                     id="danteModalContent">
-                    <div class="modal-header">
+                    <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title">
                             <h:outputText value="#{msgs.NORM_danteSearch}" />
                         </h5>
                         <button
                             type="button"
-                            class="close"
-                            data-dismiss="modal"
-                            aria-label="Close">
-                            <h:outputText
-                                value="&amp;times;"
-                                escape="false" />
+                            class="btn text-white"
+                            title="#{msgs.cancel}"
+                            data-bs-dismiss="modal">
+                            <span class="fa fa-times" />
                         </button>
                     </div>
 
@@ -54,10 +52,10 @@
                                     value="#{Metadaten.danteSearchValue}" />
                             </div>
                             <div class="col-2 text-right">
-                                <div class="text-right">
+                                <div class="d-flex justify-content-end">
                                     <button
                                     	jsf:id="danteSearch"
-                                        class="btn btn--white btn--loader"
+                                        class="btn btn-primary"
                                         jsf:action="#{Metadaten.search}">
                                         <i
                                             class="fa fa-search"
@@ -165,7 +163,7 @@
                                             <button
                                                 onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
                                             	jsf:id="danteButton1"
-                                                class="btn btn--icon-green greenCheckButton"
+                                                class="btn btn-primary"
                                                 jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                 <f:setPropertyActionListener
                                                     value="#{normdataRecord}"
