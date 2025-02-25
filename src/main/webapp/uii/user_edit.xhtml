@@ -324,7 +324,6 @@
                                                         <h:dataTable
                                                             id="newgroups"
                                                             styleClass="table table-hover dataTable table-bordered"
-                                                            columnClasses="align-middle"
                                                             var="item"
                                                             value="#{BenutzerverwaltungForm.usergroupPaginator.list}">
 
@@ -415,7 +414,6 @@
                           dataTable
                           table-bordered
                           #{BenutzerverwaltungForm.unsubscribedGroupsExist ? '' : '-no-bb'}"
-                                                            columnClasses="align-middle"
                                                             var="item"
                                                             value="#{BenutzerverwaltungForm.myClass.benutzergruppen}">
 
@@ -605,7 +603,6 @@
                         table-bordered
                         #{BenutzerverwaltungForm.unsubscribedProjectsExist ? '' : '-no-bb'}"
                                                             var="item"
-                                                            columnClasses="align-middle"
                                                             value="#{BenutzerverwaltungForm.myClass.projekte}">
 
                                                             <h:column>
