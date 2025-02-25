@@ -21,72 +21,71 @@
 <!--                 aria-hidden="true" /> -->
 <!--         </a> -->
 <!--  style="display:none" -->
-        <div
+        <ul
             id="meImageControls"
-            class="image__controls">
-            <ul class="p-0 position-absolute bottom-0 d-flex flex-nowrap gap-1 justify-content-center" role="list">
-                <!-- ROTATE LEFT -->
-                <li>
-                    <button
-                        id="rotate-left-x"
-                        aria-label="#{msgs.mets_rotateImageLeft}"
-                        type="button"
-                        class="btn btn-blank"
-                        title="#{msgs.mets_rotateImageLeft}"
-                        data-toggle="tooltip"
-                        data-placement="top">
-                        <span
-                            class="fa fa-undo fa-lg"
-                            aria-hidden="true" />
-                    </button>
-                </li>
-                <!-- ROTATE RIGHT -->
-                <li>
-                    <button
-                        type="button"
-                        class="btn btn-blank"
-                        id="rotate-right-x"
-                        aria-label="#{msgs.mets_rotateImageRight}"
-                        title="#{msgs.mets_rotateImageRight}"
-                        data-toggle="tooltip"
-                        data-placement="top">
-                        <span
-                            class="fa fa-repeat fa-lg"
-                            aria-hidden="true" />
-                    </button>
-                </li>
+            class="image__controls border rounded p-1 position-absolute bottom-0 d-flex flex-nowrap gap-1 align-items-center"
+            role="list">
+            <!-- ROTATE LEFT -->
+            <li>
+                <button
+                    id="rotate-left-x"
+                    aria-label="#{msgs.mets_rotateImageLeft}"
+                    type="button"
+                    class="btn btn-blank"
+                    title="#{msgs.mets_rotateImageLeft}"
+                    data-toggle="tooltip"
+                    data-placement="top">
+                    <span
+                        class="fa fa-undo fa-lg"
+                        aria-hidden="true" />
+                </button>
+            </li>
+            <!-- ROTATE RIGHT -->
+            <li>
+                <button
+                    type="button"
+                    class="btn btn-blank"
+                    id="rotate-right-x"
+                    aria-label="#{msgs.mets_rotateImageRight}"
+                    title="#{msgs.mets_rotateImageRight}"
+                    data-toggle="tooltip"
+                    data-placement="top">
+                    <span
+                        class="fa fa-repeat fa-lg"
+                        aria-hidden="true" />
+                </button>
+            </li>
 
-                <!-- RESET -->
-                <li>
-                    <button
-                        id="reset-position"
-                        type="button"
-                        class="btn btn-blank"
-                        aria-label="#{msgs.mets_resetImageRotation}"
-                        title="#{msgs.mets_resetImageRotation}"
-                        data-toggle="tooltip"
-                        data-placement="top">
-                        <span
-                            class="fa fa-times-circle-o fa-lg"
-                            aria-hidden="true" />
-                    </button>
-                </li>
-                <li class="image__controls-zoom">
-                    <div
-                        id="zoomSliderLabel"
-                        class="image__controls-zoom-label">
-                        <div class=" input-group">
-                            <input
-                                aria-label="#{msgs.sizeOfImages}"
-                                type="text"
-                                class="form-control" />
-                            <div class="input-group-text">
-                                <span>%</span>
-                            </div>
+            <!-- RESET -->
+            <li>
+                <button
+                    id="reset-position"
+                    type="button"
+                    class="btn btn-blank"
+                    aria-label="#{msgs.mets_resetImageRotation}"
+                    title="#{msgs.mets_resetImageRotation}"
+                    data-toggle="tooltip"
+                    data-placement="top">
+                    <span
+                        class="fa fa-times-circle-o fa-lg"
+                        aria-hidden="true" />
+                </button>
+            </li>
+            <li class="image__controls-zoom">
+                <div
+                    id="zoomSliderLabel"
+                    class="image__controls-zoom-label">
+                    <div class=" input-group">
+                        <input
+                            aria-label="#{msgs.sizeOfImages}"
+                            type="text"
+                            class="form-control" />
+                        <div class="input-group-text">
+                            <span>%</span>
                         </div>
                     </div>
-                </li>
-            </ul>
-        </div>
+                </div>
+            </li>
+        </ul>
     </composite:implementation>
 </ui:composition>
