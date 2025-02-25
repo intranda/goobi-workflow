@@ -245,7 +245,7 @@
     color: var(--bs-body-color);
   }
   .btn--title-action {
-    border-color: black;
+    border-color: var(--clr-neutral-300);
     color: black;
 
     &:hover {
