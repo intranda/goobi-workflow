@@ -30,6 +30,7 @@
             </div>
             <!-- INPUT -->
             <div class="form-input">
+                <div class="d-flex w-100 my-auto">
                     <h:inputText
                             id="firstname"
                             pt:aria-label="#{msgs.vorname}"
@@ -41,156 +42,157 @@
                             execute="@form"
                             event="valueChange"/>
                     </h:inputText>
-                <!-- ACTIONS -->
-                <!-- DELETE -->
-                <button
-                    jsf:id="delete"
-                    class="btn personButton"
-                    aria-label="#{msgs.personendatenLoeschen}"
-                    tabindex="0"
-                    jsf:action="#{Metadaten.LoeschenPerson}"
-                    title="#{msgs.personendatenLoeschen}"
-                    jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
-                    type="button">
-                    <span
-                        class="fa fa-lg fa-trash-o"
-                        aria-hidden="true" />
-                    <f:setPropertyActionListener
-                        target="#{Metadaten.curPerson}"
-                        value="#{cc.attrs.person}"/>
-                    <f:param
-                        name="ID"
-                        value="#{cc.attrs.person.identifier}"/>
-                    <f:passThroughAttribute
-                        name="data-bs-toggle"
-                        value="tooltip"/>
-                    <f:passThroughAttribute
-                        name="data-bs-placement"
-                        value="top"/>
-                    <f:ajax
-                        execute="@form"
-                        render="@form"/>
-                </button>
-                <!-- COPY -->
-                <button
-                    jsf:id="copy"
-                    tabindex="0"
-                    class="btn personButton"
-                    jsf:action="#{Metadaten.KopierenPerson}"
-                    title="#{msgs.personendatenKopieren}"
-                    aria-label="#{msgs.personendatenKopieren}"
-                    jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
-                    type="button">
-                    <span
-                        class="fa fa-lg fa-copy"
-                        aria-hidden="true" />
-                    <f:setPropertyActionListener
-                        target="#{Metadaten.currentPerson}"
-                        value="#{cc.attrs.person.p}"/>
-                    <f:param
-                        name="ID"
-                        value="#{cc.attrs.person.identifier}"/>
-                    <f:passThroughAttribute
-                        name="data-bs-toggle"
-                        value="tooltip"/>
-                    <f:passThroughAttribute
-                        name="data-bs-placement"
-                        value="top"/>
-                    <f:ajax
-                        execute="@form"
-                        render="@form"/>
-                </button>
-                <!-- NORMDATA -->
-                <ui:fragment rendered="#{cc.attrs.person.normdata}">
-                    <!-- GND -->
+                    <!-- ACTIONS -->
+                    <!-- DELETE -->
                     <button
-                        jsf:id="gndPerson"
-                        type="button"
+                        jsf:id="delete"
                         class="btn personButton"
-                        title="#{msgs.NORM_gndSearch}"
-                        aria-label="#{msgs.NORM_gndSearch}"
-                        jsf:onclick="$('#gndSearchBox').modal('show');">
-                        <img
-                            class="color-icon"
-                            style="width: 16px;"
-                            alt="GND"
-                            src="templatePG/img/Icons_GND_color.png"/>
+                        aria-label="#{msgs.personendatenLoeschen}"
+                        tabindex="0"
+                        jsf:action="#{Metadaten.LoeschenPerson}"
+                        title="#{msgs.personendatenLoeschen}"
+                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
+                        type="button">
+                        <span
+                            class="fa fa-lg fa-trash-o"
+                            aria-hidden="true" />
                         <f:setPropertyActionListener
-                            value="#{cc.attrs.person}"
-                            target="#{Metadaten.currentMetadataToPerformSearch}" />
-                        <f:ajax
-                            execute="@this"
-                            render=":gndModalContent"/>
-                        <f:setPropertyActionListener
-                            value="false"
-                            target="#{cc.attrs.person.searchInKulturnav}" />
-                        <f:setPropertyActionListener
-                            value="false"
-                            target="#{cc.attrs.person.searchInViaf}" />
+                            target="#{Metadaten.curPerson}"
+                            value="#{cc.attrs.person}"/>
+                        <f:param
+                            name="ID"
+                            value="#{cc.attrs.person.identifier}"/>
                         <f:passThroughAttribute
                             name="data-bs-toggle"
                             value="tooltip"/>
+                        <f:passThroughAttribute
+                            name="data-bs-placement"
+                            value="top"/>
+                        <f:ajax
+                            execute="@form"
+                            render="@form"/>
                     </button>
+                    <!-- COPY -->
+                    <button
+                        jsf:id="copy"
+                        tabindex="0"
+                        class="btn personButton"
+                        jsf:action="#{Metadaten.KopierenPerson}"
+                        title="#{msgs.personendatenKopieren}"
+                        aria-label="#{msgs.personendatenKopieren}"
+                        jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
+                        type="button">
+                        <span
+                            class="fa fa-lg fa-copy"
+                            aria-hidden="true" />
+                        <f:setPropertyActionListener
+                            target="#{Metadaten.currentPerson}"
+                            value="#{cc.attrs.person.p}"/>
+                        <f:param
+                            name="ID"
+                            value="#{cc.attrs.person.identifier}"/>
+                        <f:passThroughAttribute
+                            name="data-bs-toggle"
+                            value="tooltip"/>
+                        <f:passThroughAttribute
+                            name="data-bs-placement"
+                            value="top"/>
+                        <f:ajax
+                            execute="@form"
+                            render="@form"/>
+                    </button>
+                    <!-- NORMDATA -->
+                    <ui:fragment rendered="#{cc.attrs.person.normdata}">
+                        <!-- GND -->
+                        <button
+                            jsf:id="gndPerson"
+                            type="button"
+                            class="btn personButton"
+                            title="#{msgs.NORM_gndSearch}"
+                            aria-label="#{msgs.NORM_gndSearch}"
+                            jsf:onclick="$('#gndSearchBox').modal('show');">
+                            <img
+                                class="color-icon"
+                                style="width: 16px;"
+                                alt="GND"
+                                src="templatePG/img/Icons_GND_color.png"/>
+                            <f:setPropertyActionListener
+                                value="#{cc.attrs.person}"
+                                target="#{Metadaten.currentMetadataToPerformSearch}" />
+                            <f:ajax
+                                execute="@this"
+                                render=":gndModalContent"/>
+                            <f:setPropertyActionListener
+                                value="false"
+                                target="#{cc.attrs.person.searchInKulturnav}" />
+                            <f:setPropertyActionListener
+                                value="false"
+                                target="#{cc.attrs.person.searchInViaf}" />
+                            <f:passThroughAttribute
+                                name="data-bs-toggle"
+                                value="tooltip"/>
+                        </button>
 
-                    <!--Viaf-->
-                    <button
-                        jsf:id="viaf"
-                        type="button"
-                        class="btn viafIndexTrigger personButton"
-                        title="#{msgs.NORM_viafSearch}"
-                        aria-label="#{msgs.NORM_viafSearch}"
-                        jsf:onclick="$('#viafSearchBox').modal('show');">
-                        <img
-                            class="color-icon"
-                            style="width: 16px;"
-                            alt="VIAF"
-                            src="templatePG/img/Icons_Viaf_color.png"/>
-                        <f:setPropertyActionListener
-                            value="#{cc.attrs.person}"
-                            target="#{Metadaten.currentMetadataToPerformSearch}"/>
-                        <f:ajax
-                            execute="@this"
-                            render=":viafModalContent"/>
-                        <f:setPropertyActionListener
-                            value="true"
-                            target="#{cc.attrs.person.searchInViaf}"/>
-                        <f:setPropertyActionListener
-                            value="false"
-                            target="#{cc.attrs.person.searchInKulturnav}"/>
-                        <f:passThroughAttribute
-                            name="data-bs-toggle"
-                            value="tooltip"/>
-                    </button>
-                    <!-- KULTURNAV -->
-                    <button
-                        jsf:id="kulturnav"
-                        type="button"
-                        class="btn personButton"
-                        title="#{msgs.NORM_kulturnavSearch}"
-                        pt:aria-label="#{msgs.NORM_kulturnavSearch}"
-                        jsf:onclick="$('#kulturnavSearchBox').modal('show');">
-                        <img
-                            class="color-icon"
-                            style="width: 16px;"
-                            alt="KN"
-                            src="templatePG/img/import.svg"/>
-                        <f:setPropertyActionListener
-                            value="#{cc.attrs.person}"
-                            target="#{Metadaten.currentMetadataToPerformSearch}" />
-                        <f:ajax
-                            execute="@this"
-                            render=":kulturnavModalContent"/>
-                        <f:setPropertyActionListener
-                            value="true"
-                            target="#{cc.attrs.person.searchInKulturnav}" />
-                        <f:setPropertyActionListener
-                            value="false"
-                            target="#{cc.attrs.person.searchInViaf}" />
-                        <f:passThroughAttribute
-                            name="data-bs-toggle"
-                            value="tooltip" />
-                    </button>
-                </ui:fragment>
+                        <!--Viaf-->
+                        <button
+                            jsf:id="viaf"
+                            type="button"
+                            class="btn viafIndexTrigger personButton"
+                            title="#{msgs.NORM_viafSearch}"
+                            aria-label="#{msgs.NORM_viafSearch}"
+                            jsf:onclick="$('#viafSearchBox').modal('show');">
+                            <img
+                                class="color-icon"
+                                style="width: 16px;"
+                                alt="VIAF"
+                                src="templatePG/img/Icons_Viaf_color.png"/>
+                            <f:setPropertyActionListener
+                                value="#{cc.attrs.person}"
+                                target="#{Metadaten.currentMetadataToPerformSearch}"/>
+                            <f:ajax
+                                execute="@this"
+                                render=":viafModalContent"/>
+                            <f:setPropertyActionListener
+                                value="true"
+                                target="#{cc.attrs.person.searchInViaf}"/>
+                            <f:setPropertyActionListener
+                                value="false"
+                                target="#{cc.attrs.person.searchInKulturnav}"/>
+                            <f:passThroughAttribute
+                                name="data-bs-toggle"
+                                value="tooltip"/>
+                        </button>
+                        <!-- KULTURNAV -->
+                        <button
+                            jsf:id="kulturnav"
+                            type="button"
+                            class="btn personButton"
+                            title="#{msgs.NORM_kulturnavSearch}"
+                            pt:aria-label="#{msgs.NORM_kulturnavSearch}"
+                            jsf:onclick="$('#kulturnavSearchBox').modal('show');">
+                            <img
+                                class="color-icon"
+                                style="width: 16px;"
+                                alt="KN"
+                                src="templatePG/img/import.svg"/>
+                            <f:setPropertyActionListener
+                                value="#{cc.attrs.person}"
+                                target="#{Metadaten.currentMetadataToPerformSearch}" />
+                            <f:ajax
+                                execute="@this"
+                                render=":kulturnavModalContent"/>
+                            <f:setPropertyActionListener
+                                value="true"
+                                target="#{cc.attrs.person.searchInKulturnav}" />
+                            <f:setPropertyActionListener
+                                value="false"
+                                target="#{cc.attrs.person.searchInViaf}" />
+                            <f:passThroughAttribute
+                                name="data-bs-toggle"
+                                value="tooltip" />
+                        </button>
+                    </ui:fragment>
+                </div>
             </div>
         </div>
 
