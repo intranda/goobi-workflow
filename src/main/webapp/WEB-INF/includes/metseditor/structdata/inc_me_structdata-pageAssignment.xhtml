@@ -55,7 +55,7 @@
                                                     <label for="pagestart2">#{msgs.ersteSeite}:</label>
                                                 </div>
                                                 <div class="form-input">
-                                                    <p:autoComplete scrollHeight="300" id="pagestart2" pt:aria-label="#{msgs.firstPage}" styleClass="flex-grow-1" inputStyleClass="form-control focusableChildCss" forceId="true" value="#{Metadaten.pagesStartCurrentElement}" completeMethod="#{Metadaten.autocomplete}"/>
+                                                    <p:autoComplete scrollHeight="300" id="pagestart2" pt:aria-label="#{msgs.firstPage}" styleClass="flex-grow-1" inputStyleClass="form-control focusableChildCss rounded" forceId="true" value="#{Metadaten.pagesStartCurrentElement}" completeMethod="#{Metadaten.autocomplete}"/>
                                                     <button jsf:id="takePreviousImage3" aria-label="#{msgs.previousImage}" class="btn btn-outline" jsf:action="#{Metadaten.startpage}" title="#{msgs.mets_takePreviousImage}" type="button">
                                                         <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
@@ -83,7 +83,11 @@
                                                     <label for="pageend2">#{msgs.letzteSeite}:</label>
                                                 </div>
                                                 <div class="form-input">
-                                                    <p:autoComplete scrollHeight="300" id="pageend2" pt:aria-label="#{msgs.lastPage}" styleClass="flex-grow-1" inputStyleClass="form-control focusableChildCss" forceId="true" value="#{Metadaten.pagesEndCurrentElement}" completeMethod="#{Metadaten.autocomplete}"/>
+                                                    <p:autoComplete
+                                                        scrollHeight="300"
+                                                        id="pageend2"
+                                                        pt:aria-label="#{msgs.lastPage}"
+                                                        styleClass="flex-grow-1" inputStyleClass="form-control focusableChildCss rounded" forceId="true" value="#{Metadaten.pagesEndCurrentElement}" completeMethod="#{Metadaten.autocomplete}"/>
                                                     <button jsf:id="takePreviousImage4" aria-label="#{msgs.previousImage}" class="btn btn-outline" jsf:action="#{Metadaten.endpage}" title="#{msgs.mets_takePreviousImage}" type="button">
                                                         <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
