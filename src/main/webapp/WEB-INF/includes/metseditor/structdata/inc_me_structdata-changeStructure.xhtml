@@ -84,31 +84,28 @@
                                             <f:ajax render="expandbutton1"/>
                                         </button>
 
-                                        <div id="possibleActions1" class="form-group form-group--flex form-group--inside">
-                                            <div class="row">
-                                                <!-- SELECT -->
-                                                <div class="col-9">
-                                                    <div class="form-control form-control--select">
-                                                        <h:selectOneMenu pt:aria-label="#{msgs.auswahl2}" value="#{Metadaten.tempWert}">
-                                                            <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item"/>
-                                                        </h:selectOneMenu>
-                                                    </div>
-                                                </div>
-                                                <!-- ACTION -->
-                                                <div class="col-3">
-                                                    <button jsf:id="ChangeCurrentDocstructType" aria-label="#{msgs.uebernehmen}" class="btn btn-outline" jsf:action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-                                                        <span class="fa fa-check-circle-o fa-lg" aria-hidden="true"/>
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                    </button>
-                                                </div>
-                                            </div>
+                                        <div id="possibleActions1" class="d-flex gap-2 px-2">
+                                            <!-- SELECT -->
+                                            <h:selectOneMenu
+                                                pt:aria-label="#{msgs.auswahl2}"
+                                                value="#{Metadaten.tempWert}"
+                                                styleClass="form-select">
+                                                <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item"/>
+                                            </h:selectOneMenu>
+                                            <!-- ACTION -->
+                                            <button jsf:id="ChangeCurrentDocstructType" aria-label="#{msgs.uebernehmen}" class="btn btn-outline" jsf:action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                <span class="fa fa-check-circle-o fa-lg" aria-hidden="true"/>
+                                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                            </button>
                                         </div>
                                     </li>
                                     <!-- DELETE ELEMENT -->
                                     <li>
                                         <button jsf:id="deleteNode" class="btn btn-outline" jsf:action="#{Metadaten.KnotenDelete}" title="#{msgs.strukturelementLoeschen}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" role="button">
                                             <span class="fa fa-trash fa-lg"/>
-                                            <h:outputText value="#{msgs.strukturelementLoeschen}"/>
+                                            <span>
+                                                <h:outputText value="#{msgs.strukturelementLoeschen}"/>
+                                            </span>
                                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                             <f:ajax execute="@form" render="@form :treeform :openseadragonform:pageareas"/>
                                         </button>
@@ -117,7 +114,9 @@
                                     <li>
                                         <button jsf:id="duplicateNode" class="btn btn-outline" jsf:action="#{Metadaten.duplicateNode}" title="#{msgs.duplicateStructureElement}" type="button">
                                             <span class="fa fa-files-o fa-lg"/>
-                                            <h:outputText value="#{msgs.duplicateStructureElement}"/>
+                                            <span>
+                                                <h:outputText value="#{msgs.duplicateStructureElement}"/>
+                                            </span>
                                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                             <f:ajax execute="@form" render="@form :treeform"/>
                                         </button>

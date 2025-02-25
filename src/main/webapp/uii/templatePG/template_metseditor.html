@@ -21,6 +21,11 @@
         <link rel="stylesheet" href="template/css/plugins/colorbox/colorbox.css?v=#{HelperForm.buildVersion}" />
 		<!-- Javascript -->
 		<ui:include src="/WEB-INF/includes/template/inc_JS.xhtml" />
+        <style>
+            #pageContentRight {
+                left: 0 !important;
+            }
+        </style>
     </h:head>
 
     <ui:insert name="metadata" />
@@ -39,7 +44,9 @@
 
                 <!-- PAGE WRAPPER -->
 
-                <div id="pageWrapper" class="page-wrapper">
+                <div
+                    id="pageWrapper"
+                    class="page-wrapper">
                     <!-- MENU -->
                     <layout:header>
 
@@ -63,10 +70,16 @@
                     </layout:header>
 
                     <!-- CONTENT WRAPPER -->
-                    <div id="pageContentWrapper" class="d-flex flex-nowrap gap-1" tabindex="-1">
+                    <div
+                        id="pageContentWrapper"
+                        class="d-flex flex-nowrap gap-1"
+                        tabindex="-1"
+                        style="max-height: calc(100vh - 3rem); height: 100%;">
                         <!-- CONTENT LEFT -->
-                        <div id="pageContentLeft" class="flex-fill bg-light p-2 border-end border-primary">
-                            <div class="page-content__left-inner">
+                        <div
+                            id="pageContentLeft"
+                            class="resize-handle-end">
+                            <div class="page-content__left-inner flex-fill bg-light p-2 border-end border-primary overflow-y-scroll overflow-x-hidden">
                                 <!-- METSEDITOR STRUCTURE -->
                                 <ui:insert name="metseditorStructure" />
                             </div>
@@ -75,9 +88,9 @@
                         <!-- CONTENT CENTER -->
                         <h:panelGroup
                             id="pageContentCenter"
-                            styleClass="flex-fill p-2 border-end overflow-y-scroll vh-100"
+                            styleClass=""
                             layout="block">
-                            <div class="page-content__center-inner">
+                            <div class="page-content__center-inner flex-fill p-2 border-end overflow-y-scroll overflow-x-hidden">
                                 <!-- METSEDITOR CONTENT -->
                                 <ui:insert name="metseditorContent" />
                             </div>
@@ -87,8 +100,8 @@
                         <ui:fragment rendered="#{Metadaten.bildAnzeigen}">
                             <div
                                 id="pageContentRight"
-                                class="flex-fill p-2 d-none d-md-block">
-                                <div class="page-content__right-inner">
+                                class="d-none d-md-block resize-handle-start">
+                                <div class="page-content__right-inner flex-fill p-2 ">
                                     <!-- METSEDITOR IMAGE -->
                                     <ui:insert name="metseditorImage" />
                                 </div>

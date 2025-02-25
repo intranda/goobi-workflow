@@ -17,7 +17,7 @@
                 <div id="pagLeft" class="col-12 col-lg-5 pagination__left">
                     <section:section id="meSelectPagesBox" type="outline">
                         <section:header icon="bars" title="#{msgs.auswahlDerSeiten}">
-                            <section:header-actions>
+                            <section:header-actions form="#{false}">
                                 <button type="button" class="btn btn-outline ms-auto" aria-label="#{msgs.mets_treeCompress}" data-bs-toggle="collapse" data-bs-target="#paginationList" aria-expanded="true" aria-controls="paginationList">
                                     <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
                                     <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
@@ -29,39 +29,49 @@
                                 </button>
                             </section:header-actions>
                         </section:header>
-                        <h:panelGroup layout="block" id="paginationList" styleClass="collapse show">
+                        <h:panelGroup
+                            layout="block"
+                            id="paginationList"
+                            styleClass="collapse show overflow-y-scroll"
+                            style="max-height: calc(100vh - 8rem); height: 100%;">
                             <section:body padding="true">
                                 <!-- HIDDEN BUTTON TO SET REPRESENTATIVE -->
 
-                                <h:panelGroup id="pagePaginationList">
+                                <h:panelGroup
+                                    id="pagePaginationList"
+                                    layout="block">
                                     <ui:repeat value="#{Metadaten.allPages}" var="page" id="pagesList">
 
-                                        <div class="d-flex align-items-center">
-                                            <h:selectBooleanCheckbox styleClass="form-check-input" pt:aria-label="#{msgs.auswahl2}" rendered="#{page.type == 'div'}" value="#{page.selected}" id="checkbox"/>
-                                            <h:panelGroup rendered="#{page.type != 'div'}"/>
-                                            <h:outputText value="#{page.physicalPageNo}: " title="#{page.imagename}" data-bs-toggle="tooltip"/>
-                                            <h:outputText value="#{page.logicalPageNo}"/>
-                                            <h:panelGroup rendered="#{page.type == 'div'}">
-                                                <button class="btn btn-outline" title="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" aria-label="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" jsf:action="#{Metadaten.loadImageInThumbnailList}" data-renderimage="true" data-bs-toggle="tooltip" data-bs-placement="left" data-boundary="window">
-                                                    <f:setPropertyActionListener value="#{page.physicalPageNo}" target="#{Metadaten.bildNummerGeheZuCompleteString}"/>
-                                                    <ui:fragment rendered="#{page.doublePage}">
-                                                        <span class="fa fa-picture-o" style="float: right;" aria-hidden="true"/>
-                                                    </ui:fragment>
-                                                    <span class="fa fa-picture-o" aria-hidden="true"/>
-                                                    <f:ajax execute="@this" render="mainimagearea"/>
-                                                </button>
-                                                <button class="btn btn-outline star" title="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" aria-label="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" jsf:action="#{Metadaten.updateRepresentativePage}" data-bs-toggle="tooltip" data-bs-placement="right" data-boundary="window">
-                                                    <f:setPropertyActionListener value="#{page.physicalPageNo}" target="#{Metadaten.currentRepresentativePage}"/>
-                                                    <f:setPropertyActionListener value="#{page.representative}" target="#{Metadaten.resetRepresentative}"/>
-                                                    <f:ajax execute="@this" render=":pagePaginationList"/>
-                                                    <span class="fa fa-star #{page.representative?'active':''}" aria-hidden="true"/>
-                                                </button>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{page.type != 'div'}" styleClass="pagination__left__page__item">
-                                                <button jsf:id="deletePageArea" class="btn btn-outline" title="#{msgs.mets_deletePageArea}" jsf:action="#{Metadaten.deletePageArea(page.docStruct)}" data-renderimage="true">
-                                                    <span class="fa fa-trash" aria-hidden="true"/>
-                                                </button>
-                                            </h:panelGroup>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex flex-nowrap">
+                                                <h:selectBooleanCheckbox styleClass="form-check-input" pt:aria-label="#{msgs.auswahl2}" rendered="#{page.type == 'div'}" value="#{page.selected}" id="checkbox"/>
+                                                <h:panelGroup rendered="#{page.type != 'div'}"/>
+                                                <h:outputText value="#{page.physicalPageNo}: " title="#{page.imagename}" data-bs-toggle="tooltip"/>
+                                                <h:outputText value="#{page.logicalPageNo}"/>
+                                            </div>
+                                            <div class="d-flex flex-nowrap">
+                                                <h:panelGroup rendered="#{page.type == 'div'}">
+                                                    <button class="btn btn-outline" title="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" aria-label="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" jsf:action="#{Metadaten.loadImageInThumbnailList}" data-renderimage="true" data-bs-toggle="tooltip" data-bs-placement="left" data-boundary="window">
+                                                        <f:setPropertyActionListener value="#{page.physicalPageNo}" target="#{Metadaten.bildNummerGeheZuCompleteString}"/>
+                                                        <ui:fragment rendered="#{page.doublePage}">
+                                                            <span class="fa fa-picture-o" style="float: right;" aria-hidden="true"/>
+                                                        </ui:fragment>
+                                                        <span class="fa fa-picture-o" aria-hidden="true"/>
+                                                        <f:ajax execute="@this" render="mainimagearea"/>
+                                                    </button>
+                                                    <button class="btn btn-outline star" title="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" aria-label="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" jsf:action="#{Metadaten.updateRepresentativePage}" data-bs-toggle="tooltip" data-bs-placement="right" data-boundary="window">
+                                                        <f:setPropertyActionListener value="#{page.physicalPageNo}" target="#{Metadaten.currentRepresentativePage}"/>
+                                                        <f:setPropertyActionListener value="#{page.representative}" target="#{Metadaten.resetRepresentative}"/>
+                                                        <f:ajax execute="@this" render=":pagePaginationList"/>
+                                                        <span class="fa fa-star#{page.representative?'':'-o'}" aria-hidden="true"/>
+                                                    </button>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{page.type != 'div'}" styleClass="pagination__left__page__item">
+                                                    <button jsf:id="deletePageArea" class="btn btn-outline" title="#{msgs.mets_deletePageArea}" jsf:action="#{Metadaten.deletePageArea(page.docStruct)}" data-renderimage="true">
+                                                        <span class="fa fa-trash" aria-hidden="true"/>
+                                                    </button>
+                                                </h:panelGroup>
+                                            </div>
                                         </div>
 
                                     </ui:repeat>

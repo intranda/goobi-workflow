@@ -42,25 +42,27 @@
                                     <label for="pagestart1">#{msgs.ersteSeite}:</label>
                                 </div>
                                 <div class="form-input">
-                                    <p:autoComplete pt:aria-label="#{msgs.firstPage}" scrollHeight="300" id="pagestart1" styleClass="form-control" inputStyleClass="border-0 w-100 p-0" value="#{Metadaten.pagesStart}" completeMethod="#{Metadaten.autocomplete}"/>
-                                    <button jsf:id="takePreviousImage" aria-label="#{msgs.previousImage}" class="btn btn--icon-white" jsf:action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takePreviousImage}" type="button">
-                                        <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
-                                        <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
-                                        <f:ajax render="pagestart1"/>
-                                    </button>
-                                    <button jsf:id="takeCurrentImage" aria-label="#{msgs.lw_currentImage}" class="btn btn--icon-gray" jsf:action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takeCurrentImage}" type="button">
-                                        <span class="fa fa-picture-o" aria-hidden="true"/>
-                                        <f:setPropertyActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
-                                        <f:ajax render="pagestart1"/>
-                                    </button>
-                                    <button jsf:id="takeNextImage" aria-label="#{msgs.nextImage}" class="btn btn--icon-white" jsf:action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takeNextImage}" type="button">
-                                        <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
-                                        <f:setPropertyActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
-                                        <f:ajax render="pagestart1"/>
-                                    </button>
+                                    <div class="d-flex w-100 my-auto">
+                                        <p:autoComplete pt:aria-label="#{msgs.firstPage}" scrollHeight="300" id="pagestart1" styleClass="form-control" inputStyleClass="border-0 w-100 p-0" value="#{Metadaten.pagesStart}" completeMethod="#{Metadaten.autocomplete}"/>
+                                        <button jsf:id="takePreviousImage" aria-label="#{msgs.previousImage}" class="btn btn--icon-white" jsf:action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takePreviousImage}" type="button">
+                                            <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
+                                            <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                                            <f:ajax render="pagestart1"/>
+                                        </button>
+                                        <button jsf:id="takeCurrentImage" aria-label="#{msgs.lw_currentImage}" class="btn btn--icon-gray" jsf:action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takeCurrentImage}" type="button">
+                                            <span class="fa fa-picture-o" aria-hidden="true"/>
+                                            <f:setPropertyActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                                            <f:ajax render="pagestart1"/>
+                                        </button>
+                                        <button jsf:id="takeNextImage" aria-label="#{msgs.nextImage}" class="btn btn--icon-white" jsf:action="#{Metadaten.CurrentStartpage}" title="#{msgs.mets_takeNextImage}" type="button">
+                                            <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
+                                            <f:setPropertyActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                                            <f:ajax render="pagestart1"/>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <!-- LAST PAGE -->
@@ -69,25 +71,27 @@
                                     <label for="pageend1">#{msgs.letzteSeite}:</label>
                                 </div>
                                 <div class="form-input">
-                                    <p:autoComplete scrollHeight="300" id="pageend1" pt:aria-label="#{msgs.lastPage}" styleClass="form-control" inputStyleClass="border-0 w-100 p-0" forceId="true" value="#{Metadaten.pagesEnd}" completeMethod="#{Metadaten.autocomplete}"/>
-                                    <button jsf:id="takePreviousImage2" aria-label="#{msgs.previousImage}" class="btn btn--icon-white" jsf:action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takePreviousImage}" type="button">
-                                        <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
-                                        <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
-                                        <f:ajax render="pageend1"/>
-                                    </button>
-                                    <button jsf:id="takeCurrentImage2" aria-label="#{msgs.lw_currentImage}" class="btn btn--icon-gray" jsf:action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takeCurrentImage}" type="button">
-                                        <span class="fa fa-picture-o" aria-hidden="true"/>
-                                        <f:setPropertyActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
-                                        <f:ajax render="pageend1"/>
-                                    </button>
-                                    <button jsf:id="takeNextImage2" aria-label="#{msgs.nextImage}" class="btn btn--icon-white" jsf:action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takeNextImage}" type="button">
-                                        <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
-                                        <f:setPropertyActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
-                                        <f:ajax render="pageend1"/>
-                                    </button>
+                                    <div class="d-flex w-100 my-auto">
+                                        <p:autoComplete scrollHeight="300" id="pageend1" pt:aria-label="#{msgs.lastPage}" styleClass="form-control" inputStyleClass="border-0 w-100 p-0" forceId="true" value="#{Metadaten.pagesEnd}" completeMethod="#{Metadaten.autocomplete}"/>
+                                        <button jsf:id="takePreviousImage2" aria-label="#{msgs.previousImage}" class="btn btn--icon-white" jsf:action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takePreviousImage}" type="button">
+                                            <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
+                                            <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                                            <f:ajax render="pageend1"/>
+                                        </button>
+                                        <button jsf:id="takeCurrentImage2" aria-label="#{msgs.lw_currentImage}" class="btn btn--icon-gray" jsf:action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takeCurrentImage}" type="button">
+                                            <span class="fa fa-picture-o" aria-hidden="true"/>
+                                            <f:setPropertyActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                                            <f:ajax render="pageend1"/>
+                                        </button>
+                                        <button jsf:id="takeNextImage2" aria-label="#{msgs.nextImage}" class="btn btn--icon-white" jsf:action="#{Metadaten.CurrentEndpage}" title="#{msgs.mets_takeNextImage}" type="button">
+                                            <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
+                                            <f:setPropertyActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                                            <f:ajax render="pageend1"/>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <h:panelGroup id="addNewPageArea" styleClass="form-row structdata__page-area" layout="block" rendered="#{Metadaten.enablePageArea}">
@@ -95,16 +99,18 @@
                                     <label for="pageArea">#{msgs.pageArea}:</label>
                                 </div>
                                 <div class="form-input">
-                                    <h:inputText id="pageAreaName" pt:aria-label="#{msgs.pageArea}" styleClass="form-control focusableChildCss" value="#{Metadaten.pageArea}" disabled="true"/>
-                                        <ui:fragment rendered="#{(Metadaten.neuesElementWohin gt 2 and not empty Metadaten.addDocStructType2) or (Metadaten.neuesElementWohin lt 3 and not empty Metadaten.addDocStructType1)}">
-                                <!-- ADD PAGE AREA -->
-                                    <button class="btn btn--icon-gray start-area-edition" title="#{msgs.mets_createPageArea}" type="button" onclick="goobiWorkflowJS.object.startDrawArea(this, 'new')" aria-label="#{msgs.mets_createPageArea}" data-toggle="tooltip" data-placement="top">
-                                        <span class="fa fa-crop" aria-hidden="true"/>
-                                    </button>
-                                    <button class="btn btn--icon-red cancel-area-edition" title="#{msgs.mets_cancelPageArea}" type="button" onclick="goobiWorkflowJS.object.cancelDrawArea(this)" aria-label="#{msgs.mets_cancelPageArea}" data-toggle="tooltip" data-placement="top">
-                                        <span class="fa fa-ban" aria-hidden="true"/>
-                                    </button>
-                                    </ui:fragment>
+                                    <div class="d-flex w-100">
+                                        <h:inputText id="pageAreaName" pt:aria-label="#{msgs.pageArea}" styleClass="form-control focusableChildCss" value="#{Metadaten.pageArea}" disabled="true"/>
+                                            <ui:fragment rendered="#{(Metadaten.neuesElementWohin gt 2 and not empty Metadaten.addDocStructType2) or (Metadaten.neuesElementWohin lt 3 and not empty Metadaten.addDocStructType1)}">
+                                    <!-- ADD PAGE AREA -->
+                                        <button class="btn btn--icon-gray start-area-edition" title="#{msgs.mets_createPageArea}" type="button" onclick="goobiWorkflowJS.object.startDrawArea(this, 'new')" aria-label="#{msgs.mets_createPageArea}" data-toggle="tooltip" data-placement="top">
+                                            <span class="fa fa-crop" aria-hidden="true"/>
+                                        </button>
+                                        <button class="btn btn--icon-red cancel-area-edition" title="#{msgs.mets_cancelPageArea}" type="button" onclick="goobiWorkflowJS.object.cancelDrawArea(this)" aria-label="#{msgs.mets_cancelPageArea}" data-toggle="tooltip" data-placement="top">
+                                            <span class="fa fa-ban" aria-hidden="true"/>
+                                        </button>
+                                        </ui:fragment>
+                                    </div>
                                 </div>
                             </h:panelGroup>
                             <!-- STRUCTURE TYPE -->
