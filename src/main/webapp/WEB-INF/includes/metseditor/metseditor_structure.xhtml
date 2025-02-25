@@ -27,7 +27,7 @@
                         </div>
                         <div class="content">
                             <ui:fragment rendered="#{Metadaten.treeProperties.showMetadataPopup}">
-                                <button jsf:id="link" aria-label="#{msgs.seite}" jsf:immediate="true" class="btn btn--icon #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}" style="--level: #{item.niveau}" jsf:action="#{Metadaten.loadRightFrame}" data-bs-trigger="hover" data-bs-container="#treeform" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true" data-bs-content="#{item.node.metadataPopup}">
+                                <button jsf:id="link" aria-label="#{msgs.seite}" jsf:immediate="true" class="btn btn--icon #{item.node.selected ? 'table__structure-link-active fw-700' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}" style="--level: #{item.niveau}" jsf:action="#{Metadaten.loadRightFrame}" data-bs-trigger="hover" data-bs-container="#treeform" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true" data-bs-content="#{item.node.metadataPopup}">
                                     <span class="fa fa-file-o" aria-hidden="true"/>
                                     <span jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle" style="margin-left: 5px" aria-hidden="true"/>
                                     <span>
@@ -46,7 +46,7 @@
                                         </h:panelGroup>
                                     </span>
                                     <f:setPropertyActionListener property="#{Metadaten.myStrukturelement}" value="#{item.node.struct}" target="#{Metadaten.myStrukturelement}"/>
-                                    <f:ajax execute="@form" render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform :openseadragonform:pageareas"/>
+                                    <f:ajax execute="@form" render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform :pageareas"/>
                                     <f:passThroughAttribute name="data-renderimage" value="#{Metadaten.bildZuStrukturelement ? 'true':'false'}"/>
                                 </button>
                             </ui:fragment>
