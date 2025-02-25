@@ -11,17 +11,19 @@
     <composite:interface />
 
     <composite:implementation>
-        <div id="bookmarks" class="bookmarks position-absolute end-0">
+        <div
+            id="bookmarks"
+            class="bookmarks">
             <h:form id="bookmarkForm">
                 <ul role="list">
                     <!-- BOOKMARK 1 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc1 != null}">
                         <li class="bookmarks__double">
                             <button
-                            	jsf:id="showBookmark1"
+                                jsf:id="showBookmark1"
                                 href="#{NavigationForm.uiStatus.mets_toc1}"
                                 aria-label="#{msgs.mets_bookmarkShow}"
-                                class="btn btn--icon btn--icon-blue colorbox-image"
+                                class="btn btn-primary bookmark-add"
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
                                 type="submit">
@@ -31,7 +33,7 @@
                                 jsf:id="removeBookmark1"
                                 aria-label="#{msgs.mets_bookmarkRemove}"
                                 jsf:action="#{NavigationForm.Reload}"
-                                class="btn btn-blank"
+                                class="btn btn-blank bookmark-remove"
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
                                 <span class="fa fa-times" aria-hidden="true" />
@@ -68,7 +70,7 @@
                             	jsf:id="showBookmark2"
                                 href="#{NavigationForm.uiStatus.mets_toc2}"
                                 aria-label="#{msgs.mets_bookmarkShow}"
-                                class="btn btn--icon btn--icon-blue colorbox-image"
+                                class="btn btn-primary bookmark-add"
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
                                 type="submit">
@@ -77,7 +79,7 @@
                             <button
                                 jsf:id="removeBookmark2"
                                 aria-label="#{msgs.mets_bookmarkRemove}"
-                                class="btn btn-blank"
+                                class="btn btn-blank bookmark-remove"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
@@ -114,7 +116,7 @@
                             	jsf:id="showBookmark3"
                                 href="#{NavigationForm.uiStatus.mets_toc3}"
                                 aria-label="#{msgs.mets_bookmarkShow}"
-                                class="btn btn--icon btn--icon-blue colorbox-image"
+                                class="btn btn-primary bookmark-add"
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
                                 type="submit">
@@ -123,7 +125,7 @@
                             <button
                                 jsf:id="removeBookmark3"
                                 aria-label="#{msgs.mets_bookmarkRemove}"
-                                class="btn btn-blank"
+                                class="btn btn-blank bookmark-remove"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
@@ -160,7 +162,7 @@
                             	jsf:id="showBookmark4"
                                 href="#{NavigationForm.uiStatus.mets_toc4}"
                                 aria-label="#{msgs.mets_bookmarkShow}"
-                                class="btn btn--icon btn--icon-blue colorbox-image"
+                                class="btn btn-primary bookmark-add"
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
                                 type="submit">
@@ -169,7 +171,7 @@
                             <button
                                 jsf:id="removeBookmark4"
                                 aria-label="#{msgs.mets_bookmarkRemove}"
-                                class="btn btn-blank"
+                                class="btn btn-blank bookmark-remove"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
@@ -206,7 +208,7 @@
                             	jsf:id="showBookmark5"
                                 href="#{NavigationForm.uiStatus.mets_toc5}"
                                 aria-label="#{msgs.mets_bookmarkShow}"
-                                class="btn btn--icon btn--icon-blue colorbox-image"
+                                class="btn btn-primary bookmark-add"
                                 title="#{msgs.mets_bookmarkShow}"
                                 data-toggle="tooltip"
                                 type="submit">
@@ -215,7 +217,7 @@
                             <button
                                 jsf:id="removeBookmark5"
                                 aria-label="#{msgs.mets_bookmarkRemove}"
-                                class="btn btn-blank"
+                                class="btn btn-blank bookmark-remove"
                                 jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
