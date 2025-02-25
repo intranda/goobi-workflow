@@ -39,7 +39,9 @@
 
                 <!-- PAGE WRAPPER -->
 
-                <div id="pageWrapper" class="page-wrapper">
+                <div
+                    id="pageWrapper"
+                    class="page-wrapper">
                     <!-- MENU -->
                     <layout:header>
 
@@ -63,9 +65,15 @@
                     </layout:header>
 
                     <!-- CONTENT WRAPPER -->
-                    <div id="pageContentWrapper" class="d-flex flex-nowrap gap-1" tabindex="-1">
+                    <div
+                        id="pageContentWrapper"
+                        class="d-flex flex-nowrap gap-1"
+                        tabindex="-1"
+                        style="max-height: calc(100vh - 3rem); height: 100%;">
                         <!-- CONTENT LEFT -->
-                        <div id="pageContentLeft" class="flex-fill bg-light p-2 border-end border-primary">
+                        <div
+                            id="pageContentLeft"
+                            class="flex-fill bg-light p-2 border-end border-primary overflow-y-scroll overflow-x-hidden">
                             <div class="page-content__left-inner">
                                 <!-- METSEDITOR STRUCTURE -->
                                 <ui:insert name="metseditorStructure" />
@@ -75,7 +83,7 @@
                         <!-- CONTENT CENTER -->
                         <h:panelGroup
                             id="pageContentCenter"
-                            styleClass="flex-fill p-2 border-end overflow-y-scroll vh-100"
+                            styleClass="flex-fill p-2 border-end overflow-y-scroll overflow-x-hidden"
                             layout="block">
                             <div class="page-content__center-inner">
                                 <!-- METSEDITOR CONTENT -->
