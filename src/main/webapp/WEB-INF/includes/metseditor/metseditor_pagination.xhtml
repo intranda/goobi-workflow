@@ -17,15 +17,15 @@
                 <div id="pagLeft" class="col-12 col-lg-5 pagination__left">
                     <section:section id="meSelectPagesBox" type="outline">
                         <section:header icon="bars" title="#{msgs.auswahlDerSeiten}">
-                            <section:header-actions form="#{false}">
-                                <button type="button" class="btn btn-outline ms-auto" aria-label="#{msgs.mets_treeCompress}" data-bs-toggle="collapse" data-bs-target="#paginationList" aria-expanded="true" aria-controls="paginationList">
-                                    <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
-                                    <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
-                                </button>
+                            <section:header-actions>
                                 <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" jsf:id="readPagination" aria-label="#{msgs.paginierungEinlesen}" class="btn btn-outline" jsf:action="#{Metadaten.createPagination}" title="#{msgs.paginierungEinlesen}">
                                     <span class="fa fa-refresh"/>
                                     <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                     <f:passThroughAttribute name="data-bs-placement" value="bottom"/>
+                                </button>
+                                <button type="button" class="btn btn-outline ms-auto" aria-label="#{msgs.mets_treeCompress}" data-bs-toggle="collapse" data-bs-target="#paginationList" aria-expanded="true" aria-controls="paginationList">
+                                    <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
+                                    <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
                                 </button>
                             </section:header-actions>
                         </section:header>
@@ -84,13 +84,9 @@
                 <!-- SET PAGINATION -->
                 <div id="pagRight" class="col-12 col-lg-7 pagination__right">
                     <h:panelGroup layout="block" id="meSetPaginationBox" styleClass="pb-2">
-                        <section:section type="outline">
+                        <section:section type="neutral">
                             <section:header icon="bars" title="#{msgs.paginierungFestlegen}">
-                                <button type="button" class="btn btn-outline ms-auto" aria-label="#{msgs.mets_treeCompress}" data-bs-toggle="collapse" data-bs-target="#paginationDefinition" aria-expanded="true" aria-controls="paginationDefinition">
-                                    <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
-                                    <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
-                                </button>
-                                <div class="btn-group" role="group">
+                                <div class="btn-group ms-auto" role="group">
                                     <button type="button" id="paginationPagesPerImageGroup" class="btn btn-outline dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <span class="fa fa-list"/>
                                         #{Metadaten.paginierungSeitenProImage}
@@ -128,6 +124,10 @@
                                         </button>
                                     </div>
                                 </div>
+                                <button type="button" class="btn btn-outline" aria-label="#{msgs.mets_treeCompress}" data-bs-toggle="collapse" data-bs-target="#paginationDefinition" aria-expanded="true" aria-controls="paginationDefinition">
+                                    <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
+                                    <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
+                                </button>
                             </section:header>
                             <div id="paginationDefinition" class="collapse show">
                                 <section:body padding="true">
