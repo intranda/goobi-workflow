@@ -231,6 +231,8 @@
                                                 <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}"/>
                                             </span>
                                        </button>
+                                    </li>
+                                    <li>
                                        <button class="btn btn-outline cancel-area-edition" type="button" title="#{msgs.mets_cancelPageArea}" aria-label="#{msgs.mets_cancelPageArea}" onclick="goobiWorkflowJS.object.cancelDrawArea(this)" data-bs-toggle="tooltip" data-bs-placement="top">
                                             <span class="fa fa-ban fa-lg" aria-hidden="true"/>
                                             <span>
@@ -241,17 +243,19 @@
                                     <!-- DELETE PAGE AREA -->
                                     <li>
                                         <button class="btn btn-outline" type="button" title="#{msgs.mets_PageArea}" aria-label="#{msgs.mets_deletePageArea}" data-pagearea-delete="start" data-renderimage="true" data-bs-toggle="tooltip" data-bs-placement="top">
-                                                <span class="fa fa-eraser fa-lg" aria-hidden="true"/>
-                                                <span>
-                                                    <h:outputText value="#{msgs.mets_deletePageArea}"/>
-                                                </span>
-                                            </button>
-                                            <button type="button" class="btn btn-outline delete-page-area" title="#{msgs.mets_cancelPageArea}" aria-label="#{msgs.mets_cancelPageArea}" data-pagearea-delete="cancel" data-renderimage="true" data-bs-toggle="tooltip" data-bs-placement="top">
-                                                <span class="fa fa-ban fa-lg" aria-hidden="true"/>
-                                                <span>
-                                                    <h:outputText value="#{msgs.mets_deletePageArea}"/>
-                                                </span>
-                                            </button>
+                                            <span class="fa fa-eraser fa-lg" aria-hidden="true"/>
+                                            <span>
+                                                <h:outputText value="#{msgs.mets_deletePageArea}"/>
+                                            </span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="btn btn-outline delete-page-area" title="#{msgs.mets_cancelPageArea}" aria-label="#{msgs.mets_cancelPageArea}" data-pagearea-delete="cancel" data-renderimage="true" data-bs-toggle="tooltip" data-bs-placement="top">
+                                            <span class="fa fa-ban fa-lg" aria-hidden="true"/>
+                                            <span>
+                                                <h:outputText value="#{msgs.mets_deletePageArea}"/>
+                                            </span>
+                                        </button>
                                     </li>
                                 </ui:fragment>
 
