@@ -121,84 +121,84 @@ public class EasyDBSearch {
      */
 
     public void search() {
+        try (Client client = setupClient()) {
+            WebTarget easydbRoot = client.target(url);
 
-        WebTarget easydbRoot = getClient();
+            if (token == null) {
+                authenticate(easydbRoot);
+            }
 
-        if (token == null) {
-            authenticate(easydbRoot);
-        }
-
-        List<EasydbSearchField> searchFieldList = request.getSearch();
-        for (EasydbSearchField esf : searchFieldList) {
-            switch (esf.getType()) {
-                case "range":
-                    if (!esf.getOverrideValueList().isEmpty()) {
-                        esf.setFrom(esf.getOverrideValueList().get(0));
-                        esf.setTo(esf.getOverrideValueList().get(0));
-                    } else if (StringUtils.isNotBlank(searchStartValue) && StringUtils.isNotBlank(searchEndValue)) {
-                        esf.setFrom(searchStartValue);
-                        esf.setTo(searchEndValue);
-                    } else {
-                        esf.setFrom(searchValue);
-                        esf.setTo(searchValue);
-                    }
-                    break;
-                case "in":
-                    List<Object> in = new ArrayList<>();
-                    if (!esf.getOverrideValueList().isEmpty()) {
-                        for (String val : esf.getOverrideValueList()) {
-                            if (NUMERIC.equalsIgnoreCase(esf.getFieldType())) {
-                                if (StringUtils.isNumeric(val)) {
-                                    in.add(Integer.valueOf(val));
-                                } else {
-                                    in.add(null);
-                                }
-                            } else {
-                                in.add(val);
-                            }
-                        }
-
-                    } else if (NUMERIC.equalsIgnoreCase(esf.getFieldType())) {
-                        if (StringUtils.isNumeric(searchValue)) {
-                            in.add(Integer.valueOf(searchValue));
+            List<EasydbSearchField> searchFieldList = request.getSearch();
+            for (EasydbSearchField esf : searchFieldList) {
+                switch (esf.getType()) {
+                    case "range":
+                        if (!esf.getOverrideValueList().isEmpty()) {
+                            esf.setFrom(esf.getOverrideValueList().get(0));
+                            esf.setTo(esf.getOverrideValueList().get(0));
+                        } else if (StringUtils.isNotBlank(searchStartValue) && StringUtils.isNotBlank(searchEndValue)) {
+                            esf.setFrom(searchStartValue);
+                            esf.setTo(searchEndValue);
                         } else {
-                            in.add(null);
+                            esf.setFrom(searchValue);
+                            esf.setTo(searchValue);
                         }
-                    } else {
-                        in.add(searchValue);
-                    }
+                        break;
+                    case "in":
+                        List<Object> in = new ArrayList<>();
+                        if (!esf.getOverrideValueList().isEmpty()) {
+                            for (String val : esf.getOverrideValueList()) {
+                                if (NUMERIC.equalsIgnoreCase(esf.getFieldType())) {
+                                    if (StringUtils.isNumeric(val)) {
+                                        in.add(Integer.valueOf(val));
+                                    } else {
+                                        in.add(null);
+                                    }
+                                } else {
+                                    in.add(val);
+                                }
+                            }
 
-                    esf.setIn(in);
-                    break;
-                case "match":
-                default:
-                    // match
-                    if (!esf.getOverrideValueList().isEmpty()) {
-                        esf.setString(esf.getOverrideValueList().get(0));
-                    } else {
-                        esf.setString(searchValue);
-                    }
-                    break;
+                        } else if (NUMERIC.equalsIgnoreCase(esf.getFieldType())) {
+                            if (StringUtils.isNumeric(searchValue)) {
+                                in.add(Integer.valueOf(searchValue));
+                            } else {
+                                in.add(null);
+                            }
+                        } else {
+                            in.add(searchValue);
+                        }
+
+                        esf.setIn(in);
+                        break;
+                    case "match":
+                    default:
+                        // match
+                        if (!esf.getOverrideValueList().isEmpty()) {
+                            esf.setString(esf.getOverrideValueList().get(0));
+                        } else {
+                            esf.setString(searchValue);
+                        }
+                        break;
+                }
+            }
+
+            if (pool != null) {
+                request.getSearch().add(pool);
+            }
+
+            searchResponse = easydbRoot.path(searchRquestPath)
+                    .queryParam("token", token.getToken())
+                    //                .queryParam("pretty", 1)
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.json(request), EasydbSearchResponse.class);
+            for (Map<String, Object> map : searchResponse.getObjects()) {
+                EasydbResponseObject ero = new EasydbResponseObject(map);
+                searchResponse.getConvertedObjects().add(ero);
+            }
+            if (pool != null) {
+                request.getSearch().remove(pool);
             }
         }
-
-        if (pool != null) {
-            request.getSearch().add(pool);
-        }
-
-        searchResponse = easydbRoot.path(searchRquestPath)
-                .queryParam("token", token.getToken())
-                //                .queryParam("pretty", 1)
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.json(request), EasydbSearchResponse.class);
-        for (Map<String, Object> map : searchResponse.getObjects()) {
-            EasydbResponseObject ero = new EasydbResponseObject(map);
-            searchResponse.getConvertedObjects().add(ero);
-        }
-        if (pool != null) {
-            request.getSearch().remove(pool);
-        }
-
     }
 
     /**
@@ -325,12 +325,12 @@ public class EasyDBSearch {
      * @return
      */
 
-    private WebTarget getClient() {
+    private Client setupClient() {
         Client client = ClientBuilder.newClient();
         if (enableDebugging) {
             client.register(new EntityLoggingFilter());
         }
-        return client.target(url);
+        return client;
     }
 
     public void clearResults() {
