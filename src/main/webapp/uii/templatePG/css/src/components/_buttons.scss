@@ -75,10 +75,6 @@ button,
     }
   }
 
-  i ~ *,
-  .fa ~ *:not(.fa) {
-    margin-inline-start: 0.25rem;
-  }
   &:focus {
     color: var(--bs-btn-color);
   }

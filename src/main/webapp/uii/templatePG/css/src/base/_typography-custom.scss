@@ -113,3 +113,7 @@ a {
 .fw-700 {
   font-weight: 700;
 }
+
+.fa + span {
+  margin-inline-start: 0.25rem;
+}
