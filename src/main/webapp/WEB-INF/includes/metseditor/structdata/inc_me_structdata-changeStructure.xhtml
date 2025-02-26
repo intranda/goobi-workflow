@@ -8,7 +8,8 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:section="http://goobi.io/section"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface/>
 
@@ -123,65 +124,90 @@
                                     </li>
                                 </ui:fragment>
                                 <li>
-                                    <button type="button" class="btn btn-outline">
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#opacModal">
                                         <span class="fa fa-download fa-lg" aria-hidden="true"/>
                                         <span>
                                             <h:outputText value="#{msgs.strukturelementeAusOpacHinzufuegen}"/>
                                         </span>
                                     </button>
+                                    <div
+                                        class="modal fade"
+                                        id="opacModal"
+                                        tabindex="-1"
+                                        role="dialog"
+                                        aria-labelledby="opacModalLabel">
+                                        <div
+                                            class="modal-dialog"
+                                            role="document">
+                                            <div class="modal-content">
+                                                <section:section type="action">
+                                                    <section:header
+                                                        icon="download"
+                                                        title="#{msgs.strukturelementeAusOpacHinzufuegen}">
+                                                        <button type="button" class="btn text-white"
+                                                            title="Cancel" data-bs-dismiss="modal">
+                                                            <util:icon icon="times" />
+                                                        </button>
+                                                    </section:header>
+                                                    <section:body>
+                                                        <!-- CATALOGUE -->
+                                                        <div class="form-row">
+                                                            <div class="form-label">
+                                                                <h:outputText value="#{msgs.katalog}:"/>
+                                                            </div>
+                                                            <div class="form-input">
+                                                                <h:selectOneMenu pt:aria-label="#{msgs.katalog}" id="katalogauswahl" value="#{Metadaten.opacKatalog}" styleClass="form-select">
+                                                                    <f:selectItems value="#{Metadaten.allOpacCatalogues}" var="step" itemLabel="#{step}" itemValue="#{step}"/>
+                                                                    <f:ajax render="feldauswahl"/>
+                                                                </h:selectOneMenu>
+                                                            </div>
+                                                        </div>
+                                                        <!-- FIELD -->
+                                                        <div class="form-row">
+                                                            <div class="form-label">
+                                                                <h:outputText styleClass="form-group__label" value="#{msgs.feld}:"/>
+                                                            </div>
+                                                            <div class="form-input">
+                                                                <h:selectOneMenu pt:aria-label="#{msgs.feld}" id="feldauswahl" value="#{Metadaten.opacSuchfeld}" styleClass="form-select">
+                                                                    <f:selectItems value="#{Metadaten.allSearchFields}" var="step" itemLabel="#{step.label}" itemValue="#{step.value}"/>
+                                                                </h:selectOneMenu>
+                                                            </div>
+                                                        </div>
+                                                        <!-- SEARCHTERMS -->
+                                                        <div class="form-row">
+                                                            <div class="form-label">
+                                                                <h:outputText styleClass="form-group__label" value="#{msgs.suchbegriffe}:"/>
+                                                            </div>
+                                                            <div class="form-input">
+                                                                <h:inputTextarea pt:aria-label="#{msgs.suchbegriffe}" styleClass="form-control" value="#{Metadaten.additionalOpacPpns}"/>
+                                                            </div>
+                                                        </div>
+                                                    </section:body>
+                                                    <section:footer>
+                                                        <button jsf:id="importMetadata" class="btn btn-blank" jsf:immediate="false" jsf:action="#{Metadaten.AddMetadaFromOpacPpn}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                            <h:outputText value="#{msgs.nurMetadaten}"/>
+                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                        </button>
 
-                                    <div id="possibleActions2" class="border-top">
-                                        <!-- CATALOGUE -->
-                                        <div class="form-row">
-                                            <div class="form-label">
-                                                <h:outputText value="#{msgs.katalog}:"/>
-                                            </div>
-                                            <div class="form-input">
-                                                <h:selectOneMenu pt:aria-label="#{msgs.katalog}" id="katalogauswahl" value="#{Metadaten.opacKatalog}" styleClass="form-select">
-                                                    <f:selectItems value="#{Metadaten.allOpacCatalogues}" var="step" itemLabel="#{step}" itemValue="#{step}"/>
-                                                    <f:ajax render="feldauswahl"/>
-                                                </h:selectOneMenu>
-                                            </div>
-                                        </div>
-                                        <!-- FIELD -->
-                                        <div class="form-row">
-                                            <div class="form-label">
-                                                <h:outputText styleClass="form-group__label" value="#{msgs.feld}:"/>
-                                            </div>
-                                            <div class="form-input">
-                                                <h:selectOneMenu pt:aria-label="#{msgs.feld}" id="feldauswahl" value="#{Metadaten.opacSuchfeld}" styleClass="form-select">
-                                                    <f:selectItems value="#{Metadaten.allSearchFields}" var="step" itemLabel="#{step.label}" itemValue="#{step.value}"/>
-                                                </h:selectOneMenu>
-                                            </div>
-                                        </div>
-                                        <!-- SEARCHTERMS -->
-                                        <div class="form-row">
-                                            <div class="form-label">
-                                                <h:outputText styleClass="form-group__label" value="#{msgs.suchbegriffe}:"/>
-                                            </div>
-                                            <div class="form-input">
-                                                <h:inputTextarea pt:aria-label="#{msgs.suchbegriffe}" styleClass="form-control" value="#{Metadaten.additionalOpacPpns}"/>
-                                            </div>
-                                        </div>
-                                        <!-- Actions -->
-                                        <div class="p-3 d-flex justify-content-end gap-2">
-                                            <button jsf:id="importMetadata" class="btn btn-blank" jsf:immediate="false" jsf:action="#{Metadaten.AddMetadaFromOpacPpn}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-                                                <h:outputText value="#{msgs.nurMetadaten}"/>
-                                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                            </button>
+                                                        <button jsf:id="importNode" class="btn btn-blank" jsf:immediate="false" jsf:action="#{Metadaten.AddAdditionalOpacPpns}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                            <h:outputText value="#{msgs.alsUnterelemente}"/>
+                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
 
-                                            <button jsf:id="importNode" class="btn btn-blank" jsf:immediate="false" jsf:action="#{Metadaten.AddAdditionalOpacPpns}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-                                                <h:outputText value="#{msgs.alsUnterelemente}"/>
-                                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-
-                                                <!--
-                                                <f:ajax
-                                                    onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
-                                                    execute="@form"
-                                                    render="@form :pageContentCenter @form :treeform"
-                                                />
-                                                -->
-                                            </button>
+                                                            <!--
+                                                            <f:ajax
+                                                                onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                                                                execute="@form"
+                                                                render="@form :pageContentCenter @form :treeform"
+                                                            />
+                                                            -->
+                                                        </button>
+                                                    </section:footer>
+                                                </section:section>
+                                            </div>
                                         </div>
                                     </div>
                                 </li>
