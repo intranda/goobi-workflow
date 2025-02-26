@@ -17,35 +17,35 @@
                 <div id="meStructdataPageAssignmentBox">
                     <section:section type="outline">
                         <section:header icon="bars" title="#{msgs.seitenzuordnung}">
-                            <button type="button" aria-label="#{msgs.minimizeBox}" class="btn" data-bs-target="#pageAllocationBoxBody" data-bs-toggle="collapse" aria-expanded="true" aria-controls="pageAllocationBoxBody">
-                                <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
-                                <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
-                            </button>
+                            <section:header-actions>
+                                <ul class="tabs" role="list">
+                                    <button class="tab#{NavigationForm.uiStatus.pageassignment == '' ? ' active' : ''}" jsf:id="metseditor_pages_overview" jsf:action="#{NavigationForm.Reload}">
+                                        #{msgs.metseditor_pages_overview}
+                                        <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value=""/>
+                                        <f:ajax render="pageallocation"/>
+                                    </button>
+
+                                    <button class="tab#{NavigationForm.uiStatus.pageassignment == 'tab1' ? ' active' : ''}" jsf:id="metseditor_pages_allPages" jsf:action="#{NavigationForm.Reload}">
+                                        #{msgs.metseditor_pages_allPages}
+                                        <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab1"/>
+                                        <f:ajax render="pageallocation"/>
+                                    </button>
+                                    <button class="tab#{NavigationForm.uiStatus.pageassignment == 'tab2' ? ' active' : ''}" jsf:id="metseditor_pages_quickassign" jsf:action="#{NavigationForm.Reload}">
+                                        #{msgs.metseditor_pages_quickassign}
+                                        <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab2"/>
+                                        <f:ajax render="pageallocation"/>
+                                    </button>
+                                </ul>
+                                <button type="button" aria-label="#{msgs.minimizeBox}" class="btn" data-bs-target="#pageAllocationBoxBody" data-bs-toggle="collapse" aria-expanded="true" aria-controls="pageAllocationBoxBody">
+                                    <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
+                                    <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
+                                </button>
+                            </section:header-actions>
                         </section:header>
                         <div id="pageAllocationBoxBody" class="collapse show">
                             <section:body>
                                 <h:panelGroup id="pageAssignmentGroup" layout="block">
                                     <h:panelGroup id="assignments" layout="block">
-                                        <div class="p-3 d-flex gap-2 justify-content-end border-bottom">
-                                            <button class="btn btn-blank" jsf:id="metseditor_pages_overview" jsf:action="#{NavigationForm.Reload}">
-                                                #{msgs.metseditor_pages_overview}
-                                                <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value=""/>
-                                                <f:ajax render="assignments"/>
-                                            </button>
-
-                                            <button class="btn btn-blank" jsf:id="metseditor_pages_allPages" jsf:action="#{NavigationForm.Reload}">
-                                                #{msgs.metseditor_pages_allPages}
-                                                <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab1"/>
-                                                <f:ajax render="assignments"/>
-                                            </button>
-                                            <button class="btn btn-blank" jsf:id="metseditor_pages_quickassign" jsf:action="#{NavigationForm.Reload}">
-                                                #{msgs.metseditor_pages_quickassign}
-                                                <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab2"/>
-                                                <f:ajax render="assignments"/>
-                                            </button>
-
-                                        </div>
-
                                         <!-- PAGES OVERVIEW -->
                                         <h:panelGroup id="metseditorPagesOverview" layout="block" rendered="#{NavigationForm.uiStatus.pageassignment == '' || NavigationForm.uiStatus.pageassignment == null}">
 
