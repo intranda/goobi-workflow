@@ -427,9 +427,7 @@ public class PropertyParser {
                     }
                 }
 
-                if (log.isDebugEnabled()) {
-                    log.debug("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
-                }
+                log.trace("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                 properties.add(pp);
 
             }
@@ -455,9 +453,7 @@ public class PropertyParser {
                             pnew.setProzesseigenschaft(pe);
                             pnew.setValue(pe.getWert());
                             pnew.setContainer(pe.getContainer());
-                            if (log.isDebugEnabled()) {
-                                log.debug("add property B " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
-                            }
+                            log.trace("add property B " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                             properties.add(pnew);
                         }
                     }
@@ -480,16 +476,12 @@ public class PropertyParser {
                 pp.setValue(pe.getWert());
                 pp.setContainer(pe.getContainer());
                 pp.setType(Type.TEXT);
-                if (log.isDebugEnabled()) {
-                    log.debug("add property C " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
-                }
+                log.trace("add property C " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                 properties.add(pp);
 
             }
         }
-        if (log.isDebugEnabled()) {
-            log.debug("all properties are " + properties.size());
-        }
+        log.trace("all properties are " + properties.size());
 
         return properties;
     }
