@@ -50,7 +50,7 @@
                                             </button>
                                             <h:panelGroup rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">
                                                 <span class="fa fa-file-o" aria-hidden="true"/>
-                                                <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" styleClass="#{item.node.selected ? 'selected' : 'unselected'} ps-2">
+                                                <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" styleClass="#{item.node.selected ? 'fw-700' : 'unselected'} ps-2">
 
                                                     <f:passThroughAttribute name="data-trigger" value="hover"/>
                                                     <f:passThroughAttribute name="data-container" value="body"/>
