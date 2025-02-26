@@ -9,7 +9,8 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:section="http://goobi.io/section"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:util="http://goobi.io/util">
+    xmlns:util="http://goobi.io/util"
+    xmlns:form="http://goobi.io/form">
 
     <composite:interface/>
 
@@ -24,7 +25,7 @@
                 </section:header>
                 <div id="changeElementBoxBody" class="collapse show">
                     <section:body>
-                        <h:panelGroup id="structEdit">
+                        <h:panelGroup id="structEdit" layout="block" styleClass="p-2">
                             <ul class="p-0" role="list">
                                 <!-- ELEMENT UP -->
                                 <li>
@@ -76,28 +77,63 @@
                                 <ui:fragment rendered="#{Metadaten.isNotRootElement}">
                                     <!-- CHANGE DOCSTRUCTTYPE -->
                                     <li>
-                                        <button jsf:id="expandbutton1" class="btn btn-outline button-link" title="#{msgs.docstructTypeAendern}" type="button">
+                                        <button
+                                            id="expandbutton1"
+                                            class="btn btn-outline button-link"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#changeDocstructTypeModal"
+                                            type="button">
                                             <span class="fa fa-exchange fa-lg" aria-hidden="true"/>
                                             <span>
                                                 <h:outputText value="#{msgs.docstructTypeAendern}"/>
                                             </span>
-                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                            <f:ajax render="expandbutton1"/>
                                         </button>
-
-                                        <div id="possibleActions1" class="d-flex gap-2 px-2">
-                                            <!-- SELECT -->
-                                            <h:selectOneMenu
-                                                pt:aria-label="#{msgs.auswahl2}"
-                                                value="#{Metadaten.tempWert}"
-                                                styleClass="form-select">
-                                                <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item"/>
-                                            </h:selectOneMenu>
-                                            <!-- ACTION -->
-                                            <button jsf:id="ChangeCurrentDocstructType" aria-label="#{msgs.uebernehmen}" class="btn btn-outline" jsf:action="#{Metadaten.ChangeCurrentDocstructType}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-                                                <span class="fa fa-check-circle-o fa-lg" aria-hidden="true"/>
-                                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                            </button>
+                                        <div
+                                            class="modal fade"
+                                            id="changeDocstructTypeModal"
+                                            tabindex="-1"
+                                            role="dialog"
+                                            aria-labelledby="changeDocstructTypeModalLabel">
+                                            <div
+                                                class="modal-dialog"
+                                                role="document">
+                                                <div class="modal-content">
+                                                    <section:section type="action">
+                                                        <section:header
+                                                            icon="exchange"
+                                                            title="#{msgs.docstructTypeAendern}">
+                                                            <section:header-actions>
+                                                                <button type="button" class="btn text-white" title="Cancel" data-bs-dismiss="modal">
+                                                                    <util:icon icon="times" />
+                                                                </button>
+                                                            </section:header-actions>
+                                                        </section:header>
+                                                        <section:body>
+                                                            <form:field
+                                                                label="#{msgs.neuesStrukturelement}">
+                                                                <!-- SELECT -->
+                                                                <h:selectOneMenu
+                                                                    pt:aria-label="#{msgs.auswahl2}"
+                                                                    value="#{Metadaten.tempWert}"
+                                                                    styleClass="form-select">
+                                                                    <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item"/>
+                                                                </h:selectOneMenu>
+                                                            </form:field>
+                                                        </section:body>
+                                                        <section:footer>
+                                                            <!-- ACTION -->
+                                                            <button
+                                                                jsf:id="ChangeCurrentDocstructType"
+                                                                aria-label="#{msgs.uebernehmen}"
+                                                                class="btn btn-action"
+                                                                jsf:action="#{Metadaten.ChangeCurrentDocstructType}" >
+                                                                <util:icon-text icon="check" text="#{msgs.uebernehmen}" />
+                                                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                            </button>
+                                                        </section:footer>
+                                                    </section:section>
+                                                </div>
+                                            </div>
                                         </div>
                                     </li>
                                     <!-- DELETE ELEMENT -->
