@@ -32,7 +32,6 @@
 
     <body class="#{LoginForm.myBenutzer == null?'login':'content-flow'}">
     <ds:windowId/>
-    <main>
         <f:view locale="#{SpracheForm.locale}">
             <!-- USER NOT LOGGED IN -->
             <ui:fragment rendered="#{LoginForm.myBenutzer==null}">
@@ -46,7 +45,7 @@
 
                 <div
                     id="pageWrapper"
-                    class="page-wrapper">
+                    class="page-wrapper content-flow" style="max-height: 100vh;">
                     <!-- MENU -->
                     <layout:header>
 
@@ -70,11 +69,10 @@
                     </layout:header>
 
                     <!-- CONTENT WRAPPER -->
-                    <div
-                        id="pageContentWrapper"
+                    <main
+                        id="content"
                         class="d-flex flex-nowrap gap-1"
-                        tabindex="-1"
-                        style="max-height: calc(100vh - 3rem); height: 100%;">
+                        tabindex="-1">
                         <!-- CONTENT LEFT -->
                         <div
                             id="pageContentLeft"
@@ -88,9 +86,11 @@
                         <!-- CONTENT CENTER -->
                         <h:panelGroup
                             id="pageContentCenter"
-                            styleClass=""
+                            styleClass="overflow-y-scroll overflow-x-hidden"
                             layout="block">
-                            <div class="page-content__center-inner h-100 flex-fill p-2 border-end overflow-y-scroll overflow-x-hidden">
+                            <div
+                                class="page-content__center-inner flex-fill p-2 border-end overflow-y-scroll overflow-x-hidden"
+                                style="max-height: calc(100vh - 6rem); height: 100%;">
                                 <!-- METSEDITOR CONTENT -->
                                 <ui:insert name="metseditorContent" />
                             </div>
@@ -107,14 +107,9 @@
                                 </div>
                             </div>
                         </ui:fragment>
-                </div>
-
-                <!-- AJAX LOADER -->
-                <div id="ajaxloader" style="display: none;">
-                    <img src="templatePG/img/goobi/ajaxloader2.gif" />
-                </div>
+                    </main>
+                <layout:footer />
             </div>
-            <layout:footer />
 
             </c:if>
         </f:view>
@@ -174,6 +169,5 @@
                 goobiWorkflowJS.meScrollPos.restoreScrollPos();
             } );
         </script>
-        </main>
     </body>
 </html>

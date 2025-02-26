@@ -11,9 +11,11 @@
     <composite:interface />
 
     <composite:implementation>
-        <h:form id="structureform" prependId="false" style="height: auto;">
+        <h:form id="structureform" prependId="false">
             <div id="structdata" class="structdata">
-                <h:panelGroup rendered="#{not Metadaten.modusStrukturelementVerschieben and not Metadaten.modusCopyDocstructFromOtherProcess}">
+                <h:panelGroup
+                    layout="block"
+                    rendered="#{not Metadaten.modusStrukturelementVerschieben and not Metadaten.modusCopyDocstructFromOtherProcess}">
                     <!-- NEW STRUCTURE ELEMENT -->
                     <ui:include src="structdata/inc_me_structdata-newElement.xhtml" />
 

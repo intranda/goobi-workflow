@@ -170,7 +170,6 @@ function resizeHandlerHeight() {
     var wHeight = $(window).height(),
         minus = ($(window).scrollTop() == 0) ? 40 : 0;
     $("#left .ui-resizable-handle").height(wHeight - minus);
-    $("#treeform").height(wHeight - minus- 35);
 }
 
 function toggleMobileNav() {
