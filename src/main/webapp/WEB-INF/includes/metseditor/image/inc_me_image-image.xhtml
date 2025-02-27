@@ -82,11 +82,11 @@
                         <!-- 3D CONTROLS -->
                         <ui:fragment rendered="#{Metadaten.image.type == 'object'}">
                         	<div
-                                id="mainImage" 
+                                id="mainImage"
                                 class="image__main-image"
                                 style="z-index: -1">
                                 <!-- AJAX LOADER -->
-                                <div id="imageLoader">
+                                <div id="imageLoader" class="position-absolute end-0" style="display: none;">
                                     <img src="templatePG/img/goobi/ajaxloader2.gif" />
                                 </div>
                             </div>
@@ -168,10 +168,10 @@
                             <!-- MAIN IMAGE CONTAINER -->
                             <div
                                 id="mainImage"
-                                class="image__main-image above-overlay"
+                                class="image__main-image"
                                 style="z-index: -1">
                                 <!-- AJAX LOADER -->
-                                <div id="ajaxloader" style="display: none;">
+                                <div id="ajaxloader" class="position-absolute end-0" style="display: none;">
                                     <img src="templatePG/img/goobi/ajaxloader2.gif" />
                                 </div>
                             </div>
