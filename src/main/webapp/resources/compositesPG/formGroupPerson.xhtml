@@ -261,7 +261,7 @@
                 <div class="input-group">
                     <h:selectOneMenu
                             id="normDatabase"
-                            styleClass="form-select"
+                            styleClass="form-select w-25"
                             pt:aria-label="#{msgs.mets_authority_database}"
                             value="#{cc.attrs.person.normDatabase}"
                             readonly="#{Metadaten.nurLesenModus}">
@@ -277,7 +277,7 @@
                     <h:inputText
                             id="normdataValue"
                             pt:aria-label="#{msgs.mets_authority_data} #{msgs.wert}"
-                            styleClass="form-control"
+                            styleClass="form-control w-75"
                             value="#{cc.attrs.person.normdataValue}"
                             readonly="#{Metadaten.nurLesenModus}">
                         <f:ajax

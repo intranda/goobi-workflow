@@ -162,7 +162,7 @@
                             <h:inputText
                                 id="inputText1"
                                 pt:aria-label="#{cc.attrs.metadata.md.type.name}"
-                                styleClass="form-control"
+                                styleClass="form-control w-25"
                                 value="#{cc.attrs.metadata.value}"
                                 disabled="#{cc.attrs.metadata.disableMetadataField}"
                                 readonly="#{Metadaten.nurLesenModus}">
@@ -172,7 +172,7 @@
                             </h:inputText>
                             <h:selectOneMenu
                                 id="selectNoDante"
-                                styleClass="form-select"
+                                styleClass="form-select w-25"
                                 pt:aria-label="#{msgs.mets_authority_database}"
                                 disabled="#{cc.attrs.metadata.disableIdentifierField or (cc.attrs.metadata.outputType == 'readonly')}"
                                 value="#{cc.attrs.metadata.normDatabase}"

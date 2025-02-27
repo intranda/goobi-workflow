@@ -299,7 +299,7 @@
                         pt:aria-label="#{msgs.mets_authority_data}"
                         value="#{cc.attrs.corporate.normDatabase}"
                         readonly="#{Metadaten.nurLesenModus}"
-                        styleClass="form-select">
+                        styleClass="form-select w-25">
                         <f:selectItems
                             value="#{cc.attrs.corporate.possibleDatabases}"
                             var="database"
@@ -312,7 +312,7 @@
                     <h:inputText
                         id="normdataValue"
                         pt:aria-label="#{msgs.mets_authority_data} #{msgs.wert}"
-                        styleClass="form-control w-50"
+                        styleClass="form-control w-75"
                         value="#{cc.attrs.corporate.normdataValue}"
                         readonly="#{Metadaten.nurLesenModus}">
                         <f:ajax
