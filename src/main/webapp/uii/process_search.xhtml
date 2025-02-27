@@ -6,10 +6,10 @@
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	template="/uii/templatePG/templatePG.html"
-	
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<ui:param
 		name="myPageTitle"
@@ -312,14 +312,14 @@
 									</h:panelGroup>
 
 									<!-- PLUS AND MINUS BUTTONS -->
-									<div class="col-sm-1">
+									<div class="col-sm-1 d-flex gap-2 my-auto">
 										<button
 											jsf:action="#{SearchForm.addRow}"
 											title="#{msgs.conditionAdd}"
 											aria-label="#{msgs.conditionAdd}"
 											jsf:id="addCondition"
-											class="btn btn-primary fa fa-plus"
-											style="margin-right: 5px">
+											class="btn btn-primary">
+											<util:icon icon="plus" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -330,7 +330,8 @@
 											aria-label="#{msgs.conditionRemove}"
 											jsf:rendered="#{SearchForm.sizeOfRowList > 1}"
 											jsf:id="removeCondition"
-											class="btn btn-primary fa fa-minus">
+											class="btn btn-primary">
+											<util:icon icon="minus" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
