@@ -11,6 +11,7 @@
     <composite:interface/>
 
     <composite:implementation>
+        <h:form id="meMenuActionsForm">
             <ul class="navbar-nav flex-row">
                 <!-- PAGE TITLE -->
                 <li class="nav-item">
@@ -45,8 +46,8 @@
                     <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" class="nav-link" jsf:id="showSinglePage" aria-label="#{msgs.mets_showImagesOne}" jsf:action="#{Metadaten.toggleImageView}" title="#{msgs.mets_showImagesOne}" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
-                           <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showThumbnails}"/>
-                          <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showOcr}"/>
+                        <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showThumbnails}"/>
+                        <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showOcr}"/>
                     </button>
                 </li>
 
@@ -277,5 +278,6 @@
                     </ul>
                 </li>
             </ul>
+        </h:form>
     </composite:implementation>
 </ui:composition>
