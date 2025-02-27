@@ -39,10 +39,12 @@
                     </button>
                 </section:header>
                 <div id="personMetadataBox" class="collapse show">
-                    <h:outputText
-                        value="#{msgs.mets_no_persons_assigned}"
-                        rendered="#{empty Metadaten.myPersonen}" />
-
+                    <h:panelGroup
+                        layout="block"
+                        styleClass="p-3 border-bottom"
+                        rendered="#{empty Metadaten.myPersonen}">
+                        #{msgs.mets_no_persons_assigned}
+                    </h:panelGroup>
                     <ui:repeat
                         id="personList"
                         var="currentPerson"
