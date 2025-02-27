@@ -7,7 +7,9 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:section="http://goobi.io/section"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:form="http://goobi.io/form"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface/>
 
@@ -117,25 +119,44 @@
                                                 </button>
                                             </div>
                                         </h:panelGroup>
-                                        <h:panelGroup id="metseditorPagesAllPages" layout="block" rendered="#{NavigationForm.uiStatus.pageassignment eq 'tab1'}">
+                                        <h:panelGroup
+                                            id="metseditorPagesAllPages"
+                                            layout="block"
+                                            rendered="#{NavigationForm.uiStatus.pageassignment eq 'tab1'}">
                                             <!-- PAGES ALL PAGES -->
                                             <div class="form-group form-group--flex structdata__all-pages">
                                                 <div class="row">
                                                     <div class="col-5">
-                                                        <h:outputText styleClass="form-group__label" value="#{msgs.alleSeiten}"/>
-                                                        <h:selectManyListbox id="selectPages" pt:aria-label="#{msgs.alleSeiten}" styleClass="form-control" value="#{Metadaten.alleSeitenAuswahl}">
+                                                        <h:outputText
+                                                            styleClass="form-group__label"
+                                                            value="#{msgs.alleSeiten}"/>
+                                                        <h:selectManyListbox
+                                                            id="selectPages"
+                                                            pt:aria-label="#{msgs.alleSeiten}"
+                                                            styleClass="form-control"
+                                                            value="#{Metadaten.alleSeitenAuswahl}">
                                                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                             <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
                                                     </h:selectManyListbox>
                                                     </div>
-                                                    <div class="col-2">
-                                                        <button jsf:id="s1" aria-label="#{msgs.mets_addTheseImages}" jsf:action="#{Metadaten.SeitenHinzu}" class="btn  font-light" style="margin:auto;margin-top: 140px;" title="#{msgs.mets_addTheseImages}">
-                                                            <span class="fa fa-chevron-right" aria-hidden="true"/>
+                                                    <div class="col-2 d-flex gap-2 flex-column justify-content-center">
+                                                        <button
+                                                            jsf:id="s1"
+                                                            aria-label="#{msgs.mets_addTheseImages}"
+                                                            jsf:action="#{Metadaten.SeitenHinzu}"
+                                                            class="btn font-light"
+                                                            title="#{msgs.mets_addTheseImages}">
+                                                            <util:icon icon="chevron-right" />
                                                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                             <f:ajax execute="@form" render="assignments :treeform"/>
                                                         </button>
-                                                        <button jsf:id="s2" aria-label="#{msgs.mets_removeTheseImages}" jsf:action="#{Metadaten.SeitenWeg}" class="btn  font-light" style="margin:auto; margin-top:5px;" title="#{msgs.mets_removeTheseImages}">
-                                                            <span class="fa fa-chevron-left" aria-hidden="true"/>
+                                                        <button
+                                                            jsf:id="s2"
+                                                            aria-label="#{msgs.mets_removeTheseImages}"
+                                                            jsf:action="#{Metadaten.SeitenWeg}"
+                                                            class="btn font-light"
+                                                            title="#{msgs.mets_removeTheseImages}">
+                                                            <util:icon icon="chevron-left" />
                                                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                             <f:ajax execute="@form" render="assignments :treeform"/>
                                                         </button>
@@ -152,63 +173,60 @@
                                         <h:panelGroup id="metseditorPagesQuickassign" layout="block" rendered="#{NavigationForm.uiStatus.pageassignment eq 'tab2'}">
 
                                             <!-- PAGES QUICKASSIGN -->
-                                            <div class="form-group form-group--flex form-group--inside structdata__quickassign">
+                                            <div class="structdata__quickassign">
                                                 <!-- FIRST PAGE -->
-                                                <div class="row">
-                                                    <div class="col-3">
-                                                        <h:outputText styleClass="form-group__label" value="#{msgs.ersteSeite}:"/>
-                                                    </div>
-                                                    <div class="col-8">
-
-                                                        <div class="form-control form-control--select">
-                                                            <h:selectOneMenu pt:aria-label="#{msgs.ersteSeite}" rendered="#{Metadaten.treeProperties.showpagesasajax==false}" value="#{Metadaten.pageSelectionFirstPage}" style="z-index: 99999">
-                                                                <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
-                                                            </h:selectOneMenu>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-1">
-                                                        <button jsf:id="showFirst" aria-label="#{msgs.mets_showThisImage}" class="btn btn--icon" jsf:action="#{Metadaten.BildErsteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" type="button">
-                                                            <span class="fa fa-eye" aria-hidden="true"/>
+                                                <form:field
+                                                    label="#{msgs.ersteSeite}">
+                                                    <div class="d-flex w-100 my-auto">
+                                                        <h:selectOneMenu
+                                                            pt:aria-label="#{msgs.ersteSeite}"
+                                                            rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
+                                                            value="#{Metadaten.pageSelectionFirstPage}"
+                                                            styleClass="form-select">
+                                                            <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
+                                                        </h:selectOneMenu>
+                                                        <button
+                                                            jsf:id="showFirst"
+                                                            aria-label="#{msgs.mets_showThisImage}"
+                                                            class="btn font-light" jsf:action="#{Metadaten.BildErsteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" type="button">
+                                                            <util:icon icon="eye" />
                                                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         </button>
                                                     </div>
-                                                </div>
-
+                                                </form:field>
                                                 <!-- LAST PAGE -->
-                                                <div class="row">
-                                                    <div class="col-3">
-                                                        <h:outputText styleClass="form-group__label" value="#{msgs.letzteSeite}:"/>
-                                                    </div>
-                                                    <div class="col-8">
-                                                        <div class="form-control form-control--select">
-                                                            <h:selectOneMenu pt:aria-label="#{msgs.letzteSeite}" rendered="#{Metadaten.treeProperties.showpagesasajax==false}" value="#{Metadaten.pageSelectionLastPage}">
-                                                                <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
-                                                            </h:selectOneMenu>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-1">
-                                                        <button jsf:id="showLast" aria-label="#{msgs.mets_showThisImage}" class="btn btn--icon" jsf:action="#{Metadaten.BildLetzteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" type="button">
-                                                            <span class="fa fa-eye" aria-hidden="true"/>
+                                                <form:field
+                                                    label="#{msgs.letzteSeite}">
+                                                    <div class="d-flex w-100 my-auto">
+                                                        <h:selectOneMenu
+                                                            pt:aria-label="#{msgs.letzteSeite}"
+                                                            rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
+                                                            value="#{Metadaten.pageSelectionLastPage}"
+                                                            styleClass="form-select">
+                                                            <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
+                                                        </h:selectOneMenu>
+                                                        <button
+                                                            jsf:id="showLast"
+                                                            aria-label="#{msgs.mets_showThisImage}"
+                                                            class="btn font-light"
+                                                            jsf:action="#{Metadaten.BildLetzteSeiteAnzeigen}"
+                                                            title="#{msgs.mets_showThisImage}"
+                                                            type="button">
+                                                            <util:icon icon="eye" />
                                                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         </button>
                                                     </div>
-                                                </div>
-
-                                                <hr/>
-
+                                                </form:field>
                                                 <!-- ACTION -->
-                                                <div class="row">
-                                                    <div class="col-auto mr-auto"/>
-                                                    <div class="col-auto">
-                                                        <button jsf:id="SeitenStartUndEndeSetzen" class="btn btn-blank" jsf:action="#{Metadaten.SeitenStartUndEndeSetzen}" jsf:rendered="#{Metadaten.treeProperties.showpagesasajax==false}" type="button">
-                                                            <h:outputText value="#{msgs.seitenZuweisen}"/>
-                                                            <f:ajax execute="@form" render="assignments :treeform"/>
-                                                        </button>
-                                                        <button jsf:id="showpagesasajax" class="btn btn-blank" jsf:action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}" jsf:rendered="#{Metadaten.treeProperties.showpagesasajax==true}" type="button">
-                                                            <h:outputText value="#{msgs.seitenZuweisen}"/>
-                                                            <f:ajax execute="@form" render="assignments :treeform"/>
-                                                        </button>
-                                                    </div>
+                                                <div class="section-footer">
+                                                    <button jsf:id="SeitenStartUndEndeSetzen" class="btn btn-blank" jsf:action="#{Metadaten.SeitenStartUndEndeSetzen}" jsf:rendered="#{Metadaten.treeProperties.showpagesasajax==false}" type="button">
+                                                        <h:outputText value="#{msgs.seitenZuweisen}"/>
+                                                        <f:ajax execute="@form" render="assignments :treeform"/>
+                                                    </button>
+                                                    <button jsf:id="showpagesasajax" class="btn btn-blank" jsf:action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}" jsf:rendered="#{Metadaten.treeProperties.showpagesasajax==true}" type="button">
+                                                        <h:outputText value="#{msgs.seitenZuweisen}"/>
+                                                        <f:ajax execute="@form" render="assignments :treeform"/>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </h:panelGroup>
