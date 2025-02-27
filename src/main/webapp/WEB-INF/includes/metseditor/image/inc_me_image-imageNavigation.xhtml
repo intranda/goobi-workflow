@@ -37,7 +37,6 @@
                     <button jsf:action="#{Metadaten.imageLeft}" jsf:id="prevImage" class="btn btn-primary" type="button">
                         <span class="fa fa-angle-left" aria-hidden="true"/>
                         <span>#{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}</span>
-                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                         <f:ajax execute="@form :pageareas" render="@form :pageareas :altoEditAutocomplete"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
@@ -59,7 +58,6 @@
                     <button jsf:action="#{Metadaten.imageRight}" jsf:id="nextImage" class="btn btn-primary" type="button">
                         <span>#{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}</span>
                         <span class="fa fa-angle-right" aria-hidden="true"/>
-                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                         <f:ajax execute="@form :pageareas" render="@form :pageareas :altoEditAutocomplete"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>

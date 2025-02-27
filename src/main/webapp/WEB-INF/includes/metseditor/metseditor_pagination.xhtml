@@ -51,7 +51,7 @@
                                             </div>
                                             <div class="d-flex flex-nowrap">
                                                 <h:panelGroup rendered="#{page.type == 'div'}">
-                                                    <button class="btn btn-outline" title="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" aria-label="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" jsf:action="#{Metadaten.loadImageInThumbnailList}" data-renderimage="true" data-bs-toggle="tooltip" data-bs-placement="left" data-boundary="window">
+                                                    <button class="btn btn-outline font-light" title="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" aria-label="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" jsf:action="#{Metadaten.loadImageInThumbnailList}" data-renderimage="true" data-bs-toggle="tooltip" data-bs-placement="left" data-boundary="window">
                                                         <f:setPropertyActionListener value="#{page.physicalPageNo}" target="#{Metadaten.bildNummerGeheZuCompleteString}"/>
                                                         <ui:fragment rendered="#{page.doublePage}">
                                                             <span class="fa fa-picture-o" style="float: right;" aria-hidden="true"/>
@@ -63,7 +63,7 @@
                                                         <f:setPropertyActionListener value="#{page.physicalPageNo}" target="#{Metadaten.currentRepresentativePage}"/>
                                                         <f:setPropertyActionListener value="#{page.representative}" target="#{Metadaten.resetRepresentative}"/>
                                                         <f:ajax execute="@this" render=":pagePaginationList"/>
-                                                        <span class="fa fa-star#{page.representative?'':'-o'}" aria-hidden="true"/>
+                                                        <span class="fa fa-star#{page.representative?'':'-o font-light'}" aria-hidden="true"/>
                                                     </button>
                                                 </h:panelGroup>
                                                 <h:panelGroup rendered="#{page.type != 'div'}" styleClass="pagination__left__page__item">
