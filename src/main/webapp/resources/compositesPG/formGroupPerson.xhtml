@@ -43,64 +43,6 @@
                             event="valueChange"/>
                     </h:inputText>
                     <!-- ACTIONS -->
-                    <!-- DELETE -->
-                    <button
-                        jsf:id="delete"
-                        class="btn personButton"
-                        aria-label="#{msgs.personendatenLoeschen}"
-                        tabindex="0"
-                        jsf:action="#{Metadaten.LoeschenPerson}"
-                        title="#{msgs.personendatenLoeschen}"
-                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
-                        type="button">
-                        <span
-                            class="fa fa-lg fa-trash-o"
-                            aria-hidden="true" />
-                        <f:setPropertyActionListener
-                            target="#{Metadaten.curPerson}"
-                            value="#{cc.attrs.person}"/>
-                        <f:param
-                            name="ID"
-                            value="#{cc.attrs.person.identifier}"/>
-                        <f:passThroughAttribute
-                            name="data-bs-toggle"
-                            value="tooltip"/>
-                        <f:passThroughAttribute
-                            name="data-bs-placement"
-                            value="top"/>
-                        <f:ajax
-                            execute="@form"
-                            render="@form"/>
-                    </button>
-                    <!-- COPY -->
-                    <button
-                        jsf:id="copy"
-                        tabindex="0"
-                        class="btn personButton"
-                        jsf:action="#{Metadaten.KopierenPerson}"
-                        title="#{msgs.personendatenKopieren}"
-                        aria-label="#{msgs.personendatenKopieren}"
-                        jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
-                        type="button">
-                        <span
-                            class="fa fa-lg fa-copy"
-                            aria-hidden="true" />
-                        <f:setPropertyActionListener
-                            target="#{Metadaten.currentPerson}"
-                            value="#{cc.attrs.person.p}"/>
-                        <f:param
-                            name="ID"
-                            value="#{cc.attrs.person.identifier}"/>
-                        <f:passThroughAttribute
-                            name="data-bs-toggle"
-                            value="tooltip"/>
-                        <f:passThroughAttribute
-                            name="data-bs-placement"
-                            value="top"/>
-                        <f:ajax
-                            execute="@form"
-                            render="@form"/>
-                    </button>
                     <!-- NORMDATA -->
                     <ui:fragment rendered="#{cc.attrs.person.normdata}">
                         <!-- GND -->
@@ -192,6 +134,64 @@
                                 value="tooltip" />
                         </button>
                     </ui:fragment>
+                    <!-- COPY -->
+                    <button
+                        jsf:id="copy"
+                        tabindex="0"
+                        class="btn font-light personButton"
+                        jsf:action="#{Metadaten.KopierenPerson}"
+                        title="#{msgs.personendatenKopieren}"
+                        aria-label="#{msgs.personendatenKopieren}"
+                        jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
+                        type="button">
+                        <span
+                            class="fa fa-lg fa-copy"
+                            aria-hidden="true" />
+                        <f:setPropertyActionListener
+                            target="#{Metadaten.currentPerson}"
+                            value="#{cc.attrs.person.p}"/>
+                        <f:param
+                            name="ID"
+                            value="#{cc.attrs.person.identifier}"/>
+                        <f:passThroughAttribute
+                            name="data-bs-toggle"
+                            value="tooltip"/>
+                        <f:passThroughAttribute
+                            name="data-bs-placement"
+                            value="top"/>
+                        <f:ajax
+                            execute="@form"
+                            render="@form"/>
+                    </button>
+                    <!-- DELETE -->
+                    <button
+                        jsf:id="delete"
+                        class="btn font-light personButton"
+                        aria-label="#{msgs.personendatenLoeschen}"
+                        tabindex="0"
+                        jsf:action="#{Metadaten.LoeschenPerson}"
+                        title="#{msgs.personendatenLoeschen}"
+                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
+                        type="button">
+                        <span
+                            class="fa fa-lg fa-trash-o"
+                            aria-hidden="true" />
+                        <f:setPropertyActionListener
+                            target="#{Metadaten.curPerson}"
+                            value="#{cc.attrs.person}"/>
+                        <f:param
+                            name="ID"
+                            value="#{cc.attrs.person.identifier}"/>
+                        <f:passThroughAttribute
+                            name="data-bs-toggle"
+                            value="tooltip"/>
+                        <f:passThroughAttribute
+                            name="data-bs-placement"
+                            value="top"/>
+                        <f:ajax
+                            execute="@form"
+                            render="@form"/>
+                    </button>
                 </div>
             </div>
         </div>

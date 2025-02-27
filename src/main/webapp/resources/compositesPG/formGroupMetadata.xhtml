@@ -228,63 +228,6 @@
                     </h:panelGroup>
                     <!-- ACTIONS -->
                     <ui:fragment rendered="#{cc.attrs.cols eq 3}">
-                            <!-- DELETE -->
-                            <button
-                                class="btn metadataButton"
-                                jsf:id="actionDelete"
-                                aria-label="#{msgs.DELETE_CURRENT_METADATA}"
-                                tabindex="0"
-                                jsf:action="#{Metadaten.Loeschen}"
-                                title="#{msgs.metadatenLoeschen}"
-                                jsf:rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}"
-                                type="button">
-                                <span class="fa fa-lg fa-trash-o"
-                                    aria-hidden="true" />
-                                <f:setPropertyActionListener
-                                    target="#{Metadaten.curMetadatum}"
-                                    value="#{cc.attrs.metadata}" />
-                                <f:param
-                                    name="ID"
-                                    value="#{cc.attrs.metadata.identifier}" />
-                                <f:passThroughAttribute
-                                    name="data-bs-toggle"
-                                    value="tooltip" />
-                                <f:passThroughAttribute
-                                    name="data-bs-placement"
-                                    value="top" />
-                                <f:ajax
-                                    execute="@form"
-                                    render="@form" />
-                            </button>
-
-                            <!-- COPY -->
-                            <button
-                                class="btn metadataButton"
-                                jsf:id="actionCopy"
-                                aria-label="#{msgs.metadatenKopieren}"
-                                tabindex="0"
-                                jsf:action="#{Metadaten.Copy}"
-                                title="#{msgs.metadatenKopieren}"
-                                type="button"
-                                jsf:rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly' and Metadaten.isAddableMetadata(cc.attrs.metadata.md)}">
-                                <span class="fa fa-lg fa-copy"
-                                    aria-hidden="true" />
-                                <f:setPropertyActionListener
-                                    target="#{Metadaten.currentMetadata}"
-                                    value="#{cc.attrs.metadata.md}" />
-                                <f:param
-                                    name="ID"
-                                    value="#{cc.attrs.metadata.identifier}" />
-                                <f:passThroughAttribute
-                                    name="data-bs-toggle"
-                                    value="tooltip" />
-                                <f:passThroughAttribute
-                                    name="data-bs-placement"
-                                    value="top" />
-                                <f:ajax
-                                    execute="@form"
-                                    render="@form" />
-                            </button>
 
                             <!-- CONVERT -->
                             <button
@@ -594,6 +537,63 @@
                                         value="top" />
                                 </button>
                             </ui:fragment>
+
+                            <!-- COPY -->
+                            <button
+                                class="btn font-light metadataButton"
+                                jsf:id="actionCopy"
+                                aria-label="#{msgs.metadatenKopieren}"
+                                tabindex="0"
+                                jsf:action="#{Metadaten.Copy}"
+                                title="#{msgs.metadatenKopieren}"
+                                type="button"
+                                jsf:rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly' and Metadaten.isAddableMetadata(cc.attrs.metadata.md)}">
+                                <span class="fa fa-lg fa-copy"
+                                    aria-hidden="true" />
+                                <f:setPropertyActionListener
+                                    target="#{Metadaten.currentMetadata}"
+                                    value="#{cc.attrs.metadata.md}" />
+                                <f:param
+                                    name="ID"
+                                    value="#{cc.attrs.metadata.identifier}" />
+                                <f:passThroughAttribute
+                                    name="data-bs-toggle"
+                                    value="tooltip" />
+                                <f:passThroughAttribute
+                                    name="data-bs-placement"
+                                    value="top" />
+                                <f:ajax
+                                    execute="@form"
+                                    render="@form" />
+                            </button>
+                            <!-- DELETE -->
+                            <button
+                                class="btn font-light metadataButton"
+                                jsf:id="actionDelete"
+                                aria-label="#{msgs.DELETE_CURRENT_METADATA}"
+                                tabindex="0"
+                                jsf:action="#{Metadaten.Loeschen}"
+                                title="#{msgs.metadatenLoeschen}"
+                                jsf:rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}"
+                                type="button">
+                                <span class="fa fa-lg fa-trash-o"
+                                    aria-hidden="true" />
+                                <f:setPropertyActionListener
+                                    target="#{Metadaten.curMetadatum}"
+                                    value="#{cc.attrs.metadata}" />
+                                <f:param
+                                    name="ID"
+                                    value="#{cc.attrs.metadata.identifier}" />
+                                <f:passThroughAttribute
+                                    name="data-bs-toggle"
+                                    value="tooltip" />
+                                <f:passThroughAttribute
+                                    name="data-bs-placement"
+                                    value="top" />
+                                <f:ajax
+                                    execute="@form"
+                                    render="@form" />
+                            </button>
                     </ui:fragment>
                 </div>
             </div>

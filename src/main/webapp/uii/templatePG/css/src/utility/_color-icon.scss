@@ -1,3 +1,6 @@
-.color-icon:hover {
-    filter: grayscale(60%);
+.color-icon {
+    filter: grayscale(80%);
+    &:hover {
+        filter: grayscale(0%);
+    }
 }

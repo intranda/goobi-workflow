@@ -42,58 +42,6 @@
                             event="valueChange" />
                     </h:inputText>
                     <!-- ACTIONS -->
-                    <!-- DELETE -->
-                    <button
-                        jsf:id="delete"
-                        tabindex="-1"
-                        jsf:action="#{Metadaten.deleteCorporate}"
-                        aria-label="#{msgs.mets_corporate_deleteCorporate}"
-                        title="#{msgs.mets_corporate_deleteCorporate}"
-                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
-                        class="btn"
-                        type="button">
-                        <span
-                            class="fa fa-lg fa-trash-o"
-                            aria-hidden="true" />
-                        <f:setPropertyActionListener
-                            target="#{Metadaten.currentCorporate}"
-                            value="#{cc.attrs.corporate.corporate}" />
-                        <f:passThroughAttribute
-                            name="data-toggle"
-                            value="tooltip" />
-                        <f:passThroughAttribute
-                            name="data-placement"
-                            value="top" />
-                        <f:ajax
-                            execute="@form"
-                            render="@form" />
-                    </button>
-                    <!-- COPY -->
-                    <button
-                        jsf:id="copy"
-                        tabindex="-1"
-                        jsf:action="#{Metadaten.copyCorporate}"
-                        title="#{msgs.mets_corporate_copyCorporate}"
-                        aria-label="#{msgs.mets_corporate_copyCorporate}"
-                        jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.corporate.corporate.type)}"
-                        type="button"
-                            class="btn">
-                        <span
-                            class="fa fa-lg fa-copy"
-                            aria-hidden="true" />
-                        <f:setPropertyActionListener
-                            target="#{Metadaten.currentCorporate}"
-                            value="#{cc.attrs.corporate.corporate}" />
-                        <f:passThroughAttribute
-                            name="data-toggle"
-                            value="tooltip" />
-                        <f:passThroughAttribute
-                            name="data-placement"
-                            value="top" />
-                        <f:ajax
-                            execute="@form"
-                            render="@form" />
-                    </button>
                     <!-- NORMDATA -->
                     <ui:fragment rendered="#{cc.attrs.corporate.normdata}">
                         <button
@@ -153,6 +101,58 @@
                                 value="top" />
                         </button>
                     </ui:fragment>
+                    <!-- COPY -->
+                    <button
+                        jsf:id="copy"
+                        tabindex="-1"
+                        jsf:action="#{Metadaten.copyCorporate}"
+                        title="#{msgs.mets_corporate_copyCorporate}"
+                        aria-label="#{msgs.mets_corporate_copyCorporate}"
+                        jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.corporate.corporate.type)}"
+                        type="button"
+                        class="btn font-light">
+                        <span
+                            class="fa fa-lg fa-copy"
+                            aria-hidden="true" />
+                        <f:setPropertyActionListener
+                            target="#{Metadaten.currentCorporate}"
+                            value="#{cc.attrs.corporate.corporate}" />
+                        <f:passThroughAttribute
+                            name="data-toggle"
+                            value="tooltip" />
+                        <f:passThroughAttribute
+                            name="data-placement"
+                            value="top" />
+                        <f:ajax
+                            execute="@form"
+                            render="@form" />
+                    </button>
+                    <!-- DELETE -->
+                    <button
+                        jsf:id="delete"
+                        tabindex="-1"
+                        jsf:action="#{Metadaten.deleteCorporate}"
+                        aria-label="#{msgs.mets_corporate_deleteCorporate}"
+                        title="#{msgs.mets_corporate_deleteCorporate}"
+                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
+                        class="btn font-light"
+                        type="button">
+                        <span
+                            class="fa fa-lg fa-trash-o"
+                            aria-hidden="true" />
+                        <f:setPropertyActionListener
+                            target="#{Metadaten.currentCorporate}"
+                            value="#{cc.attrs.corporate.corporate}" />
+                        <f:passThroughAttribute
+                            name="data-toggle"
+                            value="tooltip" />
+                        <f:passThroughAttribute
+                            name="data-placement"
+                            value="top" />
+                        <f:ajax
+                            execute="@form"
+                            render="@form" />
+                    </button>
                 </div>
             </div>
         </div>
