@@ -19,7 +19,13 @@
                     <li class="treeView-item" style="--level: #{item.niveau}">
                         <div class="spacer"/>
                         <div class="toggle">
-                            <button jsf:id="expand" aria-label="#{msgs.expand}" jsf:action="#{NavigationForm.Reload}" class="btn btn--icon p-0 #{item.node.expanded ? 'expand' : 'expanded'}" style="--level: #{item.niveau}" jsf:rendered="#{item.node.hasChildren}">
+                            <button
+                                jsf:id="expand"
+                                aria-label="#{msgs.expand}"
+                                jsf:action="#{NavigationForm.Reload}"
+                                class="btn btn--icon p-0 d-flex flex-column justify-content-start mt-1 #{item.node.expanded ? 'expand' : 'expanded'}"
+                                style="--level: #{item.niveau}"
+                                jsf:rendered="#{item.node.hasChildren}">
                                 <span class="#{item.node.expanded ? 'fa fa-caret-down fa-lg' : 'fa fa-caret-right fa-lg'}"/>
                                 <f:setPropertyActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" target="#{item.node.expanded}"/>
                                 <f:ajax execute="treeform" render="treeform"/>
@@ -27,10 +33,22 @@
                         </div>
                         <div class="content">
                             <ui:fragment rendered="#{Metadaten.treeProperties.showMetadataPopup}">
-                                <button jsf:id="link" aria-label="#{msgs.seite}" jsf:immediate="true" class="btn btn--icon p-0 #{item.node.selected ? 'table__structure-link-active fw-700' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}" style="--level: #{item.niveau}" jsf:action="#{Metadaten.loadRightFrame}" data-bs-trigger="hover" data-bs-container="#treeform" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true" data-bs-content="#{item.node.metadataPopup}">
+                                <button
+                                    jsf:id="link"
+                                    aria-label="#{msgs.seite}"
+                                    jsf:immediate="true"
+                                    class="btn btn--icon p-0 d-flex align-items-baseline #{item.node.selected ? 'table__structure-link-active fw-700' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}"
+                                    style="--level: #{item.niveau}"
+                                    jsf:action="#{Metadaten.loadRightFrame}"
+                                    data-bs-trigger="hover"
+                                    data-bs-container="#treeform"
+                                    data-bs-toggle="popover"
+                                    data-bs-placement="top"
+                                    data-bs-html="true"
+                                    data-bs-content="#{item.node.metadataPopup}">
                                     <span class="fa fa-file-o" aria-hidden="true"/>
                                     <span jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle" style="margin-left: 5px" aria-hidden="true"/>
-                                    <span>
+                                    <span class="text-start">
                                         <h:outputText styleClass="item-niveau" value="#{item.niveau}" rendered="#{Metadaten.treeProperties.showtreelevel}"/>
                                         <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}"/>
                                         <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}"/>
