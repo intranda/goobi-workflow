@@ -15,7 +15,7 @@
             id="bookmarks"
             class="bookmarks">
             <h:form id="bookmarkForm">
-                <ul role="list">
+                <ul role="list" class="d-flex flex-column gap-1">
                     <!-- BOOKMARK 1 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc1 != null}">
                         <li class="bookmarks__double">
@@ -25,7 +25,7 @@
                                 aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn-primary bookmark-add"
                                 title="#{msgs.mets_bookmarkShow}"
-                                data-toggle="tooltip"
+                                data-bs-toggle="tooltip"
                                 type="submit">
                                 <span class="fa fa-bookmark" aria-hidden="true" />
                             </button>
@@ -37,9 +37,9 @@
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
                                 <span class="fa fa-times" aria-hidden="true" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
-                                <f:ajax render="bookmarkForm" />
+                                <f:ajax render="@form" />
                             </button>
                         </li>
                     </ui:fragment>
@@ -53,12 +53,12 @@
                                 title="#{msgs.mets_bookmarkAdd}"
                                 type="button">
                                 <span class="fa fa-bookmark-o" aria-hidden="true" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
                                 <f:setPropertyActionListener
                                     value="#{Metadaten.image.bookmarkUrl}"
                                     target="#{NavigationForm.uiStatus.mets_toc1}" />
 
-                                <f:ajax render="bookmarkForm" />
+                                <f:ajax render="@form" />
                             </button>
                         </li>
                     </ui:fragment>
@@ -72,7 +72,7 @@
                                 aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn-primary bookmark-add"
                                 title="#{msgs.mets_bookmarkShow}"
-                                data-toggle="tooltip"
+                                data-bs-toggle="tooltip"
                                 type="submit">
                                 <span class="fa fa-bookmark" aria-hidden="true" />
                             </button>
@@ -84,9 +84,9 @@
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
                                 <span class="fa fa-times" aria-hidden="true" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
-                                <f:ajax render="bookmarkForm" />
+                                <f:ajax render="@form" />
                             </button>
                         </li>
                     </ui:fragment>
@@ -100,11 +100,11 @@
                                 title="#{msgs.mets_bookmarkAdd}"
                                 type="button">
                                 <span class="fa fa-bookmark-o" aria-hidden="true" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
                                 <f:setPropertyActionListener
                                     value="#{Metadaten.image.bookmarkUrl}"
                                     target="#{NavigationForm.uiStatus.mets_toc2}" />
-                                <f:ajax render="bookmarkForm" />
+                                <f:ajax render="@form" />
                             </button>
                         </li>
                     </ui:fragment>
@@ -118,7 +118,7 @@
                                 aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn-primary bookmark-add"
                                 title="#{msgs.mets_bookmarkShow}"
-                                data-toggle="tooltip"
+                                data-bs-toggle="tooltip"
                                 type="submit">
                                 <span class="fa fa-bookmark" aria-hidden="true" />
                             </button>
@@ -130,9 +130,9 @@
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
                                 <span class="fa fa-times" aria-hidden="true" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
-                                <f:ajax render="bookmarkForm" />
+                                <f:ajax render="@form" />
                             </button>
                         </li>
                     </ui:fragment>
@@ -146,11 +146,11 @@
                                 title="#{msgs.mets_bookmarkAdd}"
                                 type="button">
                                 <span class="fa fa-bookmark-o" aria-hidden="true" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
                                 <f:setPropertyActionListener
                                     value="#{Metadaten.image.bookmarkUrl}"
                                     target="#{NavigationForm.uiStatus.mets_toc3}" />
-                                <f:ajax render="bookmarkForm" />
+                                <f:ajax render="@form" />
                             </button>
                         </li>
                     </ui:fragment>
@@ -164,7 +164,7 @@
                                 aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn-primary bookmark-add"
                                 title="#{msgs.mets_bookmarkShow}"
-                                data-toggle="tooltip"
+                                data-bs-toggle="tooltip"
                                 type="submit">
                                 <span class="fa fa-bookmark" aria-hidden="true" />
                             </button>
@@ -176,9 +176,9 @@
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
                                 <span class="fa fa-times" aria-hidden="true" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
-                                <f:ajax render="bookmarkForm" />
+                                <f:ajax render="@form" />
                             </button>
                         </li>
                     </ui:fragment>
@@ -192,11 +192,11 @@
                                 title="#{msgs.mets_bookmarkAdd}"
                                 type="button">
                                 <span class="fa fa-bookmark-o" aria-hidden="true" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
                                 <f:setPropertyActionListener
                                     value="#{Metadaten.image.bookmarkUrl}"
                                     target="#{NavigationForm.uiStatus.mets_toc4}" />
-                                <f:ajax render="bookmarkForm" />
+                                <f:ajax render="@form" />
                             </button>
                         </li>
                     </ui:fragment>
@@ -210,7 +210,7 @@
                                 aria-label="#{msgs.mets_bookmarkShow}"
                                 class="btn btn-primary bookmark-add"
                                 title="#{msgs.mets_bookmarkShow}"
-                                data-toggle="tooltip"
+                                data-bs-toggle="tooltip"
                                 type="submit">
                                 <span class="fa fa-bookmark" aria-hidden="true" />
                             </button>
@@ -222,9 +222,9 @@
                                 title="#{msgs.mets_bookmarkRemove}"
                                 type="button">
                                 <span class="fa fa-times" aria-hidden="true" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                <f:ajax render="bookmarkForm" />
+                                <f:ajax render="@form" />
                             </button>
                         </li>
                     </ui:fragment>
@@ -238,11 +238,11 @@
                                 title="#{msgs.mets_bookmarkAdd}"
                                 type="button">
                                 <span class="fa fa-bookmark-o" aria-hidden="true" />
-                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
                                 <f:setPropertyActionListener
                                     value="#{Metadaten.image.bookmarkUrl}"
                                     target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                <f:ajax render="bookmarkForm" />
+                                <f:ajax render="@form" />
                             </button>
                         </li>
                     </ui:fragment>
