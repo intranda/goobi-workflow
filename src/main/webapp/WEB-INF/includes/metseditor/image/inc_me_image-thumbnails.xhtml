@@ -19,11 +19,11 @@
                 <ui:include src="inc_me_image-thumbNavigation.xhtml"/>
 
                 <!-- THUMBNAILS -->
-                <div id="thumbnails" class="thumbnails" dir="#{Metadaten.pagesRTL?'rtl':'ltr'}">
+                <div id="thumbnails" class="thumbnails overflow-y-scroll overflow-x-hidden" dir="#{Metadaten.pagesRTL?'rtl':'ltr'}" style="max-height: calc(100vh - 13rem); height: 100%;">
                     <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
                         <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''}" dir="auto">
                             <!-- THUMBNAIL IMAGE -->
-                            <div id="thumb_#{image.order}" class="thumbnails__thumb-image">
+                            <div id="thumb_#{image.order}" class="thumbnails__thumb-image d-flex justify-content-center flex-column">
                                 <button type="button" jsf:id="thumbnailImage" aria-label="#{msgs.thumbnail}" jsf:action="#{Metadaten.checkSelectedThumbnail(image.order)}" jsf:onclick="goobiWorkflowJS.updateSelectedThumbnail(this);" class="btn">
                                     <!-- IMAGE -->
                                     <ui:fragment rendered="#{image.type == 'image' || image.type == 'pdf'}">
@@ -42,19 +42,16 @@
                                     <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                                     <f:ajax render=":pagePaginationList :openseadragonform :altoEditAutocomplete" execute="@form"/>
                                     <f:passThroughAttribute name="data-renderimage" value="true"/>
+                                    <!-- THUMBNAIL CAPTION -->
+                                    <div class="thumbnails__thumb-caption">
+                                        <span>
+                                            <h:outputText rendered="#{NavigationForm.uiStatus.mets_thumbFilename}" value="#{Metadaten.pageMap[''.concat(image.order)].label}"/>
+                                            <h:outputText rendered="#{not NavigationForm.uiStatus.mets_thumbFilename}" value="#{image.tooltip}"/>
+                                        </span>
+                                    </div>
                                 </button>
                             </div>
 
-                            <!-- THUMBNAIL CAPTION -->
-                            <div class="thumbnails__thumb-caption">
-                                <span>
-
-                                    <h:outputText rendered="#{NavigationForm.uiStatus.mets_thumbFilename}" value="#{Metadaten.pageMap[''.concat(image.order)].label}"/>
-                                    <h:outputText rendered="#{not NavigationForm.uiStatus.mets_thumbFilename}" value="#{image.tooltip}"/>
-                                </span>
-
-                                <!--                                 <hr /> -->
-                            </div>
                         </div>
                     </ui:repeat>
                 </div>
