@@ -7,7 +7,7 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/templatePG/templatePG.html"
-    
+
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -33,203 +33,190 @@
 </ui:define>
 
 <ui:define name="content">
-<main id="batchAll">
-    <h:form
-        id="myform"
-        rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
-        onkeypress="submitOnEnter(event);">
+    <main id="batchAll">
+        <h:form
+            id="myform"
+            rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
+            onkeypress="submitOnEnter(event);">
 
-    <div class="row">
-        <div class="col-sm-12 col-md-6">
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
 
-            <intranda:box
-                boxType="primary"
-                icon="fa-archive"
-                title="#{msgs.batches}"
-                boxPadding="true">
+                <intranda:box
+                    boxType="primary"
+                    icon="fa-archive"
+                    title="#{msgs.batches}"
+                    boxPadding="true">
 
 
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-sm-9">
-                        <h:inputText
-                            id="batchfilter"
-                            pt:aria-label="#{msgs.batch} #{msgs.filter}"
-                            value="#{BatchForm.batchfilter}"
-                            styleClass="form-control focusable">
-                            <c:if test="#{BatchForm.batchfilter ne ''}">
-                                <f:passThroughAttribute name="data-gw-focus-on-load" value="true" />
-                            </c:if>
-                        </h:inputText>
-                    </div>
-                    <div class="col-sm-3">
-                        <button
-                            jsf:id="filterBatches"
-                            jsf:action="#{BatchForm.filterBatches}"
-                            class="btn btn-primary-400 submitOnEnter"
-                            title="#{msgs.filter}">
-                            <span class="fa fa-search" />
-                            <span>
-                                <h:outputText value="#{msgs.filter}" />
-                            </span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <h:selectManyListbox
-                            id="selectedBatches"
-                            pt:aria-label="#{msgs.selectedBatches}"
-                            value="#{BatchForm.selectedBatchIds}"
-                            styleClass="form-control"
-                            size="20">
-                        <f:selectItems
-                            var="batch"
-                            value="#{BatchForm.currentBatchesAsSelectItems}" />
-                        </h:selectManyListbox>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <h:inputText
+                                id="batchfilter"
+                                pt:aria-label="#{msgs.batch} #{msgs.filter}"
+                                value="#{BatchForm.batchfilter}"
+                                styleClass="form-control focusable">
+                                <c:if test="#{BatchForm.batchfilter ne ''}">
+                                    <f:passThroughAttribute name="data-gw-focus-on-load" value="true" />
+                                </c:if>
+                            </h:inputText>
+                        </div>
+                        <div class="col-sm-3">
+                            <button
+                                jsf:id="filterBatches"
+                                jsf:action="#{BatchForm.filterBatches}"
+                                class="btn btn-primary-400 submitOnEnter"
+                                title="#{msgs.filter}">
+                                <span class="fa fa-search" />
+                                <span>
+                                    <h:outputText value="#{msgs.filter}" />
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <h:panelGrid columns="1" styleClass="no-borders">
-                        <button
-                            jsf:id="loadProcessData"
-                            jsf:action="#{BatchForm.loadProcessData}"
-                            class="btn-link">
-                            <h:outputText value="#{msgs.loadProcessesOfBatch}" />
-                        </button>
-
-                        <button
-                            jsf:id="downloadDocket"
-                            jsf:action="#{BatchForm.downloadDocket}"
-                            class="btn-link">
-                            <h:outputText value="#{msgs.process_generateDocket}" />
-                        </button>
-
-                        <button
-                            jsf:id="editProperties"
-                            jsf:action="#{BatchForm.editProperties}"
-                            class="btn-link">
-                            <h:outputText value="#{msgs.eigenschaftBearbeiten}" />
-                        </button>
-
-                        <button
-                            jsf:id="deleteBatch"
-                            jsf:action="#{BatchForm.deleteBatch}"
-                            class="btn-link">
-                            <h:outputText value="#{msgs.deleteBatch}" />
-                        </button>
-
-                            </h:panelGrid>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h:selectManyListbox
+                                id="selectedBatches"
+                                pt:aria-label="#{msgs.selectedBatches}"
+                                value="#{BatchForm.selectedBatchIds}"
+                                styleClass="form-control"
+                                size="20">
+                            <f:selectItems
+                                var="batch"
+                                value="#{BatchForm.currentBatchesAsSelectItems}" />
+                            </h:selectManyListbox>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            </intranda:box>
+                <div class="d-flex flex-column align-items-start">
+                    <button
+                        jsf:id="loadProcessData"
+                        jsf:action="#{BatchForm.loadProcessData}"
+                        class="btn btn-link text-400">
+                        <h:outputText value="#{msgs.loadProcessesOfBatch}" />
+                    </button>
 
-        </div> <!-- end col -->
+                    <button
+                        jsf:id="downloadDocket"
+                        jsf:action="#{BatchForm.downloadDocket}"
+                        class="btn btn-link text-400">
+                        <h:outputText value="#{msgs.process_generateDocket}" />
+                    </button>
 
-        <div class="col-sm-12 col-md-6">
+                    <button
+                        jsf:id="editProperties"
+                        jsf:action="#{BatchForm.editProperties}"
+                        class="btn btn-link text-400">
+                        <h:outputText value="#{msgs.eigenschaftBearbeiten}" />
+                    </button>
 
-            <intranda:box
-                boxType="primary"
-                icon="fa-tasks"
-                title="#{msgs.prozesse}"
-                boxPadding="true">
+                    <button
+                        jsf:id="deleteBatch"
+                        jsf:action="#{BatchForm.deleteBatch}"
+                        class="btn btn-link text-400">
+                        <h:outputText value="#{msgs.deleteBatch}" />
+                    </button>
+                </div>
 
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-sm-9">
-                        <h:inputText
-                            id="processfilter"
-                            pt:aria-label="#{msgs.filterProcesses}"
-                            value="#{BatchForm.processfilter}"
-                            styleClass="form-control focusable"
-                            onkeypress="submitOnEnter(event, 'filterProcesses');">
-                            <c:if test="#{BatchForm.processfilter ne ''}">
-                                <f:passThroughAttribute name="data-gw-focus-on-load" value="true" />
-                            </c:if>
-                        </h:inputText>
-                    </div>
-                    <div class="col-sm-3">
-                        <button
-                            jsf:id="filterProcesses"
-                            jsf:action="#{BatchForm.filterProcesses}"
-                            class="btn btn-primary filterProcesses"
-                            title="#{msgs.filter}">
-                            <span class="fa fa-search" />
-                            <span>
-                                <h:outputText value="#{msgs.filter}" />
-                            </span>
-                        </button>
+                </intranda:box>
+
+            </div> <!-- end col -->
+
+            <div class="col-sm-12 col-md-6">
+
+                <intranda:box
+                    boxType="primary"
+                    icon="fa-tasks"
+                    title="#{msgs.prozesse}"
+                    boxPadding="true">
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <h:inputText
+                                id="processfilter"
+                                pt:aria-label="#{msgs.filterProcesses}"
+                                value="#{BatchForm.processfilter}"
+                                styleClass="form-control focusable"
+                                onkeypress="submitOnEnter(event, 'filterProcesses');">
+                                <c:if test="#{BatchForm.processfilter ne ''}">
+                                    <f:passThroughAttribute name="data-gw-focus-on-load" value="true" />
+                                </c:if>
+                            </h:inputText>
+                        </div>
+                        <div class="col-sm-3">
+                            <button
+                                jsf:id="filterProcesses"
+                                jsf:action="#{BatchForm.filterProcesses}"
+                                class="btn btn-primary filterProcesses"
+                                title="#{msgs.filter}">
+                                <span class="fa fa-search" />
+                                <span>
+                                    <h:outputText value="#{msgs.filter}" />
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <h:selectManyListbox
-                            id="selectedProcessIds"
-                            pt:aria-label="#{msgs.selectedProcessId}"
-                            value="#{BatchForm.selectedProcessIds}"
-                            styleClass="form-control"
-                            size="20">
-                        <f:selectItems value="#{BatchForm.currentProcessesAsSelectItems}" />
-                        </h:selectManyListbox>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h:selectManyListbox
+                                id="selectedProcessIds"
+                                pt:aria-label="#{msgs.selectedProcessId}"
+                                value="#{BatchForm.selectedProcessIds}"
+                                styleClass="form-control"
+                                size="20">
+                            <f:selectItems value="#{BatchForm.currentProcessesAsSelectItems}" />
+                            </h:selectManyListbox>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <h:panelGrid columns="1" styleClass="no-borders">
-                        <h:messages
-                            globalOnly="false"
-                            for="loadBatchData" />
-                        <button
-                            jsf:action="#{BatchForm.loadBatchData}"
-                            jsf:id="loadBatchData"
-                            class="btn-link">
-                            <h:outputText value="#{msgs.loadAssociatedBatchOfProcess}" />
-                        </button>
-                        <button
-                            jsf:id="addProcessesToBatch"
-                            jsf:action="#{BatchForm.addProcessesToBatch}"
-                            class="btn-link">
-                            <h:outputText value="#{msgs.addToSelectedBatch}" />
-                        </button>
-                        <button
-                            jsf:id="removeProcessesFromBatch"
-                            jsf:action="#{BatchForm.removeProcessesFromBatch}"
-                            class="btn-link">
-                            <h:outputText value="#{msgs.removeFromAssociatedBatch}" />
-                        </button>
-                        <button
-                            jsf:id="createNewBatch"
-                            jsf:action="#{BatchForm.createNewBatch}"
-                            class="btn-link">
-                            <h:outputText value="#{msgs.createNewBatchFromSelectedProcesses}" />
-                        </button>
-                        </h:panelGrid>
-                    </div>
+                <div class="d-flex flex-column align-items-start">
+                    <h:messages
+                        globalOnly="false"
+                        for="loadBatchData" />
+                    <button
+                        jsf:action="#{BatchForm.loadBatchData}"
+                        jsf:id="loadBatchData"
+                        class="btn btn-link text-400">
+                        <h:outputText value="#{msgs.loadAssociatedBatchOfProcess}" />
+                    </button>
+                    <button
+                        jsf:id="addProcessesToBatch"
+                        jsf:action="#{BatchForm.addProcessesToBatch}"
+                        class="btn btn-link text-400">
+                        <h:outputText value="#{msgs.addToSelectedBatch}" />
+                    </button>
+                    <button
+                        jsf:id="removeProcessesFromBatch"
+                        jsf:action="#{BatchForm.removeProcessesFromBatch}"
+                        class="btn btn-link text-400">
+                        <h:outputText value="#{msgs.removeFromAssociatedBatch}" />
+                    </button>
+                    <button
+                        jsf:id="createNewBatch"
+                        jsf:action="#{BatchForm.createNewBatch}"
+                        class="btn btn-link text-400">
+                        <h:outputText value="#{msgs.createNewBatchFromSelectedProcesses}" />
+                    </button>
                 </div>
-            </div>
 
-            </intranda:box>
+                </intranda:box>
 
-        </div> <!-- end col -->
-    </div> <!-- end row -->
+            </div> <!-- end col -->
+        </div> <!-- end row -->
 
-    </h:form>
-</main>
+        </h:form>
+    </main>
 </ui:define>
 
 </ui:composition>
