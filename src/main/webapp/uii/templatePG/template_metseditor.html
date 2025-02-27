@@ -72,39 +72,32 @@
                     <main
                         id="content"
                         class="d-flex flex-nowrap gap-1"
-                        tabindex="-1">
+                        tabindex="-1"
+                        style="max-height: calc(100vh - 6rem); height:100%;">
                         <!-- CONTENT LEFT -->
                         <div
                             id="pageContentLeft"
-                            class="resize-handle-end">
-                            <div class="page-content__left-inner flex-fill bg-light p-2 border-end border-primary overflow-y-scroll overflow-x-hidden">
+                            class="resize-handle-end flex-fill bg-light p-2 border-end border-primary overflow-y-scroll overflow-x-hidden">
                                 <!-- METSEDITOR STRUCTURE -->
                                 <ui:insert name="metseditorStructure" />
-                            </div>
                         </div>
 
                         <!-- CONTENT CENTER -->
                         <h:panelGroup
                             id="pageContentCenter"
-                            styleClass="overflow-y-scroll overflow-x-hidden flex-fill border-end"
+                            styleClass="p-2 overflow-y-auto overflow-x-hidden flex-fill border-end h-100 d-flex flex-column"
                             layout="block">
-                            <div
-                                class="page-content__center-inner  p-2  overflow-y-scroll overflow-x-hidden"
-                                style="max-height: calc(100vh - 6rem); height: 100%;">
-                                <!-- METSEDITOR CONTENT -->
-                                <ui:insert name="metseditorContent" />
-                            </div>
+                            <!-- METSEDITOR CONTENT -->
+                            <ui:insert name="metseditorContent" />
                         </h:panelGroup>
 
                         <!-- CONTENT RIGHT -->
                         <ui:fragment rendered="#{Metadaten.bildAnzeigen}">
                             <div
                                 id="pageContentRight"
-                                class="d-none d-md-block resize-handle-start">
-                                <div class="page-content__right-inner flex-fill p-2 ">
+                                class="d-none d-md-block resize-handle-start flex-fill p-2 ">
                                     <!-- METSEDITOR IMAGE -->
                                     <ui:insert name="metseditorImage" />
-                                </div>
                             </div>
                         </ui:fragment>
                     </main>

@@ -11,11 +11,11 @@
     <composite:interface/>
 
     <composite:implementation>
-        <h:form id="metseditorPaginationForm" prependId="false">
-            <div class="row row-flexible">
+        <h:form id="metseditorPaginationForm" prependId="false" styleClass="h-100">
+            <div class="row row-flexible h-100">
                 <!-- SELECT PAGES -->
-                <div id="pagLeft" class="col-12 col-lg-5 pagination__left">
-                    <section:section id="meSelectPagesBox" type="outline">
+                <div id="pagLeft" class="col-12 col-lg-5 pagination__left h-100">
+                    <section:section id="meSelectPagesBox" type="outline" styleClass="h-100 d-flex flex-column">
                         <section:header icon="bars" title="#{msgs.auswahlDerSeiten}">
                             <section:header-actions>
                                 <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" jsf:id="readPagination" aria-label="#{msgs.paginierungEinlesen}" class="btn btn-outline" jsf:action="#{Metadaten.createPagination}" title="#{msgs.paginierungEinlesen}">
@@ -32,8 +32,7 @@
                         <h:panelGroup
                             layout="block"
                             id="paginationList"
-                            styleClass="collapse show overflow-y-scroll"
-                            style="max-height: calc(100vh - 11rem); height: 100%;">
+                            styleClass="collapse show overflow-y-scroll h-100">
                             <section:body padding="true">
                                 <!-- HIDDEN BUTTON TO SET REPRESENTATIVE -->
 

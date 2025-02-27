@@ -13,13 +13,13 @@
 
     <composite:implementation>
 
-        <h:form id="thumbnailsForm" prependId="false">
+        <h:form id="thumbnailsForm" prependId="false" styleClass="h-100 d-flex flex-column">
             <ui:fragment rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails and Metadaten.bildNummer != '-1'}">
                 <!-- THUMBNAILS NAVIGATION -->
                 <ui:include src="inc_me_image-thumbNavigation.xhtml"/>
 
                 <!-- THUMBNAILS -->
-                <div id="thumbnails" class="thumbnails overflow-y-scroll overflow-x-hidden d-flex flex-wrap justify-content-center" dir="#{Metadaten.pagesRTL?'rtl':'ltr'}" style="max-height: calc(100vh - 13rem); height: 100%;">
+                <div id="thumbnails" class="thumbnails d-flex flex-wrap justify-content-center h-100 overflow-y-auto" dir="#{Metadaten.pagesRTL?'rtl':'ltr'}">
                     <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
                         <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''} d-inline-block" dir="auto">
                             <!-- THUMBNAIL IMAGE -->
