@@ -34,7 +34,9 @@
 
 			<c:if test="#{LoginForm.myBenutzer!=null}">
 			<layout:header>
-				<ui:include src="/WEB-INF/includes/template/inc_menu.xhtml" />
+				<h:form id="menu" styleClass="d-flex justify-content-between w-100">
+					<ui:include src="/WEB-INF/includes/template/inc_menu.xhtml" />
+				</h:form>
 			</layout:header>
 
 				<div class="container-fluid" id="content" style="padding-bottom:20px">
