@@ -49,7 +49,7 @@
                                     <span class="fa fa-file-o" aria-hidden="true"/>
                                     <span jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle" style="margin-left: 5px" aria-hidden="true"/>
                                     <span class="text-start">
-                                        <h:outputText styleClass="item-niveau" value="#{item.niveau}" rendered="#{Metadaten.treeProperties.showtreelevel}"/>
+                                        <h:outputText styleClass="item-niveau" value="#{item.niveau} " rendered="#{Metadaten.treeProperties.showtreelevel}"/>
                                         <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}"/>
                                         <h:outputText value="#{item.node.mainTitle}" rendered="#{item.node.mainTitle != '' and Metadaten.treeProperties.showtitle}"/>
 
