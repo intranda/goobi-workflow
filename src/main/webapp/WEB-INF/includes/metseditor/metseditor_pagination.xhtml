@@ -182,7 +182,7 @@
                                         <f:setPropertyActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="2" target="#{Metadaten.paginierungAbSeiteOderMarkierung}"/>
                                         <f:ajax execute="@form" render="pagePaginationList"/>
                                     </button>
-                                    <button jsf:id="paginationAll" class="btn btn-blank" jsf:action="#{Metadaten.Paginierung}" type="button">
+                                    <button jsf:id="paginationAll" class="btn btn-neutral-600" jsf:action="#{Metadaten.Paginierung}" type="button">
                                         <span class="fa fa-files-o" aria-hidden="true"/>
                                         <span>#{msgs.abDerErstenMarkiertenSeite}</span>
                                         <f:setPropertyActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="1" target="#{Metadaten.paginierungAbSeiteOderMarkierung}"/>
@@ -294,9 +294,9 @@
                                             </li>
                                             <li class="pb-2">
                                                 <button jsf:id="deletePages" class="btn btn-blank w-100" jsf:action="#{Metadaten.deleteSeltectedPages}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" title="#{msgs.deleteSeltectedPages}" type="button">
-                                                    <span class="fa fa-trash-o" aria-hidden="true"/>
-                                                    <!--                                             <span class="fa fa-trash-o fa-lg" aria-hidden="true" /> -->
-                                                    <span>#{msgs.deleteSeltectedPages}</span>
+                                                    <util:icon-text
+                                                        icon="trash-o"
+                                                        text="#{msgs.deleteSeltectedPages}" />
                                                     <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                     <f:ajax execute="@form" render="@form :thumbnailsForm :openseadragonform :pageareas"/>
                                                     <f:passThroughAttribute name="data-renderimage" value="true"/>
