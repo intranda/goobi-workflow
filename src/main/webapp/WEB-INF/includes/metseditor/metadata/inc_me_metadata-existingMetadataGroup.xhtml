@@ -80,7 +80,7 @@
                             </h:panelGroup>
                         </ui:repeat>
                         <h:panelGroup rendered="#{Metadaten.sizeOfMetadataGroups!=0}" layout="block" styleClass="p-3 d-flex justify-content-end">
-                            <button jsf:id="addGroup" class="btn btn-blank" jsf:action="#{Metadaten.AddGroup}" type="button">
+                            <button jsf:id="addGroup" class="btn btn-#{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ? 'neutral-600' : 'blank'}" jsf:action="#{Metadaten.AddGroup}" type="button">
                                 #{msgs.AddNewGroup}
                                 <f:ajax render=":pageContentCenter"/>
                                 <f:setPropertyActionListener value="" target="#{Metadaten.currentGroup}"/>

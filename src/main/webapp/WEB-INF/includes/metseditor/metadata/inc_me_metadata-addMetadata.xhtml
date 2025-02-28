@@ -144,7 +144,7 @@
                                     <f:setPropertyActionListener value="" property="#{Metadaten.metadatum.value}" target="#{Metadaten.metadatum.value}"/>
                                     <f:ajax onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }" render=":pageContentCenter"/>
                                 </button>
-                                <h:commandButton id="absenden" styleClass="btn btn-blank" type="submit" action="#{Metadaten.addNewMetadata}" value="#{msgs.add}" role="button">
+                                <h:commandButton id="absenden" styleClass="btn btn-neutral-600" type="submit" action="#{Metadaten.addNewMetadata}" value="#{msgs.add}" role="button">
                                     <f:ajax onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }" execute="@form" render=":pageContentCenter"/>
                                 </h:commandButton>
                             </div>

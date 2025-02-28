@@ -157,7 +157,7 @@
                                     <f:setPropertyActionListener value="#{not Metadaten.enableFastPagination}" target="#{Metadaten.enableFastPagination}"/>
                                     <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render=":pageContentCenter"/>
                                 </button>
-                                <button jsf:id="add" class="btn btn-blank" jsf:action="#{Metadaten.KnotenAdd}">
+                                <button jsf:id="add" class="btn btn-neutral-600" jsf:action="#{Metadaten.KnotenAdd}">
                                     #{msgs.strukturelementHinzufuegen}
                                     <f:ajax render="@form :treeform :openseadragonform:pageareas" execute="@form"/>
                                 </button>

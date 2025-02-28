@@ -56,7 +56,7 @@
                             <button
                                 type="button"
                                 jsf:id="addMetadata"
-                                class="btn btn-blank"
+                                class="btn btn-#{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ? 'neutral-600' : 'blank'}"
                                 jsf:action="#{Metadaten.Hinzufuegen}">
                                 #{msgs.neuesMetadatumAnlegen}
                                 <f:setPropertyActionListener
