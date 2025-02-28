@@ -180,7 +180,11 @@
                                     #{directory}
 									<f:setPropertyActionListener value="0" property="#{Metadaten.numberOfNavigation}" target="#{Metadaten.numberOfNavigation}"/>
                                     <f:setPropertyActionListener value="#{directory}" property="#{Metadaten.currentTifFolder}" target="#{Metadaten.currentTifFolder}"/>
-                                    <f:ajax execute="@form" render="@all"/>
+                                    <f:ajax execute="@form" render="@all"
+                                        onevent="(data) => {
+                                            gwHandleTooltip.init(data, {restore: false});
+                                            gwInitTooltips.init();
+                                        }" />
                                     <f:passThroughAttribute name="data-renderimage" value="true"/>
 								</button>
                             </li>
