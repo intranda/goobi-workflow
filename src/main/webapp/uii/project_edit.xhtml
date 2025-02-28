@@ -7,7 +7,7 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/templatePG/templatePG.html"
-    
+
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
     <ui:param
@@ -568,7 +568,7 @@
                                                     help="#{msgs.helpProjectfilegroup_UseOriginalFiles}"
                                                     name="useOriginalFilesName"
                                                     ajaxEvent="click"
-                                                    ajaxRender="myform:projecteditboh:filegroupboh:mime_suffix" />
+                                                    ajaxRender="myform:projecteditbox:filegroupbox:mime_suffix" />
 
                                                 <intranda:formInputText
                                                     id="ignoreMimetypes"
@@ -589,7 +589,7 @@
                                                             <h:outputText value="#{msgs.abbrechen}" />
                                                     </span> <f:setPropertyActionListener
                                                             target="#{ProjekteForm.displayMode}"
-                                                            value="tab4" /> 
+                                                            value="tab4" />
                                                             <f:ajax render=":myform" />
                                                     </button>
 
@@ -729,10 +729,10 @@
                 <!-- JOURNAL -->
                 <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-5'}">
                    <ui:fragment rendered="#{ProjekteForm.myProjekt.id != null}">
-                
-                <intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="false" bean="#{ProjekteForm.myProjekt}" /> 
+
+                <intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="false" bean="#{ProjekteForm.myProjekt}" />
                 </ui:fragment>
-                   
+
                 </div>
                 <!-- JOURNAL -->
 
