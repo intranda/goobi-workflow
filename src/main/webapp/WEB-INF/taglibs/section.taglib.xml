@@ -62,6 +62,12 @@
             <required>true</required>
             <type>java.lang.Boolean</type>
         </attribute>
+        <attribute>
+            <description>Passes HTML classes to the component</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>footer</tag-name>
