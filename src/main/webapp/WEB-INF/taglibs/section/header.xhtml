@@ -14,8 +14,8 @@
             <c:if test="#{titleId != null}">
                 <span id="#{titleId}">#{title}</span>
             </c:if>
-            <c:if test="#{title == null}">
-                <h:outputText value="#{title}" />
+            <c:if test="#{titleId == null}">
+                #{title}
             </c:if>
         </h2>
         <ui:insert />
