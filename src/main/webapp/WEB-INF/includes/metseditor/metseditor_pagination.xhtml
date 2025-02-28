@@ -6,7 +6,8 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:section="http://goobi.io/section"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface/>
 
@@ -203,19 +204,20 @@
                                     </button>
                                 </section:header>
                                 <div id="pageOrderBoxBody" class="collapse show">
-                                    <section:body padding="true">
+                                    <section:body padding="#{true}" styleClass="d-flex justify-content-start">
 
                                         <ul role="list" class="p-0 m-0">
                                             <li class="pb-2">
-                                                <div class="btn-group">
+                                                <div class="btn-group w-100">
                                                     <button jsf:id="moveUp1" class="btn btn-blank" jsf:action="#{Metadaten.moveSelectedPages('up', 1)}" title="#{msgs.moveSeltectedPagesUp}" type="button">
-                                                        <span class="fa fa-chevron-up" aria-hidden="true"/>
-                                                        <!--                                             <span class="fa fa-chevron-up fa-lg" aria-hidden="true" /> -->
-                                                        <span>#{msgs.moveSeltectedPagesUp}</span>
+                                                        <util:icon-text
+                                                            icon="chevron-up"
+                                                            text="#{msgs.moveSeltectedPagesUp}"
+                                                            styleClass="d-flex justify-content-start align-items-baseline" />
                                                         <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax execute="@form" render="pagePaginationList"/>
                                                     </button>
-                                                    <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split flex-grow-0" data-bs-toggle="dropdown" aria-expanded="false">
                                                         <span class="visually-hidden">Toggle Dropdown</span>
                                                     </button>
                                                     <ol class="dropdown-menu">
@@ -249,15 +251,16 @@
                                             </li>
 
                                             <li class="pb-2">
-                                                <div class="btn-group">
+                                                <div class="btn-group w-100">
                                                     <button jsf:id="moveDown1" class="btn btn-blank" jsf:action="#{Metadaten.moveSelectedPages('down', 1)}" title="#{msgs.moveSeltectedPagesDown}" type="button">
-                                                        <span class="fa fa-chevron-down" aria-hidden="true"/>
-                                                        <!--                                             <span class="fa fa-chevron-down fa-lg" aria-hidden="true" /> -->
-                                                        <span>#{msgs.moveSeltectedPagesDown}</span>
+                                                        <util:icon-text
+                                                            icon="chevron-down"
+                                                            text="#{msgs.moveSeltectedPagesUp}"
+                                                            styleClass="d-flex justify-content-start align-items-baseline" />
                                                         <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax execute="@form" render="pagePaginationList"/>
                                                     </button>
-                                                    <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split flex-grow-0" data-bs-toggle="dropdown" aria-expanded="false">
                                                         <span class="visually-hidden">Toggle Dropdown</span>
                                                     </button>
 
@@ -290,7 +293,7 @@
                                                 </div>
                                             </li>
                                             <li class="pb-2">
-                                                <button jsf:id="deletePages" class="btn btn-blank" jsf:action="#{Metadaten.deleteSeltectedPages}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" title="#{msgs.deleteSeltectedPages}" type="button">
+                                                <button jsf:id="deletePages" class="btn btn-blank w-100" jsf:action="#{Metadaten.deleteSeltectedPages}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" title="#{msgs.deleteSeltectedPages}" type="button">
                                                     <span class="fa fa-trash-o" aria-hidden="true"/>
                                                     <!--                                             <span class="fa fa-trash-o fa-lg" aria-hidden="true" /> -->
                                                     <span>#{msgs.deleteSeltectedPages}</span>
@@ -300,7 +303,7 @@
                                                 </button>
                                             </li>
                                             <li>
-                                                <button jsf:id="reOrder" class="btn btn-blank" jsf:action="#{Metadaten.reOrderPagination}" jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()" title="#{msgs.reOrder}" type="button">
+                                                <button jsf:id="reOrder" class="btn btn-blank w-100" jsf:action="#{Metadaten.reOrderPagination}" jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()" title="#{msgs.reOrder}" type="button">
                                                     <span class="fa fa-refresh" aria-hidden="true"/>
                                                     <!--                                             <span class="fa fa-refresh fa-lg" aria-hidden="true" /> -->
                                                     <span>#{msgs.reOrder}</span>
