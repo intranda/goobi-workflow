@@ -74,7 +74,7 @@
 										class="btn d-flex align-items-center btn--title-action"
 										title="#{msgs.metadatenBearbeiten}"
 										rel="tooltip"
-										rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and !ProzessverwaltungForm.myProzess.istTemplate}">
+										rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and ProzessverwaltungForm.myProzess.benutzerGesperrt == null and !ProzessverwaltungForm.myProzess.istTemplate}">
 										<span class="fa fa-book" />
 										<f:passThroughAttribute
 											name="data-toggle"
@@ -103,7 +103,7 @@
 										title="#{msgs.metadatenBearbeiten}"
 										pt:aria-label="#{msgs.metadatenBearbeiten}"
 										rel="tooltip"
-										rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.prozess.temporaryMetadataFiles}">
+										rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !ProzessverwaltungForm.myProzess.temporaryMetadataFiles}">
 										<span class="fa fa-book " />
 										<f:passThroughAttribute
 											name="data-toggle"
@@ -137,7 +137,7 @@
 
 									<!--  MODAL FOR METDATA POPUP  -->
 									<h:panelGroup
-										rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and item.prozess.temporaryMetadataFiles}">
+										rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.myProzess.temporaryMetadataFiles}">
 										<a
 											class="btn text_head"
 											title="#{msgs.metadatenBearbeiten}"

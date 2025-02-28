@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Usergroup;
@@ -144,7 +145,7 @@ public class UsergroupBean extends BasicBean implements Serializable {
     public List<String> getAllAvailableRoles() {
         List<String> myroles = new ArrayList<>();
         for (String role : UserRole.getAllRoles()) {
-            if (!myBenutzergruppe.getUserRoles().contains(role)) {
+            if (StringUtils.isNotBlank(role) && !myBenutzergruppe.getUserRoles().contains(role)) {
                 myroles.add(role);
             }
         }
