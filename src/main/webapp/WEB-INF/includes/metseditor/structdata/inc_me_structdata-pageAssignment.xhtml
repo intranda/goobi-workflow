@@ -21,7 +21,7 @@
                         <section:header icon="bars" title="#{msgs.seitenzuordnung}">
                             <section:header-actions>
                                 <ul class="tabs" role="list">
-                                    <button class="tab#{NavigationForm.uiStatus.pageassignment == '' ? ' active' : ''}" jsf:id="metseditor_pages_overview" jsf:action="#{NavigationForm.Reload}">
+                                    <button class="tab#{NavigationForm.uiStatus.pageassignment == '' or NavigationForm.uiStatus.pageassignment == null ? ' active' : ''}" jsf:id="metseditor_pages_overview" jsf:action="#{NavigationForm.Reload}">
                                         #{msgs.metseditor_pages_overview}
                                         <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value=""/>
                                         <f:ajax render="pageallocation"/>
