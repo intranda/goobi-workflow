@@ -57,7 +57,13 @@
                                                             <span class="fa fa-picture-o" style="float: right;" aria-hidden="true"/>
                                                         </ui:fragment>
                                                         <span class="fa fa-picture-o" aria-hidden="true"/>
-                                                        <f:ajax execute="@this" render="mainimagearea"/>
+                                                        <f:ajax
+                                                            execute="@this"
+                                                            render="@all"
+                                                            onevent="(data) => {
+                                                                gwHandleTooltip.init(data, {restore: false});
+                                                                gwInitTooltips.init(document.querySelector('#tasks'));
+                                                            }"/>
                                                     </button>
                                                     <button class="btn btn-outline star" title="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" aria-label="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" jsf:action="#{Metadaten.updateRepresentativePage}" data-bs-toggle="tooltip" data-bs-placement="right" data-boundary="window">
                                                         <f:setPropertyActionListener value="#{page.physicalPageNo}" target="#{Metadaten.currentRepresentativePage}"/>
