@@ -1,5 +1,5 @@
 <alto-editor>
-    <div class="row{ this.alignRtl ? ' rightToLeft' : null}">
+    <div class="row{ this.alignRtl ? ' rightToLeft' : null} image-row">
         <div class="col-md-6">
             <div id="bigImage" onclick={canvasOnClick} onmousemove={canvasOnClick}></div>
         </div>
@@ -25,6 +25,9 @@
     </div>
 
 <style>
+    .image-row {
+        --column-height: 75vh;
+    }
     .altoline {
         overflow-wrap: anywhere;
         padding-bottom: 5px;
@@ -34,7 +37,7 @@
     }
     .alto-edit-wrapper {
         --alto-padding: 0.5em;
-        height: 82vh;
+        height: var(--column-height);
         display: flex;
         flex-direction: column;
     }
@@ -60,7 +63,7 @@
         justify-content: space-between;
     }
     #bigImage {
-        height: 82vh;
+        height: var(--column-height);
         border: 1px solid #ddd;
     }
     .line-marker {
