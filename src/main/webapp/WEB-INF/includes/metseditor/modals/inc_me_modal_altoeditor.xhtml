@@ -230,6 +230,14 @@
         		document.querySelector(selector).click();
         	}
         }
+        faces.ajax.addOnEvent((data) => {
+            const modal = document.querySelector('#altoEditBox');
+            if (data.status === 'success') {
+                if (modal.classList.contains('show')) {
+                    openAltoEditor(true);
+                }
+            }
+        })
         document.addEventListener('DOMContentLoaded', function() {
         	if(!window.imageNavBlockers) {
         		window.imageNavBlockers = [];
