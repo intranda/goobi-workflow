@@ -60,7 +60,7 @@
             role="dialog"
             aria-labelledby="altoEditorModalLabel">
             <div
-                class="modal-dialog modal-lg"
+                class="modal-dialog modal-xl"
                 role="document">
                 <h:panelGroup id="altoEditorModalContent" class="modal-content" layout="block">
                     <div class="modal-header bg-primary text-white">
@@ -105,7 +105,7 @@
                                 jsf:action="#{Metadaten.imageLeft}"
                                 jsf:id="prevImageAltoEdit"
                                 type="button"
-                                class="btn btn--icon-blue"
+                                class="btn btn-primary"
                                 data-renderimage="true">
                                 <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
                                 <span class="fa fa-angle-left" aria-hidden="true" />
@@ -131,7 +131,7 @@
                                 jsf:action="#{Metadaten.imageRight}"
                                 jsf:id="nextImageAltoEdit"
                                 type="button"
-                                class="btn btn--icon-blue"
+                                class="btn btn-primary"
                                 data-renderimage="true">
                                 #{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}
                                 <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
@@ -230,7 +230,15 @@
         		document.querySelector(selector).click();
         	}
         }
-        $(document).on('load', function() {
+        faces.ajax.addOnEvent((data) => {
+            const modal = document.querySelector('#altoEditBox');
+            if (data.status === 'success') {
+                if (modal.classList.contains('show')) {
+                    openAltoEditor(true);
+                }
+            }
+        })
+        document.addEventListener('DOMContentLoaded', function() {
         	if(!window.imageNavBlockers) {
         		window.imageNavBlockers = [];
         	}

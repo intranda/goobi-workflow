@@ -130,7 +130,7 @@ $colors-status: (
 
 @each $name, $color in $colors {
   .bg-#{$name} {
-    background-color: var(--clr-#{$name});
+    background-color: var(--clr-#{$name}) !important;
   }
   .text-#{$name} {
     color: var(--text-#{$name});

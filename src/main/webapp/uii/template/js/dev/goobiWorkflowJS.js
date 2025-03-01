@@ -23,9 +23,6 @@ var goobiWorkflowJS = ( function() {
         // throw some console infos
         console.info( 'Current View: ', _defaults.currentView );
 
-        // init BS features --> needs ajax reload
-        goobiWorkflowJS.initBootstrapFeatures();
-
         // init layout --> needs ajax reload
         goobiWorkflowJS.layout.init(_defaults);
 
@@ -81,41 +78,6 @@ var goobiWorkflowJS = ( function() {
     	$(".notFocusable").attr("tabindex", "-1");
     	$(".notFocusableChild").children().attr("tabindex","-1");
 
-    }
-
-    /**
-     * @description Method to initialize Bootstrap features.
-     * @method initBootstrapFeatures
-     */
-    goobiWorkflow.initBootstrapFeatures = function () {
-        if ( _debug ) {
-            console.log('EXECUTE: goobiWorkflowJS.initBootstrapFeatures');
-        }
-
-        $( '[data-toggle="tooltip"]' ).tooltip( {
-            trigger: 'hover focus'
-        } );
-        $( '[data-toggle-second="tooltip"]' ).tooltip();
-        $( '[data-toggle="popover"]' ).popover({
-            html: true
-        });
-    }
-
-    /**
-     * @description Method to clean up Bootstrap features.
-     * @method cleanUpBootstrapFeatures
-     */
-    goobiWorkflow.cleanUpBootstrapFeatures = function () {
-        if ( _debug ) {
-            console.log('EXECUTE: goobiWorkflowJS.cleanUpBootstrapFeatures');
-        }
-
-        if ( $( '.popover' ).length > 0 ) {
-            $( '.popover' ).remove();
-        }
-        else if ( $( '.tooltip' ).length > 0 ) {
-            $( '.tooltip' ).remove();
-        }
     }
 
     /**

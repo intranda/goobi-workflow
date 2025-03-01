@@ -1,6 +1,6 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
-    
+
     var _debug = false;
     var _columns = {
         left: 0,
@@ -12,7 +12,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         }
     }
     var _defaults = {};
-    
+
     goobiWorkflow.layout = {
         /**
          * @description Method to initialize the layout module.
@@ -42,14 +42,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             $( '#pageContentWrapper' ).show();
 //            setTimeout(function() {
 //            }, 500);
-            // set flexible row columns            
+            // set flexible row columns
             _setFlexibleRowColumns();
             // set initial position of toc actions
             $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
-            
+
             //set tabIndex
             _setTabindex();
-            
+
             //set image comments height
             this.setImageCommentHeight();
         },
@@ -61,14 +61,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             if ( _debug ) {
                 console.log( 'EXECUTE: goobiWorkflowJS.layout.setObjectViewHeight' );
             }
-                        
+
             var pageContentRightHeight = $( '#pageContentRight' ).outerHeight();
             var controlWrapperHeight = $( '#imageNavigation' ).outerHeight();
             var imageCommentHeight = $( '#imageCommentArea' ).outerHeight();
             if (!imageCommentHeight){
             	imageCommentHeight = 0;
             }
-            
+
             $( '#mainImage' ).css( 'height', pageContentRightHeight - controlWrapperHeight - imageCommentHeight - 45 );
         },
 	    /**
@@ -88,8 +88,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 			}
 		}
     };
-    
-    
+
+
     /**
      * @description Method to add Tabindex to elements.
      * @method _setTabindex
@@ -104,7 +104,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
      	$(".notFocusable").attr("tabindex", "-1");
      	$(".notFocusableChild").children().attr("tabindex","-1");
     }
-    
+
     /**
      * @description Method to set the resizable elements.
      * @method _setResizableElements
@@ -120,13 +120,13 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             minWidth: 200,
             maxWidth: $(window).width() * 0.45,
             resize: function( event, ui ) {
-            if (_defaults.displayImageArea) {                       
-                        $( '#pageContentCenter' ).outerWidth( $( window ).outerWidth() - $( '#pageContentRight' ).outerWidth() - $( '#pageContentLeft' ).outerWidth() -1);
-                        $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).outerWidth() );
+            if (_defaults.displayImageArea) {
+                        $( '#pageContentCenter' ).outerWidth( $( window ).offsetWidth - $( '#pageContentRight' ).offsetWidth - $( '#pageContentLeft' ).offsetWidth -1);
+                        $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).offsetWidth );
                         $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
             } else {
-                $( '#pageContentCenter' ).outerWidth( $( window ).outerWidth() - $( '#pageContentLeft' ).outerWidth() );
-                $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).outerWidth() );
+                $( '#pageContentCenter' ).outerWidth( $( window ).offsetWidth - $( '#pageContentLeft' ).offsetWidth );
+                $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).offsetWidth );
                 $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
             }
                 goobiWorkflowJS.layout.setObjectViewHeight();
@@ -143,9 +143,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             minWidth: 400,
             maxWidth: $(window).width() / 2,
             resize: function( event, ui ) {
-                $( '#pageContentCenter' ).outerWidth( $( window ).outerWidth() - $( '#pageContentRight' ).outerWidth() - $( '#pageContentLeft' ).outerWidth() -1);
-                $( '#pageContentRight .ui-resizable-handle' ).css( 'right', $( '#pageContentRight' ).outerWidth() - 7 );
-                
+                $( '#pageContentCenter' ).outerWidth( $( window ).offsetWidth - $( '#pageContentRight' ).offsetWidth - $( '#pageContentLeft' ).offsetWidth -1);
+                $( '#pageContentRight .ui-resizable-handle' ).css( 'right', $( '#pageContentRight' ).offsetWidth - 7 );
+
                 goobiWorkflowJS.layout.setObjectViewHeight();
                 _setFlexibleRowColumns();
                 _setColumnWidth();
@@ -153,11 +153,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         }).on( 'resize', function( event ) {
             event.stopPropagation();
         } );
-        
+
         $( '#pageContentLeft .ui-resizable-handle' ).attr('tabindex', '-1');
         $( '#pageContentRight .ui-resizable-handle' ).attr('tabindex', '-1');
     }
-    
+
     /**
      * @description Method to reset the resizable elements.
      * @method _resetResizableElements
@@ -174,9 +174,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         } else {
             $( '#pageContentCenter').css( 'width', '80%' );
         }
-        $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).outerWidth() );
+        $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).offsetWidth );
         $( '#pageContentLeft .ui-resizable-handle' ).attr('tabindex', '-1');
-        $( '#pageContentRight .ui-resizable-handle' ).css( 'right', $( '#pageContentRight' ).outerWidth() - 7 );
+        $( '#pageContentRight .ui-resizable-handle' ).css( 'right', $( '#pageContentRight' ).offsetWidth - 7 );
         $( '#pageContentRight .ui-resizable-handle' ).attr('tabindex', '-1');
         $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
         _setColumnWidth();
@@ -188,19 +188,18 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
      * @method _setColumnWidth
      */
     function _setColumnWidth() {
+        const leftColumn = document.querySelector('[id$="pageContentLeft"]');
+        const centerColumn = document.querySelector('[id$="pageContentCenter"]');
+        const rightColumn = document.querySelector('[id$="pageContentRight"]');
         if ( _debug ) {
             console.log( 'EXECUTE: _setColumnWidth' );
         }
-            
-        _columns.left = $( '#pageContentLeft' ).outerWidth();
-        _columns.center = $( '#pageContentCenter' ).outerWidth();
-        _columns.right = $( '#pageContentRight' ).outerWidth();
-        _columns.handles.left = parseInt( $( '#pageContentLeft .ui-resizable-handle' ).css( 'left' ) );
-        _columns.handles.right = parseInt( $( '#pageContentRight .ui-resizable-handle' ).css( 'right' ) );
-
+        _columns.left = leftColumn.offsetWidth;
+        _columns.center = centerColumn.offsetWidth;
+        _columns.right = rightColumn.offsetWidth;
         sessionStorage.setItem( 'wf_columnWidths', JSON.stringify( _columns ) );
     }
-    
+
     /**
      * @description Method to set the window rezise event.
      * @method _setResizeEvents
@@ -214,37 +213,42 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         goobiWorkflowJS.layout.setObjectViewHeight();
         _setFlexibleRowColumns();
     }
-    
+
     /**
      * @description Method to get the saved widths from session storage.
      * @method _getSavedWidths
      */
     function _getSavedWidths() {
+        const leftColumn = document.querySelector('[id$="pageContentLeft"]');
+        const centerColumn = document.querySelector('[id$="pageContentCenter"]');
+        const rightColumn = document.querySelector('[id$="pageContentRight"]');
         if ( _debug ) {
             console.log( 'EXECUTE: _getSavedWidths');
         }
-        if ( sessionStorage.getItem( 'wf_columnWidths' ) != undefined ) {
+        if ( sessionStorage.getItem( 'wf_columnWidths' ) != null ) {
             _columns = JSON.parse( sessionStorage.getItem( 'wf_columnWidths' ) );
             if (_defaults.displayImageArea) {
-                if ($( window ).outerWidth() < _columns.left +  _columns.center + _columns.right || _columns.right == null) {
-                    $( '#pageContentLeft' ).outerWidth(Math.floor(_columns.left) );
-                    $( '#pageContentCenter' ).outerWidth(Math.floor(($(window).width() -  $( '#pageContentLeft' ).outerWidth())/2 ));
-                    $( '#pageContentRight' ).outerWidth( (Math.floor($(window).width() -  $( '#pageContentLeft' ).outerWidth() ) /2));
+                if ($( window ).offsetWidth < _columns.left +  _columns.center + _columns.right || _columns.right == null) {
+                    leftColumn.style.width = Math.floor(_columns.left) + 'px';
+                    centerColumn.style.width = Math.floor(($( window ).offsetWidth -  leftColumn.offsetWidth -  document.querySelector('[id$="pageContentRight"]').offsetWidth -1)) + 'px';
+                    rightColumn.style.width = Math.floor(($( window ).offsetWidth -  leftColumn.offsetWidth ) /2) + 'px';
                 } else {
-                    $( '#pageContentLeft' ).outerWidth(Math.floor( _columns.left ));
-                    $( '#pageContentCenter' ).outerWidth(Math.floor( _columns.center ));
-                    $( '#pageContentRight' ).outerWidth(Math.floor( _columns.right ) -1);
+                    leftColumn.style.width = Math.floor(_columns.left) + 'px';
+                    centerColumn.style.width = Math.floor(_columns.center) + 'px';
+                    rightColumn.style.width = Math.floor(_columns.right) + 'px';
                 }
-                $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', _columns.handles.left );
-                $( '#pageContentRight .ui-resizable-handle' ).css( 'right', _columns.handles.right );                
             } else {
-                $( '#pageContentLeft' ).outerWidth( _columns.left );
-                $( '#pageContentCenter' ).outerWidth($(window).width() -  $( '#pageContentLeft' ).outerWidth() );
-                $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', _columns.handles.left );
+                leftColumn.style.width = Math.floor(_columns.left) + 'px';
+                centerColumn.style.width = Math.floor($(window).width() -  leftColumn.offsetWidth) + 'px';
             }
+        } else {
+            leftColumn.style.width = leftColumn.offsetWidth + 'px';
+            centerColumn.style.width = centerColumn.offsetWidth + 'px';
+            rightColumn.style.width = rightColumn.offsetWidth + 'px';
+            _setColumnWidth();
         }
     }
-    
+
     /**
      * @description Method to set top margin of the thumbnail wrapper.
      * @method _setThumbnailsMargin
@@ -253,9 +257,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         if ( _debug ) {
             console.log( 'EXECUTE: _setThumbnailsMargin' );
         }
-            
+
 //        var thumbnailsNavigationHeight = $( '#thumbnailsNavigation' ).height();
-//        
+//
 //        if (window.matchMedia('(min-width: 993px)').matches) {
 //            $( '#thumbnails' ).css( 'margin-top', thumbnailsNavigationHeight + 10 );
 //        }
@@ -263,7 +267,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 //            $( '#thumbnails' ).css( 'margin-top', 66 );
 //        }
     }
-    
+
     /**
      * @description Method to set the flexible row column width.
      * @method _setFlexibleRowColumns
@@ -273,14 +277,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setFlexibleRowColumns' );
         }
         if ($( '.row-flexible' ).width() > 0 && $( '.row-flexible' ).width() < 550 ) {
-            
+
             $( '.row-flexible' ).addClass( 'fullwidth' );
         }
         else {
             $( '.row-flexible' ).removeClass( 'fullwidth' );
         }
     }
-    
+
     return goobiWorkflow;
-    
+
 } )( goobiWorkflowJS || {}, jQuery );

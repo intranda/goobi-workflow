@@ -21,7 +21,7 @@
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
                         <span class="fa fa-angle-double-left" aria-hidden="true"/>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
-                        <f:ajax execute="@form" render="@all"/>
+                        <f:ajax execute="@form" render="thumbnailsForm"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
                 </li>
@@ -32,7 +32,7 @@
                         <span class="fa fa-angle-left" aria-hidden="true"/>
                         <span>#{Metadaten.pagesRTL?msgs.pageNext:msgs.pagePrevious}</span>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
-                        <f:ajax execute="@form" render="@all"/>
+                        <f:ajax execute="@form" render="thumbnailsForm"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
                 </li>
@@ -48,7 +48,7 @@
                         <span>#{Metadaten.pagesRTL?msgs.pagePrevious:msgs.pageNext}</span>
                         <span class="fa fa-angle-right" aria-hidden="true"/>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
-                        <f:ajax execute="@form" render="@all"/>
+                        <f:ajax execute="@form" render="thumbnailsForm"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
                 </li>
@@ -58,7 +58,7 @@
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
                         <span class="fa fa-angle-double-right" aria-hidden="true"/>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
-                        <f:ajax execute="@form" render="@all"/>
+                        <f:ajax execute="@form" render="thumbnailsForm"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
                 </li>
