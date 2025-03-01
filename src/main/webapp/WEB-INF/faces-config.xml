@@ -51,6 +51,7 @@
 			<supported-locale>en</supported-locale>
 			<supported-locale>es</supported-locale>
             <supported-locale>nl</supported-locale>
+			<supported-locale>fr</supported-locale>
 			<supported-locale>de-ch</supported-locale>
             <!-- 
             <supported-locale>it</supported-locale>
