@@ -45,6 +45,7 @@
                 <li class="nav-item d-none d-md-block #{Metadaten.treeProperties.showOcr ne 'true' and Metadaten.treeProperties.showThumbnails ne 'true' ? 'active' :''}">
                     <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" class="nav-link" jsf:id="showSinglePage" aria-label="#{msgs.mets_showImagesOne}" jsf:action="#{Metadaten.toggleImageView}" title="#{msgs.mets_showImagesOne}" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
+                        <f:ajax render=":openseadragonform :thumbnailsForm"/>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
                         <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showThumbnails}"/>
                         <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showOcr}"/>
@@ -56,6 +57,7 @@
                     <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" class="nav-link" jsf:id="showThumbnails" aria-label="#{msgs.mets_showImagesThumbs}" jsf:action="#{Metadaten.toggleImageView}" title="#{msgs.mets_showImagesThumbs}" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
                         <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
+                        <f:ajax render=":openseadragonform :thumbnailsForm"/>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
                         <f:setPropertyActionListener value="true" property="#{Metadaten.treeProperties.showThumbnails}" target="#{Metadaten.treeProperties.showThumbnails}"/>
                         <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showOcr}"/>
@@ -180,11 +182,7 @@
                                     #{directory}
 									<f:setPropertyActionListener value="0" property="#{Metadaten.numberOfNavigation}" target="#{Metadaten.numberOfNavigation}"/>
                                     <f:setPropertyActionListener value="#{directory}" property="#{Metadaten.currentTifFolder}" target="#{Metadaten.currentTifFolder}"/>
-                                    <f:ajax execute="@form" render="@all"
-                                        onevent="(data) => {
-                                            gwHandleTooltip.init(data, {restore: false});
-                                            gwInitTooltips.init();
-                                        }" />
+                                    <f:ajax execute="@form" render="@form :openseadragonform :thumbnailsForm :treeform" />
                                     <f:passThroughAttribute name="data-renderimage" value="true"/>
 								</button>
                             </li>

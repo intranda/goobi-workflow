@@ -20,11 +20,7 @@
                         <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@all"
-                            onevent="(data) => {
-                                gwHandleTooltip.init(data, {restore: false});
-                                gwInitTooltips.init();
-                            }"/>
+                            render="@form :pageareas :altoEditAutocomplete" />
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
                 </li>
@@ -36,11 +32,7 @@
                         <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@all"
-                            onevent="(data) => {
-                                gwHandleTooltip.init(data, {restore: false});
-                                gwInitTooltips.init();
-                            }"/>
+                            render="@form :pageareas :altoEditAutocomplete"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
                 </li>
@@ -51,11 +43,7 @@
                         <span>#{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}</span>
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@all"
-                            onevent="(data) => {
-                                gwHandleTooltip.init(data, {restore: false});
-                                gwInitTooltips.init();
-                            }"/>
+                            render="@form :pageareas :altoEditAutocomplete"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
                 </li>
@@ -64,11 +52,7 @@
                     <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}" styleClass="notFocusable visually-hidden">
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@all"
-                            onevent="(data) => {
-                                gwHandleTooltip.init(data, {restore: false});
-                                gwInitTooltips.init();
-                            }"/>
+                            render="@form :pageareas"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </h:commandButton>
 
@@ -84,11 +68,7 @@
                         <span class="fa fa-angle-right" aria-hidden="true"/>
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@all"
-                            onevent="(data) => {
-                                gwHandleTooltip.init(data, {restore: false});
-                                gwInitTooltips.init();
-                            }"/>
+                            render="@form :pageareas :altoEditAutocomplete"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
                 </li>
@@ -100,11 +80,7 @@
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@all"
-                            onevent="(data) => {
-                                gwHandleTooltip.init(data, {restore: false});
-                                gwInitTooltips.init();
-                            }"/>
+                            render="@form :pageareas :altoEditAutocomplete"/>
                     </button>
                 </li>
 
@@ -116,11 +92,7 @@
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@all"
-                            onevent="(data) => {
-                                gwHandleTooltip.init(data, {restore: false});
-                                gwInitTooltips.init();
-                            }"/>
+                            render="@form :pageareas :altoEditAutocomplete"/>
                     </button>
                 </li>
 
