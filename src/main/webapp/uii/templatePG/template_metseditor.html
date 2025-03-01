@@ -71,13 +71,13 @@
                     <!-- CONTENT WRAPPER -->
                     <main
                         id="content"
-                        class="d-flex flex-nowrap gap-1"
+                        class="d-flex flex-nowrap overflow-x-hidden"
                         tabindex="-1"
                         style="max-height: calc(100vh - 6rem); height:100%;">
                         <!-- CONTENT LEFT -->
                         <div
                             id="pageContentLeft"
-                            class="resize-handle-end flex-fill bg-light p-2 border-end border-primary overflow-y-scroll overflow-x-hidden">
+                            class="resize-handle-end bg-light p-2 border-end border-primary overflow-y-scroll overflow-x-hidden">
                                 <!-- METSEDITOR STRUCTURE -->
                                 <ui:insert name="metseditorStructure" />
                         </div>
@@ -85,7 +85,7 @@
                         <!-- CONTENT CENTER -->
                         <h:panelGroup
                             id="pageContentCenter"
-                            styleClass="p-2 overflow-y-auto overflow-x-hidden flex-fill border-end h-100 d-flex flex-column"
+                            styleClass="flex-grow-1 p-2 overflow-y-auto overflow-x-hidden border-end h-100 d-flex flex-column #{Metadaten.bildAnzeigen ? 'mx-2' : 'ms-2'}"
                             layout="block">
                             <!-- METSEDITOR CONTENT -->
                             <ui:insert name="metseditorContent" />
@@ -95,7 +95,7 @@
                         <ui:fragment rendered="#{Metadaten.bildAnzeigen}">
                             <div
                                 id="pageContentRight"
-                                class="d-none d-md-block resize-handle-start flex-fill p-2 ">
+                                class="d-none d-md-block resize-handle-start p-2 ">
                                     <!-- METSEDITOR IMAGE -->
                                     <ui:insert name="metseditorImage" />
                             </div>
