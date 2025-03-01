@@ -216,8 +216,6 @@ function prodJsRollup() {
 
 exports.dev = function() {
     loadConfig();
-    watch(legacySources.less, { ignoreInitial: false }, devLess);
-    watch(legacySources.js, { ignoreInitial: false }, devJsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
     watch(sources.cssGlob, { ignoreInitial: false }, devCss);
