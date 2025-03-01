@@ -54,9 +54,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             if ($('.btn').hasClass('btn--loader')) {
                                 $('.btn-ajax-loader').removeClass('in');
                             }
-                            // init BS features
-                            goobiWorkflowJS.cleanUpBootstrapFeatures();
-                            goobiWorkflowJS.initBootstrapFeatures();
                             // init layout
                             goobiWorkflowJS.layout.init();
                             if (data?.source?.dataset.renderimage=='true'){
