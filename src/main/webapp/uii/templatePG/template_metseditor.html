@@ -153,11 +153,17 @@
                     }
                 }
             };
-
-            $( document ).ready( function() {
+            faces.ajax.addOnEvent((data) => {
+                const ajaxstatus = data.status;
+                if (ajaxstatus === 'success') {
+                    goobiWorkflowJS.init( goobiWorkflowConfig );
+                    goobiWorkflowJS.meScrollPos.restoreScrollPos();
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function() {
                 goobiWorkflowJS.init( goobiWorkflowConfig );
                 goobiWorkflowJS.meScrollPos.restoreScrollPos();
-            } );
+            });
         </script>
     </body>
 </html>

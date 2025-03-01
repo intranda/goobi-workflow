@@ -1,6 +1,6 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
-    
+
     var _debug = false;
     var _positions = {
         selectPage: {
@@ -10,7 +10,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             link: 0
         }
     };
-    
+
     goobiWorkflow.scrollPositions = {
         /**
          * @description Method to initialize the box module.
@@ -40,7 +40,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
         // set scroll status of structure link
         $( 'body' ).on( 'click', '#meStructure button', function() {
-            _positions.structure.link = $( this ).parents('tr').position().top;
+            _positions.structure.link = $( this ).parents('li').position().top;
 
             sessionStorage.setItem( 'wf_scrollPositions', JSON.stringify( _positions ) );
         } );
@@ -56,7 +56,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         }
 
         var structLinkPosition;
-        
+
         if ( sessionStorage.getItem( 'wf_scrollPositions' ) == null ) {
             sessionStorage.setItem( 'wf_scrollPositions', JSON.stringify( _positions ) );
             structLinkPosition = JSON.parse( sessionStorage.getItem( 'wf_scrollPositions' ) );
@@ -67,7 +67,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             $( '#pageContentLeft' ).scrollTop( structLinkPosition.structure.link );
         }
     }
-    
+
     return goobiWorkflow;
-    
+
 } )( goobiWorkflowJS || {}, jQuery );
