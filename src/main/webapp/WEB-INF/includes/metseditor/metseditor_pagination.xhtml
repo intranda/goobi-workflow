@@ -208,115 +208,116 @@
                                     </button>
                                 </section:header>
                                 <div id="pageOrderBoxBody" class="collapse show">
-                                    <section:body padding="#{true}" styleClass="d-flex justify-content-start">
+                                    <section:body padding="#{true}">
+                                        <div class="d-flex justify-content-start">
+                                            <ul role="list" class="p-0 m-0">
+                                                <li class="pb-2">
+                                                    <div class="btn-group w-100">
+                                                        <button jsf:id="moveUp1" class="btn btn-blank" jsf:action="#{Metadaten.moveSelectedPages('up', 1)}" title="#{msgs.moveSeltectedPagesUp}" type="button">
+                                                            <util:icon-text
+                                                                icon="chevron-up"
+                                                                text="#{msgs.moveSeltectedPagesUp}"
+                                                                styleClass="d-flex justify-content-start align-items-baseline" />
+                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                            <f:ajax execute="@form" render="pagePaginationList"/>
+                                                        </button>
+                                                        <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split flex-grow-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                                        </button>
+                                                        <ol class="dropdown-menu">
+                                                            <li>
+                                                                <button class="dropdown-item" jsf:id="moveUp10" jsf:action="#{Metadaten.moveSelectedPages('up', 10)}">
+                                                                    10
+                                                                    <f:ajax execute="@form" render="pagePaginationList"/>
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="dropdown-item" jsf:id="moveUp50" jsf:action="#{Metadaten.moveSelectedPages('up', 50)}">
+                                                                    50
+                                                                    <f:ajax execute="@form" render="pagePaginationList"/>
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="dropdown-item" jsf:id="moveUp100" jsf:action="#{Metadaten.moveSelectedPages('up', 100)}">
+                                                                    100
+                                                                    <f:ajax execute="@form" render="pagePaginationList"/>
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="dropdown-item" jsf:id="moveUp1000" jsf:action="#{Metadaten.moveSelectedPages('up', 1000)}">
+                                                                    1000
+                                                                    <f:ajax execute="@form" render="pagePaginationList"/>
+                                                                </button>
+                                                            </li>
+                                                        </ol>
+                                                    </div>
 
-                                        <ul role="list" class="p-0 m-0">
-                                            <li class="pb-2">
-                                                <div class="btn-group w-100">
-                                                    <button jsf:id="moveUp1" class="btn btn-blank" jsf:action="#{Metadaten.moveSelectedPages('up', 1)}" title="#{msgs.moveSeltectedPagesUp}" type="button">
+                                                </li>
+
+                                                <li class="pb-2">
+                                                    <div class="btn-group w-100">
+                                                        <button jsf:id="moveDown1" class="btn btn-blank" jsf:action="#{Metadaten.moveSelectedPages('down', 1)}" title="#{msgs.moveSeltectedPagesDown}" type="button">
+                                                            <util:icon-text
+                                                                icon="chevron-down"
+                                                                text="#{msgs.moveSeltectedPagesUp}"
+                                                                styleClass="d-flex justify-content-start align-items-baseline" />
+                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                            <f:ajax execute="@form" render="pagePaginationList"/>
+                                                        </button>
+                                                        <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split flex-grow-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                                        </button>
+
+                                                        <ol class="dropdown-menu">
+                                                            <li>
+                                                                <button class="btn btn-outline" jsf:id="moveDown10" jsf:action="#{Metadaten.moveSelectedPages('down', 10)}">
+                                                                    10
+                                                                    <f:ajax execute="@form" render="pagePaginationList"/>
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="btn btn-outline" jsf:id="moveDown50" jsf:action="#{Metadaten.moveSelectedPages('down', 50)}">
+                                                                    50
+                                                                    <f:ajax execute="@form" render="pagePaginationList"/>
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="btn btn-outline" jsf:id="moveDown100" jsf:action="#{Metadaten.moveSelectedPages('down', 100)}">
+                                                                    100
+                                                                    <f:ajax execute="@form" render="pagePaginationList"/>
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="btn btn-outline" jsf:id="moveDown1000" jsf:action="#{Metadaten.moveSelectedPages('down', 1000)}">
+                                                                    1000
+                                                                    <f:ajax execute="@form" render="pagePaginationList"/>
+                                                                </button>
+                                                            </li>
+                                                        </ol>
+                                                    </div>
+                                                </li>
+                                                <li class="pb-2">
+                                                    <button jsf:id="deletePages" class="btn btn-blank w-100 d-flex justify-content-start" jsf:action="#{Metadaten.deleteSeltectedPages}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" title="#{msgs.deleteSeltectedPages}" type="button">
                                                         <util:icon-text
-                                                            icon="chevron-up"
-                                                            text="#{msgs.moveSeltectedPagesUp}"
-                                                            styleClass="d-flex justify-content-start align-items-baseline" />
+                                                            icon="trash-o"
+                                                            text="#{msgs.deleteSeltectedPages}" />
                                                         <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                        <f:ajax execute="@form" render="pagePaginationList"/>
+                                                        <f:ajax execute="@form" render="@form :thumbnailsForm :openseadragonform :pageareas"/>
+                                                        <f:passThroughAttribute name="data-renderimage" value="true"/>
                                                     </button>
-                                                    <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split flex-grow-0" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <span class="visually-hidden">Toggle Dropdown</span>
-                                                    </button>
-                                                    <ol class="dropdown-menu">
-                                                        <li>
-                                                            <button class="dropdown-item" jsf:id="moveUp10" jsf:action="#{Metadaten.moveSelectedPages('up', 10)}">
-                                                                10
-                                                                <f:ajax execute="@form" render="pagePaginationList"/>
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button class="dropdown-item" jsf:id="moveUp50" jsf:action="#{Metadaten.moveSelectedPages('up', 50)}">
-                                                                50
-                                                                <f:ajax execute="@form" render="pagePaginationList"/>
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button class="dropdown-item" jsf:id="moveUp100" jsf:action="#{Metadaten.moveSelectedPages('up', 100)}">
-                                                                100
-                                                                <f:ajax execute="@form" render="pagePaginationList"/>
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button class="dropdown-item" jsf:id="moveUp1000" jsf:action="#{Metadaten.moveSelectedPages('up', 1000)}">
-                                                                1000
-                                                                <f:ajax execute="@form" render="pagePaginationList"/>
-                                                            </button>
-                                                        </li>
-                                                    </ol>
-                                                </div>
-
-                                            </li>
-
-                                            <li class="pb-2">
-                                                <div class="btn-group w-100">
-                                                    <button jsf:id="moveDown1" class="btn btn-blank" jsf:action="#{Metadaten.moveSelectedPages('down', 1)}" title="#{msgs.moveSeltectedPagesDown}" type="button">
+                                                </li>
+                                                <li>
+                                                    <button jsf:id="reOrder" class="btn btn-blank w-100 d-flex justify-content-start" jsf:action="#{Metadaten.reOrderPagination}" jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()" title="#{msgs.reOrder}" type="button">
                                                         <util:icon-text
-                                                            icon="chevron-down"
-                                                            text="#{msgs.moveSeltectedPagesUp}"
-                                                            styleClass="d-flex justify-content-start align-items-baseline" />
+                                                            icon="refresh"
+                                                            text="#{msgs.reOrder}" />
                                                         <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                        <f:ajax execute="@form" render="pagePaginationList"/>
+                                                        <f:ajax execute="@form" render=":progressform :thumbnailsForm :openseadragonform"/>
+                                                        <f:passThroughAttribute name="data-renderimage" value="true"/>
                                                     </button>
-                                                    <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split flex-grow-0" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <span class="visually-hidden">Toggle Dropdown</span>
-                                                    </button>
-
-                                                    <ol class="dropdown-menu">
-                                                        <li>
-                                                            <button class="btn btn-outline" jsf:id="moveDown10" jsf:action="#{Metadaten.moveSelectedPages('down', 10)}">
-                                                                10
-                                                                <f:ajax execute="@form" render="pagePaginationList"/>
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button class="btn btn-outline" jsf:id="moveDown50" jsf:action="#{Metadaten.moveSelectedPages('down', 50)}">
-                                                                50
-                                                                <f:ajax execute="@form" render="pagePaginationList"/>
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button class="btn btn-outline" jsf:id="moveDown100" jsf:action="#{Metadaten.moveSelectedPages('down', 100)}">
-                                                                100
-                                                                <f:ajax execute="@form" render="pagePaginationList"/>
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button class="btn btn-outline" jsf:id="moveDown1000" jsf:action="#{Metadaten.moveSelectedPages('down', 1000)}">
-                                                                1000
-                                                                <f:ajax execute="@form" render="pagePaginationList"/>
-                                                            </button>
-                                                        </li>
-                                                    </ol>
-                                                </div>
-                                            </li>
-                                            <li class="pb-2">
-                                                <button jsf:id="deletePages" class="btn btn-blank w-100" jsf:action="#{Metadaten.deleteSeltectedPages}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" title="#{msgs.deleteSeltectedPages}" type="button">
-                                                    <util:icon-text
-                                                        icon="trash-o"
-                                                        text="#{msgs.deleteSeltectedPages}" />
-                                                    <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                    <f:ajax execute="@form" render="@form :thumbnailsForm :openseadragonform :pageareas"/>
-                                                    <f:passThroughAttribute name="data-renderimage" value="true"/>
-                                                </button>
-                                            </li>
-                                            <li>
-                                                <button jsf:id="reOrder" class="btn btn-blank w-100" jsf:action="#{Metadaten.reOrderPagination}" jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()" title="#{msgs.reOrder}" type="button">
-                                                    <span class="fa fa-refresh" aria-hidden="true"/>
-                                                    <!--                                             <span class="fa fa-refresh fa-lg" aria-hidden="true" /> -->
-                                                    <span>#{msgs.reOrder}</span>
-                                                    <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                    <f:ajax execute="@form" render=":progressform :thumbnailsForm :openseadragonform"/>
-                                                    <f:passThroughAttribute name="data-renderimage" value="true"/>
-                                                </button>
-                                            </li>
-                                        </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </section:body>
                                 </div>
                             </section:section>
