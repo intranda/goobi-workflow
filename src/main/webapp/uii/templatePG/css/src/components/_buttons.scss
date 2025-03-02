@@ -7,14 +7,15 @@
   text-decoration: none;
   background-color: transparent;
   border: 0;
-  > .btn {
+  &:has(.btn) {
+    align-items: stretch;
+    color: var(--clr-text-400);
+    display: flex;
+  }
+  .btn {
     --bs-btn-padding-x: 0rem;
     width: 29px;
     margin-right: 5px;
-  }
-
-  span {
-      vertical-align: middle;
   }
 
   &:hover {
