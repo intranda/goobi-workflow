@@ -4,7 +4,8 @@
     <parent>
         <groupId>io.goobi.workflow</groupId>
         <artifactId>workflow-base</artifactId>
-        <version>24.12</version>
+        <version>25.02</version>
+        
         <relativePath/>
     </parent>
     <artifactId>workflow-core</artifactId>

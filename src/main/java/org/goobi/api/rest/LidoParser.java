@@ -23,10 +23,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -39,6 +35,10 @@ import io.goobi.workflow.harvester.MetadataParser;
 import io.goobi.workflow.harvester.repository.Repository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Response;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
@@ -53,7 +53,7 @@ public class LidoParser extends MetadataService implements MetadataParser, IRest
     @POST
     @Path("/{projectName}/{templateName}/{processTitle}")
     @Operation(summary = "Create a process with given lido file",
-    description = "Create a new process, get metadata from content of the lido file ")
+            description = "Create a new process, get metadata from content of the lido file ")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Project not found or process template not found.")
@@ -68,7 +68,7 @@ public class LidoParser extends MetadataService implements MetadataParser, IRest
     @Path("/{processid}")
     @POST
     @Operation(summary = "Replace existing metadata with the content of the lido file",
-    description = "Replace existing metadata with the content of the lido file")
+            description = "Replace existing metadata with the content of the lido file")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")

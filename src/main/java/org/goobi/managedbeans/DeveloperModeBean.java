@@ -25,14 +25,13 @@
  */
 package org.goobi.managedbeans;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @Named("DevModeBean")
 @ApplicationScoped

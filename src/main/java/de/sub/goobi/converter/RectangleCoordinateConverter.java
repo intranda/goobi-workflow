@@ -26,12 +26,12 @@ package de.sub.goobi.converter;
 
 import java.awt.geom.Rectangle2D;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
-
 import com.thoughtworks.xstream.converters.ConversionException;
+
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.FacesConverter;
 
 @FacesConverter("rectangleCoordinateConverter")
 public class RectangleCoordinateConverter implements Converter<Rectangle2D> {

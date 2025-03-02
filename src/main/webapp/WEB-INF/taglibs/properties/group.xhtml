@@ -12,9 +12,9 @@
         : fn:contains(bean, 'BatchProcessHelper')? 'batch'
         : 'process'
     }" />
-    
+
     <div class="properties-group">
- 
+
         <section:section
             type="outline">
             <section:header
@@ -35,7 +35,7 @@
                                 jsf:id="newProperty"
                                 jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
                                 title="#{msgs.eigenschaftHinzufuegen}"
-                                class="btn d-flex align-items-center btn--title-action-neutral"
+                                class="btn d-flex align-items-center btn--title-action"
                                 data-bs-toggle="tooltip">
                                 <f:setPropertyActionListener
                                     target="#{bean.container}"
@@ -48,9 +48,9 @@
                                     class="fa fa-plus" />
                             </button>
                         </c:if>
-                        <c:if test="#{scope == 'step'}">
+                        <c:if test="#{scope == 'step' and !add}">
                             <button
-                                class="btn d-flex align-items-center btn--title-action-neutral"
+                                class="btn d-flex align-items-center btn--title-action"
                                 data-bs-toggle="tooltip"
                                 jsf:action="step_edit"
                                 jsf:rendered="#{bean.containers[container].propertyList[0].type.name != 'metadata'}"
@@ -69,7 +69,7 @@
                         </c:if>
                         <c:if test="#{scope == 'batch'}">
                             <button
-                                class="btn d-flex align-items-center btn--title-action-neutral"
+                                class="btn d-flex align-items-center btn--title-action"
                                 data-bs-toggle="tooltip"
                                 jsf:action="batch_edit"
                                 jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
@@ -91,7 +91,7 @@
                         </c:if>
                         <c:if test="#{scope == 'process' and !add}">
                             <button
-                                class="btn d-flex align-items-center btn--title-action-neutral"
+                                class="btn d-flex align-items-center btn--title-action"
                                 data-bs-toggle="tooltip"
                                 jsf:action="process_edit"
                                 jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
@@ -114,7 +114,7 @@
                         render="propertyEditArea propertyForm">
                         <c:if test="#{scope == 'process' and !add}">
                             <button
-                                class="btn d-flex align-items-center btn--title-action-neutral"
+                                class="btn d-flex align-items-center btn--title-action"
                                 data-bs-toggle="tooltip"
                                 jsf:id="duplicateProperty2"
                                 aria-label="#{msgs.duplicate}"

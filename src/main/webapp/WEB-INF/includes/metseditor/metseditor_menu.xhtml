@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <composite:interface/>
+
+    <composite:implementation>
+        <!-- TODO: mobile menu -->
+        <h:form id="metseditorMenuForm">
+            <!-- TODO: was machen diese hidden input Felder? -->
+            <!-- <h:inputHidden id="scrollPosition" value="#{NavigationForm.uiStatus.mets_scrollPosition}" />
+            <h:inputHidden id="scrollPositionStructData"
+                value="#{NavigationForm.uiStatus.mets_scrollPositionStructData}" />
+            <h:inputHidden id="scrollToThumb" value="#{NavigationForm.uiStatus.mets_scrollToThumb}" /> -->
+
+            <ul role="list" class="navbar-nav">
+                <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Pagination')}">
+                    <li class="nav-item #{Metadaten.modusAnsicht == 'Paginierung' ? 'active' : ''}">
+                        <h:commandLink styleClass="nav-link" action="#{Metadaten.AnsichtAendern}" id="gotoPagination">
+                            #{msgs.paginierung}
+                            <f:setPropertyActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" target="#{Metadaten.modusAnsicht}"/>
+                            <f:ajax onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Paginierung'})}" render="@form :pageContentCenter"/>
+                        </h:commandLink>
+                    </li>
+                </ui:fragment>
+
+                <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Structure')}">
+                    <li class="nav-item #{Metadaten.modusAnsicht == 'Strukturdaten' ? 'active' : ''}">
+                        <h:commandLink styleClass="nav-link" action="#{Metadaten.AnsichtAendern}" id="gotoStructure">
+                            #{msgs.strukturdaten}
+                            <f:setPropertyActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" target="#{Metadaten.modusAnsicht}"/>
+                            <f:ajax onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Strukturdaten'})}" render="@form :pageContentCenter"/>
+                        </h:commandLink>
+                    </li>
+                </ui:fragment>
+
+                <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Metadata')}">
+                    <li class="nav-item #{Metadaten.modusAnsicht == 'Metadaten' ? 'active' : ''}">
+                        <h:commandLink styleClass="nav-link" action="#{Metadaten.AnsichtAendern}" id="gotoMetadata">
+                            #{msgs.metadaten}
+                            <f:setPropertyActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" target="#{Metadaten.modusAnsicht}"/>
+                            <f:ajax onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Metadaten'})}" render="@form :pageContentCenter"/>
+                        </h:commandLink>
+                    </li>
+                </ui:fragment>
+
+                <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Files')}">
+                    <li class="nav-item #{Metadaten.modusAnsicht == 'File' ? 'active' : ''}">
+                        <h:commandLink styleClass="nav-link" action="#{Metadaten.AnsichtAendern}" id="gotoFile">
+                            #{msgs.fileManipulation}
+                            <f:setPropertyActionListener value="File" property="#{Metadaten.modusAnsicht}" target="#{Metadaten.modusAnsicht}"/>
+                            <f:ajax onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'File'})}" render="@form :pageContentCenter"/>
+                        </h:commandLink>
+                    </li>
+                </ui:fragment>
+            </ul>
+        </h:form>
+    </composite:implementation>
+</ui:composition>

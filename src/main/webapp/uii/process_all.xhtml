@@ -6,7 +6,7 @@
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+	
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -88,18 +88,11 @@
 										<div class="gw-table__filters">
 											<ui:include
 												src="templatePG/includes/process/list_filterAndDisplay.xhtml" />
-											<x:aliasBeansScope>
-												<x:aliasBean
-													alias="#{Form}"
-													value="#{ProzessverwaltungForm}" />
-												<x:aliasBean
-													alias="#{label}"
-													value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.filterProcesses:msgs.filterProcessTemplates}" />
-												<f:subview id="sub1">
-													<ui:include
-														src="templatePG/includes/task/list_searchAndSave.xhtml" />
-												</f:subview>
-											</x:aliasBeansScope>
+                                                
+                                        
+                                            
+                                             <intranda:list_searchAndSave bean="#{ProzessverwaltungForm}" label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.filterProcesses:msgs.filterProcessTemplates}" />
+                                            
 										</div>
 
 									</div>
@@ -426,7 +419,7 @@
 
 													<!-- Alle Schritte Auflisten -->
 													<td
-														data-label="#{msgs.ProzessverwaltungForm}"
+														data-label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}"
 														class="prozessVerwaltung">
 														<ui:include
 															src="templatePG/includes/ajaxPlusMinusButton.xhtml">
@@ -450,7 +443,7 @@
 																<div class="gw-table">
 																	<div class="gw-table__wrapper">
 
-																		<x:dataTable
+																		<h:dataTable
 																			styleClass="table table-hover table-bordered"
 																			id="prozessdetails"
 																			var="step"
@@ -596,7 +589,7 @@
 
 																			</h:column>
 
-																		</x:dataTable>
+																		</h:dataTable>
 
 																	</div>
 																	<!--/gw-table-->
@@ -825,11 +818,11 @@
 																data-bs-toggle="tooltip"
 																class="btn btn-blank">
 																<span class="fa fa-pencil" />
-																<x:updateActionListener
-																	property="#{ProzessverwaltungForm.myProzess}"
+																<f:setPropertyActionListener
+																	target="#{ProzessverwaltungForm.myProzess}"
 																	value="#{item}" />
-																<x:updateActionListener
-																	property="#{ProzessverwaltungForm.modusBearbeiten}"
+																<f:setPropertyActionListener
+																	target="#{ProzessverwaltungForm.modusBearbeiten}"
 																	value="" />
 															</button>
 
@@ -844,8 +837,8 @@
 																title="#{msgs.duplicate}"
 																onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
 																<span class="fa fa-clipboard" />
-																<x:updateActionListener
-																	property="#{ProzessverwaltungForm.myProzess}"
+																<f:setPropertyActionListener
+																	target="#{ProzessverwaltungForm.myProzess}"
 																	value="#{item}" />
 															</button>
 
@@ -1084,8 +1077,8 @@
 																	jsf:disabled="#{!item.containsExportStep}"
 																	jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
 																	<span class="fa fa-globe" />
-																	<x:updateActionListener
-																		property="#{ProzessverwaltungForm.myProzess}"
+																	<f:setPropertyActionListener
+																		target="#{ProzessverwaltungForm.myProzess}"
 																		value="#{item}" />
 																</button>
 
@@ -1105,8 +1098,8 @@
 																	jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}"
 																	class="btn btn-blank">
 																	<i class="font-light fa fa-globe" />
-																	<x:updateActionListener
-																		property="#{ProzessverwaltungForm.myProzess}"
+																	<f:setPropertyActionListener
+																		target="#{ProzessverwaltungForm.myProzess}"
 																		value="#{item}" />
 																</button>
 															</div>
@@ -1127,8 +1120,8 @@
 																jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and
                                                                 ProzesskopieForm.availableProjects.size() eq 1 and ProzesskopieForm.availableProjects.get(0).getTitel() == item.projekt.titel}">
 																<span class="fa fa-file-o" />
-																<x:updateActionListener
-																	property="#{ProzesskopieForm.prozessVorlage}"
+																<f:setPropertyActionListener
+																	target="#{ProzesskopieForm.prozessVorlage}"
 																	value="#{item}" />
 															</button>
 
@@ -1153,8 +1146,8 @@
 																			jsf:action="#{ProzesskopieForm.prepare}"
 																			jsf:rel="tooltip">
 																			<span class="fa fa-file-o" />
-																			<x:updateActionListener
-																				property="#{ProzesskopieForm.prozessVorlage}"
+																			<f:setPropertyActionListener
+																				target="#{ProzesskopieForm.prozessVorlage}"
 																				value="#{item}" />
 																		</button>
 
@@ -1175,11 +1168,11 @@
 																						jsf:action="#{ProzesskopieForm.prepare}"
 																						class="dropdown-item">
 																						<h:outputText value="#{proj.titel}" />
-																						<x:updateActionListener
-																							property="#{item.projekt}"
+																						<f:setPropertyActionListener
+																							target="#{item.projekt}"
 																							value="#{proj}" />
-																						<x:updateActionListener
-																							property="#{ProzesskopieForm.prozessVorlage}"
+																						<f:setPropertyActionListener
+																							target="#{ProzesskopieForm.prozessVorlage}"
 																							value="#{item}" />
 																					</button>
 																				</li>
@@ -1206,8 +1199,8 @@
 																jsf:rendered="#{(ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and
                                                                 ProzesskopieForm.availableProjects.size() eq 1 and ProzesskopieForm.availableProjects.get(0).getTitel() == item.projekt.titel)}">
 																<span class="fa fa-files-o" />
-																<x:updateActionListener
-																	property="#{MassImportForm.template}"
+																<f:setPropertyActionListener
+																	target="#{MassImportForm.template}"
 																	value="#{item}" />
 															</button>
 
@@ -1232,8 +1225,8 @@
 																			data-bs-toggle="tooltip"
 																			jsf:action="#{MassImportForm.prepare}"
 																			jsf:rel="tooltip">
-																			<x:updateActionListener
-																				property="#{MassImportForm.template}"
+																			<f:setPropertyActionListener
+																				target="#{MassImportForm.template}"
 																				value="#{item}" />
 																		</button>
 
@@ -1254,14 +1247,14 @@
 																						jsf:id="prepare"
 																						class="dropdown-item">
 																						<h:outputText value="#{proj.titel}" />
-																						<x:updateActionListener
-																							property="#{item.projekt}"
+																						<f:setPropertyActionListener
+																							target="#{item.projekt}"
 																							value="#{proj}" />
-																						<x:updateActionListener
-																							property="#{item.projectId}"
+																						<f:setPropertyActionListener
+																							target="#{item.projectId}"
 																							value="#{proj.id}" />
-																						<x:updateActionListener
-																							property="#{MassImportForm.template}"
+																						<f:setPropertyActionListener
+																							target="#{MassImportForm.template}"
 																							value="#{item}" />
 																					</button>
 																				</li>
@@ -1367,19 +1360,19 @@
 	            }
 
 	            function initGoobiScriptCodeMirror() {
-	            	var goobiScriptTextArea = document.getElementById("goobiScriptfield");
+	            	var goobiScriptTextArea = document.getElementById("boxProcessesAllActions:goobiScriptfield");
 	            	if(goobiScriptTextArea) {
 	                	goobiScriptCodeMirror = CodeMirror.fromTextArea(goobiScriptTextArea, {
 							lineNumbers: true,
 							mode: 'yaml'
 						});
 	                	goobiScriptCodeMirror.on('change', editor => {
-							document.getElementById("goobiScriptfield").innerHTML = editor.getValue();
+							document.getElementById("boxProcessesAllActions:goobiScriptfield").innerHTML = editor.getValue();
 					    });
 	            	}
 	            }
 
-	            jsf.ajax.addOnEvent( function( data ) {
+	            faces.ajax.addOnEvent( function( data ) {
 	                var ajaxstatus = data.status;
 	                switch ( ajaxstatus ) {
 	                    case "success":

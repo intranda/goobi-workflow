@@ -1,0 +1,94 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:section="http://goobi.io/section"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <composite:interface/>
+    <composite:implementation>
+        <h:panelGroup rendered="#{!(Metadaten.sizeOfMetadataGroups==0 and empty Metadaten.groups)}" layout="block" id="meEditGroupBox">
+            <section:section type="#{!empty Metadaten.groups or Metadaten.sizeOfMetadataGroups!=0 ?'neutral':'outline'}">
+                <section:header icon="bars" title="#{msgs.metadataGroups}">
+                    <button type="button" aria-label="#{msgs.minimizeBox}" class="btn" data-bs-target="#metadataGroupBoxBody" data-bs-toggle="collapse" aria-expanded="true" aria-controls="metadataGroupBoxBody">
+                        <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
+                        <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
+                    </button>
+                </section:header>
+                <div id="metadataGroupBoxBody" class="collapse show">
+                    <section:body>
+                        <p class="p-3 m-0 border-bottom" jsf:rendered="#{empty Metadaten.groups}">
+                            <h:outputText value="#{msgs.mets_no_metadatagroups_assigned}"/>
+                        </p>
+                        <ui:repeat value="#{Metadaten.groups}" var="Item" varStatus="status">
+                            <h:panelGroup layout="block" styleClass="border-bottom module__box-level-#{Item.level}">
+                                <div class="p-3 d-flex gap-2 border-bottom">
+                                    <h3 class="h6 me-auto">
+                                        <h:outputText value="#{Item.name}"/>
+                                    </h3>
+                                    <button jsf:id="grpdelete" aria-label="#{msgs.mets_deleteMetadataGroup}" class="btn" jsf:action="#{Metadaten.deleteGroup}" title="#{msgs.mets_deleteMetadataGroup}" type="button">
+                                        <span class="fa fa-lg fa-trash-o" aria-hidden="true"/>
+                                        <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{Item}" target="#{Metadaten.currentGroup}"/>
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                                        <f:ajax execute="@form" render="@form"/>
+                                    </button>
+                                    <button jsf:id="grpduplicate" aria-label="#{msgs.mets_duplicateMetadataGroup}" class="btn" jsf:action="#{Metadaten.CopyGroup}" title="#{msgs.mets_duplicateMetadataGroup}" type="button">
+                                        <span class="fa fa-lg fa-copy" aria-hidden="true"/>
+                                        <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{Item}" target="#{Metadaten.currentGroup}"/>
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                                        <f:ajax execute="@form" render="@form"/>
+                                    </button>
+                                </div>
+                                <ui:repeat value="#{Item.metadataList}" var="metadata" varStatus="status">
+                                    <intranda:formGroupMetadata id="grpMetadata" metadata="#{metadata}" renderDelete="true" renderDuplicate="true"/>
+                                </ui:repeat>
+                                <ui:repeat value="#{Item.personList}" var="currentPerson">
+                                    <intranda:formGroupPerson id="grpPerson" person="#{currentPerson}" renderDelete="true"/>
+                                </ui:repeat>
+                                <ui:repeat value="#{Item.corporateList}" var="currentCorporate" varStatus="status">
+                                    <intranda:formGroupCorporate id="grpCorporate" corporate="#{currentCorporate}" renderDelete="true" changeRole="false" index="#{status.index}"/>
+                                </ui:repeat>
+                                <ui:fragment rendered="#{Item.metadataAddable or Item.corporateAddable or Item.personAddable or Item.groupAddable}">
+                                    <div class="p-3 d-flex justify-content-end gap-2">
+                                        <button class="btn btn-blank addable" jsf:action="#{Metadaten.Hinzufuegen}" jsf:rendered="#{Item.metadataAddable}" type="button">
+                                            #{msgs.neuesMetadatumAnlegen}
+                                            <f:setPropertyActionListener value="#{Item}" target="#{Metadaten.currentGroup}"/>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                                            <f:ajax render=":pageContentCenter"/>
+                                        </button>
+                                        <button class="btn btn-blank addable" jsf:action="#{Metadaten.AddCorporate}" jsf:rendered="#{Item.corporateAddable}" type="button">
+                                            #{msgs.mets_corporate_createCorporate}
+                                            <f:setPropertyActionListener value="#{Item}" target="#{Metadaten.currentGroup}"/>
+                                            <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                                            <f:ajax render=":pageContentCenter"/>
+                                        </button>
+                                        <button class="btn btn-blank addable" jsf:action="#{Metadaten.HinzufuegenPerson}" jsf:rendered="#{Item.personAddable}" type="button">
+                                            #{msgs.neuePersonAnlegen}
+                                            <f:setPropertyActionListener value="#{Item}" target="#{Metadaten.currentGroup}"/>
+                                            <f:ajax render=":pageContentCenter"/>
+                                        </button>
+                                        <button class="btn btn-blank addable" jsf:action="#{Metadaten.AddGroup}" jsf:rendered="#{Item.groupAddable}" type="button">
+                                            #{msgs.AddNewGroup}
+                                            <f:setPropertyActionListener value="#{Item}" target="#{Metadaten.currentGroup}"/>
+                                            <f:ajax render=":pageContentCenter"/>
+                                        </button>
+                                    </div>
+                                </ui:fragment>
+                            </h:panelGroup>
+                        </ui:repeat>
+                        <h:panelGroup rendered="#{Metadaten.sizeOfMetadataGroups!=0}" layout="block" styleClass="p-3 d-flex justify-content-end">
+                            <button jsf:id="addGroup" class="btn btn-#{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ? 'neutral-600' : 'blank'}" jsf:action="#{Metadaten.AddGroup}" type="button">
+                                #{msgs.AddNewGroup}
+                                <f:ajax render=":pageContentCenter"/>
+                                <f:setPropertyActionListener value="" target="#{Metadaten.currentGroup}"/>
+                            </button>
+                        </h:panelGroup>
+                    </section:body>
+                </div>
+            </section:section>
+        </h:panelGroup>
+    </composite:implementation>
+</ui:composition>

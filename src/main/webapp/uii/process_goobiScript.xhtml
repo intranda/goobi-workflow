@@ -7,7 +7,7 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/templatePG/templatePG.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+    
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:p="http://primefaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -120,8 +120,8 @@
                                                         <span>
                                                             <h:outputText value="#{msgs.goobiScript_setMaxEntries} 100" />
                                                         </span>
-                                                        <x:updateActionListener
-                                                            property="#{SessionForm.gsm.showMax}"
+                                                        <f:setPropertyActionListener
+                                                            target="#{SessionForm.gsm.showMax}"
                                                             value="100" />
                                                     </button>
                                                 </li>
@@ -133,8 +133,8 @@
                                                         <span>
                                                             <h:outputText value="#{msgs.goobiScript_setMaxEntries} 1.000" />
                                                         </span>
-                                                        <x:updateActionListener
-                                                            property="#{SessionForm.gsm.showMax}"
+                                                        <f:setPropertyActionListener
+                                                            target="#{SessionForm.gsm.showMax}"
                                                             value="1000" />
                                                     </button>
                                                 </li>
@@ -146,8 +146,8 @@
                                                         <span>
                                                             <h:outputText value="#{msgs.goobiScript_setMaxEntries} 10.000" />
                                                         </span>
-                                                        <x:updateActionListener
-                                                            property="#{SessionForm.gsm.showMax}"
+                                                        <f:setPropertyActionListener
+                                                            target="#{SessionForm.gsm.showMax}"
                                                             value="10000" />
                                                     </button>
                                                 </li>
@@ -159,8 +159,8 @@
                                                         <span>
                                                             <h:outputText value="#{msgs.goobiScript_setMaxEntries} 1.000.000" />
                                                         </span>
-                                                        <x:updateActionListener
-                                                            property="#{SessionForm.gsm.showMax}"
+                                                        <f:setPropertyActionListener
+                                                            target="#{SessionForm.gsm.showMax}"
                                                             value="1000000" />
                                                     </button>
                                                 </li>

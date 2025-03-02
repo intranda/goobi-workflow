@@ -1,0 +1,271 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+
+        <!-- process search modal #processesSearchBox -->
+        <div
+            id="processesSearchBox"
+            class="modal fade modal__viaf"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="processesSearchBoxLabel"
+            aria-hidden="true">
+            <div
+                class="modal-dialog modal-lg modal-dialog-scrollable"
+                role="document">
+                <h:panelGroup id="processModalContent" class="modal-content" layout="block">
+                    <div class="modal-header bg-primary text-white">
+                        <h5
+                            class="modal-title">#{msgs.NORM_processesSearch}</h5>
+                        <button
+                            type="button"
+                            class="btn text-white"
+                            title="#{msgs.cancel}"
+                            data-bs-dismiss="modal">
+                            <span class="fa fa-times" />
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <p>
+                            <h:outputText
+                                value="#{msgs.NORM_helpProcessesSearch}"
+                                escape="false" />
+                        </p>
+
+                        <h:panelGroup id="processes_search">
+                            <div class="col-sm-12">
+                                <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
+                                    <ui:repeat
+                                        value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataFilters}"
+                                        var="group"
+                                        varStatus="globStatus">
+
+                                        <div class="searchgroup__container">
+                                            <button
+                                            	jsf:id="close"
+                                                class="btn btn-blank"
+                                                jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.deleteSearchGroup(globStatus.index)}">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                                <f:ajax
+                                                    execute=":normdataForm:processes_search"
+                                                    render=":normdataForm:processes_search" />
+                                            </button>
+                                            <ui:repeat
+                                                var="filter"
+                                                value="#{group.filters}"
+                                                varStatus="status">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-control form-control--select">
+                                                            <h:selectOneMenu value="#{filter.field}">
+                                                                <f:selectItems
+                                                                    value="#{Metadaten.currentMetadataToPerformSearch.possibleFields}"
+                                                                    var="field"
+                                                                    itemValue="#{field}"
+                                                                    itemLabel="#{msgs[field]}" />
+                                                            </h:selectOneMenu>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-control form-control--select">
+                                                            <h:selectOneMenu value="#{filter.relation}">
+                                                                <f:selectItems value="#{filter.operators}" />
+                                                            </h:selectOneMenu>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <!--                                                                    search button? -->
+                                                        <h:inputText
+                                                            value="#{filter.value}"
+                                                            styleClass="form-control input"
+                                                            id="input_processes" />
+                                                    </div>
+                                                    <div class="col text-right" style="flex-grow: 0;">
+                                                        <button
+                                                        	jsf:id="delete"
+                                                            jsf:action="#{group.deleteFilter(status.index)}"
+                                                            class="btn btn-blank">
+                                                            <span class="fa fa-trash" />
+                                                            <f:ajax
+                                                                execute=":normdataForm:processes_search"
+                                                                render=":normdataForm:processes_search" />
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                            </ui:repeat>
+                                            <div class="row">
+                                                <ui:fragment rendered="#{group.numFilters gt 1}">
+                                                    <div class="col-8 group-conjunction">
+                                                        <strong>
+                                                            <h:outputText value="#{msgs.NORM_filterconjunction}:" />
+                                                        </strong>
+                                                        <h:selectOneRadio
+                                                            value="#{group.conjunctive}"
+                                                            styleClass="table__radio">
+                                                            <f:selectItem
+                                                                itemValue="true"
+                                                                itemLabel="#{msgs.NORM_conjunctive}" />
+                                                            <f:selectItem
+                                                                itemValue="false"
+                                                                itemLabel="#{msgs.NORM_disjunctive}" />
+                                                            <f:ajax />
+                                                        </h:selectOneRadio>
+                                                    </div>
+                                                </ui:fragment>
+                                                <div class="#{group.numFilters gt 1 ? 'col-4' : 'col'}">
+                                                    <button
+                                                    	jsf:id="newFilter"
+                                                        jsf:action="#{group.newFilter}"
+                                                        class="btn btn-blank pull-right">
+                                                        #{msgs.NORM_newFilter}
+                                                        <f:ajax
+                                                            execute=":normdataForm:processes_search"
+                                                            render=":normdataForm:processes_search" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ui:repeat>
+                                    <div class="modal__viaf-conjunction">
+                                        <div class="row">
+                                            <h:panelGroup rendered="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1}">
+                                                <div
+                                                    class="col-sm-8 group-conjunction"
+                                                    style="padding-top: 4px;">
+                                                    <strong>
+                                                        <h:outputText value="#{msgs.NORM_groupconjunction}:" />
+                                                    </strong>
+                                                    <h:selectOneRadio styleClass="table__radio" value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataConjunctive}">
+                                                        <f:selectItem
+                                                            itemValue="true"
+                                                            itemLabel="#{msgs.NORM_conjunctive}" />
+                                                        <f:selectItem
+                                                            itemValue="false"
+                                                            itemLabel="#{msgs.NORM_disjunctive}" />
+                                                        <f:ajax />
+                                                    </h:selectOneRadio>
+                                                </div>
+                                            </h:panelGroup>
+                                            <div class="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'} text-right">
+
+                                                <button
+                                                	jsf:id="newGroup"
+                                                    jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.newGroup}"
+                                                    class="btn btn-blank">
+                                                    <f:ajax
+                                                        execute=":normdataForm:processes_search"
+                                                        render=":normdataForm:processes_search" />
+                                                        #{msgs.NORM_newGroup}
+                                                    </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:if>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button
+                            			jsf:id="processSearch"
+                                        class="btn btn-primary"
+                                        jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                        #{msgs.search}
+                                        <span class="btn-ajax-loader" aria-hidden="true">
+                                            <img src="template/img/goobi/ajaxloader2.gif" alt="Ajax Button Loader" />
+                                        </span>
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                       <f:ajax
+                                        execute="@form"
+                                        render="processResults" />
+                                </button>
+                            </div>
+
+                            <script>
+	                            $( 'input[id*="geonamesSearch"]' ).on( 'focus', function() {
+	                                $( this ).on( 'keyup', function( event ) {
+	                                    event.preventDefault();
+	                                    if ( event.keyCode == 13 ) {
+	                                        $( this ).parent().next().click();
+	                                    }
+	                                } );
+	                            } );
+	                        </script>
+
+                        </h:panelGroup>
+                        <h:panelGroup
+                            id="processResults"
+                            rendered="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
+							<c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
+                            <h:panelGroup
+                                id="processesList"
+                                layout="block"
+                                styleClass="row pre-scrollable"
+                                rendered="#{not empty Metadaten.currentMetadataToPerformSearch.results}">
+                                <h:message
+                                    for="processesList"
+                                    showDetail="true"
+                                    styleClass="help-inline font-danger" />
+
+                                <div class="col-sm-12">
+                                    <h:dataTable
+                                        value="#{Metadaten.currentMetadataToPerformSearch.results}"
+                                        var="process"
+                                        styleClass="table table-hover table-nomargin dataTable table-bordered responsive">
+                                        <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'process'}">
+                                            <c:forEach
+                                                items="#{Metadaten.currentMetadataToPerformSearch.searchRequest.wantedFields}"
+                                                var="val">
+                                                <h:column>
+                                                    <f:facet name="header">
+                                                        <!-- TODO: translation ? -->
+                                                        <h:outputText value="#{msgs[val]}" />
+                                                    </f:facet>
+                                                    <h:outputText value="#{process.metadata[val][0].value}" />
+                                                </h:column>
+                                            </c:forEach>
+                                        </c:if>
+                                        <h:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{msgs.action}" />
+                                            </f:facet>
+                                            <button
+                                                onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
+                                            	jsf:id="process"
+                                                class="btn btn-primary fa fa-check"
+                                                jsf:action="#{Metadaten.currentMetadataToPerformSearch.linkProcess(process)}">
+                                            </button>
+                                        </h:column>
+                                    </h:dataTable>
+
+                                    <h:outputText
+                                        value="#{msgs.NORM_noHits}"
+                                        rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}"
+                                        style="margin: 20px;" />
+                                </div>
+
+                            </h:panelGroup>
+                            </c:if>
+                        </h:panelGroup>
+                    </div>
+                </h:panelGroup>
+
+
+            </div>
+        </div>
+
+    </composite:implementation>
+</ui:composition>

@@ -35,9 +35,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.production.flow.jobs.AbstractGoobiJob;
 import org.goobi.production.flow.jobs.IGoobiJob;
@@ -58,6 +55,8 @@ import org.reflections.Reflections;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.BackgroundJobManager;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;

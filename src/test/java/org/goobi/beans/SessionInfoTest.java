@@ -22,12 +22,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import javax.servlet.http.HttpSession;
-
 import org.easymock.EasyMock;
 import org.junit.Test;
 
 import de.sub.goobi.AbstractTest;
+import jakarta.servlet.http.HttpSession;
 
 public class SessionInfoTest extends AbstractTest {
 

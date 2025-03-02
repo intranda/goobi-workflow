@@ -9,7 +9,7 @@
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+	
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
 	<ui:param name="myPageTitle" value="#{JobTypesBean.currentJobType.name == null?msgs.createNewJobType:msgs.editJobType}" />
@@ -82,12 +82,12 @@
 				    </div>
 
 				    <div class="box__actions">
-					    <a
+					    <button
 							class="btn btn-blank"
 							jsf:immediate="true"
 							jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
 					    	<span>#{msgs.cancel}</span>
-					    </a>
+					    </button>
 					    <button class="btn btn-success" jsf:action="#{JobTypesBean.saveCurrentJobType}">
 					    	<span class="fa fa-save" />
 					    	<span>#{msgs.save}</span>

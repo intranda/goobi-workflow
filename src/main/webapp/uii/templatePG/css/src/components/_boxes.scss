@@ -61,28 +61,6 @@
     }
   }
 
-  .btn--title-action-neutral {
-    color: var(--clr-neutral-600);
-    border: 0.0625rem solid var(--clr-neutral-300);
-
-    i,
-    .fa {
-      color: currentColor;
-    }
-
-    &:not(:last-child) {
-      margin-inline-end: 0.5rem;
-    }
-
-    &:hover {
-      background-color: var(--clr-neutral-600);
-      i,
-      .fa {
-        color: #fff;
-      }
-    }
-  }
-
   h2 {
     color: currentColor;
     font-size: 0.9375rem;
@@ -267,7 +245,7 @@
     color: var(--bs-body-color);
   }
   .btn--title-action {
-    border-color: black;
+    border-color: var(--clr-neutral-300);
     color: black;
 
     &:hover {
@@ -279,6 +257,7 @@
     }
   }
   .tab {
+    background-color: transparent;
     border-color: var(--clr-text-400);
     &.active {
       background-color: var(--clr-neutral-600);
@@ -312,5 +291,27 @@
   &__delete {
     order: -1;
     margin-right: auto;
+  }
+}
+
+.box--neutral {
+  .btn--title-action,
+  .btn--title-action-neutral {
+    color: #fff;
+    border: 0.0625rem solid var(--clr-neutral-300);
+
+    i,
+    .fa {
+      color: currentColor;
+    }
+
+    &:not(:last-child) {
+      margin-inline-end: 0.5rem;
+    }
+
+    &:hover {
+      background-color: var(--clr-neutral-100);
+      color: var(--clr-neutral-600);
+    }
   }
 }

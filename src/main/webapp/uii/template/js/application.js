@@ -170,7 +170,6 @@ function resizeHandlerHeight() {
     var wHeight = $(window).height(),
         minus = ($(window).scrollTop() == 0) ? 40 : 0;
     $("#left .ui-resizable-handle").height(wHeight - minus);
-    $("#treeform").height(wHeight - minus- 35);
 }
 
 function toggleMobileNav() {
@@ -334,7 +333,7 @@ $(document).ready(function () {
     }
 
     // page manipulation on ajax calls
-    jsf.ajax.addOnEvent(function(data) {
+    faces.ajax.addOnEvent(function(data) {
         var ajaxstatus = data.status;
 
         switch (ajaxstatus) {

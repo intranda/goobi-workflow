@@ -1,0 +1,47 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <!-- WARNING RED ONLY MODE -->
+        <h:outputText
+            rendered="#{Metadaten.nurLesenModus}"
+            styleClass="alert alert-warning"
+            value="#{msgs.metadatenBetrachten} (#{msgs.schreibgeschuetzt})" />
+
+        <h:form id="metadataform" prependId="false">
+            <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddGroup) and (not Metadaten.modeAddCorporate)}">
+                <!-- EXISTING PERSON -->
+                <ui:include src="metadata/inc_me_metadata-existingPerson.xhtml" />
+
+                <!-- EXISTING CORPORATE -->
+                <ui:include src="metadata/inc_me_metadata-existingCorporate.xhtml" />
+
+                <!-- EXISTING METADATA -->
+                <ui:include src="metadata/inc_me_metadata-existingMetadata.xhtml" />
+
+                <!-- EXISTING METADATA GROUP -->
+                <ui:include src="metadata/inc_me_metadata-existingMetadataGroup.xhtml" />
+            </h:panelGroup>
+
+            <!-- ADD METADATA -->
+            <ui:include src="metadata/inc_me_metadata-addMetadata.xhtml" />
+
+            <!-- ADD PERSON -->
+            <ui:include src="metadata/inc_me_metadata-addPerson.xhtml" />
+
+            <!-- ADD CORPORATE -->
+            <ui:include src="metadata/inc_me_metadata-addCorporate.xhtml" />
+
+            <!-- ADD GROUP -->
+            <ui:include src="metadata/inc_me_metadata-addGroup.xhtml" />
+        </h:form>
+    </composite:implementation>
+</ui:composition>

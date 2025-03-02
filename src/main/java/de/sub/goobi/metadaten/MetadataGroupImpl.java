@@ -27,11 +27,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
-
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.Helper;
+import jakarta.faces.model.SelectItem;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.dl.Corporate;

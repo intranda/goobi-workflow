@@ -48,6 +48,7 @@ const sources = {
     composites: 'resources/**/*.xhtml',
     template: 'uii/templatePG/templatePG.html',
     taglibs: 'WEB-INF/taglibs/**/*.xhtml',
+    includes: 'WEB-INF/includes/**/*.xhtml',
 }
 // target directories
 const legacyTargetFolder = {
@@ -59,6 +60,7 @@ const targetFolder = {
     staticAssets: 'uii/',
     composites: 'resources/',
     taglibs: 'WEB-INF/taglibs/',
+    includes: 'WEB-INF/includes/',
 }
 
 // FUNCTIONS
@@ -84,6 +86,11 @@ function composites() {
 function taglibs() {
     return src(sources.taglibs)
         .pipe(dest(`${customLocation}${targetFolder.taglibs}`))
+};
+
+function includes() {
+    return src(sources.includes)
+        .pipe(dest(`${customLocation}${targetFolder.includes}`))
 };
 
 // function for legacy less
@@ -209,13 +216,12 @@ function prodJsRollup() {
 
 exports.dev = function() {
     loadConfig();
-    watch(legacySources.less, { ignoreInitial: false }, devLess);
-    watch(legacySources.js, { ignoreInitial: false }, devJsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
     watch(sources.cssGlob, { ignoreInitial: false }, devCss);
     watch(sources.staticAssets, { ignoreInitial: false }, static);
     watch(sources.composites, { ignoreInitial: false }, composites);
     watch(sources.taglibs, { ignoreInitial: false }, taglibs);
+    watch(sources.includes, { ignoreInitial: false }, includes);
 };
 exports.prod = parallel(prodJsLegacy, prodJsRollup, prodBSCss, prodCss, prodLess);

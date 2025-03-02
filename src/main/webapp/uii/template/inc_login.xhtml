@@ -3,7 +3,7 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+    
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:o="http://omnifaces.org/ui"
@@ -44,18 +44,18 @@
 							</script>
 							<div class="form-group">
 								<div class="email controls">
-									<x:inputText id="login" pt:aria-label="#{msgs.login}" forceId="true" styleClass="form-control"
+									<h:inputText id="login" pt:aria-label="#{msgs.login}" forceId="true" styleClass="form-control"
 										value="#{LoginForm.login}" >
 										<f:passThroughAttribute name="placeholder" value="#{msgs.login}" />
-									</x:inputText>
+									</h:inputText>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="pw controls">
-									<x:inputSecret id="passwort" pt:aria-label="#{msgs.passwort}" forceId="true" styleClass="form-control"
+									<h:inputSecret id="passwort" pt:aria-label="#{msgs.passwort}" forceId="true" styleClass="form-control"
 										value="#{LoginForm.passwort}" autocomplete="off" >
 										<f:passThroughAttribute name="placeholder" value="#{msgs.passwort}" />
-									</x:inputSecret>
+									</h:inputSecret>
 								</div>
 							</div>
 							<div class="submit">

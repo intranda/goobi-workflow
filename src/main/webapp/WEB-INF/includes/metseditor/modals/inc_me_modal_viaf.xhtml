@@ -1,0 +1,308 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+        <!-- VIAF MODAL -->
+        <div
+            id="viafSearchBox"
+            class="modal fade modal__viaf"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="viafSearchBoxLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+               <h:panelGroup
+                    id="viafModalContent"
+                    layout="block"
+                    styleClass="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h4 class="modal-title" id="viafSearchBoxLabel">#{msgs.NORM_viafSearch}</h4>
+                        <button
+                            type="button"
+                            class="btn text-white"
+                            title="#{msgs.cancel}"
+                            data-bs-dismiss="modal">
+                            <util:icon icon="times" />
+                        </button>
+                    </div>
+                    <div class="modal-body flow">
+                        <p>
+                            <h:outputText value="#{msgs.NORM_helpViafSearch}" escape="false" />
+                        </p>
+                        <!-- VIAF SEARCH -->
+                        <h:panelGroup
+                            id="viaf_search"
+                            layout="block"
+                            styleClass="flow">
+                            <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'viaf' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'person' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'corporate'}">
+                                <ui:repeat
+                                    value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.searchParameterGroups}"
+                                    var="group"
+                                    varStatus="globStatus">
+                                    <div class="border flow p-3">
+                                        <button
+                                        	jsf:id="removeGroup"
+                                            aria-label="#{msgs.removeGroup}"
+                                            class="btn btn-blank"
+                                            jsf:action="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.deleteGroup(globStatus.index)}">
+                                            <span class="fa fa-times" aria-hidden="true" />
+                                            <f:ajax
+                                                execute=":normdataForm:viaf_search"
+                                                render=":normdataForm:viaf_search" />
+                                        </button>
+                                        <div class="d-flex flex-column gap-2">
+                                            <ui:repeat var="filter" value="#{group.parameterList}" varStatus="status">
+                                                <div class="input-group">
+                                                    <h:selectOneMenu
+                                                        value="#{filter.searchField}"
+                                                        pt:aria-label="#{msgs.filter}"
+                                                        styleClass="form-select">
+                                                        <f:selectItems
+                                                            value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.searchFields}"
+                                                            itemLabel="#{item.label}"
+                                                            itemValue="#{item.value}"
+                                                            var="item" />
+                                                        <f:ajax
+                                                            execute="@this input_processes select_databases"
+                                                            render="input_processes select_databases" />
+                                                    </h:selectOneMenu>
+                                                    <h:selectOneMenu
+                                                        value="#{filter.operand}"
+                                                        pt:aria-label="#{msgs.operand}"
+                                                        styleClass="form-select flex-shrink-1">
+                                                        <f:selectItems value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.relations}" />
+                                                    </h:selectOneMenu>
+                                                    <ui:fragment rendered="#{filter.searchField != 'local.sources'}">
+                                                        <h:inputText
+                                                            id="input_processes"
+                                                            pt:aria-label="#{msgs.suchbegriff}"
+                                                            styleClass="form-control flex-grow-1"
+                                                            pt:dir="auto"
+                                                            value="#{filter.searchValue}" />
+                                                    </ui:fragment>
+
+                                                    <ui:fragment rendered="#{filter.searchField == 'local.sources'}">
+                                                        <h:selectOneMenu
+                                                            id="select_databases"
+                                                            value="#{filter.searchValue}"
+                                                            styleClass="form-select flex-grow-1">
+                                                            <f:selectItems
+                                                                value="#{Metadaten.currentMetadataToPerformSearch.searchSources}"
+                                                                itemLabel="#{item.label}"
+                                                                itemValue="#{item.value}"
+                                                                var="item" />
+                                                        </h:selectOneMenu>
+                                                    </ui:fragment>
+                                                    <button
+                                                        jsf:id="removeFilter"
+                                                        aria-label="#{msgs.removeFilter}"
+                                                        class="btn btn-blank input-group-text"
+                                                        jsf:action="#{group.deleteFilter(status.index)}">
+                                                        <span class="fa fa-trash" aria-hidden="true" />
+                                                        <f:ajax
+                                                            execute=":normdataForm:viaf_search"
+                                                            render=":normdataForm:viaf_search" />
+                                                    </button>
+                                                </div>
+                                            </ui:repeat>
+                                        </div>
+                                        <div>
+                                            <div class="d-flex justify-content-between">
+                                                <ui:fragment rendered="#{group.numFilters gt 1}">
+                                                    <div>
+                                                        <strong>
+                                                            <h:outputText value="#{msgs.NORM_filterconjunction}:" />
+                                                        </strong>
+                                                        <h:selectOneRadio value="#{group.conjunctive}" styleClass="table__radio">
+                                                            <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
+                                                            <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
+                                                            <f:ajax />
+                                                        </h:selectOneRadio>
+                                                    </div>
+                                                </ui:fragment>
+                                                <div class="my-auto ms-auto">
+                                                    <button
+                                                        jsf:id="newFilter"
+                                                        jsf:action="#{group.newFilter}"
+                                                        class="btn btn-blank">
+                                                        #{msgs.NORM_newFilter}
+                                                        <f:ajax
+                                                            execute=":normdataForm:viaf_search"
+                                                            render=":normdataForm:viaf_search" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ui:repeat>
+
+                                <!-- GROUP CONJUNCTION -->
+                                <div class="modal__viaf-conjunction">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="d-flex gap-2 justify-content-between">
+                                            <ui:fragment rendered="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.numGroups gt 1}">
+                                                <div>
+                                                    <strong>#{msgs.NORM_groupconjunction}:</strong>
+
+                                                    <h:selectOneRadio
+                                                        styleClass="select-radio"
+                                                        value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.conjunctive}">
+                                                        <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
+                                                        <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
+                                                        <f:ajax />
+                                                    </h:selectOneRadio>
+                                                </div>
+                                            </ui:fragment>
+                                            <div>
+                                                <strong>#{msgs.NORM_authorityViafSortOrder}:</strong>
+
+                                                <h:selectOneRadio
+                                                    styleClass="select-radio"
+                                                    value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.sorting}">
+                                                    <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_authorityViafSortOptionDefault}" />
+                                                    <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_authorityViafSortOptionHoldingCount}" />
+                                                    <f:ajax />
+                                                </h:selectOneRadio>
+
+                                                <p>#{msgs.NORM_authorityViafSortOrderDescription}</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="my-auto ms-auto">
+                                            <button
+                                            	jsf:id="newGroup"
+                                                class="btn btn-blank"
+                                                jsf:action="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.newGroup}">
+                                                <f:ajax
+                                                    execute=":normdataForm:viaf_search"
+                                                    render=":normdataForm:viaf_search" />
+                                                #{msgs.NORM_newGroup}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-end">
+                                    <button
+                                    	jsf:id="viafSearch"
+                                        class="btn btn-primary"
+                                        jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}">
+                                        <util:icon-text
+                                            icon="search"
+                                            text="#{msgs.search}" />
+                                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                        <f:ajax execute="@form" render="viafResultList" />
+                                    </button>
+                                </div>
+                            </c:if>
+                        </h:panelGroup>
+                    </div>
+
+                    <!-- VIAF SEARCH LIST -->
+                    <h:panelGroup id="viafResultList" layout="block" styleClass="p-3">
+                        <c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'viaf' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'person' or Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'corporate'}">
+                            <ui:fragment rendered="#{Metadaten.currentMetadataToPerformSearch.viafSearch.records.size() gt 0}">
+                                <div class="modal__viaf-list scrollable">
+                                    <ui:repeat value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.records}" var="record">
+                                        <div class="modal__viaf-list-link">
+                                            <a
+                                                href="#{record.getFieldValues('024','7',' ','a').get(0)}"
+                                                target="_blank"
+                                                class="viaf-flag"
+                                                rel="noopener"
+                                                title="#{msgs.NORM_authorityShowClusterFileInViaf}"
+                                                data-toggle="tooltip">
+                                                <img src="template/img/Icons_Viaf_color.png" alt="viaf logo" />
+                                            </a>
+                                        </div>
+
+                                        <ui:repeat value="#{record.displayableData}" var="normdata">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <h:outputText value="#{msgs[normdata.key]}:" />
+                                                </div>
+
+                                                <div class="col-8">
+                                                    <ui:repeat value="#{normdata.values}" var="value">
+                                                        <h:outputText value="#{value.text}" />
+                                                    </ui:repeat>
+                                                </div>
+                                            </div>
+                                        </ui:repeat>
+
+                                        <ui:repeat value="#{record.authorityDatabaseUrls}" var="database">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <h:outputText value="#{msgs.NORM_authorityData} " />
+                                                    <h:outputText value="#{msgs[database.databaseCode]}:" />
+                                                </div>
+                                                <div class="col-6">
+                                                    <h:outputText value="#{database.preferedSpelling} (#{database.identifier}) " />
+                                                </div>
+
+                                                <div class="col-2">
+                                                    <button
+                                                        onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
+                                                    	jsf:id="select"
+                                                        aria-label="#{msgs.selectFile}"
+                                                        class="btn btn--icon-green btn-right greenCheckButton"
+                                                        jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+                                                        <f:setPropertyActionListener value="#{database}" target="#{Metadaten.currentMetadataToPerformSearch.viafSearch.currentDatabase}" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{record.getFieldValues('024','7',' ','a').get(0)}"
+                                                            target="#{Metadaten.currentMetadataToPerformSearch.viafSearch.currentCluster}" />
+                                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                                    </button>
+
+                                                    <a class="btn-right viaf-flag margin-right-regular"
+                                                        href="#{database.uiUrl}"
+                                                        target="_blank"
+                                                        rel="noopener"
+                                                        title="#{msgs.NORM_authorityShowInViaf}"
+                                                        data-toggle="tooltip">
+                                                        <img alt="viaf" src="template/img/Icons_Viaf_color.png" />
+                                                    </a>
+                                                    <ui:fragment rendered="#{database.localAuthorityUrl != ''}">
+                                                        <a  class="btn-right authority-flag"
+                                                            href="#{database.localAuthorityUrl}"
+                                                            target="_blank"
+                                                            rel="noopener"
+                                                            title="#{msgs.NORM_authorityShowInLocalAuthority}"
+                                                            data-toggle="tooltip">
+                                                            <img alt="#{database.databaseCode}" src="template/img/viaf/#{database.databaseCode}.png"
+                                                             style="height: 28px; padding-top: 2px; padding-bottom: 2px;"/>
+                                                        </a>
+                                                    </ui:fragment>
+                                                </div>
+                                            </div>
+                                        </ui:repeat>
+
+                                        <hr />
+                                    </ui:repeat>
+                                </div>
+                            </ui:fragment>
+
+                            <ui:fragment rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.viafSearch.records.size() eq NULL}">
+                                <p class="modal__viaf-no-hits">
+                                    <h:outputText value="#{msgs.NORM_noHits}" />
+                                </p>
+                            </ui:fragment>
+                        </c:if>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </div>
+        </div>
+    </composite:implementation>
+</ui:composition>

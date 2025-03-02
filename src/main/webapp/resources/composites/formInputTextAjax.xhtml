@@ -1,6 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" 
 	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
 	<composite:interface>
@@ -33,11 +33,11 @@
 				</h:panelGroup>
 			</div>
 			<div class="#{cc.attrs.classRight}">
-				<x:inputText id="#{cc.attrs.name}" forceId="#{cc.attrs.forceId}"
+				<h:inputText id="#{cc.attrs.name}" forceId="#{cc.attrs.forceId}"
 					styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" required="#{cc.attrs.required}"
 					readonly="#{cc.attrs.readonly}" onfocus="#{cc.attrs.onfocus}" tabindex="#{cc.attrs.tabindex}">
 						<f:ajax execute="#{cc.attrs.execute}" render="#{cc.attrs.render}" event="blur"/>
-					</x:inputText>
+					</h:inputText>
 				<h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
 				<intranda:formHelp content="#{cc.attrs.help}" />
 			</div>

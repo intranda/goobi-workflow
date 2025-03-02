@@ -6,7 +6,7 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/templatePG/templatePG.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+    
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -55,34 +55,34 @@
                                 <div class="gw-table__wrapper">
 
                                 <!-- Datentabelle -->
-                                <x:dataTable
+                                <h:dataTable
                                     id="ldaps"
                                     styleClass="table table-hover table-bordered"
                                     var="item"
                                     value="#{institutionBean.paginator.list}">
 
-                                    <x:column>
+                                    <h:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.institution_longName}" />
                                         </f:facet>
                                         <h:outputText value="#{item.longName}" />
-                                    </x:column>
+                                    </h:column>
 
-                                    <x:column>
+                                    <h:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.institution_shortName}" />
                                         </f:facet>
                                         <h:outputText value="#{item.shortName}" />
-                                    </x:column>
+                                    </h:column>
 
-                                    <x:column>
+                                    <h:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.regelsaetze}" />
                                         </f:facet>
                                         <h:outputText
                                             value="#{msgs.institution_allSelected}"
                                             rendered="#{item.allowAllRulesets}" />
-                                        <x:dataList
+                                        <ui:repeat
                                             var="intern"
                                             rendered="#{!item.allowAllRulesets}"
                                             value="#{item.allowedRulesets}"
@@ -95,18 +95,18 @@
                                                     value=","
                                                     rendered="#{rowIndex + 1 lt rowCount}" />
                                             </ui:fragment>
-                                        </x:dataList>
+                                        </ui:repeat>
 
-                                    </x:column>
+                                    </h:column>
 
-                                    <x:column>
+                                    <h:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.dockets}" />
                                         </f:facet>
                                         <h:outputText
                                             value="#{msgs.institution_allSelected}"
                                             rendered="#{item.allowAllDockets}" />
-                                        <x:dataList
+                                        <ui:repeat
                                             var="intern"
                                             rendered="#{!item.allowAllDockets}"
                                             value="#{item.allowedDockets}"
@@ -117,17 +117,17 @@
                                             <h:outputText
                                                 value=","
                                                 rendered="#{rowIndex + 1 lt rowCount}" />
-                                        </x:dataList>
+                                        </ui:repeat>
 
-                                    </x:column>
-                                    <x:column>
+                                    </h:column>
+                                    <h:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.authentication}" />
                                         </f:facet>
                                         <h:outputText
                                             value="#{msgs.institution_allSelected}"
                                             rendered="#{item.allowAllAuthentications}" />
-                                        <x:dataList
+                                        <ui:repeat
                                             var="intern"
                                             rendered="#{!item.allowAllAuthentications}"
                                             value="#{item.allowedAuthentications}"
@@ -140,11 +140,11 @@
                                                     value=","
                                                     rendered="#{rowIndex + 1 lt rowCount}" />
                                             </ui:fragment>
-                                        </x:dataList>
+                                        </ui:repeat>
 
 
-                                    </x:column>
-                                    <x:column>
+                                    </h:column>
+                                    <h:column>
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.instituiton_plugins}" />
                                         </f:facet>
@@ -158,7 +158,7 @@
                                                 escape="false"
                                                 styleClass="fw-bold"
                                                 />
-                                            <x:dataList
+                                            <ui:repeat
                                                 var="intern"
                                                 value="#{item.allowedAdministrationPlugins}"
                                                 layout="ordered list"
@@ -170,13 +170,13 @@
                                                         value=","
                                                         rendered="#{rowIndex + 1 lt rowCount}" />
                                                 </ui:fragment>
-                                            </x:dataList>
+                                            </ui:repeat>
 
                                             <h:outputText
                                                 value=" &lt;br/&gt;#{msgs.instituiton_workflowPlugin}: "
                                                 styleClass="fw-bold"
                                                 escape="false" />
-                                            <x:dataList
+                                            <ui:repeat
                                                 var="intern"
                                                 value="#{item.allowedWorkflowPlugins}"
                                                 layout="ordered list"
@@ -188,13 +188,13 @@
                                                         value=","
                                                         rendered="#{rowIndex + 1 lt rowCount}" />
                                                 </ui:fragment>
-                                            </x:dataList>
+                                            </ui:repeat>
 
                                             <h:outputText
                                                 value="&lt;br/&gt;#{msgs.instituiton_statisticsPlugin}: "
                                                 styleClass="fw-bold"
                                                 escape="false" />
-                                            <x:dataList
+                                            <ui:repeat
                                                 var="intern"
                                                 value="#{item.allowedStatisticsPlugins}"
                                                 layout="ordered list"
@@ -206,12 +206,12 @@
                                                         value=","
                                                         rendered="#{rowIndex + 1 lt rowCount}" />
                                                 </ui:fragment>
-                                            </x:dataList>
+                                            </ui:repeat>
                                             <h:outputText
                                                 value="&lt;br/&gt;#{msgs.instituiton_dashboardPlugin}: "
                                                 styleClass="fw-bold"
                                                 escape="false" />
-                                            <x:dataList
+                                            <ui:repeat
                                                 var="intern"
                                                 value="#{item.allowedDashboardPlugins}"
                                                 layout="ordered list"
@@ -223,14 +223,14 @@
                                                         value=","
                                                         rendered="#{rowIndex + 1 lt rowCount}" />
                                                 </ui:fragment>
-                                            </x:dataList>
+                                            </ui:repeat>
 
                                         </ui:fragment>
-                                    </x:column>
+                                    </h:column>
 
 
 
-                                    <x:column headerClass="gw-table-fixed__actions">
+                                    <h:column headerClass="gw-table-fixed__actions">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
@@ -253,9 +253,9 @@
                                             </button>
                                         </div>
 
-                                    </x:column>
+                                    </h:column>
 
-                                </x:dataTable>
+                                </h:dataTable>
 
                                 </div> <!-- /gw-table__table-wrapper -->
 

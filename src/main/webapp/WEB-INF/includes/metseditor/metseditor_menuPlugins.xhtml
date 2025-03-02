@@ -1,0 +1,83 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <h:form
+            id="meMenuPluginsForm"
+            rendered="#{!Metadaten.extensions.isEmpty()}"
+            layout="block"
+            styleClass="d-none d-md-block">
+            <script>
+                function loadPlugin  (data, selector) {
+                    console.log('run loadPlugin')
+                    if (data.status === 'success') {
+                        console.log(selector );
+                        $(selector).modal('show');
+                    }
+                }
+            </script>
+            <ul class="navbar-nav" role="list">
+
+                <li class="nav-item">
+                    <button
+                        id="configDropdown"
+                        type="button"
+                        class="btn btn--icon dropdown-toggle"
+                        aria-label="#{msgs.plugins}"
+                        title=""
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        onclick="switchExpanded(this.id)"
+                        data-show="submenu">
+                        <span class="mr-1">
+                            #{msgs.plugins}
+                        </span>
+                    </button>
+
+
+                    <ul class="clean submenu" style="display: none;">
+                        <ui:repeat
+                            var="extension"
+                            value="#{Metadaten.extensions}">
+                            <li>
+<!--                                   jsf:onclick="setTimeout(function() {$('##{extension.modalId}').modal('show');}, 300 );" -->
+                                <button
+                                    jsf:id="openExtension"
+                                    class="dropdown-item"
+                                    type="button">
+                                    <span
+                                        class="fa fa-plug ml-0 mr-2"
+                                        aria-hidden="true" />
+                                    <span>
+                                        <h:outputText value="#{msgs[extension.title]}" />
+                                    </span>
+                                    <f:setPropertyActionListener
+                                        value="#{extension}"
+                                        target="#{Metadaten.extension}" />
+
+                                    <!-- onevent="loadPlugin(data, '##{extension.modalId}');" -->
+                                    <f:ajax
+                                        onevent="(data) => loadPlugin(data, '##{extension.modalId}')"
+                                        execute="@this"
+                                        render="#{extension.modalId}" />
+                                </button>
+                            </li>
+
+                        </ui:repeat>
+
+                    </ul>
+                </li>
+            </ul>
+        </h:form>
+    </composite:implementation>
+</ui:composition>

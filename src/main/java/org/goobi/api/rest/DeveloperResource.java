@@ -24,11 +24,11 @@
  */
 package org.goobi.api.rest;
 
-import javax.inject.Inject;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-
 import org.goobi.managedbeans.DeveloperModeBean;
+
+import jakarta.inject.Inject;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
 
 @Path("developer")
 public class DeveloperResource {

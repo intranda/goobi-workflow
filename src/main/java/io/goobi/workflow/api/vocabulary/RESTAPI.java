@@ -1,25 +1,28 @@
 package io.goobi.workflow.api.vocabulary;
 
-import io.goobi.vocabulary.exception.VocabularyException;
-import lombok.Setter;
+import static io.goobi.workflow.api.vocabulary.VocabularyAPIManager.setupBearerTokenAuthenticationIfPresent;
+
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
-import javax.servlet.http.Part;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static io.goobi.workflow.api.vocabulary.VocabularyAPIManager.setupBearerTokenAuthenticationIfPresent;
+import io.goobi.vocabulary.exception.VocabularyException;
+import jakarta.servlet.http.Part;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import lombok.Setter;
 
 public class RESTAPI {
     @Setter
@@ -43,7 +46,7 @@ public class RESTAPI {
             if (url.contains("{{" + i + "}}")) {
                 url = url.replace("{{" + i + "}}", parameters[i].toString());
             } else {
-                queryParams.add(parameters[i].toString());
+                queryParams.add(URLEncoder.encode(parameters[i].toString(), StandardCharsets.UTF_8));
             }
         }
         if (!queryParams.isEmpty()) {
@@ -60,7 +63,8 @@ public class RESTAPI {
             builder = setupBearerTokenAuthenticationIfPresent(builder);
             try (Response response = builder.get()) {
                 if (response.getStatus() / 100 != 2) {
-                    throw new APIException(generateUrl(endpoint, parameters), "GET", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
+                    throw new APIException(generateUrl(endpoint, parameters), "GET", response.getStatus(), "Vocabulary server error",
+                            response.readEntity(VocabularyException.class), null);
                 }
                 return response.readEntity(clazz);
             }
@@ -79,7 +83,8 @@ public class RESTAPI {
             builder = setupBearerTokenAuthenticationIfPresent(builder);
             try (Response response = builder.post(Entity.json(obj))) {
                 if (response.getStatus() / 100 != 2) {
-                    throw new APIException(generateUrl(endpoint, parameters), "POST", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
+                    throw new APIException(generateUrl(endpoint, parameters), "POST", response.getStatus(), "Vocabulary server error",
+                            response.readEntity(VocabularyException.class), null);
                 }
                 return response.readEntity(clazz);
             }
@@ -98,7 +103,8 @@ public class RESTAPI {
             builder = setupBearerTokenAuthenticationIfPresent(builder);
             try (Response response = builder.put(Entity.json(obj))) {
                 if (response.getStatus() / 100 != 2) {
-                    throw new APIException(generateUrl(endpoint, parameters), "PUT", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
+                    throw new APIException(generateUrl(endpoint, parameters), "PUT", response.getStatus(), "Vocabulary server error",
+                            response.readEntity(VocabularyException.class), null);
                 }
                 return response.readEntity(clazz);
             }
@@ -120,7 +126,8 @@ public class RESTAPI {
                 builder = setupBearerTokenAuthenticationIfPresent(builder);
                 try (Response response = builder.put(Entity.entity(multiPart, multiPart.getMediaType()), Response.class)) {
                     if (response.getStatus() / 100 != 2) {
-                        throw new APIException(generateUrl(endpoint, parameters), "PUT", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
+                        throw new APIException(generateUrl(endpoint, parameters), "PUT", response.getStatus(), "Vocabulary server error",
+                                response.readEntity(VocabularyException.class), null);
                     }
                     return response.readEntity(Response.class);
                 }
@@ -143,7 +150,8 @@ public class RESTAPI {
                 builder = setupBearerTokenAuthenticationIfPresent(builder);
                 try (Response response = builder.post(Entity.entity(multiPart, multiPart.getMediaType()), Response.class)) {
                     if (response.getStatus() / 100 != 2) {
-                        throw new APIException(generateUrl(endpoint, parameters), "POST", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
+                        throw new APIException(generateUrl(endpoint, parameters), "POST", response.getStatus(), "Vocabulary server error",
+                                response.readEntity(VocabularyException.class), null);
                     }
                     return response.readEntity(Response.class);
                 }
@@ -163,7 +171,8 @@ public class RESTAPI {
             builder = setupBearerTokenAuthenticationIfPresent(builder);
             try (Response response = builder.delete()) {
                 if (response.getStatus() / 100 != 2) {
-                    throw new APIException(generateUrl(endpoint, parameters), "DELETE", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
+                    throw new APIException(generateUrl(endpoint, parameters), "DELETE", response.getStatus(), "Vocabulary server error",
+                            response.readEntity(VocabularyException.class), null);
                 }
                 return response.readEntity(clazz);
             }

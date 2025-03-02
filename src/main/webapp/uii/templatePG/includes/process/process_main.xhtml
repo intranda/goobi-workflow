@@ -4,7 +4,6 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -43,8 +42,8 @@
 										class="btn d-flex align-items-center btn--title-action"
 										jsf:rel="tooltip">
 										<span class="fa fa-pencil" />
-										<x:updateActionListener
-											property="#{ProzessverwaltungForm.modusBearbeiten}"
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.modusBearbeiten}"
 											value="prozess" />
 										<f:passThroughAttribute
 											name="data-toggle"
@@ -75,7 +74,7 @@
 										class="btn d-flex align-items-center btn--title-action"
 										title="#{msgs.metadatenBearbeiten}"
 										rel="tooltip"
-										rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and !ProzessverwaltungForm.myProzess.istTemplate}">
+										rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and ProzessverwaltungForm.myProzess.benutzerGesperrt == null and !ProzessverwaltungForm.myProzess.istTemplate}">
 										<span class="fa fa-book" />
 										<f:passThroughAttribute
 											name="data-toggle"
@@ -104,7 +103,7 @@
 										title="#{msgs.metadatenBearbeiten}"
 										pt:aria-label="#{msgs.metadatenBearbeiten}"
 										rel="tooltip"
-										rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
+										rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !ProzessverwaltungForm.myProzess.temporaryMetadataFiles}">
 										<span class="fa fa-book " />
 										<f:passThroughAttribute
 											name="data-toggle"
@@ -138,7 +137,7 @@
 
 									<!--  MODAL FOR METDATA POPUP  -->
 									<h:panelGroup
-										rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and item.temporaryMetadataFiles}">
+										rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.myProzess.temporaryMetadataFiles}">
 										<a
 											class="btn text_head"
 											title="#{msgs.metadatenBearbeiten}"
@@ -396,7 +395,7 @@
 
 								<h:outputText value="#{msgs.erstellungsdatum}:" />
 								<h:outputText
-									value="#{ProzessverwaltungForm.myProzess.erstellungsdatum}" />
+									value="#{ProzessverwaltungForm.myProzess.erstellungsdatumAsString}" />
 
 								<h:outputText value="#{msgs.regelsatz}:" />
 								<h:outputText
@@ -458,20 +457,9 @@
 						id="processJournal"
 						enctype="multipart/form-data"
 						prependId="false">
-						<ui:include src="../journal.xhtml">
-                            <ui:param
-                                name="showBigButton"
-                                value="true" />
-                            <ui:param
-                                name="showFolderSelection"
-                                value="true" />
-                            <ui:param
-                                    name="showImageComments"
-                                    value="true" />
-                            <ui:param
-                                name="bean"
-                                value="#{ProzessverwaltungForm.myProzess}" />
-                        </ui:include>
+                                     <intranda:journal showImageComments="true" showBigButton="true" showFolderSelection="true" bean="#{ProzessverwaltungForm.myProzess}" />
+
+
                     </h:form>
 				</div>
 				<!-- // JOURNAL -->
@@ -571,8 +559,8 @@
 								jsf:action="#{NavigationForm.Reload}"
 								jsf:rendered="#{ProzessverwaltungForm.myProzess.id != null}">
 								<h:outputText value="#{msgs.abbrechen}" />
-								<x:updateActionListener
-									property="#{ProzessverwaltungForm.modusBearbeiten}"
+								<f:setPropertyActionListener
+									target="#{ProzessverwaltungForm.modusBearbeiten}"
 									value="" />
 							</button>
 
@@ -585,8 +573,8 @@
 								<span>
 									<h:outputText value="#{msgs.speichern}" />
 								</span>
-								<x:updateActionListener
-									property="#{ProzessverwaltungForm.modusBearbeiten}"
+								<f:setPropertyActionListener
+									target="#{ProzessverwaltungForm.modusBearbeiten}"
 									value="" />
 							</button>
 

@@ -6,7 +6,7 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:x="http://myfaces.apache.org/tomahawk">
+    >
 
     <h3 class="mt-4">#{msgs.jobs_quartzHistory}</h3>
 
@@ -35,7 +35,7 @@
                                 style="text-align: center; line-height: 100%; padding: 0px 10px"
                                 jsf:action="#{messageQueueBean.FilterAlleStart}">#{msgs.search}</button>
                         </div>
-                        <x:commandButton
+                        <h:commandButton
                             type="submit"
                             id="FilterAlle"
                             forceId="true"

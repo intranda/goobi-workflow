@@ -1,0 +1,190 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:section="http://goobi.io/section"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:util="http://goobi.io/util">
+
+    <composite:interface/>
+
+    <composite:implementation>
+        <ui:fragment rendered="#{Metadaten.modusCopyDocstructFromOtherProcess}">
+            <div id="meStructdataCopyOtherProcessBox" class="structdata__copy-other-process pb-3">
+                <section:section type="outline">
+                    <section:header icon="bars" title="#{msgs.copyDocstructFromOtherProcess}">
+                        <button type="button" aria-label="#{msgs.minimizeBox}" class="btn" data-bs-target="#importStructureBoxBody" data-bs-toggle="collapse" aria-expanded="true" aria-controls="importStructureBoxBody">
+                            <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
+                            <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
+                        </button>
+                    </section:header>
+                    <div id="importStructureBoxBody" class="collapse show">
+                        <section:body>
+                            <ui:fragment rendered="#{!Metadaten.displayInsertion}">
+                                <!-- SEARCH PROCESS -->
+                                <div class="p-3 flow border-bottom">
+                                    <h3 class="h6">
+                                        <h:outputText value="#{msgs.findProcess}"/>
+                                    </h3>
+                                    <p class="mb-0">
+                                        <h:outputText value="#{msgs.copyDocstructFromOtherProcessDescription1}"/>
+                                    </p>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-label">
+                                        <h:outputText styleClass="form-group__label" value="#{msgs.title}:"/>
+                                    </div>
+                                    <div class="form-input">
+                                        <h:inputText id="filterProcessTitle" pt:aria-label="#{msgs.title}" styleClass="form-control" value="#{Metadaten.filterProcessTitle}"/>
+                                    </div>
+                                </div>
+
+                                <!-- ACTION -->
+                                <div class="m-3 d-flex justify-content-end gap-2">
+                                    <button jsf:id="cancelMove2" class="btn btn-blank" jsf:action="#{NavigationForm.Reload}" title="#{msgs.verschiebenAbbrechen}">
+                                        <h:outputText value="#{msgs.abbrechen}"/>
+                                        <f:setPropertyActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" target="#{Metadaten.modusCopyDocstructFromOtherProcess}"/>
+                                        <f:setPropertyActionListener value="false" property="#{Metadaten.displayInsertion}" target="#{Metadaten.displayInsertion}"/>
+                                        <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false})" render=":pageContentCenter"/>
+                                    </button>
+
+                                    <button jsf:id="filterProcess" class="btn btn-blank" jsf:action="#{Metadaten.filterMyProcess}">
+                                        <span class="fa fa-search" aria-hidden="true"/>
+                                        <span>
+                                            <h:outputText value="#{msgs.findProcess}"/>
+                                        </span>
+                                    </button>
+                                </div>
+
+                                <!-- STRUCTURE TABLE -->
+                                <ui:fragment rendered="#{Metadaten.filteredProcess != null}">
+                                    <div class="table__structure border-bottom">
+                                        <ul role="list" class="p-0">
+                                            <ui:repeat
+                                                rendered="#{Metadaten.filteredProcess != null}"
+                                                var="item"
+                                                value="#{Metadaten.struktureTreeAsTableForFilteredProcess}">
+                                                <li class="treeView-item" style="--level: #{item.niveau};">
+                                                    <div class="spacer"/>
+                                                    <div class="toggle"/>
+                                                    <div class="content">
+                                                        <button jsf:id="updateSubNodes" class="btn p-0 document#{item.node.selected ? ' fw-700' : ''}" jsf:action="#{Metadaten.updateAllSubNodes}" jsf:rendered="#{item.node.einfuegenErlaubt}">
+                                                            <util:icon-text
+                                                                icon="file-o"
+                                                                text="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" />
+
+                                                            <f:passThroughAttribute name="data-bs-trigger" value="hover"/>
+                                                            <f:passThroughAttribute name="data-bs-container" value="body"/>
+                                                            <f:passThroughAttribute name="data-bs-toggle" value="popover"/>
+                                                            <f:passThroughAttribute name="data-bs-placement" value="right"/>
+                                                            <f:passThroughAttribute name="data-bs-html" value="true"/>
+                                                            <f:passThroughAttribute name="data-bs-content" value="#{item.node.metadataPopup}"/>
+                                                            <f:setPropertyActionListener property="#{item.node.selected}" value="#{!item.node.selected}" target="#{item.node.selected}"/>
+                                                        </button>
+                                                        <h:panelGroup rendered="#{!item.node.einfuegenErlaubt}" styleClass="font-light">
+                                                            <util:icon-text
+                                                                icon="file-o"
+                                                                text="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" />
+                                                            <f:passThroughAttribute name="data-bs-trigger" value="hover"/>
+                                                            <f:passThroughAttribute name="data-bs-container" value="body"/>
+                                                            <f:passThroughAttribute name="data-bs-toggle" value="popover"/>
+                                                            <f:passThroughAttribute name="data-bs-placement" value="right"/>
+                                                            <f:passThroughAttribute name="data-bs-html" value="true"/>
+                                                            <f:passThroughAttribute name="data-bs-content" value="#{item.node.metadataPopup}"/>
+                                                        </h:panelGroup>
+                                                    </div>
+                                                </li>
+                                            </ui:repeat>
+                                        </ul>
+                                    </div>
+
+                                    <div class="p-3 d-flex justify-content-end">
+                                        <h:commandLink id="nextPage" styleClass="btn btn-blank" action="#{Metadaten.rememberFilteredProcessStruct}">
+                                            <h:outputText value="#{msgs.weiter}"/>
+                                            <f:setPropertyActionListener value="true" property="#{Metadaten.displayInsertion}" target="#{Metadaten.displayInsertion}"/>
+                                        </h:commandLink>
+                                    </div>
+                                </ui:fragment>
+                            </ui:fragment>
+
+                            <!-- COPY INTO CURRENT STRUCTURE -->
+                            <ui:fragment rendered="#{Metadaten.displayInsertion}">
+                                <div class="p-3 flow border-bottom">
+                                    <h3 class="h6">
+                                        <h:outputText value="#{msgs.selectTarget}"/>
+                                    </h3>
+                                    <p class="mb-0">
+                                        <h:outputText value="#{msgs.strukturelementVerschiebenErlaeuterung}"/>
+                                    </p>
+                                </div>
+                                <div class="py-3 border-bottom">
+                                    <ul role="list" jsf:rendered="#{Metadaten.filteredProcess != null}" class="p-0">
+                                        <ui:repeat var="item" value="#{Metadaten.strukturBaum3Alle}">
+                                            <li class="treeView-item" style="--level: #{item.niveau};">
+                                                <div class="spacer"/>
+                                                <div class="toggle"/>
+                                                <div class="content">
+                                                    <button
+                                                        jsf:id="importFilteredProcessStruct"
+                                                        class="btn document p-0#{item.node.selected ? ' fw-700' : ' unselected'}"
+                                                        jsf:action="#{Metadaten.importFilteredProcessStruct}"
+                                                        jsf:rendered="#{item.node.einfuegenErlaubt and not item.node.selected}">
+                                                        <util:icon-text
+                                                            icon="file-o"
+                                                            text="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" />
+
+                                                        <f:passThroughAttribute name="data-bs-trigger" value="hover"/>
+                                                        <f:passThroughAttribute name="data-bs-container" value="body"/>
+                                                        <f:passThroughAttribute name="data-bs-toggle" value="popover"/>
+                                                        <f:passThroughAttribute name="data-bs-placement" value="right"/>
+                                                        <f:passThroughAttribute name="data-bs-html" value="true"/>
+                                                        <f:passThroughAttribute name="data-bs-content" value="#{item.node.metadataPopup}"/>
+                                                        <f:setPropertyActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" target="#{Metadaten.modusCopyDocstructFromOtherProcess}"/>
+                                                        <f:setPropertyActionListener property="#{Metadaten.tempStrukturelement}" value="#{item.node.struct}" target="#{Metadaten.tempStrukturelement}"/>
+                                                    </button>
+
+                                                    <h:panelGroup
+                                                        styleClass="font-light"
+                                                        rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">
+                                                        <util:icon-text
+                                                            icon="file-o"
+                                                            text="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" />
+                                                        <f:passThroughAttribute name="data-bs-trigger" value="hover"/>
+                                                        <f:passThroughAttribute name="data-bs-container" value="body"/>
+                                                        <f:passThroughAttribute name="data-bs-toggle" value="popover"/>
+                                                        <f:passThroughAttribute name="data-bs-placement" value="right"/>
+                                                        <f:passThroughAttribute name="data-bs-html" value="true"/>
+                                                        <f:passThroughAttribute name="data-bs-content" value="#{item.node.metadataPopup}"/>
+                                                    </h:panelGroup>
+                                                </div>
+                                            </li>
+                                        </ui:repeat>
+                                    </ul>
+                                </div>
+
+                                <div class="p-3 d-flex justify-content-end gap-2">
+                                    <!-- CANCEL -->
+                                    <button jsf:id="cancelImport" class="btn btn-blank" jsf:action="#{NavigationForm.Reload}">
+                                        #{msgs.abbrechen}
+                                        <f:setPropertyActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" target="#{Metadaten.modusCopyDocstructFromOtherProcess}"/>
+                                        <f:setPropertyActionListener property="#{Metadaten.displayInsertion}" value="false" target="#{Metadaten.displayInsertion}"/>
+                                    </button>
+                                    <!-- BACK -->
+                                    <h:commandLink id="goBack" styleClass="btn btn-blank" action="#{NavigationForm.Reload}">
+                                        <h:outputText value="#{msgs.zurueck}"/>
+                                        <f:setPropertyActionListener value="false" property="#{Metadaten.displayInsertion}" target="#{Metadaten.displayInsertion}"/>
+                                    </h:commandLink>
+                                </div>
+                            </ui:fragment>
+                        </section:body>
+                    </div>
+                </section:section>
+            </div>
+        </ui:fragment>
+    </composite:implementation>
+</ui:composition>

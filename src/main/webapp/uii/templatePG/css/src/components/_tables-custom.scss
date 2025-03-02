@@ -40,11 +40,6 @@
   max-width: 100%;
 }
 
-.box--padded .table,
-.section-body-padded .table {
-  border-inline: 1px solid var(--clr-neutral-300);
-}
-
 .table > :not(caption) > * > * {
   padding: 0.375rem;
 }
@@ -59,7 +54,6 @@
 
 // Border color: all borders, one color
 .gw-table {
-  tbody,
   td,
   tfoot,
   th,
@@ -216,12 +210,12 @@
 }
 
 .gw-table__filters__search-bar .input-group-text:has(.fa-search) {
-  padding: 0;
-  width: 0;
+  display: none;
 }
 
 @media screen and (min-width: 660px) {
   .gw-table__filters__search-bar .input-group-text:has(.fa-search) {
+    display: block;
     padding: 0.375rem 0.75rem;
     width: auto;
   }

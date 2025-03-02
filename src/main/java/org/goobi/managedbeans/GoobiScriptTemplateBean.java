@@ -20,14 +20,13 @@ package org.goobi.managedbeans;
 
 import java.io.Serializable;
 
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.goobiScript.GoobiScriptTemplate;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.GoobiScriptTemplateManager;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 

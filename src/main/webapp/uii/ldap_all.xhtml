@@ -6,7 +6,7 @@
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+	
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -43,7 +43,7 @@
 
 						<!-- TABLE -->
 						<div class="gw-table__wrapper">
-								<x:dataTable id="ldaps"
+								<h:dataTable id="ldaps"
 									styleClass="table table-hover table-bordered"
 									var="item" value="#{LdapGruppenForm.paginator.list}">
 
@@ -54,28 +54,28 @@
 										<h:outputText value="#{item.titel}" />
 									</h:column>
 
-									<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs">
+									<h:column headerClass="hidden-xs" styleClass="hidden-xs">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.authentication_type}" />
 										</f:facet>
 										<h:outputText value="#{msgs[item.authenticationType]}" />
-									</x:column>
+									</h:column>
 
-									<x:column styleClass="tableColumnMaxWidthMid">
+									<h:column styleClass="tableColumnMaxWidthMid">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.ldapUserDN}" />
 										</f:facet>
 										<h:outputText value="#{item.userDN}" title="#{item.userDN}" rendered="#{item.authenticationType=='ldap'}" />
-									</x:column>
+									</h:column>
 
-									<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs">
+									<h:column headerClass="hidden-xs" styleClass="hidden-xs">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.ldapLoginShell}" />
 										</f:facet>
 										<h:outputText value="#{item.loginShell}" />
-									</x:column>
+									</h:column>
 
-									<x:column headerClass="gw-table-fixed__actions">
+									<h:column headerClass="gw-table-fixed__actions">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
@@ -91,9 +91,9 @@
 											<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
 											<f:setPropertyActionListener target="#{LdapGruppenForm.myLdapGruppe}" value="#{item}" />
 										</button>
-									</x:column>
+									</h:column>
 
-								</x:dataTable>
+								</h:dataTable>
 								</div> <!-- /gw-table__wrapper -->
 								</div> <!-- /gw-table -->
 

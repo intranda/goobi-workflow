@@ -2,7 +2,7 @@ package de.sub.goobi.helper;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
@@ -10,13 +10,13 @@ package de.sub.goobi.helper;
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -56,21 +56,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -89,6 +76,19 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.forms.SpracheForm;
 import de.sub.goobi.persistence.managers.JournalManager;
+import jakarta.enterprise.context.ContextNotActiveException;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 
 @WebListener
@@ -125,7 +125,7 @@ public class Helper implements Serializable, ServletContextListener {
 
     /**
      * Ermitteln eines bestimmten Paramters des Requests
-     * 
+     *
      * @return Paramter als String
      */
     @SuppressWarnings("rawtypes")
@@ -272,7 +272,7 @@ public class Helper implements Serializable, ServletContextListener {
 
     /**
      * Adds a message to the journal. The journal type is defined by the entryType variable.
-     * 
+     *
      * @param objectId id of the process, user or institution object
      * @param logType type of the message e.g. error or debug
      * @param content message content
@@ -286,8 +286,8 @@ public class Helper implements Serializable, ServletContextListener {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @deprecated use addMessageToProcessJournal instead
      */
 
@@ -297,8 +297,8 @@ public class Helper implements Serializable, ServletContextListener {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @deprecated use addMessageToProcessJournal instead
      */
     @Deprecated(since = "23.05", forRemoval = true)
@@ -436,7 +436,7 @@ public class Helper implements Serializable, ServletContextListener {
 
     /**
      * Registers a WatchService that checks for modified messages.properties files and tags them for reloading.
-     * 
+     *
      * @param path
      * @throws IOException
      * @throws InterruptedException
@@ -584,7 +584,7 @@ public class Helper implements Serializable, ServletContextListener {
 
     /**
      * get locale of current user session
-     * 
+     *
      * @return locale of current user session
      */
     public static Locale getSessionLocale() {
@@ -779,7 +779,7 @@ public class Helper implements Serializable, ServletContextListener {
         // Via FacesContext
         if (FacesContext.getCurrentInstance() != null && FacesContext.getCurrentInstance().getExternalContext().getContext() != null) {
             ret = (BeanManager) ((ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext())
-                    .getAttribute("javax.enterprise.inject.spi.BeanManager");
+                    .getAttribute("jakarta.enterprise.inject.spi.BeanManager");
             if (ret != null) {
                 return ret;
             }

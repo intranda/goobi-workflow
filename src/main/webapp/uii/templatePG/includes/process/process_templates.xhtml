@@ -4,7 +4,7 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+	
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
@@ -14,7 +14,7 @@
 
 	<composite:implementation>
 
-		<x:dataList
+		<ui:repeat
 			var="item"
 			value="#{ProzessverwaltungForm.myProzess.vorlagenList}"
 			id="templateList">
@@ -45,8 +45,8 @@
 									<f:passThroughAttribute
 										name="data-toggle"
 										value="tooltip" />
-									<x:updateActionListener
-										property="#{ProzessverwaltungForm.myVorlageReload}"
+									<f:setPropertyActionListener
+										target="#{ProzessverwaltungForm.myVorlageReload}"
 										value="#{item}" />
 								</h:commandLink>
 								<button
@@ -63,7 +63,7 @@
 							</div>
 						</intranda:boxTitle>
 
-						<x:dataTable
+						<h:dataTable
 							value="#{item.eigenschaften}"
 							var="prop"
                             columnClasses="process_propertyName, process_propertyValue"
@@ -77,12 +77,12 @@
 							<h:column>
 								<h:outputText value="#{prop.wert}" />
 							</h:column>
-						</x:dataTable>
+						</h:dataTable>
 
 					</intranda:box>
 				</div>
 			</div>
 
-		</x:dataList>
+		</ui:repeat>
 	</composite:implementation>
 </ui:composition>

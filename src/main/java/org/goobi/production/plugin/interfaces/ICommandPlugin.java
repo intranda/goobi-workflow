@@ -27,10 +27,10 @@ package org.goobi.production.plugin.interfaces;
  */
 import java.util.HashMap;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.goobi.production.cli.CommandResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface ICommandPlugin extends IPlugin {
 

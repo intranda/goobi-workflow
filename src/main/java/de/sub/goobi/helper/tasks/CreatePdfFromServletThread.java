@@ -40,11 +40,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.UriBuilder;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -57,6 +54,7 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import io.goobi.workflow.api.connection.HttpUtils;
+import jakarta.ws.rs.core.UriBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -146,6 +144,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                         .queryParam("imageSource", getImagePath().toUri())
                         .queryParam("pdfSource", getPdfPath().toUri())
                         .queryParam("altoSource", getAltoPath().toUri())
+                        .queryParam("goobiMetsFile", "true")
                         .build()
                         .toURL();
 
@@ -179,7 +178,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             }
             method = new HttpGet(goobiContentServerUrl.toString());
 
-            Builder builder = RequestConfig.custom();
+            RequestConfig.Builder builder = RequestConfig.custom();
             builder.setSocketTimeout(contentServerTimeOut);
             RequestConfig rc = builder.build();
             method.setConfig(rc);

@@ -46,13 +46,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -96,6 +89,12 @@ import de.sub.goobi.persistence.managers.UserManager;
 import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import io.goobi.workflow.xslt.XsltPreparatorMetadata;
 import io.goobi.workflow.xslt.XsltToPdf;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;

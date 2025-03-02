@@ -40,11 +40,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.Part;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.http.HttpResponse;
@@ -70,6 +65,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.helper.XmlTools;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.Part;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;

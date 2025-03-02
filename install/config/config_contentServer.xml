@@ -175,7 +175,7 @@
 		
 	<pdfCache useCache="false" useShortFileNames="false" />
 
-	<memoryUsage maximalParallelRequests="0" lowMemoryThreshold="0"></memoryUsage>
+	<memoryUsage maximalParallelRequests="0" lowMemoryThreshold="500000000"></memoryUsage>
 	
     <S3>                                                                                                                                              
         <useCustom>true</useCustom>                                                                                                                   

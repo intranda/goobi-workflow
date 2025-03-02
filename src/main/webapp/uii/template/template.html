@@ -4,7 +4,7 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:c="http://java.sun.com/jstl/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+    
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
@@ -157,10 +157,9 @@
 	                                        </li>
 
 											<ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
-                                                <o:socket channel="goobiscriptUpdateChannel" >
+                                                <o:socket channel="goobiscriptUpdateChannel">
                                                     <f:ajax render="goobiScriptResults2" event="update"/>
                                                 </o:socket>
-                                                <o:commandScript name="updateGoobiScriptIndicator" render="goobiScriptResults2" />
 	                                        	<li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'}">
 		                                            <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
 		                                                    <span class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}" />
@@ -245,7 +244,7 @@
         </script>
         <script>
      // <![CDATA[
-            jsf.ajax.addOnEvent(function (data) {
+            faces.ajax.addOnEvent(function (data) {
                 var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                 var ajaxloader = document.getElementById("ajaxloader");
                 var source = data.source;

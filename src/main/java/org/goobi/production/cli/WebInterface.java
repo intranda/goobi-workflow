@@ -30,15 +30,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
@@ -46,6 +40,10 @@ import org.goobi.production.plugin.interfaces.ICommandPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -111,15 +109,13 @@ public class WebInterface extends HttpServlet {
             // hand parameters over to command
             Map<String, String[]> map = req.getParameterMap();
             HashMap<String, String> params = new HashMap<>();
-            Iterator<Entry<String, String[]>> i = map.entrySet().iterator();
-            while (i.hasNext()) {
-                Entry<String, String[]> entry = i.next();
+            for (Entry<String, String[]> entry : map.entrySet()) {
                 if (entry.getValue()[0] != null) {
                     params.put(entry.getKey(), entry.getValue()[0]);
                 }
             }
 
-            if (command.equals("help")) {
+            if ("help".equals(command)) {
                 if (params.containsKey("for")) {
                     try {
                         generateHelp(resp, params.get("for"));
@@ -199,35 +195,35 @@ public class WebInterface extends HttpServlet {
 
     private void generateAnswer(HttpServletResponse resp, CommandResponse cr) {
         resp.setStatus(cr.getStatus());
-        String answer = "";
-        answer += "<!DOCTYPE HTML>";
-        answer += "<html>";
-        answer += "<head>";
-        answer += "<title>Goobi</title>";
-        answer += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>";
-        answer += "<style type=\"text/css\">";
-        answer += "body{font-family: Helvetica, sans-serif;background:white;padding:10px;}";
-        answer += "h1{font-size:34px;color:#FF7A00;text-align:center;margin-top:25px;}";
-        answer += "h4{border-bottom: solid #448BC8 1px;margin-bottom: 10px; padding-bottom: 10px;}";
-        answer += ".img1{position:fixed;left:15px;top:15px;}";
-        answer += ".img2{position:fixed;right:15px;bottom:15px;}";
-        answer +=
-                ".content{background: #f9f9f9; border:solid #ddd 1px; padding: 20px; color:#999;font-size:14x;margin:0px auto;text-align:center;width:60%;}";
-        answer += "</style>";
-        answer += "</head>";
-        answer += "<body>";
-        answer += "<a href=\".\" target=\"_blank\"><img class=\"img1\" src=\"uii/template/img/webapi_1.png\"></a>";
-        answer += "<a href=\"http://www.intranda.com\" target=\"_blank\"><img class=\"img2\" src=\"uii/template/img/webapi_2.png\"></a>";
-        answer += "<h1>";
-        answer += cr.getTitle();
-        answer += "</h1>";
-        answer += "<div class=\"content\">";
-        answer += cr.getMessage();
-        answer += " </div>";
-        answer += "</body>";
-        answer += "</html>";
+        StringBuilder answer = new StringBuilder();
+        answer.append("<!DOCTYPE HTML>");
+        answer.append("<html>");
+        answer.append("<head>");
+        answer.append("<title>Goobi</title>");
+        answer.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>");
+        answer.append("<style type=\"text/css\">");
+        answer.append("body{font-family: Helvetica, sans-serif;background:white;padding:10px;}");
+        answer.append("h1{font-size:34px;color:#FF7A00;text-align:center;margin-top:25px;}");
+        answer.append("h4{border-bottom: solid #448BC8 1px;margin-bottom: 10px; padding-bottom: 10px;}");
+        answer.append(".img1{position:fixed;left:15px;top:15px;}");
+        answer.append(".img2{position:fixed;right:15px;bottom:15px;}");
+        answer.append(
+                ".content{background: #f9f9f9; border:solid #ddd 1px; padding: 20px; color:#999;font-size:14x;margin:0px auto;text-align:center;width:60%;}");
+        answer.append("</style>");
+        answer.append("</head>");
+        answer.append("<body>");
+        answer.append("<a href=\".\" target=\"_blank\"><img class=\"img1\" src=\"uii/template/img/webapi_1.png\"></a>");
+        answer.append("<a href=\"http://www.intranda.com\" target=\"_blank\"><img class=\"img2\" src=\"uii/template/img/webapi_2.png\"></a>");
+        answer.append("<h1>");
+        answer.append(cr.getTitle());
+        answer.append("</h1>");
+        answer.append("<div class=\"content\">");
+        answer.append(cr.getMessage());
+        answer.append(" </div>");
+        answer.append("</body>");
+        answer.append("</html>");
         try {
-            resp.getOutputStream().print(answer);
+            resp.getOutputStream().print(answer.toString());
         } catch (IOException e) {
             log.error(e);
         }

@@ -17,29 +17,6 @@
     }
   }
 
-  .tabs {
-    gap: 2px;
-    flex-wrap: wrap;
-    padding: 0;
-    margin-left: -1rem;
-    margin-bottom: 1rem;
-    li {
-      display: flex;
-      background-color: #ddd;
-
-      a {
-        padding: 8px;
-        color: var(--bs-body-color);
-      }
-      &:hover {
-        background-image: linear-gradient(rgba(255, 255, 255, 0.6) 0 0);
-      }
-      &.active {
-        background-color: #fff;
-      }
-    }
-  }
-
   .form-check__wrapper {
     display: flex;
     gap: var(--gap);

@@ -9,7 +9,7 @@
         xmlns:jsf="http://xmlns.jcp.org/jsf"
         xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
         xmlns:f="http://xmlns.jcp.org/jsf/core"
-        xmlns:x="http://myfaces.apache.org/tomahawk"
+        
 >
     <composite:interface>
         <composite:attribute
@@ -170,14 +170,14 @@
                                         #{msgs.search}
                                     </button>
                                 </div>
-                                <x:commandButton
+                                <h:commandButton
                                         type="submit"
                                         id="FilterAlle"
                                         forceId="true"
                                         style="display: none;"
                                         action="#{vocabularyRecordsBean.reload()}">
                                     <f:ajax render="@form" execute="@form"></f:ajax>
-                                </x:commandButton>
+                                </h:commandButton>
                             </div> <!-- /__search-bar -->
                         </div> <!-- /__filters -->
                     </div> <!-- /__search -->

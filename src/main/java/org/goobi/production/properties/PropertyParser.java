@@ -30,9 +30,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.sub.goobi.helper.Helper;
-import io.goobi.workflow.api.vocabulary.APIException;
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -45,10 +42,12 @@ import org.goobi.beans.Step;
 import org.goobi.production.cli.helper.StringPair;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import io.goobi.workflow.api.vocabulary.APIException;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import jakarta.faces.model.SelectItem;
 import lombok.extern.log4j.Log4j2;
-
-import javax.faces.model.SelectItem;
 
 @Log4j2
 public class PropertyParser {
@@ -428,9 +427,7 @@ public class PropertyParser {
                     }
                 }
 
-                if (log.isDebugEnabled()) {
-                    log.debug("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
-                }
+                log.trace("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                 properties.add(pp);
 
             }
@@ -456,9 +453,7 @@ public class PropertyParser {
                             pnew.setProzesseigenschaft(pe);
                             pnew.setValue(pe.getWert());
                             pnew.setContainer(pe.getContainer());
-                            if (log.isDebugEnabled()) {
-                                log.debug("add property B " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
-                            }
+                            log.trace("add property B " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                             properties.add(pnew);
                         }
                     }
@@ -481,16 +476,12 @@ public class PropertyParser {
                 pp.setValue(pe.getWert());
                 pp.setContainer(pe.getContainer());
                 pp.setType(Type.TEXT);
-                if (log.isDebugEnabled()) {
-                    log.debug("add property C " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
-                }
+                log.trace("add property C " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                 properties.add(pp);
 
             }
         }
-        if (log.isDebugEnabled()) {
-            log.debug("all properties are " + properties.size());
-        }
+        log.trace("all properties are " + properties.size());
 
         return properties;
     }
@@ -501,7 +492,7 @@ public class PropertyParser {
         List<HierarchicalConfiguration> propertyList = config.configurationsAt("/property");
         for (int i = 0; i < propertyList.size(); i++) {
             HierarchicalConfiguration prop = propertyList.get(i);
-            String property = "/property[" + (i+1) + "]";
+            String property = "/property[" + (i + 1) + "]";
 
             ProcessProperty pp = new ProcessProperty();
             // general values for property
@@ -558,9 +549,10 @@ public class PropertyParser {
                     populatePossibleValuesWithVocabulary(property, pp);
                 } else {
                     // possible values
-                    pp.getPossibleValues().addAll(Arrays.stream(prop.getStringArray("/value"))
-                            .map(v -> new SelectItem(v, v))
-                            .toList());
+                    pp.getPossibleValues()
+                            .addAll(Arrays.stream(prop.getStringArray("/value"))
+                                    .map(v -> new SelectItem(v, v))
+                                    .toList());
                 }
 
                 properties.add(pp);
@@ -579,8 +571,10 @@ public class PropertyParser {
             if (Type.VOCABULARYREFERENCE.equals(pp.getType())) {
                 pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
             }
-            pp.getPossibleValues().addAll(VocabularyAPIManager.getInstance().vocabularyRecords()
-                    .getRecordSelectItems(vocabularyId));
+            pp.getPossibleValues()
+                    .addAll(VocabularyAPIManager.getInstance()
+                            .vocabularyRecords()
+                            .getRecordSelectItems(vocabularyId));
         } catch (APIException e) {
             log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", property, e);
         }

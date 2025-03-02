@@ -6,7 +6,7 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/templatePG/templatePG.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+    
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -53,7 +53,7 @@
                             <div class="gw-table__wrapper">
 
                                 <!-- Datentabelle -->
-                                <x:dataTable
+                                <h:dataTable
                                     id="repositories"
                                     styleClass="table table-hover table-bordered"
                                     var="item"
@@ -81,7 +81,7 @@
                                     </h:column>
 
 
-                                    <x:column headerClass="gw-table-fixed__actions">
+                                    <h:column headerClass="gw-table-fixed__actions">
 
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.auswahl}" />
@@ -123,9 +123,9 @@
                                             </button>
 
                                         </div>
-                                    </x:column>
+                                    </h:column>
 
-                                </x:dataTable>
+                                </h:dataTable>
 
                             </div>
                             <!-- /gw-table__wrapper -->

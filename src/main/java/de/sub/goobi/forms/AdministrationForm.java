@@ -28,9 +28,6 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
@@ -42,6 +39,8 @@ import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.helper.Helper;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 

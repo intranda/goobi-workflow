@@ -1,11 +1,12 @@
 package org.goobi.managedbeans;
 
-import javax.faces.model.SelectItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import jakarta.faces.model.SelectItem;
 
 public class FormInputMultiSelectHelper implements FormInputMultiSelectBean {
     private Supplier<List<SelectItem>> all;
@@ -46,7 +47,8 @@ public class FormInputMultiSelectHelper implements FormInputMultiSelectBean {
             return;
         }
 
-        Optional<SelectItem> selectedItem = this.all.get().stream()
+        Optional<SelectItem> selectedItem = this.all.get()
+                .stream()
                 .filter(s -> s.getValue().equals(item))
                 .findFirst();
 

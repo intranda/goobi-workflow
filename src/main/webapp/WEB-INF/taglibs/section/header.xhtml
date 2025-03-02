@@ -11,7 +11,12 @@
                     aria-hidden="true"
                     class="fa fa-#{icon}" />
             </c:if>
-            <h:outputText value="#{title}" />
+            <c:if test="#{titleId != null}">
+                <span id="#{titleId}">#{title}</span>
+            </c:if>
+            <c:if test="#{titleId == null}">
+                #{title}
+            </c:if>
         </h2>
         <ui:insert />
     </div>

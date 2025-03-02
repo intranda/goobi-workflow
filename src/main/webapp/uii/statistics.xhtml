@@ -5,10 +5,11 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/templatePG/templatePG.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:section="http://goobi.io/section"
+    xmlns:util="http://goobi.io/util">
 
     <ui:param
         name="myPageTitle"
@@ -312,45 +313,15 @@
 
               <div class="row mt-4" role="contentinfo">
                 <div class="col-12">
-
-                    <intranda:box
-                      boxType="neutral"
-                      boxScope="box-body-padding-top-0"
-                      id="actionform"
-                      rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}"
-                      boxTitle="false"
-                    >
-
-                      <intranda:boxTitle
-                        title="#{msgs.statistik}"
-                        icon="fa-bar-chart"
-                      >
-
-                        <div class="actions">
-
-                          <button
-                            jsf:id="resetStatistics"
-                            jsf:action="#{ProjekteForm.resetStatistics}"
-                            class="btn btn--title-action"
-                            title="#{msgs.reload}"
-                            jsf:rel="tooltip">
-                            <i
-                              class="fa fa-refresh"
-                              title="#{msgs.reload}"
-                              jsf:rel="tooltip" />
-                            <f:passThroughAttribute
-                              name="data-toggle"
-                              value="tooltip" />
-                          </button>
-
-                        </div>
-                      </intranda:boxTitle>
-
-                      <div class="box__body">
-
+                  <section:section type="neutral">
+                    <section:header
+                      icon="bar-chart"
+                      title="#{msgs.statistik}">
+                      <section:header-actions>
                         <!-- TABS -->
-                        <ul class="tabs tabs-inline tabs-top">
-                          <li class="#{NavigationForm.activeTab == 'productionStatistics'?'active':''}"><h:commandLink
+                        <ul class="tabs align-items-stretch">
+                          <li class="align-items-center tab #{NavigationForm.activeTab == 'productionStatistics'?'active':''}">
+                            <h:commandLink
                               id="tab1"
                               action="#{NavigationForm.Reload}"
                               value="#{msgs.productionStatistics}"
@@ -361,7 +332,8 @@
                             </h:commandLink>
                           </li>
 
-                          <li class="#{NavigationForm.activeTab == 'productionThroughput'?'active':''}"><h:commandLink
+                          <li class="align-items-center tab #{NavigationForm.activeTab == 'productionThroughput'?'active':''}">
+                            <h:commandLink
                               id="tab2"
                               action="#{NavigationForm.Reload}"
                               value="#{msgs.productionThroughput}"
@@ -372,7 +344,8 @@
                             </h:commandLink>
                           </li>
 
-                          <li class="#{NavigationForm.activeTab == 'errorTracking'?'active':''}"><h:commandLink
+                          <li class="align-items-center tab #{NavigationForm.activeTab == 'errorTracking'?'active':''}">
+                            <h:commandLink
                               id="tab3"
                               action="#{NavigationForm.Reload}"
                               value="#{msgs.errorTracking}"
@@ -383,7 +356,8 @@
                             </h:commandLink>
                           </li>
 
-                          <li class="#{NavigationForm.activeTab == 'storageCalculator'?'active':''}"><h:commandLink
+                          <li class="align-items-center tab #{NavigationForm.activeTab == 'storageCalculator'?'active':''}">
+                            <h:commandLink
                               id="tab4"
                               action="#{NavigationForm.Reload}"
                               value="#{msgs.storageCalculator}"
@@ -394,7 +368,8 @@
                             </h:commandLink>
                           </li>
 
-                          <li class="#{NavigationForm.activeTab == 'projektstand'?'active':''}"><h:commandLink
+                          <li class="align-items-center tab #{NavigationForm.activeTab == 'projektstand'?'active':''}">
+                            <h:commandLink
                               id="tab5"
                               action="#{NavigationForm.Reload}"
                               value="#{msgs.projektstand}"
@@ -405,7 +380,8 @@
                             </h:commandLink>
                           </li>
 
-                          <li class="#{NavigationForm.activeTab == 'projectProgress'?'active':''}"><h:commandLink
+                          <li class="align-items-center tab #{NavigationForm.activeTab == 'projectProgress'?'active':''}">
+                            <h:commandLink
                               id="tab6"
                               action="#{NavigationForm.Reload}"
                               value="#{msgs.projectProgress}"
@@ -415,216 +391,196 @@
                               value="projectProgress" />
                             </h:commandLink>
                           </li>
+                          <li>
+                            <button
+                              jsf:id="resetStatistics"
+                              jsf:action="#{ProjekteForm.resetStatistics}"
+                              class="btn btn--title-action"
+                              title="#{msgs.reload}"
+                              jsf:rel="tooltip">
+                              <i
+                                class="fa fa-refresh"
+                                title="#{msgs.reload}"
+                                jsf:rel="tooltip" />
+                              <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            </button>
+                          </li>
                         </ul>
 
-                      <div class="tab-content tab-content-inline tab-content-bottom padding-all-more">
-                                    <h:panelGroup
-                                        layout="block"
-                                        id="firsttab"
-                                        class="tab-pane active"
-                                        rendered="#{NavigationForm.activeTab == 'productionStatistics'}">
-                                        <div>
-                                            <x:aliasBeansScope>
-                                                <x:aliasBean
-                                                    alias="#{Form}"
-                                                    value="#{ProjekteForm}" />
-                                                <x:aliasBean
-                                                    alias="#{Manager}"
-                                                    value="#{ProjekteForm.statisticsManager1}" />
-                                                <f:subview id="id1">
-                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
-                                                </f:subview>
-                                            </x:aliasBeansScope>
-                                        </div>
-                                    </h:panelGroup>
 
-                                    <h:panelGroup
-                                        layout="block"
-                                        id="secondtab"
-                                        class="tab-pane active"
-                                        rendered="#{NavigationForm.activeTab == 'productionThroughput'}">
-                                        <div>
-                                            <x:aliasBeansScope>
-                                                <x:aliasBean
-                                                    alias="#{Form}"
-                                                    value="#{ProjekteForm}" />
-                                                <x:aliasBean
-                                                    alias="#{Manager}"
-                                                    value="#{ProjekteForm.statisticsManager2}" />
+                      </section:header-actions>
+                    </section:header>
+                    <section:body padding="#{true}"><div class="tab-content tab-content-inline tab-content-bottom padding-all-more">
+                      <h:panelGroup
+                          layout="block"
+                          id="firsttab"
+                          class="tab-pane active"
+                          rendered="#{NavigationForm.activeTab == 'productionStatistics'}">
+                          <div>
+                              <intranda:statistic_details id="id1" Manager="#{ProjekteForm.statisticsManager1}"/>
+                          </div>
+                      </h:panelGroup>
 
-                                                <f:subview id="id2">
-                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
-                                                </f:subview>
-                                            </x:aliasBeansScope>
-                                        </div>
-                                    </h:panelGroup>
-
-                                    <h:panelGroup
-                                        layout="block"
-                                        id="thirdtab"
-                                        class="tab-pane active"
-                                        rendered="#{NavigationForm.activeTab == 'errorTracking'}">
-                                        <div>
-                                            <x:aliasBeansScope>
-                                                <x:aliasBean
-                                                    alias="#{Form}"
-                                                    value="#{ProjekteForm}" />
-                                                <x:aliasBean
-                                                    alias="#{Manager}"
-                                                    value="#{ProjekteForm.statisticsManager3}" />
-                                                <f:subview id="id3">
-                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
-                                                </f:subview>
-                                            </x:aliasBeansScope>
-                                        </div>
-                                    </h:panelGroup>
-                                    <h:panelGroup
-                                        layout="block"
-                                        id="forthtab"
-                                        class="tab-pane active"
-                                        rendered="#{NavigationForm.activeTab == 'storageCalculator'}">
-                                        <div>
-                                            <x:aliasBeansScope>
-                                                <x:aliasBean
-                                                    alias="#{Form}"
-                                                    value="#{ProjekteForm}" />
-                                                <x:aliasBean
-                                                    alias="#{Manager}"
-                                                    value="#{ProjekteForm.statisticsManager4}" />
-                                                <f:subview id="id4">
-                                                    <ui:include src="templatePG/includes/statistics/statistic_details.xhtml" />
-                                                </f:subview>
-                                            </x:aliasBeansScope>
-                                        </div>
-                                    </h:panelGroup>
-                                    <h:panelGroup
-                                        layout="block"
-                                        id="fifthtab"
-                                        class="tab-pane active"
-                                        rendered="#{NavigationForm.activeTab == 'projektstand'}">
-                                        <h3>
-                                            <h:outputText
-                                                id="vzid34"
-                                                value="#{msgs.volumes} (#{ProjekteForm.myProjekt.numberOfVolumes})" />
-                                        </h3>
-
-                                        <h:graphicImage
-                                            id="vzid36"
-                                            alt="volumes"
-                                            title="#{ProjekteForm.myProjekt.titel}"
-                                            value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatVolumes}" />
-
-                                        <h3>
-                                            <h:outputText
-                                                id="vzid39"
-                                                value="#{msgs.seiten} (#{ProjekteForm.myProjekt.numberOfPages})" />
-                                        </h3>
-
-                                        <h:graphicImage
-                                            id="vzid41"
-                                            alt="images"
-                                            title="#{ProjekteForm.myProjekt.titel}"
-                                            value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatImages}" />
-                                    </h:panelGroup>
-                                    <h:panelGroup
-                                        layout="block"
-                                        id="sixthtab"
-                                        class="tab-pane active"
-                                        rendered="#{NavigationForm.activeTab == 'projectProgress'}">
-
-                                        <h3>
-                                            <h:outputText value="#{msgs.projectProgress}" />
-                                        </h3>
-
-                                        <div class="row">
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-group">
-                                                    <h:selectManyListbox
-                                                        pt:aria-label="#{msgs.schritte}"
-                                                        id="vinput5"
-                                                        value="#{ProjekteForm.projectProgressInterface.selectedSteps}"
-                                                        styleClass="form-select">
-                                                        <f:selectItems
-                                                            value="#{ProjekteForm.projectProgressInterface.selectableSteps}"
-                                                            var="item"
-                                                            itemLabel="#{item}"
-                                                            itemValue="#{item}" />
-                                                        <f:passThroughAttribute
-                                                            name="aria-label"
-                                                            value="#{ProjekteForm.projectProgressInterface.selectedSteps}" />
-                                                    </h:selectManyListbox>
-                                                     
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <div class="form-group">
-                                                    <h:selectOneMenu
-                                                        value="#{ProjekteForm.projectProgressInterface.timeUnit}"
-                                                        styleClass="form-select margin-bottom-regular"
-                                                        converter="StatisticsTimeUnitConverter">
-                                                        <f:selectItems
-                                                            id="pcid11"
-                                                            value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}"
-                                                            var="unit"
-                                                            itemLabel="#{unit.title}"
-                                                            itemValue="#{unit}" />
-                                                        <f:passThroughAttribute
-                                                            name="aria-label"
-                                                            value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}" />
-                                                    </h:selectOneMenu>
-                                                     
-                                                    <div class="form-check__wrapper">
-                                                    <h:selectBooleanCheckbox
-                                                        id="pcid13"
-                                                        value="#{ProjekteForm.projectProgressInterface.referenceCurve}"
-                                                        title="#{msgs.refCurve}"
-                                                        styleClass="form-check-input"
-                                                        >
-                                                    </h:selectBooleanCheckbox>
-                                                    <h:outputLabel
-                                                        id="pcid14"
-                                                        value="#{msgs.refCurve}"
-                                                        for="pcid13"
-                                                        styleClass="font-normal margin-left-5" />
-                                                </div>
-                                                </div>
-
-                                                <div class="form-group d-grid mt-4">
-                                                    <button
-                                                        jsf:id="pcid20"
-                                                        class="btn btn-neutral-600 ms-auto"
-                                                        jsf:action="#{ProjekteForm.filegroupEdit}">
-                                                        <span class="fa fa-cog" />
-                                                        <span>
-                                                            <h:outputText value="#{msgs.rerender}" />
-                                                        </span>
-                                                    </button>
-                                                     
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                        <h:panelGrid columns="4">
+                      <h:panelGroup
+                          layout="block"
+                          id="secondtab"
+                          class="tab-pane active"
+                          rendered="#{NavigationForm.activeTab == 'productionThroughput'}">
+                          <div>
+                                <intranda:statistic_details id="id2" Manager="#{ProjekteForm.statisticsManager2}"/>
 
 
-                                        </h:panelGrid>
+                          </div>
+                      </h:panelGroup>
 
-                                        <h:panelGroup id="pcid16">
-                                            <x:graphicImage
-                                                pt:aria-label="#{msgs.chart}"
-                                                forceId="true"
-                                                id="vzid36"
-                                                rendered="#{ProjekteForm.projectProgressImage != ''}"
-                                                value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectProgressImage}" />
+                      <h:panelGroup
+                          layout="block"
+                          id="thirdtab"
+                          class="tab-pane active"
+                          rendered="#{NavigationForm.activeTab == 'errorTracking'}">
+                          <div>
+                                <intranda:statistic_details id="id3" Manager="#{ProjekteForm.statisticsManager3}"/>
 
-                                        </h:panelGroup>
-                                    </h:panelGroup>
+                          </div>
+                      </h:panelGroup>
+                      <h:panelGroup
+                          layout="block"
+                          id="forthtab"
+                          class="tab-pane active"
+                          rendered="#{NavigationForm.activeTab == 'storageCalculator'}">
+                          <div>
+                               <intranda:statistic_details id="id4" Manager="#{ProjekteForm.statisticsManager4}"/>
+
+                          </div>
+                      </h:panelGroup>
+                      <h:panelGroup
+                          layout="block"
+                          id="fifthtab"
+                          class="tab-pane active"
+                          rendered="#{NavigationForm.activeTab == 'projektstand'}">
+                          <h3>
+                              <h:outputText
+                                  id="vzid34"
+                                  value="#{msgs.volumes} (#{ProjekteForm.myProjekt.numberOfVolumes})" />
+                          </h3>
+
+                          <h:graphicImage
+                              id="chart1"
+                              alt="volumes"
+                              title="#{ProjekteForm.myProjekt.titel}"
+                              value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatVolumes}" />
+
+                          <h3>
+                              <h:outputText
+                                  id="vzid39"
+                                  value="#{msgs.seiten} (#{ProjekteForm.myProjekt.numberOfPages})" />
+                          </h3>
+
+                          <h:graphicImage
+                              id="vzid41"
+                              alt="images"
+                              title="#{ProjekteForm.myProjekt.titel}"
+                              value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatImages}" />
+                      </h:panelGroup>
+                      <h:panelGroup
+                          layout="block"
+                          id="sixthtab"
+                          class="tab-pane active"
+                          rendered="#{NavigationForm.activeTab == 'projectProgress'}">
+
+                          <h3>
+                              <h:outputText value="#{msgs.projectProgress}" />
+                          </h3>
+
+                          <div class="row">
+                              <div class="col-12 col-md-6">
+                                  <div class="form-group">
+                                      <h:selectManyListbox
+                                          pt:aria-label="#{msgs.schritte}"
+                                          id="vinput5"
+                                          value="#{ProjekteForm.projectProgressInterface.selectedSteps}"
+                                          styleClass="form-select">
+                                          <f:selectItems
+                                              value="#{ProjekteForm.projectProgressInterface.selectableSteps}"
+                                              var="item"
+                                              itemLabel="#{item}"
+                                              itemValue="#{item}" />
+                                          <f:passThroughAttribute
+                                              name="aria-label"
+                                              value="#{ProjekteForm.projectProgressInterface.selectedSteps}" />
+                                      </h:selectManyListbox>
+                                       
+                                  </div>
+                              </div>
+                              <div class="col-12 col-md-6">
+                                  <div class="form-group">
+                                      <h:selectOneMenu
+                                          value="#{ProjekteForm.projectProgressInterface.timeUnit}"
+                                          styleClass="form-select margin-bottom-regular"
+                                          converter="StatisticsTimeUnitConverter">
+                                          <f:selectItems
+                                              id="pcid11"
+                                              value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}"
+                                              var="unit"
+                                              itemLabel="#{unit.title}"
+                                              itemValue="#{unit}" />
+                                          <f:passThroughAttribute
+                                              name="aria-label"
+                                              value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}" />
+                                      </h:selectOneMenu>
+                                       
+                                      <div class="form-check__wrapper">
+                                      <h:selectBooleanCheckbox
+                                          id="pcid13"
+                                          value="#{ProjekteForm.projectProgressInterface.referenceCurve}"
+                                          title="#{msgs.refCurve}"
+                                          styleClass="form-check-input"
+                                          >
+                                      </h:selectBooleanCheckbox>
+                                      <h:outputLabel
+                                          id="pcid14"
+                                          value="#{msgs.refCurve}"
+                                          for="pcid13"
+                                          styleClass="font-normal margin-left-5" />
+                                  </div>
+                                  </div>
+
+                                  <div class="form-group d-grid mt-4">
+                                      <button
+                                          jsf:id="pcid20"
+                                          class="btn btn-neutral-600 ms-auto"
+                                          jsf:action="#{ProjekteForm.filegroupEdit}">
+                                          <span class="fa fa-cog" />
+                                          <span>
+                                              <h:outputText value="#{msgs.rerender}" />
+                                          </span>
+                                      </button>
+                                       
+                                  </div>
+                              </div>
+
+                          </div>
+
+                          <h:panelGrid columns="4">
+
+
+                          </h:panelGrid>
+
+                          <h:panelGroup id="pcid16">
+                              <h:graphicImage
+                                  pt:aria-label="#{msgs.chart}"
+                                  forceId="true"
+                                  id="chart2"
+                                  rendered="#{ProjekteForm.projectProgressImage != ''}"
+                                  value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectProgressImage}" />
+
+                          </h:panelGroup>
+                      </h:panelGroup>
                       </div> <!-- /tab-content -->
-                    </div> <!-- /box__body -->
-
-                  </intranda:box>
-
+                    </section:body>
+                  </section:section>
                 </div> <!-- /col -->
               </div> <!-- /row -->
 

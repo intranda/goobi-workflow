@@ -33,13 +33,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Batch;
@@ -58,6 +51,12 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import io.goobi.workflow.xslt.XsltToPdf;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.log4j.Log4j2;
@@ -96,7 +95,7 @@ public class BatchBean extends BasicBean implements Serializable {
         this.selectedBatches = new ArrayList<>();
         for (Process p : this.selectedProcesses) {
             if (p.getBatch() != null && !this.currentBatches.contains(p.getBatch())) {
-                generateBatch(p.getBatch());
+                currentBatches.add(generateBatch(p.getBatch()));
             }
         }
     }
@@ -286,7 +285,7 @@ public class BatchBean extends BasicBean implements Serializable {
         }
         if (!docket.isEmpty() && !facesContext.getResponseComplete()) {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            String fileName = "batch_docket" + ".pdf";
+            String fileName = "batch_" + this.selectedBatches.get(0).getBatchId() + ".pdf";
             ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
             String contentType = servletContext.getMimeType(fileName);
             response.setContentType(contentType);

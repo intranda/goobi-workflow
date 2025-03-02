@@ -25,6 +25,11 @@
  */
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
+import java.util.Optional;
+
+import org.apache.deltaspike.core.api.scope.WindowScoped;
+
 import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
@@ -32,13 +37,9 @@ import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
 import io.goobi.workflow.api.vocabulary.helper.APIExceptionExtractor;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import org.apache.deltaspike.core.api.scope.WindowScoped;
-
-import javax.inject.Named;
-import java.io.Serializable;
-import java.util.Optional;
 
 @Named
 @WindowScoped
@@ -58,15 +59,14 @@ public class VocabularyBean implements Serializable {
             api.versionCheck();
             paginator = new HATEOASPaginator<>(
                     VocabularyPageResult.class,
-                    api.vocabularies().list(
-                            Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
-                            Optional.empty(),
-                            Optional.of("name,ASC")
-                    ),
+                    api.vocabularies()
+                            .list(
+                                    Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
+                                    Optional.empty(),
+                                    Optional.of("name,ASC")),
                     null,
                     null,
-                    api.vocabularies()::get
-            );
+                    api.vocabularies()::get);
             return RETURN_PAGE_OVERVIEW;
         } catch (APIException e) {
             APIExceptionExtractor extractor = new APIExceptionExtractor(e);

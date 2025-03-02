@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.faces.model.SelectItem;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.geonames.Toponym;
@@ -49,6 +47,7 @@ import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.KulturNavImporter;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import jakarta.faces.model.SelectItem;
 import lombok.Data;
 import ugh.dl.DocStruct;
 import ugh.dl.HoldingElement;

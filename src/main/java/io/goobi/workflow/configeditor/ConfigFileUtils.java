@@ -1,17 +1,17 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
@@ -248,7 +248,7 @@ public abstract class ConfigFileUtils {
             buffer.append(backupDirectory);
             buffer.append(fileName);
             buffer.append(")");
-            Helper.setFehlerMeldung("configFileEditor", buffer.toString(), "");
+            Helper.setFehlerMeldung(buffer.toString(), "");
         }
     }
 
@@ -259,7 +259,7 @@ public abstract class ConfigFileUtils {
         } catch (IOException | IllegalArgumentException ioException) {
             String message = "ConfigFileEditorAdministrationPlugin could not read file " + fileName;
             log.error(message);
-            Helper.setFehlerMeldung("configFileEditor", message, "");
+            Helper.setFehlerMeldung(message, "");
             return "";
         }
     }
@@ -279,11 +279,12 @@ public abstract class ConfigFileUtils {
         try {
             Charset charset = ConfigFileUtils.standardCharset;
             FileUtils.write(new File(fileName), content, charset);
-            Helper.setMeldung("configFileEditor", Helper.getTranslation("savedConfigFileSuccessfully"), "");
+            String message = Helper.getTranslation("savedConfigFileSuccessfully");
+            Helper.setMeldung(message, "");
         } catch (IOException | IllegalArgumentException ioException) {
             String message = "ConfigFileEditorAdministrationPlugin could not write file " + fileName;
             log.error(message);
-            Helper.setFehlerMeldung("configFileEditor", message, "");
+            Helper.setFehlerMeldung(message, "");
         }
     }
 

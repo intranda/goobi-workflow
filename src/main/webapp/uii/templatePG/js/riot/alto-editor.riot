@@ -1,0 +1,348 @@
+<alto-editor>
+    <div class="row{ this.alignRtl ? ' rightToLeft' : null} image-row">
+        <div class="col-md-6">
+            <div id="bigImage" onclick={canvasOnClick} onmousemove={canvasOnClick}></div>
+        </div>
+        <div class="col-md-6{ this.alignRtl ? ' alignRight': null} alto-edit-wrapper">
+            <div class="alto-edit">
+                <div each={line in lines} class="altoline" >
+                    <span each={word in line.words}>
+                        <span id={word.id}
+                            class="altoword"
+                            onkeyup={keyup}
+                            onkeydown={keydown}
+                            onfocus={lockWord}
+                        	onblur={unlockWord}
+                            onmousemove={highlightWord}
+                            contenteditable="true"
+                            spellcheck="false">{word.value}</span>
+                    </span>
+                <br>
+                </div>
+            </div>
+            <div class="named-entity-edit" ref="namedEntityEditorWrapper"/>
+        </div>
+    </div>
+
+<style>
+    .image-row {
+        --column-height: 75vh;
+    }
+    .altoline {
+        overflow-wrap: anywhere;
+        padding-bottom: 5px;
+    }
+    .altoword {
+        padding: 3px;
+    }
+    .alto-edit-wrapper {
+        --alto-padding: 0.5em;
+        height: var(--column-height);
+        display: flex;
+        flex-direction: column;
+    }
+    .alto-edit {
+        overflow-y: scroll;
+        border: 1px solid #ddd;
+        padding: var(--alto-padding);
+        flex-grow: 1;
+    }
+    .named-entity-edit {
+        border: 1px solid #ddd;
+        margin: 1.5em 0 0 0;
+        max-height: 50%;
+        display: none;
+    }
+    .named-entity-edit > :first-child {
+        border-bottom: 1px solid #bbb;
+        padding: var(--alto-padding);
+    }
+    .named-entity-edit.-active {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    #bigImage {
+        height: var(--column-height);
+        border: 1px solid #ddd;
+    }
+    .line-marker {
+        border: 1px solid red;
+    }
+    .line-marker {
+        border: 2px solid blue;
+    }
+    .word-marker {
+        border: 2px solid red;
+    }
+    .rightToLeft {
+        direction: rtl;
+    }
+    .alignRight{
+        text-align: right;
+    }
+    .selected-word {
+    	background: HSLA(209, 73%, 55%, 33%);
+    }
+</style>
+
+<script>
+    this.on('before-mount', () => {
+    	this.msgs = this.opts.messages;
+        this.lines = [];
+        console.log(opts)
+        this.alignRtl =this.opts.alignRtl;
+        let altoDiv = document.querySelector(opts.altoDivSelector);
+        let altoJson = altoDiv.innerText;
+        this.alto = JSON.parse(altoJson);
+        this.lines = this.alto.lines;
+        console.log(this.alto)
+        this.changes = {};
+        this.oldPos = {};
+    })
+
+    this.on('mount', () => {
+    	this.initOpenseadragon();
+        if(this.opts.namedEntityEditor?.enabled) {
+            this.refs.namedEntityEditorWrapper.classList.add("-active");
+            this.initNamedEntityEditor(this.refs.namedEntityEditorWrapper, this.opts.namedEntityEditor);
+        }
+    	this.update();
+
+    })
+
+    lockWord(e) {
+    	this.wordLocked = true;
+    	this.highlightWord(e);
+    }
+
+    unlockWord(e) {
+		this.wordLocked = false;
+    }
+
+    highlightWord(e) {
+    	if(this.wordLocked && e.type === "mousemove") {
+    		return;
+    	}
+    	var add = 14;
+    	var box = this.alto.lineMap[e.item.word.lineId];
+    	var rect = new OpenSeadragon.Rect((box.x)-add, (box.y)-add, (box.width)+add*2, (box.height)+add*2);
+    	this.viewImage.overlays.unDraw("line");
+        this.viewImage.overlays.drawRect(rect, "line");
+
+        box = e.item.word
+    	var rect = new OpenSeadragon.Rect((box.x)-add, (box.y)-add, (box.width)+add*2, (box.height)+add*2);
+    	this.viewImage.overlays.unDraw("word");
+        this.viewImage.overlays.drawRect(rect, "word");
+
+    }
+
+    keyup(e) {
+    	e.preventUpdate = true;
+        let text = e.target.innerText;
+        if(text.indexOf("\n") >= 0) {
+            text = text.replace("\n", "")
+            e.target.innerText = text;
+        }
+        let word = e.item.word
+        word.value = e.target.innerText;
+        this.changes[word.id] = {action: "changeContent", value: text};
+        let currentPos = window.getSelection().getRangeAt(0).startOffset;
+        this.oldPos = {position: currentPos, wordId: word.id};
+    }
+
+    keydown(e) {
+    	e.preventUpdate = true;
+    	let word = e.item.word
+    	let currentPos = window.getSelection().getRangeAt(0).startOffset;
+    	if(e.key == "ArrowLeft") {
+        	if(this.oldPos.wordId == word.id && this.oldPos.position == 0 && !e.shiftKey) {
+        		e.preventDefault();
+        		var previousOuterSpan = e.target.parentElement.previousElementSibling;
+        		if(previousOuterSpan) {
+            		let prevWordSpan = previousOuterSpan.children[0];
+            		let range = new Range();
+            		range.setStart(prevWordSpan, 1);
+
+            		document.getSelection().removeAllRanges();
+            	    document.getSelection().addRange(range);
+        		} else {
+        			var previousLineDiv = e.target.parentElement.parentElement.previousElementSibling;
+        			if(previousLineDiv) {
+        				let lineWords = previousLineDiv.children;
+        				let prevWordSpan = lineWords[lineWords.length-2].children[0];
+        				let range = new Range();
+        				range.setStart(prevWordSpan, 1);
+
+                		document.getSelection().removeAllRanges();
+                	    document.getSelection().addRange(range);
+        			}
+        		}
+        	}
+        }
+    	if(e.key == "ArrowRight") {
+    		if(e.target.innerText.length -1 == currentPos) {
+    			e.preventDefault();
+    			let range = new Range();
+				range.setStart(e.target.lastChild, e.target.innerText.length);
+
+        		document.getSelection().removeAllRanges();
+        	    document.getSelection().addRange(range);
+        	    currentPos = 0;
+    		} else if(e.target.innerText.length == currentPos) {
+    			e.preventDefault();
+    			var nextOuterSpan = e.target.parentElement.nextElementSibling;
+        		if(nextOuterSpan.localName == "span") {
+            		let nextWordSpan = nextOuterSpan.children[0];
+            		let range = new Range();
+            		range.setStart(nextWordSpan, 0);
+
+            		document.getSelection().removeAllRanges();
+            	    document.getSelection().addRange(range);
+        		} else {
+        			var nextLineDiv = e.target.parentElement.parentElement.nextElementSibling;
+        			if(nextLineDiv) {
+        				let lineWords = nextLineDiv.children;
+        				let nextWordSpan = lineWords[0].children[0];
+        				let range = new Range();
+        				range.setStart(nextWordSpan, 0);
+
+                		document.getSelection().removeAllRanges();
+                	    document.getSelection().addRange(range);
+        			}
+        		}
+    		}
+    	}
+    	this.oldPos = {position: currentPos, wordId: word.id};
+    }
+
+    getChanges() {
+    	let changeArr = [];
+    	for(let wordId of Object.keys(this.changes)) {
+    		let change = this.changes[wordId];
+            if(Array.isArray(change)) {
+                changeArr.push(...change);
+            } else {
+    		    changeArr.push({action: change.action, value: change.value, wordId: wordId});
+            }
+    	}
+        console.log("get changes", changeArr, this.changes);
+    	return JSON.stringify(changeArr);
+    }
+
+    saved() {
+    	const tempChanges = this.changes.namedEntities;
+    	this.changes = {};
+    	this.changes.namedEntities = tempChanges;
+    }
+
+    initOpenseadragon() {
+    	var configViewer = {
+        	global: {
+                divId: 'bigImage',
+                useTiles: true,
+                footerHeight: 0,
+                adaptContainerHeight: false,
+                zoomSlider: "#zoomSlider",
+                zoomSliderHandle: "#zoomSlider .zoom-slider-handle",
+                zoomSliderLabel: "#zoomSliderLabel input",
+                overlayGroups: [
+                	{
+                        name : "line",
+                        styleClass : "line-marker",
+                        interactive: false
+                    },
+                    {
+                        name : "word",
+                        styleClass : "word-marker",
+                        interactive: false
+                    }
+                ]
+            },
+            image: {
+                mimeType: "image/jpeg",
+                tileSource: document.querySelector(this.opts.tileSourceSelector).value
+            }
+        };
+
+        this.viewImage = new ImageView.Image( configViewer );
+        this.viewImage.load()
+        .then(function(image) {
+            image.onFirstTileLoaded()
+            .then(function() {
+                $('#ajaxloader_image').fadeOut(800);
+            })
+            .catch(function() {
+                $('#ajaxloader_image').fadeOut(800);
+            })
+        })
+        .catch(function(error){
+            console.error( 'Error opening image', error );
+            $('#ajaxloader_image').fadeOut(800);
+            $('#' + configViewer.global.divId).html( 'Failed to load image: "' + error + '"' );
+        });
+
+    }
+
+    initNamedEntityEditor(element, config) {
+        const opts = $.extend(true, {}, config, {
+            wordSelector: ".altoword",
+            wordContainerSelector: ".alto-edit",
+            namedEntities: this.alto.namedEntities.map(entity => {
+                let words = this.alto.namedEntityMap[entity.id];
+                entity.words = (words ? words : []);
+                return entity;
+            }),
+            changeCallback: (changesList) => {
+                //remove all changes regarding named entities. They will be replaced by the changesList
+                this.changes.namedEntities = changesList;
+                console.log("add named entites changes to ", this.changes, changesList);
+            }
+        });
+        riot.mount(this.refs.namedEntityEditorWrapper, "named-entity-selector", opts);
+    }
+
+    canvasOnClick(e) {
+    	if(this.wordLocked && e.type === "mousemove") {
+    		return;
+    	}
+        var pixel = new OpenSeadragon.Point( event.offsetX, event.offsetY );
+    	if(event.target.nodeName !== "CANVAS" || event.ctrlKey) {
+    		var canvas = document.querySelector('#bigImage canvas');
+			var rect = canvas.getBoundingClientRect();
+			var x = e.clientX - rect.left; //x position within the element.
+	        var y = e.clientY - rect.top;  //y position within the element.
+	        pixel = new OpenSeadragon.Point(x, y);
+        }
+        var pos = this.viewImage.viewer.viewport.viewerElementToImageCoordinates( pixel );
+        for(let line of this.lines) {
+        	if(this.posInRect(pos, line)) {
+        		for(let word of line.words) {
+        			if(this.posInRect(pos, word)) {
+        				let wordElement = document.querySelector('#'+word.id);
+        				if(e.type === "click") {
+        					wordElement.focus();
+        				} else {
+        					e.item = {word: word}
+        					this.highlightWord(e)
+        				}
+        				break;
+        			}
+        		}
+        	}
+        }
+    }
+
+    posInRect(pos, rect) {
+    	return rect.x < pos.x
+    		&& rect.x+rect.width>pos.x
+    		&& rect.y<pos.y
+    		&& rect.y+rect.height>pos.y;
+    }
+
+    this.on('before-unmount', () => {
+    	this.viewImage.close();
+    })
+
+</script>
+</alto-editor>

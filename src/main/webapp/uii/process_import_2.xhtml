@@ -7,7 +7,7 @@
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+	
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:p="http://primefaces.org/ui">
@@ -110,7 +110,7 @@
 
 
 
-						<x:dataList
+						<ui:repeat
 							forceId="true"
 							var="property"
 							id="processProperties"
@@ -148,9 +148,8 @@
 									name="selectMenu"
 									selectItems="#{property.possibleValues}"
 									required="#{property.required}"
-									var="propertys"
-									itemLabel="#{propertys}"
-									itemValue="#{propertys}" />
+									itemLabel="#{var}"
+									itemValue="#{var}" />
 							</h:panelGroup>
 
 							<h:panelGroup
@@ -178,17 +177,17 @@
 									required="#{property.required}" />
 							</h:panelGroup>
 
-						</x:dataList>
+						</ui:repeat>
 
 						<div class="form-actions">
 							<!-- Cancel -->
-							<a
+							<button
 								jsf:id="link_blank"
 								class="btn btn-blank"
 								jsf:immediate="true"
 								jsf:action="process_all">
 								<h:outputText value="#{msgs.abbrechen}" />
-							</a>
+							</button>
 
 							<!-- Save -->
 							<button

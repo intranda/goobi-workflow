@@ -29,9 +29,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.inject.Default;
-
 import org.goobi.production.flow.statistics.enums.TimeUnit;
+
+import jakarta.enterprise.inject.Default;
 
 /**
  * 

@@ -74,7 +74,7 @@
 						<xsl:variable name="barcodebatch" select="goobi:process/goobi:batch" />
 						<fo:block text-align="center">
 							<fo:instream-foreign-object>
-								<barcode:barcode xmlns:barcode="http://barcode4j.krysalis.org/ns" message="{$barcodebatch}">
+								<barcode:barcode xmlns:barcode="http://barcode4j.krysalis.org/ns" message="batch:{$barcodebatch}">
 									<barcode:code128>
 										<barcode:module-width>0.21mm</barcode:module-width>
 										<barcode:height>20mm</barcode:height>

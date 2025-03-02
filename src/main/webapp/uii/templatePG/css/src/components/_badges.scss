@@ -6,7 +6,11 @@
 .badge {
     color: var(--clr-neutral-400);
     font-size: var(--fs-400, 0.75rem);
+    .fa {
+      margin-inline-end: 0.5em;
+    }
   }
+
 
   button.badge,
   span.badge {

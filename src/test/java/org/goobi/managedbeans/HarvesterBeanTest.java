@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -35,6 +36,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryMysqlHelper;
 import io.goobi.workflow.harvester.repository.Repository;
+import jakarta.faces.model.SelectItem;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ HarvesterRepositoryMysqlHelper.class, Helper.class })
@@ -65,12 +67,12 @@ public class HarvesterBeanTest {
     public void testRepositoryTypes() {
         HarvesterBean fixture = new HarvesterBean();
         assertNotNull(fixture);
-        String[] repositoryTypes = fixture.getRepositoryTypes();
-        assertEquals(4, repositoryTypes.length);
-        assertEquals("oai", repositoryTypes[0]);
-        assertEquals("ia", repositoryTypes[1]);
-        assertEquals("ia cli", repositoryTypes[2]);
-        assertEquals("bach", repositoryTypes[3]);
+        List<SelectItem> repositoryTypes = fixture.getRepositoryTypes();
+        assertEquals(4, repositoryTypes.size());
+        assertEquals("oai", repositoryTypes.get(0).getLabel());
+        assertEquals("ia", repositoryTypes.get(1).getLabel());
+        assertEquals("ia cli", repositoryTypes.get(2).getLabel());
+        assertEquals("bach", repositoryTypes.get(3).getLabel());
     }
 
     @Test

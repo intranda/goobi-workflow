@@ -6,7 +6,7 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+    
     xmlns:p="http://primefaces.org/ui"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
@@ -29,13 +29,13 @@
 
                 <table class="table table-hover table-bordered">
 
-                    <x:dataList
+                    <ui:repeat
                         var="container"
                         value="#{propertyOwner.containerList}"
                         rowCountVar="rowCount"
                         rowIndexVar="rowIndex"
                         id="allProperties">
-                        <x:dataList
+                        <ui:repeat
                             var="proc"
                             value="#{propertyOwner.containerlessProperties}"
                             rowCountVar="propCount"
@@ -49,14 +49,14 @@
                                         <h:outputText value="#{proc.name}" />
                                     </td>
                                     <td>
-                                        <x:dataList
+                                        <ui:repeat
                                             var="val"
                                             value="#{proc.valueList}"
                                             rendered="#{proc.type.name == 'listmultiselect'}">
                                             <h:outputText
                                                 value="#{val}"
                                                 styleClass="badge badge-no-radius badge-light-grey" />
-                                        </x:dataList>
+                                        </ui:repeat>
                                         <h:outputText
                                             value="#{proc.readValue}"
                                             rendered="#{proc.type.name == 'html'}"
@@ -129,11 +129,11 @@
                                             class="btn btn-blank ms-2"
                                             jsf:rendered="#{proc.duplicationAllowed and currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
                                             <span class="fa fa-plus" />
-                                            <x:updateActionListener
-                                                property="#{propertyOwner.processProperty}"
+                                            <f:setPropertyActionListener
+                                                target="#{propertyOwner.processProperty}"
                                                 value="#{proc}" />
-                                            <x:updateActionListener
-                                                property="#{propertyOwner.container}"
+                                            <f:setPropertyActionListener
+                                                target="#{propertyOwner.container}"
                                                 value="0" />
                                         </button>
 
@@ -141,7 +141,7 @@
                                 </tr>
                             </h:panelGroup>
 
-                        </x:dataList>
+                        </ui:repeat>
                         <!-- // PROPERTIES OF CONTAINER 0 -->
 
                         <!-- BLANK LINE -->
@@ -157,7 +157,7 @@
                         <!-- // BLANK LINE -->
 
                         <!-- PROPERTIES OF CONTAINER NOT 0 -->
-                        <x:dataList
+                        <ui:repeat
                             var="process_item"
                             value="#{propertyOwner.containers[container].propertyList}"
                             rowCountVar="propCount"
@@ -170,14 +170,14 @@
                                         <h:outputText value="#{process_item.name}" />
                                     </td>
                                     <td>
-                                        <x:dataList
+                                        <ui:repeat
                                             var="val"
                                             value="#{process_item.valueList}"
                                             rendered="#{process_item.type.name == 'listmultiselect'}">
                                             <h:outputText
                                                 value="#{val}"
                                                 styleClass="badge badge-no-radius badge-light-grey" />
-                                        </x:dataList>
+                                        </ui:repeat>
                                         <h:outputText
                                             value="#{process_item.readValue}"
                                             rendered="#{process_item.type.name == 'html'}"
@@ -245,8 +245,8 @@
                                                     jsf:rendered="#{process_item.duplicationAllowed and process_item.type.name != 'metadata'}"
                                                     class="btn btn-blank ms-2">
                                                     <span class="fa fa-plus" />
-                                                    <x:updateActionListener
-                                                        property="#{propertyOwner.container}"
+                                                    <f:setPropertyActionListener
+                                                        target="#{propertyOwner.container}"
                                                         value="#{container}" />
                                                 </button>
 
@@ -257,10 +257,10 @@
                                 </tr>
                             </h:panelGroup>
 
-                        </x:dataList>
+                        </ui:repeat>
                         <!-- // PROPERTIES OF CONTAINER NOT 0 -->
 
-                    </x:dataList>
+                    </ui:repeat>
 
                     <!-- METADATA TO DISPLAY -->
                     <c:forEach
@@ -308,7 +308,7 @@
                         icon="fa-edit">
 
                         <!-- PROPERTY TO EDIT -->
-                        <x:dataList
+                        <ui:repeat
                             var="myprocess_item"
                             value="#{propertyOwner.containerProperties}"
                             id="item">
@@ -380,7 +380,7 @@
                                         labelRequired="false" />
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <x:inputText
+                                    <h:inputText
                                         id="number"
                                         forceId="true"
                                         styleClass="form-control form__input"
@@ -390,7 +390,7 @@
                                         <f:ajax
                                             execute="@this"
                                             render="@form" />
-                                    </x:inputText>
+                                    </h:inputText>
                                     <intranda:formHelp
                                         content="#{msgs.helpPropertyValue}"
                                         msgFor="number" />
@@ -537,7 +537,7 @@
                                         labelRequired="false" />
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <x:inputTextarea
+                                    <h:inputTextarea
                                         id="html"
                                         forceId="true"
                                         styleClass="form-control"
@@ -546,7 +546,7 @@
                                         <f:ajax
                                             execute="@this"
                                             render="@form" />
-                                    </x:inputTextarea>
+                                    </h:inputTextarea>
                                     <intranda:formHelp
                                         content="#{msgs.helpPropertyValue}"
                                         msgFor="html" />
@@ -554,7 +554,7 @@
                             </h:panelGroup>
                             <!-- // VALUE AS HTML -->
 
-                        </x:dataList>
+                        </ui:repeat>
                         <!-- // PROPERTY TO EDIT -->
 
 

@@ -35,13 +35,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.application.Application;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.Before;
@@ -58,6 +51,12 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.metadaten.Image.Type;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class, Helper.class, ProcessManager.class })

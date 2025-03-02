@@ -30,9 +30,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -45,6 +42,8 @@ import org.quartz.TriggerBuilder;
 import org.reflections.Reflections;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 import lombok.extern.log4j.Log4j2;
 
 /**

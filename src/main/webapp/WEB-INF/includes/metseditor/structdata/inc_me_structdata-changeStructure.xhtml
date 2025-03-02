@@ -1,0 +1,303 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:section="http://goobi.io/section"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:util="http://goobi.io/util"
+    xmlns:form="http://goobi.io/form">
+
+    <composite:interface/>
+
+    <composite:implementation>
+        <div id="meStructdataChangeBox" class="structdata__change pb-3">
+            <section:section type="outline">
+                <section:header icon="bars" title="#{msgs.ausgewaehltesStrukturelement}">
+                    <button type="button" aria-label="#{msgs.minimizeBox}" class="btn" data-bs-target="#changeElementBoxBody" data-bs-toggle="collapse" aria-expanded="true" aria-controls="changeElementBoxBody">
+                        <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
+                        <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
+                    </button>
+                </section:header>
+                <div id="changeElementBoxBody" class="collapse show">
+                    <section:body>
+                        <h:panelGroup id="structEdit" layout="block" styleClass="p-3">
+                            <ul class="p-0" role="list">
+                                <!-- ELEMENT UP -->
+                                <li>
+                                    <button jsf:id="nodeUp" class="btn btn-link" jsf:action="#{Metadaten.KnotenUp}" title="#{msgs.docstructNachObenSchieben}" role="button">
+                                        <span class="btn btn-blank">
+                                            <util:icon icon="arrow-up" />
+                                        </span>
+                                        <h:outputText value="#{msgs.docstructNachObenSchieben}"/>
+                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                        <f:ajax execute="@form" render="@form :treeform"/>
+                                    </button>
+                                </li>
+                                <!-- ELEMENT DOWN -->
+                                <li>
+                                    <button jsf:id="nodeDown" class="btn btn-link" jsf:action="#{Metadaten.KnotenDown}" title="#{msgs.docstructNachUntenSchieben}" type="button">
+                                        <span class="btn btn-blank">
+                                            <util:icon icon="arrow-down" />
+                                        </span>
+                                        <h:outputText value="#{msgs.docstructNachUntenSchieben}"/>
+                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                        <f:ajax execute="@form" render="@form :treeform"/>
+                                    </button>
+                                </li>
+                                <!-- ELEMENT MOVE -->
+                                <li>
+                                    <button jsf:id="moveNode" class="btn btn-link" jsf:action="metseditor" title="#{msgs.docstructAnAndereStelleSchieben}">
+                                        <span class="btn btn-blank">
+                                            <util:icon icon="arrows" />
+                                        </span>
+                                        <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}"/>
+                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                        <f:setPropertyActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" target="#{Metadaten.modusStrukturelementVerschieben}"/>
+                                        <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render=":pageContentCenter"/>
+                                    </button>
+                                </li>
+                                <!-- ELEMENT IMPORT -->
+                                <li>
+                                    <button jsf:id="copyNode" class="btn btn-link" jsf:action="metseditor" title="#{msgs.copyDocstructFromOtherProcess}" role="button">
+                                        <span class="btn btn-blank">
+                                            <util:icon icon="puzzle-piece" />
+                                        </span>
+                                        <h:outputText value="#{msgs.copyDocstructFromOtherProcess}"/>
+                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                        <f:setPropertyActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" target="#{Metadaten.modusCopyDocstructFromOtherProcess}"/>
+                                        <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render=":pageContentCenter"/>
+                                    </button>
+                                </li>
+
+                                <ui:fragment rendered="#{Metadaten.isNotRootElement}">
+                                    <!-- CHANGE DOCSTRUCTTYPE -->
+                                    <li>
+                                        <button
+                                            id="expandbutton1"
+                                            class="btn btn-link button-link"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#changeDocstructTypeModal"
+                                            type="button">
+                                            <span class="btn btn-blank">
+                                                <util:icon icon="exchange" />
+                                            </span>
+                                            <h:outputText value="#{msgs.docstructTypeAendern}"/>
+                                        </button>
+                                        <div
+                                            class="modal fade"
+                                            id="changeDocstructTypeModal"
+                                            tabindex="-1"
+                                            role="dialog"
+                                            aria-labelledby="changeDocstructTypeModalLabel">
+                                            <div
+                                                class="modal-dialog"
+                                                role="document">
+                                                <div class="modal-content">
+                                                    <section:section type="action">
+                                                        <section:header
+                                                            icon="exchange"
+                                                            title="#{msgs.docstructTypeAendern}">
+                                                            <section:header-actions>
+                                                                <button type="button" class="btn text-white" title="Cancel" data-bs-dismiss="modal">
+                                                                    <util:icon icon="times" />
+                                                                </button>
+                                                            </section:header-actions>
+                                                        </section:header>
+                                                        <section:body>
+                                                            <form:field
+                                                                label="#{msgs.neuesStrukturelement}">
+                                                                <!-- SELECT -->
+                                                                <h:selectOneMenu
+                                                                    pt:aria-label="#{msgs.auswahl2}"
+                                                                    value="#{Metadaten.tempWert}"
+                                                                    styleClass="form-select">
+                                                                    <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item"/>
+                                                                </h:selectOneMenu>
+                                                            </form:field>
+                                                        </section:body>
+                                                        <section:footer>
+                                                            <!-- ACTION -->
+                                                            <button
+                                                                jsf:id="ChangeCurrentDocstructType"
+                                                                aria-label="#{msgs.uebernehmen}"
+                                                                class="btn btn-action"
+                                                                jsf:action="#{Metadaten.ChangeCurrentDocstructType}" >
+                                                                <util:icon-text icon="check" text="#{msgs.uebernehmen}" />
+                                                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                            </button>
+                                                        </section:footer>
+                                                    </section:section>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <!-- DELETE ELEMENT -->
+                                    <li>
+                                        <button jsf:id="deleteNode" class="btn btn-link" jsf:action="#{Metadaten.KnotenDelete}" title="#{msgs.strukturelementLoeschen}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" role="button">
+                                            <span class="btn btn-blank">
+                                                <util:icon icon="trash" />
+                                            </span>
+                                            <h:outputText value="#{msgs.strukturelementLoeschen}"/>
+                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                            <f:ajax execute="@form" render="@form :treeform :openseadragonform:pageareas"/>
+                                        </button>
+                                    </li>
+                                    <!-- DUPLICATE ELEMENT -->
+                                    <li>
+                                        <button jsf:id="duplicateNode" class="btn btn-link" jsf:action="#{Metadaten.duplicateNode}" title="#{msgs.duplicateStructureElement}" type="button">
+                                            <span class="btn btn-blank">
+                                                <util:icon icon="files-o" />
+                                            </span>
+                                            <h:outputText value="#{msgs.duplicateStructureElement}"/>
+                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                            <f:ajax execute="@form" render="@form :treeform"/>
+                                        </button>
+                                    </li>
+                                </ui:fragment>
+                                <li>
+                                    <button
+                                        type="button"
+                                        class="btn btn-link"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#opacModal">
+                                        <span class="btn btn-blank">
+                                            <util:icon icon="download" />
+                                        </span>
+                                        <h:outputText value="#{msgs.strukturelementeAusOpacHinzufuegen}"/>
+                                    </button>
+                                    <div
+                                        class="modal fade"
+                                        id="opacModal"
+                                        tabindex="-1"
+                                        role="dialog"
+                                        aria-labelledby="opacModalLabel">
+                                        <div
+                                            class="modal-dialog"
+                                            role="document">
+                                            <div class="modal-content">
+                                                <section:section type="action">
+                                                    <section:header
+                                                        icon="download"
+                                                        title="#{msgs.strukturelementeAusOpacHinzufuegen}">
+                                                        <button type="button" class="btn text-white"
+                                                            title="Cancel" data-bs-dismiss="modal">
+                                                            <util:icon icon="times" />
+                                                        </button>
+                                                    </section:header>
+                                                    <section:body>
+                                                        <!-- CATALOGUE -->
+                                                        <div class="form-row">
+                                                            <div class="form-label">
+                                                                <h:outputText value="#{msgs.katalog}:"/>
+                                                            </div>
+                                                            <div class="form-input">
+                                                                <h:selectOneMenu pt:aria-label="#{msgs.katalog}" id="katalogauswahl" value="#{Metadaten.opacKatalog}" styleClass="form-select">
+                                                                    <f:selectItems value="#{Metadaten.allOpacCatalogues}" var="step" itemLabel="#{step}" itemValue="#{step}"/>
+                                                                    <f:ajax render="feldauswahl"/>
+                                                                </h:selectOneMenu>
+                                                            </div>
+                                                        </div>
+                                                        <!-- FIELD -->
+                                                        <div class="form-row">
+                                                            <div class="form-label">
+                                                                <h:outputText styleClass="form-group__label" value="#{msgs.feld}:"/>
+                                                            </div>
+                                                            <div class="form-input">
+                                                                <h:selectOneMenu pt:aria-label="#{msgs.feld}" id="feldauswahl" value="#{Metadaten.opacSuchfeld}" styleClass="form-select">
+                                                                    <f:selectItems value="#{Metadaten.allSearchFields}" var="step" itemLabel="#{step.label}" itemValue="#{step.value}"/>
+                                                                </h:selectOneMenu>
+                                                            </div>
+                                                        </div>
+                                                        <!-- SEARCHTERMS -->
+                                                        <div class="form-row">
+                                                            <div class="form-label">
+                                                                <h:outputText styleClass="form-group__label" value="#{msgs.suchbegriffe}:"/>
+                                                            </div>
+                                                            <div class="form-input">
+                                                                <h:inputTextarea pt:aria-label="#{msgs.suchbegriffe}" styleClass="form-control" value="#{Metadaten.additionalOpacPpns}"/>
+                                                            </div>
+                                                        </div>
+                                                    </section:body>
+                                                    <section:footer>
+                                                        <button jsf:id="importMetadata" class="btn btn-blank" jsf:immediate="false" jsf:action="#{Metadaten.AddMetadaFromOpacPpn}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                            <h:outputText value="#{msgs.nurMetadaten}"/>
+                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                        </button>
+
+                                                        <button jsf:id="importNode" class="btn btn-blank" jsf:immediate="false" jsf:action="#{Metadaten.AddAdditionalOpacPpns}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                                            <h:outputText value="#{msgs.alsUnterelemente}"/>
+                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+
+                                                            <!--
+                                                            <f:ajax
+                                                                onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                                                                execute="@form"
+                                                                render="@form :pageContentCenter @form :treeform"
+                                                            />
+                                                            -->
+                                                        </button>
+                                                    </section:footer>
+                                                </section:section>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <!-- PAGE ASSIGNMENT -->
+                                <li>
+                                    <button jsf:id="seitenVonUnterelementenZuweisen" class="btn btn-link" jsf:action="#{Metadaten.SeitenVonChildrenUebernehmen}" title="#{msgs.seitenVonUnterelementenZuweisen}">
+                                        <span class="btn btn-blank">
+                                            <util:icon icon="check-circle-o" />
+                                        </span>
+                                        <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}"/>
+                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                        <f:ajax execute="@form" render="@form :treeform"/>
+                                    </button>
+                                </li>
+                                <ui:fragment rendered="#{Metadaten.enablePageArea}">
+                                    <!-- ADD PAGE AREA TO CURRENT DOCSTRUCT -->
+                                    <li>
+                                        <button class="btn btn-link start-area-edition" type="button" title="#{msgs.mets_createPageArea}" aria-label="#{msgs.mets_createPageArea}" onclick="goobiWorkflowJS.object.startDrawArea(this, 'current')" data-bs-toggle="tooltip" data-bs-placement="top">
+                                            <span class="btn btn-blank">
+                                                <util:icon icon="crop" />
+                                            </span>
+                                            <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}"/>
+                                       </button>
+                                       <button class="btn btn-link cancel-area-edition above-overlay" style="display: none; position:relative;" type="button" title="#{msgs.mets_cancelPageArea}" aria-label="#{msgs.mets_cancelPageArea}" onclick="goobiWorkflowJS.object.cancelDrawArea(this)" data-bs-toggle="tooltip" data-bs-placement="top">
+                                            <span class="btn btn-blank">
+                                                <util:icon icon="ban" />
+                                            </span>
+                                            <h:outputText value="#{msgs.mets_cancelPageArea}"/>
+                                       </button>
+                                    </li>
+                                    <!-- DELETE PAGE AREA -->
+                                    <li>
+                                        <button class="btn btn-link" type="button" title="#{msgs.mets_PageArea}" aria-label="#{msgs.mets_deletePageArea}" data-pagearea-delete="start" data-renderimage="true" data-bs-toggle="tooltip" data-bs-placement="top">
+                                            <span class="btn btn-blank">
+                                                <util:icon icon="eraser" />
+                                            </span>
+                                            <h:outputText value="#{msgs.mets_deletePageArea}"/>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="btn btn-link delete-page-area" title="#{msgs.mets_cancelPageArea}" aria-label="#{msgs.mets_cancelPageArea}" data-pagearea-delete="cancel" data-renderimage="true" data-bs-toggle="tooltip" data-bs-placement="top">
+                                            <span class="btn btn-blank">
+                                                <span class="fa fa-ban fa-lg" aria-hidden="true"/>
+                                            </span>
+                                            <h:outputText value="#{msgs.mets_deletePageArea}"/>
+                                        </button>
+                                    </li>
+                                </ui:fragment>
+
+                            </ul>
+                        </h:panelGroup>
+                    </section:body>
+                </div>
+            </section:section>
+        </div>
+    </composite:implementation>
+</ui:composition>

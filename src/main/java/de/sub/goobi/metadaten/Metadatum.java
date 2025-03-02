@@ -21,10 +21,9 @@ package de.sub.goobi.metadaten;
 
 import java.util.List;
 
-import javax.faces.model.SelectItem;
-
 import org.goobi.api.display.Item;
 
+import jakarta.faces.model.SelectItem;
 import ugh.dl.Metadata;
 
 public interface Metadatum {

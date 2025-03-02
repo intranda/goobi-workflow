@@ -1,0 +1,21 @@
+.metseditor-structure-table {
+    margin: 0;
+    padding: 0.5em;
+    &-label {
+        font-weight: bold;
+        padding-right: 10px;
+    }
+    &-value {
+    }
+}
+
+.thumbnails {
+    .active {
+        .thumbnails__thumb-image {
+            background-color: var(--clr-primary);
+        }
+        button {
+            color: white;
+        }
+    }
+}

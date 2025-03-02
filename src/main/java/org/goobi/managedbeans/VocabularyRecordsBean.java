@@ -25,6 +25,15 @@
  */
 package org.goobi.managedbeans;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.deltaspike.core.api.scope.WindowScoped;
+
 import de.sub.goobi.helper.Helper;
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.VocabularyRecord;
@@ -36,19 +45,11 @@ import io.goobi.workflow.api.vocabulary.hateoas.VocabularyRecordPageResult;
 import io.goobi.workflow.api.vocabulary.helper.APIExceptionExtractor;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import jakarta.inject.Named;
+import jakarta.servlet.http.Part;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import org.apache.deltaspike.core.api.scope.WindowScoped;
-
-import javax.inject.Named;
-import javax.servlet.http.Part;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Named
 @WindowScoped
@@ -108,13 +109,13 @@ public class VocabularyRecordsBean implements Serializable {
                         .request(),
                 ExtendedVocabularyRecord::getChildren,
                 ExtendedVocabularyRecord::getParentId,
-                api.vocabularyRecords()::get
-        );
+                api.vocabularyRecords()::get);
     }
 
     private void loadSchema() {
         this.schema = api.vocabularySchemas().get(this.vocabulary.getSchemaId());
-        this.titleFields = this.schema.getDefinitions().stream()
+        this.titleFields = this.schema.getDefinitions()
+                .stream()
                 .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
                 .sorted(Comparator.comparing(FieldDefinition::getId))
                 .collect(Collectors.toList());
@@ -158,7 +159,8 @@ public class VocabularyRecordsBean implements Serializable {
         try {
             ExtendedVocabularyRecord newRecord = api.vocabularyRecords().save(rec);
             paginator.reload();
-            ExtendedVocabularyRecord newExtendedRecord = paginator.getItems().stream()
+            ExtendedVocabularyRecord newExtendedRecord = paginator.getItems()
+                    .stream()
                     .filter(r -> r.getId().equals(newRecord.getId()))
                     .findFirst()
                     .orElse(newRecord);

@@ -30,14 +30,6 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
-
 import org.glassfish.jersey.message.internal.ReaderWriter;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -47,16 +39,23 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.StreamingOutput;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-@javax.ws.rs.Path("/view/media")
+@jakarta.ws.rs.Path("/view/media")
 public class MediaResource {
 
     private static final Path metadataFolderPath = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
 
     @GET
-    @javax.ws.rs.Path("{process}/{folder}/{filename}")
+    @jakarta.ws.rs.Path("{process}/{folder}/{filename}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Operation(summary = "Serves a media resource",
             description = "Serves a media resource consisting of a process name, a directory name and a resource name")

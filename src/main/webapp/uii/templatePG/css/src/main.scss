@@ -12,6 +12,7 @@
 @use "composition/content-flow";
 
 // COMPONENTS
+@use "components/bookmarks";
 @use "components/collapse";
 @use "components/nav-custom";
 @use "components/header";
@@ -43,6 +44,7 @@
 @use "pages/style-guide";
 @use "pages/login-logout";
 @use "pages/batch-all";
+@use "pages/metseditor";
 @use "pages/user-group";
 @use "pages/rest-api";
 @use "pages/plugins";
@@ -52,6 +54,7 @@
 @use "pages/process-new";
 @use "pages/process-edit";
 
+@use "utility/color-icon";
 @use "utility/flex";
 @use "utility/icon-text";
 @use "utility/invalid";
@@ -60,6 +63,7 @@
 @use "utility/highlight";
 @use "utility/toggle";
 @use "utility/resets";
+@use "utility/resize";
 
 // plugins
 @use "plugins/dashboard";

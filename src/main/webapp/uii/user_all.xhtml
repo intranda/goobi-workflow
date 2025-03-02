@@ -4,7 +4,7 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+	
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -87,7 +87,7 @@
 											</div>
 
 											<!-- SUBMIT -->
-											<x:commandButton type="submit" id="FilterAlle" forceId="true"
+											<h:commandButton type="submit" id="FilterAlle" forceId="true"
 												style="display:none"
 												action="#{BenutzerverwaltungForm.FilterAlleStart}" />
 											</h:form>
@@ -170,7 +170,7 @@
 														styleClass="#{not item.active?'font-light':''}" />
 												</td>
 												<td>
-													<x:dataList var="intern"
+													<ui:repeat var="intern"
 														styleClass="#{not item.active?'font-light':''}"
 														rendered="#{item.benutzergruppenSize != 0}"
 														value="#{item.benutzergruppen}" layout="ordered list"
@@ -178,10 +178,10 @@
 														<h:outputText value="#{intern.titel}" />
 														<h:outputText value=","
 															rendered="#{rowIndex + 1 lt rowCount}" />
-													</x:dataList>
+													</ui:repeat>
 												</td>
 												<td>
-													<x:dataList var="intern"
+													<ui:repeat var="intern"
 														styleClass="#{not item.active?'font-light':''}"
 														rendered="#{item.projekteSize != 0}"
 														value="#{item.projekte}" layout="ordered list"
@@ -189,7 +189,7 @@
 														<h:outputText value="#{intern.titel}" />
 														<h:outputText value=","
 															rendered="#{rowIndex + 1 lt rowCount}" />
-													</x:dataList>
+													</ui:repeat>
 												</td>
 												<td jsf:rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
 													<h:outputText value="#{item.institution.shortName}"

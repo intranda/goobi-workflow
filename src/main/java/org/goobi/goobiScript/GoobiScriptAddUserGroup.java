@@ -1,19 +1,19 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -24,10 +24,19 @@
  */
 package org.goobi.goobiScript;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.ehcache.Cache;
+import org.ehcache.CacheManager;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.builders.ExpiryPolicyBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.EntryUnit;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
@@ -40,14 +49,10 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import lombok.extern.log4j.Log4j2;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
 
 @Log4j2
 public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGoobiScript {
 
-    private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
     private static final String GROUP = "group";
 
@@ -56,7 +61,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
      * multiple steps, the group is loaded from the database into the cache once and reused each time. This saves lots of database requests. The cache
      * only works if the status is Status.STATUS_ALIVE. The status is Status.STATUS_ALIVE after it was registered in the cache manager.
      */
-    private Cache userGroupCache = null;
+    private Cache<String, Usergroup> userGroupCache = null;
 
     @Override
     public String getAction() {
@@ -81,20 +86,20 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
         String wrongParameter = "Unknown group: ";
         String steptitle = parameters.get(STEPTITLE);
         if (steptitle == null || "".equals(steptitle)) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, STEPTITLE);
+            Helper.setFehlerMeldung(missingParameter, STEPTITLE);
             return new ArrayList<>();
         }
 
         String group = parameters.get(GROUP);
         if (group == null || "".equals(group)) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, missingParameter, GROUP);
+            Helper.setFehlerMeldung(missingParameter, GROUP);
             return new ArrayList<>();
         }
 
         /* check if usergroup exists */
         Usergroup groupInDatabase = GoobiScriptAddUserGroup.getUsergroupFromDatabase(parameters);
         if (groupInDatabase == null) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, wrongParameter, group);
+            Helper.setFehlerMeldung(wrongParameter, group);
         }
 
         // add all valid commands to list
@@ -117,14 +122,21 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
 
         String name = "userGroupCache";
         int maxElementsInMemory = 10;
-        boolean overflowToDisk = false;
-        boolean eternal = false;
-        long timeToLiveSeconds = 3600;
-        long timeToIdleSeconds = 3600;
 
-        this.userGroupCache = new Cache(name, maxElementsInMemory, overflowToDisk, eternal, timeToLiveSeconds, timeToIdleSeconds);
-        CacheManager cacheManager = new CacheManager();
-        cacheManager.addCache(this.userGroupCache);
+        long timeToLiveSeconds = 3600;
+
+        CacheManagerBuilder builder = CacheManagerBuilder.newCacheManagerBuilder();
+
+        CacheManager manager = builder.build();
+        manager.init();
+
+        userGroupCache = manager.createCache(name, CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, Usergroup.class,
+                ResourcePoolsBuilder.newResourcePoolsBuilder()
+                        .heap(maxElementsInMemory, EntryUnit.ENTRIES))
+
+                .withExpiry(ExpiryPolicyBuilder.timeToIdleExpiration(Duration.of(timeToLiveSeconds, ChronoUnit.SECONDS)))
+                .build());
+
     }
 
     @Override
@@ -133,10 +145,9 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
 
         // Add the group to the cache if it does not already exist
         String group = parameters.get(GROUP);
-        if (!this.userGroupCache.isElementInMemory(group)) {
+        if (!this.userGroupCache.containsKey(group)) {
             Usergroup userGroup = GoobiScriptAddUserGroup.getUsergroupFromDatabase(parameters);
-            Element element = new Element(group, userGroup);
-            this.userGroupCache.put(element);
+            this.userGroupCache.put(group, userGroup);
         }
 
         Process process = ProcessManager.getProcessById(gsr.getProcessId());
@@ -161,8 +172,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
                 step.setBenutzergruppen(groupsOfStep);
             }
 
-            Element element = this.userGroupCache.get(group);
-            Usergroup userGroup = (Usergroup) (element.getObjectValue());
+            Usergroup userGroup = this.userGroupCache.get(group);
 
             if (!groupsOfStep.contains(userGroup)) {
                 groupsOfStep.add(userGroup);
@@ -189,7 +199,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
             gsr.setResultMessage(message);
 
         } catch (DAOException daoException) {
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error while saving - " + process.getTitel(), daoException);
+            Helper.setFehlerMeldung("Error while saving - " + process.getTitel(), daoException);
             gsr.setResultMessage("Problem while adding usergroup " + info + ": " + daoException.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(daoException.getMessage());
@@ -206,7 +216,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
             }
         } catch (DAOException e) {
             log.error(e);
-            Helper.setFehlerMeldung(GOOBI_SCRIPTFIELD, "Error in GoobiScript addusergroup", e);
+            Helper.setFehlerMeldung("Error in GoobiScript addusergroup", e);
             return null;
         }
     }

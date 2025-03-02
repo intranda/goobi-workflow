@@ -1,9 +1,9 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
-    
+
     var _debug = false;
     var _defaults = {};
-    
+
     goobiWorkflow.jsfAjax = {
         /**
          * @description Method to initialize the jsf ajax listener.
@@ -22,7 +22,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
             // listen to jsf ajax event
             if (typeof jsf !== 'undefined') {
-                jsf.ajax.addOnEvent(function (data) {
+                faces.ajax.addOnEvent(function (data) {
                     if (_debug) {
                         console.log('JSF AJAX - data: ', data);
                     }
@@ -54,9 +54,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             if ($('.btn').hasClass('btn--loader')) {
                                 $('.btn-ajax-loader').removeClass('in');
                             }
-                            // init BS features
-                            goobiWorkflowJS.cleanUpBootstrapFeatures();
-                            goobiWorkflowJS.initBootstrapFeatures();
                             // init layout
                             goobiWorkflowJS.layout.init();
                             if (data?.source?.dataset.renderimage=='true'){
@@ -99,12 +96,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             goobiWorkflowJS.buttons.init();
                             // init bookmarks
                             goobiWorkflowJS.bookmarks.init();
-                            
+
                             // init tinyMCE if needed
                             goobiWorkflowJS.tinymce.init(_defaults);
-                            
+
                             goobiWorkflowJS.setAutocompleteListHandler();
-                            
+
                             goobiWorkflowJS.layout.setImageCommentHeight();
                             break;
                     }
@@ -112,7 +109,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
         }
     };
-    
+
     return goobiWorkflow;
-    
+
 } )( goobiWorkflowJS || {}, jQuery );

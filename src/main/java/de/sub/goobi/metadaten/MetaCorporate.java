@@ -29,8 +29,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
-
 import org.apache.commons.lang3.StringUtils;
 import org.geonames.Toponym;
 import org.goobi.api.display.enums.DisplayType;
@@ -44,6 +42,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import jakarta.faces.model.SelectItem;
 import lombok.Data;
 import ugh.dl.Corporate;
 import ugh.dl.HoldingElement;

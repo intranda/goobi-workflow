@@ -1,28 +1,27 @@
 package io.goobi.workflow.api.vocabulary;
 
-import io.goobi.vocabulary.exchange.HateoasHref;
-import io.goobi.vocabulary.exchange.Identifiable;
-import io.goobi.workflow.api.vocabulary.hateoas.BasePageResult;
-import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import org.easymock.EasyMock;
+import org.junit.Test;
+
+import io.goobi.vocabulary.exchange.HateoasHref;
+import io.goobi.vocabulary.exchange.Identifiable;
+import io.goobi.workflow.api.vocabulary.hateoas.BasePageResult;
+import io.goobi.workflow.api.vocabulary.hateoas.HATEOASPaginator;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Response;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 public class HATEOASPaginatorTest {
     @Data
@@ -49,7 +48,8 @@ public class HATEOASPaginatorTest {
         selfLink.setHref("http://localhost:8081/test/1");
         resultPage.set_links(Map.of("self", selfLink));
         resultPage.setContent(rootItems);
-        this.paginator = new HATEOASPaginator<>(TestItemResultPage.class, resultPage, TestItem::getChildren, TestItem::getParent, id -> items.stream().filter(i -> i.getId().equals(id)).findFirst().orElseThrow());
+        this.paginator = new HATEOASPaginator<>(TestItemResultPage.class, resultPage, TestItem::getChildren, TestItem::getParent,
+                id -> items.stream().filter(i -> i.getId().equals(id)).findFirst().orElseThrow());
 
         // Client mocking
         Response response = EasyMock.createMock(Response.class);
@@ -96,8 +96,7 @@ public class HATEOASPaginatorTest {
                 new TestItem(1L, null, List.of(11L)),
                 new TestItem(2L, null, null),
                 new TestItem(3L, null, null),
-                new TestItem(11L, 1L, null)
-        );
+                new TestItem(11L, 1L, null));
         List<TestItem> rootItems = items.stream()
                 .filter(i -> i.getParent() == null)
                 .collect(Collectors.toList());
@@ -113,8 +112,7 @@ public class HATEOASPaginatorTest {
                 new TestItem(1L, null, List.of(11L)),
                 new TestItem(11L, 1L, null),
                 new TestItem(2L, null, null),
-                new TestItem(3L, null, null)
-        );
+                new TestItem(3L, null, null));
 
         setupPaginator(items);
         this.paginator.expand(items.get(0));
@@ -128,8 +126,7 @@ public class HATEOASPaginatorTest {
                 new TestItem(1L, null, List.of(11L)),
                 new TestItem(11L, 1L, null),
                 new TestItem(2L, null, null),
-                new TestItem(3L, null, null)
-        );
+                new TestItem(3L, null, null));
 
         setupPaginator(items);
 
@@ -142,8 +139,7 @@ public class HATEOASPaginatorTest {
                 new TestItem(1L, null, List.of(11L)),
                 new TestItem(11L, 1L, null),
                 new TestItem(2L, null, null),
-                new TestItem(3L, null, null)
-        );
+                new TestItem(3L, null, null));
 
         setupPaginator(items);
 
@@ -170,8 +166,7 @@ public class HATEOASPaginatorTest {
                 new TestItem(1111L, 111L, null),
                 new TestItem(2L, null, List.of(21L)),
                 new TestItem(21L, 2L, null),
-                new TestItem(3L, null, null)
-        );
+                new TestItem(3L, null, null));
 
         setupPaginator(items);
         this.paginator.postLoad(items.get(3));
