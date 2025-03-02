@@ -8,3 +8,14 @@
     &-value {
     }
 }
+
+.thumbnails {
+    .active {
+        .thumbnails__thumb-image {
+            background-color: var(--clr-primary);
+        }
+        button {
+            color: white;
+        }
+    }
+}
