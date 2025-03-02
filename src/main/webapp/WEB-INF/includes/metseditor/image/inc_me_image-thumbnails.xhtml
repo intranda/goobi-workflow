@@ -19,7 +19,7 @@
                 <ui:include src="inc_me_image-thumbNavigation.xhtml"/>
 
                 <!-- THUMBNAILS -->
-                <div id="thumbnails" class="thumbnails d-flex flex-wrap justify-content-center h-100 overflow-y-auto" dir="#{Metadaten.pagesRTL?'rtl':'ltr'}">
+                <div id="thumbnails" class="thumbnails d-flex flex-wrap justify-content-start h-100 overflow-y-auto" dir="#{Metadaten.pagesRTL?'rtl':'ltr'}">
                     <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
                         <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''} d-inline-block" dir="auto">
                             <!-- THUMBNAIL IMAGE -->
