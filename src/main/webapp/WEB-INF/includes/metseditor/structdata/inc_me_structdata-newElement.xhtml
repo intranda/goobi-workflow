@@ -151,7 +151,7 @@
 
                             <!-- ADD ELEMENT -->
                             <section:footer>
-                                <button jsf:id="fastPagination" class="btn btn-blank" type="button">
+                                <button jsf:id="fastPagination" class="btn btn-outline me-auto ps-0" type="button">
                                     <span class="fa #{Metadaten.enableFastPagination == false?'fa fa-square-o':'fa fa-check-square-o'}" aria-hidden="true"/>
                                     <h:outputText value="#{msgs.mets_easyPagination}" styleClass="structdata__easyPagination"/>
                                     <f:setPropertyActionListener value="#{not Metadaten.enableFastPagination}" target="#{Metadaten.enableFastPagination}"/>
