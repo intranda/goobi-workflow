@@ -53,9 +53,6 @@ var goobiWorkflowJS = ( function() {
         // init progressbar
         // goobiWorkflowJS..init();
 
-        // init shortcuts for navigation
-        goobiWorkflowJS.navigation.init(_defaults);
-
         // init buttons --> needs ajax reload
         goobiWorkflowJS.buttons.init(_defaults);
 
