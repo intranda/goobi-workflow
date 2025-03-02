@@ -65,7 +65,7 @@
                                                         <f:setPropertyActionListener value="#{page.physicalPageNo}" target="#{Metadaten.currentRepresentativePage}"/>
                                                         <f:setPropertyActionListener value="#{page.representative}" target="#{Metadaten.resetRepresentative}"/>
                                                         <f:ajax execute="@this" render=":pagePaginationList"/>
-                                                        <span class="fa fa-star#{page.representative?'':'-o font-light'}" aria-hidden="true"/>
+                                                        <span class="fa fa-star#{page.representative?' text-primary':'-o font-light'}" aria-hidden="true"/>
                                                     </button>
                                                 </h:panelGroup>
                                                 <h:panelGroup rendered="#{page.type != 'div'}" styleClass="pagination__left__page__item">
