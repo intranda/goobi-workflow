@@ -3,54 +3,49 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    template="/uii/templatePG/template_minimum.html"
-    
+    template="/uii/templatePG/template_logout.html"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:define name="content">
-        <div class="login-logout">
-            <div class="login-logout-body">
-                
-                <!-- HEADLILNE -->
-                <h1>
-                    <h:outputLink value="index.xhtml">
-                        <h:outputText
-                            escape="false"
-                            value="#{HelperForm.applicationHeaderTitle}" />
-                    </h:outputLink>
-                </h1>
-                <!-- // HEADLILNE -->
-                
-                <!-- BOX -->
-                <div class="login-logout-box mt-3 mb-3">
-                    <div>
+        <main>
+            <div class="login-logout">
+                <div class="login-logout-body">
+
+                    <!-- HEADLILNE -->
+                    <h1>
+                        <h:outputLink value="index.xhtml">
+                            <h:outputText
+                                escape="false"
+                                value="#{HelperForm.applicationHeaderTitle}" />
+                        </h:outputLink>
+                    </h1>
+                    <!-- // HEADLILNE -->
+
+                    <!-- BOX -->
+                    <div class="login-logout-box mt-3 mb-3 p-5 d-flex flex-column align-items-stretch">
                         <h2>
                             <h:outputText value="#{LoginForm.ssoError == null ? 'You have been logged out' : 'Error logging you in: User not found'}"/>
                         </h2>
-                        <p class="mt-5">
+                        <div class="mt-5 d-flex justify-content-between">
                             <h:outputText value="#{LoginForm.ssoError == null ? 'To log in again, click here:' : 'To try logging in again, click here:'}"/>
-                            <h:outputLink styleClass="btn btn-primary-400 ms-5" value="index.xhtml">
+                            <h:outputLink styleClass="btn btn-primary-400" value="index.xhtml">
                                 <h:outputText value="Login into Goobi" />
                             </h:outputLink>
-                        </p>
+                        </div>
                     </div>
+                    <!-- // BOX -->
+
+                    <!-- LINK AND VERSION -->
+                    <h:outputLink value="https://goobi.io/">
+                    Goobi workflow - developed by intranda
+                    </h:outputLink>
+                    <h:outputText
+                        styleClass="float-end"
+                        value="#{msgs.version} #{HelperForm.version}" />
+                    <!-- // LINK AND VERSION -->
+
                 </div>
-                <!-- // BOX -->
-                
-                <!-- LINK AND VERSION -->
-                <h:outputLink value="https://goobi.io/">
-                   Goobi workflow - developed by intranda
-                </h:outputLink>
-                <h:outputText
-                    styleClass="float-end"
-                    value="#{msgs.version} #{HelperForm.version}" />
-                <!-- // LINK AND VERSION -->
-                
             </div>
-        </div>
+        </main>
     </ui:define>
-
-
-
-
 </ui:composition>
