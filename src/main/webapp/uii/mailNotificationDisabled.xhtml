@@ -5,8 +5,7 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template_blank.html"
-    
+    template="/uii/templatePG/template_minimum.html"
     xmlns:c="http://java.sun.com/jstl/core"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -14,92 +13,28 @@
     <ui:param
         name="myPageTitle"
         value="#{msgs.mail_notification_disable}" />
-
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="notificationDisabled"
+            label="#{msgs.mail_notification_disable}"
+            action="index"
+            navId="a0"
+            noSeparator="#{true}" />
+    </ui:define>
     <ui:define name="content">
-        <style type="text/css">
-            a {
-                text-decoration: none;
-            }
-        </style>
-        <ui:include src="template/inc_menu.xhtml" />
 
         <div
             id="main"
             style="margin-right: 0px; margin-left: 0px;">
-            <div class="container-fluid">
-                <h:form id="header">
-                    <div class="page-header">
-                        <h:panelGroup
-                            rendered="#{SessionForm.logoutMessage!=''}"
-                            styleClass="alert alert-danger block"
-                            style="line-height:40px;font-size:24px;">
-                            <span class="fa fa-exclamation-triangle margin-right-10" />
-                            <h:outputText value="#{SessionForm.logoutMessage}" />
-                        </h:panelGroup>
-                        <div class="pull-left">
-                            <h1>
-                                <ui:insert name="title">
-                                    <h:outputText value="#{myPageTitle}" />
-                                </ui:insert>
-                            </h1>
-                        </div>
 
-                        <div class="pull-right">
-                            <ui:insert name="info" />
-                            <ul class="stats">
 
-                                <li class='background-color-A'>
-                                    <span class="fa fa-calendar" />
-                                    <div class="details">
-                                        <span class="big">
-                                            <h:outputText value="#{SessionForm.currentTime}" />
-                                            <a
-                                                href="#{HelperForm.itmPathAsUrl}"
-                                                target="self"
-                                                style="color: #aaa">itm</a>
-                                        </span>
-                                        <span>
-                                            <h:outputText value="#{SessionForm.date}">
-                                                <f:convertDateTime
-                                                    locale="#{SpracheForm.locale}"
-                                                    type="both"
-                                                    dateStyle="medium" />
-                                            </h:outputText>
-                                        </span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </h:form>
-            </div>
-
-            <h:form
-                style="margin:0px;"
-                id="breadcrumb">
-
-                <div class="breadcrumbs">
-                    <ul>
-                        <!--
-                        Replace this in the following intranda:breadcrumb when
-                        the dashboard is reachable when users are not logged in.
-                        label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-                        -->
-                        <intranda:breadcrumb
-                            id="index"
-                            label="#{msgs.startseite}"
-                            action="index"
-                            navId="a0" />
-                        <intranda:breadcrumb
-                            id="mailNotificationDisabled"
-                            label="#{myPageTitle}"
-                            noSeparator="#{true}" />
-                    </ul>
-                </div>
-            </h:form>
-
-            <div style="margin: 20px 20px 20px 20px;">
-                <p>#{msgs.mail_notification_successfulDisabled}</p>
+            <div class="alert alert-info">
+                #{msgs.mail_notification_successfulDisabled}
             </div>
         </div>
     </ui:define>

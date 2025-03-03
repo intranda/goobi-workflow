@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html
+    lang="#{SpracheForm.locale}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:ds="http://deltaspike.apache.org/jsf"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:layout="http://goobi.io/layout">
+	<h:head>
+		<!-- METADATA -->
+		<ui:include src="/WEB-INF/includes/template/inc_metadata.xhtml" />
+		<!-- CSS -->
+		<ui:include src="/WEB-INF/includes/template/inc_CSS.xhtml" />
+		<!-- Javascript -->
+		<ui:fragment rendered="#{LoginForm.myBenutzer != null}">
+			<ui:include src="/WEB-INF/includes/template/inc_JS.xhtml" />
+		</ui:fragment>
+
+	</h:head>
+
+	<ui:insert name="metadata" />
+
+	<h:body styleClass="sidebar-right content-flow templatePG">
+	<ds:windowId/>
+		<f:view locale="#{SpracheForm.locale}">
+			<layout:header>
+				<h:form id="menu" styleClass="d-flex justify-content-between w-100">
+					<ui:include src="/WEB-INF/includes/template/inc_menu.xhtml" />
+				</h:form>
+			</layout:header>
+
+				<div class="container-fluid" id="content" style="padding-bottom:20px">
+					<div id="main" style="margin-right: 0px;">
+						<div class="flow container-fluid">
+
+							<h:form id="header">
+
+								<o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
+
+								<!-- HEADER -->
+								<header class="header">
+
+								<!-- GLOBAL WARNING MESSAGE -->
+								<div class="header__top">
+									<h:panelGroup layout="block" id="globalWarningMessage" styleClass="mt-4">
+										<h:panelGroup layout="block" rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger" style="line-height:40px;font-size:24px;">
+										<span>
+											<h:outputText value="#{SessionForm.logoutMessage}" />
+										</span>
+										</h:panelGroup>
+									</h:panelGroup>
+									<o:socket channel="adminMessageChannel">
+										<f:ajax event="update" render="globalWarningMessage"/>
+									</o:socket>
+								</div>
+								<!-- // GLOBAL WARNING MESSAGE -->
+
+									<div class="header__bottom">
+										<h1>
+										<ui:insert name="title">
+											<h:outputText value="#{myPageTitle}" />
+										</ui:insert>
+										</h1>
+
+									<ui:insert name="info" />
+
+									</div>
+
+								</header>
+								<!-- // HEADER -->
+
+							</h:form>
+
+							<!-- BREADCRUMB -->
+							 <ui:fragment rendered="#{LoginForm.myBenutzer != null}">
+								<nav class="navigation-breadcrumb" aria-label="Breadcrumb">
+									<h:form style="margin:0px;" id="breadcrumb">
+										<div class="breadcrumbs">
+											<ol>
+												<ui:insert name="breadcrumb" />
+											</ol>
+										</div>
+									</h:form>
+								</nav>
+							 </ui:fragment>
+							<!-- // BREADCRUMB -->
+
+							<!-- CONTENT -->
+							<div jsf:id="main-content" tabindex="-1">
+							<ui:insert name="content" />
+							</div>
+							<!-- // CONTENT -->
+
+						</div>
+					</div>
+				</div>
+				<layout:footer />
+
+		</f:view>
+	</h:body>
+</html>
