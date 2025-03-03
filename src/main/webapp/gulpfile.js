@@ -21,7 +21,6 @@ let customLocation;
 
 // source directories, files, globs
 const legacySources = {
-    less: 'uii/template/css/less/build.less',
     js: './uii/template/js/dev/*.js',
 }
 const sources = {
@@ -49,10 +48,6 @@ const sources = {
     template: 'uii/templatePG/templatePG.html',
     taglibs: 'WEB-INF/taglibs/**/*.xhtml',
     includes: 'WEB-INF/includes/**/*.xhtml',
-}
-// target directories
-const legacyTargetFolder = {
-    lessDest: 'uii/template/css/dist/'
 }
 const targetFolder = {
     css: 'uii/templatePG/css/dist/',
@@ -91,30 +86,6 @@ function taglibs() {
 function includes() {
     return src(sources.includes)
         .pipe(dest(`${customLocation}${targetFolder.includes}`))
-};
-
-// function for legacy less
-function prodLess() {
-    return src(`${legacySources.less}`)
-        .pipe(sourcemaps.init())
-        .pipe(less({
-            plugins: [autoprefix],
-            outputSourceFiles: true
-        }))
-        .pipe(cleanCSS({debug: true}, (details) => {
-            console.log(`${details.name}: ${details.stats.originalSize}`);
-            console.log(`${details.name}: ${details.stats.minifiedSize}`);
-        }))
-        .pipe(sourcemaps.write())
-        .pipe(rename('goobiWorkflow.min.css'))
-        .pipe(dest(legacyTargetFolder.lessDest))
-};
-
-function devLess() {
-    return src(`${legacySources.less}`)
-    .pipe(less())
-    .pipe(rename('goobiWorkflow.min.css'))
-    .pipe(dest(`${customLocation}${legacyTargetFolder.lessDest}`))
 };
 
 function BSCss() {
@@ -224,4 +195,4 @@ exports.dev = function() {
     watch(sources.taglibs, { ignoreInitial: false }, taglibs);
     watch(sources.includes, { ignoreInitial: false }, includes);
 };
-exports.prod = parallel(prodJsLegacy, prodJsRollup, prodBSCss, prodCss, prodLess);
+exports.prod = parallel(prodJsLegacy, prodJsRollup, prodBSCss, prodCss);
