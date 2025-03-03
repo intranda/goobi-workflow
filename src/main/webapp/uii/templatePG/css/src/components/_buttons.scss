@@ -8,7 +8,7 @@
   background-color: transparent;
   border: 0;
   &:has(.btn) {
-    align-items: stretch;
+    align-items: center;
     color: var(--clr-text-400);
     display: flex;
   }
@@ -16,6 +16,10 @@
     --bs-btn-padding-x: 0rem;
     width: 29px;
     margin-right: 5px;
+  }
+  .btn + span {
+    align-items: center;
+    display: inline-flex;
   }
 
   &:hover {
