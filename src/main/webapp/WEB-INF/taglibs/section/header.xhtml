@@ -6,7 +6,7 @@
     <div class="box__title">
         <h2>
             <!-- Do not render icon if cc.attrs.icon is undefined -->
-            <c:if test="#{icon != 'undefined'}">
+            <c:if test="#{icon != null}">
                 <span
                     aria-hidden="true"
                     class="fa fa-#{icon}" />
