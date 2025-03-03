@@ -9,7 +9,7 @@
         xmlns:jsf="http://xmlns.jcp.org/jsf"
         xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
         xmlns:f="http://xmlns.jcp.org/jsf/core"
-        
+
 >
     <composite:interface>
         <composite:attribute
@@ -193,7 +193,7 @@
                                             <th scope="col" role="columnheader">
                                                 <button
                                                         jsf:id="changeOrderLabel"
-                                                        class="text-start"
+                                                        class="column-header-sort"
                                                         jsf:action="#{vocabularyRecordsBean.reload()}">
                                                     <h:outputText
                                                             value="#{definition.name}"/>
