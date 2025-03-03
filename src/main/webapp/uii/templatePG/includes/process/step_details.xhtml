@@ -5,7 +5,6 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
-	
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
@@ -15,9 +14,6 @@
 	</composite:interface>
 
 	<composite:implementation>
-		<link
-			rel="stylesheet"
-			href="template/css/codemirror/codemirror.css?v=#{HelperForm.buildVersion}" />
 		<script
 			type="text/javascript"
 			src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
@@ -70,7 +66,7 @@
 							<f:passThroughAttribute
 								name="data-toggle"
 								value="tooltip" />
-							<f:setPropertyActionListener 
+							<f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.modusBearbeiten}"
 								value="schritt" />
 						</button>
@@ -80,7 +76,7 @@
 
 				<!-- BOX CONTENT -->
 				<h:panelGrid
-                
+
 					columns="2"
 					styleClass="table table-hover table-bordered">
 
@@ -901,7 +897,7 @@
 
 			function txtAutomatischAnzeigen() {
 				var myelement = document.querySelector("[id$='chkautomatisch']");
-					
+
 				if (myelement != null) {
 					if (myelement.checked) {
 						document
