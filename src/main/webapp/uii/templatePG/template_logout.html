@@ -33,20 +33,7 @@
     <!-- ========================================
           CSS
       ======================================== -->
-
-    <!-- Main styles (BS + custom styles) -->
-    <link rel="stylesheet" href="templatePG/css/dist/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
-    <link rel="stylesheet" href="templatePG/css/dist/main.min.css?v=#{HelperForm.buildVersion}" />
-
-    <!-- WCAG compatibility CSS -->
-    <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
-      <link rel="stylesheet" href="templatePG/css/dist/accessibility.css?v=#{HelperForm.buildVersion}" />
-    </ui:fragment>
-
-    <!-- CUSTOM CSS (user specific)-->
-    <style>
-        <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
-    </style>
+    <ui:include src="/WEB-INF/includes/template/inc_CSS.xhtml" />
 
     <!-- ========================================
         JAVASCRIPT
