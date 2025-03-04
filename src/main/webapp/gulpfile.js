@@ -33,6 +33,7 @@ const sources = {
     cssDeps: [
         'node_modules/bootstrap/scss/',
     ],
+    legacyJS: './uii/templatePG/js/legacy/',
     js: './uii/templatePG/js/**/*.js',
     staticAssets: [
         'uii/**/*.xhtml',
@@ -130,27 +131,12 @@ function prodCss() {
 
 // function for legacy JS
 function jsLegacy() {
-    return src(legacySources.js)
-        .pipe(concat(`goobiWorkflowJS.min.js`))
+    return src([`${sources.legacyJS}goobiWorkflowJS.js`, `${sources.legacyJS}*.js`])
+        .pipe(concat(`legacy.min.js`))
         .pipe(sourcemaps.init())
         .pipe(uglify())
         .pipe(sourcemaps.write())
         .pipe(dest(targetFolder.js))
-};
-
-function prodJsLegacy() {
-    return jsLegacy()
-        .pipe(concat(`goobiWorkflowJS.min.js`))
-        .pipe(sourcemaps.init())
-        .pipe(uglify())
-        .pipe(sourcemaps.write())
-        .pipe(dest(targetFolder.js))
-};
-
-function devJsLegacy() {
-    return jsLegacy()
-        .pipe(concat(`goobiWorkflowJS.min.js`))
-        .pipe(dest(`${customLocation}${targetFolder.js}`))
 };
 
 function devJsRollup() {
@@ -195,4 +181,4 @@ exports.dev = function() {
     watch(sources.taglibs, { ignoreInitial: false }, taglibs);
     watch(sources.includes, { ignoreInitial: false }, includes);
 };
-exports.prod = parallel(prodJsLegacy, prodJsRollup, prodBSCss, prodCss);
+exports.prod = parallel(jsLegacy, prodJsRollup, prodBSCss, prodCss);
