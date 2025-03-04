@@ -1749,6 +1749,7 @@ public class ProzesskopieForm implements Serializable {
 
                         // Skip process title generation if a required field is not present
                         if (myField.isRequired() && value.isBlank()) {
+                            Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + myField.getTitel());
                             return;
                         }
                         gen.addToken(calcProcesstitelCheck(myField.getTitel(), value), ManipulationType.NORMAL);
