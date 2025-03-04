@@ -15,14 +15,8 @@
     <!-- jQuery -->
     <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" target="head" />
 
-    <!-- imagesLoaded => used in application.js -->
-    <script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js?v=#{HelperForm.buildVersion}"></script>
-
     <!-- jQuery UI -->
     <script src="template/js/plugins/jquery-ui/jquery-ui.js?v=#{HelperForm.buildVersion}"></script>
-
-    <!-- slimScroll => used in application.js -->
-    <script src="template/js/plugins/slimscroll/jquery.slimscroll.min.js?v=#{HelperForm.buildVersion}"></script>
 
     <!--
       ==> used in formInputSlider.xhtml, however the plugin only supports bs4!
@@ -35,9 +29,6 @@
     <!-- shortcuts ==> used in several templates (also plugins) + _metseditor.xhtml -->
     <script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
 
-    <!-- Theme scripts -->
-    <script src="template/js/application.js?v=#{HelperForm.buildVersion}"></script>
-
     <!-- GW custom JS -->
     <script>
         // WHAT DOES IT DO?
@@ -45,9 +36,6 @@
         myfaces.config = myfaces.config || {};
         //set the config part
         myfaces.config.no_portlet_env = true;
-        $(document).ready(function () {
-            setTimeout(scrollDownScrollDowns(), 100);
-        });
     </script>
     <script src="template/js/dist/goobiWorkflowJS.min.js?v=#{HelperForm.buildVersion}" defer="true" />
     <script src="../dist/js/main.min.js?v=#{HelperForm.buildVersion}" defer="true" />

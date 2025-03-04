@@ -3,7 +3,7 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    
+
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -13,8 +13,7 @@
     <composite:implementation>
                     <div
                         class="#{NavigationForm.uiStatus['imageCommentsBig']?'':''} overflow-y-auto"
-                        style="min-height: 330px; height: 330px;"
-                        data-scrolldown="true">
+                        style="min-height: 330px; height: 330px;">
                         <h:panelGroup
                             rendered="#{bean.imageComments.size()>0}">
                             <table class="table table-hover table-bordered w-100">
@@ -60,5 +59,3 @@
     </composite:implementation>
 
 </ui:composition>
-
-

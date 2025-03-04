@@ -268,8 +268,7 @@
             <ui:fragment rendered="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null}">
                 <div
                     class="gw-table-fixed #{NavigationForm.uiStatus['journalBig']?'journal-big':''}"
-                    tabindex="0"
-                    data-scrolldown="true">
+                    tabindex="0">
                     <h:panelGroup rendered="#{cc.attrs.bean.journal.size()>0}">
                         <ol class="feed" role="list">
                             <ui:repeat

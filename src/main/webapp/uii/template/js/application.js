@@ -1127,11 +1127,3 @@ $( window ).on( 'resize orientationchange', function() {
         }
     }
 });
-
-function scrollDownScrollDowns() {
-	var allScrollDowns = document.querySelectorAll('[data-scrolldown="true"]');
-    for(var i=0;i < allScrollDowns.length;i++) {
-    	var scrollDown = allScrollDowns[i];
-    	scrollDown.scrollTop = scrollDown.scrollHeight;
-    }
-}

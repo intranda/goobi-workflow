@@ -111,8 +111,7 @@
 
                             <div
                                 class="gw-table-fixed"
-                                tabindex="0"
-                                data-scrolldown="true">
+                                tabindex="0">
                                 <h:panelGrid
                                     columns="2"
                                     styleClass="table table-hover table-bordered"
@@ -189,8 +188,7 @@
 
                             <div
                                 class="gw-table gw-table-fixed"
-                                tabindex="0"
-                                data-scrolldown="true">
+                                tabindex="0">
                                 <div class="gw-table__wrapper">
                                     <h:dataTable
                                         var="item"
@@ -305,8 +303,7 @@
 
                             <div
                                 class="gw-table-fixed"
-                                tabindex="0"
-                                data-scrolldown="true">
+                                tabindex="0">
                                 <h:panelGroup rendered="#{ProzesskopieForm.existingProcess.journal.size()>0}">
                                     <table class="table table-hover table-bordered pt-2 pb-2">
                                         <ui:repeat
@@ -661,7 +658,7 @@
 
                                 <ui:fragment
                                     rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and !intern.multiselect}">
-                                  
+
                                     <intranda:formInputDropDown
                                         id="select"
                                         label="#{HelperForm.getTranslation ('import_', intern.titel)}"
@@ -671,7 +668,7 @@
                                         selectItems="#{intern.selectList}"
                                         displayAsRequired="#{intern.required}"
                                         required="false" />
-                                        
+
                                 </ui:fragment>
                                 <ui:fragment
                                     rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and intern.multiselect}">
