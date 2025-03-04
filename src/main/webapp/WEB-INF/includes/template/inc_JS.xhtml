@@ -10,24 +10,16 @@
     <script src="templatePG/js/hc-sticky.js?v=#{HelperForm.buildVersion}"></script>
 
     <!-- INTRANDA JS -->
-    <script src="template/js/intranda.js?v=1.2"></script>
+    <script src="templatePG/js/static/intranda.js?v=1.2"></script>
 
     <!-- jQuery -->
     <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" target="head" />
 
-    <!-- jQuery UI -->
-    <script src="template/js/plugins/jquery-ui/jquery-ui.js?v=#{HelperForm.buildVersion}"></script>
-
-    <!--
-      ==> used in formInputSlider.xhtml, however the plugin only supports bs4!
-    <script src="template/js/bootstrap-slider.js?v=#{HelperForm.buildVersion}"></script>
-    -->
-
     <!-- Reactive rx -->
-    <script src="template/js/reactiveX/rx.lite.min.js"></script>
+    <script src="templatePG/js/static/reactiveX/rx.lite.min.js"></script>
 
     <!-- shortcuts ==> used in several templates (also plugins) + _metseditor.xhtml -->
-    <script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="templatePG/js/static/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
 
     <!-- GW custom JS -->
     <script>
@@ -37,7 +29,7 @@
         //set the config part
         myfaces.config.no_portlet_env = true;
     </script>
-    <script src="template/js/dist/goobiWorkflowJS.min.js?v=#{HelperForm.buildVersion}" defer="true" />
+    <script src="../dist/js/legacy.min.js?v=#{HelperForm.buildVersion}" defer="true" />
     <script src="../dist/js/main.min.js?v=#{HelperForm.buildVersion}" defer="true" />
     <script>
         // wrapping these initializations in an event listener is a workaround as we can't defer inline JS
