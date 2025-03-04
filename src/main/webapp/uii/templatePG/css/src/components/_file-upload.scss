@@ -15,6 +15,35 @@ body .ui-fileupload-buttonbar .ui-button{
 
 body .ui-fileupload .ui-fileupload-content {
   border: 0;
+  .ui-fileupload-files {
+    .ui-fileupload-row {
+      &> div {
+        padding: 0.5rem 1rem;
+        position: relative;
+      }
+      .ui-fileupload-cancel {
+        align-items: baseline;
+        display: inline-flex;
+        position: absolute;
+        height: 1.75rem;
+        top: 25%;
+        width: 2rem;
+        .ui-icon {
+          align-items: center;
+          display: inline-flex;
+          margin: 0;
+          transform: translate(-50%, -50%);
+          &::before {
+            content: "\f00d";
+            font-family: FontAwesome;
+          }
+        }
+        .ui-button-text {
+          display: none;
+        }
+      }
+    }
+  }
 }
 
 body .ui-button.ui-button-text-icon-left {
@@ -41,12 +70,6 @@ body .ui-button-icon-only{
 
 body .ui-fileupload-preview {
   display: none;
-}
-
-body .ui-fileupload-cancel > span.ui-button-text {
-    padding-top: 5px !important;
-    padding-bottom: 5px !important;
-    margin-top: 0px;
 }
 
 body .ui-messages .ui-messages-error .ui-messages-error-icon, body .ui-messages .ui-messages-error .ui-messages-fatal, body .ui-messages .ui-messages-fatal .ui-messages-error-icon, body .ui-messages .ui-messages-fatal .ui-messages-fatal{
