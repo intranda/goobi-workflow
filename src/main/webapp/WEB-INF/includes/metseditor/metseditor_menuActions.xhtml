@@ -22,7 +22,11 @@
 
                 <!-- PROCESS ID -->
                 <ui:fragment rendered="#{LoginForm.myBenutzer.metsDisplayProcessID}">
-                    <li class="nav-item">Goobi-ID: #{Metadaten.myProzess.id}</li>
+                    <li class="nav-item">
+                        <span class="nav-link">
+                            Goobi-ID: #{Metadaten.myProzess.id}
+                        </span>
+                    </li>
                 </ui:fragment>
                 <ui:fragment rendered="#{Metadaten.showOcrButton}">
                     <li class="nav-item d-none d-md-block">
