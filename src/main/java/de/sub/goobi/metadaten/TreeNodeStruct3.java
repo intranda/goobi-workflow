@@ -124,7 +124,7 @@ public class TreeNodeStruct3 extends TreeNode {
         }
         if (validationErrorPresent) {
             answer.append("<li class=\"font-red\">");
-            answer.append("<i class=\"fa fa-exclamation-circle\"></i>");
+            answer.append("<span class=\"fa fa-exclamation-circle text-danger d-inline-block me-2\"></span>");
             answer.append(validationMessage);
             answer.append("</li>");
         }
