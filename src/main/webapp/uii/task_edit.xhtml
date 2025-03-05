@@ -44,7 +44,7 @@
 
                 <!-- DETAILS OF STEP AND PROCESS -->
                 <div class="col-sm-6">
-                    <ui:include src="templatePG/includes/task/box_details.xhtml">
+                    <ui:include src="template/includes/task/box_details.xhtml">
                         <ui:param
                             name="currentStep"
                             value="#{AktuelleSchritteForm.mySchritt}" />
@@ -78,7 +78,7 @@
 				                title="#{msgs.imageComments}"
 				                icon="fa-comment" />
 				            <ui:fragment>
-				            	<ui:include src="templatePG/includes/imageComments.xhtml">
+				            	<ui:include src="template/includes/imageComments.xhtml">
 							        <ui:param
 					                    name="bean"
 					                    value="#{AktuelleSchritteForm.mySchritt.prozess}" />
@@ -92,7 +92,7 @@
                         <properties:wrapper bean="#{AktuelleSchritteForm}" />
                      </div>
                      <!-- ACTION BOX -->
-                     <ui:include src="templatePG/includes/task/box_action.xhtml">
+                     <ui:include src="template/includes/task/box_action.xhtml">
                          <ui:param
                              name="currentStep"
                              value="#{AktuelleSchritteForm.mySchritt}" />

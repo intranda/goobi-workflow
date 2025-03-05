@@ -9,7 +9,7 @@
 
     <ui:param name="myPageTitle" value="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" />
     <ui:define name="css">
-      <link rel="stylesheet" href="templatePG/css/lib/swagger-ui.css?v=#{HelperForm.buildVersion}"/>
+      <link rel="stylesheet" href="template/css/lib/swagger-ui.css?v=#{HelperForm.buildVersion}"/>
     </ui:define>
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" noSeparator="#{true}" />
@@ -20,7 +20,7 @@
 
     <ui:define name="content">
 
-    <script type="text/javascript" src="templatePG/js/static/swagger/swagger-ui-bundle.js?v=#{HelperForm.buildVersion}"/>
+    <script type="text/javascript" src="template/js/static/swagger/swagger-ui-bundle.js?v=#{HelperForm.buildVersion}"/>
 
   		<div id="swagger-container"></div>
 

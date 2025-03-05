@@ -108,16 +108,16 @@
 
                             <!-- Tab 1 -->
                             <div class="#{BenutzerverwaltungForm.displayMode eq '' ? 'tab-pane active' : 'tab-pane'}">
-                                <ui:include src="templatePG/includes/messagequeue/mq_waiting.xhtml"></ui:include>
+                                <ui:include src="template/includes/messagequeue/mq_waiting.xhtml"></ui:include>
                             </div>
 
                             <!-- Tab 2 -->
                             <div class="#{BenutzerverwaltungForm.displayMode eq 'tab1' ? 'tab-pane active' : 'tab-pane'}">
-                                <ui:include src="templatePG/includes/messagequeue/mq_history.xhtml"></ui:include>
+                                <ui:include src="template/includes/messagequeue/mq_history.xhtml"></ui:include>
                             </div>
 
                             <div class="#{BenutzerverwaltungForm.displayMode eq 'tab2' ? 'tab-pane active' : 'tab-pane'}">
-                                <ui:include src="templatePG/includes/messagequeue/mq_statistics.xhtml"></ui:include>
+                                <ui:include src="template/includes/messagequeue/mq_statistics.xhtml"></ui:include>
                             </div>
                         </h:panelGroup>
 

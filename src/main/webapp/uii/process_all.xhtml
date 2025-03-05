@@ -39,9 +39,9 @@
 	<ui:define name="content">
 		<script
 			type="text/javascript"
-			src="templatePG/js/static/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
+			src="template/js/static/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
 		<script
-			src="templatePG/js/static/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}" />
+			src="template/js/static/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}" />
 
 		<style>
 .CodeMirror {
@@ -84,7 +84,7 @@
 
 										<div class="gw-table__filters">
 											<ui:include
-												src="templatePG/includes/process/list_filterAndDisplay.xhtml" />
+												src="template/includes/process/list_filterAndDisplay.xhtml" />
 
 
 
@@ -101,7 +101,7 @@
                                     <!-- DISPLAY AS GRID -->
 									<h:panelGroup
 										rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['gridview']}">
-										<ui:include src="templatePG/includes/process/list_grid.xhtml" />
+										<ui:include src="template/includes/process/list_grid.xhtml" />
 									</h:panelGroup>
                                     <!-- // DISPLAY AS GRID -->
 
@@ -419,7 +419,7 @@
 														data-label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}"
 														class="prozessVerwaltung">
 														<ui:include
-															src="templatePG/includes/ajaxPlusMinusButton.xhtml">
+															src="template/includes/ajaxPlusMinusButton.xhtml">
 															<ui:param
                                                                 name="ajaxRender"
                                                                 value="processAllProcessesBox:myform" />
@@ -1264,7 +1264,7 @@
 															<!-- ADDITIONAL OPTIONS AS DROPDOWN -->
 															<h:panelGroup
 																rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Workflow_Processes_Allow_Download') or LoginForm.hasRole('Workflow_Processes_Allow_Linking'))}">
-																<ui:include src="templatePG/includes/process/list_optionDropdownButton.xhtml" />
+																<ui:include src="template/includes/process/list_optionDropdownButton.xhtml" />
 															</h:panelGroup>
 														</div>
 													</td>
@@ -1310,11 +1310,11 @@
 				<h:panelGroup
 					rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.paginator.list.size() gt 0}">
 					<!-- ACTION AREA -->
-					<ui:include src="templatePG/includes/process/list_action.xhtml" />
+					<ui:include src="template/includes/process/list_action.xhtml" />
 					<!-- COUNTING AREA -->
-					<ui:include src="templatePG/includes/process/list_count.xhtml" />
+					<ui:include src="template/includes/process/list_count.xhtml" />
 					<!-- STATISTICS AREA -->
-					<ui:include src="templatePG/includes/process/list_statistics.xhtml" />
+					<ui:include src="template/includes/process/list_statistics.xhtml" />
 				</h:panelGroup>
 
 			</c:if>
