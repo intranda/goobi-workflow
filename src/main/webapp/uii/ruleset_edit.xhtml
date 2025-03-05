@@ -3,9 +3,9 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
-	template="/uii/templatePG/templatePG.html"
-	
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
+	template="/uii/template/template.html"
+
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
 	<ui:param name="myPageTitle"
 		value="#{RegelsaetzeForm.myRegelsatz.id == null?msgs.neuenRegelsatzAnlegen:msgs.regelsatzBearbeiten}" />
@@ -24,7 +24,7 @@
 
 	<ui:define name="content">
 
-		<h:form id="myform" 
+		<h:form id="myform"
 			onkeypress="submitOnEnter(event);"
 			rendered="#{LoginForm.hasRole('Admin_Rulesets')}">
 

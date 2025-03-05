@@ -6,8 +6,8 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/templatePG/templatePG.html"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    template="/uii/template/template.html"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:p="http://primefaces.org/ui">
 
@@ -257,7 +257,7 @@
                             <h:panelGroup
                                 layout="block"
                                 rendered="#{NavigationForm.activeImportTab == 'idImport'}">
-                              
+
 								<intranda:formOutputText
 									label="#{msgs.project}"
 									field="#{MassImportForm.template.projekt.titel}"

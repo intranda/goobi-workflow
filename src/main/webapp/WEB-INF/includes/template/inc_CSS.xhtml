@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="templatePG/css/dist/main.min.css?v=#{HelperForm.buildVersion}" />
     <!-- WCAG compatibility CSS -->
     <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
-      <link rel="stylesheet" href="templatePG/css/dist/accessibility.css?v=#{HelperForm.buildVersion}" />
+      <link rel="stylesheet" href="templatePG/css/lib/accessibility.css?v=#{HelperForm.buildVersion}" />
     </ui:fragment>
     <!-- CUSTOM CSS (user specific)-->
     <style>

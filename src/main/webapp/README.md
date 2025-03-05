@@ -27,18 +27,18 @@ Gulp expects the location of your Tomcat in a global configuration file. This fi
 
 ### Javascript
 
-New JS modules should be included in `uii/templatePG/js/modules/`. Import new modules in `uii/templatesPG/js/main.js` so that Rollup can handle them.
+New JS modules should be included in `uii/template/js/modules/`. Import new modules in `uii/templatesPG/js/main.js` so that Rollup can handle them.
 
 ### CSS
 
 #### Bootstrap
 
-Goobi workflow styles are based on [Bootstrap 5](https://getbootstrap.com/docs/), using select imports. The main SASS file fo these imports is `uii/templatePG/css/src/bootstrap.scss`. Bootstrap variables declared in `uii/templatePG/css/src/_overrides.scss`.
+Goobi workflow styles are based on [Bootstrap 5](https://getbootstrap.com/docs/), using select imports. The main SASS file fo these imports is `uii/template/css/src/bootstrap.scss`. Bootstrap variables declared in `uii/template/css/src/_overrides.scss`.
 
 #### Custom Styles
 
 Bootstrap 5 is extended with custom styles.
-Custom styles are organized in sass files which are imported into `uii/templatePG/css/src/main.scss`.
+Custom styles are organized in sass files which are imported into `uii/template/css/src/main.scss`.
 
 They are divided into three categories:
 
@@ -52,4 +52,4 @@ They are divided into three categories:
 
 ## Accessibility: High Contrast mode
 
-Goobi workflow has a high contrast mode, which is called `WCAG compliant mode`. `WCAG compliant mode` can be set in the `user configuration`. `templagePG.xhtml` will then load additional styles overriding css color properties. The corresponding scss module is `uii/templatePG/css/src/accessibility.scss`.
+Goobi workflow has a high contrast mode, which is called `WCAG compliant mode`. `WCAG compliant mode` can be set in the `user configuration`. `templagePG.xhtml` will then load additional styles overriding css color properties. The corresponding scss module is `uii/template/css/src/accessibility.scss`.

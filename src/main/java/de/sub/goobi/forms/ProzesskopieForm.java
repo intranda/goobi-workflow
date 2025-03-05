@@ -1637,7 +1637,7 @@ public class ProzesskopieForm implements Serializable {
      */
     public String getPluginGui() {
         if (currentCatalogue == null || currentCatalogue.getOpacPlugin() == null) {
-            return "/uii/templatePG/includes/process/process_new_opac.xhtml";
+            return "/uii/template/includes/process/process_new_opac.xhtml";
         } else {
             return currentCatalogue.getOpacPlugin().getGui();
         }

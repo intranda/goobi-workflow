@@ -1,0 +1,716 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+
+		<script type="text/javascript">
+			function switchExpanded(id) {
+				// console.log("called by: " + id);
+				var x = document.getElementById(id).getAttribute(
+						"aria-expanded");
+				// console.log(x)
+				if (x == "true") {
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+			}
+		</script>
+
+		<div class="row">
+			<div class="col-sm-12">
+
+				<intranda:box
+					id="template"
+					boxType="primary"
+					boxPadding="false"
+					boxTitle="false">
+
+					<intranda:boxTitle
+						title="#{msgs.arbeitsschritte}"
+						icon="fa-list">
+
+						<div class="actions d-flex">
+							<!-- NEW STEP -->
+							<button
+								jsf:id="addStepLink"
+								class="btn d-flex align-items-center btn--title-action"
+								jsf:action="#{ProzessverwaltungForm.SchrittNeu}"
+								title="#{msgs.schrittHinzufuegen}"
+								jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and (ProzessverwaltungForm.myProzess.titel != '')}">
+								<span class="fa fa-plus" />
+							</button>
+							<!-- // NEW STEP -->
+
+							<!-- CHANGE WORKFLOW -->
+							<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Template_Change')}">
+								<div
+									class="dropdown-left"
+									title="#{msgs.process_changeTemplate}"
+									data-bs-toggle="tooltip">
+									<button
+										jsf:id="changeTemplate"
+										aria-label="#{msgs.process_changeTemplate}"
+										aria-haspopup="true"
+										aria-expanded="false"
+										onclick="switchExpanded(this.id)"
+										type="button"
+										class="btn d-flex align-items-center btn--title-action dropdown-toggle"
+										data-bs-toggle="dropdown">
+										<span class="fa fa-exchange btn-dropDownInBoxHeader" />
+									</button>
+									<ul class="dropdown-menu">
+									<ui:repeat
+											var="template"
+											value="#{ProzessverwaltungForm.availableProcessTemplates}">
+											<li>
+												<button
+													jsf:id="changeTemplate"
+													jsf:action="#{ProzessverwaltungForm.changeTemplate}"
+													title="#{msgs.process_changeTemplate}"
+													aria-label="#{msgs.process_changeTemplate}"
+													class="dropdown-item">
+													<h:outputText value="#{template.titel}" />
+													<f:setPropertyActionListener
+														target="#{ProzessverwaltungForm.template}"
+														value="#{template}" />
+													<f:setPropertyActionListener
+														target="#{ProzessverwaltungForm.processToChange}"
+														value="#{ProzessverwaltungForm.myProzess}" />
+													<f:passThroughAttribute
+														name="data-toggle"
+														value="tooltip" />
+												</button>
+											</li>
+										</ui:repeat>
+									</ul>
+								</div>
+							</h:panelGroup>
+							<!-- CHANGE WORKFLOW -->
+
+						</div>
+					</intranda:boxTitle>
+
+					<div class="gw-table gw-table-fixed">
+
+						<div class="gw-table__wrapper">
+							<h:dataTable
+								styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+								id="steps"
+								var="item"
+								value="#{ProzessverwaltungForm.myProzess.schritteList}">
+
+								<!-- ORDER -->
+								<h:column
+									id="ordercolumn" headerClass="gw-table-fixed__sizeXXS">
+									<f:facet name="header">
+										<h:outputText value="#{msgs.nr}" />
+									</f:facet>
+									<div class="pt-1">
+										<h:outputText
+											value="#{item.reihenfolge}"
+											styleClass="alig-middle #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+										<!-- Button: count order number 1 down -->
+										<button
+											jsf:id="down"
+											jsf:action="#{ProzessverwaltungForm.decrementOrder}"
+											title="#{msgs.process_countTaskOrderNumberDown}"
+											aria-label="#{msgs.process_countTaskOrderNumberDown}"
+											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+											class="btn ms-3 p-0 mb-1">
+											<span class="fa fa-minus-circle font-light" />
+											<f:passThroughAttribute
+												name="data-toggle"
+												value="tooltip" />
+											<f:setPropertyActionListener
+												target="#{ProzessverwaltungForm.mySchritt}"
+												value="#{item}" />
+											<f:ajax render="@form" />
+										</button>
+										<!-- Button: count order number 1 up -->
+										<button
+											jsf:id="up"
+											jsf:action="#{ProzessverwaltungForm.incrementOrder}"
+											title="#{msgs.process_countTaskOrderNumberUp}"
+											aria-label="#{msgs.process_countTaskOrderNumberUp}"
+											class="btn p-0 mb-1"
+											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+											<span class="fa fa-plus-circle font-light" />
+											<f:passThroughAttribute
+												name="data-toggle"
+												value="tooltip" />
+											<f:setPropertyActionListener
+												target="#{ProzessverwaltungForm.mySchritt}"
+												value="#{item}" />
+											<f:ajax render="@form" />
+										</button>
+										<!-- Button: reorder step - move down -->
+										<button
+											jsf:id="down_exchange"
+											jsf:action="#{ProzessverwaltungForm.exchangeTaskOrderDownwards}"
+											title="#{msgs.process_moveTaskUp}"
+											aria-label="#{msgs.process_moveTaskUp}"
+											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+											class="btn ms-3 p-0 mb-1">
+											<span class="fa fa-chevron-up font-light" />
+											<f:passThroughAttribute
+												name="data-toggle"
+												value="tooltip" />
+											<f:setPropertyActionListener
+												target="#{ProzessverwaltungForm.mySchritt}"
+												value="#{item}" />
+											<f:ajax render="@form" />
+										</button>
+										<!-- Button: reorder step - move up -->
+										<button
+											jsf:id="up_exchange"
+											jsf:action="#{ProzessverwaltungForm.exchangeTaskOrderUpwards}"
+											title="#{msgs.process_moveTaskDown}"
+											aria-label="#{msgs.process_moveTaskDown}"
+											class="btn p-0 mb-1"
+											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+											<span class="fa fa-chevron-down font-light" />
+											<f:passThroughAttribute
+												name="data-toggle"
+												value="tooltip" />
+											<f:setPropertyActionListener
+												target="#{ProzessverwaltungForm.mySchritt}"
+												value="#{item}" />
+											<f:ajax render="@form" />
+										</button>
+									</div>
+								</h:column>
+								<!-- // ORDER -->
+
+								<!-- +++++++++++++++++  alle Eigenschaften auflisten - mit CSS ++++++++++++++++++++++++ -->
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="#{msgs.titel}" />
+									</f:facet>
+
+									<h:panelGroup id="possibleActions1">
+
+										<button
+											jsf:id="expandbutton1"
+											class="btn text-start">
+											<h:panelGroup rendered="#{!item.panelAusgeklappt}">
+												<i
+													class="fa fa-angle-right #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+											</h:panelGroup>
+											<h:panelGroup rendered="#{item.panelAusgeklappt}">
+												<i
+													class="fa fa-angle-down #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+											</h:panelGroup>
+											<f:setPropertyActionListener
+												value="#{item.panelAusgeklappt?false:true}"
+												target="#{item.panelAusgeklappt}" />
+											<f:ajax render="possibleActions1" />
+											<h:panelGroup rendered="#{item.typAutomatisch}">
+												<i
+													class="fa fa-cogs font-light me-3"
+													title="#{msgs.automatischerSchritt}"
+													data-toggle="tooltip"></i>
+											</h:panelGroup>
+											<h:panelGroup rendered="#{not item.typAutomatisch}">
+												<i
+													class="fa fa-user-o font-light me-3"
+													title="#{msgs.normalerSchritt}"
+													data-toggle="tooltip"></i>
+											</h:panelGroup>
+											<h:outputText
+												value="#{item.titelLokalisiert}"
+												styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+										</button>
+
+										<h:panelGroup
+											styleClass="d-block"
+											rendered="#{item.panelAusgeklappt}">
+
+											<intranda:box
+												boxType="neutral"
+												boxSmall="true"
+												boxPadding="false"
+												icon="fa-table"
+												title="#{msgs.eigenschaften}">
+
+												<h:panelGrid
+													columns="2"
+													class="table table-hover table-bordered #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"
+                                                    columnClasses="gw-width7, gw-width9">
+
+													<h:outputText value="#{msgs.titel}:" />
+													<h:outputText value="#{item.titelLokalisiert}" />
+													<h:outputText value="#{msgs.prioritaet}:" />
+													<h:panelGroup>
+														<h:panelGroup rendered="#{item.prioritaet == 0}">
+															<span class="badge badge-intranda-light">
+																#{msgs.badgePriority0} </span>
+														</h:panelGroup>
+
+														<h:panelGroup rendered="#{item.prioritaet == 1}">
+															<span class="badge badge-intranda-orange">
+																<span class="fa fa-lightbulb-o" />
+																#{msgs.badgePriority1}
+															</span>
+														</h:panelGroup>
+
+														<h:panelGroup rendered="#{item.prioritaet == 2}">
+															<span class="badge badge-intranda-orange">
+																<span class="fa fa-lightbulb-o" />
+																#{msgs.badgePriority2}
+															</span>
+														</h:panelGroup>
+
+														<h:panelGroup
+															rendered="#{item.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
+															<span class="badge badge-intranda-orange">
+																<span class="fa fa-lightbulb-o" />
+																#{msgs.badgePriority3}
+															</span>
+														</h:panelGroup>
+
+														<h:panelGroup rendered="#{item.prioritaet gt 9}">
+															<span class="badge badge-intranda-red">
+																<span class="fa fa-bullhorn" />
+																#{msgs.badgeCorrection}
+															</span>
+														</h:panelGroup>
+													</h:panelGroup>
+
+													<h:outputText
+														value="#{msgs.bearbeitungsbeginn}:"
+														rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
+													<h:outputText
+														value="#{item.bearbeitungsbeginnAsFormattedString}"
+														rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
+													</h:outputText>
+
+													<h:outputText
+														value="#{msgs.zuletztBearbeitet}:"
+														rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
+													<h:outputText
+														value="#{item.bearbeitungszeitpunktAsFormattedString}"
+														rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
+													</h:outputText>
+
+													<h:outputText
+														value="#{msgs.letzteAktualisierungDurch}:"
+														rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
+													<h:outputText
+														value="#{item.bearbeitungsbenutzer.nachVorname}"
+														rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
+
+													<h:outputText value="#{msgs.aktualisierungstyp}:" />
+													<h:outputText value="#{item.editTypeEnum.title}" />
+
+													<h:outputText
+														value="#{msgs.typ}:"
+														rendered="#{item.typeSpecified}" />
+													<h:panelGroup rendered="#{item.typeSpecified}">
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.metadaten}"
+															rendered="#{item.typMetadaten}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.importMittelsFileUpload}"
+															rendered="#{item.typImportFileUpload}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.exportDMS}"
+															rendered="#{item.typExportDMS}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.schrittBeimAnnehmenAbschliessen}"
+															rendered="#{item.typBeimAnnehmenAbschliessen}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.beimAnnehmenModulStarten}"
+															rendered="#{item.typBeimAnnehmenModul}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}"
+															rendered="#{item.typBeimAnnehmenModulUndAbschliessen}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.imagesLesen}"
+															rendered="#{item.typImagesLesen}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.imagesSchreiben}"
+															rendered="#{item.typImagesSchreiben}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.beimAbschliessenVerifizieren}"
+															rendered="#{item.typBeimAbschliessenVerifizieren}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.automatischerSchritt}"
+															rendered="#{item.typAutomatisch}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.typeThumbnailStep}"
+															rendered="#{item.typAutomaticThumbnail}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.typScriptStep}"
+															rendered="#{item.typScriptStep}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.modulSchritt}: #{item.typModulName}"
+															rendered="#{item.typModulName!=null and item.typModulName!=''}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.stepPlugin}: #{item.stepPlugin}"
+															rendered="#{item.stepPlugin!=null and item.stepPlugin!=''}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.validationPlugin}"
+															rendered="#{item.validationPlugin!=null and item.validationPlugin!=''}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.timeDelayPlugin}"
+															rendered="#{item.delayStep}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.batchStep}"
+															rendered="#{item.batchStep}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.updateMetadataIndex}"
+															rendered="#{item.updateMetadataIndex}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.process_generateDocket}"
+															rendered="#{item.generateDocket}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs.httpStep}"
+															rendered="#{item.httpStep}" />
+														<h:outputText
+															styleClass="d-block"
+															value="#{msgs['queue_'.concat(item.messageQueue.name)]}"
+															rendered="#{item.messageQueue ne 'NONE'}" />
+
+													</h:panelGroup>
+
+													<h:outputText
+														value="#{msgs.typScriptStep}:"
+														rendered="#{item.typScriptStep and not empty item.allScriptPaths}" />
+													<h:panelGroup
+														rendered="#{item.typScriptStep and not empty item.allScriptPaths}">
+
+														<h:panelGroup
+															styleClass="d-block"
+															rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}">
+															<h:outputText value="#{item.scriptname1}" />
+															<h:outputText
+																styleClass="font-light "
+																value=" #{item.typAutomatischScriptpfad}" />
+														</h:panelGroup>
+
+														<h:panelGroup
+															styleClass="d-block"
+															rendered="#{item.typAutomatischScriptpfad2 != null and item.typAutomatischScriptpfad2 != ''}">
+															<h:outputText value="#{item.scriptname2}" />
+															<h:outputText
+																styleClass="font-light "
+																value=" #{item.typAutomatischScriptpfad2}" />
+														</h:panelGroup>
+
+														<h:panelGroup
+															styleClass="d-block"
+															rendered="#{item.typAutomatischScriptpfad3 != null and item.typAutomatischScriptpfad3 != ''}">
+															<h:outputText value="#{item.scriptname3}" />
+															<h:outputText
+																styleClass="font-light "
+																value=" #{item.typAutomatischScriptpfad3}" />
+														</h:panelGroup>
+
+														<h:panelGroup
+															styleClass="d-block"
+															rendered="#{item.typAutomatischScriptpfad4 != null and item.typAutomatischScriptpfad4 != ''}">
+															<h:outputText value="#{item.scriptname4}" />
+															<h:outputText
+																styleClass="font-light "
+																value=" #{item.typAutomatischScriptpfad4}" />
+														</h:panelGroup>
+
+														<h:panelGroup
+															styleClass="d-block"
+															rendered="#{item.typAutomatischScriptpfad5 != null and item.typAutomatischScriptpfad5 != ''}">
+															<h:outputText value="#{item.scriptname5}" />
+															<h:outputText
+																styleClass="font-light "
+																value=" #{item.typAutomatischScriptpfad5}" />
+														</h:panelGroup>
+
+													</h:panelGroup>
+
+													<h:outputText
+														value="#{msgs.module}:"
+														rendered="#{item.typModulName != null and item.typModulName != ''}" />
+													<h:outputText
+														value="#{item.typModulName}"
+														rendered="#{item.typModulName != null and item.typModulName != ''}" />
+
+													<h:outputText
+														value="#{msgs.usergroup_assignedRoles}:"
+														rendered="#{not empty item.benutzergruppen}" />
+													<h:panelGroup rendered="#{not empty item.benutzergruppen}">
+														<ui:repeat
+															value="#{item.benutzergruppen}"
+															var="group"
+															rowCountVar="count"
+															rowIndexVar="index">
+															<h:outputText value="#{group.titel}" />
+															<h:outputText
+																value=", "
+																rendered="#{index lt count-1}"></h:outputText>
+														</ui:repeat>
+													</h:panelGroup>
+												</h:panelGrid>
+
+											</intranda:box>
+
+										</h:panelGroup>
+									</h:panelGroup>
+								</h:column>
+								<!-- +++++++++++++++++  // alle Eigenschaften auflisten mit CSS ++++++++++++++++++++++++ -->
+
+								<h:column headerClass="gw-table-fixed__sizeXXS">
+									<f:facet name="header">
+										<h:outputText value="#{msgs.status}" />
+									</f:facet>
+
+									<!-- LOCKED -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'LOCKED'}"
+										title="#{msgs.statusGesperrt}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+
+									<!-- OPEN -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'OPEN'}"
+										title="#{msgs.statusOffen}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+
+									<!-- DONE AND ANONYMIZED -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}"
+										title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+
+									<!-- INWORK AND ANONYMIZED -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}"
+										title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+
+									<!-- DONE AND NOT ANONYMIZED -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}"
+										title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+
+									<!-- INWORK AND NOT ANONYMIZED -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}"
+										title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+
+									<!-- ERROR -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'ERROR'}"
+										title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+
+									<!-- DEACTIVATED -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'}"
+										title="#{msgs.statusDeactivated}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+
+									<!-- INFLIGHT -->
+									<div jsf:rendered="#{item.bearbeitungsstatusEnum == 'INFLIGHT'}"
+										title="#{msgs.statusInFlight}"
+										rel="tooltip"
+										data-toggle="tooltip"
+										class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"/>
+
+									<div class="ms-3 d-inline-block align-middle" jsf:rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}">
+										<h:outputText value="#{item.bearbeitungsstatusEnum.title}" />
+									</div>
+
+									<!-- Bearbeitungsstatus hoch und runter -->
+									<button
+										type="button"
+										class="btn ms-1 pe-1 me-0"
+										jsf:id="statusDown"
+										jsf:action="#{ProzessverwaltungForm.stepStatusDown}"
+										jsf:rel="tooltip"
+										title="#{msgs.statusRunterSetzen}"
+										data-bs-toggle="tooltip"
+										aria-label="#{msgs.statusRunterSetzen}"
+										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+										<span class="fa fa-chevron-left font-light" />
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchrittReload}"
+											value="#{item}" />
+										<f:passThroughAttribute
+											name="data-toggle"
+											value="tooltip" />
+										<f:ajax render="@form"
+											onevent="(data) => {gwHandleTooltip.init(data); gwInitTooltips.init();}" />
+									</button>
+
+									<!-- Bearbeitungsstatus hoch und runter -->
+									<button
+										type="button"
+										class="btn ps-1"
+										jsf:id="statusUp"
+										jsf:action="#{ProzessverwaltungForm.stepStatusUp}"
+										jsf:rel="tooltip"
+										title="#{msgs.statusHoeherSetzen}"
+										data-bs-toggle="tooltip"
+										aria-label="#{msgs.statusHoeherSetzen}"
+										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+										<span class="fa fa-chevron-right font-light" />
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchrittReload}"
+											value="#{item}" />
+										<f:passThroughAttribute
+											name="data-toggle"
+											value="tooltip" />
+										<f:ajax render="@form"
+											onevent="(data) => {gwHandleTooltip.init(data); gwInitTooltips.init();}" />
+									</button>
+
+
+								</h:column>
+
+								<h:column headerClass="gw-table-fixed__sizeXXS"
+									rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+									<f:facet name="header">
+										<h:outputText value="#{msgs.auswahl}" />
+									</f:facet>
+									<!-- Bearbeiten-Schaltknopf -->
+									<button
+										jsf:id="editStep"
+										aria-label="#{msgs.detailsDesSchritts}"
+										jsf:action="process_edit_step"
+										title="#{msgs.detailsDesSchritts}"
+										class="btn btn-blank me-2">
+										<span class="fa fa-pencil" />
+										<f:passThroughAttribute
+											name="data-toggle"
+											value="tooltip" />
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchrittReload}"
+											value="#{item}" />
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.modusBearbeiten}"
+											value="" />
+									</button>
+
+									<button
+										jsf:id="runPlugin"
+										title="#{msgs.executePlugin}"
+										aria-label="#{msgs.executePlugin}"
+										jsf:rendered="#{item.stepPlugin != '' and item.stepPlugin != null  and !item.typExportDMS}"
+										jsf:action="#{ProzessverwaltungForm.startPlugin}"
+										onclick="preventDoubleSubmit(this);"
+										class="btn btn-blank me-2">
+										<span class="fa fa-puzzle-piece" />
+										<f:passThroughAttribute
+											name="data-toggle"
+											value="tooltip" />
+										<f:setPropertyActionListener
+											target="#{NavigationForm.uiStatus.pluginSimulation}"
+											value="#{true}" />
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchrittReload}"
+											value="#{item}" />
+									</button>
+
+									<button
+										jsf:id="executeScript"
+										title="#{msgs.executeScripts}"
+										aria-label="#{msgs.executeScripts}"
+										jsf:rendered="#{item.typScriptStep and item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
+										jsf:action="#{HelperForm.executeScriptsForStep(item.id)}"
+										onclick="preventDoubleSubmit(this);"
+										class="btn btn-blank me-2">
+										<f:passThroughAttribute
+											name="data-toggle"
+											value="tooltip" />
+										<span class="fa fa-cog" />
+									</button>
+
+									<button
+										jsf:id="executeHttp"
+										title="#{msgs.executeHttpCalls}"
+										jsf:rendered="#{item.httpStep}"
+										jsf:action="#{HelperForm.executeHttpCallForStep(item.id)}"
+										onclick="preventDoubleSubmit(this);"
+										class="btn btn-blank me-2">
+										<f:passThroughAttribute
+											name="data-toggle"
+											value="tooltip" />
+										<span class="fa fa-cog" />
+									</button>
+
+
+									<button
+										jsf:id="exportProcess"
+										title="#{msgs.exportDMS}"
+										aria-label="#{msgs.exportDMS}"
+										jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.typExportDMS}"
+										jsf:action="#{ProzessverwaltungForm.exportStep}"
+										onclick="preventDoubleSubmit(this);"
+										class="btn btn-blank me-2">
+										<f:passThroughAttribute
+											name="data-toggle"
+											value="tooltip" />
+										<f:setPropertyActionListener
+											target="#{ProzessverwaltungForm.mySchritt}"
+											value="#{item}" />
+										<span class="fa fa-globe" />
+									</button>
+
+								</h:column>
+
+							</h:dataTable>
+						</div>
+					</div>
+				</intranda:box>
+
+			</div>
+		</div>
+
+
+
+	</composite:implementation>
+
+</ui:composition>

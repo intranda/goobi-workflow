@@ -4,7 +4,6 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
@@ -14,22 +13,33 @@
 	<composite:interface />
 
 	<composite:implementation>
-		<nav role="navigation" aria-label="navigation" id="navigation" class="container-fluid">
-			<h:form id="menu">
+		<nav aria-label="navigation" id="navigation" class="navbar navbar-expand-lg">
+			<h:form id="menu" class="container-fluid">
 				<!-- Goobi-Workflow-Logo -->
-				<a aria-label="intranda Logo"
+				<a aria-label="#{msgs.returnHome}"
 					href="index.xhtml"
-					id="brand">&#160;
+					id="brand">
+					<img src="templatePG/img/goobi/goobi_eyes.svg" alt="" width="30" height="24" aria-hidden="true" />
+
 				</a>
+
+				<div class="navbar navbar-collapse collapse" id="navbarSupportedContent">
+					<ui:include src="inc_menu_main.xhtml" />
+				</div>
+
 				<!-- The menu in the right corner -->
 				<ui:include src="inc_menu_preferences.xhtml" />
-				<!-- The main menu with "Start", "My Tasks", "Workflow", "Administration" and "Controlling" -->
-				<!-- This must be AFTER the preferences menu because the main menu is a dropdown menu in the small-mode. Otherwise it cannot be openend correctly-->
-				<ui:include src="inc_menu_main.xhtml" />
+
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
 			</h:form>
 		</nav>
+		<!--
 		<script type="text/javascript">
 			loadMenu();
 		</script>
+		-->
 	</composite:implementation>
 </ui:composition>

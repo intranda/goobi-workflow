@@ -5,9 +5,9 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	template="/uii/templatePG/templatePG.html"
-	
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	template="/uii/template/template.html"
+
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -37,14 +37,11 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<link
-			rel="stylesheet"
-			href="template/css/codemirror/codemirror.css?v=#{HelperForm.buildVersion}" />
 		<script
 			type="text/javascript"
-			src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
+			src="templatePG/js/static/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
 		<script
-			src="template/js/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}" />
+			src="templatePG/js/static/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}" />
 
 		<style>
 .CodeMirror {
@@ -88,11 +85,11 @@
 										<div class="gw-table__filters">
 											<ui:include
 												src="templatePG/includes/process/list_filterAndDisplay.xhtml" />
-                                                
-                                        
-                                            
+
+
+
                                              <intranda:list_searchAndSave bean="#{ProzessverwaltungForm}" label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.filterProcesses:msgs.filterProcessTemplates}" />
-                                            
+
 										</div>
 
 									</div>
