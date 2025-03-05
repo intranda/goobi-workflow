@@ -3,7 +3,6 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -40,15 +39,19 @@
 
 				<div class="dataTables__paginator__page-count">
 					<!-- aktuelle Seite anzeigen -->
-					<h:outputText id="txtMoveTo1" forceId="false"
-						value="#{msgs.seite} #{cc.attrs.paginator.pageNumberCurrent} #{msgs.von} #{cc.attrs.paginator.pageNumberLast}"
+					<span
+						id="txtMoveTo1"
 						onclick="document.querySelector('[id$=txtMoveTo2]').style.display='inline';
-			       		document.querySelector('[id$=txtMoveTo1]').style.display='none';
+			       			document.querySelector('[id$=txtMoveTo1]').style.display='none';
 							document.querySelector('[id$=txtMoveTo2]').focus();
-							document.querySelector('[id$=txtMoveTo2]').select();" />
+							document.querySelector('[id$=txtMoveTo2]').select();">
+						#{msgs.seite} #{cc.attrs.paginator.pageNumberCurrent} #{msgs.von} #{cc.attrs.paginator.pageNumberLast}
+					</span>
 
 					<!-- Seite direkt anspringen -->
-					<h:inputText id="txtMoveTo2" forceId="false"
+					<h:inputText
+						id="txtMoveTo2"
+						forceId="false"
 						value="#{cc.attrs.paginator.txtMoveTo}" style="display:none;width:30px"
 						required="true"
 						onblur="document.querySelector('[id$=txtMoveTo2]').style.display='none';document.querySelector('[id$=txtMoveTo1]').style.display='inline';"
