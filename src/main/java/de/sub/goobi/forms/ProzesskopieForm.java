@@ -1716,6 +1716,7 @@ public class ProzesskopieForm implements Serializable {
 
         StringTokenizer tokenizer = new StringTokenizer(titeldefinition, "+");
         ProcessTitleGenerator gen = new ProcessTitleGenerator();
+        gen.setSpecialCharacterReplacement(replacement);
         gen.setSeparator("");
         /* jetzt den Bandtitel parsen */
         while (tokenizer.hasMoreTokens()) {
