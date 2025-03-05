@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 path=src/main/webapp/
-cssPath="/uii/templatePG/css/"
-declare -a sources=("${path}uii/templatePG/css/src/" "${path}uii/templatePG/css/lib/" "${path}uii/templatePG/js/")
+cssPath="/uii/template/css/"
+declare -a sources=("${path}uii/template/css/src/" "${path}uii/template/css/lib/" "${path}uii/template/js/")
 
 runBuild() {
     checkModules

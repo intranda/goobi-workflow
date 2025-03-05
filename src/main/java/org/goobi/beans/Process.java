@@ -1,20 +1,20 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -468,7 +468,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     /**
      * Get the image directory name matching the given thumbnail directory name. If the name ends with a number preceded by an underscore character,
      * then that part is removed from the returned name Otherwise, the whole name is returned
-     * 
+     *
      * @param thumbDirName
      * @return
      */
@@ -609,7 +609,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * Get the process thumbnail directory which is located directly in the process directory and named 'thumbs'
-     * 
+     *
      * @return The full path to the thumbnail directory ending with a path separator
      * @throws IOException
      * @throws DAOException
@@ -621,7 +621,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     /**
      * Return all thumbnail directories containing thumbs for the images stored in the given images directory as a map hashed by the thumbnail size.
      * If no thumbnail directories exist, anfalse empty map is returned
-     * 
+     *
      * @param imageDirectory The path of an image directory, either only the name or the entire path.
      * @return A map of folders containing thumbnails for the given imageDirectory hashed by thumbnail size
      * @throws DAOException
@@ -640,7 +640,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     /**
      * Return the thumbnail directory for the given imageDirectory containing images of the given size. If no directory exists for the given size then
      * the thumbnail directory with the closest larger image size is returned. If no such directory exists, null is returned
-     * 
+     *
      * @param imageDirectory The path of an image directory, either only the name or the entire path.
      * @param size The size of the desired thumbnails
      * @return The full path to thumbnail directory or null if no matching directory was found
@@ -662,7 +662,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     /**
      * Return the thumbnail directory for the given imageDirectory containing images of the largest size. If no such directory exists, null is
      * returned
-     * 
+     *
      * @param imageDirectory The path of an image directory, either only the name or the entire path.
      * @return The full path to the largest thumbnail directory or null if no matching directory was found
      * @throws SwapException
@@ -682,7 +682,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
      * Return the thumbnail directory for the given imageDirectory containing images of the given size. If no directory exists for the given size then
      * the thumbnail directory with the closest larger image size is returned. If no such directory exists, the thumbnail directory for the given
      * image directory with the largest thumbnails is returned
-     * 
+     *
      * @param imageDirectory The path of an image directory, either only the name or the entire path.
      * @param size The size of the desired thumbnails
      * @return The full path to thumbnail directory or null if no matching directory was found
@@ -709,7 +709,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     /**
      * Return the thumbnail directory for the given imageDirectory containing images of the given size. If no directory exists for the given size then
      * the thumbnail directory with the closest larger image size is returned. If no such directory exists, null is returned
-     * 
+     *
      * @param imageDirectory The path of an image directory, either only the name or the entire path.
      * @param size The size of the desired thumbnails
      * @return The full path to thumbnail directory or the full path to the given imageDirectory if no matching thumbnail directory was found
@@ -732,7 +732,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * Get the image sizes of all thumbnail folders for the given image Folder
-     * 
+     *
      * @param imageDirectory
      * @return
      * @throws IOException
@@ -1327,7 +1327,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     /**
      * Creates and returns an output stream for the current faces context. The file name parameter in the HTTP header is set to the given file name.
      * The file name parameter is then recommended in the save-dialog on the client's side.
-     * 
+     *
      * @param fileName The file name that should be used as default file name on the client side
      * @return The output stream of the current faces context
      * @throws IOException If the output stream could not be created
@@ -1493,7 +1493,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * getter for the representative as IIIF URL of the configured thumbnail size
-     * 
+     *
      * @return IIIF URL for the representative thumbnail image
      */
     public String getRepresentativeImage() {
@@ -1503,7 +1503,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * convert the path of the representative into a IIIF URL of the given size
-     * 
+     *
      * @param thumbnailWidth max width of the image
      * @return IIIF URL for the representative image
      */
@@ -1545,7 +1545,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * get the path of the representative as string from the filesystem
-     * 
+     *
      * @return path of representative image
      */
     public String getRepresentativeImageAsString() {
@@ -1571,12 +1571,12 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                         images = StorageProvider.getInstance().listFiles(getImagesOrigDirectory(true), NIOFileUtils.objectNameFilter);
                     }
                     if (images != null && !images.isEmpty()) {
-                        return "uii/templatePG/img/goobi_3d_object_placeholder.png?version=1";
+                        return "uii/template/img/goobi_3d_object_placeholder.png?version=1";
                     }
                 }
 
                 if (StringUtils.isBlank(representativeImage)) {
-                    return "uii/templatePG/img/thumbnail-placeholder.png?version=1";
+                    return "uii/template/img/thumbnail-placeholder.png?version=1";
                 }
             } catch (IOException | SwapException | DAOException e) {
                 log.error(e);
@@ -1620,7 +1620,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * return specific variable for this process adapted by the central VariableReplacer
-     * 
+     *
      * @param inVariable
      * @return adapted result with replaced value
      */
@@ -1654,7 +1654,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * Get all Step titles for steps of a given status as String with a given separator
-     * 
+     *
      * @param status long value for the status (0=Locked, 1=Open, 2=InWork, 3=Done, 4=Error, 5=Deactivated)
      * @param separator String value to use as separator
      * @return status as String with a given separator
@@ -1677,7 +1677,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * Get a list of folder names to select from. Not all folder can be selected.
-     * 
+     *
      * @return
      */
 
@@ -1713,7 +1713,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     /**
      * List the files of a selected folder. If a LogEntry is used (because it was uploaded in the logfile area), it will be used. Otherwise a
      * temporary LogEntry is created.
-     * 
+     *
      * @return
      */
 
@@ -1761,7 +1761,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * Save the previous uploaded file in the selected process directory and create a new LogEntry.
-     * 
+     *
      */
 
     @Override
@@ -1911,7 +1911,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * get the complete path to a folder as string, or null if the folder name is unknown
-     * 
+     *
      * @param folderName
      * @return
      * @throws IOException
@@ -1993,7 +1993,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * Get the name of the last finished task
-     * 
+     *
      */
 
     public String getLastStatusChangeTask() {
@@ -2067,7 +2067,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * Tiny check to see whether a process is currently setup to perform XML Export Validation before the actual export.
-     * 
+     *
      * @return true if the process is set up to perform a pre-export validation, false if not
      */
     public boolean isConfiguredWithExportValidator() {
@@ -2075,7 +2075,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * 
+     *
      * @deprecated use getJournal() instead
      */
     @Deprecated(since = "23.05", forRemoval = true)
@@ -2084,7 +2084,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * 
+     *
      * @deprecated use setJournal() instead
      */
     @Deprecated(since = "23.05", forRemoval = true)

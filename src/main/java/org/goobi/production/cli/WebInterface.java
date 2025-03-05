@@ -212,7 +212,7 @@ public class WebInterface extends HttpServlet {
         answer.append("</style>");
         answer.append("</head>");
         answer.append("<body>");
-        answer.append("<a href=\".\" target=\"_blank\"><img class=\"img1\" src=\"uii/templatePG/img/webapi_1.png\"></a>");
+        answer.append("<a href=\".\" target=\"_blank\"><img class=\"img1\" src=\"uii/template/img/webapi_1.png\"></a>");
         answer.append("<a href=\"http://www.intranda.com\" target=\"_blank\"><img class=\"img2\" src=\"uii/template/img/webapi_2.png\"></a>");
         answer.append("<h1>");
         answer.append(cr.getTitle());

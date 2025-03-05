@@ -17,17 +17,17 @@ let customLocation;
 
 // source directories, files, globs
 const sources = {
-    bsCss: 'uii/templatePG/css/src/bootstrap.scss',
-    css: 'uii/templatePG/css/src/',
+    bsCss: 'uii/template/css/src/bootstrap.scss',
+    css: 'uii/template/css/src/',
     cssGlob: [
-        'uii/templatePG/css/src/',
-        '!uii/templatePG/css/src/bootstrap.scss'
+        'uii/template/css/src/',
+        '!uii/template/css/src/bootstrap.scss'
     ],
     cssDeps: [
         'node_modules/bootstrap/scss/',
     ],
-    legacyJS: './uii/templatePG/js/legacy/',
-    js: './uii/templatePG/js/**/*.js',
+    legacyJS: './uii/template/js/legacy/',
+    js: './uii/template/js/**/*.js',
     staticAssets: [
         'uii/**/*.xhtml',
         'uii/**/*.html',
@@ -39,12 +39,11 @@ const sources = {
         'uii/**/*.riot'
     ],
     composites: 'resources/**/*.xhtml',
-    template: 'uii/templatePG/templatePG.html',
     taglibs: 'WEB-INF/taglibs/**/*.xhtml',
     includes: 'WEB-INF/includes/**/*.xhtml',
 }
 const targetFolder = {
-    css: 'uii/templatePG/css/dist/',
+    css: 'uii/template/css/dist/',
     js: 'dist/js/',
     staticAssets: 'uii/',
     composites: 'resources/',
@@ -135,7 +134,7 @@ function jsLegacy() {
 function devJsRollup() {
     return rollup
         .rollup({
-            input: './uii/templatePG/js/main.js',
+            input: './uii/template/js/main.js',
             plugins: [cleanup()]
         })
         .then(bundle => {
@@ -149,7 +148,7 @@ function devJsRollup() {
 function prodJsRollup() {
     return rollup
         .rollup({
-            input: './uii/templatePG/js/main.js',
+            input: './uii/template/js/main.js',
             plugins: [cleanup()]
         })
         .then(bundle => {
