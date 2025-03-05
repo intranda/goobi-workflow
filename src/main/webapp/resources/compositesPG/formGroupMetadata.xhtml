@@ -217,15 +217,6 @@
                                 event="valueChange" />
                         </h:inputText>
                     </ui:fragment>
-                    <h:panelGroup layout="block"
-                        class="validation-error"
-                        rendered="#{cc.attrs.metadata.validationErrorPresent}">
-                        <span
-                            class="fa fa-exclamation-circle"
-                            aria-hidden="true"
-                        />
-                        <h:outputText value="#{cc.attrs.metadata.validationMessage}" />
-                    </h:panelGroup>
                     <!-- ACTIONS -->
                     <ui:fragment rendered="#{cc.attrs.cols eq 3}">
 
@@ -596,6 +587,12 @@
                             </button>
                     </ui:fragment>
                 </div>
+
+                <h:panelGroup layout="block"
+                    class="validation-error text-danger"
+                    rendered="#{!cc.attrs.metadata.validationErrorPresent}">
+                    <h:outputText value="#{cc.attrs.metadata.validationMessage}" />
+                </h:panelGroup>
             </div>
         </div>
     </composite:implementation>

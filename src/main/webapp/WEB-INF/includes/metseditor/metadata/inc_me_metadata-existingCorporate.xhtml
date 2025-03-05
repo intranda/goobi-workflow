@@ -57,7 +57,7 @@
                                 <button
                                     type="button"
                                     jsf:id="addCorporate"
-                                    class="btn btn-#{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ? 'neutral-600' : 'blank'}"
+                                    class="btn btn-#{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ? 'blank' : 'neutral-600'}"
                                     jsf:action="#{Metadaten.AddCorporate}">
                                     #{msgs.mets_corporate_createCorporate}
                                     <f:setPropertyActionListener
