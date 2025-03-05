@@ -4,9 +4,9 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	
+
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -14,40 +14,40 @@
 	<composite:interface />
 
 	<composite:implementation>
-		
+
 		<intranda:box
 			boxType="primary"
 			boxPadding="true"
 			icon="fa-search"
 			title="#{msgs.search}">
-			
+
 			<h:outputText value="Box with boxType primary"/>
 		</intranda:box>
-		
+
 		<intranda:box
 			boxType="action"
 			boxPadding="true"
 			icon="fa-search"
 			title="#{msgs.search}">
-			
+
 			<h:outputText value="Box with boxType action"/>
 		</intranda:box>
-		
+
 		<intranda:box
 			boxType="success"
 			boxPadding="true"
 			icon="fa-search"
 			title="#{msgs.search}">
-			
+
 			<h:outputText value="Box with boxType success"/>
 		</intranda:box>
-		
+
 		<intranda:box
 			boxType="hot"
 			boxPadding="true"
 			icon="fa-search"
 			title="#{msgs.search}">
-			
+
 			<h:outputText value="Box with boxType hot"/>
 		</intranda:box>
 
@@ -56,19 +56,19 @@
 			boxPadding="true"
 			icon="fa-search"
 			title="#{msgs.search}">
-			
+
 			<h:outputText value="Box with boxType neutral"/>
 		</intranda:box>
-		
+
 		<intranda:box
 			boxType="outline"
 			boxPadding="true"
 			icon="fa-search"
 			title="#{msgs.search}">
-			
+
 			<h:outputText value="Box with boxType outline"/>
 		</intranda:box>
-		
+
 		<!-- CODE -->
 		<div class="accordion-item mt-3">
 			<h2 class="accordion-header">
@@ -95,7 +95,7 @@
 	boxPadding=&quot;true&quot;
 	icon=&quot;fa-search&quot;
 	title=&quot;#{msgs.search}&quot;&gt;
-	
+
 	&lt;h:outputText value=&quot;Box with boxType primary&quot;/&gt;
 &lt;/intranda:box&gt;
 
@@ -104,7 +104,7 @@
 	boxPadding=&quot;true&quot;
 	icon=&quot;fa-search&quot;
 	title=&quot;#{msgs.search}&quot;&gt;
-	
+
 	&lt;h:outputText value=&quot;Box with boxType action&quot;/&gt;
 &lt;/intranda:box&gt;
 
@@ -113,7 +113,7 @@
 	boxPadding=&quot;true&quot;
 	icon=&quot;fa-search&quot;
 	title=&quot;#{msgs.search}&quot;&gt;
-	
+
 	&lt;h:outputText value=&quot;Box with boxType success&quot;/&gt;
 &lt;/intranda:box&gt;
 
@@ -122,7 +122,7 @@
 	boxPadding=&quot;true&quot;
 	icon=&quot;fa-search&quot;
 	title=&quot;#{msgs.search}&quot;&gt;
-	
+
 	&lt;h:outputText value=&quot;Box with boxType hot&quot;/&gt;
 &lt;/intranda:box&gt;
 
@@ -131,7 +131,7 @@
 	boxPadding=&quot;true&quot;
 	icon=&quot;fa-search&quot;
 	title=&quot;#{msgs.search}&quot;&gt;
-	
+
 	&lt;h:outputText value=&quot;Box with boxType neutral&quot;/&gt;
 &lt;/intranda:box&gt;
 
@@ -140,7 +140,7 @@
 	boxPadding=&quot;true&quot;
 	icon=&quot;fa-search&quot;
 	title=&quot;#{msgs.search}&quot;&gt;
-	
+
 	&lt;h:outputText value=&quot;Box with boxType outline&quot;/&gt;
 &lt;/intranda:box&gt;
 						</code>
@@ -153,4 +153,3 @@
 
 	</composite:implementation>
 </ui:composition>
-

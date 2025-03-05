@@ -6,7 +6,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	template="/uii/templatePG/templatePG.html"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -45,21 +45,21 @@
 										</div>
 
 
-							
+
 											<f:subview id="sub1">
 												<div class="gw-table__filters">
 													<ui:include
-                                                        
+
 														src="templatePG/includes/task/list_filterAndDisplay.xhtml" />
-                                                   
-                                                        
+
+
                                                         <intranda:list_searchAndSave bean="#{AktuelleSchritteForm}" label="#{msgs.filterTasks}" />
-										
-                               
+
+
 												</div>
 
 											</f:subview>
-									
+
 
 
 									</div>
@@ -503,8 +503,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- ACCEPT TASK IN ERROR STATUS -->
@@ -522,8 +522,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- KEEP ON WORKING ON TASK -->
@@ -543,8 +543,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- PEEK INTO TASK OF ANOTHER ONE -->
@@ -564,8 +564,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- ACCEPT TASK IN BATCH -->
@@ -586,8 +586,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- ACCEPT TASK IN ERROR STATUS IN BATCH -->
@@ -608,8 +608,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />                            
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- KEEP ON WORKING ON TASK IN BATCH -->
@@ -628,8 +628,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- PEEK INTO TASK IN BATCH OF ANOTHER ONE -->
@@ -648,8 +648,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 													</td>
 													<!-- // ACTION -->

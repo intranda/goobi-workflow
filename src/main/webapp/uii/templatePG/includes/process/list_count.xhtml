@@ -3,17 +3,17 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	
+
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
 	<composite:interface>
 	</composite:interface>
 
 	<composite:implementation>
 
-		<h:panelGroup 
+		<h:panelGroup
 			rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.myAnzahlList != null}">
 
 			<div class="row mt-4">
@@ -21,12 +21,12 @@
 
 					<intranda:box id="imageCountSummary" boxType="neutral" boxPadding="false"
 						icon="fa-calculator" title="#{msgs.zusammenfassung}">
-		
+
 						<div class="gw-table gw-table-fixed">
-		
+
 							<!-- TABLE WRAPPER -->
 							<div class="gw-table__wrapper">
-	
+
 								<!-- TABLE -->
 								<table role="grid"
 									class="table table-bordered table-fixed table-hover">
@@ -63,7 +63,7 @@
 								</table>
 							</div>
 						</div>
-		
+
 					</intranda:box>
 
 				</div>
@@ -71,19 +71,19 @@
 			<div class="row mt-4">
 				<div class="col-sm-12">
 
-					
+
 					<intranda:box id="imageCount" boxType="neutral" boxPadding="false"
 						icon="fa-table" title="#{msgs.anzahlDerArtikelUndImages}">
-		
+
 						<div class="gw-table gw-table-fixed">
-		
+
 							<!-- TABLE WRAPPER -->
 							<div class="gw-table__wrapper">
-	
+
 								<!-- TABLE -->
 								<h:dataTable styleClass="table table-bordered table-fixed table-hover"
 									var="item" value="#{ProzessverwaltungForm.myAnzahlList}">
-	
+
 									<!-- Title -->
 									<h:column styleClass="tableColumnMaxWidthLong">
 										<f:facet name="header">
@@ -91,7 +91,7 @@
 										</f:facet>
 										<span title="#{item.title}" data-toggle="tooltip">#{item.title}</span>
 									</h:column>
-	
+
 									<!-- Images -->
 									<h:column>
 										<f:facet name="header">
@@ -110,7 +110,7 @@
 												aria-label="#{item.relImages * 1}% #{item.images} #{msgs.images}"></div>
 										</div>
 									</h:column>
-	
+
 									<!-- Docstructs -->
 									<h:column>
 										<f:facet name="header">
@@ -130,7 +130,7 @@
 												aria-label="#{item.relDocstructs * 1}% #{item.docstructs} #{msgs.docstructs}"></div>
 										</div>
 									</h:column>
-	
+
 									<!-- Metadata -->
 									<h:column>
 										<f:facet name="header">
@@ -150,14 +150,14 @@
 												aria-label="#{item.relMetadata * 1}% #{item.relMetadata} #{msgs.metadata}"></div>
 										</div>
 									</h:column>
-	
+
 								</h:dataTable>
-							
+
 							</div>
 						</div>
-		
+
 					</intranda:box>
-					
+
 				</div>
 			</div>
 
@@ -166,5 +166,3 @@
 	</composite:implementation>
 
 </ui:composition>
-
-
