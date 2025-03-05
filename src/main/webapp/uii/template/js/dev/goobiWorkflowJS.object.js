@@ -226,7 +226,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             $('#disable-interaction-overlay').hide();
             this.drawer = new ImageView.Draw(_viewImage.viewer, _drawStyle, () => this.isDrawArea());
             this.drawer.finishedDrawing().subscribe(function(overlay) {
-            	console.log("finished drawing", this);
+            	if(_debug)console.log("finished drawing", overlay);
             	overlay.style = $.extend({}, _drawStyle, {borderColor: this.colors.next()});
                 overlay.draw();
                 this.addOverlay(overlay);

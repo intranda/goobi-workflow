@@ -155,6 +155,11 @@
             };
             faces.ajax.addOnEvent((data) => {
                 const ajaxstatus = data.status;
+                const ajaxBehaviour = data.source.dataset.ajaxBehaviour;
+                console.log("ajaxBehaviour", ajaxBehaviour, data.source.dataset);
+                if(ajaxBehaviour === "ignore") {
+                	return;
+                }
                 if (ajaxstatus === 'success') {
                     goobiWorkflowJS.init( goobiWorkflowConfig );
                     goobiWorkflowJS.meScrollPos.restoreScrollPos();
