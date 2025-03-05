@@ -1,10 +1,6 @@
 const { parallel, watch, src, dest } = require('gulp');
 
 const sass = require('gulp-sass')(require('sass'));
-const less = require('gulp-less');
-const LessAutoprefix = require('less-plugin-autoprefix');
-const autoprefix = new LessAutoprefix({ browsers: ['last 2 versions'] });
-const cleanCSS = require('gulp-clean-css');
 
 const rename = require('gulp-rename');
 
@@ -20,9 +16,6 @@ const terser = require('@rollup/plugin-terser');
 let customLocation;
 
 // source directories, files, globs
-const legacySources = {
-    js: './uii/template/js/dev/*.js',
-}
 const sources = {
     bsCss: 'uii/templatePG/css/src/bootstrap.scss',
     css: 'uii/templatePG/css/src/',
