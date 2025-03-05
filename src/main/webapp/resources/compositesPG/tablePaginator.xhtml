@@ -39,14 +39,16 @@
 
 				<div class="dataTables__paginator__page-count">
 					<!-- aktuelle Seite anzeigen -->
-					<span
+					<button
+						type="button"
+						class="btn btn-link text-black"
 						id="txtMoveTo1"
 						onclick="document.querySelector('[id$=txtMoveTo2]').style.display='inline';
 			       			document.querySelector('[id$=txtMoveTo1]').style.display='none';
 							document.querySelector('[id$=txtMoveTo2]').focus();
 							document.querySelector('[id$=txtMoveTo2]').select();">
 						#{msgs.seite} #{cc.attrs.paginator.pageNumberCurrent} #{msgs.von} #{cc.attrs.paginator.pageNumberLast}
-					</span>
+					</button>
 
 					<!-- Seite direkt anspringen -->
 					<h:inputText
