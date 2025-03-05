@@ -5,7 +5,6 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
@@ -86,7 +85,7 @@
 
 					<!-- TAB 1 - ACTION -->
 					<h:panelGroup
-						class="p-3"
+						class="p-3 d-flex flex-column align-items-start"
 						layout="block"
 						id="tab1"
 						rendered="#{NavigationForm.uiStatus.taskActionBox_view ne 'tab2' and NavigationForm.uiStatus.taskActionBox_view ne 'tab3'}">
@@ -131,7 +130,7 @@
 								jsf:id="runPluginFullGUI"
 								jsf:rendered="#{AktuelleSchritteForm.myPlugin !=null and (AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL' or AktuelleSchritteForm.myPlugin.pluginGuiType == 'PART_AND_FULL')}"
 								jsf:action="#{AktuelleSchritteForm.runPlugin}"
-								class="btn btn-link btn-link-task d-block "
+								class="btn btn-link  "
 								onclick="preventDoubleSubmit(this);">
 								<!-- <h:graphicImage value="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/icon.gif" style="margin-right:3px;vertical-align:middle" /> -->
 								<span class="btn btn-blank">
@@ -151,7 +150,7 @@
 								jsf:id="runPluginNoGUI"
 								jsf:rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}"
 								jsf:action="#{AktuelleSchritteForm.runPlugin}"
-								class="btn btn-link btn-link-task d-block"
+								class="btn btn-link "
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-blank">
 									<span class="fa fa-puzzle-piece" />
@@ -167,7 +166,7 @@
 								jsf:id="executeModule"
 								jsf:rendered="#{currentStep.typModulName != null and currentStep.typModulName != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeModule}"
-								class="btn btn-link btn-link-task d-block"
+								class="btn btn-link "
 								title="#{msgs.modulStarten} (#{currentStep.typModulName})"
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-blank">
@@ -184,7 +183,7 @@
 								jsf:id="executeScript"
 								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad != null and currentStep.typAutomatischScriptpfad != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
-								class="btn btn-link btn-link-task d-block"
+								class="btn btn-link "
 								title="#{currentStep.scriptname1}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
@@ -205,7 +204,7 @@
 								jsf:id="executeScript2"
 								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad2 != null and currentStep.typAutomatischScriptpfad2 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
-								class="btn btn-link btn-link-task d-block"
+								class="btn btn-link "
 								title="#{currentStep.scriptname2}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
@@ -226,7 +225,7 @@
 								jsf:id="executeScript3"
 								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad3 != null and currentStep.typAutomatischScriptpfad3 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
-								class="btn btn-link btn-link-task d-block"
+								class="btn btn-link "
 								title="#{currentStep.scriptname3}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
@@ -247,7 +246,7 @@
 								jsf:id="executeScript4"
 								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad4 != null and currentStep.typAutomatischScriptpfad4 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
-								class="btn btn-link btn-link-task d-block"
+								class="btn btn-link "
 								title="#{currentStep.scriptname4}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
@@ -267,7 +266,7 @@
 								jsf:id="executeScript5"
 								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad5 != null and currentStep.typAutomatischScriptpfad5 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
-								class="btn btn-link btn-link-task d-block"
+								class="btn btn-link "
 								title="#{currentStep.scriptname5}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
@@ -293,7 +292,7 @@
 								<button
 									jsf:id="export"
 									jsf:action="#{AktuelleSchritteForm.exportDMS}"
-									class="btn btn-link btn-link-task d-block"
+									class="btn btn-link "
 									title="#{msgs.importDms}"
 									onclick="preventDoubleSubmit(this);">
 									<span class="btn btn-blank">
@@ -317,7 +316,7 @@
 									title="#{msgs.metadatenBearbeiten}"
 									rendered="#{!currentStep.prozess.temporaryMetadataFiles}"
 									onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');"
-									styleClass="btn btn-link btn-link-task">
+									styleClass="btn btn-link ">
 									<span class="btn btn-blank">
 										<span class="fa fa-book" />
 									</span>
@@ -376,7 +375,7 @@
 								<h:panelGroup
 									rendered="#{currentStep.prozess.temporaryMetadataFiles}">
 									<button
-										class="btn btn-link btn-link-task d-block"
+										class="btn btn-link "
 										title="#{msgs.metadatenBearbeiten}"
 										type="button"
 										data-bs-toggle="modal"
@@ -512,7 +511,7 @@
 								jsf:rendered="#{currentStep.generateDocket}"
 								jsf:id="generateDocket"
 								jsf:action="#{currentStep.prozess.downloadDocket}"
-								class="btn btn-link btn-link-task d-block"
+								class="btn btn-link "
 								title="#{msgs.laufzettelDrucken}"
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-blank">
@@ -528,7 +527,7 @@
                                 jsf:id="cancel"
                                 jsf:rendered="#{!isBatchStep}"
                                 jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}"
-                                class="btn btn-link btn-link-task d-block"
+                                class="btn btn-link "
                                 title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
                                 onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-hot">
@@ -544,7 +543,7 @@
 								jsf:id="cancelBatch"
                                 jsf:rendered="#{isBatchStep}"
 								jsf:action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerZurueckgeben}"
-								class="btn btn-link btn-link-task d-block"
+								class="btn btn-link "
 								title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-hot">
@@ -560,7 +559,7 @@
                                 jsf:rendered="#{AktuelleSchritteForm.enableFinalizeButton and !isBatchStep}"
                                 jsf:id="finish"
                                 jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}"
-                                class="btn btn-link btn-link-task d-block"
+                                class="btn btn-link "
                                 title="#{msgs.diesenSchrittAbschliessen}"
                                 onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-success">
@@ -576,7 +575,7 @@
 								jsf:rendered="#{AktuelleSchritteForm.enableFinalizeButton and isBatchStep}"
 								jsf:id="finishBatch"
 								jsf:action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerAbschliessen}"
-								class="btn btn-link btn-link-task d-block"
+								class="btn btn-link "
 								title="#{msgs.diesenSchrittAbschliessen}"
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-success">

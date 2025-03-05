@@ -27,24 +27,6 @@
   }
 }
 
-.btn-link-task {
-  .btn-success,
-  .btn-hot,
-  .btn-action,
-  .btn-primary,
-  .btn-primary-400,
-  [class*="btn-neutral-"] {
-    .fa {
-      color: var(--clr-white);
-    }
-  }
-  span {
-      color: var(--clr-text-400);
-  }
-}
-
-
-
 .btn--plusMinus {
         user-select: text;
   &:hover {
