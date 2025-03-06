@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.goobi.production.plugin.DockAnchor;
 import org.goobi.production.plugin.barcode.config.BarcodeFormat;
 import org.goobi.production.plugin.barcode.config.BarcodeScannerPluginConfiguration;
 import org.goobi.production.plugin.interfaces.AbstractDockablePlugin;
@@ -11,6 +12,7 @@ import org.goobi.production.plugin.interfaces.AbstractDockablePlugin;
 import jakarta.annotation.ManagedBean;
 import jakarta.enterprise.context.RequestScoped;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,13 +33,12 @@ public class BarcodeScannerPlugin extends AbstractDockablePlugin {
     }
 
     @Override
-    public boolean isMenuBarDockable() {
-        return true;
-    }
-
-    @Override
-    public boolean isFooterDockable () {
-        return true;
+    public boolean isDockable(DockAnchor anchor) {
+        try {
+            return config().getDocking().contains(anchor);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -106,16 +107,17 @@ public class BarcodeScannerPlugin extends AbstractDockablePlugin {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        BarcodeScannerPlugin plugin = new BarcodeScannerPlugin();
-        plugin.initialize();
-        plugin.config.getBarcode().get(0).activate("propertyset_Standort_54");
-    }
-
     @Override
     public void initialize() throws Exception {
-        XmlMapper mapper = new XmlMapper();
-        this.config = mapper.readValue(new File("/opt/digiverso/goobi/config/plugin_intranda_footer_barcodeScanner.xml"), BarcodeScannerPluginConfiguration.class);
+        config(); // Load config
+    }
+
+    private BarcodeScannerPluginConfiguration config() throws IOException {
+        if (this.config == null) {
+            XmlMapper mapper = new XmlMapper();
+            this.config = mapper.readValue(new File("/opt/digiverso/goobi/config/plugin_intranda_dockable_barcodeScanner.xml"), BarcodeScannerPluginConfiguration.class);
+        }
+        return this.config;
     }
 
     public void scan() {
