@@ -75,7 +75,12 @@
                             <span class="flex-shrink-0">
                                 #{msgs.sizeOfImages}:
                             </span>
-                            <h:selectOneMenu id="sizeOfImages" styleClass="form-select" pt:aria-label="#{msgs.sizeOfImages}" value="#{Metadaten.thumbnailSize}">
+                            <h:selectOneMenu
+                                id="sizeOfImages"
+                                styleClass="form-select"
+                                pt:aria-label="#{msgs.sizeOfImages}"
+                                value="#{Metadaten.thumbnailSize}"
+                                onchange="this.nextElementSibling.click();">
                                 <f:selectItem itemValue="100" itemLabel="100 px"/>
                                 <f:selectItem itemValue="150" itemLabel="150 px"/>
                                 <f:selectItem itemValue="200" itemLabel="200 px"/>
@@ -86,9 +91,13 @@
                                 <f:selectItem itemValue="450" itemLabel="450 px"/>
                                 <f:selectItem itemValue="500" itemLabel="500 px"/>
                             </h:selectOneMenu>
-                            <button aria-label="#{msgs.uebernehmen}" type="submit" class="btn btn-blank" title="#{msgs.uebernehmen}">
-                                <span class="fa fa-check-circle-o" aria-hidden="true"/>
-                                <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                            <button
+                                jsf:id="sizeOfImagesSubmit"
+                                aria-label="#{msgs.uebernehmen}"
+                                type="submit"
+                                class="visually-hidden"
+                                title="#{msgs.uebernehmen}">
+                                <f:ajax render="@form" execute="@form" />
                             </button>
                         </label>
                     </li>
@@ -97,15 +106,24 @@
                             <span class="flex-shrink-0">
                                 #{msgs.numberOfImages}:
                             </span>
-                            <h:selectOneMenu id="numberOfImages" styleClass="form-select flex-shrink-1" pt:aria-label="#{msgs.numberOfImages}" value="#{Metadaten.numberOfImagesPerPage}">
+                            <h:selectOneMenu
+                                id="numberOfImages"
+                                styleClass="form-select flex-shrink-1"
+                                pt:aria-label="#{msgs.numberOfImages}"
+                                value="#{Metadaten.numberOfImagesPerPage}"
+                                onchange="this.nextElementSibling.click();">
                                 <f:selectItem itemValue="12" itemLabel="12"/>
                                 <f:selectItem itemValue="24" itemLabel="24"/>
                                 <f:selectItem itemValue="48" itemLabel="48"/>
                                 <f:selectItem itemValue="96" itemLabel="96"/>
                             </h:selectOneMenu>
-                            <button aria-label="#{msgs.uebernehmen}" type="submit" class="btn btn-blank" title="#{msgs.uebernehmen}">
-                                <span class="fa fa-check-circle-o" aria-hidden="true"/>
-                                <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                            <button
+                                jsf:id="numberOfImagesSubmit"
+                                aria-label="#{msgs.uebernehmen}"
+                                type="submit"
+                                class="visually-hidden"
+                                title="#{msgs.uebernehmen}">
+                                <f:ajax render="@form" execute="@form" />
                             </button>
                         </label>
                     </li>
