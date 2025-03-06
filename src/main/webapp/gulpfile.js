@@ -27,7 +27,10 @@ const sources = {
         'node_modules/bootstrap/scss/',
     ],
     legacyJS: './uii/template/js/legacy/',
-    js: './uii/template/js/**/*.js',
+    js: [
+        './uii/template/js/**/*.js',
+        '!./uii/template/js/legacy/**/*',
+    ],
     staticAssets: [
         'uii/**/*.xhtml',
         'uii/**/*.html',
@@ -128,7 +131,7 @@ function jsLegacy() {
         .pipe(sourcemaps.init())
         .pipe(uglify())
         .pipe(sourcemaps.write())
-        .pipe(dest(targetFolder.js))
+        .pipe(dest(`${customLocation}${targetFolder.js}`))
 };
 
 function devJsRollup() {
@@ -165,6 +168,7 @@ function prodJsRollup() {
 
 exports.dev = function() {
     loadConfig();
+    watch(sources.legacyJS, { ignoreInitial: false }, jsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
     watch(sources.cssGlob, { ignoreInitial: false }, devCss);
