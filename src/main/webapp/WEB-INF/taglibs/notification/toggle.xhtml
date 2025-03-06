@@ -5,10 +5,10 @@
         data-bs-toggle="collapse"
         data-bs-target="#notificationArea"
         role="button"
-        aria-expanded="#{facesContext.getMessageList().size() > 0 ? 'true' : 'false'}"
+        aria-expanded="#{HelperForm.getFacesMessageList(null).size() > 0 ? 'true' : 'false'}"
         aria-controls="notificationArea">
         <span class="notification-count">
-            #{facesContext.messageList.size()}
+            #{HelperForm.getFacesMessageList(null).size()}
             <span class="visually-hidden">messages</span>
         </span>
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-message" focusable="false">

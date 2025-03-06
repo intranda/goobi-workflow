@@ -1,0 +1,90 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<ui:repeat
+			var="item"
+			value="#{ProzessverwaltungForm.myProzess.werkstueckeList}"
+			id="masterpieces">
+
+			<div class="row">
+				<div class="col-sm-12">
+
+					<intranda:box
+						id="workpiece"
+						boxType="outline"
+						boxPadding="false"
+						boxTitle="false">
+
+						<intranda:boxTitle
+							title="#{msgs.werkstuecke}"
+							icon="fa-list">
+
+							<div class="actions d-flex">
+								<button
+									title="#{msgs.werkstueckBearbeiten}"
+									jsf:action="process_edit_workpiece"
+									jsf:id="editMasterpiece"
+									aria-label="#{msgs.werkstueckBearbeiten}"
+									class="btn d-flex align-items-center btn--title-action-neutral"
+									jsf:rel="tooltip"
+									jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+									<span class="fa fa-pencil" />
+									<f:passThroughAttribute
+										name="data-toggle"
+										value="tooltip" />
+									<f:setPropertyActionListener
+										target="#{ProzessverwaltungForm.myWerkstueckReload}"
+										value="#{item}" />
+								</button>
+								<button
+									jsf:action="#{ProzessverwaltungForm.WerkstueckNeu}"
+									jsf:id="newMasterpiece"
+									class="btn d-flex align-items-center btn--title-action-neutral"
+									jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+									title="#{msgs.werkstueckHinzufuegen}">
+									<span class="fa fa-plus margin-right-5" />
+									<f:passThroughAttribute
+										name="data-toggle"
+										value="tooltip" />
+								</button>
+
+							</div>
+						</intranda:boxTitle>
+
+						<h:dataTable
+							value="#{item.eigenschaften}"
+							var="prop"
+							columnClasses="process_propertyName, process_propertyValue"
+                            styleClass="table table-hover table-bordered">
+							<h:column>
+								<span
+									title="&quot;{product.#{prop.titel}}&quot;"
+									data-toggle="tooltip"
+									rel="tooltip">#{prop.titel}:</span>
+							</h:column>
+							<h:column>
+								<h:outputText value="#{prop.wert}" />
+							</h:column>
+						</h:dataTable>
+
+					</intranda:box>
+
+				</div>
+			</div>
+		</ui:repeat>
+
+	</composite:implementation>
+</ui:composition>

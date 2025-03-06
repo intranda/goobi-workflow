@@ -3,12 +3,11 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    template="/uii/templatePG/templatePG.html"
+    template="/uii/template/template.html"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:form="http://goobi.io/form">
@@ -581,14 +580,14 @@
                                     </div>
 
                                     <div class="col-12 col-md-9">
-                                        <x:inputText
+                                        <h:inputText
                                             id="metadataSaveTime"
                                             forceId="true"
                                             styleClass="form-control"
                                             value="#{LoginForm.myBenutzer.metsEditorTime}"
                                             required="true">
                                             <f:validator validatorId="org.goobi.validator.TimeValidator" />
-                                        </x:inputText>
+                                        </h:inputText>
 
                                         <intranda:formHelp
                                             content="#{msgs.helpMetadataSaveTime}"
@@ -644,7 +643,7 @@
 
                             <!-- TAB 6 -->
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab6'}">
-                                <ui:include src="templatePG/includes/user_config_mail_configuration.xhtml" />
+                                <ui:include src="template/includes/user_config_mail_configuration.xhtml" />
                             </h:panelGroup>
 
 
@@ -713,7 +712,7 @@
 
                                 <!-- new token -->
                                 <ui:fragment rendered="#{LoginForm.myBenutzer.token != null and LoginForm.myBenutzer.token.tokenId == null}">
-                               	    <br />
+                                    <br />
                                     <div
                                         class="row"
                                         style="border-top: 1px solid var(--clr-neutral-300);">

@@ -5,9 +5,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/templatePG/templatePG.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    template="/uii/template/template.html"
+
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
@@ -42,7 +42,7 @@
 
         <main id="batchEdit">
 
-            <ui:include src="templatePG/includes/calendarJavaScript.xhtml" />
+            <ui:include src="template/includes/calendarJavaScript.xhtml" />
 
             <div class="row">
                 <div class="col-12">
@@ -95,15 +95,15 @@
 
                             <div class="box__actions">
 
-                                <a
+                                <button
                                     jsf:id="cancel"
                                     class="btn btn-blank"
                                     jsf:immediate="true"
                                     jsf:action="#{NavigationForm.Reload}"> <h:outputText value="#{msgs.abbrechen}" />
-                                    <x:updateActionListener
-                                        property="#{NavigationForm.uiStatus.batch_edit}"
+                                    <f:setPropertyActionListener
+                                        target="#{NavigationForm.uiStatus.batch_edit}"
                                         value="" />
-                                </a>
+                                </button>
 
 
                                 <button
@@ -114,8 +114,8 @@
                                     <span>
                                         <h:outputText value="#{msgs.speichern}" />
                                     </span>
-                                    <x:updateActionListener
-                                        property="#{NavigationForm.uiStatus.batch_edit}"
+                                    <f:setPropertyActionListener
+                                        target="#{NavigationForm.uiStatus.batch_edit}"
                                         value="" />
                                 </button>
 
@@ -147,8 +147,8 @@
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                        <x:updateActionListener
-                                            property="#{NavigationForm.uiStatus.batch_edit}"
+                                        <f:setPropertyActionListener
+                                            target="#{NavigationForm.uiStatus.batch_edit}"
                                             value="edit" />
                                     </button>
                                 </div>

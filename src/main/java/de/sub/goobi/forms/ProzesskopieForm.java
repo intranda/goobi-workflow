@@ -47,11 +47,7 @@ import java.util.TreeSet;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
-import javax.enterprise.inject.Default;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
 import javax.naming.NamingException;
-import javax.servlet.http.Part;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
@@ -118,6 +114,10 @@ import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import jakarta.enterprise.inject.Default;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
+import jakarta.servlet.http.Part;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -1637,7 +1637,7 @@ public class ProzesskopieForm implements Serializable {
      */
     public String getPluginGui() {
         if (currentCatalogue == null || currentCatalogue.getOpacPlugin() == null) {
-            return "/uii/templatePG/includes/process/process_new_opac.xhtml";
+            return "/uii/template/includes/process/process_new_opac.xhtml";
         } else {
             return currentCatalogue.getOpacPlugin().getGui();
         }
@@ -1659,9 +1659,9 @@ public class ProzesskopieForm implements Serializable {
                 field.setWert(String.valueOf(System.currentTimeMillis() + counter));
                 counter++;
             }
-            if (field.getMetadata() != null && "TitleDocMain".equals(field.getMetadata()) && currentTitle.length() == 0) {
+            if (field.getMetadata() != null && "TitleDocMain".equals(field.getMetadata()) && currentTitle.isEmpty()) {
                 currentTitle = field.getWert();
-            } else if (field.getMetadata() != null && "ListOfCreators".equals(field.getMetadata()) && currentAuthors.length() == 0) {
+            } else if (field.getMetadata() != null && "ListOfCreators".equals(field.getMetadata()) && currentAuthors.isEmpty()) {
                 currentAuthors = field.getWert();
             }
 
@@ -1716,6 +1716,7 @@ public class ProzesskopieForm implements Serializable {
 
         StringTokenizer tokenizer = new StringTokenizer(titeldefinition, "+");
         ProcessTitleGenerator gen = new ProcessTitleGenerator();
+        gen.setSpecialCharacterReplacement(replacement);
         gen.setSeparator("");
         /* jetzt den Bandtitel parsen */
         while (tokenizer.hasMoreTokens()) {
@@ -1734,7 +1735,7 @@ public class ProzesskopieForm implements Serializable {
                      */
                     if (("ATS".equals(myField.getTitel()) || "TSL".equals(myField.getTitel())) && myField.getShowDependingOnDoctype(getDocType())
                             && (myField.getWert() == null || "".equals(myField.getWert()))) {
-                        if (atstsl == null || atstsl.length() == 0) {
+                        if (StringUtils.isBlank(atstsl)) {
                             atstsl = createAtstsl(currentTitle, currentAuthors);
                         }
                         myField.setWert(this.atstsl);
@@ -1749,6 +1750,7 @@ public class ProzesskopieForm implements Serializable {
 
                         // Skip process title generation if a required field is not present
                         if (myField.isRequired() && value.isBlank()) {
+                            Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + myField.getTitel());
                             return;
                         }
                         gen.addToken(calcProcesstitelCheck(myField.getTitel(), value), ManipulationType.NORMAL);
@@ -1935,7 +1937,7 @@ public class ProzesskopieForm implements Serializable {
 
     public String createAtstsl(String title, String author) {
         StringBuilder result = new StringBuilder(8);
-        if (author != null && author.trim().length() > 0) {
+        if (StringUtils.isNotBlank(author)) {
             result.append(author.length() > 4 ? author.substring(0, 4) : author);
             result.append(title.length() > 4 ? title.substring(0, 4) : title);
         } else {
@@ -1998,15 +2000,15 @@ public class ProzesskopieForm implements Serializable {
         String key = this.getErrorMessageKeyOfFolder(this.uploadFolder);
         String message = "";
 
-        if (key != null && key.length() > 0) {
+        if (StringUtils.isNotBlank(key)) {
             String result = Helper.getTranslation(key, this.uploadRegex);
-            if (result != null && result.length() > 0 && !result.equals(key)) {
+            if (StringUtils.isNotBlank(result) && !result.equals(key)) {
                 message = result;
             } else {
                 message = "";
             }
         }
-        if (message.length() == 0) {
+        if (StringUtils.isBlank(message)) {
             message = "The selected file could not be uploaded because it does not match the specified file format.";
         }
         return message;
@@ -2140,7 +2142,10 @@ public class ProzesskopieForm implements Serializable {
                             Optional<String> otherValue = Optional.empty();
                             if (Type.VOCABULARYREFERENCE.equals(other.getType())) {
                                 try {
-                                    otherValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(other.getValue())).getMainValue());
+                                    otherValue = Optional.of(VocabularyAPIManager.getInstance()
+                                            .vocabularyRecords()
+                                            .get(Long.parseLong(other.getValue()))
+                                            .getMainValue());
                                 } catch (NumberFormatException e) {
                                     log.error("Unable to read ID \"{}\"", other.getValue());
                                 }

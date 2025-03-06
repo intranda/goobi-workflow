@@ -21,9 +21,8 @@ package io.goobi.workflow.harvester;
 import java.io.InputStream;
 import java.nio.file.Path;
 
-import javax.ws.rs.core.Response;
-
 import io.goobi.workflow.harvester.repository.Repository;
+import jakarta.ws.rs.core.Response;
 
 public interface MetadataParser {
 
@@ -50,7 +49,6 @@ public interface MetadataParser {
      */
 
     public Response replaceMetadata(Integer processid, InputStream inputStream);
-
 
     /**
      * Use this method to enhance metadata, e.g. add additional metadata or check for the document type and add an anchor record

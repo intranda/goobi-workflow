@@ -1,0 +1,50 @@
+<ui:composition
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <!-- Bootstrap -->
+
+    <!-- Bootstrap 5 -->
+    <script src="template/js/bootstrap.bundle.min.js?v=#{HelperForm.buildVersion}"></script>
+
+    <!-- HC-Sticky -->
+    <script src="template/js/hc-sticky.js?v=#{HelperForm.buildVersion}"></script>
+
+    <!-- INTRANDA JS -->
+    <script src="template/js/static/intranda.js?v=1.2"></script>
+
+    <!-- jQuery -->
+    <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" target="head" />
+
+    <!-- Reactive rx -->
+    <script src="template/js/static/reactiveX/rx.lite.min.js"></script>
+
+    <!-- shortcuts ==> used in several templates (also plugins) + _metseditor.xhtml -->
+    <script src="template/js/static/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
+
+    <!-- GW custom JS -->
+    <script>
+        // WHAT DOES IT DO?
+        window.myfaces = window.myfaces || {};
+        myfaces.config = myfaces.config || {};
+        //set the config part
+        myfaces.config.no_portlet_env = true;
+    </script>
+    <script src="../dist/js/legacy.min.js?v=#{HelperForm.buildVersion}" defer="true" />
+    <script src="../dist/js/main.min.js?v=#{HelperForm.buildVersion}" defer="true" />
+    <script>
+        // wrapping these initializations in an event listener is a workaround as we can't defer inline JS
+        window.addEventListener('DOMContentLoaded', () => {
+            (() => {
+                //Show and hide goobi ajax loader
+                gwAjaxLoader.init();
+                //TOOLTIPS
+                //Initialize Bootstrap tooltips
+                gwInitTooltips.init();
+                //Handle tooltips in the context of ajax calls (destroy + reinitialize. Usage: cp. for example inc_menu_preferences.xhtml)
+                gwResizableTable.init();
+                gwFocusOnLoad.init();
+                gwConfigEditor.init();
+            })();
+        })
+    </script>
+</ui:composition>

@@ -6,12 +6,17 @@
     <div class="box__title">
         <h2>
             <!-- Do not render icon if cc.attrs.icon is undefined -->
-            <c:if test="#{icon != 'undefined'}">
+            <c:if test="#{icon != null}">
                 <span
                     aria-hidden="true"
                     class="fa fa-#{icon}" />
             </c:if>
-            <h:outputText value="#{title}" />
+            <c:if test="#{titleId != null}">
+                <span id="#{titleId}">#{title}</span>
+            </c:if>
+            <c:if test="#{titleId == null}">
+                #{title}
+            </c:if>
         </h2>
         <ui:insert />
     </div>

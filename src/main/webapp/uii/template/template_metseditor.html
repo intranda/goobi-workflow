@@ -6,255 +6,173 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:c="http://java.sun.com/jstl/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:p="http://primefaces.org/ui"
     xmlns:ds="http://deltaspike.apache.org/jsf"
-    xmlns:notification="http://goobi.io/notification">
+    xmlns:notification="http://goobi.io/notification"
+	xmlns:layout="http://goobi.io/layout">
 
-<h:head>
-    <!-- META TAGS -->
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <meta name="description" content="Goobi workflow" />
-	<meta name="author" content="intranda GmbH" />
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta http-equiv="Content-Script-Type" content="type" />
-	<meta http-equiv="pragma" content="no-cache" />
-	<meta http-equiv="cache-control" content="no-cache" />
-	<meta name="date" content="1970-01-01T00:00:00+01:00" />
-    <meta name="application" content="#{HelperForm.applicationHeaderTitle}" />
-    <meta name="version" content="#{HelperForm.version}" />
-    <meta name="build date" content="#{HelperForm.buildDate}" />
-    <meta name="git-revision" content="#{HelperForm.revision}" />
-    <meta name="msapplication-TileColor" content="#ffffff" />
-    <meta name="msapplication-TileImage" content="template/img/favicons/ms-icon-144x144.png" />
-    <meta name="theme-color" content="#ffffff" />
+    <h:head>
+        <!-- METADATA -->
+        <ui:include src="/WEB-INF/includes/template/inc_metadata.xhtml" />
+        <!-- CSS -->
+        <ui:include src="/WEB-INF/includes/template/inc_CSS.xhtml" />
+        <!-- Template Specific CSS -->
+        <link rel="stylesheet" href="template/css/lib/colorbox.css?v=#{HelperForm.buildVersion}" />
+        <link rel="stylesheet" href="template/css/lib/x3dom.css?v=1" />
+		<!-- Javascript -->
+		<ui:include src="/WEB-INF/includes/template/inc_JS.xhtml" />
+        <style>
+            #pageContentRight {
+                left: 0 !important;
+            }
+        </style>
+    </h:head>
 
-    <!-- TITLE -->
-    <title>#{HelperForm.applicationHeaderTitle}</title>
+    <ui:insert name="metadata" />
 
-    <!-- FAVICONS -->
-    <link rel="icon" href="template/img/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="57x57" href="template/img/favicons/apple-icon-57x57.png" />
-    <link rel="apple-touch-icon" sizes="60x60" href="template/img/favicons/apple-icon-60x60.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="template/img/favicons/apple-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="76x76" href="template/img/favicons/apple-icon-76x76.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="template/img/favicons/apple-icon-114x114.png" />
-    <link rel="apple-touch-icon" sizes="120x120" href="template/img/favicons/apple-icon-120x120.png" />
-    <link rel="apple-touch-icon" sizes="144x144" href="template/img/favicons/apple-icon-144x144.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="template/img/favicons/apple-icon-152x152.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="template/img/favicons/apple-icon-180x180.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="template/img/favicons/android-icon-192x192.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="template/img/favicons/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="96x96" href="template/img/favicons/favicon-96x96.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="template/img/favicons/favicon-16x16.png" />
-    <link rel="manifest" href="template/img/favicons/manifest.json" />
+    <body class="#{LoginForm.myBenutzer == null?'login':'content-flow'}">
+    <ds:windowId/>
+        <f:view locale="#{SpracheForm.locale}">
+            <!-- USER NOT LOGGED IN -->
+            <ui:fragment rendered="#{LoginForm.myBenutzer==null}">
+                <ui:include src="/WEB-INF/includes/template/inc_login.xhtml" />
+            </ui:fragment>
 
-    <!-- CSS ASSETS -->
-    <link rel="stylesheet" href="template/assets/css/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
-    <link rel="stylesheet" href="template/assets/css/jquery-ui.min.css?v=#{HelperForm.buildVersion}" />
-    <link rel="stylesheet" href="template/assets/css/jquery-ui.structure.min.css?v=#{HelperForm.buildVersion}" />
-    <link rel="stylesheet" href="template/assets/css/font-awesome.min.css?v=#{HelperForm.buildVersion}" />
-    <link rel="stylesheet" href="template/css/plugins/colorbox/colorbox.css?v=#{HelperForm.buildVersion}" />
+            <!-- USER LOGGED IN -->
+            <c:if test="#{LoginForm.myBenutzer!=null}">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css?v=#{HelperForm.buildVersion}" />
+                <!-- PAGE WRAPPER -->
 
-    <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
-        <link rel="stylesheet" href="template/css/accessibility.css?v=#{HelperForm.buildVersion}" />
-    </ui:fragment>
+                <div
+                    id="pageWrapper"
+                    class="page-wrapper content-flow" style="max-height: 100vh;">
+                    <!-- MENU -->
+                    <layout:header>
 
-    <!-- CUSTOM CSS -->
-    <style>
-        <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
-    </style>
-    <span class="outer-skip-link">
-    	<a class="skip-main sr-only" href="#pageContentWrapper" tabindex="0">#{msgs.skipMainContent}</a>
-    </span>
-</h:head>
+                        <!-- NAVIGATION -->
+                        <nav aria-label="#{msgs.navigation}" id="navbarSupportedContent" class="navbar navbar-collapse collapse" role="navigation">
+                            <!-- METSEDITOR MENU -->
+                            <ui:insert name="metseditorMenu" />
+                        </nav>
 
-<ui:insert name="metadata" />
+                        <!-- plugins -->
+                        <nav aria-label="#{msgs.navigation}" id="navigationPlugins" class="page-menu__navigation navigationActions" role="navigation">
+                            <!-- METSEDITOR MENU -->
+                            <ui:insert name="metseditorPlugins" />
+                        </nav>
 
-<body class="#{LoginForm.myBenutzer == null?'login':'content-flow'}">
-  <ds:windowId/>
-<main>
-    <f:view locale="#{SpracheForm.locale}">
-        <!-- USER NOT LOGGED IN -->
-        <ui:fragment rendered="#{LoginForm.myBenutzer==null}">
-			<ui:include src="inc_login.xhtml" />
-        </ui:fragment>
+                        <!-- ACTIONS -->
+                        <nav aria-label="#{msgs.navigation} #{msgs.auswahl}" id="navigationActions" class="page-menu__actions navigationActions">
+                            <!-- METSEDITOR MENU ACTIONS -->
+                            <ui:insert name="metseditorMenuActions" />
+                        </nav>
+                    </layout:header>
 
-        <!-- USER LOGGED IN -->
-        <c:if test="#{LoginForm.myBenutzer!=null}">
-
-            <!-- PAGE WRAPPER -->
-
-            <div id="pageWrapper" class="page-wrapper">
-                <!-- MENU -->
-                <div id="pageMenu" class="page-menu">
-                    <!-- LOGO -->
-                    <div id="brand" class="page-menu__logo">
-                        <a aria-label="#{msgs.returnHome}" href="index.xhtml"></a>
-                    </div>
-
-                    <!-- TOGLLE MOBILE MENU -->
-                    <button type="button" class="btn btn--clean mobile-visible" data-toggle="mobile-menu">
-                        <i class="fa fa-bars fa-lg" aria-hidden="true"></i>
-                        <span class="sr-only">#{msgs.toggleMobileMenu}</span>
-                    </button>
-
-                    <!-- NAVIGATION -->
-                    <nav aria-label="#{msgs.navigation}" id="navigation" class="page-menu__navigation" role="navigation">
-                        <!-- METSEDITOR MENU -->
-                        <ui:insert name="metseditorMenu" />
-                    </nav>
-
-                    <!-- plugins -->
-                   <nav aria-label="#{msgs.navigation}" id="navigationPlugins" class="page-menu__navigation navigationActions" role="navigation">
-                        <!-- METSEDITOR MENU -->
-                        <ui:insert name="metseditorPlugins" />
-                    </nav>
-
-                    <!-- ACTIONS -->
-                    <nav aria-label="#{msgs.navigation} #{msgs.auswahl}" id="navigationActions" class="page-menu__actions navigationActions">
-                        <!-- METSEDITOR MENU ACTIONS -->
-                        <ui:insert name="metseditorMenuActions" />
-                    </nav>
-
-                    <!-- TOGLLE MOBILE IMAGE -->
-                    <button type="button" class="btn btn--clean mobile-visible" data-toggle="mobile-image">
-                        <i class="fa fa-chevron-left fa-lg" aria-hidden="true"></i>
-                        <i class="fa fa-picture-o fa-lg" aria-hidden="true"></i>
-                        <span class="sr-only">#{msgs.toggleMobileImage}</span>
-                    </button>
-                </div>
-
-                <!-- CONTENT WRAPPER -->
-                <div id="pageContentWrapper" class="page-content-wrapper" tabindex="-1">
-                    <!-- CONTENT LEFT -->
-                    <div id="pageContentLeft" class="page-content__left">
-                        <div class="page-content__left-inner">
-                            <!-- METSEDITOR STRUCTURE -->
-                            <ui:insert name="metseditorStructure" />
+                    <!-- CONTENT WRAPPER -->
+                    <main
+                        id="content"
+                        class="d-flex flex-nowrap overflow-x-hidden"
+                        tabindex="-1"
+                        style="max-height: calc(100vh - 6rem); height:100%;">
+                        <!-- CONTENT LEFT -->
+                        <div
+                            id="pageContentLeft"
+                            class="resize-handle-end bg-light p-2 border-end border-primary overflow-y-scroll overflow-x-hidden">
+                                <!-- METSEDITOR STRUCTURE -->
+                                <ui:insert name="metseditorStructure" />
                         </div>
-                    </div>
 
-                    <!-- CONTENT CENTER -->
-                    <h:panelGroup id="pageContentCenter" styleClass="page-content__center" layout="block">
-                        <div class="page-content__center-inner">
+                        <!-- CONTENT CENTER -->
+                        <h:panelGroup
+                            id="pageContentCenter"
+                            styleClass="flex-grow-1 p-2 overflow-y-auto overflow-x-hidden border-end h-100 d-flex flex-column #{Metadaten.bildAnzeigen ? 'mx-2' : 'ms-2'}"
+                            layout="block">
                             <!-- METSEDITOR CONTENT -->
                             <ui:insert name="metseditorContent" />
-                        </div>
-                    </h:panelGroup>
+                        </h:panelGroup>
 
-                    <!-- CONTENT RIGHT -->
-                    <ui:fragment rendered="#{Metadaten.bildAnzeigen}">
-                    <div id="pageContentRight" class="page-content__right">
-                        <div class="page-content__right-inner">
-                            <!-- METSEDITOR IMAGE -->
-                            <ui:insert name="metseditorImage" />
-                        </div>
-                    </div>
-                </ui:fragment>
+                        <!-- CONTENT RIGHT -->
+                        <ui:fragment rendered="#{Metadaten.bildAnzeigen}">
+                            <div
+                                id="pageContentRight"
+                                class="d-none d-md-block resize-handle-start p-2 ">
+                                    <!-- METSEDITOR IMAGE -->
+                                    <ui:insert name="metseditorImage" />
+                            </div>
+                        </ui:fragment>
+                    </main>
+                <layout:footer />
             </div>
 
-            <!-- AJAX LOADER -->
-            <div id="ajaxloader" class="ajax-loader">
-                <img src="template/img/goobi/ajaxloader2.gif" />
-            </div>
-        </div>
-        <footer class="footer">
-          <div class="d-flex gap-3 justify-content-start align-items-center">
-            <a class="footer-text" href="https://github.com/intranda/goobi-workflow" target="_blank">
-              <span class="fa fa-github fa-lg" />
-              <span>
-                GitHub
-              </span>
-            </a>
-            <a class="footer-text" href="https://github.com/intranda/goobi-workflow/blob/master/LICENSE" target="_blank">
-              License
-            </a>
-            <a class="footer-text " href="https://goobi.io/" target="_blank">
-               Goobi workflow - developed by intranda
-            </a>
-            <h:outputText
-                styleClass="footer-text"
-                value="#{msgs.version} #{HelperForm.version}" />
-          </div>
-          <ui:fragment rendered="#{not empty facesContext.messageList}">
-            <notification:area>
-              <notification:toggle />
-              <notification:messages>
-              </notification:messages>
-            </notification:area>
-          </ui:fragment>
-        </footer>
+            </c:if>
+        </f:view>
 
-        </c:if>
-    </f:view>
+        <!-- JAVASCRIPT ASSETS -->
+        <script src="template/js/static/jquery.colorbox-min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/riot.min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/q-promises/q.min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/plugins/tinymce/tinymce.min.js"></script>
+        <!-- OPEN SEADRAGON AND IMAGE VIEW -->
+        <script src="template/js/static/openseadragon/openseadragon.min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/openseadragon/openseadragon-viewerinputhook.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/imageView.min.js?v=#{HelperForm.buildVersion}"></script>
+        <!-- 3D-MODELS -->
+        <script src="template/js/static/three/three.min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/OBJLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/MTLLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/PLYLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/STLLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/FBXLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/TDSLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/DRACOLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/GLTFLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/controls/OrbitControls.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/dependencies/inflate.min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/x3dom/x3dom.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/objectView.min.js?v=#{HelperForm.buildVersion}"></script>
 
-    <!-- JAVASCRIPT ASSETS -->
-    <script src="template/assets/js/jquery-3.4.0.min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/assets/js/jquery-ui.min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/assets/js/jquery.colorbox-min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/assets/js/popper.min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/assets/js/bootstrap.min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/assets/js/riot.min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/reactiveX/rx.lite.min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/q-promises/q.min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/plugins/tinymce/tinymce.min.js"></script>
-    <script src="template/js/jquery.hotkeys.js?v=#{HelpeForm.buildVersion}"></script>
-    <!-- OPEN SEADRAGON AND IMAGE VIEW -->
-    <script src="template/js/openseadragon/openseadragon.min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/openseadragon/openseadragon-viewerinputhook.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/imageView.min.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- 3D-MODELS -->
-    <script src="template/js/three/three.min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/three/loaders/OBJLoader.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/three/loaders/MTLLoader.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/three/loaders/PLYLoader.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/three/loaders/STLLoader.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/three/loaders/FBXLoader.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/three/loaders/TDSLoader.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/three/loaders/DRACOLoader.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/three/loaders/GLTFLoader.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/three/controls/OrbitControls.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/three/dependencies/inflate.min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/x3dom/x3dom.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="template/js/objectView.min.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- GOOBI WORKFLOW JS -->
-    <script src="template/js/dist/goobiWorkflowJS.min.js?v=#{HelperForm.buildVersion}"></script>
-
-    <!-- ALTO EDITOR -->
-    <script src="template/js/altoEditorUtils.js?v=#{HelperForm.buildVersion}" type="text/javascript"></script>
-    <script src="template/js/riot+compiler.min.js?v=#{HelperForm.buildVersion}" type="text/javascript"></script>
-    <script src="template/riot/alto-editor.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
-    <script src="template/riot/named-entity-selector.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
-    <script src="template/riot/autocomplete.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
-    <script>
-        goobiWorkflowConfig = {
-            currentView: "#{Metadaten.modusAnsicht}",
-            readOnlyMode: "#{Metadaten.nurLesenModus}",
-            autoSaveInterval: "#{LoginForm.myBenutzer.metsEditorTime}",
-            baseUrl: "#{HelperForm.servletPathWithHostAsUrl}",
-            openImageTitleText: "#{msgs.mets_showThisImage}",
-            setRepresentativeImageText: "#{msgs.mets_setRepresentativeImage}",
-            displayImageArea: #{Metadaten.bildAnzeigen},
-            navigationShortcut: "#{LoginForm.myBenutzer.shortcutPrefix}",
-            metseditor: {
-                thumbnails: {
-                    maxParallelRequests : #{Metadaten.maxParallelThumbnailRequests}
+        <!-- ALTO EDITOR -->
+        <script src="template/js/static/altoEditorUtils.js?v=#{HelperForm.buildVersion}" type="text/javascript"></script>
+        <script src="template/js/static/riot+compiler.min.js?v=#{HelperForm.buildVersion}" type="text/javascript"></script>
+        <script src="template/js/riot/alto-editor.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
+        <script src="template/js/riot/named-entity-selector.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
+        <script src="template/js/riot/autocomplete.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
+        <script>
+            goobiWorkflowConfig = {
+                currentView: "#{Metadaten.modusAnsicht}",
+                readOnlyMode: "#{Metadaten.nurLesenModus}",
+                autoSaveInterval: "#{LoginForm.myBenutzer.metsEditorTime}",
+                baseUrl: "#{HelperForm.servletPathWithHostAsUrl}",
+                openImageTitleText: "#{msgs.mets_showThisImage}",
+                setRepresentativeImageText: "#{msgs.mets_setRepresentativeImage}",
+                displayImageArea: #{Metadaten.bildAnzeigen},
+                navigationShortcut: "#{LoginForm.myBenutzer.shortcutPrefix}",
+                metseditor: {
+                    thumbnails: {
+                        maxParallelRequests : #{Metadaten.maxParallelThumbnailRequests}
+                    }
                 }
-            }
-        };
-
-        $( document ).ready( function() {
-            goobiWorkflowJS.init( goobiWorkflowConfig );
-            goobiWorkflowJS.meScrollPos.restoreScrollPos();
-        } );
-    </script>
-    </main>
-</body>
+            };
+            faces.ajax.addOnEvent((data) => {
+                const ajaxstatus = data.status;
+                const ajaxBehaviour = data.source.dataset.ajaxBehaviour;
+                console.log("ajaxBehaviour", ajaxBehaviour, data.source.dataset);
+                if(ajaxBehaviour === "ignore") {
+                	return;
+                }
+                if (ajaxstatus === 'success') {
+                    goobiWorkflowJS.init( goobiWorkflowConfig );
+                    goobiWorkflowJS.meScrollPos.restoreScrollPos();
+                    gwHandleTooltip.init(data, {restore: false});
+                    gwInitTooltips.init();
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                goobiWorkflowJS.init( goobiWorkflowConfig );
+                goobiWorkflowJS.meScrollPos.restoreScrollPos();
+                goobiWorkflowJS.navigation.init(goobiWorkflowConfig);
+            });
+        </script>
+    </body>
 </html>

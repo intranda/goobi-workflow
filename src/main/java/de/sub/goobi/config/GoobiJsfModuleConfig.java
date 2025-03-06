@@ -24,10 +24,10 @@
  */
 package de.sub.goobi.config;
 
-import javax.enterprise.inject.Specializes;
-
 import org.apache.deltaspike.jsf.api.config.JsfModuleConfig;
 import org.apache.deltaspike.jsf.spi.scope.window.ClientWindowConfig;
+
+import jakarta.enterprise.inject.Specializes;
 
 @Specializes
 public class GoobiJsfModuleConfig extends JsfModuleConfig {

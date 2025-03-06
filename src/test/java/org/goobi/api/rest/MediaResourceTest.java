@@ -27,14 +27,13 @@ package org.goobi.api.rest;
 
 import static org.junit.Assert.assertNotNull;
 
-import javax.ws.rs.core.Response;
-
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
+import jakarta.ws.rs.core.Response;
 
 public class MediaResourceTest extends AbstractTest {
 

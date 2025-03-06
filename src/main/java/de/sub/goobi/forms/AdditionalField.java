@@ -32,10 +32,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
-
 import org.apache.commons.lang3.StringUtils;
 
+import jakarta.faces.model.SelectItem;
 import lombok.Getter;
 import lombok.Setter;
 

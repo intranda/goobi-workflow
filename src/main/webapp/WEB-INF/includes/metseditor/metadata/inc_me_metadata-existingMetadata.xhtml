@@ -1,0 +1,75 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:section="http://goobi.io/section">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <h:panelGroup
+            layout="block"
+            id="meEditMetadataBox"
+            rendered="#{!(Metadaten.sizeOfMetadata==0 and empty Metadaten.myMetadaten)}"
+            styleClass="pb-2">
+            <section:section type="#{!empty Metadaten.myMetadaten or Metadaten.sizeOfMetadata!=0 ? 'neutral' : 'outline'}">
+                <section:header
+                    icon="bars"
+                    title="#{msgs.metadaten}">
+                    <button
+                        type="button"
+                        aria-label="#{msgs.minimizeBox}"
+                        class="btn"
+                        data-bs-target="#metadataBoxBody"
+                        data-bs-toggle="collapse"
+                        aria-expanded="true"
+                        aria-controls="metadataBoxBody">
+                        <span
+                            class="collapse-caret fa fa-angle-up"
+                            aria-hidden="true" />
+                        <span
+                            class="extend-caret fa fa-angle-down"
+                            aria-hidden="true" />
+                    </button>
+                </section:header>
+                <div id="metadataBoxBody" class="collapse show">
+                    <p class="p-3 border-bottom" jsf:rendered="#{empty Metadaten.myMetadaten}">
+                        <h:outputText value="#{msgs.mets_no_metadata_assigned}" />
+                    </p>
+                    <ui:repeat
+                        value="#{Metadaten.myMetadaten}"
+                        var="Item"
+                        varStatus="status">
+                        <intranda:formGroupMetadata
+                            id="metadata"
+                            metadata="#{Item}"
+                            index="#{status.index}" />
+                    </ui:repeat>
+
+                    <ui:fragment rendered="#{Metadaten.sizeOfMetadata!=0}">
+                        <div class="p-3 d-flex justify-content-end gap-2">
+                            <button
+                                type="button"
+                                jsf:id="addMetadata"
+                                class="btn btn-#{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ? 'blank' : 'neutral-600'}"
+                                jsf:action="#{Metadaten.Hinzufuegen}">
+                                #{msgs.neuesMetadatumAnlegen}
+                                <f:setPropertyActionListener
+                                        value=""
+                                        target="#{Metadaten.currentGroup}" />
+                                <f:ajax
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data) }"
+                                    render=":pageContentCenter" />
+                            </button>
+                        </div>
+                    </ui:fragment>
+                </div>
+            </section:section>
+        </h:panelGroup>
+    </composite:implementation>
+</ui:composition>

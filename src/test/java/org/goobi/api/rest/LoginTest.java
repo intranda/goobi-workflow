@@ -30,10 +30,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.easymock.EasyMock;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
@@ -54,6 +50,9 @@ import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.persistence.managers.UserManager;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Helper.class, UserManager.class, JwtHelper.class })

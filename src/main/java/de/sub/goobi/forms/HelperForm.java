@@ -28,17 +28,11 @@ package de.sub.goobi.forms;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Ruleset;
@@ -57,6 +51,12 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.dl.Fileformat;
@@ -127,8 +127,7 @@ public class HelperForm implements Serializable {
         List<SelectItem> myPrefs = new ArrayList<>();
         List<Ruleset> temp = RulesetManager.getRulesets("titel", null, null, null,
                 Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
-        for (Iterator<Ruleset> iter = temp.iterator(); iter.hasNext();) {
-            Ruleset an = iter.next();
+        for (Ruleset an : temp) {
             myPrefs.add(new SelectItem(an, an.getTitel(), null));
         }
         return myPrefs;
@@ -363,6 +362,19 @@ public class HelperForm implements Serializable {
 
     public boolean isShowEditionDataEnabled() {
         return ConfigurationHelper.getInstance().isProcesslistShowEditionData();
+    }
+
+    public List<FacesMessage> getFacesMessageList() {
+        return getFacesMessageList(null);
+    }
+
+    public List<FacesMessage> getFacesMessageList(String clientId) {
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        if (StringUtils.isBlank(clientId)) {
+            return context.getMessageList(null);
+        } else {
+            return context.getMessageList(clientId);
+        }
     }
 
 }

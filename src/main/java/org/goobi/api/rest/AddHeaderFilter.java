@@ -28,13 +28,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.ext.Provider;
-
 import org.apache.commons.configuration.ConfigurationException;
 
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.ext.Provider;
 import lombok.extern.log4j.Log4j2;
 
 @Provider

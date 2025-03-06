@@ -27,11 +27,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.faces.application.Application;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +39,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
+import jakarta.faces.application.Application;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, UIViewRoot.class, Application.class })

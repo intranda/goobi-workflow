@@ -1,4 +1,4 @@
-FROM maven:3.9.3-eclipse-temurin-17 AS build
+FROM maven:3-eclipse-temurin-21 AS build
 
 # you can use --build-arg build=false to skip workflow-core.war compilation, a workflow-core.war file needs to be available in target/workflow-core.war then
 ARG build=true
@@ -8,7 +8,7 @@ WORKDIR /workflow
 RUN echo $build; if [ "$build" = "true" ]; then mvn clean package; elif [ -f "/workflow/target/workflow-core.war" ]; then echo "using existing workflow-core.war"; else echo "not supposed to build, but no workflow-core.war found either"; exit 1; fi
 
 # Build actual application container
-FROM tomcat:9-jre17 AS assemble
+FROM tomcat:10-jre21 AS assemble
 LABEL maintainer="Matthias Geerdsen <matthias.geerdsen@intranda.com>"
 
 ENV DB_SERVER workflow-db

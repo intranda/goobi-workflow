@@ -40,10 +40,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-
 import org.easymock.EasyMock;
 import org.goobi.beans.Batch;
 import org.goobi.beans.HistoryEvent;
@@ -92,6 +88,9 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyManager.class, StepManager.class, TemplateManager.class, MasterpieceManager.class, HistoryManager.class,

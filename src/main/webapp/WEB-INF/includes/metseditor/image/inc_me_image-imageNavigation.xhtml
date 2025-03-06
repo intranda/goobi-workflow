@@ -1,0 +1,119 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <composite:interface/>
+
+    <composite:implementation>
+
+        <nav aria-label="#{msgs.navigation} #{msgs.images}" id="imageNavigation" class="d-flex justify-content-center" role="navigation">
+            <ul class="dataTables__paginator" role="list">
+                <!-- FIRST IMAGE -->
+                <li>
+                    <button jsf:action="#{Metadaten.imageLeftmost}" jsf:id="imageFirst" aria-label="#{msgs.firstImage}" class="btn btn-blank" title="#{Metadaten.pagesRTL?msgs.lastImage:msgs.firstImage}" type="button">
+                        <span class="fa fa-angle-double-left" aria-hidden="true"/>
+                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                        <f:ajax
+                            execute="@form :pageareas"
+                            render="@form :pageareas :altoEditAutocomplete" />
+                        <f:passThroughAttribute name="data-renderimage" value="true"/>
+                    </button>
+                </li>
+
+                <!-- PREV-2 IMAGE -->
+                <li>
+                    <button jsf:action="#{Metadaten.imageLeft2}" jsf:id="prevImage2" aria-label="#{msgs.previousImage}" class="btn btn-blank" title="#{msgs.mets_navigateTwoImagesLeft}" type="button">
+                        <span class="fa fa-angle-left" aria-hidden="true"/>
+                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                        <f:ajax
+                            execute="@form :pageareas"
+                            render="@form :pageareas :altoEditAutocomplete"/>
+                        <f:passThroughAttribute name="data-renderimage" value="true"/>
+                    </button>
+                </li>
+                <!-- PREV IMAGE -->
+                <li>
+                    <button jsf:action="#{Metadaten.imageLeft}" jsf:id="prevImage" class="btn btn-primary" type="button">
+                        <span class="fa fa-angle-left" aria-hidden="true"/>
+                        <span>#{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}</span>
+                        <f:ajax
+                            execute="@form :pageareas"
+                            render="@form :pageareas :altoEditAutocomplete"/>
+                        <f:passThroughAttribute name="data-renderimage" value="true"/>
+                    </button>
+                </li>
+                <li id="autocomplete" class="dataTables__paginator__page-count">
+                    <p:autoComplete id="txtMoveTo2" inputStyleClass="form-control" scrollHeight="300" forceId="false" value="#{Metadaten.bildNummerGeheZuCompleteString}" completeMethod="#{Metadaten.autocomplete}" inputStyle="display:none;width:110px" onblur="                         document.querySelector('[id$=txtMoveTo2_input]').style.display='none';                         document.querySelector('[id$=txtMoveTo2_input]').value='';                         document.querySelector('[id$=txtMoveTo1]').style.display='inline';                         document.querySelector('[id$=txtMoveTo2_panel]')?.close();" onkeyup="return submitEnter(document.querySelector('[id$=goButton]').id,event)"/>
+                    <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}" styleClass="notFocusable visually-hidden">
+                        <f:ajax
+                            execute="@form :pageareas"
+                            render="@form :pageareas"/>
+                        <f:passThroughAttribute name="data-renderimage" value="true"/>
+                    </h:commandButton>
+
+                    <span id="txtMoveTo1" class="p-3" onclick="document.querySelector('[id$=txtMoveTo2_input]').style.display='inline';                         document.querySelector('[id$=txtMoveTo1]').style.display='none';                         document.querySelector('[id$=txtMoveTo2_input]').focus();">
+                        <h:outputText forceId="false" value="#{msgs.mets_currentImage} #{Metadaten.imageIndex +1} #{msgs.von} #{Metadaten.sizeOfImageList}"/>
+                    </span>
+                </li>
+
+                <!-- IMAGE NEXT -->
+                <li>
+                    <button jsf:action="#{Metadaten.imageRight}" jsf:id="nextImage" class="btn btn-primary" type="button">
+                        <span>#{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}</span>
+                        <span class="fa fa-angle-right" aria-hidden="true"/>
+                        <f:ajax
+                            execute="@form :pageareas"
+                            render="@form :pageareas :altoEditAutocomplete"/>
+                        <f:passThroughAttribute name="data-renderimage" value="true"/>
+                    </button>
+                </li>
+                <!-- IMAGE NEXT-2 -->
+                <li>
+                    <button jsf:action="#{Metadaten.imageRight2}" jsf:id="nextImage2" aria-label="#{msgs.nextImage}" class="btn btn-blank" title="#{msgs.mets_navigateTwoImagesRight}" type="button">
+                        <span class="fa fa-angle-right" aria-hidden="true"/>
+                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                        <f:passThroughAttribute name="data-renderimage" value="true"/>
+                        <f:ajax
+                            execute="@form :pageareas"
+                            render="@form :pageareas :altoEditAutocomplete"/>
+                    </button>
+                </li>
+
+                <!-- IMAGE LAST -->
+                <li>
+                    <button jsf:action="#{Metadaten.imageRightmost}" jsf:id="imageLast" aria-label="#{msgs.lastImage}" class="btn btn-blank" title="#{Metadaten.pagesRTL?msgs.firstImage:msgs.lastImage}" type="button">
+                        <span class="fa fa-angle-double-right" aria-hidden="true"/>
+                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                        <f:passThroughAttribute name="data-renderimage" value="true"/>
+                        <f:ajax
+                            execute="@form :pageareas"
+                            render="@form :pageareas :altoEditAutocomplete"/>
+                    </button>
+                </li>
+
+
+            </ul>
+
+            <h:commandButton id="imageBack20" style="display:none">
+                <f:setPropertyActionListener value="#{Metadaten.imageIndex -20}" property="#{Metadaten.imageIndex}" target="#{Metadaten.imageIndex}"/>
+                <f:ajax execute="@form :pageareas" render="@form :pageareas"/>
+                <f:passThroughAttribute name="data-renderimage" value="true"/>
+            </h:commandButton>
+
+            <h:commandButton id="imageNext20" style="display:none">
+                <f:setPropertyActionListener value="#{Metadaten.imageIndex +20}" property="#{Metadaten.imageIndex}" target="#{Metadaten.imageIndex}"/>
+                <f:ajax execute="@form :pageareas" render="@form :pageareas"/>
+                <f:passThroughAttribute name="data-renderimage" value="true"/>
+            </h:commandButton>
+
+            <h:inputText id="hiddenImageNo" style="display: none" value="#{Metadaten.imageIndex}"/>
+
+
+        </nav>
+    </composite:implementation>
+</ui:composition>

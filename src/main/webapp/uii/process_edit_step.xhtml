@@ -3,12 +3,12 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	template="/uii/templatePG/templatePG.html"
+	template="/uii/template/template.html"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <ui:param
         name="myPageTitle"
@@ -42,21 +42,15 @@
     </ui:define>
 
     <ui:define name="content">
-        
+
         <h:form
             id="myform"
             onkeypress="submitOnEnter(event);"
             rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
 
-            <ui:include src="templatePG/includes/process/step_details.xhtml" />
-            <ui:include src="templatePG/includes/process/step_usersMerged.xhtml" />
+            <ui:include src="template/includes/process/step_details.xhtml" />
+            <ui:include src="template/includes/process/step_usersMerged.xhtml" />
         </h:form>
     </ui:define>
 
 </ui:composition>
-
-
-
-
-
-

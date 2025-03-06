@@ -31,10 +31,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.JobType;
 import org.goobi.beans.Step;
@@ -43,6 +39,9 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.StepManager;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 

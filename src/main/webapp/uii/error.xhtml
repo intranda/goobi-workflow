@@ -5,9 +5,7 @@
   xmlns:f="http://xmlns.jcp.org/jsf/core"
   xmlns:o="http://omnifaces.org/ui"
   xmlns:of="http://omnifaces.org/functions"
-  template="/uii/templatePG/templatePG.html"
-  xmlns:x="http://myfaces.apache.org/tomahawk"
-  xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+  template="/uii/template/template.html"
   >
 
   <ui:param name="myPageTitle" value="#{msgs.failure}" />
@@ -62,7 +60,7 @@
                     <h:outputText value="#{errorDetails}" />
                     <br />
                     <br />
-                    <x:dataList value="#{stacktrace}" var="e" rowIndexVar="row">
+                    <ui:repeat value="#{stacktrace}" var="e" rowIndexVar="row">
 
                         <h:outputText value="#{e}" rendered="#{row == 0}" />
 
@@ -71,7 +69,7 @@
                         <h:panelGroup rendered="#{row lt 15}">
                             <br />
                         </h:panelGroup>
-                    </x:dataList>
+                    </ui:repeat>
                 </div>
 
             </h:panelGroup>

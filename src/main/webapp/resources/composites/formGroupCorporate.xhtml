@@ -4,11 +4,9 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
-
     <composite:interface>
         <composite:attribute name="corporate" />
         <composite:attribute
@@ -19,48 +17,20 @@
             default="true" />
             <composite:attribute name="changeRole" default="true"/>
     </composite:interface>
-
     <composite:implementation>
         <!-- FORM GROUP CORPORATE -->
         <!-- MAIN NAME -->
-        <div class="form-group form-group--flex">
-            <div class="row justify-content-between">
-                <!-- LABEL -->
-                <div class="col-3 d-flex justify-content-between">
-                    <h:outputText
-                        styleClass="form-group__label"
-                        value="#{msgs.mets_corporate_mainName}:" />
-
-                    <h:panelGroup
-                        id="restrictBtn"
-                        rendered="#{cc.attrs.corporate.displayRestrictions}">
-                        <button
-                            type="button"
-                            class="btn#{cc.attrs.corporate.restricted == false ? ' btn--icon-light' : ''} d-flex flex-nowrap pt-1 restrict-button"
-                            jsf:id="toggle-restrictions"
-                            title="#{cc.attrs.corporate.restricted == false ? msgs.mets_notRestricted : msgs.mets_restricted }"
-                            data-toggle="tooltip">
-
-                            <!-- ACCESS RESTRICTION ACTIVE - ACTION: REMOVE ACCESS RESTRICTION -->
-                            <h:outputText value="" styleClass="fa fa-lg fa-lock" escape="false" 
-                            rendered="#{cc.attrs.metadata.restricted == true}"/>
-
-                            <!-- NO ACCESS RESTRICTION ACTIVE - ACTION: SET ACCESS RESTRICTION -->
-                            <h:outputText value="" styleClass="fa fa-lg fa-unlock" escape="false" 
-                            rendered="#{cc.attrs.metadata.restricted == false}"/>
-
-                            <f:ajax
-                                execute="restrictBtn"
-                                render="restrictBtn" />
-                            <f:setPropertyActionListener
-                                value="#{not cc.attrs.corporate.restricted}"
-                                target="#{cc.attrs.corporate.restricted}" />
-                        </button>
-                    </h:panelGroup>
-                </div>
-                <!-- INPUT -->
-                <div class="col-7">
-                    <x:inputText
+        <div class="form-row">
+            <!-- LABEL -->
+            <div class="form-label">
+                <h:outputText
+                    styleClass="form-group__label"
+                    value="#{msgs.mets_corporate_mainName}:" />
+            </div>
+            <!-- INPUT -->
+            <div class="form-input">
+                <div class="d-flex w-100 my-auto">
+                    <h:inputText
                         id="mainName"
                         pt:aria-label="#{msgs.mets_corporate_mainName}"
                         styleClass="form-control"
@@ -70,81 +40,19 @@
                         <f:ajax
                             execute="@form"
                             event="valueChange" />
-                    </x:inputText>
-                </div>
-                <!-- ACTIONS -->
-                <div class="btn-area duplicate">
-                    <!-- DELETE -->
-                    <button
-                        jsf:id="delete"
-                        tabindex="-1"
-                        jsf:action="#{Metadaten.deleteCorporate}"
-                        aria-label="#{msgs.mets_corporate_deleteCorporate}"
-                        title="#{msgs.mets_corporate_deleteCorporate}"
-                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
-                        class="btn btn--icon-light"
-                        type="button">
-                        <i
-                            class="fa fa-lg fa-trash-o"
-                            aria-hidden="true"></i>
-                        <x:updateActionListener
-                            property="#{Metadaten.currentCorporate}"
-                            value="#{cc.attrs.corporate.corporate}" />
-                        <f:passThroughAttribute
-                            name="data-toggle"
-                            value="tooltip" />
-                        <f:passThroughAttribute
-                            name="data-placement"
-                            value="top" />
-                        <f:ajax
-                            execute="@form"
-                            render="@form" />
-                    </button>
-
-                    <!-- COPY -->
-                    <button
-                        jsf:id="copy"
-                        tabindex="-1"
-                        jsf:action="#{Metadaten.copyCorporate}"
-                        title="#{msgs.mets_corporate_copyCorporate}"
-                        aria-label="#{msgs.mets_corporate_copyCorporate}"
-                        jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.corporate.corporate.type)}"
-                        type="button"
-                         class="btn btn--icon-light">
-                        <i
-                            class="fa fa-lg fa-copy"
-                            aria-hidden="true"></i>
-                        <x:updateActionListener
-                            property="#{Metadaten.currentCorporate}"
-                            value="#{cc.attrs.corporate.corporate}" />
-                        <f:passThroughAttribute
-                            name="data-toggle"
-                            value="tooltip" />
-                        <f:passThroughAttribute
-                            name="data-placement"
-                            value="top" />
-                        <f:ajax
-                            execute="@form"
-                            render="@form" />
-                    </button>
-
-
+                    </h:inputText>
+                    <!-- ACTIONS -->
                     <!-- NORMDATA -->
                     <ui:fragment rendered="#{cc.attrs.corporate.normdata}">
                         <button
-                        	jsf:id="gndSearch"
-                            class="btn change-icon btn--icon-light personButton"
+                            jsf:id="gndSearch"
+                            class="btn change-icon personButton"
                             title="#{msgs.NORM_gndSearch}"
                             aria-label="#{msgs.NORM_gndSearch}"
                             jsf:onclick="$('#gndSearchBox').modal('show');"
                             type="button">
                             <img
-                                class="toggle"
-                                style="width: 16px;"
-                                alt="GND"
-                                src="template/img/Icons_GND_grey.png" />
-                            <img
-                                class="toggle"
+                                class="color-icon"
                                 style="width: 16px;"
                                 alt="GND"
                                 src="template/img/Icons_GND_color.png" />
@@ -158,28 +66,21 @@
                                 value="false"
                                 target="#{cc.attrs.corporate.searchInViaf}" />
                             <f:passThroughAttribute
-	                            name="data-toggle"
-	                            value="tooltip" />
-	                        <f:passThroughAttribute
-	                            name="data-placement"
-	                            value="top" />
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="top" />
                         </button>
-
-
                         <button
-                        	jsf:id="viafSearch"
+                            jsf:id="viafSearch"
                             type="button"
-                            class="btn change-icon viafIndexTrigger btn--icon-light personButton"
+                            class="btn change-icon viafIndexTrigger personButton"
                             title="#{msgs.NORM_viafSearch}"
                             aria-label="#{msgs.NORM_viafSearch}"
                             jsf:onclick="$('#viafSearchBox').modal('show');">
                             <img
-                                class="toggle"
-                                style="width: 16px;"
-                                alt="VIAF"
-                                src="template/img/Icons_Viaf_grey.png" />
-                            <img
-                                class="toggle"
+                                class="color-icon"
                                 style="width: 16px;"
                                 alt="VIAF"
                                 src="template/img/Icons_Viaf_color.png" />
@@ -192,217 +93,234 @@
                             <f:setPropertyActionListener
                                 value="true"
                                 target="#{cc.attrs.corporate.searchInViaf}" />
-                        	<f:passThroughAttribute
-	                            name="data-toggle"
-	                            value="tooltip" />
-	                        <f:passThroughAttribute
-	                            name="data-placement"
-	                            value="top" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="top" />
                         </button>
-
                     </ui:fragment>
+                    <!-- COPY -->
+                    <button
+                        jsf:id="copy"
+                        tabindex="-1"
+                        jsf:action="#{Metadaten.copyCorporate}"
+                        title="#{msgs.mets_corporate_copyCorporate}"
+                        aria-label="#{msgs.mets_corporate_copyCorporate}"
+                        jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.corporate.corporate.type)}"
+                        type="button"
+                        class="btn font-light">
+                        <span
+                            class="fa fa-lg fa-copy"
+                            aria-hidden="true" />
+                        <f:setPropertyActionListener
+                            target="#{Metadaten.currentCorporate}"
+                            value="#{cc.attrs.corporate.corporate}" />
+                        <f:passThroughAttribute
+                            name="data-toggle"
+                            value="tooltip" />
+                        <f:passThroughAttribute
+                            name="data-placement"
+                            value="top" />
+                        <f:ajax
+                            execute="@form"
+                            render="@form" />
+                    </button>
+                    <!-- DELETE -->
+                    <button
+                        jsf:id="delete"
+                        tabindex="-1"
+                        jsf:action="#{Metadaten.deleteCorporate}"
+                        aria-label="#{msgs.mets_corporate_deleteCorporate}"
+                        title="#{msgs.mets_corporate_deleteCorporate}"
+                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
+                        class="btn font-light"
+                        type="button">
+                        <span
+                            class="fa fa-lg fa-trash-o"
+                            aria-hidden="true" />
+                        <f:setPropertyActionListener
+                            target="#{Metadaten.currentCorporate}"
+                            value="#{cc.attrs.corporate.corporate}" />
+                        <f:passThroughAttribute
+                            name="data-toggle"
+                            value="tooltip" />
+                        <f:passThroughAttribute
+                            name="data-placement"
+                            value="top" />
+                        <f:ajax
+                            execute="@form"
+                            render="@form" />
+                    </button>
                 </div>
             </div>
         </div>
-
-
         <!-- SUB NAMES -->
-        <x:dataList
+        <ui:repeat
             var="part"
             value="#{cc.attrs.corporate.subNames}">
-
-            <div class="form-group form-group--flex">
-                <div class="row justify-content-between">
-                    <!-- LABEL -->
-                    <div class="col-3">
-                        <h:outputText
-                            styleClass="form-group__label"
-                            value="#{msgs.mets_corporate_subName}:" />
-                    </div>
-                    <!-- INPUT -->
-                    <div class="col-7">
-                        <x:inputText
-                            id="subName"
-                            pt:aria-label="#{msgs.mets_corporate_subName}"
-                            styleClass="form-control"
-                            value="#{part.value}"
-                            required="#{cc.attrs.required}"
-                            readonly="#{Metadaten.nurLesenModus}">
-                            <f:ajax
-                                execute="@form"
-                                event="valueChange" />
-                        </x:inputText>
-                    </div>
-                    <div class="btn-area duplicate">
-                        <!-- DELETE -->
-                        <button
-                            jsf:id="delete"
-                            class="btn btn--icon-light"
-                            aria-label="#{msgs.mets_corporate_deleteSubName}"
-                            tabindex="-1"
-                            jsf:action="#{cc.attrs.corporate.removeSubName(part)}"
-                            title="#{msgs.mets_corporate_deleteSubName}"
-                            jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
-                            type="button"
-                            jsf:disabled="#{cc.attrs.corporate.subNameSize lt 2}">
-                            <i
-                                class="fa fa-lg fa-trash-o"
-                                aria-hidden="true"></i>
-                            <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip" />
-                            <f:passThroughAttribute
-                                name="data-placement"
-                                value="top" />
-                            <f:ajax
-                                execute="@form"
-                                render="@form" />
-                        </button>
-
-                        <button
-                            jsf:id="addSubName"
-                            class="btn btn--icon-light"
-                            aria-label="#{msgs.mets_corporate_addSubName}"
-                            jsf:action="#{cc.attrs.corporate.addSubName}"
-                            title="#{msgs.mets_corporate_addSubName}"
-                            type="button">
-                            <i
-                                class="fa fa-lg fa-plus"
-                                aria-hidden="true"></i>
-                            <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip" />
-                            <f:passThroughAttribute
-                                name="data-placement"
-                                value="top" />
-                            <f:ajax
-                                execute="@form"
-                                render="@form" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </x:dataList>
-
-        <!-- PART NAME -->
-        <div class="form-group form-group--flex">
-            <div class="row justify-content-between">
+            <div class="form-row">
                 <!-- LABEL -->
-                <div class="col-3">
+                <div class="form-label">
                     <h:outputText
                         styleClass="form-group__label"
-                        value="#{msgs.mets_corporate_partName}:" />
+                        value="#{msgs.mets_corporate_subName}:" />
                 </div>
                 <!-- INPUT -->
-                <div class="col-7">
-                    <x:inputText
-                        id="partName"
-                        pt:aria-label="#{msgs.mets_corporate_partName}"
+                <div class="form-input">
+                    <h:inputText
+                        id="subName"
+                        pt:aria-label="#{msgs.mets_corporate_subName}"
                         styleClass="form-control"
-                        value="#{cc.attrs.corporate.partName}"
+                        value="#{part.value}"
                         required="#{cc.attrs.required}"
                         readonly="#{Metadaten.nurLesenModus}">
                         <f:ajax
                             execute="@form"
                             event="valueChange" />
-                    </x:inputText>
+                    </h:inputText>
+                    <!-- DELETE -->
+                    <button
+                        jsf:id="delete"
+                        class="btn font-light"
+                        aria-label="#{msgs.mets_corporate_deleteSubName}"
+                        tabindex="-1"
+                        jsf:action="#{cc.attrs.corporate.removeSubName(part)}"
+                        title="#{msgs.mets_corporate_deleteSubName}"
+                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
+                        type="button"
+                        jsf:disabled="#{cc.attrs.corporate.subNameSize lt 2}">
+                        <span
+                            class="fa fa-lg fa-trash-o"
+                            aria-hidden="true" />
+                        <f:passThroughAttribute
+                            name="data-toggle"
+                            value="tooltip" />
+                        <f:passThroughAttribute
+                            name="data-placement"
+                            value="top" />
+                        <f:ajax
+                            execute="@form"
+                            render="@form" />
+                    </button>
+                    <button
+                        jsf:id="addSubName"
+                        class="btn font-light"
+                        aria-label="#{msgs.mets_corporate_addSubName}"
+                        jsf:action="#{cc.attrs.corporate.addSubName}"
+                        title="#{msgs.mets_corporate_addSubName}"
+                        type="button">
+                        <span
+                            class="fa fa-lg fa-plus"
+                            aria-hidden="true" />
+                        <f:passThroughAttribute
+                            name="data-toggle"
+                            value="tooltip" />
+                        <f:passThroughAttribute
+                            name="data-placement"
+                            value="top" />
+                        <f:ajax
+                            execute="@form"
+                            render="@form" />
+                    </button>
                 </div>
-                <div class="btn-area"></div>
+            </div>
+        </ui:repeat>
+        <!-- PART NAME -->
+        <div class="form-row">
+            <!-- LABEL -->
+            <div class="form-label">
+                <h:outputText
+                    styleClass="form-group__label"
+                    value="#{msgs.mets_corporate_partName}:" />
+            </div>
+            <!-- INPUT -->
+            <div class="form-input">
+                <h:inputText
+                    id="partName"
+                    pt:aria-label="#{msgs.mets_corporate_partName}"
+                    styleClass="form-control"
+                    value="#{cc.attrs.corporate.partName}"
+                    required="#{cc.attrs.required}"
+                    readonly="#{Metadaten.nurLesenModus}">
+                    <f:ajax
+                        execute="@form"
+                        event="valueChange" />
+                </h:inputText>
             </div>
         </div>
-
-
         <!-- ROLE -->
-        <div class="form-group form-group--flex">
-            <div class="row justify-content-between">
-                <!-- LABEL -->
-                <div class="col-3">
+        <div class="form-row">
+            <!-- LABEL -->
+            <div class="form-label">
+                <h:outputText
+                    styleClass="form-group__label"
+                    value="#{msgs.rolle}:" />
+            </div>
+            <!-- INPUT -->
+            <div class="form-input">
+                <c:if test="#{cc.attrs.changeRole}">
+                    <h:selectOneMenu
+                        id="role"
+                        pt:aria-label="#{msgs.rolle}"
+                        value="#{cc.attrs.corporate.role}"
+                        disabled="#{Metadaten.nurLesenModus}"
+                        readonly="#{Metadaten.nurLesenModus}"
+                        styleClass="form-select">
+                        <f:selectItems value="#{cc.attrs.corporate.addableRoles}" />
+                        <f:ajax
+                            execute="@form"
+                            event="valueChange" />
+                    </h:selectOneMenu>
+                </c:if>
+                <c:if test="#{not cc.attrs.changeRole}">
                     <h:outputText
-                        styleClass="form-group__label"
-                        value="#{msgs.rolle}:" />
-                </div>
-                <!-- INPUT -->
-                <div class="col-7">
-                    <div class="form-control form-control--select">
-                    <c:if test="#{cc.attrs.changeRole}">
-                        <h:selectOneMenu
-                            id="role"
-                            pt:aria-label="#{msgs.rolle}"
-                            value="#{cc.attrs.corporate.role}"
-                            disabled="#{Metadaten.nurLesenModus}"
-                            readonly="#{Metadaten.nurLesenModus}">
-                            <f:selectItems value="#{cc.attrs.corporate.addableRoles}" />
-                            <f:ajax
-                                execute="@form"
-                                event="valueChange"
-                                render="restrictBtn"/>
-                        </h:selectOneMenu>
-
-                    </c:if>
-                    <c:if test="#{not cc.attrs.changeRole}">
-                        <h:outputText
-                            id="roleText"
-                            pt:aria-label="#{msgs.rolle}"
-                            value="#{cc.attrs.corporate.role}"
-                          />
-
-</c:if>
-
-                    </div>
-                </div>
-                <div class="btn-area"></div>
+                        id="roleText"
+                        pt:aria-label="#{msgs.rolle}"
+                        value="#{cc.attrs.corporate.role}"
+                        />
+                </c:if>
             </div>
         </div>
-
-
         <!-- AUTHORITY DATA -->
-        <h:panelGroup layout="block" styleClass="form-group form-group--flex" rendered="#{cc.attrs.corporate.normdata}">
-            <div class="row justify-content-between">
-                <!-- LABEL -->
-                <div class="col-3">
-                    <h:outputText
-                        styleClass="form-group__label"
-                        value="#{msgs.mets_authority_data}:" />
+        <h:panelGroup layout="block" styleClass="form-row" rendered="#{cc.attrs.corporate.normdata}">
+            <!-- LABEL -->
+            <div class="form-label">
+                <h:outputText
+                    styleClass="form-group__label"
+                    value="#{msgs.mets_authority_data}:" />
+            </div>
+            <!-- INPUT -->
+            <div class="form-input">
+                <div class="input-group">
+                    <h:selectOneMenu
+                        id="normDatabase"
+                        pt:aria-label="#{msgs.mets_authority_data}"
+                        value="#{cc.attrs.corporate.normDatabase}"
+                        readonly="#{Metadaten.nurLesenModus}"
+                        styleClass="form-select w-25">
+                        <f:selectItems
+                            value="#{cc.attrs.corporate.possibleDatabases}"
+                            var="database"
+                            itemLabel="#{database}"
+                            itemValue="#{database}" />
+                        <f:ajax
+                            execute="@form"
+                            event="valueChange" />
+                    </h:selectOneMenu>
+                    <h:inputText
+                        id="normdataValue"
+                        pt:aria-label="#{msgs.mets_authority_data} #{msgs.wert}"
+                        styleClass="form-control w-75"
+                        value="#{cc.attrs.corporate.normdataValue}"
+                        readonly="#{Metadaten.nurLesenModus}">
+                        <f:ajax
+                            execute="@form"
+                            event="valueChange" />
+                    </h:inputText>
                 </div>
-                <!-- INPUT -->
-                <div class="col-7">
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-control form-control--select">
-                                <h:selectOneMenu
-                                    id="normDatabase"
-                                    pt:aria-label="#{msgs.mets_authority_data}"
-                                    value="#{cc.attrs.corporate.normDatabase}"
-                                    readonly="#{Metadaten.nurLesenModus}">
-                                    <f:selectItems
-                                        value="#{cc.attrs.corporate.possibleDatabases}"
-                                        var="database"
-                                        itemLabel="#{database}"
-                                        itemValue="#{database}" />
-                                    <f:ajax
-                                        execute="@form"
-                                        event="valueChange" />
-                                </h:selectOneMenu>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <h:inputText
-                                id="normdataValue"
-                                pt:aria-label="#{msgs.mets_authority_data} #{msgs.wert}"
-                                styleClass="form-control"
-                                value="#{cc.attrs.corporate.normdataValue}"
-                                readonly="#{Metadaten.nurLesenModus}">
-                                <f:ajax
-                                    execute="@form"
-                                    event="valueChange" />
-                            </h:inputText>
-                        </div>
-                    </div>
-                </div>
-                <div class="btn-area"></div>
             </div>
         </h:panelGroup>
-
-        <hr />
     </composite:implementation>
 </ui:composition>

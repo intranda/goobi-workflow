@@ -5,11 +5,11 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	template="/uii/template/template.html"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<ui:param
 		name="myPageTitle"
@@ -47,7 +47,7 @@
 
 
 							<!-- LIST OF SEARCH ROWS -->
-							<x:dataList
+							<ui:repeat
 								value="#{SearchForm.rowList}"
 								var="row"
 								id="rowList">
@@ -312,14 +312,14 @@
 									</h:panelGroup>
 
 									<!-- PLUS AND MINUS BUTTONS -->
-									<div class="col-sm-1">
+									<div class="col-sm-1 d-flex gap-2 my-auto">
 										<button
 											jsf:action="#{SearchForm.addRow}"
 											title="#{msgs.conditionAdd}"
 											aria-label="#{msgs.conditionAdd}"
 											jsf:id="addCondition"
-											class="btn btn-primary fa fa-plus"
-											style="margin-right: 5px">
+											class="btn btn-primary">
+											<util:icon icon="plus" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -330,19 +330,20 @@
 											aria-label="#{msgs.conditionRemove}"
 											jsf:rendered="#{SearchForm.sizeOfRowList > 1}"
 											jsf:id="removeCondition"
-											class="btn btn-primary fa fa-minus">
+											class="btn btn-primary">
+											<util:icon icon="minus" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
-											<x:updateActionListener
-												property="#{SearchForm.currentRow}"
+											<f:setPropertyActionListener
+												target="#{SearchForm.currentRow}"
 												value="#{row}" />
 										</button>
 									<!-- // PLUS AND MINUS BUTTONS -->
 
 									</div>
 								</div>
-							</x:dataList>
+							</ui:repeat>
 							<!-- // LIST OF SEARCH ROWS -->
 
 
@@ -372,13 +373,13 @@
 
 							<!-- BUTTONS -->
 							<div class="form-actions">
-								<a
+								<button
 									jsf:id="cancel"
 									class="btn btn-blank me-2"
 									jsf:immediate="true"
 									jsf:action="#{SearchForm.resetFilter}">
 									<h:outputText value="#{msgs.clear}" />
-								</a>
+								</button>
 
 								<button
 									class="btn btn-primary-400 search-button"

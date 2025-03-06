@@ -25,28 +25,17 @@
  */
 package org.goobi.production.servlets;
 
-import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.context.FacesContextFactory;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import de.sub.goobi.helper.FacesContextHelper;
+import jakarta.faces.FactoryFinder;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.FacesContextFactory;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class ServletHelper {
-
-    private static Application getApplication(FacesContext facesContext) {
-        return facesContext.getApplication();
-    }
-
-    @SuppressWarnings("deprecation")
-    public static Object getManagedBean(String beanName, FacesContext facesContext) {
-        return getApplication(facesContext).getVariableResolver().resolveVariable(facesContext, beanName);
-    }
 
     public static FacesContext getFacesContext(HttpServletRequest request, HttpServletResponse response) {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();

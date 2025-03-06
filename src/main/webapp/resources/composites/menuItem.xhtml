@@ -4,11 +4,10 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+	>
 
 	<composite:interface>
 		<composite:attribute name="id"/>
-		<composite:attribute name="linkClass"/>
 		<composite:attribute name="action" targets="link"/>
 		<composite:attribute name="label"/>
 		<composite:attribute name="filter"/>
@@ -22,8 +21,11 @@
 
 	<composite:implementation>
 		<li class="#{NavigationForm.aktuell == cc.attrs.id?'active':''}">
-		<h:commandLink id="link" styleClass="#{cc.attrs.linkClass}" action="#{cc.attrs.action}">
-				<i class="#{cc.attrs.icon}"></i>
+			<h:commandLink
+				id="link"
+				action="#{cc.attrs.action}"
+				styleClass="dropdown-item">
+				<span class="#{cc.attrs.icon}" />
 				<span class="#{cc.attrs.fontclass}">#{cc.attrs.label}</span>
 				<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="#{cc.attrs.id}" />
 				<c:if test="#{not empty cc.attrs.filter}">
@@ -42,5 +44,3 @@
 		</li>
 	</composite:implementation>
 </ui:composition>
-
-

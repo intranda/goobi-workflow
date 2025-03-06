@@ -27,17 +27,16 @@ package org.goobi.api.rest;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import org.goobi.beans.PluginInfo;
 import org.goobi.managedbeans.PluginsBean;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
-@javax.ws.rs.Path("/plugins")
+@jakarta.ws.rs.Path("/plugins")
 public class Plugins {
 
     @GET

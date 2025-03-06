@@ -4,9 +4,9 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	template="/uii/template/template.html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
@@ -45,20 +45,21 @@
 										</div>
 
 
-										<x:aliasBeansScope>
-											<x:aliasBean alias="#{Form}" value="#{AktuelleSchritteForm}" />
-											<x:aliasBean alias="#{label}" value="#{msgs.filterTasks}" />
-											<f:subview id="sub1">
 
+											<f:subview id="sub1">
 												<div class="gw-table__filters">
 													<ui:include
-														src="templatePG/includes/task/list_filterAndDisplay.xhtml" />
-													<ui:include
-														src="templatePG/includes/task/list_searchAndSave.xhtml" />
+
+														src="template/includes/task/list_filterAndDisplay.xhtml" />
+
+
+                                                        <intranda:list_searchAndSave bean="#{AktuelleSchritteForm}" label="#{msgs.filterTasks}" />
+
+
 												</div>
 
 											</f:subview>
-										</x:aliasBeansScope>
+
 
 
 									</div>
@@ -206,7 +207,7 @@
 													<!-- TITLE -->
 													<td>
 														<ui:include
-															src="templatePG/includes/task/task_ajaxPlusMinusButton.xhtml">
+															src="template/includes/task/task_ajaxPlusMinusButton.xhtml">
 															<ui:param name="ajaxRender" value="processAllBox:myform" />
 														</ui:include>
 														<h:panelGroup
@@ -413,68 +414,74 @@
 
 
 													<!-- STATUS -->
-													<td>
-														<h:panelGroup rendered="#{item.prioritaet == 0}"
-															class="badge badge-intranda-ultralight">
-															<h:outputText value="#{msgs.normalePrioritaet}" />
-														</h:panelGroup>
-														<h:panelGroup rendered="#{item.prioritaet == 1}"
-															class="badge badge-intranda-orange">
-															<span class="fa fa-lightbulb-o" />
-															 #{msgs.badgePriority1}
-														 </h:panelGroup>
-														 <h:panelGroup rendered="#{item.prioritaet == 2}"
-															class="badge badge-intranda-orange">
-															<span class="fa fa-lightbulb-o" />
-															 #{msgs.badgePriority2}
-														 </h:panelGroup>
-														 <h:panelGroup
-															rendered="#{item.prioritaet gt 2 and item.prioritaet lt 10}"
-															class="badge badge-intranda-orange">
-															<span class="fa fa-lightbulb-o" />
-														 	#{msgs.badgePriority3}
-														 </h:panelGroup>
-														 <!-- Popup -->
-														<x:popup id="popup"
-															closePopupOnExitingElement="true"
-															closePopupOnExitingPopup="true" displayAtDistanceX="-320"
-															displayAtDistanceY="-160"
-															style="z-index:9"
-															rendered="#{item.prioritaet gt 9}">
-
-															<f:facet name="popup">
-																<intranda:box
-																  boxType="hot"
-																  boxSmall="true"
-																  title="#{msgs.badgeCorrection}"
-																  icon="fa-bullhorn"
-																  boxScope="bg-white">
-																	<x:dataTable var="intern" style="width:400px;"
-																		rendered="#{item.eigenschaftenSize!=0}"
-																		value="#{item.eigenschaftenList}"
-																		styleClass="table table-hover table-bordered">
-																		<x:column style="vertical-align: top;">
-																			<h:outputText value="#{intern.titel}" /><br/>
-                                                                            <h:outputText styleClass="font-light" value="#{intern.creationDate}">
-																				<f:convertDateTime
-																					type="both"
-																					dateStyle="long"
-																					timeStyle="medium" />
-																			</h:outputText>
-																		</x:column>
-																		<x:column style="vertical-align: top;">
-																			<h:outputText value="#{intern.wert}" />
-																		</x:column>
-																	</x:dataTable>
-																</intranda:box>
-															</f:facet>
-															<h:panelGroup class="badge badge-intranda-red mw-100 text-wrap">
-																<span class="fa fa-bullhorn" />
-																 #{msgs.badgeCorrection}
-															 </h:panelGroup>
-														</x:popup>
-													</td>
-													<!-- // STATUS -->
+                                                    <td>
+                                                        <h:panelGroup
+                                                            rendered="#{item.prioritaet == 0}"
+                                                            class="badge badge-intranda-ultralight">
+                                                            <h:outputText value="#{msgs.normalePrioritaet}" />
+                                                        </h:panelGroup>
+                                                        <h:panelGroup rendered="#{item.prioritaet == 1}"
+                                                            class="badge badge-intranda-orange">
+                                                            <span class="fa fa-lightbulb-o" />
+                                                             #{msgs.badgePriority1}
+                                                         </h:panelGroup>
+                                                         <h:panelGroup rendered="#{item.prioritaet == 2}"
+                                                            class="badge badge-intranda-orange">
+                                                            <span class="fa fa-lightbulb-o" />
+                                                             #{msgs.badgePriority2}
+                                                         </h:panelGroup>
+                                                         <h:panelGroup
+                                                            rendered="#{item.prioritaet gt 2 and item.prioritaet lt 10}"
+                                                            class="badge badge-intranda-orange">
+                                                            <span class="fa fa-lightbulb-o" />
+                                                            #{msgs.badgePriority3}
+                                                         </h:panelGroup>
+                                                         <h:panelGroup
+                                                            rendered="#{item.prioritaet gt 9}"
+                                                            class="badge badge-intranda-red mw-100 text-wrap"
+                                                            id="correctionBadge">
+                                                            <span class="fa fa-bullhorn" />
+                                                            #{msgs.badgeCorrection}
+                                                         </h:panelGroup>
+                                                         <!-- Popup -->
+                                                        <p:overlayPanel
+                                                            for="correctionBadge"
+                                                            showEvent="mouseover"
+                                                            hideEvent="mouseout"
+                                                            autoHide="false"
+                                                            rendered="#{item.prioritaet gt 9}">
+                                                            <intranda:box
+                                                                boxType="hot"
+                                                                boxSmall="true"
+                                                                title="#{msgs.badgeCorrection}"
+                                                                icon="fa-bullhorn"
+                                                                boxScope="bg-white">
+                                                                <table
+                                                                    class="table table-hover table-bordered"
+                                                                    jsf:rendered="#{item.eigenschaftenSize!=0}">
+                                                                    <ui:repeat
+                                                                        value="#{item.eigenschaftenList}"
+                                                                        var="intern">
+                                                                        <tr>
+                                                                            <td>
+                                                                                <h:outputText value="#{intern.titel}" /><br/>
+                                                                                <h:outputText styleClass="font-light" value="#{intern.creationDate}">
+                                                                                    <f:convertDateTime
+                                                                                        type="both"
+                                                                                        dateStyle="long"
+                                                                                        timeStyle="medium" />
+                                                                                </h:outputText>
+                                                                            </td>
+                                                                            <td>
+                                                                                <h:outputText value="#{intern.wert}" />
+                                                                            </td>
+                                                                        </tr>
+                                                                    </ui:repeat>
+                                                                </table>
+                                                            </intranda:box>
+                                                        </p:overlayPanel>
+                                                    </td>
+                                                    <!-- // STATUS -->
 
 													<!-- ACTION -->
 													<td>
@@ -496,8 +503,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- ACCEPT TASK IN ERROR STATUS -->
@@ -515,8 +522,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- KEEP ON WORKING ON TASK -->
@@ -536,8 +543,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- PEEK INTO TASK OF ANOTHER ONE -->
@@ -557,8 +564,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- ACCEPT TASK IN BATCH -->
@@ -579,8 +586,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- ACCEPT TASK IN ERROR STATUS IN BATCH -->
@@ -601,8 +608,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />                            
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- KEEP ON WORKING ON TASK IN BATCH -->
@@ -621,8 +628,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 
 														<!-- PEEK INTO TASK IN BATCH OF ANOTHER ONE -->
@@ -641,8 +648,8 @@
 																target="#{NavigationForm.uiStatus.taskActionBox_view}"
 																value="" />
 															<f:setPropertyActionListener
-									                            target="#{NavigationForm.uiStatus.toggleJournal}" 
-									                            value="" />    
+									                            target="#{NavigationForm.uiStatus.toggleJournal}"
+									                            value="" />
 														</button>
 													</td>
 													<!-- // ACTION -->

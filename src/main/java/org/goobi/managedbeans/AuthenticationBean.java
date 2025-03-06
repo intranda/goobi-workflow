@@ -29,9 +29,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Ldap;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
@@ -39,6 +36,8 @@ import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationT
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.LdapManager;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -52,11 +52,11 @@ import lombok.extern.log4j.Log4j2;
 /**
  * This class encapsulates all functionality required to display an image in Goobi. It provides methods to get thumbnail urls, IIIF urls and legacy
  * ContentServer urls. It can also be used to display 3D objects rather than actual images, and can also hold videos and audio files.
- * 
+ *
  * There are two constructors: {@link #Image(Process, String, String, int, Integer)} creates an image based on an image file within a goobi process,
  * while {@link #Image(Path, int, Integer)} creates an image based on an arbitrary image file. Note though that the latter has limited support for
  * IIIF image delivery and no support for 3D objects
- * 
+ *
  * The most important call method is {@link #getUrl()} which returns a IIIF image info object url for images (which can be directly passed to an
  * OpenSeadragon view) and a custom info object for 3D objects containing all information for the goobi javascript ObjectView to display the object.
  * For audio and videos, the thumbnails placeholder is returned Alternatively {@link #getImageLevels()} can be used to retrieve a non-IIIF and
@@ -64,20 +64,20 @@ import lombok.extern.log4j.Log4j2;
  * then look this way: image: { mimeType: "image/jpeg", tileSource : [#{image.imageLevels}], originalImageWidth: "#{image.size.width}",
  * originalImageHeight: "#{image.size.height}", } Conversly if using the IIIF api the same property should read: image: { mimeType: "image/jpeg",
  * tileSource: "#{AktuelleSchritteForm.myPlugin.image.url}" }
- * 
+ *
  * For thumbnail display, use #{@link #getThumbnailUrl()} and for zoomed thumbnails {@link #getLargeThumbnailUrl()}
- * 
+ *
  * TODO: implement {@link #getObjectUrl()} for audio/video to deliver the appropriate file/information
  */
 @Log4j2
 public @Data class Image {
     private static final int LARGE_THUMBNAIL_SIZE_FACTOR = 3;
-    private static final String PLACEHOLDER_URL_PDF = "/uii/templatePG/img/goobi_placeholder_pdf_large.png?version=1";
-    private static final String PLACEHOLDER_URL_EPUB = "/uii/templatePG/img/goobi_placeholder_epub_large.png?version=1";
-    private static final String PLACEHOLDER_URL_3D = "/uii/templatePG/img/goobi_3d_object_placeholder_large.png?version=1";
-    private static final String PLACEHOLDER_URL_VIDEO = "/uii/templatePG/img/goobi_placeholder_video_large.png?version=1";
-    private static final String PLACEHOLDER_URL_AUDIO = "/uii/templatePG/img/goobi_placeholder_audio_large.png?version=1";
-    private static final String PLACEHOLDER_URL_NOTFOUND = "/uii/templatePG/img/goobi_placeholder_notFound_large.png?version=1";
+    private static final String PLACEHOLDER_URL_PDF = "/uii/template/img/goobi_placeholder_pdf_large.png?version=1";
+    private static final String PLACEHOLDER_URL_EPUB = "/uii/template/img/goobi_placeholder_epub_large.png?version=1";
+    private static final String PLACEHOLDER_URL_3D = "/uii/template/img/goobi_3d_object_placeholder_large.png?version=1";
+    private static final String PLACEHOLDER_URL_VIDEO = "/uii/template/img/goobi_placeholder_video_large.png?version=1";
+    private static final String PLACEHOLDER_URL_AUDIO = "/uii/template/img/goobi_placeholder_audio_large.png?version=1";
+    private static final String PLACEHOLDER_URL_NOTFOUND = "/uii/template/img/goobi_placeholder_notFound_large.png?version=1";
 
     private static final String FILE_TYPE_NOT_IMPLEMENTED_ERROR = "Filetype handling not implemented at ";
 
@@ -87,7 +87,7 @@ public @Data class Image {
     private String thumbnailFormat = "jpeg";
     /**
      * The image format for the main image urls contained in imageLevels
-     * 
+     *
      */
     private String largeImageFormat = "jpeg";
     /**
@@ -117,7 +117,7 @@ public @Data class Image {
 
     /**
      * Url and size information for different resolutions of this image. Used to create layer urls for pyramid image display
-     * 
+     *
      */
     private List<ImageLevel> imageLevels = new ArrayList<>();
     /**
@@ -134,7 +134,7 @@ public @Data class Image {
     private String tooltip;
     /**
      * Size of this image as determined by the ContentServer from image metadata
-     * 
+     *
      */
     private Dimension size = null;
     /**
@@ -146,7 +146,7 @@ public @Data class Image {
      * Creates an image object from the given file within the goobi-metadata hierarchy. All required urls are either set in the constructor, or
      * created when needed This class can also contain other media objects link 3D obects, video and audio. In these cases a default image is used for
      * thumbnails.
-     * 
+     *
      * @param process The goobi process containing the image
      * @param imageFolderName The name of the image folder (typically ..._media or master_..._media)
      * @param filename The filename of the image file
@@ -182,7 +182,7 @@ public @Data class Image {
     /**
      * Base constructor which only provides placeholder images. Inheriting classes may use this as base constructor and define 'objectUrl',
      * 'bookmarkUrl', 'thumbnailUrl' and 'largeThumbnailUrl' themselves
-     * 
+     *
      * @param imagePath The path to the image file
      * @param order The order of the image within the goobi process
      * @param thumbnailSize The size of the thumbnails to create. May be null, in which case the configured default is used
@@ -210,7 +210,7 @@ public @Data class Image {
     }
 
     /**
-     * 
+     *
      * @param imageName The full image path
      * @param order The order of the image within the image folder
      * @param thumbnailUrl The thumbnail url
@@ -230,7 +230,7 @@ public @Data class Image {
 
     /**
      * Recreates the urls to the image thumbnails using the given size
-     * 
+     *
      * @param size The size of the smaller thumbnails
      */
     public void createThumbnailUrls(int size) {
@@ -262,7 +262,7 @@ public @Data class Image {
 
     /**
      * Recreates the urls to the image thumbnails using the given size
-     * 
+     *
      * @param size The size of the smaller thumbnails
      */
     public void createThumbnailUrls(int size, Process process, String imageFoldername, String filename) {
@@ -284,10 +284,10 @@ public @Data class Image {
 
     /**
      * Gets the media type of the given file from its file extension
-     * 
+     *
      * @param filename
      * @return returns the media type of the given file from its file extension
-     * 
+     *
      */
     private Type getType(String filename) {
         String extension = FilenameUtils.getExtension(filename);
@@ -296,7 +296,7 @@ public @Data class Image {
 
     /**
      * Add a level to pyramid image display
-     * 
+     *
      * @param imageUrl The url to call
      * @param size The size of this level
      */
@@ -314,7 +314,7 @@ public @Data class Image {
 
     /**
      * Returns true if any image levels were created, false otherwise
-     * 
+     *
      * @return true if any image levels were created, false otherwise
      */
     public boolean hasImageLevels() {
@@ -331,7 +331,7 @@ public @Data class Image {
 
     /**
      * Gets the size of the image
-     * 
+     *
      * @return The size of the images, or null if the size could not be determined
      */
     public Dimension getSize() {
@@ -352,7 +352,7 @@ public @Data class Image {
 
     /**
      * Reads the size of an image file from its image header
-     * 
+     *
      * @param path Path to image file
      * @return The width and height of the image
      * @throws ImageManagerException If an error occured while reading the image file
@@ -371,7 +371,7 @@ public @Data class Image {
 
     /**
      * Creates a goobi rest api url to a json object containing the information about the 3D object (mostly associated files)
-     * 
+     *
      * @param process
      * @param imageFolderName
      * @param imageName
@@ -385,7 +385,7 @@ public @Data class Image {
 
     /**
      * Creates a goobi rest api url to a multimedia resource
-     * 
+     *
      * @param process
      * @param imageFolderName
      * @return
@@ -406,7 +406,7 @@ public @Data class Image {
 
     /**
      * Creates a rest url to the iiif image information about this image
-     * 
+     *
      * @param process The process containing the image
      * @param imageFolderName The name of the image folder used
      * @param filename The filename of the image
@@ -459,7 +459,7 @@ public @Data class Image {
 
     /**
      * Enum for media types to be handled
-     * 
+     *
      * @author Florian Alpers
      *
      */
@@ -476,7 +476,7 @@ public @Data class Image {
 
         /**
          * Determine the media type from the file extension of the given path
-         * 
+         *
          * @param path
          * @return The corresponding type, {@link #unknown} if no media type could be determined
          */
@@ -504,7 +504,7 @@ public @Data class Image {
 
         /**
          * Returns the corresponding type, {@link #unknown} if no media type could be determined
-         * 
+         *
          * @param extension The file extension, without the preceding dot
          * @return The corresponding type, {@link #unknown} if no media type could be determined
          */

@@ -1,0 +1,630 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+
+        <ui:include src="../calendarJavaScript.xhtml" />
+
+        <h:form
+            rendered="#{bean.modusBearbeiten!='eigenschaft' and (propertyOwner.propertyListSize>0 or propertyOwner.sizeOfDisplayableMetadata>0)}"
+            id="propertyform">
+
+            <intranda:box
+                boxType="primary"
+                boxPadding="false"
+                icon="fa-edit"
+                title="#{msgs.eigenschaften}">
+
+                <table class="table table-hover table-bordered">
+
+                    <ui:repeat
+                        var="container"
+                        value="#{propertyOwner.containerList}"
+                        rowCountVar="rowCount"
+                        rowIndexVar="rowIndex"
+                        id="allProperties">
+                        <ui:repeat
+                            var="proc"
+                            value="#{propertyOwner.containerlessProperties}"
+                            rowCountVar="propCount"
+                            rowIndexVar="propInd"
+                            id="containerless">
+
+                            <!-- PROPERTIES OF CONTAINER 0 -->
+                            <h:panelGroup rendered="#{container == '0'}">
+                                <tr>
+                                    <td>
+                                        <h:outputText value="#{proc.name}" />
+                                    </td>
+                                    <td>
+                                        <ui:repeat
+                                            var="val"
+                                            value="#{proc.valueList}"
+                                            rendered="#{proc.type.name == 'listmultiselect'}">
+                                            <h:outputText
+                                                value="#{val}"
+                                                styleClass="badge badge-no-radius badge-light-grey" />
+                                        </ui:repeat>
+                                        <h:outputText
+                                            value="#{proc.readValue}"
+                                            rendered="#{proc.type.name == 'html'}"
+                                            escape="false" />
+                                        <h:outputText
+                                            value="#{proc.readValue}"
+                                            rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html' and proc.type.name != 'listmultiselect'}" />
+                                        <h:outputLink
+                                            value="#{proc.readValue}"
+                                            title="#{proc.readValue}"
+                                            target="_blank"
+                                            rendered="#{proc.type.name == 'link'}">
+                                            <h:outputText value="#{proc.readValue}" />
+                                        </h:outputLink>
+                                        <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
+                                            <h:panelGroup rendered="#{proc.readValue eq 'true'}">
+                                                <span class="fa fa-check-square-o fa-lg" />
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{proc.readValue ne 'true'}">
+                                                <span class="fa fa-square-o fa-lg" />
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                    </td>
+
+                                    <td>
+
+                                        <!-- EDIT BUTTON FOR REGULAR TASK -->
+                                        <button
+                                            jsf:id="editProperty"
+                                            jsf:action="task_edit"
+                                            title="#{msgs.bearbeiten}"
+                                            class="btn btn-blank"
+                                            jsf:rendered="#{!isBatchStep and currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
+                                            <span class="fa fa-pencil" />
+                                            <f:setPropertyActionListener
+                                                target="#{propertyOwner.processProperty}"
+                                                value="#{proc}" />
+                                            <f:setPropertyActionListener
+                                                target="#{propertyOwner.container}"
+                                                value="0" />
+                                            <f:setPropertyActionListener
+                                                target="#{bean.modusBearbeiten}"
+                                                value="eigenschaft" />
+                                        </button>
+
+                                        <!-- EDIT BUTTON FOR BATCH TASK -->
+                                        <button
+                                            jsf:id="editPropertyBatch"
+                                            jsf:action="task_batch_edit"
+                                            title="#{msgs.bearbeiten}"
+                                            class="btn btn-blank"
+                                            jsf:rendered="#{isBatchStep and currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
+                                            <span class="fa fa-pencil" />
+                                            <f:setPropertyActionListener
+                                                target="#{propertyOwner.processProperty}"
+                                                value="#{proc}" />
+                                            <f:setPropertyActionListener
+                                                target="#{propertyOwner.container}"
+                                                value="0" />
+                                            <f:setPropertyActionListener
+                                                target="#{bean.modusBearbeiten}"
+                                                value="eigenschaft" />
+                                        </button>
+
+                                        <!-- CANCEL BUTTON -->
+                                        <button
+                                            jsf:id="duplicateProperty"
+                                            jsf:action="#{propertyOwner.duplicateProperty}"
+                                            title="#{msgs.duplicate}"
+                                            class="btn btn-blank ms-2"
+                                            jsf:rendered="#{proc.duplicationAllowed and currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
+                                            <span class="fa fa-plus" />
+                                            <f:setPropertyActionListener
+                                                target="#{propertyOwner.processProperty}"
+                                                value="#{proc}" />
+                                            <f:setPropertyActionListener
+                                                target="#{propertyOwner.container}"
+                                                value="0" />
+                                        </button>
+
+                                    </td>
+                                </tr>
+                            </h:panelGroup>
+
+                        </ui:repeat>
+                        <!-- // PROPERTIES OF CONTAINER 0 -->
+
+                        <!-- BLANK LINE -->
+                        <h:panelGroup rendered="#{container != '0'}">
+                            <tr>
+                                <td colspan="3">
+                                    <h:outputText
+                                        value="#{msgs[container]}"
+                                        escape="false" />
+                                </td>
+                            </tr>
+                        </h:panelGroup>
+                        <!-- // BLANK LINE -->
+
+                        <!-- PROPERTIES OF CONTAINER NOT 0 -->
+                        <ui:repeat
+                            var="process_item"
+                            value="#{propertyOwner.containers[container].propertyList}"
+                            rowCountVar="propCount"
+                            rowIndexVar="propInd"
+                            id="container">
+
+                            <h:panelGroup rendered="#{container != '0'}">
+                                <tr>
+                                    <td>
+                                        <h:outputText value="#{process_item.name}" />
+                                    </td>
+                                    <td>
+                                        <ui:repeat
+                                            var="val"
+                                            value="#{process_item.valueList}"
+                                            rendered="#{process_item.type.name == 'listmultiselect'}">
+                                            <h:outputText
+                                                value="#{val}"
+                                                styleClass="badge badge-no-radius badge-light-grey" />
+                                        </ui:repeat>
+                                        <h:outputText
+                                            value="#{process_item.readValue}"
+                                            rendered="#{process_item.type.name == 'html'}"
+                                            escape="false" />
+                                        <h:outputText
+                                            value="#{process_item.readValue}"
+                                            rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean' and process_item.type.name != 'html' and process_item.type.name != 'listmultiselect'}" />
+                                        <h:outputLink
+                                            value="#{process_item.readValue}"
+                                            title="#{process_item.readValue}"
+                                            target="_blank"
+                                            rendered="#{process_item.type.name == 'link'}">
+                                            <h:outputText value="#{process_item.readValue}" />
+                                        </h:outputLink>
+                                        <h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
+                                            <h:panelGroup rendered="#{process_item.readValue eq 'true'}">
+                                                <span class="fa fa-check-square-o fa-lg" />
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{process_item.readValue ne 'true'}">
+                                                <span class="fa fa-square-o fa-lg" />
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                    </td>
+                                    <h:panelGroup rendered="#{propInd ==0}">
+                                        <td rowspan="#{propertyOwner.containers[container].propertyListSizeString}">
+                                            <h:panelGroup rendered="#{currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
+
+                                                <!-- EDIT BUTTON FOR REGULAR TASK -->
+                                                <button
+                                                    jsf:id="editContainer"
+                                                    jsf:action="task_edit"
+                                                    title="#{msgs.bearbeiten}"
+                                                    class="btn btn-blank"
+                                                    jsf:rendered="#{!isBatchStep and propertyOwner.containerAccess[container] and process_item.type.name != 'metadata'}">
+                                                    <span class="fa fa-pencil" />
+                                                    <f:setPropertyActionListener
+                                                        target="#{propertyOwner.container}"
+                                                        value="#{container}" />
+                                                    <f:setPropertyActionListener
+                                                        target="#{bean.modusBearbeiten}"
+                                                        value="eigenschaft" />
+                                                </button>
+
+                                                <!-- EDIT BUTTON FOR BATCH TASK -->
+                                                <button
+                                                    jsf:id="editContainerBatch"
+                                                    jsf:action="task_batch_edit"
+                                                    title="#{msgs.bearbeiten}"
+                                                    class="btn btn-blank"
+                                                    jsf:rendered="#{isBatchStep and propertyOwner.containerAccess[container] and process_item.type.name != 'metadata'}">
+                                                    <span class="fa fa-pencil" />
+                                                    <f:setPropertyActionListener
+                                                        target="#{propertyOwner.container}"
+                                                        value="#{container}" />
+                                                    <f:setPropertyActionListener
+                                                        target="#{bean.modusBearbeiten}"
+                                                        value="eigenschaft" />
+                                                </button>
+
+                                                <!-- DUPLICATE BUTTON -->
+                                                <button
+                                                    jsf:id="duplicateContainer"
+                                                    jsf:action="#{propertyOwner.duplicateContainer}"
+                                                    title="#{msgs.duplicate}"
+                                                    jsf:rendered="#{process_item.duplicationAllowed and process_item.type.name != 'metadata'}"
+                                                    class="btn btn-blank ms-2">
+                                                    <span class="fa fa-plus" />
+                                                    <f:setPropertyActionListener
+                                                        target="#{propertyOwner.container}"
+                                                        value="#{container}" />
+                                                </button>
+
+                                            </h:panelGroup>
+                                        </td>
+                                    </h:panelGroup>
+
+                                </tr>
+                            </h:panelGroup>
+
+                        </ui:repeat>
+                        <!-- // PROPERTIES OF CONTAINER NOT 0 -->
+
+                    </ui:repeat>
+
+                    <!-- METADATA TO DISPLAY -->
+                    <c:forEach
+                        items="#{propertyOwner.displayableMetadataMap}"
+                        var="metadata">
+                        <tr>
+                            <td>
+                                <h:outputText value="#{msgs[metadata.key]}" />
+                            </td>
+                            <td>
+                                <c:forEach
+                                    items="#{metadata.value}"
+                                    var="metadataValue">
+                                    <h:outputText
+                                        value="#{msgs[metadataValue]}"
+                                        rendered="#{metadata.key == 'DocStruct'}" />
+                                    <h:outputText
+                                        value="#{metadataValue}"
+                                        rendered="#{metadata.key != 'DocStruct'}" />
+                                    <br />
+                                </c:forEach>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    <!-- // METADATA TO DISPLAY -->
+
+                </table>
+            </intranda:box>
+        </h:form>
+
+        <!-- EDIT PROPERTIES -->
+        <h:form
+            onkeypress="submitOnEnter(event);"
+            id="editProperties"
+            rendered="#{bean.modusBearbeiten=='eigenschaft' and currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
+
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <intranda:box
+                        boxType="action"
+                        boxForm="true"
+                        boxPadding="false"
+                        title="#{msgs.eigenschaft}"
+                        icon="fa-edit">
+
+                        <!-- PROPERTY TO EDIT -->
+                        <ui:repeat
+                            var="myprocess_item"
+                            value="#{propertyOwner.containerProperties}"
+                            id="item">
+
+                            <!-- VALUE AS TEXT -->
+                            <h:panelGroup
+                                styleClass="row"
+                                rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{myprocess_item.name}"
+                                        labelFor="value"
+                                        labelRequired="false" />
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <h:inputText
+                                        id="value"
+                                        forceId="true"
+                                        styleClass="form-control form__input"
+                                        value="#{myprocess_item.value}"
+                                        required="false"
+                                        readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
+                                    </h:inputText>
+                                    <intranda:formHelp
+                                        content="#{msgs.helpPropertyValue}"
+                                        msgFor="value" />
+                                </div>
+                            </h:panelGroup>
+                            <!-- // VALUE AS TEXT -->
+
+                            <!-- VALUE AS TEXTAREA -->
+                            <h:panelGroup
+                                styleClass="row"
+                                rendered="#{myprocess_item.type.name == 'textarea'}">
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{myprocess_item.name}"
+                                        labelFor="textareaValue"
+                                        labelRequired="false" />
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <h:inputTextarea
+                                        id="textareaValue"
+                                        rows="7"
+                                        forceId="true"
+                                        styleClass="form-control form__input"
+                                        value="#{myprocess_item.value}"
+                                        required="false"
+                                        readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
+                                    </h:inputTextarea>
+                                    <intranda:formHelp
+                                        content="#{msgs.helpPropertyValue}"
+                                        msgFor="textareaValue" />
+                                </div>
+                            </h:panelGroup>
+                            <!-- // VALUE AS TEXTAREA -->
+
+                            <!-- VALUE AS NUMBER -->
+                            <h:panelGroup
+                                styleClass="row"
+                                rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{myprocess_item.name}"
+                                        labelFor="number"
+                                        labelRequired="false" />
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <h:inputText
+                                        id="number"
+                                        forceId="true"
+                                        styleClass="form-control form__input"
+                                        value="#{myprocess_item.value}"
+                                        readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                        <f:validateLongRange minimum="0" />
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
+                                    </h:inputText>
+                                    <intranda:formHelp
+                                        content="#{msgs.helpPropertyValue}"
+                                        msgFor="number" />
+                                </div>
+                            </h:panelGroup>
+                            <!-- // VALUE AS NUMBER -->
+
+
+                            <!-- VALUE AS DROPDOQWN -->
+                            <h:panelGroup
+                                styleClass="row"
+                                rendered="#{(myprocess_item.type.name == 'list')}">
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{myprocess_item.name}"
+                                        labelFor="select"
+                                        labelRequired="false" />
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <h:selectOneMenu
+                                        id="select"
+                                        styleClass="form-select"
+                                        disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
+                                        value="#{myprocess_item.value}">
+                                        <f:selectItems
+                                            value="#{myprocess_item.possibleValues}"
+                                            var="myprocess_items"
+                                            itemLabel="#{myprocess_items}"
+                                            itemValue="#{myprocess_items}" />
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
+                                    </h:selectOneMenu>
+                                    <intranda:formHelp
+                                        content="#{msgs.helpPropertyValue}"
+                                        msgFor="select" />
+                                </div>
+                            </h:panelGroup>
+                            <!-- // VALUE AS DROPDOQWN -->
+
+                            <!-- VALUE AS MULTI SELECT -->
+                            <h:panelGroup
+                                styleClass="row"
+                                rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{myprocess_item.name}"
+                                        labelFor="selectmany"
+                                        labelRequired="false" />
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <h:selectManyListbox
+                                        id="selectmany"
+                                        value="#{myprocess_item.valueList}"
+                                        size="5"
+                                        styleClass="form-control"
+                                        disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                        <f:selectItems
+                                            value="#{myprocess_item.possibleValues}"
+                                            var="myprocess_items"
+                                            itemLabel="#{myprocess_items}"
+                                            itemValue="#{myprocess_items}" />
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
+                                    </h:selectManyListbox>
+                                    <intranda:formHelp
+                                        content="#{msgs.helpPropertyValue}"
+                                        msgFor="selectmany" />
+                                </div>
+                            </h:panelGroup>
+                            <!-- VALUE AS MULTI SELECT -->
+
+                            <!-- VALUE AS BOOLEAN -->
+                            <h:panelGroup
+                                styleClass="row"
+                                rendered="#{(myprocess_item.type.name == 'boolean')}">
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{myprocess_item.name}"
+                                        labelFor="boolean"
+                                        labelRequired="false" />
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <h:selectBooleanCheckbox
+                                        id="boolean"
+                                        value="#{myprocess_item.booleanValue}"
+                                        disabled="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
+                                    </h:selectBooleanCheckbox>
+                                    <intranda:formHelp
+                                        content="#{msgs.helpPropertyValue}"
+                                        msgFor="boolean" />
+                                </div>
+                            </h:panelGroup>
+                            <!-- // VALUE AS BOOLEAN -->
+
+                            <!-- VALUE AS DATE -->
+                            <h:panelGroup
+                                styleClass="row"
+                                rendered="#{(myprocess_item.type.name == 'date')}">
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{myprocess_item.name}"
+                                        labelFor="date"
+                                        labelRequired="false" />
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <p:calendar
+                                        id="date"
+                                        value="#{myprocess_item.dateValue}"
+                                        locale="#{SpracheForm.locale}"
+                                        readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}"
+                                        styleClass="ff-goobi"
+                                        mask="true"
+                                        navigator="true"
+                                        yearRange="-100:+100"
+                                        pattern="#{myprocess_item.pattern}">
+                                        <f:passThroughAttribute
+                                            name="autocomplete"
+                                            value="off" />
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
+                                    </p:calendar>
+
+                                    <intranda:formHelp
+                                        content="#{msgs.helpPropertyValue}"
+                                        msgFor="date" />
+                                </div>
+                            </h:panelGroup>
+                            <!-- // VALUE AS DATE -->
+
+                            <!-- VALUE AS HTML -->
+                            <h:panelGroup
+                                styleClass="row"
+                                rendered="#{(myprocess_item.type.name == 'html')}">
+                                <div class="col-12 col-md-3">
+                                    <intranda:formLabel
+                                        label="#{myprocess_item.name}"
+                                        labelFor="html"
+                                        labelRequired="false" />
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <h:inputTextarea
+                                        id="html"
+                                        forceId="true"
+                                        styleClass="form-control"
+                                        value="#{myprocess_item.value}"
+                                        readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                        <f:ajax
+                                            execute="@this"
+                                            render="@form" />
+                                    </h:inputTextarea>
+                                    <intranda:formHelp
+                                        content="#{msgs.helpPropertyValue}"
+                                        msgFor="html" />
+                                </div>
+                            </h:panelGroup>
+                            <!-- // VALUE AS HTML -->
+
+                        </ui:repeat>
+                        <!-- // PROPERTY TO EDIT -->
+
+
+                        <!-- BUTTONS -->
+                        <div class="box__actions">
+
+                            <!-- CANCEL -->
+                            <button
+                                jsf:id="cancelProperty"
+                                class="btn btn-blank"
+                                jsf:immediate="true"
+                                jsf:action="#{NavigationForm.Reload}">
+                                <h:outputText value="#{msgs.abbrechen}" />
+                                <f:setPropertyActionListener
+                                    target="#{bean.modusBearbeiten}"
+                                    value="" />
+                            </button>
+
+                            <!-- SAVE FOR REGULAR TASK -->
+                            <button
+                                jsf:id="saveProperty"
+                                jsf:rendered="#{!isBatchStep}"
+                                class="btn btn-success submitOnEnter"
+                                jsf:action="#{propertyOwner.saveCurrentProperty}">
+                                <span class="fa fa-save" />
+                                <span>
+                                    <h:outputText value="#{msgs.speichern}" />
+                                </span>
+                                <f:setPropertyActionListener
+                                    target="#{bean.modusBearbeiten}"
+                                    value="" />
+                            </button>
+
+                            <!-- SAVE FOR BATCH TASK - ALL -->
+                            <button
+                                jsf:id="savePropertyBatch1"
+                                jsf:rendered="#{isBatchStep}"
+                                class="btn btn-success submitOnEnter"
+                                jsf:action="#{propertyOwner.saveCurrentPropertyForAll}">
+                                <span class="fa fa-save" />
+                                <span>
+                                    <h:outputText value="#{msgs.applyToAllProcesses}" />
+                                </span>
+                                <f:setPropertyActionListener
+                                    target="#{bean.modusBearbeiten}"
+                                    value="" />
+                            </button>
+
+                            <!-- SAVE FOR BATCH TASK - THIS ONE ONLY -->
+                            <button
+                                jsf:id="savePropertyBatch2"
+                                jsf:rendered="#{isBatchStep}"
+                                class="btn btn-success submitOnEnter"
+                                jsf:action="#{propertyOwner.saveCurrentProperty}">
+                                <span class="fa fa-save" />
+                                <span>
+                                    <h:outputText value="#{msgs.applyToThisProcess}" />
+                                </span>
+                                <f:setPropertyActionListener
+                                    target="#{bean.modusBearbeiten}"
+                                    value="" />
+                            </button>
+                        </div>
+                        <!-- // BUTTONS -->
+
+                    </intranda:box>
+                </div>
+            </div>
+        </h:form>
+        <!-- EDIT PROPERTIES -->
+
+    </composite:implementation>
+</ui:composition>

@@ -25,6 +25,10 @@
  */
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
+
+import org.apache.deltaspike.core.api.scope.WindowScoped;
+
 import de.sub.goobi.helper.Helper;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularySchema;
@@ -32,14 +36,10 @@ import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.helper.APIExceptionExtractor;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import org.apache.deltaspike.core.api.scope.WindowScoped;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.Serializable;
-import java.util.Locale;
 
 @Named
 @WindowScoped

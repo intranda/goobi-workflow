@@ -71,7 +71,7 @@
 							styleClass=&quot;#{not item.active?&#039;font-light&#039;:&#039;&#039;}&quot; /&gt;
 					&lt;/td&gt;
 					&lt;td&gt;
-						&lt;x:dataList var=&quot;intern&quot;
+						&lt;ui:repeat var=&quot;intern&quot;
 							styleClass=&quot;#{not item.active?&#039;font-light&#039;:&#039;&#039;}&quot;
 							rendered=&quot;#{item.benutzergruppenSize != 0}&quot;
 							value=&quot;#{item.benutzergruppen}&quot; layout=&quot;ordered list&quot;
@@ -79,10 +79,10 @@
 							&lt;h:outputText value=&quot;#{intern.titel}&quot; /&gt;
 							&lt;h:outputText value=&quot;,&quot;
 								rendered=&quot;#{rowIndex + 1 lt rowCount}&quot; /&gt;
-						&lt;/x:dataList&gt;
+						&lt;/ui:repeat&gt;
 					&lt;/td&gt;
 					&lt;td&gt;
-						&lt;x:dataList var=&quot;intern&quot;
+						&lt;ui:repeat var=&quot;intern&quot;
 							styleClass=&quot;#{not item.active?&#039;font-light&#039;:&#039;&#039;}&quot;
 							rendered=&quot;#{true}&quot;
 							value=&quot;#{item.projekte}&quot; layout=&quot;ordered list&quot;
@@ -90,7 +90,7 @@
 							&lt;h:outputText value=&quot;#{intern.titel}&quot; /&gt;
 							&lt;h:outputText value=&quot;,&quot;
 								rendered=&quot;#{rowIndex + 1 lt rowCount}&quot; /&gt;
-						&lt;/x:dataList&gt;
+						&lt;/ui:repeat&gt;
 					&lt;/td&gt;
 					&lt;td jsf:rendered=&quot;#{true}&quot;&gt;
 						&lt;h:outputText value=&quot;#{item.institution.shortName}&quot;

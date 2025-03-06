@@ -1,0 +1,15 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:util="http://goobi.io/util"
+>
+    <span class="#{styleClass}">
+        <util:icon
+            icon="#{icon}"
+            styleClass="#{iconClass}" />
+        <span
+            class="#{textClass}">
+            #{text}
+        </span>
+    </span>
+</ui:composition>

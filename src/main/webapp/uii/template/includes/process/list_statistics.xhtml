@@ -1,0 +1,302 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui" xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<ui:include src="../calendarJavaScript.xhtml" />
+
+		<h:panelGroup
+			rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.statisticsManager != null and ProzessverwaltungForm.showStatistics}">
+			<div class="row mt-4">
+				<div class="col-12">
+
+					<intranda:box id="statistics" boxType="neutral" boxPadding="true"
+						icon="fa-bar-chart-o"
+						title="#{msgs.statistischeAuswertung}: #{ProzessverwaltungForm.statisticsManager.statisticMode.title}">
+
+
+						<!-- ++++++++++++++++     Action      ++++++++++++++++ -->
+
+						<h:form
+							rendered="#{ProzessverwaltungForm.statisticsManager.statisticMode.restrictedDate}">
+
+							<div class="row">
+								<div class="col-sm-3">
+									<div class="form-group">
+										<h:outputLabel for="cal01" styleClass="control-label"
+											value="#{msgs.zeitraum} #{msgs.from}" />
+										<div style="display: block">
+											<intranda:formInputCalendar3 id="startdate" name="startdate"
+												field="#{ProzessverwaltungForm.statisticsManager.sourceDateFrom}"
+												required="false" />
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3">
+									<div class="form-group">
+										<h:outputLabel for="cal02" styleClass="control-label"
+											value="#{msgs.to}" />
+										<div style="display: block">
+											<intranda:formInputCalendar3 id="enddate" name="enddate"
+												field="#{ProzessverwaltungForm.statisticsManager.sourceDateTo}"
+												required="false" />
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3">
+									<div class="form-group">
+										<h:outputLabel for="field01" styleClass="control-label"
+											value="- #{msgs.orLast} -" />
+										<h:inputText id="field01" forceId="true"
+											styleClass="form-control"
+											value="#{ProzessverwaltungForm.statisticsManager.sourceNumberOfTimeUnitsAsString}"
+											required="false" />
+									</div>
+								</div>
+								<div class="col-sm-3">
+									<div class="form-group">
+										<h:outputLabel for="field02" styleClass="control-label"
+											value="#{msgs.einheiten}" />
+										<h:selectOneMenu id="field02"
+											value="#{ProzessverwaltungForm.statisticsManager.sourceTimeUnit}"
+											converter="StatisticsTimeUnitConverter"
+											styleClass="form-control">
+											<f:selectItems
+												value="#{ProzessverwaltungForm.statisticsManager.allTimeUnits}"
+												var="unit" itemLabel="#{unit.title}" itemValue="#{unit}" />
+										</h:selectOneMenu>
+
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-sm-3">
+									<div class="form-group">
+										<h:outputLabel for="field03" styleClass="control-label"
+											value="#{msgs.einheit}" />
+										<h:selectOneMenu id="field03"
+											value="#{ProzessverwaltungForm.statisticsManager.targetTimeUnit}"
+											converter="StatisticsTimeUnitConverter"
+											styleClass="form-control">
+											<f:selectItems
+												value="#{ProzessverwaltungForm.statisticsManager.allTimeUnits}"
+												var="unit" itemLabel="#{unit.title}" itemValue="#{unit}" />
+										</h:selectOneMenu>
+									</div>
+								</div>
+
+								<div class="col-sm-3">
+									<div class="form-group">
+										<h:outputLabel for="field04" styleClass="control-label"
+											value="#{msgs.anzeige}" />
+										<h:selectOneMenu id="field04"
+											value="#{ProzessverwaltungForm.statisticsManager.targetCalculationUnit}"
+											converter="StatisticsCalculationUnitConverter"
+											styleClass="form-control">
+											<f:selectItems
+												value="#{ProzessverwaltungForm.statisticsManager.allCalculationUnits}"
+												var="unit" itemLabel="#{unit.title}" itemValue="#{unit}" />
+										</h:selectOneMenu>
+									</div>
+								</div>
+
+								<div class="col-sm-3">
+									<div class="form-group">
+										<h:outputLabel for="field05" styleClass="control-label"
+											value="#{msgs.ausgabe}" />
+										<h:selectOneMenu id="field05"
+											value="#{ProzessverwaltungForm.statisticsManager.targetResultOutput}"
+											converter="StatisticsResultOutputConverter"
+											styleClass="form-control">
+											<f:selectItems
+												value="#{ProzessverwaltungForm.statisticsManager.allResultOutputs}"
+												var="out" itemLabel="#{out.title}" itemValue="#{out}" />
+										</h:selectOneMenu>
+									</div>
+								</div>
+
+								<div class="col-sm-3">
+									<div class="form-group">
+										<h:outputLabel for="field06" styleClass="control-label"
+											value="#{msgs.showAverage}" />
+										<h:selectOneMenu id="field06"
+											value="#{ProzessverwaltungForm.statisticsManager.showAverage}"
+											styleClass="form-control">
+											<f:selectItem itemValue="#{true}" itemLabel="#{msgs.ja}"></f:selectItem>
+											<f:selectItem itemValue="#{false}" itemLabel="#{msgs.nein}"></f:selectItem>
+										</h:selectOneMenu>
+									</div>
+								</div>
+							</div>
+
+
+							<div class="form-actions">
+								<h:panelGroup styleClass="mt-2 me-5"
+									rendered="#{ProzessverwaltungForm.statisticsManager.renderLoopOption}">
+									<h:selectBooleanCheckbox id="loops"
+										styleClass="form-check-input me-2"
+										value="#{ProzessverwaltungForm.statisticsManager.includeLoops}"
+										title="#{msgs.includeLoops}">
+										<f:passThroughAttribute name="data-toggle" value="tooltip" />
+									</h:selectBooleanCheckbox>
+									<h:outputLabel for="loops" styleClass="form-check-label" value="#{msgs.includeLoops}" />
+								</h:panelGroup>
+
+								<button jsf:id="myStatisticButton" type="submit"
+									title="#{msgs.calculateStatistics}"
+									jsf:action="#{ProzessverwaltungForm.statisticsManager.calculate}"
+									class="btn btn-primary">
+									<span class="fa fa-cog" />
+									<span>
+										<h:outputText value="#{msgs.calculateStatistics}" />
+									</span>
+									<f:setPropertyActionListener
+										target="#{ProzessverwaltungForm.showStatistics}"
+										value="true" />
+								</button>
+							</div>
+				           </h:form>
+
+						<h:panelGroup
+							rendered="#{ProzessverwaltungForm.statisticsManager.statisticMode.isSimple}">
+							<img
+								src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProzessverwaltungForm.statisticsManager.jfreeImage}"
+								aria-label="#{msgs.chart}" title="#{element.title}"
+								data-toggle="tooltip" />
+						</h:panelGroup>
+
+						<h:form
+							rendered="#{!ProzessverwaltungForm.statisticsManager.statisticMode.isSimple and ProzessverwaltungForm.statisticsManager.renderingElements!=null}">
+
+							<h:panelGroup layout="block" class="border-bottom my-5"
+								rendered="#{ProzessverwaltungForm.statisticsManager.statisticMode.restrictedDate}">
+							</h:panelGroup>
+
+							<ui:repeat var="element"
+								value="#{ProzessverwaltungForm.statisticsManager.renderingElements}"
+								layout="ordered list" rowCountVar="rowCount"
+								rowIndexVar="rowIndex">
+
+								<h:panelGroup
+									rendered="#{element.dataTable.showableInChart and ProzessverwaltungForm.statisticsManager.targetResultOutput=='chart'}">
+									<h4 class="mb-5">
+										<h:outputText value="#{element.title}" />
+									</h4>
+									<img
+										src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}"
+										aria-label="#{msgs.chart}" title="#{element.title}"
+										data-toggle="tooltip" />
+								</h:panelGroup>
+
+
+								<h:panelGroup
+									rendered="#{element.dataTable.showableInTable and ProzessverwaltungForm.statisticsManager.targetResultOutput== 'table'}">
+									<h4 class="mt-5">
+										<h:outputText value="#{element.title}" />
+									</h4>
+									<h:outputText value="#{element.htmlTableRenderer.rendering}"
+										escape="false" />
+
+									<button jsf:id="createExcel"
+										jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
+										title="#{msgs.download_excel}" class="btn btn-blank">
+										<span class="fa fa-floppy-o" />
+										<span>
+											<h:outputText value="#{msgs.download_excel}" />
+										</span>
+										<f:setPropertyActionListener value="#{element}"
+											target="#{ProzessverwaltungForm.myCurrentTable}" />
+										<f:passThroughAttribute name="data-toggle" value="tooltip" />
+									</button>
+
+									<button jsf:id="createCsv"
+										jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
+										title="#{msgs.download_csv}" class="btn btn-blank">
+										<span class="fa fa-floppy-o" />
+										<span>
+											<h:outputText value="#{msgs.download_csv}" />
+										</span>
+										<f:setPropertyActionListener value="#{element}"
+											target="#{ProzessverwaltungForm.myCurrentTable}" />
+										<f:passThroughAttribute name="data-toggle" value="tooltip" />
+									</button>
+								</h:panelGroup>
+
+								<h:panelGroup
+									rendered="#{ProzessverwaltungForm.statisticsManager.targetResultOutput=='chartAndTable'}">
+
+									<h:panelGroup
+										rendered="#{ProzessverwaltungForm.statisticsManager.statisticMode.restrictedDate}">
+										<h4 class="mt-5">
+											<h:outputText value="#{element.title}" />
+										</h4>
+									</h:panelGroup>
+									<h:panelGroup>
+
+										<h:panelGroup rendered="#{element.dataTable.showableInChart}">
+											<img
+												src="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{element.imageUrl}"
+												aria-label="#{msgs.chart}" title="#{element.title}"
+												data-toggle="tooltip" />
+										</h:panelGroup>
+
+										<div class="gw-table gw-table-fixed">
+										  <div class="gw-table__wrapper">
+											<h:outputText value="#{element.htmlTableRenderer.rendering}"
+												escape="false"
+												rendered="#{element.dataTable.showableInTable}" />
+											</div>
+										</div>
+										<button jsf:id="createExcel2"
+											jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
+											title="#{msgs.download_excel}"
+											jsf:rendered="#{element.dataTable.showableInTable}"
+											class="btn btn-blank">
+											<span class="fa fa-floppy-o" />
+											<span>
+												<h:outputText value="#{msgs.download_excel}" />
+											</span>
+											<f:setPropertyActionListener value="#{element}"
+												target="#{ProzessverwaltungForm.myCurrentTable}" />
+											<f:passThroughAttribute name="data-toggle" value="tooltip" />
+										</button>
+
+										<button class="btn btn-blank ms-3" jsf:id="createCsv2"
+											jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
+											title="#{msgs.download_csv}"
+											jsf:rendered="#{element.dataTable.showableInTable}">
+											<span class="fa fa-floppy-o" />
+											<span>
+												<h:outputText value="#{msgs.download_csv}" />
+											</span>
+											<f:setPropertyActionListener value="#{element}"
+												target="#{ProzessverwaltungForm.myCurrentTable}" />
+											<f:passThroughAttribute name="data-toggle" value="tooltip" />
+										</button>
+									</h:panelGroup>
+								</h:panelGroup>
+							</ui:repeat>
+						</h:form>
+
+					</intranda:box>
+
+				</div>
+			</div>
+
+
+		</h:panelGroup>
+
+	</composite:implementation>
+
+</ui:composition>

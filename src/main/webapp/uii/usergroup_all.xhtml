@@ -2,12 +2,12 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+	template="/uii/template/template.html"
+
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.benutzergruppen}" />
@@ -48,17 +48,17 @@
 
 								<!-- TABLE WITH ALL GROUPS -->
 								<div class="gw-table__wrapper">
-    								<x:dataTable id="usergrouptable" styleClass="table table-hover table-bordered"
+    								<h:dataTable id="usergrouptable" styleClass="table table-hover table-bordered"
     									var="item" value="#{BenutzergruppenForm.paginator.list}">
 
     									<!-- NAME COLUMN -->
-                                        <x:column>
+                                        <h:column>
     										<f:facet name="header">
     											<h:outputText value="#{msgs.name}" />
     										</f:facet>
 
                                             <ui:include
-                                                src="templatePG/includes/ajaxPlusMinusButton.xhtml">
+                                                src="template/includes/ajaxPlusMinusButton.xhtml">
                                                 <ui:param
                                                     name="ajaxRender"
                                                     value="usergroupform" />
@@ -79,12 +79,12 @@
     														boxSmall="true"
     														title="#{msgs.benutzer}">
 
-    														<x:dataTable var="step" value="#{item.benutzer}"
+    														<h:dataTable var="step" value="#{item.benutzer}"
     															styleClass="table table-hover table-bordered ">
     															<h:column>
     																<h:outputText value="#{step.nachVorname}" />
     															</h:column>
-    														</x:dataTable>
+    														</h:dataTable>
     													</intranda:box>
     												</div>
                                                     <!-- // BOX WITH USERS -->
@@ -116,20 +116,20 @@
     										</h:panelGroup>
                                             <!-- // EXPANDED DETAILS OF THE GROUP -->
 
-    									</x:column>
+    									</h:column>
                                         <!-- // NAME COLUMN -->
 
                                         <!-- INSTITUTION COLUMN -->
-    									<x:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
+    									<h:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
     											<f:facet name="header">
     													<h:outputText value="#{msgs.institution}" />
     											</f:facet>
     											<h:outputText value="#{item.institution.shortName}" />
-    									</x:column>
+    									</h:column>
                                         <!-- // INSTITUTION COLUMN -->
 
                                         <!-- ACTION COLUMN -->
-    									<x:column headerClass="gw-table-fixed__actions">
+    									<h:column headerClass="gw-table-fixed__actions">
     										<f:facet name="header">
     											<h:outputText value="#{msgs.auswahl}" />
     										</f:facet>
@@ -158,14 +158,14 @@
     												<span class="fa fa-clipboard" />
     												<f:passThroughAttribute name="data-toggle" value="tooltip" />
     												<f:passThroughAttribute name="aria-label" value="#{msgs.duplicate}" />
-    												<x:updateActionListener property="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
+    												<f:setPropertyActionListener target="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
     											</button>
     										</div>
 
-    									</x:column>
+    									</h:column>
                                         <!-- // ACTION COLUMN -->
 
-    								</x:dataTable>
+    								</h:dataTable>
 								</div>
 
                                 <!-- ACTION AREA -->

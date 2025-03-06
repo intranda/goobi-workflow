@@ -6,9 +6,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/templatePG/templatePG.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
+    template="/uii/template/template.html"
+
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <ui:param
         name="myPageTitle"
@@ -581,7 +581,7 @@
                                                 <div class="form-actions">
 
                                                     <!-- Abbrechen-Schaltknopf -->
-                                                    <a
+                                                    <button
                                                         jsf:id="cancelFileformat"
                                                         class="btn btn-blank"
                                                         jsf:immediate="true"
@@ -589,8 +589,9 @@
                                                             <h:outputText value="#{msgs.abbrechen}" />
                                                     </span> <f:setPropertyActionListener
                                                             target="#{ProjekteForm.displayMode}"
-                                                            value="tab4" /> <f:ajax render=":myform" />
-                                                    </a>
+                                                            value="tab4" />
+                                                            <f:ajax render=":myform" />
+                                                    </button>
 
                                                     <!-- Speichern-Schaltknopf -->
                                                     <button
@@ -624,10 +625,7 @@
                                                 title="#{msgs.metsfilegroups}"
                                                 icon="fa-table">
 
-
-                                                <div class="dataTables_wrapper">
-
-                                                    <x:dataTable
+                                                    <h:dataTable
                                                         id="fileformats"
                                                         styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                                                         var="item"
@@ -679,7 +677,7 @@
 
                                                         </h:column>
 
-                                                    </x:dataTable>
+                                                    </h:dataTable>
 
                                                     <div class="form__actions">
 
@@ -700,8 +698,6 @@
 
                                                     </div>
                                                     <!-- end form__actions -->
-
-                                                </div>
 
                                             </intranda:box>
 
@@ -727,17 +723,11 @@
 
                 <!-- JOURNAL -->
                 <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-5'}">
-                    <ui:include src="templatePG/includes/journal.xhtml">
-                        <ui:param
-                            name="showBigButton"
-                            value="true" />
-                        <ui:param
-                            name="showFolderSelection"
-                            value="false" />
-                        <ui:param
-                            name="bean"
-                            value="#{ProjekteForm.myProjekt}" />
-                    </ui:include>
+                   <ui:fragment rendered="#{ProjekteForm.myProjekt.id != null}">
+
+                <intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="false" bean="#{ProjekteForm.myProjekt}" />
+                </ui:fragment>
+
                 </div>
                 <!-- JOURNAL -->
 

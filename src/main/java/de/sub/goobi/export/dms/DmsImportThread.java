@@ -87,7 +87,7 @@ public class DmsImportThread extends Thread {
     public void run() {
         while (!this.cancel) {
             try {
-                Thread.sleep(550);
+                Thread.sleep(550); //NOSONAR We will work on the migration to virtual threads in March 2025
                 if (!StorageProvider.getInstance().isFileExists(this.fileXml) && (StorageProvider.getInstance().isFileExists(this.fileError)
                         || StorageProvider.getInstance().isFileExists(this.fileSuccess))) {
                     if (StorageProvider.getInstance().isFileExists(this.fileError)
@@ -112,11 +112,10 @@ public class DmsImportThread extends Thread {
                         this.cancel = true;
                     }
                 }
-            } catch (Throwable t) {
-                log.error("Unexception exception", t);
-                if (t instanceof InterruptedException) {
-                    Thread.currentThread().interrupt();
-                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                log.error("Error in import thread", e);
             }
         }
         if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {

@@ -1,0 +1,273 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+
+        <button
+          class="btn gw-table__filters__option"
+          jsf:action="#{NavigationForm.Reload}"
+          title="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']?msgs.process_displayAsTable:msgs.process_displayAsGrid}"
+          pt:aria-label="#{msgs.process_displayAsGrid}"
+          jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'}">
+          <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['gridview']?'fa-align-justify':'fa-th-large'}" />
+          <f:setPropertyActionListener
+            target="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']}"
+            value="#{not ProzessverwaltungForm.anzeigeAnpassen['gridview']}" />
+          <f:passThroughAttribute
+            name="data-toggle"
+            value="tooltip" />
+        </button>
+
+        <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' or !NavigationForm.uiStatus['processListDisplay']}">
+        <div
+          class="btn-group"
+          data-bs-toggle="tooltip"
+          title="#{msgs.selectTableColumns}">
+          <!-- show columns -->
+          <div id="dropdown" class="dropdown">
+            <button
+              type="button"
+              aria-label="#{msgs.selectTableColumns}"
+              id="selectDisplay"
+              class="btn gw-table__filters__option dropdown-toggle"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false">
+              <span class="fa fa-columns" />
+              <span class="caret"></span>
+            </button>
+
+            <ul class="dropdown-menu">
+              <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                <!-- check boxes -->
+                <button
+                  jsf:action="#{NavigationForm.Reload}"
+                  jsf:id="showSelectionBoxes"
+                  class="dropdown-item">
+                  <i
+                    class="fa #{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                  <span>
+                    <h:outputText value="#{msgs.auswahlboxen}" />
+                  </span>
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
+                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" />
+                </button>
+              </li>
+              <li>
+                <!-- ID -->
+                <button
+                  jsf:action="#{NavigationForm.Reload}"
+                  jsf:id="showProcessId"
+                  class="dropdown-item">
+                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
+                  <span>
+                    <h:outputText value="#{msgs.id}" />
+                  </span>
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}"
+                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['processId']}" />
+                </button>
+              </li>
+              <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                <!-- Thumbnail -->
+                <button
+                  jsf:action="#{NavigationForm.Reload}"
+                  jsf:id="showProcessThumbnail"
+                  class="dropdown-item">
+                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
+                  <span>
+                    <h:outputText value="#{msgs.thumbnail}" />
+                  </span>
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}"
+                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}" />
+                </button>
+              </li>
+              <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                <!-- Metadata details -->
+                <button
+                  jsf:action="#{NavigationForm.Reload}"
+                  jsf:id="showProcessMetadataDetails"
+                  class="dropdown-item">
+                  <i
+                    class="fa #{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                  <span>
+                    <h:outputText value="#{msgs.metadatadetails}" />
+                  </span>
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}"
+                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}" />
+                </button>
+              </li>
+              <li>
+                <!-- Regelsatz -->
+                <button
+                  jsf:action="#{NavigationForm.Reload}"
+                  jsf:id="showProcessRuleset"
+                  class="dropdown-item">
+                  <i
+                    class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                  <span>
+                    <h:outputText value="#{msgs.regelsatz}" />
+                  </span>
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
+                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}" />
+                </button>
+              </li>
+              <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                <!-- Batch ID -->
+                <button
+                  jsf:action="#{NavigationForm.Reload}"
+                  jsf:id="showBatch"
+                  class="dropdown-item">
+                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
+                  <span>
+                    <h:outputText value="#{msgs.batch}" />
+                  </span>
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}"
+                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['batchId']}" />
+                </button>
+              </li>
+              <li>
+                <!-- process date -->
+                <button
+                  jsf:action="#{NavigationForm.Reload}"
+                  jsf:id="showProcessDate"
+                  class="dropdown-item">
+                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
+                  <span>
+                    <h:outputText value="#{msgs.vorgangsdatum}" />
+                  </span>
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
+                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['processDate']}" />
+                </button>
+              </li>
+              <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                <!-- lockings -->
+                <button
+                  jsf:action="#{NavigationForm.Reload}"
+                  jsf:id="showProcessLockings"
+                  class="dropdown-item">
+                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
+                  <span>
+                    <h:outputText value="#{msgs.sperrungen}" />
+                  </span>
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
+                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['lockings']}" />
+                </button>
+              </li>
+              <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                <!-- swapping -->
+                <button
+                  jsf:action="#{NavigationForm.Reload}"
+                  jsf:id="showSwapping"
+                  class="dropdown-item">
+                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
+                  <span>
+                    <h:outputText value="#{msgs.ausgelagerung}" />
+                  </span>
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
+                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}" />
+                </button>
+              </li>
+
+              <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                <!-- show number of images -->
+                <button
+                  jsf:action="#{NavigationForm.Reload}"
+                  jsf:id="showNumberOfImages"
+                  class="dropdown-item">
+                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
+                  <span>
+                    <h:outputText value="#{msgs.NumberOfImages}" />
+                  </span>
+                  <f:setPropertyActionListener
+                    target="#{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
+                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}" />
+                </button>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </h:panelGroup>
+
+            <c:if test="#{LoginForm.hasRole('Workflow_Processes_Show_Deactivated_Projects') or LoginForm.hasRole('Workflow_Processes_Show_Finished')}">
+                <div
+                  class="btn-group"
+                  data-bs-toggle="tooltip"
+                  title="#{msgs.anzeigeAnpassen}">
+                  <div class="dropdown">
+                    <button
+                    	id="modifyDisplay"
+                      type="button"
+                      aria-label="#{msgs.anzeigeAnpassen}"
+                      class="btn gw-table__filters__option dropdown-toggle"
+                      data-bs-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      >
+                      <span class="fa fa-wrench margin-right-5" />
+                      <span class="caret"></span>
+                    </button>
+
+                    <!-- show or hide depending on filter -->
+                    <ul class="dropdown-menu">
+                        <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Finished')}">
+                            <li>
+                              <!-- correction tasks -->
+                              <button
+                                jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                jsf:id="showCorrectionTasks"
+                                class="dropdown-item">
+                                <span class="fa #{ProzessverwaltungForm.showClosedProcesses?'fa-check-square-o':'fa-square-o'} margin-right-5" />
+                                <span>
+                                  <h:outputText value="#{msgs.showClosedProcesses}" />
+                                </span>
+                                <f:setPropertyActionListener
+                                  target="#{ProzessverwaltungForm.showClosedProcesses}"
+                                  value="#{not ProzessverwaltungForm.showClosedProcesses}" />
+                                </button>
+                            </li>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Deactivated_Projects')}">
+                            <li>
+                            <!-- automatic tasks -->
+                            <button
+                              jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                              jsf:id="showAutomaticTasks"
+                              class="dropdown-item">
+                              <span class="fa #{ProzessverwaltungForm.showArchivedProjects?'fa-check-square-o':'fa-square-o'}" />
+                              <span>
+                                <h:outputText value="#{msgs.showArchivedProjects}" />
+                              </span>
+                              <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.showArchivedProjects}"
+                                value="#{not ProzessverwaltungForm.showArchivedProjects}" />
+                            </button>
+                            </li>
+                        </h:panelGroup>
+                    </ul>
+                </div>
+                </div>
+            </c:if>
+    </composite:implementation>
+
+</ui:composition>

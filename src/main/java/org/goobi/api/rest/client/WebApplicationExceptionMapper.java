@@ -5,23 +5,22 @@ import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
-
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentExceptionMapper;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentExceptionMapper.ErrorMessage;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 
 /**
  * Catches general exceptions encountered during rest-api calls and creates an error response
@@ -47,12 +46,12 @@ public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplica
         if (e == null) {
             e = eParent;
         }
-        if(e instanceof WebApplicationException) {
-            status = ((WebApplicationException) e).getResponse().getStatusInfo().toEnum();
+        if (e instanceof WebApplicationException wae) {
+            status = wae.getResponse().getStatusInfo().toEnum();
         } else if (e instanceof NotFoundException || e instanceof FileNotFoundException) {
             status = Status.NOT_FOUND;
-        } else if (e instanceof ContentLibException) {
-            return new ContentExceptionMapper(request, response).toResponse((ContentLibException) e);
+        } else if (e instanceof ContentLibException cle) {
+            return new ContentExceptionMapper(request, response).toResponse(cle);
         } else if (e instanceof TimeoutException) {
             status = Status.INTERNAL_SERVER_ERROR;
         } else if (e instanceof RuntimeException) {
@@ -87,4 +86,3 @@ public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplica
     }
 
 }
-

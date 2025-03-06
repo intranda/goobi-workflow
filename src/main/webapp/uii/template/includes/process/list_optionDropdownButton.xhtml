@@ -1,0 +1,279 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+		<span
+            class="dropdown-left"
+            title="#{msgs.additionalOptions}"
+            data-bs-toggle="tooltip">
+            <button
+                jsf:id="additionalOptionsDropdown"
+                aria-label="#{msgs.additionalOptions}"
+                aria-haspopup="true"
+                aria-expanded="false"
+                type="button"
+                class="btn btn-blank dropdown-toggle"
+                data-bs-toggle="dropdown">
+                <span class="fa fa-cog" />
+            </button>
+            <ul class="dropdown-menu">
+
+                <li>
+                    <!-- EDIT -->
+                    <button jsf:action="#{ProzessverwaltungForm.editProcess}" jsf:id="grid_edit"
+                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}" jsf:rel="tooltip" title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}"
+                        class="dropdown-item">
+                        <span class="fa fa-pencil" />
+                        <span>
+                            <h:outputText value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}" />
+                        </span>
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
+                    </button>
+                </li>
+
+                 <li>
+                    <!-- METADATA EDITOR - READ ONLY -->
+                    <button jsf:action="#{Metadaten.XMLlesen}"
+                        class="dropdown-item"
+                        id="grid_action14" rel="tooltip" title="#{msgs.metadatenBearbeiten}"
+                        jsf:rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                        <span class="fa fa-book" />
+                        <span>
+                            <h:outputText value="#{msgs.metadatenBearbeiten}" />
+                        </span>
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:param name="nurLesen" value="true" />
+                        <f:param name="ProzesseID" value="#{item.id}" />
+                        <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                        <f:param name="zurueck" value="process_all" />
+                    </button>
+                </li>
+
+                <li>
+                    <!-- METADATA EDITOR - WRITE ACCESS -->
+                    <button jsf:action="#{Metadaten.XMLlesen}"
+                        class="dropdown-item"
+                        id="grid_action15" rel="tooltip" title="#{msgs.metadatenBearbeiten}"
+                        jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
+                        <span class="fa fa-book" />
+                        <span>
+                            <h:outputText value="#{msgs.metadatenBearbeiten}" />
+                        </span>
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:param name="ProzesseID" value="#{item.id}" />
+                        <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                        <f:param name="zurueck" value="process_all" />
+                        <c:if test="#{LoginForm.hasRole('Task_Mets_Files')}">
+                            <f:setPropertyActionListener value="File" target="#{Metadaten.modusAnsicht}" />
+                        </c:if>
+                        <c:if test="#{LoginForm.hasRole('Task_Mets_Metadata')}">
+                            <f:setPropertyActionListener value="Metadaten" target="#{Metadaten.modusAnsicht}" />
+                        </c:if>
+                        <c:if test="#{LoginForm.hasRole('Task_Mets_Structure')}">
+                            <f:setPropertyActionListener value="Strukturdaten" target="#{Metadaten.modusAnsicht}" />
+                        </c:if>
+                        <c:if test="#{LoginForm.hasRole('Task_Mets_Pagination')}">
+                            <f:setPropertyActionListener value="Paginierung" target="#{Metadaten.modusAnsicht}" />
+                        </c:if>
+                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                        <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                    </button>
+                </li>
+
+                <li>
+                    <!-- EXPORT -->
+                    <button jsf:action="#{ProzessverwaltungForm.exportDMS}" jsf:id="grid_action21" jsf:rel="tooltip" title="#{msgs.importDms}" class="font-light dropdown-item" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
+                        <span class="fa fa-globe margin-right-10" />
+                        <span>
+                            <h:outputText value="#{msgs.importDms}" />
+                        </span>
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+                    </button>
+                </li>
+                <li>
+                    <!-- EXPORT - DISABLED -->
+                    <button jsf:id="grid_action21-greyed" jsf:action="#{ProzessverwaltungForm.exportDMS}" class="dropdown-item" jsf:disabled="true" jsf:rel="tooltip" title="#{msgs.importDms}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}">
+                        <i class="font-light fa fa-globe" />
+                        <span>
+                            <h:outputText value="#{msgs.importDms}" />
+                        </span>
+                        <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                        <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
+                    </button>
+                </li>
+
+
+
+
+
+
+
+
+
+
+                <h:panelGroup
+                    rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Linking')}">
+                    <li>
+                        <!-- DOWNLOAD INTO HOME DIRECTORY -->
+                        <button
+                            jsf:action="#{ProzessverwaltungForm.downloadToHome}"
+                            jsf:id="action16"
+                            jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}"
+                            class="dropdown-item">
+                            <span class="fa fa-cloud-download" />
+                            <span>
+                                <h:outputText
+                                    value="#{msgs.imHomeVerzeichnisVerlinken}" />
+                            </span>
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.myProzess}"
+                                value="#{item}" />
+                        </button>
+                    </li>
+                    <li>
+                        <!-- DOWNLOAD INTO HOME DIRECTORY - FOR ADMINS -->
+                        <button
+                            jsf:action="#{ProzessverwaltungForm.downloadToHome}"
+                            jsf:id="action17"
+                            onclick="if (!confirm('#{msgs.warningAdminBeforeLinking}')) return false"
+                            jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and item.imageFolderInUse}"
+                            class="dropdown-item">
+                            <span class="fa fa-cloud-download" />
+                            <span>
+                                <h:outputText
+                                    value="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" />
+                            </span>
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.myProzess}"
+                                value="#{item}" />
+                        </button>
+                    </li>
+                    <li>
+                        <!-- UPLOAD FROM HOME DIRECTORY -->
+                        <button
+                            jsf:action="#{ProzessverwaltungForm.uploadFromHome}"
+                            jsf:id="action18"
+                            onclick="if (!confirm('#{msgs.ausHomeverzeichnisEntfernen}')) return false"
+                            jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
+                            class="dropdown-item">
+                            <span class="fa fa-cloud-upload" />
+                            <span>
+                                <h:outputText
+                                    value="#{msgs.ausHomeverzeichnisEntfernen}" />
+                            </span>
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.myProzess}"
+                                value="#{item}" />
+                        </button>
+                    </li>
+                </h:panelGroup>
+
+                <h:panelGroup
+                    rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Download')}">
+                    <li>
+                        <!-- DOWNLOAD LOG FILE -->
+                        <button
+                            jsf:id="ubid119"
+                            jsf:action="#{item.downloadLogFile}"
+                            onclick="preventDoubleSubmit(this);"
+                            class="dropdown-item">
+                            <span class="fa fa-file-code-o" />
+                            <span>
+                                <h:outputText value="#{msgs.downloadLogFile}" />
+                            </span>
+                        </button>
+                    </li>
+                    <li>
+                        <!-- DOWNLOAD DOCKET -->
+                        <button
+                            jsf:id="ubid1119"
+                            jsf:action="#{item.downloadDocket}"
+                            onclick="preventDoubleSubmit(this);"
+                            class="dropdown-item">
+                            <span class="fa fa-print" />
+                            <span>
+                                <h:outputText
+                                    value="#{msgs.process_generateDocket}" />
+                            </span>
+                        </button>
+
+                    </li>
+                    <li>
+                        <!-- DOWNLOAD METS FILE -->
+                        <button
+                            jsf:action="#{ProzessverwaltungForm.downloadMets}"
+                            jsf:id="action25"
+                            onclick="preventDoubleSubmit(this);"
+                            jsf:rendered="#{item.displayMETSButton}"
+                            class="dropdown-item">
+                            <span class="fa fa-floppy-o" />
+                            <span>
+                                <h:outputText value="#{msgs.downloadMets}" />
+                            </span>
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.myProzess}"
+                                value="#{item}" />
+                        </button>
+                    </li>
+                    <li>
+                        <!-- DOWNLOAD PDF FILE -->
+                        <h:commandLink target="_blank"
+                            action="#{ProzessverwaltungForm.exportPdf}"
+                            id="action20"
+                            onclick="preventDoubleSubmit(this);"
+                            rendered="#{item.displayPDFButton}"
+                            class="dropdown-item">
+                            <span class="fa fa-file-pdf-o" />
+                            <span>
+                                <h:outputText
+                                    value="#{msgs.process_generatePdfForEntireObject}" />
+                            </span>
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.myProzess}"
+                                value="#{item}" />
+                        </h:commandLink>
+                    </li>
+
+                    <li>
+                        <!-- GENERATE SIMPLIFIED METADATA -->
+                        <button
+                            jsf:action="#{ProzessverwaltungForm.generateSimplifiedMetadataFile}"
+                            jsf:id="action23"
+                            onclick="preventDoubleSubmit(this);"
+                            class="dropdown-item">
+                            <span class="fa fa-file-pdf-o" />
+                            <span>
+                                <h:outputText
+                                    value="#{msgs.process_generateSimplifiedMetadata}" />
+                            </span>
+                            <f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.myProzess}"
+                                value="#{item}" />
+                        </button>
+                    </li>
+
+                </h:panelGroup>
+
+            </ul>
+        </span>
+
+	</composite:implementation>
+
+</ui:composition>

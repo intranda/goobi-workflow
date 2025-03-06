@@ -1,5 +1,7 @@
 package org.goobi.production.converters;
 
+import org.goobi.production.flow.statistics.enums.ResultOutput;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -18,12 +20,10 @@ package org.goobi.production.converters;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
-
-import org.goobi.production.flow.statistics.enums.ResultOutput;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
 
 /**
  * StatisticOutputConverter for statistics ResultOutput as select-items in jsf-guis

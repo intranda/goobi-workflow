@@ -5,9 +5,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/templatePG/templatePG.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
+    template="/uii/template/template.html"
+
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <ui:param
         name="myPageTitle"
@@ -62,6 +62,8 @@
                             help="#{msgs.help_intranda_administration_repository_name}"
                             required="true" />
 
+
+
                         <intranda:formInputDropDownAjax
                             id="repoType"
                             ajaxEvent="change"
@@ -73,9 +75,9 @@
                             selectItems="#{harvesterBean.repositoryTypes}"
                             hidePleaseSelectMessage="false"
                             required="true"
-                            var="item"
-                            itemLabel="#{item}"
-                            itemValue="#{item}" />
+                            itemLabel="#{var.label}"
+                            itemValue="#{var.value}" />
+
 
                         <h:panelGroup id="typeArea">
                             <h:panelGroup rendered="#{harvesterBean.repository.repositoryType == 'bach'}">
@@ -190,6 +192,8 @@
                             </h:panelGroup>
 
                         </h:panelGroup>
+
+
 
                         <intranda:formInputText
                             id="Frequency"

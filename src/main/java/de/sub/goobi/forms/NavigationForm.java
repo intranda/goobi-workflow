@@ -31,10 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
@@ -48,6 +44,9 @@ import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 

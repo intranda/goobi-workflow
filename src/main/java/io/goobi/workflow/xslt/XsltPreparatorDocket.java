@@ -32,12 +32,11 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.servlet.ServletOutputStream;
-
-import io.goobi.workflow.api.vocabulary.APIException;
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
@@ -60,7 +59,6 @@ import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
-import org.goobi.production.properties.Type;
 import org.jaxen.JaxenException;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -88,6 +86,7 @@ import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.UserManager;
+import jakarta.servlet.ServletOutputStream;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -479,27 +478,19 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         List<Element> processProperties = new ArrayList<>();
         List<ProcessProperty> propertyList = PropertyParser.getInstance().getPropertiesForProcess(process);
         for (ProcessProperty prop : propertyList) {
+            Element property = new Element(ELEMENT_PROPERTY, namespace);
+            property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getName());
             if (prop.getValue() != null) {
-                String value = prop.getValue();
-                List<String> parts = List.of(value.split("; "));
-                parts.forEach(p -> {
-                    Element property = new Element(ELEMENT_PROPERTY, namespace);
-                    property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getName());
-                    property.setAttribute(ATTRIBUTE_VALUE, convertPropertyValue(prop, p));
-                    Element label = new Element(ELEMENT_LABEL, namespace);
-                    label.setText(prop.getName());
-                    property.addContent(label);
-                    processProperties.add(property);
-                });
+                property.setAttribute(ATTRIBUTE_VALUE, prop.getValue());
             } else {
-                Element property = new Element(ELEMENT_PROPERTY, namespace);
-                property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getName());
                 property.setAttribute(ATTRIBUTE_VALUE, "");
-                Element label = new Element(ELEMENT_LABEL, namespace);
-                label.setText(prop.getName());
-                property.addContent(label);
-                processProperties.add(property);
             }
+
+            Element label = new Element(ELEMENT_LABEL, namespace);
+
+            label.setText(prop.getName());
+            property.addContent(label);
+            processProperties.add(property);
         }
         if (!processProperties.isEmpty()) {
             Element properties = new Element(ELEMENT_PROPERTIES, namespace);
@@ -781,20 +772,6 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         mainElement.setContent(elements);
         return doc;
-    }
-
-    private static String convertPropertyValue(ProcessProperty prop, String value) {
-        if (prop.getType().equals(Type.VOCABULARYREFERENCE) || prop.getType().equals(Type.VOCABULARYMULTIREFERENCE)) {
-            try {
-                return VocabularyAPIManager.getInstance().vocabularyRecords()
-                        .get(Long.parseLong(value))
-                        .getMainValue();
-            } catch (APIException e) {
-                log.error("Error retrieving vocabulary record", e);
-                return "[vocabulary record not found]";
-            }
-        }
-        return value;
     }
 
     /**

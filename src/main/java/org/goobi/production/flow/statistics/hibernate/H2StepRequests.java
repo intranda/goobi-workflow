@@ -29,11 +29,10 @@ package org.goobi.production.flow.statistics.hibernate;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.inject.Alternative;
-
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 
 import de.sub.goobi.helper.enums.HistoryEventType;
+import jakarta.enterprise.inject.Alternative;
 
 /**
  * Class provides SQL for Step Requests statistics on the history table it offers a little more functionality compared to the other SQL Source

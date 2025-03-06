@@ -1,5 +1,7 @@
 package de.sub.goobi.converter;
 
+import org.goobi.production.flow.statistics.enums.ResultOutput;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -25,13 +27,11 @@ package de.sub.goobi.converter;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
-import javax.faces.convert.FacesConverter;
-
-import org.goobi.production.flow.statistics.enums.ResultOutput;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.ConverterException;
+import jakarta.faces.convert.FacesConverter;
 
 /**
  * StatisticOutputConverter for statistics ResultOutput as select-items in jsf-guis

@@ -1,0 +1,28 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:p="http://primefaces.org/ui">
+
+	<composite:interface />
+
+	<composite:implementation>
+		<h:panelGroup
+			id="mainimagearea"
+			rendered="#{Metadaten.bildAnzeigen==true}"
+			layout="block"
+			styleClass="h-100">
+			<!-- IMAGE VIEW -->
+			<ui:include src="image/inc_me_image-image.xhtml" />
+
+			<!-- THUMBNAIL VIEW -->
+			<ui:include src="image/inc_me_image-thumbnails.xhtml" />
+
+			<!-- BOOKMARKS -->
+			<ui:include src="image/inc_me_image-bookmarks.xhtml" />
+		</h:panelGroup>
+	</composite:implementation>
+</ui:composition>

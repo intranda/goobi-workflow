@@ -35,12 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.production.cli.helper.OrderedKeyMap;
@@ -53,6 +47,11 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;

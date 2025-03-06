@@ -1,11 +1,11 @@
-<ui:composition 
-	xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" 
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-	xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
-	xmlns:h="http://xmlns.jcp.org/jsf/html" 
-	xmlns:f="http://xmlns.jcp.org/jsf/core" 
-	xmlns:x="http://myfaces.apache.org/tomahawk" 
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
@@ -15,36 +15,51 @@
         <composite:attribute name="field" />
         <composite:attribute name="help" />
         <composite:attribute name="fieldStyle" />
-        <composite:attribute name="style" />
-        <composite:attribute name="styleRight" />
         <composite:attribute name="ajaxEvent" />
         <composite:attribute name="ajaxRender" />
         <composite:attribute name="required" default="false" />
         <composite:attribute name="displayAsRequired" default="false" />
-        <composite:attribute name="classLeft" default="col-sm-3" />
-        <composite:attribute name="classRight" default="col-sm-9" />
+        <composite:attribute name="classLeft" default="col-12 col-md-3" />
+        <composite:attribute name="classRight" default="col-12 col-md-9" />
         <composite:attribute name="tabindex" default="0" />
+        <composite:attribute name="displayLabel" default="true" />
+        <composite:attribute name="onfocus" default="" />
     </composite:interface>
 
     <composite:implementation>
-        <div class="form-group" style="#{cc.attrs.style}">
-            <div class="#{cc.attrs.classLeft} control-label">
-				<h:outputLabel for="#{cc.attrs.name}" value="#{cc.attrs.label}" />
-				<h:panelGroup rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}">
-					<i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip"/>
-				</h:panelGroup>
-			</div>
-            <div class="#{cc.attrs.classRight}" style="#{cc.attrs.styleRight}">
-                <h:selectBooleanCheckbox id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle} checkbox-height-fix" style="margin-left: 0px;" value="#{cc.attrs.field}">
-                    <f:ajax event="#{cc.attrs.ajaxEvent}" render="#{cc.attrs.ajaxRender}" tabindex="#{cc.attrs.tabindex}" pt:aria-label="#{cc.attrs.label}"/>
-                </h:selectBooleanCheckbox>
-                <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
-                <intranda:formHelp content="#{cc.attrs.help}" />
+
+    	<!-- ROW -->
+        <div class="row">
+
+            <!-- LABEL -->
+            <div class="#{cc.attrs.classLeft}" tabindex="-1">
+                <intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}"
+                    labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
+                <composite:insertChildren />
             </div>
+            <!-- // LABEL -->
+
+			<!-- CONTENT -->
+            <div class="#{cc.attrs.classRight}">
+                <h:selectBooleanCheckbox
+                    id="#{cc.attrs.name}"
+                    styleClass="form-check-input #{cc.attrs.fieldStyle}"
+                    value="#{cc.attrs.field}"
+                    onfocus="#{cc.attrs.onfocus}">
+                    <f:ajax
+                        event="#{cc.attrs.ajaxEvent}"
+                        render="#{cc.attrs.ajaxRender}"
+                        tabindex="#{cc.attrs.tabindex}"
+                        pt:aria-label="#{cc.attrs.label}" />
+                </h:selectBooleanCheckbox>
+
+                <intranda:formHelp content="#{cc.attrs.help}" msgFor="#{cc.attrs.name}"/>
+            </div>
+            <!-- // CONTENT -->
+
         </div>
+		<!-- // ROW -->
 
     </composite:implementation>
 
 </ui:composition>
-
-

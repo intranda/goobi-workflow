@@ -443,6 +443,16 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         return Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "project", titel.replace(" ", "_"));
     }
 
+    @Override
+    public String getUploadFolder() {
+        return getDownloadFolder().toString();
+    }
+
+    @Override
+    public void setUploadFolder(String uploadFolder) {
+        // do nothing
+    }
+
     /**
      * Returns a project title for the case that the project with the given source project title is cloned. The returned title is generated so that is
      * unused in the current list of (active and inactive) projects in the goobi database. If a normal project title is cloned for the first time,

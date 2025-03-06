@@ -1,0 +1,523 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:form="http://goobi.io/form">
+
+	<composite:interface />
+
+	<composite:implementation>
+
+		<!-- REGULAR FORM -->
+		<intranda:box
+			boxType="action"
+			boxForm="true"
+			boxPadding="false"
+			title="#{myPageTitle}"
+			icon="fa-edit">
+
+			<form:field
+				label="#{msgs.nachname}"
+				required="true"
+				help="#{msgs.helpNachname}">
+				<h:inputText
+					id="lastname"
+					styleClass="form-control"
+					field="#{BenutzerverwaltungForm.myClass.nachname}" />
+				<form:message target="lastname" />
+			</form:field>
+			<form:field
+				label="#{msgs.vorname}"
+				help="#{msgs.helpVorname}">
+				<h:inputText
+					id="firstname"
+					styleClass="form-control"
+					field="#{BenutzerverwaltungForm.myClass.vorname}" />
+				<form:message target="firstname" />
+			</form:field>
+			<form:field
+				label="#{msgs.dashboard}"
+				help="#{msgs.helpUserDashboard}">
+				<h:selectOneMenu
+					id="dashboard"
+					styleClass="form-select"
+					field="#{BenutzerverwaltungForm.myClass.dashboardPlugin}">
+					<f:selectItem itemLabel="#{msgs.bitteAuswaehlen}" itemValue="" />
+					<f:selectItems value="#{BenutzerverwaltungForm.myClass.availableDashboards}" />
+				</h:selectOneMenu>
+				<form:message target="dashboard" />
+			</form:field>
+			<form:field
+				group="true"
+				label="#{msgs.istAktiv}"
+				help="#{msgs.helpIstAktiv}">
+				<h:selectBooleanCheckbox
+					id="isActive"
+					styleClass="form-check-input"
+					field="#{BenutzerverwaltungForm.myClass.active}" />
+				<form:message target="isActive" />
+			</form:field>
+			<form:field
+				label="#{msgs.user_config_customCss}"
+				help="#{msgs.help_user_config_customCss}">
+				<h:inputTextarea
+					id="customCss"
+					styleClass="form-control"
+					field="#{LoginForm.myBenutzer.customCss}"
+					rows="8" />
+				<form:message target="customCss" />
+			</form:field>
+			<form:field
+				group="true"
+				label="#{msgs.defaultSortOrder}"
+				help="#{msgs.helpDefaultSortOrder}">
+				<h:selectOneRadio
+					id="processDefaultSortOrderVertical"
+					value="#{LoginForm.myBenutzer.processListDefaultSortOrder}"
+					styleClass="select-radio select-radio-vertical">
+					<f:selectItem
+						itemLabel="#{msgs.defaultSortFieldAsc}"
+						itemValue="Asc" />
+					<f:selectItem
+						itemLabel="#{msgs.defaultSortFieldDesc}"
+						itemValue="Desc" />
+				</h:selectOneRadio>
+			</form:field>
+			<form:field
+				group="true"
+				label="#{msgs.defaultSortOrder}"
+				help="#{msgs.helpDefaultSortOrder}">
+				<h:selectOneRadio
+					id="processDefaultSortOrderHorizontal"
+					value="#{LoginForm.myBenutzer.processListDefaultSortOrder}"
+					styleClass="select-radio select-radio-horizontal">
+					<f:selectItem
+						itemLabel="#{msgs.defaultSortFieldAsc}"
+						itemValue="Asc" />
+					<f:selectItem
+						itemLabel="#{msgs.defaultSortFieldDesc}"
+						itemValue="Desc" />
+				</h:selectOneRadio>
+			</form:field>
+			<form:field
+				group="true"
+				label="#{msgs.usergroup_assignedRoles}"
+				help="#{msgs.helpUserRoles}">
+				<span>
+					<ui:repeat
+						var="var"
+						value="#{['Value 1', 'Value 2', 'Value 3']}">
+						<h:outputText
+							value="#{var}"
+							styleClass="badge badge-no-radius badge-light-blue">
+							<f:passThroughAttribute
+								name="tabindex"
+								value="-1" />
+						</h:outputText>
+					</ui:repeat>
+				</span>
+			</form:field>
+			<form:field
+				group="true"
+				label="#{msgs.name}"
+				help="#{msgs.helpName}">
+				<h:inputText
+					id="manualFieldC"
+					styleClass="form-control form__input"
+					value="#{LoginForm.myBenutzer.vorname}"
+					required="true"
+					readonly="false"
+					tabindex="0">
+					<f:passThroughAttribute
+						name="aria-label"
+						value="#{msgs.vorname}" />
+					<c:if test="false">
+						<f:passThroughAttribute
+							name="data-gw-focus-on-load"
+							value="false" />
+					</c:if>
+				</h:inputText>
+				<h:inputText
+					id="manualFieldD"
+					styleClass="form-control form__input"
+					value="#{LoginForm.myBenutzer.nachname}"
+					required="true"
+					readonly="false"
+					tabindex="0">
+					<f:passThroughAttribute
+						name="aria-label"
+						value="#{msgs.nachname}" />
+					<c:if test="false">
+						<f:passThroughAttribute
+							name="data-gw-focus-on-load"
+							value="false" />
+					</c:if>
+				</h:inputText>
+			</form:field>
+			<form:fieldset
+				label="#{msgs.benutzer}">
+				<form:field
+					label="#{msgs.nachname}"
+					help="#{msgs.helpNachname}">
+					<h:inputText
+						id="lastnameInFieldset"
+						styleClass="form-control"
+						field="#{BenutzerverwaltungForm.myClass.nachname}" />
+					<form:message target="lastnameInFieldset" />
+				</form:field>
+				<form:field
+					label="#{msgs.vorname}"
+					help="#{msgs.helpVorname}">
+					<h:inputText
+						id="firstnameInFieldset"
+						styleClass="form-control"
+						field="#{BenutzerverwaltungForm.myClass.vorname}" />
+					<form:message target="lastnameInFieldset" />
+				</form:field>
+			</form:fieldset>
+			<form:fieldset
+				label="#{msgs.benutzer}">
+				<form:fieldset
+					label="#{msgs.name}">
+					<form:field
+						label="#{msgs.nachname}"
+						help="#{msgs.helpNachname}">
+						<h:inputText
+							id="lastnameInStackedFieldset"
+							styleClass="form-control"
+							field="#{BenutzerverwaltungForm.myClass.nachname}" />
+						<form:message target="lastnameInFieldset" />
+					</form:field>
+					<form:field
+						label="#{msgs.vorname}"
+						help="#{msgs.helpVorname}">
+						<h:inputText
+							id="firstnameInStackedFieldset"
+							styleClass="form-control"
+							field="#{BenutzerverwaltungForm.myClass.vorname}" />
+						<form:message target="lastnameInFieldset" />
+					</form:field>
+				</form:fieldset>
+			</form:fieldset>
+			<div class="box__actions">
+
+				<!-- Cancel -->
+				<a
+					jsf:id="cancelEdition"
+					class="btn btn-blank"
+					jsf:immediate="true"
+					jsf:action="">
+					<h:outputText value="#{msgs.abbrechen}" />
+				</a>
+
+				<!-- Save => should be the first btn in the form (subit on enter) -->
+				<button
+					class="btn btn-success"
+					jsf:id="absenden"
+					type="submit"
+					jsf:action="#{BenutzerverwaltungForm.Speichern}">
+					<span class="fa fa-save" />
+					<span>
+						<h:outputText value="#{msgs.speichern}" />
+					</span>
+				</button>
+
+				<!-- Delete -->
+				<button
+					jsf:id="deleteUser"
+					class="btn btn-hot trigger-delete"
+					onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+					jsf:action="#{BenutzerverwaltungForm.Loeschen}">
+					<span class="fa fa-trash-o" />
+					<span>
+						<h:outputText value="#{msgs.loeschen}" />
+					</span>
+				</button>
+
+			</div>
+
+		</intranda:box>
+		<!-- // REGULAR FORM -->
+		<div>
+			<h2 class="h4 description">What to use?</h2>
+			<p>
+				Use <code>&lt;form:field&gt;</code> for any field that contains a single input element.
+			</p>
+			<p>
+				Use <code>&lt;form:field group="true"&gt;</code> for any field that contains one if the following input types: radio, checkboxes.
+				Also use this for multiple input elements in one field (see the "Assigned rights" as well as the following "Name" field above).
+				This will produce the field as a HTML fieldset, as well as the provided label as a HTML legend instead of a HTML label, to improve accessibility.
+			</p>
+			<p>
+				Use <code>&lt;form:fieldset&gt;</code> for any field that contains multiple grouped, distinct input elements.
+				Fieldsets may be nested, as shown above.
+			</p>
+		</div>
+		<!-- CODE -->
+		<div class="accordion-item mt-3">
+			<h2 class="accordion-header">
+				<button
+					data-bs-target="#codeForm1"
+					class="accordion-button btn btn-primary-400 collapsed"
+					type="button"
+					data-bs-toggle="collapse"
+					aria-expanded="false"
+					aria-controls="collapseOne">Code Snippet</button>
+			</h2>
+			<div
+				id="codeForm1"
+				class="accordion-collapse collapse"
+				data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+
+					<pre
+						class="code--form-actions bg-neutral-500 text-white px-4"
+						style="border-radius: var(- -border-radius)">
+						<code class="microlight">
+&lt;intranda:box
+	boxType=&quot;action&quot;
+	boxForm=&quot;true&quot;
+	boxPadding=&quot;false&quot;
+	title=&quot;#{myPageTitle}&quot;
+	icon=&quot;fa-edit&quot;&gt;
+
+	&lt;form:field
+		label=&quot;#{msgs.nachname}&quot;
+		required=&quot;true&quot;
+		help=&quot;#{msgs.helpNachname}&quot;&gt;
+		&lt;h:inputText
+			id=&quot;lastname&quot;
+			styleClass=&quot;form-control&quot;
+			field=&quot;#{BenutzerverwaltungForm.myClass.nachname}&quot; /&gt;
+		&lt;form:message target=&quot;lastname&quot; /&gt;
+	&lt;/form:field&gt;
+	&lt;form:field
+		label=&quot;#{msgs.vorname}&quot;
+		help=&quot;#{msgs.helpVorname}&quot;&gt;
+		&lt;h:inputText
+			id=&quot;firstname&quot;
+			styleClass=&quot;form-control&quot;
+			field=&quot;#{BenutzerverwaltungForm.myClass.vorname}&quot; /&gt;
+		&lt;form:message target=&quot;firstname&quot; /&gt;
+	&lt;/form:field&gt;
+	&lt;form:field
+		label=&quot;#{msgs.dashboard}&quot;
+		help=&quot;#{msgs.helpUserDashboard}&quot;&gt;
+		&lt;h:selectOneMenu
+			id=&quot;dashboard&quot;
+			styleClass=&quot;form-select&quot;
+			field=&quot;#{BenutzerverwaltungForm.myClass.dashboardPlugin}&quot;&gt;
+			&lt;f:selectItem itemLabel=&quot;#{msgs.bitteAuswaehlen}&quot; itemValue=&quot;&quot; /&gt;
+			&lt;f:selectItems value=&quot;#{BenutzerverwaltungForm.myClass.availableDashboards}&quot; /&gt;
+		&lt;/h:selectOneMenu&gt;
+		&lt;form:message target=&quot;dashboard&quot; /&gt;
+	&lt;/form:field&gt;
+	&lt;form:field
+		group=&quot;true&quot;
+		label=&quot;#{msgs.istAktiv}&quot;
+		help=&quot;#{msgs.helpIstAktiv}&quot;&gt;
+		&lt;h:selectBooleanCheckbox
+			id=&quot;isActive&quot;
+			styleClass=&quot;form-check-input&quot;
+			field=&quot;#{BenutzerverwaltungForm.myClass.active}&quot; /&gt;
+		&lt;form:message target=&quot;isActive&quot; /&gt;
+	&lt;/form:field&gt;
+	&lt;form:field
+		label=&quot;#{msgs.user_config_customCss}&quot;
+		help=&quot;#{msgs.help_user_config_customCss}&quot;&gt;
+		&lt;h:inputTextarea
+			id=&quot;customCss&quot;
+			styleClass=&quot;form-control&quot;
+			field=&quot;#{LoginForm.myBenutzer.customCss}&quot;
+			rows=&quot;8&quot; /&gt;
+		&lt;form:message target=&quot;customCss&quot; /&gt;
+	&lt;/form:field&gt;
+	&lt;form:field
+		group=&quot;true&quot;
+		label=&quot;#{msgs.defaultSortOrder}&quot;
+		help=&quot;#{msgs.helpDefaultSortOrder}&quot;&gt;
+		&lt;h:selectOneRadio
+			id=&quot;processDefaultSortOrderVertical&quot;
+			value=&quot;#{LoginForm.myBenutzer.processListDefaultSortOrder}&quot;
+			styleClass=&quot;select-radio select-radio-vertical&quot;&gt;
+			&lt;f:selectItem
+				itemLabel=&quot;#{msgs.defaultSortFieldAsc}&quot;
+				itemValue=&quot;Asc&quot; /&gt;
+			&lt;f:selectItem
+				itemLabel=&quot;#{msgs.defaultSortFieldDesc}&quot;
+				itemValue=&quot;Desc&quot; /&gt;
+		&lt;/h:selectOneRadio&gt;
+	&lt;/form:field&gt;
+	&lt;form:field
+		group=&quot;true&quot;
+		label=&quot;#{msgs.defaultSortOrder}&quot;
+		help=&quot;#{msgs.helpDefaultSortOrder}&quot;&gt;
+		&lt;h:selectOneRadio
+			id=&quot;processDefaultSortOrderHorizontal&quot;
+			value=&quot;#{LoginForm.myBenutzer.processListDefaultSortOrder}&quot;
+			styleClass=&quot;select-radio select-radio-horizontal&quot;&gt;
+			&lt;f:selectItem
+				itemLabel=&quot;#{msgs.defaultSortFieldAsc}&quot;
+				itemValue=&quot;Asc&quot; /&gt;
+			&lt;f:selectItem
+				itemLabel=&quot;#{msgs.defaultSortFieldDesc}&quot;
+				itemValue=&quot;Desc&quot; /&gt;
+		&lt;/h:selectOneRadio&gt;
+	&lt;/form:field&gt;
+	&lt;form:field
+		group=&quot;true&quot;
+		label=&quot;#{msgs.usergroup_assignedRoles}&quot;
+		help=&quot;#{msgs.helpUserRoles}&quot;&gt;
+		&lt;span&gt;
+			&lt;ui:repeat
+				var=&quot;var&quot;
+				value=&quot;#{['Value 1', 'Value 2', 'Value 3']}&quot;&gt;
+				&lt;h:outputText
+					value=&quot;#{var}&quot;
+					styleClass=&quot;badge badge-no-radius badge-light-blue&quot;&gt;
+					&lt;f:passThroughAttribute
+						name=&quot;tabindex&quot;
+						value=&quot;-1&quot; /&gt;
+				&lt;/h:outputText&gt;
+			&lt;/ui:repeat&gt;
+		&lt;/span&gt;
+	&lt;/form:field&gt;
+	&lt;form:field
+		group=&quot;true&quot;
+		label=&quot;#{msgs.name}&quot;
+		help=&quot;#{msgs.helpName}&quot;&gt;
+		&lt;h:inputText
+			id=&quot;manualFieldC&quot;
+			styleClass=&quot;form-control form__input&quot;
+			value=&quot;#{LoginForm.myBenutzer.vorname}&quot;
+			required=&quot;true&quot;
+			readonly=&quot;false&quot;
+			tabindex=&quot;0&quot;&gt;
+			&lt;f:passThroughAttribute
+				name=&quot;aria-label&quot;
+				value=&quot;#{msgs.vorname}&quot; /&gt;
+			&lt;c:if test=&quot;false&quot;&gt;
+				&lt;f:passThroughAttribute
+					name=&quot;data-gw-focus-on-load&quot;
+					value=&quot;false&quot; /&gt;
+			&lt;/c:if&gt;
+		&lt;/h:inputText&gt;
+		&lt;h:inputText
+			id=&quot;manualFieldD&quot;
+			styleClass=&quot;form-control form__input&quot;
+			value=&quot;#{LoginForm.myBenutzer.nachname}&quot;
+			required=&quot;true&quot;
+			readonly=&quot;false&quot;
+			tabindex=&quot;0&quot;&gt;
+			&lt;f:passThroughAttribute
+				name=&quot;aria-label&quot;
+				value=&quot;#{msgs.nachname}&quot; /&gt;
+			&lt;c:if test=&quot;false&quot;&gt;
+				&lt;f:passThroughAttribute
+					name=&quot;data-gw-focus-on-load&quot;
+					value=&quot;false&quot; /&gt;
+			&lt;/c:if&gt;
+		&lt;/h:inputText&gt;
+	&lt;/form:field&gt;
+	&lt;form:fieldset
+		label=&quot;#{msgs.benutzer}&quot;&gt;
+		&lt;form:field
+			label=&quot;#{msgs.nachname}&quot;
+			help=&quot;#{msgs.helpNachname}&quot;&gt;
+			&lt;h:inputText
+				id=&quot;lastnameInFieldset&quot;
+				styleClass=&quot;form-control&quot;
+				field=&quot;#{BenutzerverwaltungForm.myClass.nachname}&quot; /&gt;
+			&lt;form:message target=&quot;lastnameInFieldset&quot; /&gt;
+		&lt;/form:field&gt;
+		&lt;form:field
+			label=&quot;#{msgs.vorname}&quot;
+			help=&quot;#{msgs.helpVorname}&quot;&gt;
+			&lt;h:inputText
+				id=&quot;firstnameInFieldset&quot;
+				styleClass=&quot;form-control&quot;
+				field=&quot;#{BenutzerverwaltungForm.myClass.vorname}&quot; /&gt;
+			&lt;form:message target=&quot;lastnameInFieldset&quot; /&gt;
+		&lt;/form:field&gt;
+	&lt;/form:fieldset&gt;
+	&lt;form:fieldset
+		label=&quot;#{msgs.benutzer}&quot;&gt;
+		&lt;form:fieldset
+			label=&quot;#{msgs.name}&quot;&gt;
+			&lt;form:field
+				label=&quot;#{msgs.nachname}&quot;
+				help=&quot;#{msgs.helpNachname}&quot;&gt;
+				&lt;h:inputText
+					id=&quot;lastnameInStackedFieldset&quot;
+					styleClass=&quot;form-control&quot;
+					field=&quot;#{BenutzerverwaltungForm.myClass.nachname}&quot; /&gt;
+				&lt;form:message target=&quot;lastnameInFieldset&quot; /&gt;
+			&lt;/form:field&gt;
+			&lt;form:field
+				label=&quot;#{msgs.vorname}&quot;
+				help=&quot;#{msgs.helpVorname}&quot;&gt;
+				&lt;h:inputText
+					id=&quot;firstnameInStackedFieldset&quot;
+					styleClass=&quot;form-control&quot;
+					field=&quot;#{BenutzerverwaltungForm.myClass.vorname}&quot; /&gt;
+				&lt;form:message target=&quot;lastnameInFieldset&quot; /&gt;
+			&lt;/form:field&gt;
+		&lt;/form:fieldset&gt;
+	&lt;/form:fieldset&gt;
+
+
+	&lt;div class=&quot;box__actions&quot;&gt;
+
+		&lt;!-- Cancel --&gt;
+		&lt;a
+			jsf:id=&quot;cancelEdition&quot;
+			class=&quot;btn btn-blank&quot;
+			jsf:immediate=&quot;true&quot;
+			jsf:action=&quot;{BenutzerverwaltungForm.cancelEdit}&quot;&gt;
+			&lt;h:outputText value=&quot;#{msgs.abbrechen}&quot; /&gt;
+		&lt;/a&gt;
+
+		&lt;!-- Save =&gt; should be the first btn in the form (subit on enter) --&gt;
+		&lt;button
+			class=&quot;btn btn-success&quot;
+			jsf:id=&quot;absenden&quot;
+			type=&quot;submit&quot;
+			jsf:action=&quot;{BenutzerverwaltungForm.Speichern}&quot;&gt;
+			&lt;i class=&quot;fa fa-save&quot;&gt;&lt;/i&gt;
+			&lt;span&gt;
+				&lt;h:outputText value=&quot;#{msgs.speichern}&quot; /&gt;
+			&lt;/span&gt;
+		&lt;/button&gt;
+
+		&lt;!-- Delete --&gt;
+		&lt;button
+			jsf:id=&quot;deleteUser&quot;
+			class=&quot;btn btn-hot trigger-delete&quot;
+			onclick=&quot;if (!confirm(&#39;#{msgs.sollDieserEintragWirklichGeloeschtWerden}&#39;)) return false&quot;
+			jsf:action=&quot;{BenutzerverwaltungForm.Loeschen}&quot;&gt;
+			&lt;i class=&quot;fa fa-trash-o&quot;&gt;&lt;/i&gt;
+			&lt;span&gt;
+				&lt;h:outputText value=&quot;#{msgs.loeschen}&quot; /&gt;
+			&lt;/span&gt;
+		&lt;/button&gt;
+
+	&lt;/div&gt;
+
+&lt;/intranda:box&gt;
+						</code>
+					</pre>
+				</div>
+			</div>
+		</div>
+		<!-- // CODE -->
+
+	</composite:implementation>
+</ui:composition>

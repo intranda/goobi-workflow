@@ -28,11 +28,10 @@ package org.goobi.production.flow.statistics.hibernate;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.inject.Default;
-
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 
 import de.sub.goobi.helper.enums.HistoryEventType;
+import jakarta.enterprise.inject.Default;
 
 /**
  * Class provides SQL for storage statistics

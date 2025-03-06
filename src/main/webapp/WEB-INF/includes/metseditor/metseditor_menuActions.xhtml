@@ -1,0 +1,288 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <composite:interface/>
+
+    <composite:implementation>
+        <h:form id="meMenuActionsForm">
+            <ul class="navbar-nav flex-row">
+                <!-- PAGE TITLE -->
+                <li class="nav-item">
+                    <span class="nav-link">
+                        #{myPageTitle}
+                    </span>
+                </li>
+
+                <!-- PROCESS ID -->
+                <ui:fragment rendered="#{LoginForm.myBenutzer.metsDisplayProcessID}">
+                    <li class="nav-item">
+                        <span class="nav-link">
+                            Goobi-ID: #{Metadaten.myProzess.id}
+                        </span>
+                    </li>
+                </ui:fragment>
+                <ui:fragment rendered="#{Metadaten.showOcrButton}">
+                    <li class="nav-item d-none d-md-block">
+                            <!-- JS function is defined in uii/includes/metseditor/modals/inc_me_modal_altoeditor.xhtml -->
+                        <button onclick="openAltoEditor()" type="button" aria-label="#{msgs.mets_editOcrForCurrentImage}" class="nav-link" title="#{msgs.mets_editOcrForCurrentImage}" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                            <span class="fa fa-file-text-o fa-lg" aria-hidden="true"/>
+                            <span class="fa fa-pencil fa-lg" aria-hidden="true"/>
+
+                        </button>
+                    </li>
+                    <li class="nav-item d-none d-md-block #{Metadaten.treeProperties.showOcr eq 'true' ? 'active' :''}">
+                        <button jsf:id="ocrButton" aria-label="#{msgs.mets_showOcrForCurrentImage}" class="nav-link" jsf:action="#{NavigationForm.Reload}" title="#{msgs.mets_showOcrForCurrentImage}" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                            <span class="fa fa-file-text-o fa-lg" aria-hidden="true"/>
+                            <f:setPropertyActionListener value="true" target="#{Metadaten.treeProperties.showOcr}"/>
+                            <f:setPropertyActionListener value="" property="#{Metadaten.treeProperties.showThumbnails}" target="#{Metadaten.treeProperties.showThumbnails}"/>
+                        </button>
+                    </li>
+                </ui:fragment>
+                <!-- TOGGLE IMAGE VIEW -->
+                <li class="nav-item d-none d-md-block #{Metadaten.treeProperties.showOcr ne 'true' and Metadaten.treeProperties.showThumbnails ne 'true' ? 'active' :''}">
+                    <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" class="nav-link" jsf:id="showSinglePage" aria-label="#{msgs.mets_showImagesOne}" jsf:action="#{Metadaten.toggleImageView}" title="#{msgs.mets_showImagesOne}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
+                        <f:ajax render=":openseadragonform :thumbnailsForm"/>
+                        <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
+                        <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showThumbnails}"/>
+                        <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showOcr}"/>
+                    </button>
+                </li>
+
+                <!-- TOGGLE IMAGE VIEW -->
+                <li class="nav-item d-none d-md-block #{Metadaten.treeProperties.showThumbnails ne '' ? 'active' :''}">
+                    <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" class="nav-link" jsf:id="showThumbnails" aria-label="#{msgs.mets_showImagesThumbs}" jsf:action="#{Metadaten.toggleImageView}" title="#{msgs.mets_showImagesThumbs}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
+                        <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
+                        <f:ajax render=":openseadragonform :thumbnailsForm"/>
+                        <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
+                        <f:setPropertyActionListener value="true" property="#{Metadaten.treeProperties.showThumbnails}" target="#{Metadaten.treeProperties.showThumbnails}"/>
+                        <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showOcr}"/>
+                    </button>
+                </li>
+                <!-- VALIDATION -->
+                <li class="nav-item d-none d-md-block">
+                    <button style="display: none" jsf:id="startValidationButton" jsf:action="#{Metadaten.Validate}">
+                    </button>
+
+                    <button class="nav-link" jsf:id="startValidation" aria-label="#{msgs.validieren}" jsf:action="#{Metadaten.Validate}" title="#{msgs.validieren}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <span class="fa fa-check fa-lg" aria-hidden="true"/>
+                        <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render="@form :pageContentCenter @form :treeform"/>
+                    </button>
+
+                    <h:commandButton type="button" id="startValidationButtonAjax" style="display:none" action="#{Metadaten.Validate}" title="#{msgs.validieren}" rel="tooltip">
+                            <f:ajax render="@form"/>
+                    </h:commandButton>
+                </li>
+
+                <!-- CONFIGURATION -->
+                <li class="nav-item dropdown d-none d-md-block">
+                    <button id="configDropdown" type="button" class="nav-link dropdown-toggle" aria-label="#{msgs.mets_configuration}" aria-expanded="false" data-bs-toggle="dropdown">
+                        <span class="fa fa-cog fa-lg" aria-hidden="true"/>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <button jsf:id="showtreelevel" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
+                                <span class="fa fa-list-ol" aria-hidden="true"/>
+                                #{Metadaten.treeProperties.showtreelevel ? msgs.mets_treelevel_hide : msgs.mets_treelevel}
+                                <f:setPropertyActionListener value="#{Metadaten.treeProperties.showtreelevel?false:true}" property="#{Metadaten.treeProperties.showtreelevel}" target="#{Metadaten.treeProperties.showtreelevel}"/>
+
+                                <f:ajax render="@form :treeform"/>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button jsf:id="showtitle" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
+                                <span class="fa fa-list" aria-hidden="true"/>
+                                #{Metadaten.treeProperties.showtitle ? msgs.mets_treeTitle_hide : msgs.mets_treeTitle}
+                                <f:setPropertyActionListener value="#{Metadaten.treeProperties.showtitle?false:true}" property="#{Metadaten.treeProperties.showtitle}" target="#{Metadaten.treeProperties.showtitle}"/>
+                                <f:ajax render="@form :treeform"/>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button jsf:id="showfirstpagenumber" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
+                                <span class="fa fa-exchange" aria-hidden="true"/>
+                                #{Metadaten.treeProperties.showfirstpagenumber ? msgs.mets_treePageNumber_hide : msgs.mets_treePageNumber}
+                                <f:setPropertyActionListener value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}" property="#{Metadaten.treeProperties.showfirstpagenumber}" target="#{Metadaten.treeProperties.showfirstpagenumber}"/>
+
+                                <f:ajax render="@form :treeform"/>
+
+                            </button>
+                        </li>
+
+                        <li>
+                            <button jsf:id="fullexpanded" jsf:action="#{Metadaten.TreeExpand}" class="dropdown-item">
+                                <span class="fa fa-indent" aria-hidden="true"/>
+                                #{not Metadaten.treeProperties.fullexpanded ? msgs.mets_treeExpand : msgs.mets_treeCompress}
+                                <f:setPropertyActionListener value="#{Metadaten.treeProperties.fullexpanded?false:true}" property="#{Metadaten.treeProperties.fullexpanded}" target="#{Metadaten.treeProperties.fullexpanded}"/>
+
+                                <f:ajax render="@form :treeform"/>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button jsf:id="displayImage" jsf:action="#{Metadaten.BildAnzeigen}" class="dropdown-item">
+                                <span class="fa fa-picture-o" aria-hidden="true"/>
+                                #{Metadaten.bildAnzeigen == true ? msgs.metadatenBildAusblenden : msgs.metadatenBildAnzeigen}
+                            </button>
+                        </li>
+
+                        <c:if test="#{not Metadaten.nurLesenModus and LoginForm.hasRole('Task_Mets_Pagination')}">
+                            <li>
+                                <button jsf:id="resetPagination" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#resetPaginationModal" type="button">
+                                    <span class="fa fa-refresh" aria-hidden="true"/>
+                                    #{msgs.mets_resetPagination}
+                                </button>
+                            </li>
+                        </c:if>
+
+                        <li>
+                            <button jsf:id="toggleTopstruct" jsf:action="#{Metadaten.changeTopstruct}" class="dropdown-item">
+                                <span class="fa fa-sitemap" aria-hidden="true"/>
+                                #{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}
+                                <f:ajax render="@form :treeform"/>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button jsf:id="toggleThumbLabel" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
+                                <span class="fa fa-file" aria-hidden="true"/>
+                                #{NavigationForm.uiStatus.mets_thumbFilename?msgs.mets_showThumbFileNames:msgs.mets_showThumbPagination}
+                                <f:setPropertyActionListener value="#{NavigationForm.uiStatus.mets_thumbFilename?false:true}" property="#{NavigationForm.uiStatus.mets_thumbFilename}" target="#{NavigationForm.uiStatus.mets_thumbFilename}"/>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button jsf:id="toggleHiddenFields" jsf:action="#{Metadaten.reloadMetadataList}" class="dropdown-item">
+                                <span class="fa fa-eye" aria-hidden="true"/>
+                                #{Metadaten.displayHiddenMetadata?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}
+                                <f:setPropertyActionListener value="#{!Metadaten.displayHiddenMetadata}" property="#{Metadaten.displayHiddenMetadata}" target="#{Metadaten.displayHiddenMetadata}"/>
+                            </button>
+                        </li>
+                        <ui:fragment rendered="#{Metadaten.checkForReadingDirection}">
+                             <li>
+                                <button jsf:id="toggleRTL" jsf:action="#{Metadaten.Reload}" class="dropdown-item">
+                                     <span class="fa fa-exchange" aria-hidden="true"/>
+                                    #{Metadaten.pagesRTL?msgs.mets_toggleLTR:msgs.mets_toggleRTL}
+                                    <f:setPropertyActionListener value="#{!Metadaten.pagesRTL}" property="#{Metadaten.pagesRTL}" target="#{Metadaten.pagesRTL}"/>
+                                </button>
+                            </li>
+                        </ui:fragment>
+                        <li class="seperator"/>
+
+                        <!-- DIRECTORIES -->
+                        <ui:repeat var="directory" value="#{Metadaten.allTifFolders}">
+                            <li class="#{Metadaten.currentTifFolder == directory ? 'active':''}">
+                                <button jsf:id="changeFolder" class="dropdown-item" jsf:action="#{Metadaten.changeFolder}">
+                                    <span class="fa fa-sitemap" aria-hidden="true"/>
+                                    #{directory}
+									<f:setPropertyActionListener value="0" property="#{Metadaten.numberOfNavigation}" target="#{Metadaten.numberOfNavigation}"/>
+                                    <f:setPropertyActionListener value="#{directory}" property="#{Metadaten.currentTifFolder}" target="#{Metadaten.currentTifFolder}"/>
+                                    <f:ajax execute="@form" render="@form :openseadragonform :thumbnailsForm :treeform" />
+                                    <f:passThroughAttribute name="data-renderimage" value="true"/>
+								</button>
+                            </li>
+                        </ui:repeat>
+                    </ul>
+                </li>
+
+                <!-- SAVE -->
+                <c:if test="#{not Metadaten.nurLesenModus}">
+                    <li class="nav-item d-none d-md-block">
+                        <!-- This button and the hidden button below have to
+                        work together to get the wanted effect here. This button
+                        is responsible for FIRST UNFOCUSING the currently
+                        focused input field and THEN SENDING the content to the
+                        belonging java bean. Because JSF has no reliable
+                        execution order between onclick() and the call of the
+                        belonging Java bean (it does not wait until Javascript
+                        terminates), the javascript of this button is used to do
+                        the unfocus-task first and then simulate the click of
+                        the other button (below, hidden) AFTER UNFOCUSING the
+                        currently focused field.-->
+                        <!-- This button should not submit the form. Otherwise there will be two submits,
+                        from this button and from #saveMetsFileButton. In Firefox only the second submit is sent, resulting
+                        in the desired behaviour. In Chromium-browsers, the first submit is sent, resulting in Metadaten.Reload
+                        not being called (Florian 06-10-2022) -->
+                        <button type="button" class="nav-link" id="saveMetsFileButtonSimulation" onclick="document.activeElement.blur();document.getElementById('meMenuActionsForm:saveMetsFileButton').click();" title="#{msgs.speichern}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+
+                            <span class="fa fa-floppy-o fa-lg" aria-hidden="true"/>
+
+                        </button>
+                        <!-- This button may not be removed or merged into the
+                        button above. It is called AFTER the javascript of the
+                        button above has terminated. -->
+                        <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" style="display: none" jsf:id="saveMetsFileButton" jsf:action="#{Metadaten.Reload}">
+                            <!--
+                            <f:ajax
+                                onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                                execute="@form"
+                                render="@form :pageContentCenter @form :treeform"
+                            />
+                            -->
+                        </button>
+
+                        <h:panelGroup style="display:none" styleClass="navigationitem" id="saveMetsFileImage">
+                            <span class="fa fa-floppy-o"/>
+                        </h:panelGroup>
+
+                        <h:commandButton type="button" id="saveMetsFileButtonAjax" style="display:none" action="#{Metadaten.Reload}" title="#{msgs.speichern}" rel="tooltip">
+                            <f:ajax render="@form"/>
+                        </h:commandButton>
+
+                        <h:commandButton type="button" id="automaticSave" style="display:none" action="#{Metadaten.automaticSave}" title="#{msgs.automaticSave}" rel="tooltip">
+                            <f:ajax render="@form"/>
+                            <f:passThroughAttribute name="data-bs-placement" value="bottom"/>
+                        </h:commandButton>
+
+                    </li>
+                </c:if>
+
+                <li class="nav-item dropdown">
+                    <button id="exit" type="button" class="nav-link dropdown-toggle" aria-expanded="false" aria-label="#{msgs.mets_leaveMetsEditor}" title="#{msgs.mets_leaveMetsEditor}" data-bs-toggle="dropdown">
+                        <span class="fa fa-home fa-lg" aria-hidden="true"/>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <c:if test="#{not Metadaten.nurLesenModus}">
+                            <li class="nav-item">
+                                <h:commandLink
+                                    id="saveAndExit"
+                                    action="#{Metadaten.XMLschreiben}"
+                                    onclick="goobiWorkflowJS.displayProgressBar(); goobiWorkflowJS.meScrollPos.destroyScrollPos()"
+                                    styleClass="dropdown-item">
+                                    <span class="fa fa-floppy-o" aria-hidden="true"/>
+                                    #{msgs.speichernZurueck}
+                                </h:commandLink>
+                            </li>
+                        </c:if>
+
+                        <li class="nav-item">
+                            <h:commandLink
+                                onclick="goobiWorkflowJS.meScrollPos.destroyScrollPos()"
+                                id="exitOnly"
+                                action="#{Metadaten.goZurueck}"
+                                rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}"
+                                styleClass="dropdown-item">
+                                <span class="fa fa-trash-o" aria-hidden="true"/>
+                                #{msgs.goBack}
+                            </h:commandLink>
+                            <h:panelGroup rendered="#{Metadaten.checkForNewerTemporaryMetadataFiles}">
+                                <button type="button" class="dropdown-item" title="#{msgs.goBack}" data-bs-toggle="modal" data-target="#unsavedChanges">
+                                    <span class="fa fa-trash-o" aria-hidden="true"/>
+                                    #{msgs.goBack}
+                                </button>
+                            </h:panelGroup>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </h:form>
+    </composite:implementation>
+</ui:composition>

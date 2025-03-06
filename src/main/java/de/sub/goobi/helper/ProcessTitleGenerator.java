@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.ManipulationType;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -61,6 +63,9 @@ public class ProcessTitleGenerator {
     // Pattern to check if the input id is uuid
     private static final Pattern UUID_REGEX = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
+    @Getter
+    @Setter
+    private String specialCharacterReplacement = "_";
 
     /**
      * use default settings or use setters to initialize individually
@@ -171,7 +176,7 @@ public class ProcessTitleGenerator {
     public boolean addToken(String value, ManipulationType type) {
         // preparation
         // 1. there should not be more than one AFTER_LAST_SEPARATOR or BEFORE_FIRST_SEPARATOR
-        // 2. for cases NORMAL, CAMEL_CASE, CAMEL_CASE_LENGTH_LIMITED, all umlauts should be replaced 
+        // 2. for cases NORMAL, CAMEL_CASE, CAMEL_CASE_LENGTH_LIMITED, all umlauts should be replaced
         // 3. for cases NORMAL, CAMEL_CASE, CAMEL_CASE_LENGTH_LIMITED, all special and space chars should be replaced with _ for the moment
         if (value == null) {
             log.debug("token value can not be null");
@@ -305,7 +310,7 @@ public class ProcessTitleGenerator {
      * @return string with all of its special and space letters replaced
      */
     private String replaceSpecialAndSpaceChars(String value) {
-        return value.replaceAll("[^a-zA-Z0-9]", "_");
+        return value.replaceAll(ConfigurationHelper.getInstance().getProcessTitleReplacementRegex(), specialCharacterReplacement);
     }
 
     /**
@@ -317,8 +322,8 @@ public class ProcessTitleGenerator {
     private String getCamelString(String value) {
         String[] words = value.split("_");
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < words.length; ++i) {
-            String word = words[i];
+        for (String word2 : words) {
+            String word = word2;
             word = word.isEmpty() ? word : Character.toUpperCase(word.charAt(0)) + word.substring(1).toLowerCase();
             sb.append(word);
         }

@@ -1,7 +1,11 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
 	<composite:interface>
 		<composite:attribute name="name" />
@@ -17,13 +21,13 @@
 	<composite:implementation>
 		<autocomplete id="#{cc.attrs.name}_autocompleteRiot"></autocomplete>
         <h:inputText class="#{cc.attrs.name}_autocompleteHiddenInput" id="#{cc.attrs.name}_autocompleteHiddenInput" style="display:none" value="#{cc.attrs.field}" pt:placeholder="#{cc.attrs.placeholder}" />
-        
+
         <h:commandScript name="#{cc.attrs.name}_requestAutocomplete" action="#{cc.attrs.autocompletefunction}" onevent="#{cc.attrs.name}_autocompleted" render="" pt:data-noaction="true" />
-	    <h:commandScript 
+	    <h:commandScript
 	        pt:data-renderimage="#{cc.attrs.renderimage}"
 	        name="#{cc.attrs.name}_sendAutocompleteValue"
-	        action="#{cc.attrs.afterselectaction}" 
-	        execute="#{cc.attrs.execute} #{cc.attrs.name}_autocompleteHiddenInput" 
+	        action="#{cc.attrs.afterselectaction}"
+	        execute="#{cc.attrs.execute} #{cc.attrs.name}_autocompleteHiddenInput"
 	        render="#{cc.attrs.render}" />
 
 		<script>
@@ -42,10 +46,10 @@
 	        }
 	        $(document).on('load', function() {
 	        	var ocOpts = function() {
-    	        	return {	
+    	        	return {
     	        		requestAutocomplete: #{cc.attrs.name}_sendAutocomplete,
     	        		enterValue: #{cc.attrs.name}_enterValue,
-    	        		initialValue: document.querySelector('.#{cc.attrs.name}_autocompleteHiddenInput').value      		
+    	        		initialValue: document.querySelector('.#{cc.attrs.name}_autocompleteHiddenInput').value
     	        	}
 	        	}
 	        	riot.mount('##{cc.attrs.name}_autocompleteRiot', ocOpts());

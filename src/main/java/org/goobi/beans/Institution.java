@@ -248,4 +248,14 @@ public class Institution extends AbstractJournal implements Serializable, Databa
     public Path getDownloadFolder() {
         return Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "institution", shortName);
     }
+
+    @Override
+    public String getUploadFolder() {
+        return Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "institution", shortName).toString();
+    }
+
+    @Override
+    public void setUploadFolder(String uploadFolder) {
+        // do nothing
+    }
 }

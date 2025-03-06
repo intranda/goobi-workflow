@@ -5,9 +5,9 @@
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
-	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	template="/uii/template/template.html"
+
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
 	<ui:param name="myPageTitle"
@@ -27,10 +27,9 @@
 
 	<ui:define name="content">
 
-		<link rel="stylesheet" href="template/css/codemirror/codemirror.css"/>
-		<script type="text/javascript" src="template/js/codemirror/codemirror.js"/>
-		<script type="text/javascript" src="template/js/plugin-installer-codemirror.js"/>
-		<script type="text/javascript" src="template/js/codemirror/mode/xml/xml.js"/>
+		<script type="text/javascript" src="template/js/static/codemirror/codemirror.js"/>
+		<script type="text/javascript" src="template/js/static/plugin-installer-codemirror.js"/>
+		<script type="text/javascript" src="template/js/static/codemirror/mode/xml/xml.js"/>
 
 
 		<main class="row">
@@ -47,45 +46,7 @@
 			>
 
 
-			<!-- TITLE BAR -->
 
-			<!--
-			<intranda:boxTitle
-				title="#{msgs.menu_administration_plugins} - #{HelperForm.version}"
-				icon="fa-stethoscope"
-			>
-				<ul class="tabs" >
-					<li class="tab tab-0 #{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
-						<h:commandLink
-							id="tab0"
-							styleClass="tab__link"
-							action="#{NavigationForm.Reload}"
-							value="#{msgs.install_plugin_installed}">
-							<f:setPropertyActionListener
-								target="#{BenutzerverwaltungForm.displayMode}"
-								value="" />
-							<f:ajax
-								render="@form"
-								execute="@form" />
-						</h:commandLink>
-					</li>
-					<li class="tab tab-1 #{BenutzerverwaltungForm.displayMode eq 'tab1'?'active':''}">
-						<h:commandLink
-							id="tab1"
-							styleClass="tab__link"
-							action="#{NavigationForm.Reload}"
-							value="#{msgs.install_plugin_install_new}">
-							<f:setPropertyActionListener
-								target="#{BenutzerverwaltungForm.displayMode}"
-								value="tab1" />
-							<f:ajax
-								render="@form"
-								execute="@form" />
-						</h:commandLink>
-					</li>
-				</ul>
-			</intranda:boxTitle>
-			-->
 
 			<!-- BOX BODY -->
 
@@ -149,87 +110,6 @@
 							</div> <!-- /installed plugins tab -->
 
 
-							<!-- TAB 1 -->
-							<!--
-							<div class="#{BenutzerverwaltungForm.displayMode eq 'tab1' ? 'tab-pane active' : 'tab-pane'}">
-
-								<h3 class="mt-4">#{msgs.install_plugin_install_new}</h3>
-
-								<h:form enctype="multipart/form-data">
-
-									<ui:fragment rendered="#{pluginInstallBean.pluginInstaller.pluginInfo eq null}">
-										<ui:repeat value="#{pluginInstallBean.availablePlugins.keySet()}" var="type">
-											<h4>#{type}</h4>
-											<table class="table table-bordered table-hover">
-												<ui:repeat value="#{pluginInstallBean.availablePlugins[type]}" var="plugin">
-													<tr>
-														<td>#{plugin.name}</td>
-														<td class="tableColumnOverFlow width200">
-															<button class="btn fa fa-download" jsf:action="#{pluginInstallBean.downloadAndInstallPlugin(plugin)}"></button>
-														</td>
-													</tr>
-												</ui:repeat>
-											</table>
-										</ui:repeat>
-										<h:inputFile value="#{pluginInstallBean.uploadedPluginFile}" >
-											<f:ajax listener="#{pluginInstallBean.parseUploadedPlugin}" render="@form"/>
-										</h:inputFile>
-									</ui:fragment>
-
-									<ui:fragment rendered="#{pluginInstallBean.pluginInstaller.pluginInfo != null}">
-
-										<div class="row">
-											<div class="col-12">
-												<table class="table">
-													<tr>
-														<th>Plugin identifier</th>
-														<td>#{pluginInstallBean.pluginInstaller.pluginInfo.name}</td>
-													</tr>
-													<tr>
-														<th>Plugin type</th>
-														<td>#{pluginInstallBean.pluginInstaller.pluginInfo.type}</td>
-													</tr>
-													<tr>
-														<th>Plugin version</th>
-														<td>#{pluginInstallBean.pluginInstaller.pluginInfo.versions[0].pluginVersion}</td>
-													</tr>
-													<tr>
-														<th>Goobi version</th>
-														<td>#{pluginInstallBean.pluginInstaller.pluginInfo.versions[0].publicGoobiVersion}</td>
-													</tr>
-												</table>
-											</div>
-										</div>
-
-										<div class="row">
-											<ui:repeat var="conflict" value="#{pluginInstallBean.pluginInstaller.check.conflicts.values()}">
-												<intranda:pluginInstallerConflict conflict="#{conflict}" />
-											</ui:repeat>
-
-											<script type="text/javascript">
-												initXmlCodeMirror();
-											</script>
-
-										</div>
-
-										<div class="row">
-											<div class="col-12">
-												<ui:fragment rendered="#{!pluginInstallBean.areAllConflictsFixed}">
-													<div class="alert alert-warning">
-														<h:outputText value="#{msgs.install_plugin_resolve_conflicts_before_installation}" />
-													</div>
-												</ui:fragment>
-												<h:commandButton id="install" forcedId="true" styleClass="btn btn-primary" value="#{msgs.install}" action="#{pluginInstallBean.install}" disabled="#{!pluginInstallBean.areAllConflictsFixed}" />
-												<h:commandButton id="cancel" forcedId="true" styleClass="btn" value="#{msgs.cancel}" action="#{pluginInstallBean.cancelInstall}" />
-											</div>
-										</div>
-
-									</ui:fragment>
-
-
-								</h:form>
-							</div>
-							-->
 
 						</div>
 

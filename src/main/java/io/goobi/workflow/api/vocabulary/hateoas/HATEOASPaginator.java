@@ -1,18 +1,7 @@
 package io.goobi.workflow.api.vocabulary.hateoas;
 
-import io.goobi.vocabulary.exception.VocabularyException;
-import io.goobi.vocabulary.exchange.Identifiable;
-import io.goobi.workflow.api.vocabulary.APIException;
-import lombok.Data;
-import lombok.Setter;
-import org.apache.commons.lang3.NotImplementedException;
-import org.goobi.managedbeans.Paginator;
+import static io.goobi.workflow.api.vocabulary.VocabularyAPIManager.setupBearerTokenAuthenticationIfPresent;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -24,7 +13,19 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static io.goobi.workflow.api.vocabulary.VocabularyAPIManager.setupBearerTokenAuthenticationIfPresent;
+import org.apache.commons.lang3.NotImplementedException;
+import org.goobi.managedbeans.Paginator;
+
+import io.goobi.vocabulary.exception.VocabularyException;
+import io.goobi.vocabulary.exchange.Identifiable;
+import io.goobi.workflow.api.vocabulary.APIException;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import lombok.Data;
+import lombok.Setter;
 
 public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResult<T>> implements Paginator<T> {
     public static final String NAVIGATE_PREVIOUS = "prev";
@@ -82,7 +83,8 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
     private Map<Long, Node> treeMap = new HashMap<>();
     private List<T> items = new LinkedList<>();
 
-    public HATEOASPaginator(Class<PageT> pageClass, PageT initialPage, Function<T, Collection<Long>> childrenExtractor, Function<T, Long> parentExtractor, Function<Long, T> postLoader) {
+    public HATEOASPaginator(Class<PageT> pageClass, PageT initialPage, Function<T, Collection<Long>> childrenExtractor,
+            Function<T, Long> parentExtractor, Function<Long, T> postLoader) {
         this.pageClass = pageClass;
         this.childrenExtractor = Optional.ofNullable(childrenExtractor);
         this.parentExtractor = Optional.ofNullable(parentExtractor);
@@ -208,7 +210,8 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
             builder = setupBearerTokenAuthenticationIfPresent(builder);
             try (Response response = builder.get()) {
                 if (response.getStatus() / 100 != 2) {
-                    throw new APIException(url, "GET", response.getStatus(), "Vocabulary server error", response.readEntity(VocabularyException.class), null);
+                    throw new APIException(url, "GET", response.getStatus(), "Vocabulary server error",
+                            response.readEntity(VocabularyException.class), null);
                 }
                 setCurrentPage(response.readEntity(pageClass));
             }
@@ -219,7 +222,8 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
         }
     }
 
-    private static String updatePageAndSizeUrlParameters(String url, Optional<Long> pageSize, Optional<Long> pageNumber, Optional<String> sortField, Optional<String> searchParameter) {
+    private static String updatePageAndSizeUrlParameters(String url, Optional<Long> pageSize, Optional<Long> pageNumber, Optional<String> sortField,
+            Optional<String> searchParameter) {
         Map<String, String> parameters = new HashMap<>();
         int questionMarkIndex = url.indexOf('?');
         if (questionMarkIndex > 0) {
@@ -242,7 +246,8 @@ public class HATEOASPaginator<T extends Identifiable, PageT extends BasePageResu
             url += "?";
             questionMarkIndex = url.length() - 1;
         }
-        url = url.substring(0, questionMarkIndex + 1) + parameters.entrySet().stream()
+        url = url.substring(0, questionMarkIndex + 1) + parameters.entrySet()
+                .stream()
                 .map(e -> e.getKey() + "=" + e.getValue())
                 .collect(Collectors.joining("&"));
         return url;

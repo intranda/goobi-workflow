@@ -29,9 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Usergroup;
@@ -41,6 +39,8 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -145,7 +145,7 @@ public class UsergroupBean extends BasicBean implements Serializable {
     public List<String> getAllAvailableRoles() {
         List<String> myroles = new ArrayList<>();
         for (String role : UserRole.getAllRoles()) {
-            if (!myBenutzergruppe.getUserRoles().contains(role)) {
+            if (StringUtils.isNotBlank(role) && !myBenutzergruppe.getUserRoles().contains(role)) {
                 myroles.add(role);
             }
         }

@@ -3,13 +3,13 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    template="/uii/templatePG/templatePG.html"
+    template="/uii/template/template.html"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
+
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <ui:param
         name="myPageTitle"
@@ -34,18 +34,15 @@
     </ui:define>
 
     <ui:define name="content">
-        <link
-            rel="stylesheet"
-            href="template/css/codemirror/codemirror.css?v=#{HelperForm.buildVersion}" />
         <script
             type="text/javascript"
-            src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
+            src="template/js/static/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
         <script
             type="text/javascript"
-            src="template/js/codemirror/mode/properties/properties.js?v=#{HelperForm.buildVersion}" />
+            src="template/js/static/codemirror/mode/properties/properties.js?v=#{HelperForm.buildVersion}" />
         <script
             type="text/javascript"
-            src="template/js/codemirror/mode/xml/xml.js?v=#{HelperForm.buildVersion}" />
+            src="template/js/static/codemirror/mode/xml/xml.js?v=#{HelperForm.buildVersion}" />
         <style>
 .CodeMirror {
     height: auto;
@@ -148,7 +145,7 @@
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}">
                                                 <i class="fa #{configFileEditorBean.isWritable(item) ? 'fa-pencil' : 'fa-eye'}"></i>
                                                 <f:ajax
-                                                    render="configFileEditorForm"
+                                                    render="@form"
                                                     onevent="function() { gwConfigEditor.init();}" />
                                             </button>
                                         </h:panelGroup>
@@ -271,8 +268,8 @@
                                                                 class="dropdown-item">
                                                                 <h:outputText value="#{backupFile.fileName}" />
 
-                                                                <x:updateActionListener
-                                                                    property="#{configFileEditorBean.selectedFile}"
+                                                                <f:setPropertyActionListener
+                                                                    target="#{configFileEditorBean.selectedFile}"
                                                                     value="#{backupFile}" />
                                                             </button>
                                                         </li>
@@ -303,14 +300,14 @@
                                         <span>
                                             <h:outputText value="#{msgs.save}" />
                                         </span>
-                                        <!--<f:ajax render="" />-->
+                                        <f:ajax render="@form" />
                                     </button>
                                 </div>
                                 <!-- Text editor -->
                                 <div
                                     id="configFileEditorBorder"
                                     class="border">
-                                    <x:inputTextarea
+                                    <h:inputTextarea
                                         id="configFileEditor"
                                         style="resize: none;"
                                         pt:aria-label="configFileEditor"

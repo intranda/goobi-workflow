@@ -1,0 +1,77 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:section="http://goobi.io/section">
+
+    <composite:interface />
+
+    <composite:implementation>
+        <h:panelGroup
+            layout="block"
+            id="meEditCorporateBox"
+            rendered="#{!(Metadaten.sizeOfCorporates==0 and empty Metadaten.corporates)}"
+            styleClass="pb-2">
+            <section:section type="#{!empty Metadaten.corporates or Metadaten.sizeOfCorporates!=0 ? 'neutral' : 'outline'}">
+                <section:header
+                    icon="bars"
+                    title="#{msgs.mets_corporate_corporates}">
+                    <button
+                        type="button"
+                        aria-label="#{msgs.minimizeBox}"
+                        class="btn"
+                        data-bs-target="#corporateBoxBody"
+                        data-bs-toggle="collapse"
+                        aria-expanded="true"
+                        aria-controls="corporateBoxBody">
+                        <span
+                            class="collapse-caret fa fa-angle-up"
+                            aria-hidden="true" />
+                        <span
+                            class="extend-caret fa fa-angle-down"
+                            aria-hidden="true" />
+                    </button>
+                </section:header>
+                <div id="corporateBoxBody" class="collapse show">
+                    <section:body>
+                        <p class="p-3 border-bottom" jsf:rendered="#{empty Metadaten.corporates}">
+                            <h:outputText value="#{msgs.mets_no_metadata_assigned}" />
+                        </p>
+                        <ui:repeat
+                            value="#{Metadaten.corporates}"
+                            var="Item"
+                            varStatus="status">
+                            <intranda:formGroupCorporate
+                                id="corporate"
+                                corporate="#{Item}"
+                                index="#{status.index}" />
+                        </ui:repeat>
+
+                        <ui:fragment rendered="#{Metadaten.sizeOfCorporates!=0}">
+                            <div class="p-3 d-flex justify-content-end gap-2">
+                                <button
+                                    type="button"
+                                    jsf:id="addCorporate"
+                                    class="btn btn-#{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ? 'blank' : 'neutral-600'}"
+                                    jsf:action="#{Metadaten.AddCorporate}">
+                                    #{msgs.mets_corporate_createCorporate}
+                                    <f:setPropertyActionListener
+                                            value=""
+                                            target="#{Metadaten.currentGroup}" />
+                                    <f:ajax
+                                        onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data) }"
+                                        render=":pageContentCenter" />
+                                </button>
+                            </div>
+                        </ui:fragment>
+                    </section:body>
+                </div>
+            </section:section>
+        </h:panelGroup>
+    </composite:implementation>
+</ui:composition>

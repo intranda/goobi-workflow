@@ -3,9 +3,9 @@ package de.sub.goobi.mock;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Collection;
 
-import javax.servlet.http.Part;
+import jakarta.servlet.http.Part;
 
 public class MockUploadedFile implements Part, Serializable {
 
@@ -90,6 +90,7 @@ public class MockUploadedFile implements Part, Serializable {
 
     }
 
+    @Override
     public String getSubmittedFileName() {
         // TODO Auto-generated method stub
         return null;

@@ -1,0 +1,15 @@
+<ui:composition
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <!-- Main styles (BS + custom styles) -->
+    <link rel="stylesheet" href="template/css/dist/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
+    <link rel="stylesheet" href="template/css/dist/main.min.css?v=#{HelperForm.buildVersion}" />
+    <!-- WCAG compatibility CSS -->
+    <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
+      <link rel="stylesheet" href="template/css/lib/accessibility.css?v=#{HelperForm.buildVersion}" />
+    </ui:fragment>
+    <!-- CUSTOM CSS (user specific)-->
+    <style>
+        <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
+    </style>
+</ui:composition>

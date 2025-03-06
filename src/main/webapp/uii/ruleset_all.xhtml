@@ -3,12 +3,12 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	template="/uii/templatePG/templatePG.html"
+	template="/uii/template/template.html"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
 	<ui:param name="myPageTitle" value="#{msgs.regelsaetze}" />
 
@@ -41,7 +41,7 @@
 								<!-- Datentabelle -->
 							<div class="gw-table-fixed__wrapper">
 
-								<x:dataTable id="rulesets" styleClass="table table-hover table-bordered" var="item"
+								<h:dataTable id="rulesets" styleClass="table table-hover table-bordered" var="item"
 									value="#{RegelsaetzeForm.paginator.list}">
 
 									<h:column>
@@ -58,7 +58,7 @@
 										<h:outputText value="#{item.datei}" />
 									</h:column>
 
-									<x:column headerClass="gw-table-fixed__actions">
+									<h:column headerClass="gw-table-fixed__actions">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
@@ -79,9 +79,9 @@
 											</button>
 										</div>
 
-									</x:column>
+									</h:column>
 
-								</x:dataTable>
+								</h:dataTable>
 
 							</div>
 

@@ -29,11 +29,10 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.inject.Alternative;
-
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 
 import de.sub.goobi.helper.enums.HistoryEventType;
+import jakarta.enterprise.inject.Alternative;
 import lombok.Setter;
 
 /**

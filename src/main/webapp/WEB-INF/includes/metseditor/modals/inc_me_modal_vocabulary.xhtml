@@ -1,0 +1,168 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:x="http://myfaces.apache.org/tomahawk"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
+        xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <composite:interface/>
+
+    <composite:implementation>
+        <!-- GND MODAL -->
+        <h:panelGroup
+                styleClass="modal fade modal__gnd"
+                layout="block"
+                id="vocabularySearchBox"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="vocabularySearchBoxLabel"
+                aria-hidden="true">
+            <h:panelGroup
+                    layout="block"
+                    class="modal-dialog modal-lg modal-dialog-scrollable"
+                    role="document"
+                    id="vocabularySearchModalContent">
+                <h:panelGroup
+                        rendered="#{Metadaten.currentMetadataToPerformSearch != null}"
+                        styleClass="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5
+                                class="modal-title"
+                                id="vocabularySearchBoxLabel">#{msgs.NORM_vocabularySearch}: #{msgs[Metadaten.currentMetadataToPerformSearch.vocabularyName]}</h5>
+                        <button
+                            type="button"
+                            class="btn text-white"
+                            title="#{msgs.cancel}"
+                            data-bs-dismiss="modal">
+                            <span class="fa fa-times" />
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <h:outputText
+                                    value="#{msgs.NORM_helpVocabularySearch}"
+                                    escape="false"/>
+                        </p>
+                        <div class="row form-group">
+                            <div class="col-3">
+                                <intranda:formInputDropDownWithEmptyValue
+                                        classLeft="invisible"
+                                        name="searchField"
+                                        field="#{Metadaten.currentMetadataToPerformSearch.currentVocabularySearchField}"
+                                        fieldStyle="form-control form-control--select"
+                                        selectItems="#{Metadaten.currentMetadataToPerformSearch.vocabularySearchFields}"
+                                />
+                            </div>
+                            <div class="col-9">
+                                <h:inputText
+                                        id="vocabularySearchInput"
+                                        styleClass="form-control"
+                                        value="#{Metadaten.currentMetadataToPerformSearch.vocabularySearchQuery}"/>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button
+                                    jsf:id="vocabularySearchAction"
+                                    class="btn btn-primary"
+                                    jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchVocabulary}">
+                                <span
+                                        class="fa fa-search"
+                                        aria-hidden="true"/>
+                                #{msgs.search}
+                                <span
+                                        class="btn-ajax-loader"
+                                        aria-hidden="true">
+                                        <img
+                                                src="template/img/goobi/ajaxloader2.gif"
+                                                alt="Ajax Button Loader"/>
+                                    </span>
+                                <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip"/>
+                                <f:ajax
+                                        execute="@form"
+                                        render="vocabularySearchlist"/>
+                            </button>
+                        </div>
+
+                        <h:panelGroup id="vocabularySearchlist">
+                            <ui:fragment
+                                    rendered="#{Metadaten.currentMetadataToPerformSearch.records != null and Metadaten.currentMetadataToPerformSearch.records.size() gt 0}">
+                                <div class="modal__gnd-list scrollable">
+                                    <div class="row">
+                                        <div class="col-11">
+                                            <!-- hier "header" einfügen -->
+                                            <div class="row">
+                                                <ui:repeat var="definition"
+                                                           value="#{Metadaten.currentMetadataToPerformSearch.definitions}">
+                                                    <div class="col">
+                                                        <h:outputText value="#{definition.name} "/>
+                                                    </div>
+                                                </ui:repeat>
+                                            </div>
+                                        </div>
+                                        <div class="col-1">
+                                            <b>
+                                                <h:outputText value="#{msgs.auswahl}"/>
+                                            </b>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <ui:repeat
+                                            value="#{Metadaten.currentMetadataToPerformSearch.records}"
+                                            var="record">
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <div class="row">
+                                                    <div class="col-12 pb-1 text-muted small">
+                                                        <ui:repeat var="parent" value="#{record.parents}">
+                                                            <h:outputText value="#{parent.mainValue} "/>
+                                                            <span class="fa fa-caret-right mr-2"/>
+                                                        </ui:repeat>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <ui:repeat var="titleValue" value="#{record.titleValues}">
+                                                        <div class="col">
+                                                            <h:outputText value="#{titleValue} "/>
+                                                        </div>
+                                                    </ui:repeat>
+                                                </div>
+                                            </div>
+                                            <div class="col-1 d-flex align-items-center">
+                                                <button
+                                                        onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
+                                                        jsf:id="check"
+                                                        class="btn btn-primary"
+                                                        jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+                                                    <f:setPropertyActionListener
+                                                            value="#{record}"
+                                                            target="#{Metadaten.currentMetadataToPerformSearch.selectedVocabularyRecord}"/>
+
+                                                    <span class="fa fa-check"/>
+                                                </button>
+                                            </div>
+                                        </div>
+
+
+                                        <hr/>
+                                    </ui:repeat>
+
+                                </div>
+                            </ui:fragment>
+
+                            <ui:fragment
+                                    rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}">
+                                <h:outputText value="#{msgs.NORM_noHits}"/>
+                            </ui:fragment>
+
+                        </h:panelGroup>
+                    </div>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:panelGroup>
+    </composite:implementation>
+</ui:composition>

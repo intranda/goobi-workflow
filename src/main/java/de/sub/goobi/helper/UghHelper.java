@@ -34,13 +34,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.util.List;
 
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpSession;
-
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
@@ -187,7 +186,7 @@ public class UghHelper {
 
     private void addMetadatum(DocStruct inStruct, Prefs inPrefs, String inMetadataType, String inValue) {
         /* wenn kein Wert vorhanden oder das DocStruct null, dann gleich raus */
-        if (inValue.equals("") || inStruct == null || inStruct.getType() == null) {
+        if ("".equals(inValue) || inStruct == null || inStruct.getType() == null) {
             return;
         }
         /* andernfalls dem DocStruct das passende Metadatum zuweisen */
