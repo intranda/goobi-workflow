@@ -26,9 +26,11 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.VocabularyRecordAPI;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedFieldInstance;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import org.easymock.EasyMock;
 import org.goobi.beans.*;
@@ -205,29 +207,37 @@ public class VariableReplacerTest extends AbstractTest {
         ProcessProperty appleProperty = new ProcessProperty();
         appleProperty.setName("AppleProperty");
         appleProperty.setType(Type.VOCABULARYREFERENCE);
-        appleProperty.setValue("http://localhost:8081/api/v1/records/13");
+        appleProperty.setValue("13");
 
         ProcessProperty bananaProperty = new ProcessProperty();
         bananaProperty.setName("BananaProperty");
         bananaProperty.setType(Type.VOCABULARYREFERENCE);
-        bananaProperty.setValue("http://localhost:8081/api/v1/records/14");
+        bananaProperty.setValue("14");
 
         ProcessProperty fruitsProperty = new ProcessProperty();
         fruitsProperty.setName("FruitsProperty");
         fruitsProperty.setType(Type.VOCABULARYMULTIREFERENCE);
-        fruitsProperty.setValue("http://localhost:8081/api/v1/records/13; http://localhost:8081/api/v1/records/14");
+        fruitsProperty.setValue("13; 14");
 
+        ExtendedFieldInstance appleField = EasyMock.createMock(ExtendedFieldInstance.class);
+        EasyMock.expect(appleField.getFieldValue()).andReturn("Apple").anyTimes();
+        EasyMock.replay(appleField);
         ExtendedVocabularyRecord appleRecord = EasyMock.createMock(ExtendedVocabularyRecord.class);
         EasyMock.expect(appleRecord.getMainValue()).andReturn("Apple").anyTimes();
+        EasyMock.expect(appleRecord.getMainField()).andReturn(Optional.of(appleField)).anyTimes();
         EasyMock.replay(appleRecord);
 
+        ExtendedFieldInstance bananaField = EasyMock.createMock(ExtendedFieldInstance.class);
+        EasyMock.expect(bananaField.getFieldValue()).andReturn("Banana").anyTimes();
+        EasyMock.replay(bananaField);
         ExtendedVocabularyRecord bananaRecord = EasyMock.createMock(ExtendedVocabularyRecord.class);
         EasyMock.expect(bananaRecord.getMainValue()).andReturn("Banana").anyTimes();
+        EasyMock.expect(bananaRecord.getMainField()).andReturn(Optional.of(bananaField)).anyTimes();
         EasyMock.replay(bananaRecord);
 
         VocabularyRecordAPI recordAPI = EasyMock.createMock(VocabularyRecordAPI.class);
-        EasyMock.expect(recordAPI.get(appleProperty.getValue())).andReturn(appleRecord).anyTimes();
-        EasyMock.expect(recordAPI.get(bananaProperty.getValue())).andReturn(bananaRecord).anyTimes();
+        EasyMock.expect(recordAPI.get(Long.parseLong(appleProperty.getValue()))).andReturn(appleRecord).anyTimes();
+        EasyMock.expect(recordAPI.get(Long.parseLong(bananaProperty.getValue()))).andReturn(bananaRecord).anyTimes();
         EasyMock.replay(recordAPI);
 
         VocabularyAPIManager vocabularyAPIManager = EasyMock.createMock(VocabularyAPIManager.class);

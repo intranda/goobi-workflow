@@ -181,7 +181,14 @@
 					</div>
 				</div>
 				<layout:footer />
-
+				<c:forEach
+						items="#{DockableBean.dockablePlugins}"
+						var="plugin"
+				>
+					<c:if test="#{plugin.modal != null}">
+						<h:panelGroup binding="#{plugin.modal}" />
+					</c:if>
+				</c:forEach>
 			</c:if>
 		</f:view>
 	</h:body>
