@@ -114,6 +114,9 @@ public class TreeNodeStruct3 extends TreeNode {
     public String getMetadataPopup() {
         StringBuilder answer = new StringBuilder();
 
+        if (displayableMetadata.isEmpty() && !validationErrorPresent) {
+            return "";
+        }
         answer.append("<ul role=\"list\" class=\"metseditor-structure-table\">");
         for (StringPair sp : displayableMetadata) {
             answer.append("<li class=\"metseditor-structure-table-label\">");
