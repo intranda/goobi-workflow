@@ -8,8 +8,8 @@ import org.goobi.production.plugin.barcode.config.BarcodeFormat;
 import org.goobi.production.plugin.barcode.config.BarcodeScannerPluginConfiguration;
 import org.goobi.production.plugin.interfaces.AbstractDockablePlugin;
 
-import javax.annotation.ManagedBean;
-import javax.enterprise.context.RequestScoped;
+import jakarta.annotation.ManagedBean;
+import jakarta.enterprise.context.RequestScoped;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;

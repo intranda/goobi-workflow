@@ -3,13 +3,13 @@ package org.goobi.production.plugin.interfaces;
 import de.sub.goobi.helper.Helper;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.faces.application.Application;
-import javax.faces.application.Resource;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIPanel;
-import javax.faces.component.html.HtmlPanelGroup;
-import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.Resource;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIPanel;
+import jakarta.faces.component.html.HtmlPanelGroup;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.facelets.FaceletContext;
 import java.io.IOException;
 
 @Slf4j

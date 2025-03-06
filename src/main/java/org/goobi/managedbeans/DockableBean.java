@@ -7,7 +7,7 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.production.plugin.barcode.BarcodeScannerPlugin;
 import org.goobi.production.plugin.interfaces.IDockablePlugin;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
 
