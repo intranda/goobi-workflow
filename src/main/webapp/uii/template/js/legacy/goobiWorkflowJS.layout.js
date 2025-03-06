@@ -242,9 +242,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 centerColumn.style.width = Math.floor($(window).width() -  leftColumn.offsetWidth) + 'px';
             }
         } else {
-            leftColumn.style.width = leftColumn.offsetWidth + 'px';
-            centerColumn.style.width = centerColumn.offsetWidth + 'px';
-            rightColumn.style.width = rightColumn.offsetWidth + 'px';
+            const leftWidth = Math.max(window.innerWidth / 6, 300);
+            const otherWidth = (window.innerWidth - leftWidth) / 2;
+            leftColumn.style.width = `${leftWidth}px`;
+            centerColumn.style.width = `${otherWidth}px`;
+            rightColumn.style.width = `${otherWidth}px`;
             _setColumnWidth();
         }
     }
