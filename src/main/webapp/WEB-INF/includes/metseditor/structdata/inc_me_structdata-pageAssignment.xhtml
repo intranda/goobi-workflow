@@ -191,6 +191,7 @@
                                                             class="btn font-light" jsf:action="#{Metadaten.BildErsteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" type="button">
                                                             <util:icon icon="eye" />
                                                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                            <f:ajax render=":openseadragonform" />
                                                         </button>
                                                     </div>
                                                 </form:field>
@@ -214,6 +215,7 @@
                                                             type="button">
                                                             <util:icon icon="eye" />
                                                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                            <f:ajax render=":openseadragonform" />
                                                         </button>
                                                     </div>
                                                 </form:field>
