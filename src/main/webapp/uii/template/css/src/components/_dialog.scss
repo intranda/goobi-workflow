@@ -46,3 +46,13 @@
     background: var(--clr-white);
     display: flex;
 }
+
+.modal-xxl {
+    --bs-modal-width: 90vw;
+}
+
+@media screen and (min-width: 1500px) {
+    .modal-xxl {
+        --bs-modal-width: 1440px;
+    }
+}
