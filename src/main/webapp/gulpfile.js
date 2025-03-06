@@ -13,7 +13,7 @@ const cleanup = require('rollup-plugin-cleanup');
 const terser = require('@rollup/plugin-terser');
 
 // provide custom asset location for watch task
-let customLocation;
+let customLocation = '';
 
 // source directories, files, globs
 const sources = {
