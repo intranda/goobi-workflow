@@ -43,9 +43,8 @@
                                     <ui:repeat value="#{Metadaten.allPages}" var="page" id="pagesList">
 
                                         <div class="d-flex align-items-center justify-content-between">
-                                            <label class="d-flex flex-nowrap">
+                                            <label class="d-flex flex-nowrap#{page.type != 'div' ? ' ps-3' : ''}">
                                                 <h:selectBooleanCheckbox styleClass="form-check-input" pt:aria-label="#{msgs.auswahl2}" rendered="#{page.type == 'div'}" value="#{page.selected}" id="checkbox"/>
-                                                <h:panelGroup rendered="#{page.type != 'div'}"/>
                                                 <span title="#{page.imagename}" data-bs-toggle="tooltip">
                                                     #{page.physicalPageNo}:
                                                 </span>
