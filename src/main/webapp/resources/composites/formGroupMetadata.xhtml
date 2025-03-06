@@ -587,10 +587,9 @@
                             </button>
                     </ui:fragment>
                 </div>
-
                 <h:panelGroup layout="block"
                     class="validation-error text-danger"
-                    rendered="#{!cc.attrs.metadata.validationErrorPresent}">
+                    rendered="#{cc.attrs.metadata.validationErrorPresent}">
                     <h:outputText value="#{cc.attrs.metadata.validationMessage}" />
                 </h:panelGroup>
             </div>
