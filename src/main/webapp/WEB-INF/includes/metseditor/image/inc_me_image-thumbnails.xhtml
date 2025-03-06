@@ -18,9 +18,9 @@
                 <ui:include src="inc_me_image-thumbNavigation.xhtml"/>
 
                 <!-- THUMBNAILS -->
-                <div id="thumbnails" class="thumbnails d-flex flex-wrap justify-content-start h-100 overflow-y-auto" dir="#{Metadaten.pagesRTL?'rtl':'ltr'}">
+                <div id="thumbnails" class="thumbnails mh-100 overflow-y-auto" dir="#{Metadaten.pagesRTL?'rtl':'ltr'}" style="&#45;&#45;thumb-size: #{Metadaten.thumbnailSize + 50}px;">
                     <ui:repeat var="image" value="#{Metadaten.paginatorList}" varStatus="status" id="thumbnailGrid">
-                        <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''} d-inline-block" dir="auto">
+                        <div class="thumbnails__thumb #{Metadaten.image.imageName eq image.imageName ? 'active' : ''}" dir="auto">
                             <!-- THUMBNAIL IMAGE -->
                             <div id="thumb_#{image.order}" class="thumbnails__thumb-image">
                                 <button type="button" jsf:id="thumbnailImage" aria-label="#{msgs.thumbnail}" jsf:action="#{Metadaten.checkSelectedThumbnail(image.order)}" jsf:onclick="goobiWorkflowJS.updateSelectedThumbnail(this);" class="btn">
