@@ -43,9 +43,10 @@ case $CONFIGSOURCE in
     fi
     
     echo "Copying configuration from local folder"
-    [ -d "$CONFIG_FOLDER"/config ] && cp -v "$CONFIG_FOLDER"/config/* /opt/digiverso/goobi/config/ 
-    [ -d "$CONFIG_FOLDER"/rulesets ] && cp -v "$CONFIG_FOLDER"/rulesets/* /opt/digiverso/goobi/rulesets/ 
-    [ -d "$CONFIG_FOLDER"/xslt ] && cp -v "$CONFIG_FOLDER"/xslt/* /opt/digiverso/goobi/xslt/ 
+    [ -d "$CONFIG_FOLDER"/config ] && cp -arnv "$CONFIG_FOLDER"/config/* /opt/digiverso/goobi/config/
+    [ -d "$CONFIG_FOLDER"/rulesets ] && cp -arnv "$CONFIG_FOLDER"/rulesets/* /opt/digiverso/goobi/rulesets/
+    [ -d "$CONFIG_FOLDER"/scripts ] && cp -arnv "$CONFIG_FOLDER"/scripts/* /opt/digiverso/goobi/scripts/
+    [ -d "$CONFIG_FOLDER"/xslt ] && cp -arnv "$CONFIG_FOLDER"/xslt/* /opt/digiverso/goobi/xslt/
     ;;
 
   *)
