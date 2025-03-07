@@ -98,6 +98,14 @@
   max-height: calc(100vh - 265px);
 }
 
+.white-space-pre {
+  white-space: pre;
+}
+
+.white-space-pre-wrap {
+  white-space: pre-wrap;
+}
+
 .preformatted {
   white-space: pre;
   font-size: 13px;
