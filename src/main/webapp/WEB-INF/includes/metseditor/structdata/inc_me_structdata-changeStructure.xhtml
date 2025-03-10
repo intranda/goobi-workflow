@@ -29,46 +29,42 @@
                             <ul class="p-0" role="list">
                                 <!-- ELEMENT UP -->
                                 <li>
-                                    <button jsf:id="nodeUp" class="btn btn-link" jsf:action="#{Metadaten.KnotenUp}" title="#{msgs.docstructNachObenSchieben}" role="button">
+                                    <button jsf:id="nodeUp" class="btn btn-link" jsf:action="#{Metadaten.KnotenUp}" role="button">
                                         <span class="btn btn-blank">
                                             <util:icon icon="arrow-up" />
                                         </span>
                                         <h:outputText value="#{msgs.docstructNachObenSchieben}"/>
-                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                         <f:ajax execute="@form" render="@form :treeform"/>
                                     </button>
                                 </li>
                                 <!-- ELEMENT DOWN -->
                                 <li>
-                                    <button jsf:id="nodeDown" class="btn btn-link" jsf:action="#{Metadaten.KnotenDown}" title="#{msgs.docstructNachUntenSchieben}" type="button">
+                                    <button jsf:id="nodeDown" class="btn btn-link" jsf:action="#{Metadaten.KnotenDown}" type="button">
                                         <span class="btn btn-blank">
                                             <util:icon icon="arrow-down" />
                                         </span>
                                         <h:outputText value="#{msgs.docstructNachUntenSchieben}"/>
-                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                         <f:ajax execute="@form" render="@form :treeform"/>
                                     </button>
                                 </li>
                                 <!-- ELEMENT MOVE -->
                                 <li>
-                                    <button jsf:id="moveNode" class="btn btn-link" jsf:action="metseditor" title="#{msgs.docstructAnAndereStelleSchieben}">
+                                    <button jsf:id="moveNode" class="btn btn-link" jsf:action="metseditor">
                                         <span class="btn btn-blank">
                                             <util:icon icon="arrows" />
                                         </span>
                                         <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}"/>
-                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                         <f:setPropertyActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" target="#{Metadaten.modusStrukturelementVerschieben}"/>
                                         <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render=":pageContentCenter"/>
                                     </button>
                                 </li>
                                 <!-- ELEMENT IMPORT -->
                                 <li>
-                                    <button jsf:id="copyNode" class="btn btn-link" jsf:action="metseditor" title="#{msgs.copyDocstructFromOtherProcess}" role="button">
+                                    <button jsf:id="copyNode" class="btn btn-link" jsf:action="metseditor" role="button">
                                         <span class="btn btn-blank">
                                             <util:icon icon="puzzle-piece" />
                                         </span>
                                         <h:outputText value="#{msgs.copyDocstructFromOtherProcess}"/>
-                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                         <f:setPropertyActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" target="#{Metadaten.modusCopyDocstructFromOtherProcess}"/>
                                         <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render=":pageContentCenter"/>
                                     </button>
@@ -138,23 +134,21 @@
                                     </li>
                                     <!-- DELETE ELEMENT -->
                                     <li>
-                                        <button jsf:id="deleteNode" class="btn btn-link" jsf:action="#{Metadaten.KnotenDelete}" title="#{msgs.strukturelementLoeschen}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" role="button">
+                                        <button jsf:id="deleteNode" class="btn btn-link" jsf:action="#{Metadaten.KnotenDelete}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" role="button">
                                             <span class="btn btn-blank">
                                                 <util:icon icon="trash" />
                                             </span>
                                             <h:outputText value="#{msgs.strukturelementLoeschen}"/>
-                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                             <f:ajax execute="@form" render="@form :treeform :openseadragonform:pageareas"/>
                                         </button>
                                     </li>
                                     <!-- DUPLICATE ELEMENT -->
                                     <li>
-                                        <button jsf:id="duplicateNode" class="btn btn-link" jsf:action="#{Metadaten.duplicateNode}" title="#{msgs.duplicateStructureElement}" type="button">
+                                        <button jsf:id="duplicateNode" class="btn btn-link" jsf:action="#{Metadaten.duplicateNode}" type="button">
                                             <span class="btn btn-blank">
                                                 <util:icon icon="files-o" />
                                             </span>
                                             <h:outputText value="#{msgs.duplicateStructureElement}"/>
-                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                             <f:ajax execute="@form" render="@form :treeform"/>
                                         </button>
                                     </li>
@@ -249,25 +243,24 @@
                                 </li>
                                 <!-- PAGE ASSIGNMENT -->
                                 <li>
-                                    <button jsf:id="seitenVonUnterelementenZuweisen" class="btn btn-link" jsf:action="#{Metadaten.SeitenVonChildrenUebernehmen}" title="#{msgs.seitenVonUnterelementenZuweisen}">
+                                    <button jsf:id="seitenVonUnterelementenZuweisen" class="btn btn-link" jsf:action="#{Metadaten.SeitenVonChildrenUebernehmen}">
                                         <span class="btn btn-blank">
                                             <util:icon icon="check-circle-o" />
                                         </span>
                                         <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}"/>
-                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                         <f:ajax execute="@form" render="@form :treeform"/>
                                     </button>
                                 </li>
                                 <ui:fragment rendered="#{Metadaten.enablePageArea}">
                                     <!-- ADD PAGE AREA TO CURRENT DOCSTRUCT -->
                                     <li>
-                                        <button class="btn btn-link start-area-edition" type="button" title="#{msgs.mets_createPageArea}" aria-label="#{msgs.mets_createPageArea}" onclick="goobiWorkflowJS.object.startDrawArea(this, 'current')" data-bs-toggle="tooltip" data-bs-placement="top">
+                                        <button class="btn btn-link start-area-edition" type="button" aria-label="#{msgs.mets_createPageArea}" onclick="goobiWorkflowJS.object.startDrawArea(this, 'current')">
                                             <span class="btn btn-blank">
                                                 <util:icon icon="crop" />
                                             </span>
                                             <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}"/>
                                        </button>
-                                       <button class="btn btn-link cancel-area-edition above-overlay" style="display: none; position:relative;" type="button" title="#{msgs.mets_cancelPageArea}" aria-label="#{msgs.mets_cancelPageArea}" onclick="goobiWorkflowJS.object.cancelDrawArea(this)" data-bs-toggle="tooltip" data-bs-placement="top">
+                                       <button class="btn btn-link cancel-area-edition above-overlay" style="display: none; position:relative;" type="button" onclick="goobiWorkflowJS.object.cancelDrawArea(this)">
                                             <span class="btn btn-blank">
                                                 <util:icon icon="ban" />
                                             </span>
@@ -276,7 +269,7 @@
                                     </li>
                                     <!-- DELETE PAGE AREA -->
                                     <li>
-                                        <button class="btn btn-link" type="button" title="#{msgs.mets_PageArea}" aria-label="#{msgs.mets_deletePageArea}" data-pagearea-delete="start" data-renderimage="true" data-bs-toggle="tooltip" data-bs-placement="top">
+                                        <button class="btn btn-link" type="button" data-pagearea-delete="start" data-renderimage="true">
                                             <span class="btn btn-blank">
                                                 <util:icon icon="eraser" />
                                             </span>
@@ -284,7 +277,7 @@
                                         </button>
                                     </li>
                                     <li>
-                                        <button type="button" class="btn btn-link delete-page-area" title="#{msgs.mets_cancelPageArea}" aria-label="#{msgs.mets_cancelPageArea}" data-pagearea-delete="cancel" data-renderimage="true" data-bs-toggle="tooltip" data-bs-placement="top">
+                                        <button type="button" class="btn btn-link delete-page-area" data-pagearea-delete="cancel" data-renderimage="true">
                                             <span class="btn btn-blank">
                                                 <span class="fa fa-ban fa-lg" aria-hidden="true"/>
                                             </span>

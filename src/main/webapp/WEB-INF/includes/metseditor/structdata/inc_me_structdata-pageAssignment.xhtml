@@ -58,22 +58,43 @@
                                                 </div>
                                                 <div class="form-input">
                                                     <p:autoComplete scrollHeight="300" id="pagestart2" pt:aria-label="#{msgs.firstPage}" styleClass="flex-grow-1" inputStyleClass="form-control focusableChildCss rounded" forceId="true" value="#{Metadaten.pagesStartCurrentElement}" completeMethod="#{Metadaten.autocomplete}"/>
-                                                    <button jsf:id="takePreviousImage3" aria-label="#{msgs.previousImage}" class="btn font-light" jsf:action="#{Metadaten.startpage}" title="#{msgs.mets_takePreviousImage}" type="button">
+                                                    <button
+                                                        jsf:id="takePreviousImage3"
+                                                        aria-label="#{msgs.previousImage}"
+                                                        class="btn font-light"
+                                                        jsf:action="#{Metadaten.startpage}"
+                                                        title="#{msgs.mets_takePreviousImage}"
+                                                        type="button"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="left">
                                                         <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax render="pagestart2"/>
                                                     </button>
-                                                    <button jsf:id="takeCurrentImage3" aria-label="#{msgs.lw_currentImage}" class="btn  font-light" jsf:action="#{Metadaten.startpage}" title="#{msgs.mets_takeCurrentImage}" type="button">
+                                                    <button
+                                                        jsf:id="takeCurrentImage3"
+                                                        aria-label="#{msgs.lw_currentImage}"
+                                                        class="btn font-light"
+                                                        jsf:action="#{Metadaten.startpage}"
+                                                        title="#{msgs.mets_takeCurrentImage}"
+                                                        type="button"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top">
                                                         <span class="fa fa-picture-o" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax render="pagestart2"/>
                                                     </button>
-                                                    <button jsf:id="takeNextImage3" aria-label="#{msgs.nextImage}" class="btn font-light" jsf:action="#{Metadaten.startpage}" title="#{msgs.mets_takeNextImage}" type="button">
+                                                    <button
+                                                        jsf:id="takeNextImage3"
+                                                        aria-label="#{msgs.nextImage}"
+                                                        class="btn font-light"
+                                                        jsf:action="#{Metadaten.startpage}"
+                                                        title="#{msgs.mets_takeNextImage}"
+                                                        type="button"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="right">
                                                         <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax render="pagestart2"/>
                                                     </button>
                                                 </div>
@@ -90,22 +111,44 @@
                                                         id="pageend2"
                                                         pt:aria-label="#{msgs.lastPage}"
                                                         styleClass="flex-grow-1" inputStyleClass="form-control focusableChildCss rounded" forceId="true" value="#{Metadaten.pagesEndCurrentElement}" completeMethod="#{Metadaten.autocomplete}"/>
-                                                    <button jsf:id="takePreviousImage4" aria-label="#{msgs.previousImage}" class="btn font-light" jsf:action="#{Metadaten.endpage}" title="#{msgs.mets_takePreviousImage}" type="button">
+                                                    <button
+                                                        jsf:id="takePreviousImage4"
+                                                        aria-label="#{msgs.previousImage}"
+                                                        class="btn font-light"
+                                                        jsf:action="#{Metadaten.endpage}"
+                                                        title="#{msgs.mets_takePreviousImage}"
+                                                        type="button"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="left">
                                                         <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax render="pageend2"/>
                                                     </button>
-                                                    <button jsf:id="takeCurrentImage4" aria-label="#{msgs.lw_currentImage}" class="btn  font-light" jsf:action="#{Metadaten.endpage}" title="#{msgs.mets_takeCurrentImage}" type="button">
+                                                    <button
+                                                        jsf:id="takeCurrentImage4"
+                                                        aria-label="#{msgs.lw_currentImage}"
+                                                        class="btn  font-light"
+                                                        jsf:action="#{Metadaten.endpage}"
+                                                        title="#{msgs.mets_takeCurrentImage}"
+                                                        type="button"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="bottom">
                                                         <span class="fa fa-picture-o" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                                         <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax render="pageend2"/>
                                                     </button>
-                                                    <button jsf:id="takeNextImage4" aria-label="#{msgs.nextImage}" class="btn font-light" jsf:action="#{Metadaten.endpage}" title="#{msgs.mets_takeNextImage}" type="button">
+                                                    <button
+                                                        jsf:id="takeNextImage4"
+                                                        aria-label="#{msgs.nextImage}"
+                                                        class="btn font-light"
+                                                        jsf:action="#{Metadaten.endpage}"
+                                                        title="#{msgs.mets_takeNextImage}"
+                                                        type="button"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="right">
                                                         <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax render="pageend2"/>
                                                     </button>
                                                 </div>
@@ -145,9 +188,10 @@
                                                             aria-label="#{msgs.mets_addTheseImages}"
                                                             jsf:action="#{Metadaten.SeitenHinzu}"
                                                             class="btn font-light"
-                                                            title="#{msgs.mets_addTheseImages}">
+                                                            title="#{msgs.mets_addTheseImages}"
+                                                            data-bs-toggle="tooltip"
+                                                            data-bs-placement="top">
                                                             <util:icon icon="chevron-right" />
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                             <f:ajax execute="@form" render="assignments :treeform"/>
                                                         </button>
                                                         <button
@@ -155,9 +199,10 @@
                                                             aria-label="#{msgs.mets_removeTheseImages}"
                                                             jsf:action="#{Metadaten.SeitenWeg}"
                                                             class="btn font-light"
-                                                            title="#{msgs.mets_removeTheseImages}">
+                                                            title="#{msgs.mets_removeTheseImages}"
+                                                            data-bs-toggle="tooltip"
+                                                            data-bs-placement="bottom">
                                                             <util:icon icon="chevron-left" />
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                             <f:ajax execute="@form" render="assignments :treeform"/>
                                                         </button>
                                                     </div>
