@@ -17,7 +17,7 @@
             id="meEditCorporateBox"
             rendered="#{!(Metadaten.sizeOfCorporates==0 and empty Metadaten.corporates)}"
             styleClass="pb-2">
-            <section:section type="#{!empty Metadaten.corporates or Metadaten.sizeOfCorporates!=0 ? 'neutral' : 'outline'}">
+            <section:section type="outline">
                 <section:header
                     icon="bars"
                     title="#{msgs.mets_corporate_corporates}">
