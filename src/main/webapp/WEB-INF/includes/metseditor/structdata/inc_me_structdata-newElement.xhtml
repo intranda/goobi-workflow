@@ -52,7 +52,8 @@
                                             title="#{msgs.mets_takePreviousImage}"
                                             type="button"
                                             data-bs-toggle="tooltip"
-                                            data-bs-placement="left">
+                                            data-bs-placement="left"
+                                            jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
                                             <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
                                             <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                             <f:ajax render="pagestart1"/>
@@ -65,7 +66,8 @@
                                             title="#{msgs.mets_takeCurrentImage}"
                                             type="button"
                                             data-bs-toggle="tooltip"
-                                            data-bs-placement="top">
+                                            data-bs-placement="top"
+                                            jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
                                             <span class="fa fa-picture-o" aria-hidden="true"/>
                                             <f:setPropertyActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                             <f:ajax render="pagestart1"/>
@@ -78,7 +80,8 @@
                                             title="#{msgs.mets_takeNextImage}"
                                             type="button"
                                             data-bs-toggle="tooltip"
-                                            data-bs-placement="right">
+                                            data-bs-placement="right"
+                                            jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
                                             <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
                                             <f:setPropertyActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                             <f:ajax render="pagestart1"/>
@@ -102,7 +105,8 @@
                                             title="#{msgs.mets_takePreviousImage}"
                                             type="button"
                                             data-bs-toggle="tooltip"
-                                            data-bs-placement="left">
+                                            data-bs-placement="left"
+                                            jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
                                             <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
                                             <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                             <f:ajax render="pageend1"/>
@@ -115,7 +119,8 @@
                                             title="#{msgs.mets_takeCurrentImage}"
                                             type="button"
                                             data-bs-toggle="tooltip"
-                                            data-bs-placement="bottom">
+                                            data-bs-placement="bottom"
+                                            jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
                                             <span class="fa fa-picture-o" aria-hidden="true"/>
                                             <f:setPropertyActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                             <f:ajax render="pageend1"/>
@@ -128,7 +133,8 @@
                                             title="#{msgs.mets_takeNextImage}"
                                             type="button"
                                             data-bs-toggle="tooltip"
-                                            data-bs-placement="right">
+                                            data-bs-placement="right"
+                                            jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
                                             <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
                                             <f:setPropertyActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                             <f:ajax render="pageend1"/>
