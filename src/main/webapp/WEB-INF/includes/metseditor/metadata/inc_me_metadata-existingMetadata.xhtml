@@ -17,7 +17,7 @@
             id="meEditMetadataBox"
             rendered="#{!(Metadaten.sizeOfMetadata==0 and empty Metadaten.myMetadaten)}"
             styleClass="pb-2">
-            <section:section type="#{!empty Metadaten.myMetadaten or Metadaten.sizeOfMetadata!=0 ? 'neutral' : 'outline'}">
+            <section:section type="outline">
                 <section:header
                     icon="bars"
                     title="#{msgs.metadaten}">
@@ -56,7 +56,7 @@
                             <button
                                 type="button"
                                 jsf:id="addMetadata"
-                                class="btn btn-#{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ? 'blank' : 'neutral-600'}"
+                                class="btn btn-blank"
                                 jsf:action="#{Metadaten.Hinzufuegen}">
                                 #{msgs.neuesMetadatumAnlegen}
                                 <f:setPropertyActionListener
