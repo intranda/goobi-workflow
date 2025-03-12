@@ -76,6 +76,9 @@ public class VocabularyAPIManager {
             } else {
                 current = Integer.parseInt(versionParts[i]);
             }
+            if (current > min) {
+                return true;
+            }
             if (current < min) {
                 return false;
             }
