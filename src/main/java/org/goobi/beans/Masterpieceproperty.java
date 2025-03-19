@@ -48,4 +48,5 @@ public class Masterpieceproperty extends GoobiProperty implements Serializable {
         }
         return this.werkstueck;
     }
+
 }

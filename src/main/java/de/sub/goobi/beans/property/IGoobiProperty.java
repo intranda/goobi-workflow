@@ -31,17 +31,9 @@ import de.sub.goobi.helper.enums.PropertyType;
 
 public interface IGoobiProperty {
 
-    public String getAuswahl();
-
-    public void setAuswahl(String auswahl);
-
     public Integer getId();
 
     public void setId(Integer id);
-
-    public Boolean isIstObligatorisch();
-
-    public void setIstObligatorisch(Boolean istObligatorisch);
 
     public String getTitel();
 

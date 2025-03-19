@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.PropertyType;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 
-public abstract class GoobiProperty implements Serializable {
+public abstract class GoobiProperty implements IGoobiProperty, Serializable {
 
     private static final long serialVersionUID = -947157110530797855L;
 
@@ -69,6 +70,7 @@ public abstract class GoobiProperty implements Serializable {
 
     public List<String> valueList;
 
+    @Override
     public String getContainer() {
         if (container == null) {
             return "0";
@@ -76,6 +78,7 @@ public abstract class GoobiProperty implements Serializable {
         return container;
     }
 
+    @Override
     public void setContainer(String order) {
         if (order == null) {
             order = "0";
