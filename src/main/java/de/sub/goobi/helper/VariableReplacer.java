@@ -36,7 +36,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,9 +49,6 @@ import java.util.stream.Stream;
 
 import javax.naming.ConfigurationException;
 
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedFieldInstance;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.text.StringTokenizer;
@@ -58,16 +60,19 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
+import org.goobi.production.properties.Type;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedFieldInstance;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import org.goobi.production.properties.Type;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
@@ -466,8 +471,8 @@ public class VariableReplacer {
             String propertyTitle = r.group(1);
             for (Masterpiece ws : this.process.getWerkstueckeList()) {
                 for (Masterpieceproperty we : ws.getEigenschaftenList()) {
-                    if (we.getTitel().equalsIgnoreCase(propertyTitle)) {
-                        inString = inString.replace(r.group(), we.getWert());
+                    if (we.getPropertyName().equalsIgnoreCase(propertyTitle)) {
+                        inString = inString.replace(r.group(), we.getPropertyValue());
                         break;
                     }
                 }
@@ -480,8 +485,8 @@ public class VariableReplacer {
             String propertyTitle = r.group(1);
             for (Template v : this.process.getVorlagenList()) {
                 for (Templateproperty ve : v.getEigenschaftenList()) {
-                    if (ve.getTitel().equalsIgnoreCase(propertyTitle)) {
-                        inString = inString.replace(r.group(), ve.getWert());
+                    if (ve.getPropertyName().equalsIgnoreCase(propertyTitle)) {
+                        inString = inString.replace(r.group(), ve.getPropertyValue());
                         break;
                     }
                 }
@@ -501,7 +506,8 @@ public class VariableReplacer {
             Optional<ProcessProperty> match = Optional.empty();
             List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
             for (ProcessProperty pe : ppList) {
-                if ((propertyTitleWithoutField.isPresent() && propertyTitleWithoutField.get().equalsIgnoreCase(pe.getName())) || pe.getName().equalsIgnoreCase(propertyTitle)) {
+                if ((propertyTitleWithoutField.isPresent() && propertyTitleWithoutField.get().equalsIgnoreCase(pe.getName()))
+                        || pe.getName().equalsIgnoreCase(propertyTitle)) {
                     match = Optional.ofNullable(pe);
                     break;
                 }
@@ -543,7 +549,8 @@ public class VariableReplacer {
             Optional<ProcessProperty> match = Optional.empty();
             List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
             for (ProcessProperty pe : ppList) {
-                if ((propertyTitleWithoutField.isPresent() && propertyTitleWithoutField.get().equalsIgnoreCase(pe.getName())) || pe.getName().equalsIgnoreCase(propertyTitle)) {
+                if ((propertyTitleWithoutField.isPresent() && propertyTitleWithoutField.get().equalsIgnoreCase(pe.getName()))
+                        || pe.getName().equalsIgnoreCase(propertyTitle)) {
                     match = Optional.ofNullable(pe);
                     break;
                 }

@@ -37,17 +37,13 @@ public class MasterpiecepropertyTest extends AbstractTest {
     public void testIstObligatorisch() {
         Masterpieceproperty property = new Masterpieceproperty();
 
-        // tests whether 'null' is replaced by 'false'
-        property.setIstObligatorisch(null);
-        assertEquals(property.isIstObligatorisch(), false);
-
         // tests whether 'false' is returned correctly
-        property.setIstObligatorisch(false);
-        assertEquals(property.isIstObligatorisch(), false);
+        property.setRequired(false);
+        assertEquals(property.isRequired(), false);
 
         // tests whether 'true' is returned correctly
-        property.setIstObligatorisch(true);
-        assertEquals(property.isIstObligatorisch(), true);
+        property.setRequired(true);
+        assertEquals(property.isRequired(), true);
     }
 
     @Test
@@ -94,14 +90,14 @@ public class MasterpiecepropertyTest extends AbstractTest {
     @Test
     public void testGetNormalizedTitle() {
         Masterpieceproperty property = new Masterpieceproperty();
-        property.setTitel("\tMy Title\t");
+        property.setPropertyName("\tMy Title\t");
         assertEquals("My_Title", property.getNormalizedTitle());
     }
 
     @Test
     public void testGetNormalizedValue() {
         Masterpieceproperty property = new Masterpieceproperty();
-        property.setTitel("\tMy Value\t");
+        property.setPropertyName("\tMy Value\t");
         assertEquals("My_Value", property.getNormalizedTitle());
     }
 }

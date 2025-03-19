@@ -52,9 +52,9 @@ import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import jakarta.faces.model.SelectItem;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
-@Slf4j
+@Log4j2
 public class ProcessProperty implements IProperty, Serializable {
 
     private static final long serialVersionUID = 6413183995622426678L;
@@ -213,8 +213,8 @@ public class ProcessProperty implements IProperty, Serializable {
      */
     @Override
     public void transfer() {
-        this.prozesseigenschaft.setWert(this.value);
-        this.prozesseigenschaft.setTitel(this.name);
+        this.prozesseigenschaft.setPropertyValue(value);
+        this.prozesseigenschaft.setPropertyName(name);
         this.prozesseigenschaft.setContainer(this.container);
     }
 

@@ -55,7 +55,7 @@ class MasterpieceMysqlHelper implements Serializable {
 
     }
 
-    public static final ResultSetHandler<List<Masterpiece>> resultSetToMasterpieceListHandler = new ResultSetHandler<List<Masterpiece>>() {
+    public static final ResultSetHandler<List<Masterpiece>> resultSetToMasterpieceListHandler = new ResultSetHandler<>() {
         @Override
         public List<Masterpiece> handle(ResultSet rs) throws SQLException {
             List<Masterpiece> answer = new ArrayList<>();
@@ -77,7 +77,7 @@ class MasterpieceMysqlHelper implements Serializable {
         }
     };
 
-    public static final ResultSetHandler<Masterpiece> resultSetToMasterpieceHandler = new ResultSetHandler<Masterpiece>() {
+    public static final ResultSetHandler<Masterpiece> resultSetToMasterpieceHandler = new ResultSetHandler<>() {
         @Override
         public Masterpiece handle(ResultSet rs) throws SQLException {
             try {
@@ -158,7 +158,7 @@ class MasterpieceMysqlHelper implements Serializable {
 
         List<Masterpieceproperty> templateProperties = object.getEigenschaften();
         for (Masterpieceproperty property : templateProperties) {
-            property.setMasterpieceId(object.getId());
+            property.setObjectId(object.getId());
             property = PropertyManager.saveMasterpieceProperty(property);
         }
     }

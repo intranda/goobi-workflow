@@ -28,12 +28,11 @@ package org.goobi.beans;
 import java.io.Serializable;
 import java.util.Date;
 
-import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Templateproperty extends AbstractProperty implements Serializable {
+public class Templateproperty extends GoobiProperty implements Serializable {
     private static final long serialVersionUID = -5981263038302791497L;
     @Getter
     @Setter
@@ -42,8 +41,7 @@ public class Templateproperty extends AbstractProperty implements Serializable {
     private Template vorlage;
 
     public Templateproperty() {
-        this.istObligatorisch = false;
-        this.datentyp = PropertyType.STRING.getId();
+        super(PropertyOwnerType.TEMPLATE);
         this.creationDate = new Date();
     }
 

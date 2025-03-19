@@ -1801,8 +1801,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         /* Prozesseigenschaften */
         if (getEigenschaftenList() != null && !getEigenschaftenList().isEmpty()) {
             for (Processproperty pe : this.getEigenschaftenList()) {
-                if (pe != null && pe.getWert() != null && pe.getWert().contains(this.getTitel())) {
-                    pe.setWert(pe.getWert().replaceAll(this.getTitel(), newTitle));
+                if (pe != null && pe.getPropertyValue() != null && pe.getPropertyValue().contains(this.getTitel())) {
+                    pe.setPropertyValue(pe.getPropertyValue().replaceAll(this.getTitel(), newTitle));
                 }
             }
         }
@@ -1810,8 +1810,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         if (getVorlagenList() != null && !getVorlagenList().isEmpty()) {
             for (Template vl : this.getVorlagenList()) {
                 for (Templateproperty ve : vl.getEigenschaftenList()) {
-                    if (ve.getWert().contains(this.getTitel())) {
-                        ve.setWert(ve.getWert().replaceAll(this.getTitel(), newTitle));
+                    if (ve.getPropertyValue().contains(this.getTitel())) {
+                        ve.setPropertyValue(ve.getPropertyValue().replaceAll(this.getTitel(), newTitle));
                     }
                 }
             }
@@ -1820,8 +1820,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         if (getWerkstueckeList() != null && !getWerkstueckeList().isEmpty()) {
             for (Masterpiece w : this.getWerkstueckeList()) {
                 for (Masterpieceproperty we : w.getEigenschaftenList()) {
-                    if (we.getWert().contains(this.getTitel())) {
-                        we.setWert(we.getWert().replaceAll(this.getTitel(), newTitle));
+                    if (we.getPropertyValue().contains(this.getTitel())) {
+                        we.setPropertyValue(we.getPropertyValue().replaceAll(this.getTitel(), newTitle));
                     }
                 }
             }

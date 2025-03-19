@@ -455,8 +455,8 @@ public class CopyProcess {
             Masterpiece werk = tempProzess.getWerkstueckeList().get(0);
             for (Masterpieceproperty eig : werk.getEigenschaften()) {
                 for (AdditionalField field : this.additionalFields) {
-                    if (field.getTitel().equals(eig.getTitel())) {
-                        field.setWert(eig.getWert());
+                    if (field.getTitel().equals(eig.getPropertyName())) {
+                        field.setWert(eig.getPropertyValue());
                     }
                 }
             }
@@ -467,8 +467,8 @@ public class CopyProcess {
             Template vor = tempProzess.getVorlagenList().get(0);
             for (Templateproperty eig : vor.getEigenschaften()) {
                 for (AdditionalField field : this.additionalFields) {
-                    if (field.getTitel().equals(eig.getTitel())) {
-                        field.setWert(eig.getWert());
+                    if (field.getTitel().equals(eig.getPropertyName())) {
+                        field.setWert(eig.getPropertyValue());
                     }
                 }
             }
@@ -1028,7 +1028,7 @@ public class CopyProcess {
      */
 
     public boolean isSingleChoiceCollection() {
-        return (getPossibleDigitalCollections() != null && getPossibleDigitalCollections().size() == 1);
+        return (getPossibleDigitalCollections() != null && getPossibleDigitalCollections().size() > 0);
 
     }
 
@@ -1040,7 +1040,7 @@ public class CopyProcess {
 
     public String getDigitalCollectionIfSingleChoice() {
         List<String> pdc = getPossibleDigitalCollections();
-        if (pdc.size() == 1) {
+        if (pdc.size() > 0) {
             return pdc.get(0);
         } else {
             return null;
@@ -1292,18 +1292,16 @@ public class CopyProcess {
     private void addProperty(Template inVorlage, Templateproperty property) {
         if ("0".equals(property.getContainer())) {
             for (Templateproperty ve : inVorlage.getEigenschaftenList()) {
-                if (ve.getTitel().equals(property.getTitel()) && !"0".equals(ve.getContainer())) {
-                    ve.setWert(property.getWert());
+                if (ve.getPropertyName().equals(property.getPropertyName()) && !"0".equals(ve.getContainer())) {
+                    ve.setPropertyValue(property.getPropertyValue());
                     return;
                 }
             }
         }
         Templateproperty eig = new Templateproperty();
-        eig.setTitel(property.getTitel());
-        eig.setWert(property.getWert());
-        eig.setAuswahl(property.getAuswahl());
+        eig.setPropertyName(property.getPropertyName());
+        eig.setPropertyValue(property.getPropertyValue());
         eig.setContainer(property.getContainer());
-        eig.setType(property.getType());
         eig.setVorlage(inVorlage);
         List<Templateproperty> eigenschaften = inVorlage.getEigenschaften();
         if (eigenschaften == null) {
@@ -1315,18 +1313,16 @@ public class CopyProcess {
     private void addProperty(Process inProcess, Processproperty property) {
         if ("0".equals(property.getContainer())) {
             for (Processproperty pe : inProcess.getEigenschaftenList()) {
-                if (pe.getTitel().equals(property.getTitel()) && !"0".equals(property.getContainer())) {
-                    pe.setWert(property.getWert());
+                if (pe.getPropertyName().equals(property.getPropertyName()) && !"0".equals(property.getContainer())) {
+                    pe.setPropertyValue(property.getPropertyValue());
                     return;
                 }
             }
         }
         Processproperty eig = new Processproperty();
-        eig.setTitel(property.getTitel());
-        eig.setWert(property.getWert());
-        eig.setAuswahl(property.getAuswahl());
+        eig.setPropertyName(property.getPropertyName());
+        eig.setPropertyValue(property.getPropertyValue());
         eig.setContainer(property.getContainer());
-        eig.setType(property.getType());
         eig.setProzess(inProcess);
         List<Processproperty> eigenschaften = inProcess.getEigenschaften();
         if (eigenschaften == null) {
@@ -1338,18 +1334,16 @@ public class CopyProcess {
     private void addProperty(Masterpiece inWerk, Masterpieceproperty property) {
         if ("0".equals(property.getContainer())) {
             for (Masterpieceproperty we : inWerk.getEigenschaftenList()) {
-                if (we.getTitel().equals(property.getTitel()) && !"0".equals(we.getContainer())) {
-                    we.setWert(property.getWert());
+                if (we.getPropertyName().equals(property.getPropertyName()) && !"0".equals(we.getContainer())) {
+                    we.setPropertyValue(property.getPropertyValue());
                     return;
                 }
             }
         }
         Masterpieceproperty eig = new Masterpieceproperty();
-        eig.setTitel(property.getTitel());
-        eig.setWert(property.getWert());
-        eig.setAuswahl(property.getAuswahl());
+        eig.setPropertyName(property.getPropertyName());
+        eig.setPropertyValue(property.getPropertyValue());
         eig.setContainer(property.getContainer());
-        eig.setType(property.getType());
         eig.setWerkstueck(inWerk);
         List<Masterpieceproperty> eigenschaften = inWerk.getEigenschaften();
         if (eigenschaften == null) {

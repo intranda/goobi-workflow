@@ -82,14 +82,14 @@ public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements I
         gsr.updateTimestamp();
 
         for (Processproperty pp : p.getEigenschaften()) {
-            if (pp.getTitel().equals(propertyName)) {
+            if (pp.getPropertyName().equals(propertyName)) {
                 PropertyManager.deleteProcessProperty(pp);
                 gsr.setResultMessage("Property deleted.");
                 gsr.setResultType(GoobiScriptResultType.OK);
                 break;
             }
         }
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+        if (GoobiScriptResultType.RUNNING.equals(gsr.getResultType())) {
             gsr.setResultType(GoobiScriptResultType.OK);
             gsr.setResultMessage("Property not found: " + propertyName);
         }

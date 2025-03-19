@@ -46,8 +46,8 @@ public class RestPropertyResource {
 
     public RestPropertyResource(Processproperty property) {
         id = property.getId();
-        name = property.getTitel();
-        value = property.getWert();
+        name = property.getPropertyName();
+        value = property.getPropertyValue();
         creationDate = property.getCreationDate();
     }
 }

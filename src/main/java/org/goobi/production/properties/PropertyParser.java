@@ -128,8 +128,8 @@ public class PropertyParser {
 
         String workflowTitle = "";
         for (Processproperty p : process.getEigenschaften()) {
-            if ("Template".equals(p.getTitel())) {
-                workflowTitle = p.getWert();
+            if ("Template".equals(p.getPropertyName())) {
+                workflowTitle = p.getPropertyValue();
             }
         }
         StringBuilder xpath = new StringBuilder();
@@ -188,8 +188,8 @@ public class PropertyParser {
 
         // find out original workflow template
         for (Processproperty p : mySchritt.getProzess().getEigenschaften()) {
-            if ("Template".equals(p.getTitel())) {
-                workflowTitle = p.getWert();
+            if ("Template".equals(p.getPropertyName())) {
+                workflowTitle = p.getPropertyValue();
             }
         }
 
@@ -301,18 +301,18 @@ public class PropertyParser {
         for (Processproperty pe : plist) {
 
             for (ProcessProperty pp : listClone) {
-                if (pe.getTitel() != null && pe.getTitel().equals(pp.getName())) {
+                if (pe.getPropertyName() != null && pe.getPropertyName().equals(pp.getName())) {
 
                     // pp has no pe assigned
                     if (pp.getProzesseigenschaft() == null) {
                         pp.setProzesseigenschaft(pe);
-                        pp.setValue(pe.getWert());
+                        pp.setValue(pe.getPropertyValue());
                         pp.setContainer(pe.getContainer());
                     } else {
                         // clone pp
                         ProcessProperty pnew = pp.getClone(pe.getContainer());
                         pnew.setProzesseigenschaft(pe);
-                        pnew.setValue(pe.getWert());
+                        pnew.setValue(pe.getPropertyValue());
                         pnew.setContainer(pe.getContainer());
                         properties.add(pnew);
                     }
@@ -329,10 +329,10 @@ public class PropertyParser {
             List<Processproperty> plist = process.getEigenschaftenList();
             for (Processproperty pe : plist) {
                 ProcessProperty pp = new ProcessProperty();
-                pp.setName(pe.getTitel());
+                pp.setName(pe.getPropertyName());
                 pp.setProzesseigenschaft(pe);
                 pp.setType(Type.TEXT);
-                pp.setValue(pe.getWert());
+                pp.setValue(pe.getPropertyValue());
                 pp.setContainer(pe.getContainer());
                 properties.add(pp);
             }
@@ -341,8 +341,8 @@ public class PropertyParser {
 
         String workflowTitle = "";
         for (Processproperty p : process.getEigenschaften()) {
-            if ("Template".equals(p.getTitel())) {
-                workflowTitle = p.getWert();
+            if ("Template".equals(p.getPropertyName())) {
+                workflowTitle = p.getPropertyValue();
             }
         }
 
@@ -438,20 +438,20 @@ public class PropertyParser {
         List<Processproperty> plist = new ArrayList<>(process.getEigenschaftenList());
         for (Processproperty pe : plist) {
 
-            if (pe.getTitel() != null) {
+            if (pe.getPropertyName() != null) {
 
                 for (ProcessProperty pp : listClone) {
-                    if (pe.getTitel().equals(pp.getName())) {
+                    if (pe.getPropertyName().equals(pp.getName())) {
                         // pp has no pe assigned
                         if (pp.getProzesseigenschaft() == null) {
                             pp.setProzesseigenschaft(pe);
-                            pp.setValue(pe.getWert());
+                            pp.setValue(pe.getPropertyValue());
                             pp.setContainer(pe.getContainer());
                         } else {
                             // clone pp
                             ProcessProperty pnew = pp.getClone(pe.getContainer());
                             pnew.setProzesseigenschaft(pe);
-                            pnew.setValue(pe.getWert());
+                            pnew.setValue(pe.getPropertyValue());
                             pnew.setContainer(pe.getContainer());
                             log.trace("add property B " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                             properties.add(pnew);
@@ -472,8 +472,8 @@ public class PropertyParser {
             for (Processproperty pe : plist) {
                 ProcessProperty pp = new ProcessProperty();
                 pp.setProzesseigenschaft(pe);
-                pp.setName(pe.getTitel());
-                pp.setValue(pe.getWert());
+                pp.setName(pe.getPropertyName());
+                pp.setValue(pe.getPropertyValue());
                 pp.setContainer(pe.getContainer());
                 pp.setType(Type.TEXT);
                 log.trace("add property C " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());

@@ -397,7 +397,6 @@ class StepMysqlHelper implements Serializable {
                     String value = rs.getString("Wert");
                     Boolean mandatory = rs.getBoolean("IstObligatorisch");
                     int type = rs.getInt("DatentypenID");
-                    String choice = rs.getString("Auswahl");
                     Timestamp time = rs.getTimestamp("creationDate");
                     Date creationDate = null;
                     if (time != null) {
@@ -406,11 +405,10 @@ class StepMysqlHelper implements Serializable {
                     String container = rs.getString("container");
                     ErrorProperty ve = new ErrorProperty();
                     ve.setId(id);
-                    ve.setTitel(title);
-                    ve.setWert(value);
-                    ve.setIstObligatorisch(mandatory);
+                    ve.setPropertyName(title);
+                    ve.setPropertyValue(value);
+                    ve.setRequired(mandatory);
                     ve.setType(PropertyType.getById(type));
-                    ve.setAuswahl(choice);
                     ve.setCreationDate(creationDate);
                     ve.setContainer(container);
                     properties.add(ve);
@@ -527,9 +525,9 @@ class StepMysqlHelper implements Serializable {
     private static void saveErrorProperty(ErrorProperty property) throws SQLException {
         if (property.getId() == null) {
             String sql =
-                    "INSERT INTO schritteeigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, schritteID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            Object[] param = { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(),
-                    property.getAuswahl(), property.getSchritt().getId(),
+                    "INSERT INTO schritteeigenschaften (Titel, WERT, IstObligatorisch, DatentypenID,  schritteID, creationDate, container) VALUES (?, ?, ?,  ?, ?, ?, ?)";
+            Object[] param = { property.getPropertyName(), property.getPropertyValue(), property.isRequired(), property.getType().getId(),
+                    property.getSchritt().getId(),
                     property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
             Connection connection = null;
             try {
@@ -550,10 +548,10 @@ class StepMysqlHelper implements Serializable {
 
         } else {
             String sql =
-                    "UPDATE schritteeigenschaften set Titel = ?,  WERT = ?, IstObligatorisch = ?, DatentypenID = ?, Auswahl = ?, schritteID = ?, creationDate = ?, container = ? WHERE schritteeigenschaftenID = "
+                    "UPDATE schritteeigenschaften set Titel = ?,  WERT = ?, IstObligatorisch = ?, DatentypenID = ?,  schritteID = ?, creationDate = ?, container = ? WHERE schritteeigenschaftenID = "
                             + property.getId();
-            Object[] param = { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(),
-                    property.getAuswahl(), property.getSchritt().getId(),
+            Object[] param = { property.getPropertyName(), property.getPropertyValue(), property.isRequired(), property.getType().getId(),
+                    property.getSchritt().getId(),
                     property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
             Connection connection = null;
             try {

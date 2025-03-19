@@ -174,8 +174,8 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
         List<Processproperty> props = new ArrayList<>();
         Processproperty p = new Processproperty();
-        p.setTitel("title");
-        p.setWert("value");
+        p.setPropertyName("title");
+        p.setPropertyValue("value");
         props.add(p);
 
         EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(props).anyTimes();
@@ -198,11 +198,11 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(steps);
         Template template = new Template();
         Templateproperty tp = new Templateproperty();
-        tp.setTitel("title");
-        tp.setWert("value");
+        tp.setPropertyName("title");
+        tp.setPropertyValue("value");
         Templateproperty tp2 = new Templateproperty();
-        tp2.setTitel("Signatur");
-        tp2.setWert("value");
+        tp2.setPropertyName("Signatur");
+        tp2.setPropertyValue("value");
         List<Templateproperty> tpl = new ArrayList<>();
         tpl.add(tp);
         tpl.add(tp2);
@@ -216,8 +216,8 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
         Masterpiece masterpiece = new Masterpiece();
         Masterpieceproperty mp = new Masterpieceproperty();
-        mp.setTitel("title");
-        mp.setWert("value");
+        mp.setPropertyName("title");
+        mp.setPropertyValue("value");
         List<Masterpieceproperty> mpl = new ArrayList<>();
         mpl.add(mp);
         masterpiece.setEigenschaften(mpl);

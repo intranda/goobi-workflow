@@ -4046,8 +4046,8 @@ public class Metadaten implements Serializable {
             List<Processproperty> properties = myProzess.getEigenschaften();
             if (properties != null) {
                 for (Processproperty pp : properties) {
-                    if ("Template".equals(pp.getTitel())) {
-                        processTemplateName = pp.getWert();
+                    if ("Template".equals(pp.getPropertyName())) {
+                        processTemplateName = pp.getPropertyValue();
                     }
                 }
             }

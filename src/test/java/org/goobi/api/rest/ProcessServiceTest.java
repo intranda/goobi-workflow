@@ -153,8 +153,8 @@ public class ProcessServiceTest extends AbstractTest {
         property.setProzess(process);
         property.setProcessId(1);
         property.setCreationDate(new Date());
-        property.setTitel("title");
-        property.setWert("value");
+        property.setPropertyName("title");
+        property.setPropertyValue("value");
 
         entry = new JournalEntry(1, 1, new Date(), "user", LogType.INFO, "content", "filename", EntryType.PROCESS, null);
         List<JournalEntry> journal = new ArrayList<>();

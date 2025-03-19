@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
@@ -550,26 +551,26 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             List<Element> templateProperties = new ArrayList<>();
             for (Templateproperty prop : v.getEigenschaftenList()) {
                 Element property = new Element(ELEMENT_PROPERTY, namespace);
-                property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel());
-                if (prop.getWert() != null) {
-                    property.setAttribute(ATTRIBUTE_VALUE, prop.getWert());
+                property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getPropertyName());
+                if (prop.getPropertyValue() != null) {
+                    property.setAttribute(ATTRIBUTE_VALUE, prop.getPropertyValue());
                 } else {
                     property.setAttribute(ATTRIBUTE_VALUE, "");
                 }
 
                 Element label = new Element(ELEMENT_LABEL, namespace);
 
-                label.setText(prop.getTitel());
+                label.setText(prop.getPropertyName());
                 property.addContent(label);
 
                 templateProperties.add(property);
-                if ("Signatur".equals(prop.getTitel())) {
+                if ("Signatur".equals(prop.getPropertyName())) {
                     Element secondProperty = new Element(ELEMENT_PROPERTY, namespace);
-                    secondProperty.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel() + "Encoded");
-                    if (prop.getWert() != null) {
-                        secondProperty.setAttribute(ATTRIBUTE_VALUE, "vorl:" + prop.getWert());
+                    secondProperty.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getPropertyName() + "Encoded");
+                    if (prop.getPropertyValue() != null) {
+                        secondProperty.setAttribute(ATTRIBUTE_VALUE, "vorl:" + prop.getPropertyValue());
                         Element secondLabel = new Element(ELEMENT_LABEL, namespace);
-                        secondLabel.setText(prop.getTitel());
+                        secondLabel.setText(prop.getPropertyName());
                         secondProperty.addContent(secondLabel);
                         templateProperties.add(secondProperty);
                     }
@@ -597,16 +598,16 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             List<Element> docProperties = new ArrayList<>();
             for (Masterpieceproperty prop : w.getEigenschaftenList()) {
                 Element property = new Element(ELEMENT_PROPERTY, namespace);
-                property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel());
-                if (prop.getWert() != null) {
-                    property.setAttribute(ATTRIBUTE_VALUE, prop.getWert());
+                property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getPropertyName());
+                if (prop.getPropertyValue() != null) {
+                    property.setAttribute(ATTRIBUTE_VALUE, prop.getPropertyValue());
                 } else {
                     property.setAttribute(ATTRIBUTE_VALUE, "");
                 }
 
                 Element label = new Element(ELEMENT_LABEL, namespace);
 
-                label.setText(prop.getTitel());
+                label.setText(prop.getPropertyName());
                 property.addContent(label);
                 docProperties.add(property);
             }
@@ -1271,12 +1272,12 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
                 // werkstueckeeigenschaften.Titel
                 Element propertyName = new Element(ELEMENT_NAME, xmlns);
-                propertyName.setText(property.getTitel());
+                propertyName.setText(property.getPropertyName());
                 element.addContent(propertyName);
 
                 // werkstueckeeigenschaften.WERT
                 Element propertyValue = new Element(ELEMENT_VALUE, xmlns);
-                propertyValue.setText(property.getWert());
+                propertyValue.setText(property.getPropertyValue());
                 element.addContent(propertyValue);
             }
         }
@@ -1308,12 +1309,12 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
                 // vorlageneigenschaften.Titel
                 Element propertyName = new Element(ELEMENT_NAME, xmlns);
-                propertyName.setText(property.getTitel());
+                propertyName.setText(property.getPropertyName());
                 element.addContent(propertyName);
 
                 // vorlageneigenschaften.WERT
                 Element propertyValue = new Element(ELEMENT_VALUE, xmlns);
-                propertyValue.setText(property.getWert());
+                propertyValue.setText(property.getPropertyValue());
                 element.addContent(propertyValue);
             }
         }
@@ -1344,12 +1345,12 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
             // prozesseeigenschaften.Titel
             Element propertyName = new Element(ELEMENT_NAME, xmlns);
-            propertyName.setText(property.getTitel());
+            propertyName.setText(property.getPropertyName());
             element.addContent(propertyName);
 
             // prozesseeigenschaften.WERT
             Element propertyValue = new Element(ELEMENT_VALUE, xmlns);
-            propertyValue.setText(property.getWert());
+            propertyValue.setText(property.getPropertyValue());
             element.addContent(propertyValue);
             properties.addContent(element);
         }

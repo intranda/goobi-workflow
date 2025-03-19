@@ -64,8 +64,8 @@ public class BeanHelper implements Serializable {
 
     public void EigenschaftHinzufuegen(Process inProzess, String inTitel, String inWert) {
         Processproperty eig = new Processproperty();
-        eig.setTitel(inTitel);
-        eig.setWert(inWert);
+        eig.setPropertyName(inTitel);
+        eig.setPropertyValue(inWert);
         eig.setProzess(inProzess);
         List<Processproperty> eigenschaften = inProzess.getEigenschaften();
         if (eigenschaften == null) {
@@ -76,8 +76,8 @@ public class BeanHelper implements Serializable {
 
     public void EigenschaftHinzufuegen(Template inVorlage, String inTitel, String inWert) {
         Templateproperty eig = new Templateproperty();
-        eig.setTitel(inTitel);
-        eig.setWert(inWert);
+        eig.setPropertyName(inTitel);
+        eig.setPropertyValue(inWert);
         eig.setVorlage(inVorlage);
         List<Templateproperty> eigenschaften = inVorlage.getEigenschaften();
         if (eigenschaften == null) {
@@ -88,8 +88,8 @@ public class BeanHelper implements Serializable {
 
     public void EigenschaftHinzufuegen(Masterpiece inWerkstueck, String inTitel, String inWert) {
         Masterpieceproperty eig = new Masterpieceproperty();
-        eig.setTitel(inTitel);
-        eig.setWert(inWert);
+        eig.setPropertyName(inTitel);
+        eig.setPropertyValue(inWert);
         eig.setWerkstueck(inWerkstueck);
         List<Masterpieceproperty> eigenschaften = inWerkstueck.getEigenschaften();
         if (eigenschaften == null) {
@@ -196,10 +196,10 @@ public class BeanHelper implements Serializable {
             List<Masterpieceproperty> myEigenschaften = new ArrayList<>();
             for (Masterpieceproperty eig : werk.getEigenschaften()) {
                 Masterpieceproperty eigneu = new Masterpieceproperty();
-                eigneu.setIstObligatorisch(eig.isIstObligatorisch());
+                eigneu.setRequired(eig.isRequired());
                 eigneu.setType(eig.getType());
-                eigneu.setTitel(eig.getTitel());
-                eigneu.setWert(eig.getWert());
+                eigneu.setPropertyName(eig.getPropertyName());
+                eigneu.setPropertyValue(eig.getPropertyValue());
                 eigneu.setWerkstueck(werkneu);
                 myEigenschaften.add(eigneu);
             }
@@ -215,10 +215,10 @@ public class BeanHelper implements Serializable {
         List<Processproperty> myEigenschaften = new ArrayList<>();
         for (Processproperty eig : prozessVorlage.getEigenschaftenList()) {
             Processproperty eigneu = new Processproperty();
-            eigneu.setIstObligatorisch(eig.isIstObligatorisch());
+            eigneu.setRequired(eig.isRequired());
             eigneu.setType(eig.getType());
-            eigneu.setTitel(eig.getTitel());
-            eigneu.setWert(eig.getWert());
+            eigneu.setPropertyName(eig.getPropertyName());
+            eigneu.setPropertyValue(eig.getPropertyValue());
             eigneu.setProzess(prozessKopie);
             myEigenschaften.add(eigneu);
         }
@@ -241,10 +241,10 @@ public class BeanHelper implements Serializable {
             List<Templateproperty> myEigenschaften = new ArrayList<>();
             for (Templateproperty eig : vor.getEigenschaften()) {
                 Templateproperty eigneu = new Templateproperty();
-                eigneu.setIstObligatorisch(eig.isIstObligatorisch());
+                eigneu.setRequired(eig.isRequired());
                 eigneu.setType(eig.getType());
-                eigneu.setTitel(eig.getTitel());
-                eigneu.setWert(eig.getWert());
+                eigneu.setPropertyName(eig.getPropertyName());
+                eigneu.setPropertyValue(eig.getPropertyValue());
                 eigneu.setVorlage(vorneu);
                 myEigenschaften.add(eigneu);
             }
@@ -260,8 +260,8 @@ public class BeanHelper implements Serializable {
         String werkstueckEigenschaft = "";
         for (Masterpiece myWerkstueck : myProzess.getWerkstueckeList()) {
             for (Masterpieceproperty eigenschaft : myWerkstueck.getEigenschaftenList()) {
-                if (eigenschaft.getTitel().equals(inEigenschaft)) {
-                    werkstueckEigenschaft = eigenschaft.getWert();
+                if (eigenschaft.getPropertyName().equals(inEigenschaft)) {
+                    werkstueckEigenschaft = eigenschaft.getPropertyValue();
                 }
             }
         }
@@ -272,8 +272,8 @@ public class BeanHelper implements Serializable {
         String scanvorlagenEigenschaft = "";
         for (Template myVorlage : myProzess.getVorlagenList()) {
             for (Templateproperty eigenschaft : myVorlage.getEigenschaftenList()) {
-                if (eigenschaft.getTitel().equals(inEigenschaft)) {
-                    scanvorlagenEigenschaft = eigenschaft.getWert();
+                if (eigenschaft.getPropertyName().equals(inEigenschaft)) {
+                    scanvorlagenEigenschaft = eigenschaft.getPropertyValue();
                 }
             }
         }
@@ -319,10 +319,10 @@ public class BeanHelper implements Serializable {
         }
         // update properties for template name + id
         for (Processproperty property : processToChange.getEigenschaften()) {
-            if ("Template".equals(property.getTitel())) {
-                property.setWert(template.getTitel());
-            } else if ("TemplateID".equals(property.getTitel())) {
-                property.setWert(String.valueOf(template.getId()));
+            if ("Template".equals(property.getPropertyName())) {
+                property.setPropertyValue(template.getTitel());
+            } else if ("TemplateID".equals(property.getPropertyName())) {
+                property.setPropertyValue(String.valueOf(template.getId()));
             }
         }
 

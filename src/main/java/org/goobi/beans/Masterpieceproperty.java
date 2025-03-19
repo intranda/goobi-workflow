@@ -28,28 +28,23 @@ package org.goobi.beans;
 import java.io.Serializable;
 import java.util.Date;
 
-import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
-import lombok.Getter;
 import lombok.Setter;
 
-public class Masterpieceproperty extends AbstractProperty implements Serializable {
+public class Masterpieceproperty extends GoobiProperty implements Serializable {
     private static final long serialVersionUID = -88407008893258729L;
-    @Getter
-    @Setter
-    private Integer masterpieceId;
+
     @Setter
     private Masterpiece werkstueck;
 
     public Masterpieceproperty() {
-        this.istObligatorisch = false;
-        this.datentyp = PropertyType.STRING.getId();
+        super(PropertyOwnerType.MASTERPIECE);
         this.creationDate = new Date();
     }
 
     public Masterpiece getWerkstueck() {
-        if (werkstueck == null && masterpieceId != null) {
-            werkstueck = MasterpieceManager.getMasterpieceForTemplateID(masterpieceId);
+        if (werkstueck == null && objectId != null) {
+            werkstueck = MasterpieceManager.getMasterpieceForTemplateID(objectId);
         }
         return this.werkstueck;
     }

@@ -2333,7 +2333,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         List<Processproperty> props = this.myProzess.getEigenschaftenList();
         for (Processproperty pe : props) {
-            if (pe.getTitel() == null) {
+            if (pe.getPropertyName() == null) {
                 this.myProzess.getEigenschaften().remove(pe);
             }
         }

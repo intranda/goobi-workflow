@@ -127,8 +127,8 @@ public class RestProcessResource {
 
     private void initializePropertiesList(List<Processproperty> properties) {
         for (Processproperty property : properties) {
-            String name = property.getTitel();
-            String value = property.getWert();
+            String name = property.getPropertyName();
+            String value = property.getPropertyValue();
             Map<String, String> propertyMap = new HashMap<>();
             propertyMap.put("name", name);
             propertyMap.put("value", value);

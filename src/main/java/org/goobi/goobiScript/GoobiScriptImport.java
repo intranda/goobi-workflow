@@ -175,8 +175,8 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                 if (additionalProperties != null) {
                     for (ProcessProperty prop : additionalProperties) {
                         Processproperty pe = new Processproperty();
-                        pe.setWert(prop.getValue());
-                        pe.setTitel(prop.getName());
+                        pe.setPropertyValue(prop.getValue());
+                        pe.setPropertyName(prop.getName());
                         pe.setContainer(prop.getContainer());
                         io.getProcessProperties().add(pe);
                     }

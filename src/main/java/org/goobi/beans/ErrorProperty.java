@@ -28,19 +28,17 @@ package org.goobi.beans;
 import java.io.Serializable;
 import java.util.Date;
 
-import de.sub.goobi.helper.enums.PropertyType;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ErrorProperty extends AbstractProperty implements Serializable {
+public class ErrorProperty extends GoobiProperty implements Serializable {
     private static final long serialVersionUID = -443521810121056341L;
     @Getter
     @Setter
     private Step schritt;
 
     public ErrorProperty() {
-        this.istObligatorisch = false;
-        this.datentyp = PropertyType.STRING.getId();
+        super(PropertyOwnerType.ERROR);
         this.creationDate = new Date();
     }
 

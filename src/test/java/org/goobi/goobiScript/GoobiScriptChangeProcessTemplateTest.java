@@ -103,11 +103,11 @@ public class GoobiScriptChangeProcessTemplateTest extends AbstractTest {
         List<Processproperty> props = new ArrayList<>();
 
         Processproperty p1 = new Processproperty();
-        p1.setTitel("Template");
-        p1.setWert("abc");
+        p1.setPropertyName("Template");
+        p1.setPropertyValue("abc");
         Processproperty p2 = new Processproperty();
-        p2.setTitel("TemplateID");
-        p2.setWert("111");
+        p2.setPropertyName("TemplateID");
+        p2.setPropertyValue("111");
         props.add(p1);
         props.add(p2);
 

@@ -95,8 +95,8 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
         gsr.updateTimestamp();
         boolean matched = false;
         for (Processproperty pp : p.getEigenschaften()) {
-            if (pp.getTitel().equals(propertyName)) {
-                pp.setWert(value);
+            if (pp.getPropertyName().equals(propertyName)) {
+                pp.setPropertyValue(value);
                 PropertyManager.saveProcessProperty(pp);
                 gsr.setResultMessage("Property updated.");
                 gsr.setResultType(GoobiScriptResultType.OK);
@@ -106,8 +106,8 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
         }
         if (!matched) {
             Processproperty pp = new Processproperty();
-            pp.setTitel(propertyName);
-            pp.setWert(value);
+            pp.setPropertyName(propertyName);
+            pp.setPropertyValue(value);
             pp.setProzess(p);
             PropertyManager.saveProcessProperty(pp);
             gsr.setResultMessage("Property created.");

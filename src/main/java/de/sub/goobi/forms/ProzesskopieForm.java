@@ -743,12 +743,12 @@ public class ProzesskopieForm implements Serializable {
     private void fillTemplateFromProperties(Process tempProcess) {
         for (Processproperty pe : tempProcess.getEigenschaften()) {
             for (AdditionalField field : this.additionalFields) {
-                if (field.getTitel().equals(pe.getTitel())) {
-                    setFieldValue(field, pe.getWert());
+                if (field.getTitel().equals(pe.getPropertyName())) {
+                    setFieldValue(field, pe.getPropertyValue());
                 }
             }
-            if ("digitalCollection".equals(pe.getTitel())) {
-                digitalCollections.add(pe.getWert());
+            if ("digitalCollection".equals(pe.getPropertyName())) {
+                digitalCollections.add(pe.getPropertyValue());
             }
         }
     }
@@ -758,8 +758,8 @@ public class ProzesskopieForm implements Serializable {
         Template vor = tempProcess.getVorlagenList().get(0);
         for (Templateproperty eig : vor.getEigenschaften()) {
             for (AdditionalField field : this.additionalFields) {
-                if (field.getTitel().equals(eig.getTitel())) {
-                    setFieldValue(field, eig.getWert());
+                if (field.getTitel().equals(eig.getPropertyName())) {
+                    setFieldValue(field, eig.getPropertyValue());
                 }
             }
         }
@@ -769,11 +769,11 @@ public class ProzesskopieForm implements Serializable {
         Masterpiece werk = tempProcess.getWerkstueckeList().get(0);
         for (Masterpieceproperty eig : werk.getEigenschaften()) {
             for (AdditionalField field : this.additionalFields) {
-                if (field.getTitel().equals(eig.getTitel())) {
-                    setFieldValue(field, eig.getWert());
+                if (field.getTitel().equals(eig.getPropertyName())) {
+                    setFieldValue(field, eig.getPropertyValue());
                 }
-                if ("DocType".equals(eig.getTitel())) {
-                    docType = eig.getWert();
+                if ("DocType".equals(eig.getPropertyName())) {
+                    docType = eig.getPropertyValue();
                 }
             }
         }

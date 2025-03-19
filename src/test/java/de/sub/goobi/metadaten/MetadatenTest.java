@@ -1353,8 +1353,8 @@ public class MetadatenTest extends AbstractTest {
     public void testImportSubElementsFromOpac() throws Exception {
         Metadaten fixture = initMetadaten();
         Processproperty pp = new Processproperty();
-        pp.setTitel("Template");
-        pp.setWert("test");
+        pp.setPropertyName("Template");
+        pp.setPropertyValue("test");
         List<Processproperty> props = new ArrayList<>();
         props.add(pp);
         process.setEigenschaften(props);
@@ -1372,8 +1372,8 @@ public class MetadatenTest extends AbstractTest {
     public void testImportMetadataFromOpac() throws Exception {
         Metadaten fixture = initMetadaten();
         Processproperty pp = new Processproperty();
-        pp.setTitel("Template");
-        pp.setWert("test");
+        pp.setPropertyName("Template");
+        pp.setPropertyValue("test");
         List<Processproperty> props = new ArrayList<>();
         props.add(pp);
         process.setEigenschaften(props);
@@ -1656,8 +1656,8 @@ public class MetadatenTest extends AbstractTest {
     public void testGetOpacKatalog() throws Exception {
         Metadaten fixture = initMetadaten();
         Processproperty pp = new Processproperty();
-        pp.setTitel("Template");
-        pp.setWert("test");
+        pp.setPropertyName("Template");
+        pp.setPropertyValue("test");
         List<Processproperty> props = new ArrayList<>();
         props.add(pp);
         process.setEigenschaften(props);
@@ -1668,8 +1668,8 @@ public class MetadatenTest extends AbstractTest {
     public void testGetAllSearchFields() throws Exception {
         Metadaten fixture = initMetadaten();
         Processproperty pp = new Processproperty();
-        pp.setTitel("Template");
-        pp.setWert("test");
+        pp.setPropertyName("Template");
+        pp.setPropertyValue("test");
         List<Processproperty> props = new ArrayList<>();
         props.add(pp);
         process.setEigenschaften(props);

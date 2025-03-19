@@ -28,13 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.VocabularyRecordAPI;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedFieldInstance;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import org.easymock.EasyMock;
-import org.goobi.beans.*;
+import org.goobi.beans.Masterpiece;
+import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
+import org.goobi.beans.Template;
+import org.goobi.beans.Templateproperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
@@ -48,6 +47,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.VocabularyRecordAPI;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedFieldInstance;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import ugh.dl.DigitalDocument;
 import ugh.dl.Prefs;
 
@@ -163,8 +166,8 @@ public class VariableReplacerTest extends AbstractTest {
         VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
 
         Templateproperty tp = new Templateproperty();
-        tp.setTitel("templateProperty");
-        tp.setWert("template value");
+        tp.setPropertyName("templateProperty");
+        tp.setPropertyValue("template value");
         List<Templateproperty> tpl = new ArrayList<>();
         tpl.add(tp);
 
@@ -189,8 +192,8 @@ public class VariableReplacerTest extends AbstractTest {
         process.setWerkstuecke(ml);
 
         Masterpieceproperty mp = new Masterpieceproperty();
-        mp.setTitel("masterpieceProperty");
-        mp.setWert("value");
+        mp.setPropertyName("masterpieceProperty");
+        mp.setPropertyValue("value");
         List<Masterpieceproperty> mpl = new ArrayList<>();
         mpl.add(mp);
         m.setEigenschaften(mpl);

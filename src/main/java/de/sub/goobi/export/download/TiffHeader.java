@@ -61,15 +61,15 @@ public class TiffHeader {
             if (myWerkstueck.getEigenschaftenSize() > 0) {
                 for (Masterpieceproperty eig : myWerkstueck.getEigenschaftenList()) {
 
-                    if ("TifHeaderDocumentname".equals(eig.getTitel())) {
-                        this.tifHeaderDocumentname = eig.getWert();
+                    if ("TifHeaderDocumentname".equals(eig.getPropertyName())) {
+                        this.tifHeaderDocumentname = eig.getPropertyValue();
                     }
-                    if ("TifHeaderImagedescription".equals(eig.getTitel())) {
-                        this.tifHeaderImagedescription = eig.getWert();
+                    if ("TifHeaderImagedescription".equals(eig.getPropertyName())) {
+                        this.tifHeaderImagedescription = eig.getPropertyValue();
                     }
 
-                    if ("Artist".equals(eig.getTitel())) {
-                        this.artist = eig.getWert();
+                    if ("Artist".equals(eig.getPropertyName())) {
+                        this.artist = eig.getPropertyValue();
                     }
                 }
             }

@@ -122,7 +122,7 @@ public class BatchProcessHelper implements Serializable {
             Process p = this.currentProcess;
             List<Processproperty> props = p.getEigenschaftenList();
             for (Processproperty pe : props) {
-                if (pe.getTitel() == null) {
+                if (pe.getPropertyName() == null) {
                     p.getEigenschaften().remove(pe);
                 }
             }
@@ -158,8 +158,9 @@ public class BatchProcessHelper implements Serializable {
             for (Process process : this.processes) {
                 boolean match = false;
                 for (Processproperty prpr : process.getEigenschaftenList()) {
-                    if (prpr.getTitel() != null && prop.getTitel().equals(prpr.getTitel()) && prop.getContainer().equals(prpr.getContainer())) {
-                        prpr.setWert(prop.getWert());
+                    if (prpr.getPropertyName() != null && prop.getPropertyName().equals(prpr.getPropertyName())
+                            && prop.getContainer().equals(prpr.getContainer())) {
+                        prpr.setPropertyValue(prop.getPropertyValue());
                         PropertyManager.saveProcessProperty(prpr);
                         match = true;
                         break;
@@ -167,8 +168,8 @@ public class BatchProcessHelper implements Serializable {
                 }
                 if (!match) {
                     Processproperty p = new Processproperty();
-                    p.setTitel(prop.getTitel());
-                    p.setWert(prop.getWert());
+                    p.setPropertyName(prop.getPropertyName());
+                    p.setPropertyValue(prop.getPropertyValue());
                     p.setContainer(prop.getContainer());
                     p.setType(prop.getType());
                     p.setProzess(process);

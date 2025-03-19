@@ -209,7 +209,7 @@ public class BatchStepHelper implements Serializable {
             Process p = this.currentStep.getProzess();
             List<Processproperty> props = p.getEigenschaftenList();
             for (Processproperty pe : props) {
-                if (pe.getTitel() == null) {
+                if (pe.getPropertyName() == null) {
                     p.getEigenschaften().remove(pe);
                 }
             }
@@ -245,8 +245,9 @@ public class BatchStepHelper implements Serializable {
                 Process process = s.getProzess();
                 boolean match = false;
                 for (Processproperty prpr : process.getEigenschaftenList()) {
-                    if (prpr.getTitel() != null && prop.getTitel().equals(prpr.getTitel()) && prop.getContainer().equals(prpr.getContainer())) {
-                        prpr.setWert(prop.getWert());
+                    if (prpr.getPropertyName() != null && prop.getPropertyName().equals(prpr.getPropertyName())
+                            && prop.getContainer().equals(prpr.getContainer())) {
+                        prpr.setPropertyValue(prop.getPropertyValue());
                         PropertyManager.saveProcessProperty(prpr);
                         match = true;
                         break;
@@ -254,8 +255,8 @@ public class BatchStepHelper implements Serializable {
                 }
                 if (!match) {
                     Processproperty p = new Processproperty();
-                    p.setTitel(prop.getTitel());
-                    p.setWert(prop.getWert());
+                    p.setPropertyName(prop.getPropertyName());
+                    p.setPropertyValue(prop.getPropertyValue());
                     p.setContainer(prop.getContainer());
                     p.setType(prop.getType());
                     p.setProzess(process);
@@ -412,7 +413,7 @@ public class BatchStepHelper implements Serializable {
         Process p = this.currentStep.getProzess();
         List<Processproperty> props = p.getEigenschaftenList();
         for (Processproperty pe : props) {
-            if (pe.getTitel() == null) {
+            if (pe.getPropertyName() == null) {
                 p.getEigenschaften().remove(pe);
             }
         }
@@ -518,11 +519,11 @@ public class BatchStepHelper implements Serializable {
                     messageText = problemMessage;
                 }
 
-                se.setTitel(Helper.getTranslation("Korrektur notwendig"));
+                se.setPropertyName(Helper.getTranslation("Korrektur notwendig"));
                 if (ben == null) {
-                    se.setWert("[" + this.formatter.format(new Date()) + "] " + messageText);
+                    se.setPropertyValue("[" + this.formatter.format(new Date()) + "] " + messageText);
                 } else {
-                    se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + messageText);
+                    se.setPropertyValue("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + messageText);
                 }
                 se.setType(PropertyType.MESSAGE_ERROR);
                 se.setCreationDate(myDate);
@@ -558,8 +559,8 @@ public class BatchStepHelper implements Serializable {
                     step.setCorrectionStep();
                     step.setBearbeitungsende(null);
                     ErrorProperty seg = new ErrorProperty();
-                    seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
-                    seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText);
+                    seg.setPropertyName(Helper.getTranslation("Korrektur notwendig"));
+                    seg.setPropertyValue(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText);
                     seg.setSchritt(step);
                     seg.setType(PropertyType.MESSAGE_IMPORTANT);
                     seg.setCreationDate(new Date());
@@ -675,8 +676,8 @@ public class BatchStepHelper implements Serializable {
                         step.setBearbeitungszeitpunkt(now);
                     }
                     ErrorProperty seg = new ErrorProperty();
-                    seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
-                    seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
+                    seg.setPropertyName(Helper.getTranslation("Korrektur durchgefuehrt"));
+                    seg.setPropertyValue("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
                             + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + messageText);
                     seg.setSchritt(step);
                     seg.setType(PropertyType.MESSAGE_IMPORTANT);

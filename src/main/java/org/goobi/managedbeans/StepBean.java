@@ -620,7 +620,7 @@ public class StepBean extends BasicBean implements Serializable {
             temp.setBearbeitungsende(new Date());
             ErrorProperty se = new ErrorProperty();
 
-            se.setTitel(Helper.getTranslation("Korrektur notwendig"));
+            se.setPropertyName(Helper.getTranslation("Korrektur notwendig"));
             String messageText;
             if (StringUtils.isNotBlank(selectedErrorPropertyType)) {
                 messageText = errorPropertyTypes.get(selectedErrorPropertyType).replace("{}", problemMessage);
@@ -632,7 +632,7 @@ public class StepBean extends BasicBean implements Serializable {
             if (ben != null) {
                 suffix = " (" + ben.getNachVorname() + ")";
             }
-            se.setWert(messageText + suffix);
+            se.setPropertyName(messageText + suffix);
             se.setType(PropertyType.MESSAGE_ERROR);
             se.setCreationDate(myDate);
             se.setSchritt(temp);
@@ -665,8 +665,8 @@ public class StepBean extends BasicBean implements Serializable {
                 step.setCorrectionStep();
                 step.setBearbeitungsende(null);
                 ErrorProperty seg = new ErrorProperty();
-                seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
-                seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText + suffix);
+                seg.setPropertyName(Helper.getTranslation("Korrektur notwendig"));
+                seg.setPropertyValue(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText + suffix);
                 seg.setSchritt(step);
                 seg.setType(PropertyType.MESSAGE_IMPORTANT);
                 seg.setCreationDate(new Date());
@@ -762,13 +762,13 @@ public class StepBean extends BasicBean implements Serializable {
 
                 }
                 ErrorProperty seg = new ErrorProperty();
-                seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
+                seg.setPropertyName(Helper.getTranslation("Korrektur durchgefuehrt"));
                 String suffix = "";
                 if (user != null) {
                     step.setBearbeitungsbenutzer(user);
                     suffix = (" (" + user.getNachVorname() + ")");
                 }
-                seg.setWert(message + suffix);
+                seg.setPropertyValue(message + suffix);
                 seg.setSchritt(step);
                 seg.setType(PropertyType.MESSAGE_IMPORTANT);
                 seg.setCreationDate(new Date());
@@ -1247,7 +1247,7 @@ public class StepBean extends BasicBean implements Serializable {
             Process p = this.mySchritt.getProzess();
             List<Processproperty> props = p.getEigenschaftenList();
             for (Processproperty pe : props) {
-                if (pe.getTitel() == null) {
+                if (pe.getPropertyName() == null) {
                     p.getEigenschaften().remove(pe);
                 }
             }
@@ -1277,7 +1277,7 @@ public class StepBean extends BasicBean implements Serializable {
 
             List<Processproperty> props = this.mySchritt.getProzess().getEigenschaftenList();
             for (Processproperty pe : props) {
-                if (pe.getTitel() == null) {
+                if (pe.getPropertyName() == null) {
                     this.mySchritt.getProzess().getEigenschaften().remove(pe);
                 }
             }
@@ -1313,7 +1313,7 @@ public class StepBean extends BasicBean implements Serializable {
         this.mySchritt.getProzess().getEigenschaften().remove(this.processProperty.getProzesseigenschaft());
         List<Processproperty> props = this.mySchritt.getProzess().getEigenschaftenList();
         for (Processproperty pe : props) {
-            if (pe.getTitel() == null) {
+            if (pe.getPropertyName() == null) {
                 this.mySchritt.getProzess().getEigenschaften().remove(pe);
             }
         }

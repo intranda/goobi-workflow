@@ -466,12 +466,12 @@ public class DatabaseVersion {
     }
 
     private static void createNewImageCommentsProperty(Processproperty p) throws SQLException {
-        if (!p.getTitel().startsWith("image comments ")) {
+        if (!p.getPropertyName().startsWith("image comments ")) {
             throw new SQLException("Unable to parse legacy image comments folder name");
         }
-        String imageFolder = p.getTitel().substring(15);
+        String imageFolder = p.getPropertyName().substring(15);
         ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(p.getProzess());
-        Map<String, String> legacyComments = GSON.fromJson(p.getWert(), Map.class);
+        Map<String, String> legacyComments = GSON.fromJson(p.getPropertyValue(), Map.class);
         legacyComments.entrySet()
                 .stream()
                 .forEach(lc -> helper.setComment(new ImageComment(imageFolder, lc.getKey(), lc.getValue())));

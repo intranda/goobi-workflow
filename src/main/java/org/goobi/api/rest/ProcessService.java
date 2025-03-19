@@ -559,8 +559,8 @@ public class ProcessService implements IRestAuthentication {
 
     private Processproperty saveNewProcessproperty(Process process, String key, String value, Date creationDate) {
         Processproperty property = new Processproperty();
-        property.setTitel(key);
-        property.setWert(value);
+        property.setPropertyName(key);
+        property.setPropertyValue(value);
         property.setProzess(process);
         property.setType(PropertyType.STRING);
         if (creationDate != null) {
@@ -568,7 +568,7 @@ public class ProcessService implements IRestAuthentication {
         } else {
             property.setCreationDate(new Date());
         }
-        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property added using REST-API: " + property.getTitel());
+        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property added using REST-API: " + property.getPropertyName());
 
         PropertyManager.saveProcessProperty(property);
 
@@ -1377,12 +1377,12 @@ public class ProcessService implements IRestAuthentication {
             return Response.status(409).entity("Property belongs to a different process.").build();
         }
         if (StringUtils.isNotBlank(resource.getName())) {
-            property.setTitel(resource.getName());
+            property.setPropertyName(resource.getName());
         }
         if (StringUtils.isNotBlank(resource.getValue())) {
-            property.setWert(resource.getValue());
+            property.setPropertyValue(resource.getValue());
         }
-        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property changed using REST-API: " + property.getTitel());
+        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property changed using REST-API: " + property.getPropertyName());
 
         PropertyManager.saveProcessProperty(property);
         return Response.status(200).entity(new RestPropertyResource(property)).build();
@@ -1464,7 +1464,7 @@ public class ProcessService implements IRestAuthentication {
 
         PropertyManager.deleteProcessProperty(property);
 
-        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property deleted using REST-API: " + property.getTitel());
+        Helper.addMessageToProcessJournal(property.getProcessId(), LogType.DEBUG, "Property deleted using REST-API: " + property.getPropertyName());
         return Response.status(200).build();
     }
 
