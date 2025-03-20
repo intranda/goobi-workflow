@@ -426,21 +426,21 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
             if (ts.length > 1) {
-                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select object_id from properties where object_type = 'error' AND Wert like ''"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND Titel like '"
+                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select object_id from properties where object_type = 'error' AND property_value like ''"
+                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND property_name like '"
                         + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
 
             } else {
-                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select object_id from properties where object_type = 'error' AND Wert like '"
+                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select object_id from properties where object_type = 'error' AND property_value like '"
                         + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
             }
         } else if (ts.length > 1) {
-            return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select object_id from properties where object_type = 'error' AND Wert like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND Titel like '"
+            return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select object_id from properties where object_type = 'error' AND property_value like '"
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND property_name like '"
                     + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
 
         } else {
-            return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select object_id from properties where object_type = 'error' AND Wert like '"
+            return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select object_id from properties where object_type = 'error' AND property_value like '"
                     + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
         }
     }

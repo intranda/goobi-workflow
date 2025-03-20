@@ -108,12 +108,15 @@ public class ProcesspropertyTest extends AbstractTest {
         Date date = new Date();
         Processproperty property1 = new Processproperty();
         property1.setId(1);
+        property1.setObjectId(1);
         property1.setCreationDate(date);
         Processproperty property2 = new Processproperty();
         property2.setId(1);
+        property2.setObjectId(1);
         property2.setCreationDate(date);
         Processproperty property3 = new Processproperty();
         property3.setId(2);
+        property3.setObjectId(2);
         property3.setCreationDate(date);
         // test that property 1 has the same hash code as itself
         assertEquals(property1.hashCode(), property1.hashCode());

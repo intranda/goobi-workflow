@@ -399,7 +399,7 @@ public class FilterHelperTest extends AbstractTest {
     public void testFilterScanTemplateWithoutNegate() {
         String tok = "template:Title:Value";
         String expectedQuery =
-                " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%Value%' AND vorlageneigenschaften.Titel LIKE '%Title%'))";
+                " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select object_id from properties where object_type = 'template' AND properties.property_value like '%Value%' AND properties.property_name LIKE '%Title%'))";
 
         String result = FilterHelper.filterScanTemplate(tok, false);
 
@@ -411,7 +411,7 @@ public class FilterHelperTest extends AbstractTest {
     public void testFilterScanTemplateWithNegate() {
         String tok = "template:Title:Value";
         String expectedQuery =
-                " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '%Value%' AND vorlageneigenschaften.Titel LIKE '%Title%'))";
+                " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select object_id from properties where object_type = 'template' AND properties.property_value like '%Value%' AND properties.property_name LIKE '%Title%'))";
 
         String result = FilterHelper.filterScanTemplate(tok, true);
 
@@ -423,7 +423,8 @@ public class FilterHelperTest extends AbstractTest {
     public void testFilterStepPropertyWithoutNegate() {
         String tok = "stepproperty:Title:Value";
         String expectedQuery =
-                " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like ''%Value%'  AND Titel like '%Title%' ))";
+                " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select object_id from properties where object_type = 'error' AND property_value like ''%Value%'  AND property_name like '%Title%' ))";
+
         String result = FilterHelper.filterStepProperty(tok, false);
 
         // Assert that the generated SQL query matches the expected query without negation
@@ -434,7 +435,8 @@ public class FilterHelperTest extends AbstractTest {
     public void testFilterStepPropertyWithNegate() {
         String tok = "stepproperty:Title:Value";
         String expectedQuery =
-                " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '%Value%'  AND Titel like '%Title%' ))";
+                " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select object_id from properties where object_type = 'error' AND property_value like '%Value%'  AND property_name like '%Title%' ))";
+
         String result = FilterHelper.filterStepProperty(tok, true);
 
         // Assert that the generated SQL query matches the expected query with negation
@@ -471,7 +473,7 @@ public class FilterHelperTest extends AbstractTest {
     public void testFilterProcessPropertyWithoutNegate() {
         String tok = "processproperty:Title:Value";
         String expectedQuery =
-                "prozesse.ProzesseID in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Titel like '%Title%' AND prozesseeigenschaften.Wert like '%Value%' )";
+                "prozesse.ProzesseID in (select object_id from properties where object_type = 'process' AND properties.property_name like '%Title%' AND properties.property_value like '%Value%' )";
         String result = FilterHelper.filterProcessProperty(tok, false);
 
         // Assert that the generated SQL query matches the expected query without negation
@@ -482,7 +484,7 @@ public class FilterHelperTest extends AbstractTest {
     public void testFilterProcessPropertyWithNegate() {
         String tok = "processproperty:Title:Value";
         String expectedQuery =
-                "prozesse.ProzesseID not in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Titel like  '%Title%' AND prozesseeigenschaften.Wert like '%Value%' )";
+                "prozesse.ProzesseID not in (select object_id from properties where object_type = 'process' AND properties.property_name like  '%Title%' AND properties.property_value like '%Value%' )";
 
         String result = FilterHelper.filterProcessProperty(tok, true);
 
@@ -611,8 +613,7 @@ public class FilterHelperTest extends AbstractTest {
         String tok = "workpiece:title:value";
         boolean negate = false;
         String expectedQuery =
-                " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%value%' AND werkstueckeeigenschaften.Titel LIKE '%title%'))";
-
+                " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select object_id from properties where object_type = 'masterpiece' AND properties.property_value like '%value%' AND properties.property_name LIKE '%title%'))";
         String result = FilterHelper.filterWorkpiece(tok, negate);
 
         // Assert that the generated SQL query matches the expected query with a valid signature and no negation
@@ -624,7 +625,7 @@ public class FilterHelperTest extends AbstractTest {
         String tok = "workpiece:title:value";
         boolean negate = true;
         String expectedQuery =
-                " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%value%' AND werkstueckeeigenschaften.Titel LIKE '%title%'))";
+                " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID not in (select object_id from properties where object_type = 'masterpiece' AND properties.property_value like '%value%' AND properties.property_name LIKE '%title%'))";
 
         String result = FilterHelper.filterWorkpiece(tok, negate);
 
@@ -637,8 +638,7 @@ public class FilterHelperTest extends AbstractTest {
         String tok = "workpiece:value";
         boolean negate = false;
         String expectedQuery =
-                " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '%value%'))";
-
+                " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select object_id from properties where object_type = 'masterpiece' AND properties.property_value like '%value%'))";
         String result = FilterHelper.filterWorkpiece(tok, negate);
 
         // Assert that the generated SQL query matches the expected query with no title in the signature and no negation

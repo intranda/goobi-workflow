@@ -61,7 +61,7 @@ public class Processproperty extends GoobiProperty implements Serializable, Comp
         result = prime * result + ((getContainer() == null) ? 0 : getContainer().hashCode());
         result = prime * result + ((creationDate == null) ? 0 : creationDate.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + objectId;
+        result = prime * result + ((objectId == null) ? 0 : objectId);
         result = prime * result + ((propertyName == null) ? 0 : propertyName.hashCode());
         result = prime * result + ((propertyValue == null) ? 0 : propertyValue.hashCode());
         return result;
