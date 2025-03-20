@@ -51,11 +51,11 @@ public class SearchColumn implements Serializable {
         } else if (value.startsWith(TABLE_PROJECTS)) {
             return "projekte";
         } else if (value.startsWith(TABLE_PROCESS_PROPERTIES)) {
-            return "prozesseeigenschaften" + order;
+            return "properties" + order;
         } else if (value.startsWith(TABLE_TEMPLATE_PROPERTIES)) {
-            return "vorlageneigenschaften" + order;
+            return "properties" + order;
         } else if (value.startsWith(TABLE_WORKPIECE_PROPERTIES)) {
-            return "werkstueckeeigenschaften" + order;
+            return "properties" + order;
         } else if (value.startsWith(TABLE_METADATA)) {
             return "metadata" + order;
         } else if (value.startsWith(TABLE_LOG)) {
@@ -70,11 +70,11 @@ public class SearchColumn implements Serializable {
         } else if (value.startsWith(TABLE_PROJECTS)) {
             return "projekte ";
         } else if (value.startsWith(TABLE_PROCESS_PROPERTIES)) {
-            return "prozesseeigenschaften ";
+            return "properties ";
         } else if (value.startsWith(TABLE_TEMPLATE_PROPERTIES)) {
-            return "vorlageneigenschaften ";
+            return "properties ";
         } else if (value.startsWith(TABLE_WORKPIECE_PROPERTIES)) {
-            return "werkstueckeeigenschaften ";
+            return "properties ";
         } else if (value.startsWith(TABLE_METADATA)) {
             return "metadata ";
         } else if (value.startsWith(TABLE_LOG)) {
@@ -103,8 +103,9 @@ public class SearchColumn implements Serializable {
             return "";
         }
         if (value.startsWith(TABLE_PROCESS_PROPERTIES)) {
-            return " prozesseeigenschaften " + getTableName() + " ON prozesse.ProzesseID = " + getTableName() + ".prozesseID AND " + getTableName()
-                    + ".Titel = \"" + value.substring(value.indexOf(".") + 1) + "\"";
+            return " prozesseeigenschaften " + getTableName() + " ON prozesse.ProzesseID = " + getTableName() + ".object_id AND "
+                    + getTableName() + "object_type = 'process' AND " + getTableName() + ".Titel = \"" + value.substring(value.indexOf(".") + 1)
+                    + "\"";
 
         } else if (value.startsWith(TABLE_METADATA)) {
             return " metadata " + getTableName() + " ON prozesse.ProzesseID = " + getTableName() + ".processid AND " + getTableName() + ".name = \""
@@ -114,14 +115,16 @@ public class SearchColumn implements Serializable {
             return " projekte " + getTableName() + " ON prozesse.ProjekteID = " + getTableName() + ".ProjekteID";
 
         } else if (value.startsWith(TABLE_TEMPLATE_PROPERTIES)) {
-            return "vorlagen vorlagen" + order + " ON prozesse.ProzesseID = vorlagen" + order + ".ProzesseID LEFT JOIN vorlageneigenschaften "
-                    + getTableName() + " ON " + getTableName() + ".vorlagenID = vorlagen" + order + ".vorlagenID AND " + getTableName() + ".Titel =\""
+            return "vorlagen vorlagen" + order + " ON prozesse.ProzesseID = vorlagen" + order + ".ProzesseID LEFT JOIN properties "
+                    + getTableName() + " ON " + getTableName() + ".object_id = vorlagen" + order + ".vorlagenID AND"
+                    + getTableName() + "object_type = 'template' AND " + getTableName() + ".Titel =\""
                     + value.substring(value.indexOf(".") + 1) + "\"";
 
         } else if (value.startsWith(TABLE_WORKPIECE_PROPERTIES)) {
             return "werkstuecke werkstuecke" + order + " ON prozesse.ProzesseID = werkstuecke" + order
-                    + ".ProzesseID LEFT JOIN werkstueckeeigenschaften " + getTableName() + " ON " + getTableName() + ".werkstueckeID = werkstuecke"
-                    + order + ".WerkstueckeID AND " + getTableName() + ".Titel =\"" + value.substring(value.indexOf(".") + 1) + "\"";
+                    + ".ProzesseID LEFT JOIN properties " + getTableName() + " ON " + getTableName() + ".object_id = werkstuecke"
+                    + order + ".WerkstueckeID AND " + getTableName() + "object_type = 'masterpiece' AND " + getTableName() + ".Titel =\""
+                    + value.substring(value.indexOf(".") + 1) + "\"";
         }
 
         return "";

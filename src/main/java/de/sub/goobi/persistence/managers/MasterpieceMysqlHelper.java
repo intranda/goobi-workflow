@@ -159,7 +159,7 @@ class MasterpieceMysqlHelper implements Serializable {
         List<Masterpieceproperty> templateProperties = object.getEigenschaften();
         for (Masterpieceproperty property : templateProperties) {
             property.setObjectId(object.getId());
-            property = PropertyManager.saveMasterpieceProperty(property);
+            PropertyManager.saveMasterpieceProperty(property);
         }
     }
 

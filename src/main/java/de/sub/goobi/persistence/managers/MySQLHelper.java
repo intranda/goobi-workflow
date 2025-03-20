@@ -39,7 +39,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.format.DateTimeFormat;
@@ -52,6 +51,7 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -227,7 +227,7 @@ public class MySQLHelper implements Serializable {
         return helper;
     }
 
-    public static ResultSetHandler<List<Integer>> resultSetToIntegerListHandler = new ResultSetHandler<List<Integer>>() {
+    public static ResultSetHandler<List<Integer>> resultSetToIntegerListHandler = new ResultSetHandler<>() {
         @Override
         public List<Integer> handle(ResultSet rs) throws SQLException {
             List<Integer> answer = new ArrayList<>();
@@ -254,7 +254,7 @@ public class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<List<String>> resultSetToStringListHandler = new ResultSetHandler<List<String>>() {
+    public static ResultSetHandler<List<String>> resultSetToStringListHandler = new ResultSetHandler<>() {
         @Override
         public List<String> handle(ResultSet rs) throws SQLException {
             List<String> answer = new ArrayList<>();
@@ -269,7 +269,7 @@ public class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<String> resultSetToStringHandler = new ResultSetHandler<String>() {
+    public static ResultSetHandler<String> resultSetToStringHandler = new ResultSetHandler<>() {
         @Override
         public String handle(ResultSet rs) throws SQLException {
             String answer = "";
@@ -284,7 +284,7 @@ public class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Integer> resultSetToIntegerHandler = new ResultSetHandler<Integer>() {
+    public static ResultSetHandler<Integer> resultSetToIntegerHandler = new ResultSetHandler<>() {
         @Override
         public Integer handle(ResultSet rs) throws SQLException {
             Integer answer = null;
@@ -303,7 +303,7 @@ public class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Boolean> resultSetToBooleanHandler = new ResultSetHandler<Boolean>() {
+    public static ResultSetHandler<Boolean> resultSetToBooleanHandler = new ResultSetHandler<>() {
         @Override
         public Boolean handle(ResultSet rs) throws SQLException {
             Boolean answer = null;
@@ -322,7 +322,7 @@ public class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Long> resultSetToLongHandler = new ResultSetHandler<Long>() {
+    public static ResultSetHandler<Long> resultSetToLongHandler = new ResultSetHandler<>() {
         @Override
         public Long handle(ResultSet rs) throws SQLException {
             Long answer = null;
@@ -340,7 +340,7 @@ public class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Double> resultSetToDoubleHandler = new ResultSetHandler<Double>() {
+    public static ResultSetHandler<Double> resultSetToDoubleHandler = new ResultSetHandler<>() {
         @Override
         public Double handle(ResultSet rs) throws SQLException {
             Double answer = null;
@@ -369,7 +369,7 @@ public class MySQLHelper implements Serializable {
         return inputString;
     }
 
-    public static ResultSetHandler<List<Map<String, String>>> resultSetToMapListHandler = new ResultSetHandler<List<Map<String, String>>>() {
+    public static ResultSetHandler<List<Map<String, String>>> resultSetToMapListHandler = new ResultSetHandler<>() {
 
         @Override
         public List<Map<String, String>> handle(ResultSet rs) throws SQLException {
@@ -385,7 +385,7 @@ public class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Map<String, String>> resultSetToMapHandler = new ResultSetHandler<Map<String, String>>() {
+    public static ResultSetHandler<Map<String, String>> resultSetToMapHandler = new ResultSetHandler<>() {
         @Override
         public Map<String, String> handle(ResultSet rs) throws SQLException {
             try {
@@ -399,8 +399,7 @@ public class MySQLHelper implements Serializable {
         }
     };
 
-
-    public final static ResultSetHandler<Map<String, Integer>> resultSetToIntMapHandler = new ResultSetHandler<Map<String, Integer>>() {
+    public final static ResultSetHandler<Map<String, Integer>> resultSetToIntMapHandler = new ResultSetHandler<>() {
         @Override
         public Map<String, Integer> handle(ResultSet rs) throws SQLException {
             Map<String, Integer> result = new HashMap<>();
@@ -416,8 +415,7 @@ public class MySQLHelper implements Serializable {
         }
     };
 
-
-    public static ResultSetHandler<List<Object[]>> resultSetToObjectListHandler = new ResultSetHandler<List<Object[]>>() {
+    public static ResultSetHandler<List<Object[]>> resultSetToObjectListHandler = new ResultSetHandler<>() {
 
         @Override
         public List<Object[]> handle(ResultSet rs) throws SQLException {
@@ -562,17 +560,18 @@ public class MySQLHelper implements Serializable {
             sql.append(fieldname);
             sql.append("' GROUP BY processid) AS field ON field.processid = prozesse.prozesseID ");
         } else if (order.startsWith("{process.")) {
-            sql.append("LEFT JOIN (SELECT prozesseID, MAX(WERT) AS value FROM prozesseeigenschaften WHERE prozesseeigenschaften.Titel = '");
+            sql.append(
+                    "LEFT JOIN (SELECT prozesseID, MAX(WERT) AS value FROM properties WHERE properties.object_type='process' AND properties.property_name = '");
             sql.append(fieldname);
             sql.append("' GROUP BY prozesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
         } else if (order.startsWith("{template.")) {
-            sql.append("LEFT JOIN (SELECT  ProzesseID, MAX(WERT) AS value FROM vorlageneigenschaften LEFT JOIN vorlagen ON ");
-            sql.append("vorlagen.VorlagenID = vorlageneigenschaften.VorlagenID WHERE titel = '");
+            sql.append("LEFT JOIN (SELECT  ProzesseID, MAX(WERT) AS value FROM properties LEFT JOIN vorlagen ON ");
+            sql.append("vorlagen.VorlagenID = properties.object_id AND properties.object_type='template'  WHERE property_name = '");
             sql.append(fieldname);
             sql.append("' GROUP BY ProzesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
         } else if (order.startsWith("{product.")) {
-            sql.append("LEFT JOIN (SELECT  ProzesseID, MAX(WERT) AS value FROM werkstueckeeigenschaften LEFT JOIN werkstuecke ON ");
-            sql.append("werkstuecke.werkstueckeID = werkstueckeeigenschaften.werkstueckeID WHERE titel = '");
+            sql.append("LEFT JOIN (SELECT  ProzesseID, MAX(WERT) AS value FROM properties LEFT JOIN werkstuecke ON ");
+            sql.append("werkstuecke.werkstueckeID = properties.object_id WHERE properties.object_type = 'masterpiece' AND property_name = '");
             sql.append(fieldname);
             sql.append("' GROUP BY ProzesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
         }

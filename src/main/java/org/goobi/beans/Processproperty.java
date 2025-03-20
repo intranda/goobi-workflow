@@ -36,8 +36,6 @@ public class Processproperty extends GoobiProperty implements Serializable, Comp
 
     @Setter
     private Process prozess;
-    @Setter
-    private int processId;
 
     public Processproperty() {
         super(PropertyOwnerType.PROCESS);
@@ -46,7 +44,7 @@ public class Processproperty extends GoobiProperty implements Serializable, Comp
 
     public Process getProzess() {
         if (prozess == null) {
-            prozess = ProcessManager.getProcessById(processId);
+            prozess = ProcessManager.getProcessById(objectId);
         }
         return this.prozess;
     }
@@ -56,10 +54,6 @@ public class Processproperty extends GoobiProperty implements Serializable, Comp
         return propertyName.toLowerCase().compareTo(o.getPropertyName().toLowerCase());
     }
 
-    public Integer getProcessId() {
-        return processId;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -67,7 +61,7 @@ public class Processproperty extends GoobiProperty implements Serializable, Comp
         result = prime * result + ((getContainer() == null) ? 0 : getContainer().hashCode());
         result = prime * result + ((creationDate == null) ? 0 : creationDate.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + processId;
+        result = prime * result + objectId;
         result = prime * result + ((propertyName == null) ? 0 : propertyName.hashCode());
         result = prime * result + ((propertyValue == null) ? 0 : propertyValue.hashCode());
         return result;
@@ -103,7 +97,7 @@ public class Processproperty extends GoobiProperty implements Serializable, Comp
             return false;
         }
 
-        if (processId != other.processId) {
+        if (objectId != other.objectId) {
             return false;
         }
         if (propertyName == null) {

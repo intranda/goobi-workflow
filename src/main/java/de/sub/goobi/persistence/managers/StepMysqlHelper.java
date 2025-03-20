@@ -392,12 +392,12 @@ class StepMysqlHelper implements Serializable {
             List<ErrorProperty> properties = new ArrayList<>();
             try {
                 while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
-                    int id = rs.getInt("schritteeigenschaftenID");
-                    String title = rs.getString("Titel");
-                    String value = rs.getString("Wert");
-                    Boolean mandatory = rs.getBoolean("IstObligatorisch");
-                    int type = rs.getInt("DatentypenID");
-                    Timestamp time = rs.getTimestamp("creationDate");
+                    int id = rs.getInt("id");
+                    String title = rs.getString("property_name");
+                    String value = rs.getString("property_value");
+                    Boolean mandatory = rs.getBoolean("required");
+                    int type = rs.getInt("datatype");
+                    Timestamp time = rs.getTimestamp("creation_date");
                     Date creationDate = null;
                     if (time != null) {
                         creationDate = new Date(time.getTime());
@@ -524,50 +524,14 @@ class StepMysqlHelper implements Serializable {
 
     private static void saveErrorProperty(ErrorProperty property) throws SQLException {
         if (property.getId() == null) {
-            String sql =
-                    "INSERT INTO schritteeigenschaften (Titel, WERT, IstObligatorisch, DatentypenID,  schritteID, creationDate, container) VALUES (?, ?, ?,  ?, ?, ?, ?)";
-            Object[] param = { property.getPropertyName(), property.getPropertyValue(), property.isRequired(), property.getType().getId(),
-                    property.getSchritt().getId(),
-                    property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
-            Connection connection = null;
-            try {
-                connection = MySQLHelper.getInstance().getConnection();
-                QueryRunner run = new QueryRunner();
-                if (log.isTraceEnabled()) {
-                    log.trace(sql + ", " + Arrays.toString(param));
-                }
-                Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
-                if (id != null) {
-                    property.setId(id);
-                }
-            } finally {
-                if (connection != null) {
-                    MySQLHelper.closeConnection(connection);
-                }
-            }
-
+            PropertyMysqlHelper.insertProperty(property);
         } else {
-            String sql =
-                    "UPDATE schritteeigenschaften set Titel = ?,  WERT = ?, IstObligatorisch = ?, DatentypenID = ?,  schritteID = ?, creationDate = ?, container = ? WHERE schritteeigenschaftenID = "
-                            + property.getId();
-            Object[] param = { property.getPropertyName(), property.getPropertyValue(), property.isRequired(), property.getType().getId(),
-                    property.getSchritt().getId(),
-                    property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
-            Connection connection = null;
-            try {
-                connection = MySQLHelper.getInstance().getConnection();
-                QueryRunner run = new QueryRunner();
-                run.update(connection, sql, param);
-            } finally {
-                if (connection != null) {
-                    MySQLHelper.closeConnection(connection);
-                }
-            }
+            PropertyMysqlHelper.updateProperty(property);
         }
     }
 
     private static List<ErrorProperty> getErrorPropertiesForStep(int stepId) throws SQLException {
-        String sql = "SELECT * FROM schritteeigenschaften WHERE schritteID = " + stepId;
+        String sql = "SELECT * FROM properties WHERE object_type = 'error' AND object_id = " + stepId;
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -581,17 +545,7 @@ class StepMysqlHelper implements Serializable {
     }
 
     private static void deleteErrorProperty(ErrorProperty property) throws SQLException {
-        String sql = "DELETE FROM schritteeigenschaften WHERE schritteeigenschaftenID = " + property.getId();
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner run = new QueryRunner();
-            run.update(connection, sql);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
+        PropertyMysqlHelper.deleteProperty(property);
     }
 
     private static void insertStep(Step o) throws SQLException {
@@ -1358,7 +1312,7 @@ class StepMysqlHelper implements Serializable {
         }
 
         // delete error properties
-        String deleteProperties = "DELETE FROM schritteeigenschaften WHERE schritteID in (" + ids.toString() + ")";
+        String deleteProperties = "DELETE FROM properties WHERE object_type = 'error' AND object_id in (" + ids.toString() + ")";
         // delete assigned users
         String deleteUserAssignment = "DELETE FROM schritteberechtigtebenutzer WHERE schritteID in (" + ids.toString() + ")";
         // delete assigned user groups

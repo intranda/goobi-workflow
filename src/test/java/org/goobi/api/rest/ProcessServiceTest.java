@@ -151,7 +151,7 @@ public class ProcessServiceTest extends AbstractTest {
 
         Processproperty property = new Processproperty();
         property.setProzess(process);
-        property.setProcessId(1);
+        property.setObjectId(1);
         property.setCreationDate(new Date());
         property.setPropertyName("title");
         property.setPropertyValue("value");

@@ -130,7 +130,7 @@ public class ProcesspropertyTest extends AbstractTest {
         property1.setContainer("1");
         property1.setCreationDate(new Date());
         property1.setType(PropertyType.BOOLEAN);
-        property1.setProcessId(1);
+        property1.setObjectId(1);
         property1.setPropertyName("Title");
         property1.setPropertyValue("Value");
         Processproperty property2 = new Processproperty();
@@ -142,7 +142,7 @@ public class ProcesspropertyTest extends AbstractTest {
         Processproperty property5 = new Processproperty();
         property5.setType(PropertyType.NUMBER);
         Processproperty property6 = new Processproperty();
-        property6.setProcessId(2);
+        property6.setObjectId(2);
         Processproperty property7 = new Processproperty();
         property7.setPropertyName("Title 2");
         Processproperty property8 = new Processproperty();

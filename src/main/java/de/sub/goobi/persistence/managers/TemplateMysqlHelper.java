@@ -55,7 +55,7 @@ class TemplateMysqlHelper implements Serializable {
 
     }
 
-    public static final ResultSetHandler<List<Template>> resultSetToTemplateListHandler = new ResultSetHandler<List<Template>>() {
+    public static final ResultSetHandler<List<Template>> resultSetToTemplateListHandler = new ResultSetHandler<>() {
         @Override
         public List<Template> handle(ResultSet rs) throws SQLException {
             List<Template> answer = new ArrayList<>();
@@ -79,7 +79,7 @@ class TemplateMysqlHelper implements Serializable {
         }
     };
 
-    public static final ResultSetHandler<Template> resultSetToTemplateHandler = new ResultSetHandler<Template>() {
+    public static final ResultSetHandler<Template> resultSetToTemplateHandler = new ResultSetHandler<>() {
         @Override
         public Template handle(ResultSet rs) throws SQLException {
             try {
@@ -161,8 +161,8 @@ class TemplateMysqlHelper implements Serializable {
 
         List<Templateproperty> templateProperties = template.getEigenschaften();
         for (Templateproperty property : templateProperties) {
-            property.setTemplateId(template.getId());
-            property = PropertyManager.saveTemplateProperty(property);
+            property.setObjectId(template.getId());
+            PropertyManager.saveTemplateProperty(property);
         }
     }
 

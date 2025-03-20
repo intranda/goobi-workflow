@@ -117,7 +117,7 @@ public class ImageCommentPropertyHelper {
 
         // no such property exists, create a new one
         Processproperty property = new Processproperty();
-        property.setProcessId(process.getId());
+        property.setObjectId(process.getId());
         property.setPropertyName(propertyTitle);
         return property;
     }

@@ -111,7 +111,7 @@ public class SearchRequest {
             b.append(", projekte.Titel ");
         }
         if (this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) {
-            b.append(", prozesseeigenschaften.Titel, prozesseeigenschaften.WERT ");
+            b.append(", properties.property_name, properties.property_value ");
         }
     }
 
@@ -122,7 +122,7 @@ public class SearchRequest {
             b.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
         }
         if (this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) {
-            b.append("LEFT JOIN prozesseeigenschaften ON prozesse.prozesseID = prozesseeigenschaften.prozesseID ");
+            b.append("LEFT JOIN properties ON prozesse.prozesseID = properties.object_id and object_type = 'process' ");
         }
         if (this.stepName != null && !this.stepName.isEmpty()) {
             b.append("LEFT JOIN schritte ON prozesse.prozesseID = schritte.ProzesseID ");
@@ -167,7 +167,7 @@ public class SearchRequest {
                 b.append("AND ");
             }
             firstWhere = false;
-            b.append("prozesseeigenschaften.Titel=\"templateID\" AND prozesseeigenschaften.WERT IN (");
+            b.append("properties.property_name=\"templateID\" AND properties.property_value IN (");
             for (int i = 0; i < this.filterTemplateIDs.size(); i++) {
                 b.append("?");
                 if (i + 1 < this.filterTemplateIDs.size()) {
@@ -182,7 +182,7 @@ public class SearchRequest {
                 b.append("AND ");
             }
             firstWhere = false;
-            b.append("prozesseeigenschaften.Titel IN (?) AND prozesseeigenschaften.WERT IN (?) ");
+            b.append("properties.property_name IN (?) AND properties.property_value IN (?) ");
         }
         if (this.stepName != null && this.stepStatus != null) {
 
@@ -275,7 +275,7 @@ public class SearchRequest {
             b.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
         }
         if ((this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) || (this.propName != null && !this.propName.isEmpty())) {
-            b.append("LEFT JOIN prozesseeigenschaften ON prozesse.prozesseID = prozesseeigenschaften.prozesseID ");
+            b.append("LEFT JOIN properties ON prozesse.prozesseID = properties.object_id AND properties.object_type = 'process'");
         }
         if (this.stepName != null && !this.stepName.isEmpty()) {
             b.append("LEFT JOIN schritte ON prozesse.prozesseID = schritte.ProzesseID ");

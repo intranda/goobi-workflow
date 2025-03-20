@@ -109,14 +109,12 @@ public class PropertyManager implements Serializable {
         return propertyList;
     }
 
-    public static Templateproperty saveTemplateProperty(Templateproperty property) {
+    public static void saveTemplateProperty(Templateproperty property) {
         try {
-            property = PropertyMysqlHelper.saveTemplateproperty(property);
-            return property;
+            PropertyMysqlHelper.saveTemplateproperty(property);
         } catch (SQLException e) {
             log.error(e);
         }
-        return null;
     }
 
     public static void deleteTemplateProperty(Templateproperty property) {
@@ -137,14 +135,12 @@ public class PropertyManager implements Serializable {
         return propertyList;
     }
 
-    public static Masterpieceproperty saveMasterpieceProperty(Masterpieceproperty property) {
+    public static void saveMasterpieceProperty(Masterpieceproperty property) {
         try {
-            property = PropertyMysqlHelper.saveMasterpieceProperty(property);
-            return property;
+            PropertyMysqlHelper.saveMasterpieceProperty(property);
         } catch (SQLException e) {
             log.error(e);
         }
-        return null;
     }
 
     public static void deleteMasterpieceProperty(Masterpieceproperty property) {
