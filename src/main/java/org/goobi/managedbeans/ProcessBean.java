@@ -2770,4 +2770,5 @@ public class ProcessBean extends BasicBean implements Serializable {
             myNewProcessTitle = myProzess.getTitel();
         }
     }
+
 }

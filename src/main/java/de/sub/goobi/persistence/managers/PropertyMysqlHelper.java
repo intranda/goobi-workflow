@@ -30,6 +30,7 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Templateproperty;
@@ -47,7 +48,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { processId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql, resultSetToPropertyListHandler, param);
+            return new QueryRunner().query(connection, sql, resultSetToProcessPropertyListHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -60,7 +61,7 @@ class PropertyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql, resultSetToPropertyHandler, propertyId);
+            return new QueryRunner().query(connection, sql, resultSetToProcessPropertyHandler, propertyId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -69,7 +70,36 @@ class PropertyMysqlHelper implements Serializable {
 
     }
 
-    private static final ResultSetHandler<Processproperty> resultSetToPropertyHandler = new ResultSetHandler<>() {
+    private static final ResultSetHandler<GoobiProperty> resultSetToPropertyHandler = new ResultSetHandler<>() {
+        @Override
+        public GoobiProperty handle(ResultSet resultSet) throws SQLException {
+            try {
+                if (resultSet.next()) {
+                    return PropertyMysqlHelper.parseProperty(resultSet);
+                }
+            } finally {
+                resultSet.close();
+            }
+            return null;
+        }
+    };
+
+    public static final ResultSetHandler<List<GoobiProperty>> resultSetToPropertyListHandler = new ResultSetHandler<>() {
+        @Override
+        public List<GoobiProperty> handle(ResultSet resultSet) throws SQLException {
+            List<GoobiProperty> properties = new ArrayList<>();
+            try {
+                while (resultSet.next()) {
+                    properties.add(PropertyMysqlHelper.parseProperty(resultSet));
+                }
+            } finally {
+                resultSet.close();
+            }
+            return properties;
+        }
+    };
+
+    private static final ResultSetHandler<Processproperty> resultSetToProcessPropertyHandler = new ResultSetHandler<>() {
         @Override
         public Processproperty handle(ResultSet resultSet) throws SQLException {
             try {
@@ -83,7 +113,7 @@ class PropertyMysqlHelper implements Serializable {
         }
     };
 
-    public static final ResultSetHandler<List<Processproperty>> resultSetToPropertyListHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<List<Processproperty>> resultSetToProcessPropertyListHandler = new ResultSetHandler<>() {
         @Override
         public List<Processproperty> handle(ResultSet resultSet) throws SQLException {
             List<Processproperty> properties = new ArrayList<>();
@@ -132,6 +162,25 @@ class PropertyMysqlHelper implements Serializable {
 
     private static Processproperty parseProcessProperty(ResultSet result) throws SQLException {
         Processproperty property = new Processproperty();
+        property.setId(result.getInt("id"));
+        property.setPropertyName(result.getString("property_name"));
+        property.setPropertyValue(result.getString("property_value"));
+        property.setRequired(result.getBoolean("required"));
+        property.setType(PropertyType.getById(result.getInt("datatype")));
+        property.setObjectId(result.getInt("object_id"));
+        Timestamp time = result.getTimestamp("creation_date");
+        Date creationDate = null;
+        if (time != null) {
+            creationDate = new Date(time.getTime());
+        }
+        property.setCreationDate(creationDate);
+        property.setContainer(result.getString("container"));
+        return property;
+    }
+
+    private static GoobiProperty parseProperty(ResultSet result) throws SQLException {
+        PropertyOwnerType pot = PropertyOwnerType.getByTitle(result.getString("object_type"));
+        GoobiProperty property = new GoobiProperty(pot);
         property.setId(result.getInt("id"));
         property.setPropertyName(result.getString("property_name"));
         property.setPropertyValue(result.getString("property_value"));
@@ -267,51 +316,16 @@ class PropertyMysqlHelper implements Serializable {
     }
 
     public static List<String> getDistinctPropertyTitles() throws SQLException {
-        String sql = "select distinct property_name from properties where object_type = 'process' order by property_name";
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            if (log.isTraceEnabled()) {
-                log.trace(sql);
-            }
-            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
+        return getPropertyTitles(PropertyOwnerType.PROCESS);
     }
 
     public static List<String> getDistinctTemplatePropertyTitles() throws SQLException {
-        String sql = "select distinct property_name from properties where object_type = 'template' order by property_name";
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            if (log.isTraceEnabled()) {
-                log.trace(sql);
-            }
-            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
+        return getPropertyTitles(PropertyOwnerType.TEMPLATE);
+
     }
 
     public static List<String> getDistinctMasterpiecePropertyTitles() throws SQLException {
-        String sql = "select distinct property_name from properties where object_type = 'masterpiece' order by property_name";
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            if (log.isTraceEnabled()) {
-                log.trace(sql);
-            }
-            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
+        return getPropertyTitles(PropertyOwnerType.MASTERPIECE);
     }
 
     public static List<Templateproperty> getTemplateProperties(int templateId) throws SQLException {
@@ -379,15 +393,66 @@ class PropertyMysqlHelper implements Serializable {
         }
     }
 
-    private static void updateMasterpieceproperty(Masterpieceproperty property) throws SQLException {
+    static void updateMasterpieceproperty(Masterpieceproperty property) throws SQLException {
         updateProperty(property);
     }
 
-    private static void insertMasterpieceproperty(Masterpieceproperty property) throws SQLException {
+    static void insertMasterpieceproperty(Masterpieceproperty property) throws SQLException {
         insertProperty(property);
     }
 
-    public static void deleteMasterpieceProperty(Masterpieceproperty property) throws SQLException {
+    static void deleteMasterpieceProperty(Masterpieceproperty property) throws SQLException {
         deleteProperty(property);
+    }
+
+    static void saveProperty(GoobiProperty property) throws SQLException {
+        if (property.getId() == null) {
+            insertProperty(property);
+        } else {
+            updateProperty(property);
+        }
+
+    }
+
+    public static List<String> getPropertyTitles(PropertyOwnerType propertyType) throws SQLException {
+        String sql = "select distinct property_name from properties where object_type = ? order by property_name";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql);
+            }
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler, propertyType.getTitle());
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static GoobiProperty getPropertyById(int propertyId) throws SQLException {
+        String sql = "SELECT * FROM properties WHERE id = ?";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, resultSetToPropertyHandler, propertyId);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static List<GoobiProperty> getPropertiesForObject(int objectId, PropertyOwnerType propertyType) throws SQLException {
+        String sql = "SELECT * FROM properties WHERE object_id = ? and object_type = ? ORDER BY container, property_name, creation_date desc";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, resultSetToPropertyListHandler, objectId, propertyType.getTitle());
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
     }
 }

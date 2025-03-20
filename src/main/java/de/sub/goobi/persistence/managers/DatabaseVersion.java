@@ -526,7 +526,7 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Processproperty> properties = new QueryRunner().query(connection, sql, PropertyMysqlHelper.resultSetToPropertyListHandler);
+            List<Processproperty> properties = new QueryRunner().query(connection, sql, PropertyMysqlHelper.resultSetToProcessPropertyListHandler);
             performNewImageCommentsPropertySQLInsertStatements(properties);
             removeLegacyImageComments();
         } finally {

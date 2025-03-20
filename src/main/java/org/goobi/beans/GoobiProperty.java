@@ -1,3 +1,22 @@
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ */
+
 package org.goobi.beans;
 
 import java.io.Serializable;
@@ -18,7 +37,7 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 
-public abstract class GoobiProperty implements IGoobiProperty, Serializable {
+public class GoobiProperty implements IGoobiProperty, Serializable {
 
     private static final long serialVersionUID = -947157110530797855L;
 
@@ -51,7 +70,8 @@ public abstract class GoobiProperty implements IGoobiProperty, Serializable {
         TEMPLATE("template"),
         MASTERPIECE("masterpiece"),
         USER("user"),
-        ERROR("error");
+        ERROR("error"),
+        PROJECT("project");
 
         @Getter
         private String title;
@@ -86,14 +106,17 @@ public abstract class GoobiProperty implements IGoobiProperty, Serializable {
         container = order;
     }
 
+    @Override
     public String getNormalizedTitle() {
         return propertyName.replace(" ", "_").trim();
     }
 
+    @Override
     public String getNormalizedValue() {
         return propertyValue.replace(" ", "_").trim();
     }
 
+    @Override
     public String getNormalizedDate() {
         return Helper.getDateAsFormattedString(creationDate);
     }
@@ -110,6 +133,7 @@ public abstract class GoobiProperty implements IGoobiProperty, Serializable {
      * 
      * @param inType as {@link PropertyType}
      */
+    @Override
     public void setType(PropertyType inType) {
         dataType = inType.getId();
     }
@@ -119,6 +143,7 @@ public abstract class GoobiProperty implements IGoobiProperty, Serializable {
      * 
      * @return current datentyp
      */
+    @Override
     public PropertyType getType() {
         if (dataType == null) {
             dataType = PropertyType.STRING.getId();
@@ -128,21 +153,25 @@ public abstract class GoobiProperty implements IGoobiProperty, Serializable {
 
     // legacy methods, kept for plugin compatibility
 
+    @Override
     @Deprecated
     public void setTitel(String name) {
         setPropertyName(name);
     }
 
+    @Override
     @Deprecated
     public String getTitel() {
         return getPropertyName();
     }
 
+    @Override
     @Deprecated
     public void setWert(String value) {
         setPropertyValue(value);
     }
 
+    @Override
     @Deprecated
     public String getWert() {
         return getPropertyValue();

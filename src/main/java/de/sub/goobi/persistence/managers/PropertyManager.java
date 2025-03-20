@@ -24,6 +24,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Templateproperty;
@@ -151,4 +153,48 @@ public class PropertyManager implements Serializable {
         }
     }
 
+    public static List<GoobiProperty> getPropertiesForObject(int objectId, PropertyOwnerType propertyType) {
+        List<GoobiProperty> propertyList = new ArrayList<>();
+        try {
+            propertyList = PropertyMysqlHelper.getPropertiesForObject(objectId, propertyType);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return propertyList;
+    }
+
+    public static GoobiProperty getPropertById(int propertyId) {
+        try {
+            return PropertyMysqlHelper.getPropertyById(propertyId);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    public static void saveProperty(GoobiProperty pe) {
+        try {
+            PropertyMysqlHelper.saveProperty(pe);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
+    public static void deleteProperty(GoobiProperty pe) {
+        try {
+            PropertyMysqlHelper.deleteProperty(pe);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
+    public static List<String> getPropertyTitles(PropertyOwnerType propertyType) {
+        List<String> titleList = new ArrayList<>();
+        try {
+            titleList = PropertyMysqlHelper.getPropertyTitles(propertyType);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return titleList;
+    }
 }

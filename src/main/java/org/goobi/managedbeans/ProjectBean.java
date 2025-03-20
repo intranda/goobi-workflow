@@ -43,6 +43,8 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
@@ -74,6 +76,7 @@ import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.PropertyManager;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
 import jakarta.inject.Named;
@@ -125,6 +128,10 @@ public class ProjectBean extends BasicBean implements Serializable {
     private String newProjectTitle;
 
     private static final String EMPTY_STRING = "";
+
+    @Getter
+    @Setter
+    private GoobiProperty currentProperty;
 
     /**
      * this method deletes filegroups by their id's in the list
@@ -861,4 +868,25 @@ public class ProjectBean extends BasicBean implements Serializable {
         return institutions;
     }
 
+    // properties
+
+    public String deleteProperty() {
+
+        myProjekt.getProperties().remove(currentProperty);
+        PropertyManager.deleteProperty(currentProperty);
+        return "";
+    }
+
+    public String newProperty() {
+        currentProperty = new GoobiProperty(PropertyOwnerType.PROJECT);
+        return "";
+    }
+
+    public String saveProperty() {
+        if (!myProjekt.getProperties().contains(currentProperty)) {
+            myProjekt.getProperties().add(currentProperty);
+        }
+        PropertyManager.saveProperty(currentProperty);
+        return "";
+    }
 }

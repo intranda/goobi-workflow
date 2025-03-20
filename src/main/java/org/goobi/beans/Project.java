@@ -170,6 +170,10 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
     @Setter
     private String dfgViewerUrl = "";
 
+    @Getter
+    @Setter
+    private List<GoobiProperty> properties;
+
     @Override
     public void lazyLoad() {
 
@@ -184,6 +188,7 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         this.dmsImportCreateProcessFolder = false;
         this.fileFormatInternal = "Mets";
         this.fileFormatDmsExport = "Mets";
+        properties = new ArrayList<>();
     }
 
     /**
