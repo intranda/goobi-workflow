@@ -879,6 +879,7 @@ public class ProjectBean extends BasicBean implements Serializable {
 
     public String newProperty() {
         currentProperty = new GoobiProperty(PropertyOwnerType.PROJECT);
+        currentProperty.setOwner(myProjekt);
         return "";
     }
 
@@ -886,6 +887,8 @@ public class ProjectBean extends BasicBean implements Serializable {
         if (!myProjekt.getProperties().contains(currentProperty)) {
             myProjekt.getProperties().add(currentProperty);
         }
+
+        PropertyManager.saveProperty(currentProperty);
         return "";
     }
 }
