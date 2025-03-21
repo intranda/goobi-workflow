@@ -211,7 +211,9 @@
                     <button
                         jsf:id="adapt_display_folders"
                         data-toggle="tooltip"
-                        jsf:rendered="#{cc.attrs.showFolderSelection=!'false'}"
+                        jsf:rendered="#{cc.attrs.showFolderSelection=!'false'
+                            and view.viewId != '/uii/user_edit.xhtml'
+                            and view.viewId != '/uii/project_edit.xhtml'}"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         class="btn d-flex align-items-center btn--title-action-neutral">
