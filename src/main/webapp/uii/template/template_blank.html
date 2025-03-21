@@ -1,131 +1,38 @@
 <!DOCTYPE html>
-<html lang="#{SpracheForm.locale}" xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:c="http://java.sun.com/jstl/core"  xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
-<h:head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Apple devices fullscreen -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <!-- Apple devices fullscreen -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<html
+    lang="#{SpracheForm.locale}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    >
 
-    <meta name="description" content="Goobi workflow" />
-    <meta name="author" content="intranda GmbH" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="Content-Script-Type" content="type" />
-    <meta http-equiv="pragma" content="no-cache" />
-    <meta http-equiv="cache-control" content="no-cache" />
-    <meta name="date" content="1970-01-01T00:00:00+01:00" />
-    <meta name="application" content="#{HelperForm.applicationHeaderTitle}" />
-    <meta name="version" content="#{HelperForm.version}" />
-    <meta name="build date" content="#{HelperForm.buildDate}" />
-    <meta name="git-revision" content="#{HelperForm.revision}" />
-    <title><h:outputText value="#{HelperForm.applicationHeaderTitle}" /></title>
+    <h:head>
+        <!-- METADATA -->
+        <ui:include src="/WEB-INF/includes/template/inc_metadata.xhtml" />
+        <!-- CSS -->
+        <ui:include src="/WEB-INF/includes/template/inc_CSS.xhtml" />
+        <!-- Additional CSS for specific views -->
+        <ui:insert name="css" />
+        <!-- Javascript -->
+        <ui:include src="/WEB-INF/includes/template/inc_JS.xhtml" />
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="template/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="template/css/bootstrap-slider.css" />
-    <!-- Theme CSS -->
-    <link rel="stylesheet" href="template/css/style.css?version=1" />
-    <!-- Color CSS -->
-    <link rel="stylesheet" href="template/css/themes.css" />
-    <!-- Font Awesome CSS -->
-    <link rel="stylesheet" href="template/css/font-awesome.css" />
-    <!-- intranda -->
-    <link rel="stylesheet" href="template/css/intranda.css?version=2" />
-    <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css" />
-    <script src="template/js/intranda.js?version=2"></script>
-    <!-- jQuery -->
-    <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
-    <!-- Mobile nav swipe -->
-    <script src="template/js/plugins/touchwipe/touchwipe.min.js"></script>
-    <!-- Nice Scroll -->
-    <script src="template/js/plugins/nicescroll/jquery.nicescroll.min.js"></script>
-    <!-- imagesLoaded -->
-    <script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js"></script>
-    <!-- jQuery UI -->
-    <script src="template/js/plugins/jquery-ui/jquery-ui.js"></script>
-    <!-- slimScroll -->
-    <script src="template/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="template/js/bootstrap.min.js"></script>
-    <script src="template/js/bootstrap-slider.js"></script>
-    <!-- Bootbox -->
-    <script src="template/js/plugins/bootbox/jquery.bootbox.js"></script>
-    <!-- Bootbox -->
-    <script src="template/js/plugins/form/jquery.form.min.js"></script>
-    <!-- Validation -->
-    <script src="template/js/plugins/validation/jquery.validate.min.js"></script>
-    <script src="template/js/plugins/validation/additional-methods.min.js"></script>
+    </h:head>
 
-	<!-- shortcuts -->
-	<script src="template/js/jquery.hotkeys.js"></script>
+    <ui:insert name="metadata" />
 
-    <!-- Theme framework -->
-    <!-- <script src="template/js/eakroko.js"></script> -->
-    <!-- Theme scripts -->
-    <script src="template/js/application.js?version=1"></script>
+    <h:body>
+        <f:view locale="#{SpracheForm.locale}">
 
-    <!--[if lte IE 9]>
-	<script src="template/js/plugins/placeholder/jquery.placeholder.min.js"></script>
-		<script>
-			$(document).ready(function() {
-				$('input, textarea').placeholder();
-			});
-		</script>
-	<![endif]-->
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="template/img/favicon.ico" />
-    <!-- Apple devices Homescreen icon -->
-    <link rel="apple-touch-icon-precomposed" href="template/img/apple-touch-icon.png" />
-	<ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
-		<link rel="stylesheet" href="template/css/accessibility.css" />
-	</ui:fragment>
-</h:head>
+            <div id="ajaxloader" class='' style="display: none;">
+                <img src="template/img/goobi/ajaxloader2.gif" />
+            </div>
 
-<ui:insert name="metadata" />
+            <ui:insert name="content" />
 
-<h:body>
-    <f:view locale="#{SpracheForm.locale}">
-
-	    <div id="ajaxloader" class='' style="display: none;">
-	        <img src="template/img/goobi/ajaxloader2.gif" />
-	    </div>
-
-		<ui:insert name="content" />
-		
-		<style>
-			<h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false"/>
-        </style>
-    </f:view>
-</h:body>
-<script>
-    
-//     jsf.ajax.addOnEvent(function(data) {
-//         var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
-//         var ajaxloader = document.getElementById("ajaxloader");
-
-//         switch (ajaxstatus) {
-//             case "begin": // This is called right before ajax request is been sent.
-//                 ajaxloader.style.display = 'block';
-//                 break;
-
-//             case "complete": // This is called right after ajax response is received.
-//                 ajaxloader.style.display = 'none';
-//                 break;
-
-//             case "success": // This is called when ajax response is successfully processed.
-//                 // NOOP.
-// 				$(function () {
-// 					  $('[data-toggle="tooltip"]').tooltip();
-// 					  $('[data-toggle="popover"]').popover();
-// 					  if ($('.popover.fade.right.in').length > 0) {
-//                           $('.popover.fade.right.in').remove();
-//                       }
-// 				})
-// 				loadImages();
-//                 break;
-//         }
-//     });
-
-</script>
+            <style>
+                <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false"/>
+            </style>
+        </f:view>
+    </h:body>
 </html>
