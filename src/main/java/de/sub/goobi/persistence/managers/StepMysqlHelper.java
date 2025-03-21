@@ -35,6 +35,8 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mq.QueueType;
 import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -375,10 +377,10 @@ class StepMysqlHelper implements Serializable {
         s.setHttpEscapeBodyJson(rs.getBoolean("httpEscapeBodyJson"));
         s.setMessageQueue(QueueType.getByName(rs.getString("messageQueue")));
         // load error properties
-        List<ErrorProperty> stepList = getErrorPropertiesForStep(s.getId());
+        List<GoobiProperty> stepList = getErrorPropertiesForStep(s.getId());
         if (!stepList.isEmpty()) {
-            for (ErrorProperty property : stepList) {
-                property.setSchritt(s);
+            for (GoobiProperty property : stepList) {
+                property.setOwner(s);
             }
             s.setEigenschaften(stepList);
         }
@@ -451,8 +453,8 @@ class StepMysqlHelper implements Serializable {
 
     public static void deleteStep(Step o) throws SQLException {
         if (o.getId() != null) {
-            for (ErrorProperty property : o.getEigenschaften()) {
-                deleteErrorProperty(property);
+            for (GoobiProperty property : o.getEigenschaften()) {
+                PropertyMysqlHelper.deleteProperty(property);
             }
 
             String schritteberechtigtebenutzer = "DELETE FROM schritteberechtigtebenutzer WHERE schritteID = ?";
@@ -508,8 +510,8 @@ class StepMysqlHelper implements Serializable {
         }
 
         if (o.getEigenschaftenSize() > 0) {
-            for (ErrorProperty property : o.getEigenschaften()) {
-                saveErrorProperty(property);
+            for (GoobiProperty property : o.getEigenschaften()) {
+                PropertyMysqlHelper.saveProperty(property);
             }
         }
 
@@ -530,18 +532,8 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
-    private static List<ErrorProperty> getErrorPropertiesForStep(int stepId) throws SQLException {
-        String sql = "SELECT * FROM properties WHERE object_type = 'error' AND object_id = " + stepId;
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner run = new QueryRunner();
-            return run.query(connection, sql, resultSetToErrorPropertyListHandler);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
+    private static List<GoobiProperty> getErrorPropertiesForStep(int stepId) throws SQLException {
+        return PropertyMysqlHelper.getPropertiesForObject(stepId, PropertyOwnerType.ERROR);
     }
 
     private static void deleteErrorProperty(ErrorProperty property) throws SQLException {

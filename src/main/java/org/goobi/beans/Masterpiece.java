@@ -35,12 +35,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Masterpiece implements Serializable {
+public class Masterpiece implements Serializable, IPropertyHolder {
     private static final long serialVersionUID = 123266825187246791L;
     private Integer id;
     private Process prozess;
     private Integer processId;
-    private List<Masterpieceproperty> eigenschaften;
+    private List<GoobiProperty> eigenschaften;
     private boolean panelAusgeklappt = true;
 
     public Masterpiece() {
@@ -70,7 +70,7 @@ public class Masterpiece implements Serializable {
 
     }
 
-    public List<Masterpieceproperty> getEigenschaftenList() {
+    public List<GoobiProperty> getEigenschaftenList() {
 
         return getEigenschaften();
     }
@@ -105,4 +105,13 @@ public class Masterpiece implements Serializable {
         return true;
     }
 
+    @Override
+    public List<GoobiProperty> getProperties() {
+        return getEigenschaften();
+    }
+
+    @Override
+    public void setProperties(List<GoobiProperty> properties) {
+        setEigenschaften(properties);
+    }
 }

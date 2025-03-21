@@ -29,7 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.DisplayProperty;
 
 import lombok.Getter;
 
@@ -38,7 +38,7 @@ public class PropertyListObject implements Serializable {
     private static final long serialVersionUID = 1119130003588038047L;
 
     @Getter
-    private List<ProcessProperty> propertyList = new ArrayList<>();
+    private List<DisplayProperty> propertyList = new ArrayList<>();
 
     @Getter
     private String containerNumber = "0";
@@ -50,7 +50,7 @@ public class PropertyListObject implements Serializable {
         this.containerNumber = container;
     }
 
-    public void addToList(ProcessProperty pp) {
+    public void addToList(DisplayProperty pp) {
         this.propertyList.add(pp);
     }
 

@@ -56,7 +56,7 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class Step implements Serializable, DatabaseObject, Comparable<Step> {
+public class Step implements Serializable, DatabaseObject, Comparable<Step>, IPropertyHolder {
     private static final long serialVersionUID = 6831844584239811846L;
 
     @Getter
@@ -206,7 +206,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private Integer processId;
 
     @Setter
-    private List<ErrorProperty> eigenschaften;
+    private List<GoobiProperty> eigenschaften;
     @Setter
     private List<User> benutzer;
     @Setter
@@ -413,7 +413,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         return this.titel.replace(" ", "_");
     }
 
-    public List<ErrorProperty> getEigenschaften() {
+    public List<GoobiProperty> getEigenschaften() {
         if (this.eigenschaften == null) {
             this.eigenschaften = new ArrayList<>();
         }
@@ -442,7 +442,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         return getEigenschaften().size();
     }
 
-    public List<ErrorProperty> getEigenschaftenList() {
+    public List<GoobiProperty> getEigenschaftenList() {
 
         return getEigenschaften();
     }
@@ -717,5 +717,15 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
                 || typScriptStep || StringUtils.isNotEmpty(typModulName) || StringUtils.isNotEmpty(stepPlugin) || typAutomaticThumbnail
                 || StringUtils.isNotEmpty(validationPlugin) || delayStep || batchStep || updateMetadataIndex || generateDocket || httpStep
                 || messageQueue != QueueType.NONE;
+    }
+
+    @Override
+    public List<GoobiProperty> getProperties() {
+        return getEigenschaften();
+    }
+
+    @Override
+    public void setProperties(List<GoobiProperty> properties) {
+        setEigenschaften(properties);
     }
 }

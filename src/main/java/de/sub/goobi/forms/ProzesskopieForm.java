@@ -53,18 +53,17 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.StringPair;
@@ -74,7 +73,7 @@ import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.goobi.production.plugin.interfaces.IOpacPluginVersion2;
 import org.goobi.production.properties.AccessCondition;
-import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
 import org.jdom2.Document;
@@ -250,7 +249,7 @@ public class ProzesskopieForm implements Serializable {
 
     private List<Project> availableProjects = new ArrayList<>();
 
-    private List<ProcessProperty> configuredProperties;
+    private List<DisplayProperty> configuredProperties;
 
     @Getter
     private Process existingProcess;
@@ -741,7 +740,7 @@ public class ProzesskopieForm implements Serializable {
     }
 
     private void fillTemplateFromProperties(Process tempProcess) {
-        for (Processproperty pe : tempProcess.getEigenschaften()) {
+        for (GoobiProperty pe : tempProcess.getEigenschaften()) {
             for (AdditionalField field : this.additionalFields) {
                 if (field.getTitel().equals(pe.getPropertyName())) {
                     setFieldValue(field, pe.getPropertyValue());
@@ -756,7 +755,7 @@ public class ProzesskopieForm implements Serializable {
     private void fillTemplateFromTemplate(Process tempProcess) {
         /* erste Vorlage durchlaufen */
         Template vor = tempProcess.getVorlagenList().get(0);
-        for (Templateproperty eig : vor.getEigenschaften()) {
+        for (GoobiProperty eig : vor.getEigenschaften()) {
             for (AdditionalField field : this.additionalFields) {
                 if (field.getTitel().equals(eig.getPropertyName())) {
                     setFieldValue(field, eig.getPropertyValue());
@@ -767,7 +766,7 @@ public class ProzesskopieForm implements Serializable {
 
     private void fillTemplateFromMasterpiece(Process tempProcess) {
         Masterpiece werk = tempProcess.getWerkstueckeList().get(0);
-        for (Masterpieceproperty eig : werk.getEigenschaften()) {
+        for (GoobiProperty eig : werk.getEigenschaften()) {
             for (AdditionalField field : this.additionalFields) {
                 if (field.getTitel().equals(eig.getPropertyName())) {
                     setFieldValue(field, eig.getPropertyValue());
@@ -863,7 +862,7 @@ public class ProzesskopieForm implements Serializable {
 
         // property validation
 
-        for (ProcessProperty pt : configuredProperties) {
+        for (DisplayProperty pt : configuredProperties) {
             if (!pt.isValid()
                     || (AccessCondition.WRITEREQUIRED.equals(pt.getShowProcessGroupAccessCondition())
                             && StringUtils.isBlank(pt.getValue()))) {
@@ -977,7 +976,7 @@ public class ProzesskopieForm implements Serializable {
 
         this.prozessKopie.setSortHelperImages(this.guessedImages);
 
-        for (ProcessProperty pt : configuredProperties) {
+        for (DisplayProperty pt : configuredProperties) {
             Processproperty pe = new Processproperty();
             pe.setProzess(prozessKopie);
             pt.setProzesseigenschaft(pe);
@@ -2128,16 +2127,16 @@ public class ProzesskopieForm implements Serializable {
         }
     }
 
-    public List<ProcessProperty> getConfiguredProperties() {
-        List<ProcessProperty> properties = new ArrayList<>();
+    public List<DisplayProperty> getConfiguredProperties() {
+        List<DisplayProperty> properties = new ArrayList<>();
 
-        for (ProcessProperty prop : configuredProperties) {
+        for (DisplayProperty prop : configuredProperties) {
             boolean match = true;
             if (!prop.getProcessCreationConditions().isEmpty()) {
                 // check if condition matches
                 match = false;
                 for (StringPair sp : prop.getProcessCreationConditions()) {
-                    for (ProcessProperty other : configuredProperties) {
+                    for (DisplayProperty other : configuredProperties) {
                         if (other.getName().equals(sp.getOne())) {
                             Optional<String> otherValue = Optional.empty();
                             if (Type.VOCABULARYREFERENCE.equals(other.getType())) {

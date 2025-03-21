@@ -26,12 +26,9 @@ import java.util.List;
 
 import org.goobi.beans.Docket;
 import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Project;
 import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,17 +53,17 @@ public class BeanHelperTest extends AbstractTest {
         project.setTitel("Project");
         process.setProjekt(project);
 
-        process.setEigenschaften(new ArrayList<Processproperty>());
+        process.setEigenschaften(new ArrayList<>());
 
         template = new Template();
-        template.setEigenschaften(new ArrayList<Templateproperty>());
+        template.setEigenschaften(new ArrayList<>());
         template.setProzess(process);
         List<Template> tl = new ArrayList<>();
         tl.add(template);
         process.setVorlagen(tl);
 
         master = new Masterpiece();
-        master.setEigenschaften(new ArrayList<Masterpieceproperty>());
+        master.setEigenschaften(new ArrayList<>());
         master.setProzess(process);
         List<Masterpiece> ml = new ArrayList<>();
         ml.add(master);

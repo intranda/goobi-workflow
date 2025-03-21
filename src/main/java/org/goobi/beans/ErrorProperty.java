@@ -31,6 +31,7 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
+@Deprecated
 public class ErrorProperty extends GoobiProperty implements Serializable {
     private static final long serialVersionUID = -443521810121056341L;
     @Getter

@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -235,9 +236,9 @@ public class ProcessTest extends AbstractTest {
     public void testEigenschaften() {
         Process process = new Process();
 
-        List<Processproperty> properties = new ArrayList<>();
-        Processproperty property1 = new Processproperty();
-        Processproperty property2 = new Processproperty();
+        List<GoobiProperty> properties = new ArrayList<>();
+        GoobiProperty property1 = new GoobiProperty(PropertyOwnerType.PROCESS);
+        GoobiProperty property2 = new GoobiProperty(PropertyOwnerType.PROCESS);
         properties.add(property1);
         properties.add(property2);
         process.setEigenschaften(properties);
@@ -599,8 +600,8 @@ public class ProcessTest extends AbstractTest {
         Process process = new Process();
         process.setEigenschaften(new ArrayList<>());
         assertEquals(0, process.getEigenschaftenSize());
-        List<Processproperty> list = new ArrayList<>();
-        list.add(new Processproperty());
+        List<GoobiProperty> list = new ArrayList<>();
+        list.add(new GoobiProperty(PropertyOwnerType.PROCESS));
         process.setEigenschaften(list);
         assertEquals(1, process.getEigenschaftenSize());
     }
@@ -608,7 +609,7 @@ public class ProcessTest extends AbstractTest {
     @Test
     public void testGetEigenschaftenList() {
         Process process = new Process();
-        List<Processproperty> list = new ArrayList<>();
+        List<GoobiProperty> list = new ArrayList<>();
         process.setEigenschaften(list);
         assertSame(list, process.getEigenschaftenList());
     }

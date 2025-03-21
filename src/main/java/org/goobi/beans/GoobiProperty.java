@@ -27,16 +27,23 @@ import java.util.List;
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.PropertyType;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.MasterpieceManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.StepManager;
+import de.sub.goobi.persistence.managers.TemplateManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
-
+@Log4j2
 public class GoobiProperty implements IGoobiProperty, Serializable {
 
     private static final long serialVersionUID = -947157110530797855L;
@@ -54,7 +61,7 @@ public class GoobiProperty implements IGoobiProperty, Serializable {
 
     protected boolean required;
 
-    protected Date creationDate;
+    protected Date creationDate = new Date();
 
     protected String container;
 
@@ -62,6 +69,8 @@ public class GoobiProperty implements IGoobiProperty, Serializable {
 
     @NonNull
     private PropertyOwnerType propertyType;
+
+    private IPropertyHolder ownerObject;
 
     @AllArgsConstructor
     public enum PropertyOwnerType {
@@ -149,6 +158,42 @@ public class GoobiProperty implements IGoobiProperty, Serializable {
             dataType = PropertyType.STRING.getId();
         }
         return PropertyType.getById(dataType);
+    }
+
+    public IPropertyHolder getOwner() {
+        if (ownerObject == null && objectId != null) {
+            switch (propertyType) {
+                case ERROR:
+                    ownerObject = StepManager.getStepById(objectId);
+                    break;
+                case MASTERPIECE:
+                    ownerObject = MasterpieceManager.getMasterpieceForTemplateID(objectId);
+                    break;
+                case PROCESS:
+                    ownerObject = ProcessManager.getProcessById(objectId);
+                    break;
+                case PROJECT:
+                    try {
+                        ownerObject = ProjectManager.getProjectById(objectId);
+                    } catch (DAOException e) {
+                        log.error(e);
+                    }
+                    break;
+                case TEMPLATE:
+                    ownerObject = TemplateManager.getTemplateForTemplateID(objectId);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        return ownerObject;
+
+    }
+
+    public void setOwner(IPropertyHolder owner) {
+        ownerObject = owner;
+        objectId = owner.getId();
     }
 
     // legacy methods, kept for plugin compatibility

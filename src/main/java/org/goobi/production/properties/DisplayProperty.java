@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.goobi.beans.Processproperty;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Step;
 import org.goobi.managedbeans.FormInputMultiSelectBean;
 import org.goobi.managedbeans.FormInputMultiSelectHelper;
@@ -55,7 +55,7 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class ProcessProperty implements IProperty, Serializable {
+public class DisplayProperty implements IProperty, Serializable {
 
     private static final long serialVersionUID = 6413183995622426678L;
     @Getter
@@ -97,7 +97,7 @@ public class ProcessProperty implements IProperty, Serializable {
 
     @Getter
     @Setter
-    private Processproperty prozesseigenschaft;
+    private GoobiProperty prozesseigenschaft;
     @Getter
     @Setter
     private AccessCondition currentStepAccessCondition;
@@ -113,7 +113,7 @@ public class ProcessProperty implements IProperty, Serializable {
     @Getter
     private FormInputMultiSelectBean vocabularySelectionBean;
 
-    public ProcessProperty() {
+    public DisplayProperty() {
         this.possibleValues = new ArrayList<>();
         this.projects = new ArrayList<>();
         this.workflows = new ArrayList<>();
@@ -189,8 +189,8 @@ public class ProcessProperty implements IProperty, Serializable {
      * @see org.goobi.production.properties.IProperty#getClone()
      */
     @Override
-    public ProcessProperty getClone(String containerName) {
-        ProcessProperty p = new ProcessProperty();
+    public DisplayProperty getClone(String containerName) {
+        DisplayProperty p = new DisplayProperty();
         p.setContainer(containerName);
         p.setName(this.name);
         p.setValidation(this.validation);
@@ -291,11 +291,11 @@ public class ProcessProperty implements IProperty, Serializable {
         this.readValue = value;
     }
 
-    public static class CompareProperties implements Comparator<ProcessProperty>, Serializable {
+    public static class CompareProperties implements Comparator<DisplayProperty>, Serializable {
         private static final long serialVersionUID = 8047374873015931547L;
 
         @Override
-        public int compare(ProcessProperty o1, ProcessProperty o2) {
+        public int compare(DisplayProperty o1, DisplayProperty o2) {
             return o1.getContainer().compareTo(o2.getContainer());
         }
 

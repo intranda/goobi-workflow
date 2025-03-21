@@ -39,7 +39,7 @@ import org.goobi.production.importer.ImportObject;
 import org.goobi.production.importer.Record;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
-import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.DisplayProperty;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.MassImportForm;
@@ -55,7 +55,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     private static final String PROJECT_ID = "projectId";
 
     @Setter
-    public List<ProcessProperty> additionalProperties;
+    public List<DisplayProperty> additionalProperties;
 
     @Setter
     private MassImportForm mi;
@@ -173,7 +173,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
             if (ImportReturnValue.ExportFinished.equals(io.getImportReturnValue())) {
                 // add configured properties to all processes
                 if (additionalProperties != null) {
-                    for (ProcessProperty prop : additionalProperties) {
+                    for (DisplayProperty prop : additionalProperties) {
                         Processproperty pe = new Processproperty();
                         pe.setPropertyValue(prop.getValue());
                         pe.setPropertyName(prop.getName());

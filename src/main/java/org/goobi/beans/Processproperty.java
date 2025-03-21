@@ -31,6 +31,7 @@ import java.util.Date;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Setter;
 
+@Deprecated
 public class Processproperty extends GoobiProperty implements Serializable, Comparable<Processproperty> {
     private static final long serialVersionUID = -2356566712752716107L;
 

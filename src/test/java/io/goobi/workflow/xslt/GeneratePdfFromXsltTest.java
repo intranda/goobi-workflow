@@ -42,18 +42,17 @@ import java.util.List;
 
 import org.easymock.EasyMock;
 import org.goobi.beans.Batch;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
@@ -172,14 +171,13 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
         PowerMock.mockStatic(UserManager.class);
 
-        List<Processproperty> props = new ArrayList<>();
-        Processproperty p = new Processproperty();
+        List<GoobiProperty> props = new ArrayList<>();
+        GoobiProperty p = new GoobiProperty(PropertyOwnerType.PROCESS);
         p.setPropertyName("title");
         p.setPropertyValue("value");
         props.add(p);
 
-        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(props).anyTimes();
-
+        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.anyObject())).andReturn(props).anyTimes();
         List<Step> steps = new ArrayList<>();
         Step step = new Step();
         step.setTitel("title");
@@ -197,13 +195,13 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(steps);
         Template template = new Template();
-        Templateproperty tp = new Templateproperty();
+        GoobiProperty tp = new GoobiProperty(PropertyOwnerType.TEMPLATE);
         tp.setPropertyName("title");
         tp.setPropertyValue("value");
-        Templateproperty tp2 = new Templateproperty();
+        GoobiProperty tp2 = new GoobiProperty(PropertyOwnerType.TEMPLATE);
         tp2.setPropertyName("Signatur");
         tp2.setPropertyValue("value");
-        List<Templateproperty> tpl = new ArrayList<>();
+        List<GoobiProperty> tpl = new ArrayList<>();
         tpl.add(tp);
         tpl.add(tp2);
         template.setEigenschaften(tpl);
@@ -215,10 +213,10 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(steps);
 
         Masterpiece masterpiece = new Masterpiece();
-        Masterpieceproperty mp = new Masterpieceproperty();
+        GoobiProperty mp = new GoobiProperty(PropertyOwnerType.MASTERPIECE);
         mp.setPropertyName("title");
         mp.setPropertyValue("value");
-        List<Masterpieceproperty> mpl = new ArrayList<>();
+        List<GoobiProperty> mpl = new ArrayList<>();
         mpl.add(mp);
         masterpiece.setEigenschaften(mpl);
         List<Masterpiece> ml = new ArrayList<>();

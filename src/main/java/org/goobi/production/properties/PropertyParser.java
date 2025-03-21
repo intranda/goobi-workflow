@@ -36,8 +36,8 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang3.StringUtils;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.production.cli.helper.StringPair;
 
@@ -127,7 +127,7 @@ public class PropertyParser {
         }
 
         String workflowTitle = "";
-        for (Processproperty p : process.getEigenschaften()) {
+        for (GoobiProperty p : process.getEigenschaften()) {
             if ("Template".equals(p.getPropertyName())) {
                 workflowTitle = p.getPropertyValue();
             }
@@ -179,15 +179,15 @@ public class PropertyParser {
         }
     }
 
-    public List<ProcessProperty> getPropertiesForStep(Step mySchritt) {
+    public List<DisplayProperty> getPropertiesForStep(Step mySchritt) {
 
         String stepTitle = mySchritt.getTitel();
         String projectTitle = mySchritt.getProzess().getProjekt().getTitel();
         String workflowTitle = "";
-        ArrayList<ProcessProperty> properties = new ArrayList<>();
+        ArrayList<DisplayProperty> properties = new ArrayList<>();
 
         // find out original workflow template
-        for (Processproperty p : mySchritt.getProzess().getEigenschaften()) {
+        for (GoobiProperty p : mySchritt.getProzess().getEigenschaften()) {
             if ("Template".equals(p.getPropertyName())) {
                 workflowTitle = p.getPropertyValue();
             }
@@ -203,7 +203,7 @@ public class PropertyParser {
             int position = i + 1;
             String property = "/property[" + position + "]";
             // general values for property
-            ProcessProperty pp = new ProcessProperty();
+            DisplayProperty pp = new DisplayProperty();
             pp.setName(config.getString(property + "/@name"));
             pp.setContainer(config.getString(property + "/@container"));
 
@@ -295,12 +295,12 @@ public class PropertyParser {
 
         // add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
         // 'eigenschaften'
-        ArrayList<ProcessProperty> listClone = new ArrayList<>(properties);
+        ArrayList<DisplayProperty> listClone = new ArrayList<>(properties);
         mySchritt.getProzess().setEigenschaften(null);
-        List<Processproperty> plist = mySchritt.getProzess().getEigenschaftenList();
-        for (Processproperty pe : plist) {
+        List<GoobiProperty> plist = mySchritt.getProzess().getEigenschaftenList();
+        for (GoobiProperty pe : plist) {
 
-            for (ProcessProperty pp : listClone) {
+            for (DisplayProperty pp : listClone) {
                 if (pe.getPropertyName() != null && pe.getPropertyName().equals(pp.getName())) {
 
                     // pp has no pe assigned
@@ -310,7 +310,7 @@ public class PropertyParser {
                         pp.setContainer(pe.getContainer());
                     } else {
                         // clone pp
-                        ProcessProperty pnew = pp.getClone(pe.getContainer());
+                        DisplayProperty pnew = pp.getClone(pe.getContainer());
                         pnew.setProzesseigenschaft(pe);
                         pnew.setValue(pe.getPropertyValue());
                         pnew.setContainer(pe.getContainer());
@@ -322,13 +322,13 @@ public class PropertyParser {
         return properties;
     }
 
-    public List<ProcessProperty> getPropertiesForProcess(Process process) {
+    public List<DisplayProperty> getPropertiesForProcess(Process process) {
         String projectTitle = process.getProjekt().getTitel();
-        ArrayList<ProcessProperty> properties = new ArrayList<>();
+        ArrayList<DisplayProperty> properties = new ArrayList<>();
         if (process.isIstTemplate()) {
-            List<Processproperty> plist = process.getEigenschaftenList();
-            for (Processproperty pe : plist) {
-                ProcessProperty pp = new ProcessProperty();
+            List<GoobiProperty> plist = process.getEigenschaftenList();
+            for (GoobiProperty pe : plist) {
+                DisplayProperty pp = new DisplayProperty();
                 pp.setName(pe.getPropertyName());
                 pp.setProzesseigenschaft(pe);
                 pp.setType(Type.TEXT);
@@ -340,7 +340,7 @@ public class PropertyParser {
         }
 
         String workflowTitle = "";
-        for (Processproperty p : process.getEigenschaften()) {
+        for (GoobiProperty p : process.getEigenschaften()) {
             if ("Template".equals(p.getPropertyName())) {
                 workflowTitle = p.getPropertyValue();
             }
@@ -352,7 +352,7 @@ public class PropertyParser {
             int position = i + 1;
             String property = "/property[" + position + "]";
             // general values for property
-            ProcessProperty pp = new ProcessProperty();
+            DisplayProperty pp = new DisplayProperty();
             pp.setName(config.getString(property + "/@name"));
             pp.setContainer(config.getString(property + "/@container"));
 
@@ -433,14 +433,14 @@ public class PropertyParser {
             }
         } // add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
           // 'eigenschaften'
-        List<ProcessProperty> listClone = new ArrayList<>(properties);
+        List<DisplayProperty> listClone = new ArrayList<>(properties);
         process.setEigenschaften(null);
-        List<Processproperty> plist = new ArrayList<>(process.getEigenschaftenList());
-        for (Processproperty pe : plist) {
+        List<GoobiProperty> plist = new ArrayList<>(process.getEigenschaftenList());
+        for (GoobiProperty pe : plist) {
 
             if (pe.getPropertyName() != null) {
 
-                for (ProcessProperty pp : listClone) {
+                for (DisplayProperty pp : listClone) {
                     if (pe.getPropertyName().equals(pp.getName())) {
                         // pp has no pe assigned
                         if (pp.getProzesseigenschaft() == null) {
@@ -449,7 +449,7 @@ public class PropertyParser {
                             pp.setContainer(pe.getContainer());
                         } else {
                             // clone pp
-                            ProcessProperty pnew = pp.getClone(pe.getContainer());
+                            DisplayProperty pnew = pp.getClone(pe.getContainer());
                             pnew.setProzesseigenschaft(pe);
                             pnew.setValue(pe.getPropertyValue());
                             pnew.setContainer(pe.getContainer());
@@ -462,15 +462,15 @@ public class PropertyParser {
         }
 
         // add 'eigenschaft' to all ProcessProperties
-        for (ProcessProperty pp : properties) {
+        for (DisplayProperty pp : properties) {
             if (pp.getProzesseigenschaft() != null) {
                 plist.remove(pp.getProzesseigenschaft());
             }
         }
         // create ProcessProperties to remaining 'eigenschaften'
         if (!plist.isEmpty()) {
-            for (Processproperty pe : plist) {
-                ProcessProperty pp = new ProcessProperty();
+            for (GoobiProperty pe : plist) {
+                DisplayProperty pp = new DisplayProperty();
                 pp.setProzesseigenschaft(pe);
                 pp.setName(pe.getPropertyName());
                 pp.setValue(pe.getPropertyValue());
@@ -486,15 +486,15 @@ public class PropertyParser {
         return properties;
     }
 
-    public List<ProcessProperty> getProcessCreationProperties(Process process, String templateName) {
-        List<ProcessProperty> properties = new ArrayList<>();
+    public List<DisplayProperty> getProcessCreationProperties(Process process, String templateName) {
+        List<DisplayProperty> properties = new ArrayList<>();
 
         List<HierarchicalConfiguration> propertyList = config.configurationsAt("/property");
         for (int i = 0; i < propertyList.size(); i++) {
             HierarchicalConfiguration prop = propertyList.get(i);
             String property = "/property[" + (i + 1) + "]";
 
-            ProcessProperty pp = new ProcessProperty();
+            DisplayProperty pp = new DisplayProperty();
             // general values for property
             pp.setName(prop.getString("@name"));
             pp.setContainer(prop.getString("@container"));
@@ -562,7 +562,7 @@ public class PropertyParser {
 
     }
 
-    private void populatePossibleValuesWithVocabulary(String property, ProcessProperty pp) {
+    private void populatePossibleValuesWithVocabulary(String property, DisplayProperty pp) {
         String vocabularyName = config.getString(property + "/vocabulary");
         try {
             long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();

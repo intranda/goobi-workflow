@@ -886,7 +886,6 @@ public class ProjectBean extends BasicBean implements Serializable {
         if (!myProjekt.getProperties().contains(currentProperty)) {
             myProjekt.getProperties().add(currentProperty);
         }
-        PropertyManager.saveProperty(currentProperty);
         return "";
     }
 }

@@ -34,13 +34,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Template implements Serializable {
+public class Template implements Serializable, IPropertyHolder {
     private static final long serialVersionUID = 1736135433162833277L;
     private Integer id;
     private String herkunft;
     private Process prozess;
     private Integer processId;
-    private List<Templateproperty> eigenschaften;
+    private List<GoobiProperty> eigenschaften;
 
     private boolean panelAusgeklappt = true;
 
@@ -57,7 +57,7 @@ public class Template implements Serializable {
         return getEigenschaften().size();
     }
 
-    public List<Templateproperty> getEigenschaftenList() {
+    public List<GoobiProperty> getEigenschaftenList() {
         return getEigenschaften();
     }
 
@@ -101,5 +101,15 @@ public class Template implements Serializable {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public List<GoobiProperty> getProperties() {
+        return getEigenschaften();
+    }
+
+    @Override
+    public void setProperties(List<GoobiProperty> properties) {
+        setEigenschaften(properties);
     }
 }

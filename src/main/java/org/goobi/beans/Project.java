@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.production.flow.statistics.StepInformation;
 
@@ -39,13 +40,14 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.ProjectHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class Project extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Project> {
+public class Project extends AbstractJournal implements IPropertyHolder, Serializable, DatabaseObject, Comparable<Project> {
     private static final long serialVersionUID = -8543713331407761617L;
     @Getter
     @Setter
@@ -479,6 +481,14 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
             cloneIndex++;
         } while (existingProjectTitles.contains(newProjectTitle + cloneIndex));
         return newProjectTitle + cloneIndex;
+    }
+
+    @Override
+    public List<GoobiProperty> getProperties() {
+        if ((properties == null || properties.isEmpty()) && id != null) {
+            properties = PropertyManager.getPropertiesForObject(id, PropertyOwnerType.PROJECT);
+        }
+        return properties;
     }
 
 }

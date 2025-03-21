@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -55,9 +56,9 @@ public class TemplateTest extends AbstractTest {
     public void testEigenschaften() {
 
         // Create some test properties
-        Templateproperty property1 = new Templateproperty();
-        Templateproperty property2 = new Templateproperty();
-        List<Templateproperty> propertyList = new ArrayList<>();
+        GoobiProperty property1 = new GoobiProperty(PropertyOwnerType.TEMPLATE);
+        GoobiProperty property2 = new GoobiProperty(PropertyOwnerType.TEMPLATE);
+        List<GoobiProperty> propertyList = new ArrayList<>();
         propertyList.add(property1);
         propertyList.add(property2);
 
@@ -66,7 +67,7 @@ public class TemplateTest extends AbstractTest {
         template.setEigenschaften(propertyList);
 
         // Check that the returned list contains the same elements
-        List<Templateproperty> returnedList = template.getEigenschaftenList();
+        List<GoobiProperty> returnedList = template.getEigenschaftenList();
         assertNotNull(returnedList);
         assertEquals(template.getEigenschaftenSize(), 2);
         assertTrue(returnedList.contains(property1));

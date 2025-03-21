@@ -30,8 +30,8 @@ import java.sql.SQLException;
 
 import javax.naming.NamingException;
 
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -59,7 +59,7 @@ public class TiffHeader {
         if (inProzess.getWerkstueckeSize() > 0) {
             Masterpiece myWerkstueck = inProzess.getWerkstueckeList().get(0);
             if (myWerkstueck.getEigenschaftenSize() > 0) {
-                for (Masterpieceproperty eig : myWerkstueck.getEigenschaftenList()) {
+                for (GoobiProperty eig : myWerkstueck.getEigenschaftenList()) {
 
                     if ("TifHeaderDocumentname".equals(eig.getPropertyName())) {
                         this.tifHeaderDocumentname = eig.getPropertyValue();

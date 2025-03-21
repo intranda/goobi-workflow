@@ -73,18 +73,17 @@ import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Docket;
 import org.goobi.beans.ExportValidator;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.goobiScript.GoobiScriptManager;
@@ -105,8 +104,8 @@ import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
+import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.IProperty;
-import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
 import org.jdom2.output.Format;
@@ -221,7 +220,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     private HashMap<String, Integer> myAnzahlSummary;
     @Getter
     @Setter
-    private Processproperty myProzessEigenschaft;
+    private GoobiProperty myProzessEigenschaft;
     @Getter
     @Setter
     private User myBenutzer;
@@ -230,13 +229,13 @@ public class ProcessBean extends BasicBean implements Serializable {
     private Template myVorlage;
     @Getter
     @Setter
-    private Templateproperty myVorlageEigenschaft;
+    private GoobiProperty myVorlageEigenschaft;
     @Getter
     @Setter
     private Masterpiece myWerkstueck;
     @Getter
     @Setter
-    private Masterpieceproperty myWerkstueckEigenschaft;
+    private GoobiProperty myWerkstueckEigenschaft;
     @Getter
     @Setter
     private Usergroup myBenutzergruppe;
@@ -267,10 +266,10 @@ public class ProcessBean extends BasicBean implements Serializable {
     @Getter
     @Setter
     private boolean showArchivedProjects = false;
-    private List<ProcessProperty> processPropertyList;
+    private List<DisplayProperty> processPropertyList;
     @Getter
     @Setter
-    private ProcessProperty processProperty;
+    private DisplayProperty processProperty;
     @Getter
     private Map<String, PropertyListObject> containers = new TreeMap<>();
     @Getter
@@ -730,62 +729,62 @@ public class ProcessBean extends BasicBean implements Serializable {
      */
     public String ProzessEigenschaftLoeschen() {
         myProzess.getEigenschaften().remove(myProzessEigenschaft);
-        PropertyManager.deleteProcessProperty(myProzessEigenschaft);
+        PropertyManager.deleteProperty(myProzessEigenschaft);
         return "";
     }
 
     public String VorlageEigenschaftLoeschen() {
 
         myVorlage.getEigenschaften().remove(myVorlageEigenschaft);
-        PropertyManager.deleteTemplateProperty(myVorlageEigenschaft);
+        PropertyManager.deleteProperty(myVorlageEigenschaft);
         return "";
     }
 
     public String WerkstueckEigenschaftLoeschen() {
         myWerkstueck.getEigenschaften().remove(myWerkstueckEigenschaft);
-        PropertyManager.deleteMasterpieceProperty(myWerkstueckEigenschaft);
+        PropertyManager.deleteProperty(myWerkstueckEigenschaft);
         return "";
     }
 
     public String ProzessEigenschaftNeu() {
-        myProzessEigenschaft = new Processproperty();
+        myProzessEigenschaft = new GoobiProperty(PropertyOwnerType.PROCESS);
         return "";
     }
 
     public String VorlageEigenschaftNeu() {
-        myVorlageEigenschaft = new Templateproperty();
+        myVorlageEigenschaft = new GoobiProperty(PropertyOwnerType.TEMPLATE);
         return "";
     }
 
     public String WerkstueckEigenschaftNeu() {
-        myWerkstueckEigenschaft = new Masterpieceproperty();
+        myWerkstueckEigenschaft = new GoobiProperty(PropertyOwnerType.MASTERPIECE);
         return "";
     }
 
     public String ProzessEigenschaftUebernehmen() {
         if (!myProzess.getEigenschaften().contains(myProzessEigenschaft)) {
             myProzess.getEigenschaften().add(myProzessEigenschaft);
-            myProzessEigenschaft.setProzess(myProzess);
+            myProzessEigenschaft.setOwner(myProzess);
         }
-        PropertyManager.saveProcessProperty(myProzessEigenschaft);
+        PropertyManager.saveProperty(myProzessEigenschaft);
         return "";
     }
 
     public String VorlageEigenschaftUebernehmen() {
         if (!myVorlage.getEigenschaften().contains(myVorlageEigenschaft)) {
             myVorlage.getEigenschaften().add(myVorlageEigenschaft);
-            myVorlageEigenschaft.setVorlage(myVorlage);
+            myVorlageEigenschaft.setOwner(myVorlage);
         }
-        PropertyManager.saveTemplateProperty(myVorlageEigenschaft);
+        PropertyManager.saveProperty(myVorlageEigenschaft);
         return "";
     }
 
     public String WerkstueckEigenschaftUebernehmen() {
         if (!myWerkstueck.getEigenschaften().contains(myWerkstueckEigenschaft)) {
             myWerkstueck.getEigenschaften().add(myWerkstueckEigenschaft);
-            myWerkstueckEigenschaft.setWerkstueck(myWerkstueck);
+            myWerkstueckEigenschaft.setOwner(myWerkstueck);
         }
-        PropertyManager.saveMasterpieceProperty(myWerkstueckEigenschaft);
+        PropertyManager.saveProperty(myWerkstueckEigenschaft);
         return "";
     }
 
@@ -2249,7 +2248,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
-    public List<ProcessProperty> getProcessProperties() {
+    public List<DisplayProperty> getProcessProperties() {
         return this.processPropertyList;
     }
 
@@ -2283,10 +2282,10 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.containers = new TreeMap<>();
         this.processPropertyList = PropertyParser.getInstance().getPropertiesForProcess(this.myProzess);
 
-        for (ProcessProperty pt : this.processPropertyList) {
+        for (DisplayProperty pt : this.processPropertyList) {
             if (pt.getProzesseigenschaft() == null) {
-                Processproperty pe = new Processproperty();
-                pe.setProzess(myProzess);
+                GoobiProperty pe = new GoobiProperty(PropertyOwnerType.PROCESS);
+                pe.setOwner(myProzess);
                 pt.setProzesseigenschaft(pe);
                 myProzess.getEigenschaften().add(pe);
                 pt.transfer();
@@ -2318,10 +2317,10 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     private void saveValidProperties() {
-        for (ProcessProperty p : this.processPropertyList) {
+        for (DisplayProperty p : this.processPropertyList) {
             if (p.getProzesseigenschaft() == null) {
-                Processproperty pe = new Processproperty();
-                pe.setProzess(this.myProzess);
+                GoobiProperty pe = new GoobiProperty(PropertyOwnerType.PROCESS);
+                pe.setOwner(this.myProzess);
                 p.setProzesseigenschaft(pe);
                 this.myProzess.getEigenschaften().add(pe);
             }
@@ -2331,20 +2330,20 @@ public class ProcessBean extends BasicBean implements Serializable {
             }
         }
 
-        List<Processproperty> props = this.myProzess.getEigenschaftenList();
-        for (Processproperty pe : props) {
+        List<GoobiProperty> props = this.myProzess.getEigenschaftenList();
+        for (GoobiProperty pe : props) {
             if (pe.getPropertyName() == null) {
                 this.myProzess.getEigenschaften().remove(pe);
             }
         }
 
-        PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+        PropertyManager.saveProperty(processProperty.getProzesseigenschaft());
         Helper.setMeldung("Properties saved");
     }
 
     public void saveCurrentProperty() {
-        List<ProcessProperty> ppList = getContainerProperties();
-        for (ProcessProperty pp : ppList) {
+        List<DisplayProperty> ppList = getContainerProperties();
+        for (DisplayProperty pp : ppList) {
             this.processProperty = pp;
             if (!this.processProperty.isValid()) {
                 String value = Helper.getTranslation("propertyNotValid", processProperty.getName());
@@ -2352,21 +2351,21 @@ public class ProcessBean extends BasicBean implements Serializable {
                 return;
             }
             if (this.processProperty.getProzesseigenschaft() == null) {
-                Processproperty pe = new Processproperty();
-                pe.setProzess(this.myProzess);
+                GoobiProperty pe = new GoobiProperty(PropertyOwnerType.PROCESS);
+                pe.setOwner(myProzess);
                 this.processProperty.setProzesseigenschaft(pe);
                 this.myProzess.getEigenschaften().add(pe);
             }
             this.processProperty.transfer();
 
             if (!this.processProperty.getProzesseigenschaft()
-                    .getProzess()
-                    .getEigenschaften()
+                    .getOwner()
+                    .getProperties()
                     .contains(this.processProperty.getProzesseigenschaft())) {
-                this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
+                this.processProperty.getProzesseigenschaft().getOwner().getProperties().add(this.processProperty.getProzesseigenschaft());
             }
 
-            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+            PropertyManager.saveProperty(processProperty.getProzesseigenschaft());
         }
         Helper.setMeldung("propertiesSaved");
         loadProcessProperties();
@@ -2390,24 +2389,24 @@ public class ProcessBean extends BasicBean implements Serializable {
         return this.containers.size();
     }
 
-    public List<ProcessProperty> getSortedProperties() {
-        Comparator<ProcessProperty> comp = new ProcessProperty.CompareProperties();
+    public List<DisplayProperty> getSortedProperties() {
+        Comparator<DisplayProperty> comp = new DisplayProperty.CompareProperties();
         Collections.sort(this.processPropertyList, comp);
         return this.processPropertyList;
     }
 
     public void deleteProperty() {
-        List<ProcessProperty> ppList = getContainerProperties();
-        for (ProcessProperty pp : ppList) {
+        List<DisplayProperty> ppList = getContainerProperties();
+        for (DisplayProperty pp : ppList) {
             this.processPropertyList.remove(pp);
             this.myProzess.getEigenschaften().remove(pp.getProzesseigenschaft());
-            PropertyManager.deleteProcessProperty(pp.getProzesseigenschaft());
+            PropertyManager.deleteProperty(pp.getProzesseigenschaft());
         }
         loadProcessProperties();
     }
 
     public void duplicateProperty() {
-        ProcessProperty pt = this.processProperty.getClone("0");
+        DisplayProperty pt = this.processProperty.getClone("0");
         this.processPropertyList.add(pt);
         saveProcessProperties();
     }
@@ -2419,11 +2418,11 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
-    public List<ProcessProperty> getContainerProperties() {
-        List<ProcessProperty> answer = new ArrayList<>();
+    public List<DisplayProperty> getContainerProperties() {
+        List<DisplayProperty> answer = new ArrayList<>();
 
         if (this.container != null && !"0".equals(container)) {
-            for (ProcessProperty pp : this.processPropertyList) {
+            for (DisplayProperty pp : this.processPropertyList) {
                 if (pp.getContainer().equals(container)) {
                     answer.add(pp);
                 }
@@ -2437,9 +2436,9 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String duplicateContainer() {
         String currentContainer = this.processProperty.getContainer();
-        List<ProcessProperty> plist = new ArrayList<>();
+        List<DisplayProperty> plist = new ArrayList<>();
         // search for all properties in container
-        for (ProcessProperty pt : this.processPropertyList) {
+        for (DisplayProperty pt : this.processPropertyList) {
             if (pt.getContainer().equals(currentContainer)) {
                 plist.add(pt);
             }
@@ -2460,18 +2459,18 @@ public class ProcessBean extends BasicBean implements Serializable {
             }
         }
         // clone properties
-        for (ProcessProperty pt : plist) {
-            ProcessProperty newProp = pt.getClone(newContainerNumber);
+        for (DisplayProperty pt : plist) {
+            DisplayProperty newProp = pt.getClone(newContainerNumber);
             this.processPropertyList.add(newProp);
             this.processProperty = newProp;
             if (this.processProperty.getProzesseigenschaft() == null) {
-                Processproperty pe = new Processproperty();
-                pe.setProzess(this.myProzess);
+                GoobiProperty pe = new GoobiProperty(PropertyOwnerType.PROCESS);
+                pe.setOwner(myProzess);
                 this.processProperty.setProzesseigenschaft(pe);
                 this.myProzess.getEigenschaften().add(pe);
             }
             this.processProperty.transfer();
-            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+            PropertyManager.saveProperty(processProperty.getProzesseigenschaft());
         }
         Helper.setMeldung("propertySaved");
         loadProcessProperties();
@@ -2479,9 +2478,9 @@ public class ProcessBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public List<ProcessProperty> getContainerlessProperties() {
-        List<ProcessProperty> answer = new ArrayList<>();
-        for (ProcessProperty pp : this.processPropertyList) {
+    public List<DisplayProperty> getContainerlessProperties() {
+        List<DisplayProperty> answer = new ArrayList<>();
+        for (DisplayProperty pp : this.processPropertyList) {
             if ("0".equals(pp.getContainer())) {
                 answer.add(pp);
             }
@@ -2493,7 +2492,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         if (this.processPropertyList == null) {
             this.processPropertyList = new ArrayList<>();
         }
-        ProcessProperty pp = new ProcessProperty();
+        DisplayProperty pp = new DisplayProperty();
         pp.setType(Type.TEXT);
         pp.setContainer("0");
         this.processProperty = pp;

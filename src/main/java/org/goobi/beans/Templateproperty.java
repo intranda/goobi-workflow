@@ -31,6 +31,7 @@ import java.util.Date;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import lombok.Setter;
 
+@Deprecated
 public class Templateproperty extends GoobiProperty implements Serializable {
     private static final long serialVersionUID = -5981263038302791497L;
 

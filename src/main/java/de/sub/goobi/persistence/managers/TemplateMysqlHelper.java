@@ -27,8 +27,9 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
 
 import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 
@@ -68,7 +69,7 @@ class TemplateMysqlHelper implements Serializable {
                     template.setId(templateId);
                     template.setHerkunft(herkunft);
                     template.setProcessId(processId);
-                    List<Templateproperty> properties = PropertyManager.getTemplateProperties(templateId);
+                    List<GoobiProperty> properties = PropertyManager.getPropertiesForObject(templateId, PropertyOwnerType.TEMPLATE);
                     template.setEigenschaften(properties);
                     answer.add(template);
                 }
@@ -91,7 +92,7 @@ class TemplateMysqlHelper implements Serializable {
                     template.setId(templateId);
                     template.setHerkunft(herkunft);
                     template.setProcessId(processId);
-                    List<Templateproperty> properties = PropertyManager.getTemplateProperties(templateId);
+                    List<GoobiProperty> properties = PropertyManager.getPropertiesForObject(templateId, PropertyOwnerType.TEMPLATE);
                     template.setEigenschaften(properties);
                     return template;
                 }
@@ -159,17 +160,17 @@ class TemplateMysqlHelper implements Serializable {
             }
         }
 
-        List<Templateproperty> templateProperties = template.getEigenschaften();
-        for (Templateproperty property : templateProperties) {
+        List<GoobiProperty> templateProperties = template.getEigenschaften();
+        for (GoobiProperty property : templateProperties) {
             property.setObjectId(template.getId());
-            PropertyManager.saveTemplateProperty(property);
+            PropertyManager.saveProperty(property);
         }
     }
 
     public static void deleteTemplate(Template template) throws SQLException {
         if (template.getId() != null) {
-            for (Templateproperty property : template.getEigenschaften()) {
-                PropertyManager.deleteTemplateProperty(property);
+            for (GoobiProperty property : template.getEigenschaften()) {
+                PropertyManager.deleteProperty(property);
             }
             Connection connection = null;
             try {

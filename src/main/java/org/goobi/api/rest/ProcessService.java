@@ -38,11 +38,12 @@ import org.goobi.api.rest.model.RestStepQueryResource;
 import org.goobi.api.rest.model.RestStepResource;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Docket;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
@@ -557,11 +558,11 @@ public class ProcessService implements IRestAuthentication {
         return getProcessData(String.valueOf(process.getId()));
     }
 
-    private Processproperty saveNewProcessproperty(Process process, String key, String value, Date creationDate) {
-        Processproperty property = new Processproperty();
+    private GoobiProperty saveNewProcessproperty(Process process, String key, String value, Date creationDate) {
+        GoobiProperty property = new GoobiProperty(PropertyOwnerType.PROCESS);
         property.setPropertyName(key);
         property.setPropertyValue(value);
-        property.setProzess(process);
+        property.setOwner(process);
         property.setType(PropertyType.STRING);
         if (creationDate != null) {
             property.setCreationDate(creationDate);
@@ -570,7 +571,7 @@ public class ProcessService implements IRestAuthentication {
         }
         Helper.addMessageToProcessJournal(property.getObjectId(), LogType.DEBUG, "Property added using REST-API: " + property.getPropertyName());
 
-        PropertyManager.saveProcessProperty(property);
+        PropertyManager.saveProperty(property);
 
         return property;
     }
@@ -1298,11 +1299,11 @@ public class ProcessService implements IRestAuthentication {
             return Response.status(400).entity("Process id is missing.").build();
         }
 
-        List<Processproperty> properties = PropertyManager.getProcessPropertiesForProcess(Integer.parseInt(processid));
+        List<GoobiProperty> properties = PropertyManager.getPropertiesForObject(Integer.parseInt(processid), PropertyOwnerType.PROCESS);
 
         List<RestPropertyResource> answer = new ArrayList<>(properties.size());
 
-        for (Processproperty entry : properties) {
+        for (GoobiProperty entry : properties) {
             answer.add(new RestPropertyResource(entry));
         }
 
@@ -1337,7 +1338,7 @@ public class ProcessService implements IRestAuthentication {
             return Response.status(400).entity("Property id is missing.").build();
         }
         int propId = Integer.parseInt(propertyid);
-        Processproperty property = PropertyManager.getProcessPropertyById(propId);
+        GoobiProperty property = PropertyManager.getPropertById(propId);
         if (property == null) {
             return Response.status(404).entity("Property not found").build();
         }
@@ -1369,7 +1370,7 @@ public class ProcessService implements IRestAuthentication {
         if (resource.getId() == null || resource.getId().intValue() == 0) {
             return Response.status(400).entity("Property id is missing.").build();
         }
-        Processproperty property = PropertyManager.getProcessPropertyById(resource.getId());
+        GoobiProperty property = PropertyManager.getPropertById(resource.getId());
         if (property == null) {
             return Response.status(404).entity("Property not found").build();
         }
@@ -1384,7 +1385,7 @@ public class ProcessService implements IRestAuthentication {
         }
         Helper.addMessageToProcessJournal(property.getObjectId(), LogType.DEBUG, "Property changed using REST-API: " + property.getPropertyName());
 
-        PropertyManager.saveProcessProperty(property);
+        PropertyManager.saveProperty(property);
         return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
 
@@ -1425,7 +1426,7 @@ public class ProcessService implements IRestAuthentication {
         String propertyName = resource.getName();
         String propertyValue = resource.getValue();
         Date creationDate = resource.getCreationDate(); // maybe null but it doesn't matter
-        Processproperty property = saveNewProcessproperty(process, propertyName, propertyValue, creationDate);
+        GoobiProperty property = saveNewProcessproperty(process, propertyName, propertyValue, creationDate);
 
         return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
@@ -1454,7 +1455,7 @@ public class ProcessService implements IRestAuthentication {
         if (resource.getId() == null || resource.getId().intValue() == 0) {
             return Response.status(400).entity("Property id is missing.").build();
         }
-        Processproperty property = PropertyManager.getProcessPropertyById(resource.getId());
+        GoobiProperty property = PropertyManager.getPropertById(resource.getId());
         if (property == null) {
             return Response.status(404).entity("Property not found").build();
         }
@@ -1462,7 +1463,7 @@ public class ProcessService implements IRestAuthentication {
             return Response.status(409).entity("Property belongs to a different process.").build();
         }
 
-        PropertyManager.deleteProcessProperty(property);
+        PropertyManager.deleteProperty(property);
 
         Helper.addMessageToProcessJournal(property.getObjectId(), LogType.DEBUG, "Property deleted using REST-API: " + property.getPropertyName());
         return Response.status(200).build();

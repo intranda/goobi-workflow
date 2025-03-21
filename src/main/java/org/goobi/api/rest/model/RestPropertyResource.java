@@ -20,7 +20,7 @@ package org.goobi.api.rest.model;
 
 import java.util.Date;
 
-import org.goobi.beans.Processproperty;
+import org.goobi.beans.GoobiProperty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -44,7 +44,7 @@ public class RestPropertyResource {
     public RestPropertyResource() {
     }
 
-    public RestPropertyResource(Processproperty property) {
+    public RestPropertyResource(GoobiProperty property) {
         id = property.getId();
         name = property.getPropertyName();
         value = property.getPropertyValue();

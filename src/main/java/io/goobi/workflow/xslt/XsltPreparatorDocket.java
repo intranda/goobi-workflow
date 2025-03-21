@@ -42,23 +42,21 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang3.StringUtils;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
-import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.jaxen.JaxenException;
 import org.jdom2.Attribute;
@@ -477,8 +475,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
 
         List<Element> processProperties = new ArrayList<>();
-        List<ProcessProperty> propertyList = PropertyParser.getInstance().getPropertiesForProcess(process);
-        for (ProcessProperty prop : propertyList) {
+        List<DisplayProperty> propertyList = PropertyParser.getInstance().getPropertiesForProcess(process);
+        for (DisplayProperty prop : propertyList) {
             Element property = new Element(ELEMENT_PROPERTY, namespace);
             property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getName());
             if (prop.getValue() != null) {
@@ -549,7 +547,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             template.setAttribute(ATTRIBUTE_ORIGINAL_ID, String.valueOf(v.getId()));
 
             List<Element> templateProperties = new ArrayList<>();
-            for (Templateproperty prop : v.getEigenschaftenList()) {
+            for (GoobiProperty prop : v.getEigenschaftenList()) {
                 Element property = new Element(ELEMENT_PROPERTY, namespace);
                 property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getPropertyName());
                 if (prop.getPropertyValue() != null) {
@@ -596,7 +594,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             dd.setAttribute(ATTRIBUTE_DIGITAL_DOCUMENT_ID, String.valueOf(w.getId()));
 
             List<Element> docProperties = new ArrayList<>();
-            for (Masterpieceproperty prop : w.getEigenschaftenList()) {
+            for (GoobiProperty prop : w.getEigenschaftenList()) {
                 Element property = new Element(ELEMENT_PROPERTY, namespace);
                 property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getPropertyName());
                 if (prop.getPropertyValue() != null) {
@@ -1257,7 +1255,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         Element properties = new Element(ELEMENT_WORKPIECE, xmlns);
 
         for (Masterpiece template : process.getWerkstueckeList()) {
-            for (Masterpieceproperty property : template.getEigenschaften()) {
+            for (GoobiProperty property : template.getEigenschaften()) {
                 Element element = new Element(ELEMENT_PROPERTY, xmlns);
 
                 // werkstueckeeigenschaften.werkstueckeeigenschaftenID
@@ -1294,7 +1292,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         Element properties = new Element(ELEMENT_TEMPLATES, xmlns);
 
         for (Template template : process.getVorlagenList()) {
-            for (Templateproperty property : template.getEigenschaften()) {
+            for (GoobiProperty property : template.getEigenschaften()) {
                 Element element = new Element(ELEMENT_PROPERTY, xmlns);
 
                 // vorlageneigenschaften.vorlageneigenschaftenID
@@ -1330,7 +1328,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     private Element getProcessPropertyData(Process process) {
         Element properties = new Element(ELEMENT_PROPERTIES, xmlns);
 
-        for (Processproperty property : process.getEigenschaften()) {
+        for (GoobiProperty property : process.getEigenschaften()) {
             Element element = new Element(ELEMENT_PROPERTY, xmlns);
 
             // prozesseeigenschaften.prozesseeigenschaftenID

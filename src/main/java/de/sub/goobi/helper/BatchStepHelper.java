@@ -39,6 +39,8 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
@@ -53,7 +55,7 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 import org.goobi.production.properties.AccessCondition;
-import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -89,10 +91,10 @@ public class BatchStepHelper implements Serializable {
     private Step currentStep;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     @Setter
-    private List<ProcessProperty> processPropertyList;
+    private List<DisplayProperty> processPropertyList;
     @Getter
     @Setter
-    private ProcessProperty processProperty;
+    private DisplayProperty processProperty;
     @Getter
     private Map<String, PropertyListObject> containers = new TreeMap<>();
     @Getter
@@ -168,7 +170,7 @@ public class BatchStepHelper implements Serializable {
      * properties
      */
 
-    public List<ProcessProperty> getProcessProperties() {
+    public List<DisplayProperty> getProcessProperties() {
         return this.processPropertyList;
     }
 
@@ -191,8 +193,8 @@ public class BatchStepHelper implements Serializable {
     }
 
     public void saveCurrentProperty() {
-        List<ProcessProperty> ppList = getContainerProperties();
-        for (ProcessProperty pp : ppList) {
+        List<DisplayProperty> ppList = getContainerProperties();
+        for (DisplayProperty pp : ppList) {
             this.processProperty = pp;
             if (!this.processProperty.isValid()) {
                 Helper.setFehlerMeldung("Property " + this.processProperty.getName() + " is not valid");
@@ -207,26 +209,26 @@ public class BatchStepHelper implements Serializable {
             this.processProperty.transfer();
 
             Process p = this.currentStep.getProzess();
-            List<Processproperty> props = p.getEigenschaftenList();
-            for (Processproperty pe : props) {
+            List<GoobiProperty> props = p.getEigenschaftenList();
+            for (GoobiProperty pe : props) {
                 if (pe.getPropertyName() == null) {
                     p.getEigenschaften().remove(pe);
                 }
             }
             if (!this.processProperty.getProzesseigenschaft()
-                    .getProzess()
-                    .getEigenschaften()
+                    .getOwner()
+                    .getProperties()
                     .contains(this.processProperty.getProzesseigenschaft())) {
-                this.processProperty.getProzesseigenschaft().getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
+                this.processProperty.getProzesseigenschaft().getOwner().getProperties().add(this.processProperty.getProzesseigenschaft());
             }
-            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+            PropertyManager.saveProperty(processProperty.getProzesseigenschaft());
         }
         Helper.setMeldung("propertiesSaved");
     }
 
     public void saveCurrentPropertyForAll() {
-        List<ProcessProperty> ppList = getContainerProperties();
-        for (ProcessProperty pp : ppList) {
+        List<DisplayProperty> ppList = getContainerProperties();
+        for (DisplayProperty pp : ppList) {
             this.processProperty = pp;
             if (!this.processProperty.isValid()) {
                 Helper.setFehlerMeldung("Property " + this.processProperty.getName() + " is not valid");
@@ -240,28 +242,28 @@ public class BatchStepHelper implements Serializable {
             }
             this.processProperty.transfer();
 
-            Processproperty prop = processProperty.getProzesseigenschaft();
+            GoobiProperty prop = processProperty.getProzesseigenschaft();
             for (Step s : this.steps) {
                 Process process = s.getProzess();
                 boolean match = false;
-                for (Processproperty prpr : process.getEigenschaftenList()) {
+                for (GoobiProperty prpr : process.getEigenschaftenList()) {
                     if (prpr.getPropertyName() != null && prop.getPropertyName().equals(prpr.getPropertyName())
                             && prop.getContainer().equals(prpr.getContainer())) {
                         prpr.setPropertyValue(prop.getPropertyValue());
-                        PropertyManager.saveProcessProperty(prpr);
+                        PropertyManager.saveProperty(prpr);
                         match = true;
                         break;
                     }
                 }
                 if (!match) {
-                    Processproperty p = new Processproperty();
+                    GoobiProperty p = new GoobiProperty(PropertyOwnerType.PROCESS);
                     p.setPropertyName(prop.getPropertyName());
                     p.setPropertyValue(prop.getPropertyValue());
                     p.setContainer(prop.getContainer());
                     p.setType(prop.getType());
-                    p.setProzess(process);
+                    p.setOwner(process);
                     process.getEigenschaften().add(p);
-                    PropertyManager.saveProcessProperty(p);
+                    PropertyManager.saveProperty(p);
                 }
             }
         }
@@ -296,7 +298,7 @@ public class BatchStepHelper implements Serializable {
         for (Step step : this.steps) {
             pList.add(step.getProzess());
         }
-        for (ProcessProperty pt : this.processPropertyList) {
+        for (DisplayProperty pt : this.processPropertyList) {
             if (!"0".equals(pt.getContainer()) && pt.getCurrentStepAccessCondition() != AccessCondition.READ) {
                 containerAccess.put(pt.getContainer(), true);
             }
@@ -319,7 +321,7 @@ public class BatchStepHelper implements Serializable {
         }
 
         for (Process p : pList) {
-            for (Processproperty pe : p.getEigenschaftenList()) {
+            for (GoobiProperty pe : p.getEigenschaftenList()) {
                 if (!this.containers.keySet().contains(pe.getContainer())) {
                     this.containers.put(pe.getContainer(), null);
                 }
@@ -334,15 +336,15 @@ public class BatchStepHelper implements Serializable {
         return this.containers.size();
     }
 
-    public List<ProcessProperty> getSortedProperties() {
-        Comparator<ProcessProperty> comp = new ProcessProperty.CompareProperties();
+    public List<DisplayProperty> getSortedProperties() {
+        Comparator<DisplayProperty> comp = new DisplayProperty.CompareProperties();
         Collections.sort(this.processPropertyList, comp);
         return this.processPropertyList;
     }
 
-    public List<ProcessProperty> getContainerlessProperties() {
-        List<ProcessProperty> answer = new ArrayList<>();
-        for (ProcessProperty pp : this.processPropertyList) {
+    public List<DisplayProperty> getContainerlessProperties() {
+        List<DisplayProperty> answer = new ArrayList<>();
+        for (DisplayProperty pp : this.processPropertyList) {
             if ("0".equals(pp.getContainer()) && pp.getName() != null) {
                 answer.add(pp);
             }
@@ -357,11 +359,11 @@ public class BatchStepHelper implements Serializable {
         }
     }
 
-    public List<ProcessProperty> getContainerProperties() {
-        List<ProcessProperty> answer = new ArrayList<>();
+    public List<DisplayProperty> getContainerProperties() {
+        List<DisplayProperty> answer = new ArrayList<>();
 
         if (this.container != null && !"0".equals(this.container)) {
-            for (ProcessProperty pp : this.processPropertyList) {
+            for (DisplayProperty pp : this.processPropertyList) {
                 if (this.container.equals(pp.getContainer()) && pp.getName() != null) {
                     answer.add(pp);
                 }
@@ -375,9 +377,9 @@ public class BatchStepHelper implements Serializable {
 
     public String duplicateContainerForSingle() {
         String currentContainer = this.processProperty.getContainer();
-        List<ProcessProperty> plist = new ArrayList<>();
+        List<DisplayProperty> plist = new ArrayList<>();
         // search for all properties in container
-        for (ProcessProperty pt : this.processPropertyList) {
+        for (DisplayProperty pt : this.processPropertyList) {
             if (pt.getContainer().equals(currentContainer)) {
                 plist.add(pt);
             }
@@ -398,8 +400,8 @@ public class BatchStepHelper implements Serializable {
             }
         }
         // clone properties
-        for (ProcessProperty pt : plist) {
-            ProcessProperty newProp = pt.getClone(newContainerNumber);
+        for (DisplayProperty pt : plist) {
+            DisplayProperty newProp = pt.getClone(newContainerNumber);
             this.processPropertyList.add(newProp);
             this.processProperty = newProp;
             saveCurrentProperty();
@@ -411,8 +413,8 @@ public class BatchStepHelper implements Serializable {
 
     private void saveStep() {
         Process p = this.currentStep.getProzess();
-        List<Processproperty> props = p.getEigenschaftenList();
-        for (Processproperty pe : props) {
+        List<GoobiProperty> props = p.getEigenschaftenList();
+        for (GoobiProperty pe : props) {
             if (pe.getPropertyName() == null) {
                 p.getEigenschaften().remove(pe);
             }
@@ -427,9 +429,9 @@ public class BatchStepHelper implements Serializable {
 
     public String duplicateContainerForAll() {
         String currentContainer = this.processProperty.getContainer();
-        List<ProcessProperty> plist = new ArrayList<>();
+        List<DisplayProperty> plist = new ArrayList<>();
         // search for all properties in container
-        for (ProcessProperty pt : this.processPropertyList) {
+        for (DisplayProperty pt : this.processPropertyList) {
             if (pt.getContainer().equals(currentContainer)) {
                 plist.add(pt);
             }
@@ -450,8 +452,8 @@ public class BatchStepHelper implements Serializable {
             }
         }
         // clone properties
-        for (ProcessProperty pt : plist) {
-            ProcessProperty newProp = pt.getClone(newContainerNumber);
+        for (DisplayProperty pt : plist) {
+            DisplayProperty newProp = pt.getClone(newContainerNumber);
             this.processPropertyList.add(newProp);
             this.processProperty = newProp;
             saveCurrentPropertyForAll();
@@ -849,7 +851,7 @@ public class BatchStepHelper implements Serializable {
 
                 loadProcessProperties(s);
 
-                for (ProcessProperty prop : processPropertyList) {
+                for (DisplayProperty prop : processPropertyList) {
 
                     if (AccessCondition.WRITEREQUIRED.equals(prop.getCurrentStepAccessCondition())
                             && (prop.getValue() == null || "".equals(prop.getValue()))) {

@@ -27,8 +27,9 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
 
 import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 
@@ -66,7 +67,7 @@ class MasterpieceMysqlHelper implements Serializable {
                     Masterpiece object = new Masterpiece();
                     object.setId(id);
                     object.setProcessId(processId);
-                    List<Masterpieceproperty> properties = PropertyManager.getMasterpieceProperties(id);
+                    List<GoobiProperty> properties = PropertyManager.getPropertiesForObject(id, PropertyOwnerType.MASTERPIECE);
                     object.setEigenschaften(properties);
                     answer.add(object);
                 }
@@ -87,7 +88,7 @@ class MasterpieceMysqlHelper implements Serializable {
                     Masterpiece object = new Masterpiece();
                     object.setId(id);
                     object.setProcessId(processId);
-                    List<Masterpieceproperty> properties = PropertyManager.getMasterpieceProperties(id);
+                    List<GoobiProperty> properties = PropertyManager.getPropertiesForObject(id, PropertyOwnerType.MASTERPIECE);
                     object.setEigenschaften(properties);
                     return object;
                 }
@@ -156,17 +157,17 @@ class MasterpieceMysqlHelper implements Serializable {
             }
         }
 
-        List<Masterpieceproperty> templateProperties = object.getEigenschaften();
-        for (Masterpieceproperty property : templateProperties) {
+        List<GoobiProperty> templateProperties = object.getEigenschaften();
+        for (GoobiProperty property : templateProperties) {
             property.setObjectId(object.getId());
-            PropertyManager.saveMasterpieceProperty(property);
+            PropertyManager.saveProperty(property);
         }
     }
 
     public static void deleteMasterpiece(Masterpiece object) throws SQLException {
         if (object.getId() != null) {
-            for (Masterpieceproperty property : object.getEigenschaften()) {
-                PropertyManager.deleteMasterpieceProperty(property);
+            for (GoobiProperty property : object.getEigenschaften()) {
+                PropertyManager.deleteProperty(property);
             }
             Connection connection = null;
             try {

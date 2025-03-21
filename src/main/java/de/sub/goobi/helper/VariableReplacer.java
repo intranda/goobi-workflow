@@ -52,13 +52,12 @@ import javax.naming.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.text.StringTokenizer;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
-import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
 
@@ -470,7 +469,7 @@ public class VariableReplacer {
         for (MatchResult r : findRegexMatches(REGEX_PRODUCT, inString)) {
             String propertyTitle = r.group(1);
             for (Masterpiece ws : this.process.getWerkstueckeList()) {
-                for (Masterpieceproperty we : ws.getEigenschaftenList()) {
+                for (GoobiProperty we : ws.getEigenschaftenList()) {
                     if (we.getPropertyName().equalsIgnoreCase(propertyTitle)) {
                         inString = inString.replace(r.group(), we.getPropertyValue());
                         break;
@@ -484,7 +483,7 @@ public class VariableReplacer {
         for (MatchResult r : findRegexMatches(REGEX_TEMPLATE, inString)) {
             String propertyTitle = r.group(1);
             for (Template v : this.process.getVorlagenList()) {
-                for (Templateproperty ve : v.getEigenschaftenList()) {
+                for (GoobiProperty ve : v.getEigenschaftenList()) {
                     if (ve.getPropertyName().equalsIgnoreCase(propertyTitle)) {
                         inString = inString.replace(r.group(), ve.getPropertyValue());
                         break;
@@ -503,9 +502,9 @@ public class VariableReplacer {
                 propertyTitleWithoutField = Optional.ofNullable(propertyTitle.substring(0, propertyTitle.indexOf('.')));
                 fieldName = Optional.ofNullable(propertyTitle.substring(propertyTitle.indexOf('.') + 1));
             }
-            Optional<ProcessProperty> match = Optional.empty();
-            List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
-            for (ProcessProperty pe : ppList) {
+            Optional<DisplayProperty> match = Optional.empty();
+            List<DisplayProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
+            for (DisplayProperty pe : ppList) {
                 if ((propertyTitleWithoutField.isPresent() && propertyTitleWithoutField.get().equalsIgnoreCase(pe.getName()))
                         || pe.getName().equalsIgnoreCase(propertyTitle)) {
                     match = Optional.ofNullable(pe);
@@ -546,9 +545,9 @@ public class VariableReplacer {
                 propertyTitleWithoutField = Optional.ofNullable(propertyTitle.substring(0, propertyTitle.indexOf('.')));
                 fieldName = Optional.ofNullable(propertyTitle.substring(propertyTitle.indexOf('.') + 1));
             }
-            Optional<ProcessProperty> match = Optional.empty();
-            List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
-            for (ProcessProperty pe : ppList) {
+            Optional<DisplayProperty> match = Optional.empty();
+            List<DisplayProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
+            for (DisplayProperty pe : ppList) {
                 if ((propertyTitleWithoutField.isPresent() && propertyTitleWithoutField.get().equalsIgnoreCase(pe.getName()))
                         || pe.getName().equalsIgnoreCase(propertyTitle)) {
                     match = Optional.ofNullable(pe);

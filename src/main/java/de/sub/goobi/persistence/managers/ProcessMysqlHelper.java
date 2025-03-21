@@ -34,12 +34,12 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Batch;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.joda.time.LocalDate;
@@ -121,9 +121,9 @@ class ProcessMysqlHelper implements Serializable {
                     StepMysqlHelper.saveStep(s);
                 }
             }
-            List<Processproperty> properties = o.getEigenschaften();
-            for (Processproperty pe : properties) {
-                PropertyManager.saveProcessProperty(pe);
+            List<GoobiProperty> properties = o.getEigenschaften();
+            for (GoobiProperty pe : properties) {
+                PropertyManager.saveProperty(pe);
             }
 
             for (Masterpiece object : o.getWerkstuecke()) {
@@ -218,8 +218,8 @@ class ProcessMysqlHelper implements Serializable {
             MetadataManager.deleteMetadata(o.getId());
 
             // delete properties
-            for (Processproperty object : o.getEigenschaften()) {
-                PropertyManager.deleteProcessProperty(object);
+            for (GoobiProperty object : o.getEigenschaften()) {
+                PropertyManager.deleteProperty(object);
             }
 
             // delete templates

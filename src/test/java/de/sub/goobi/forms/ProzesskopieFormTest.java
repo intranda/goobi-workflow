@@ -34,10 +34,11 @@ import java.util.Map;
 
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.beans.User;
@@ -433,12 +434,12 @@ public class ProzesskopieFormTest extends AbstractTest {
         EasyMock.expect(MasterpieceManager.getMasterpiecesForProcess(EasyMock.anyInt())).andReturn(masterList).anyTimes();
         PowerMock.replay(MasterpieceManager.class);
 
-        Processproperty prop = new Processproperty();
-        List<Processproperty> propList = new ArrayList<>();
+        GoobiProperty prop = new GoobiProperty(PropertyOwnerType.PROCESS);
+        List<GoobiProperty> propList = new ArrayList<>();
         propList.add(prop);
 
         PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(propList).anyTimes();
+        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.anyObject())).andReturn(propList).anyTimes();
         PowerMock.replay(PropertyManager.class);
 
         PowerMock.mockStatic(ProcessManager.class);

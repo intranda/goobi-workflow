@@ -36,6 +36,7 @@ import lombok.extern.log4j.Log4j2;
 public class PropertyManager implements Serializable {
     private static final long serialVersionUID = 900347502238407686L;
 
+    @Deprecated
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) {
         List<Processproperty> propertyList = new ArrayList<>();
         try {
@@ -46,6 +47,7 @@ public class PropertyManager implements Serializable {
         return propertyList;
     }
 
+    @Deprecated
     public static Processproperty getProcessPropertyById(int propertyId) {
         try {
             return PropertyMysqlHelper.getProcessPropertyById(propertyId);
@@ -55,6 +57,7 @@ public class PropertyManager implements Serializable {
         return null;
     }
 
+    @Deprecated
     public static void saveProcessProperty(Processproperty pe) {
         try {
             PropertyMysqlHelper.saveProcessproperty(pe);
@@ -62,6 +65,8 @@ public class PropertyManager implements Serializable {
             log.error(e);
         }
     }
+
+    @Deprecated
 
     public static void deleteProcessProperty(Processproperty pe) {
         try {
@@ -101,6 +106,7 @@ public class PropertyManager implements Serializable {
         return titleList;
     }
 
+    @Deprecated
     public static List<Templateproperty> getTemplateProperties(int templateId) {
         List<Templateproperty> propertyList = new ArrayList<>();
         try {
@@ -111,6 +117,7 @@ public class PropertyManager implements Serializable {
         return propertyList;
     }
 
+    @Deprecated
     public static void saveTemplateProperty(Templateproperty property) {
         try {
             PropertyMysqlHelper.saveTemplateproperty(property);
@@ -119,6 +126,7 @@ public class PropertyManager implements Serializable {
         }
     }
 
+    @Deprecated
     public static void deleteTemplateProperty(Templateproperty property) {
         try {
             PropertyMysqlHelper.deleteTemplateProperty(property);
@@ -127,6 +135,7 @@ public class PropertyManager implements Serializable {
         }
     }
 
+    @Deprecated
     public static List<Masterpieceproperty> getMasterpieceProperties(int templateId) {
         List<Masterpieceproperty> propertyList = new ArrayList<>();
         try {
@@ -137,6 +146,7 @@ public class PropertyManager implements Serializable {
         return propertyList;
     }
 
+    @Deprecated
     public static void saveMasterpieceProperty(Masterpieceproperty property) {
         try {
             PropertyMysqlHelper.saveMasterpieceProperty(property);
@@ -145,6 +155,7 @@ public class PropertyManager implements Serializable {
         }
     }
 
+    @Deprecated
     public static void deleteMasterpieceProperty(Masterpieceproperty property) {
         try {
             PropertyMysqlHelper.deleteMasterpieceProperty(property);

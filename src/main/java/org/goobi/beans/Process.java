@@ -49,6 +49,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.io.BackupFileManager;
 import org.goobi.io.FileListFilter;
@@ -111,7 +112,7 @@ import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 @Log4j2
-public class Process extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Process>, IJournal {
+public class Process extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Process>, IJournal, IPropertyHolder {
     private static final long serialVersionUID = -6503348094655786275L;
 
     private static final String META_FILE = "meta.xml";
@@ -152,7 +153,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     @Setter
     private List<Template> vorlagen;
     @Setter
-    private List<Processproperty> eigenschaften;
+    private List<GoobiProperty> eigenschaften;
     @Getter
     @Setter
     private String sortHelperStatus;
@@ -295,9 +296,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         return this.werkstuecke;
     }
 
-    public List<Processproperty> getEigenschaften() {
+    public List<GoobiProperty> getEigenschaften() {
         if ((eigenschaften == null || eigenschaften.isEmpty()) && id != null) {
-            eigenschaften = PropertyManager.getProcessPropertiesForProcess(id);
+            eigenschaften = PropertyManager.getPropertiesForObject(id, PropertyOwnerType.PROCESS);
         }
         return this.eigenschaften;
     }
@@ -774,7 +775,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         return getEigenschaften().size();
     }
 
-    public List<Processproperty> getEigenschaftenList() {
+    public List<GoobiProperty> getEigenschaftenList() {
         return getEigenschaften();
     }
 
@@ -1800,7 +1801,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
         /* Prozesseigenschaften */
         if (getEigenschaftenList() != null && !getEigenschaftenList().isEmpty()) {
-            for (Processproperty pe : this.getEigenschaftenList()) {
+            for (GoobiProperty pe : this.getEigenschaftenList()) {
                 if (pe != null && pe.getPropertyValue() != null && pe.getPropertyValue().contains(this.getTitel())) {
                     pe.setPropertyValue(pe.getPropertyValue().replaceAll(this.getTitel(), newTitle));
                 }
@@ -1809,7 +1810,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         /* Scanvorlageneigenschaften */
         if (getVorlagenList() != null && !getVorlagenList().isEmpty()) {
             for (Template vl : this.getVorlagenList()) {
-                for (Templateproperty ve : vl.getEigenschaftenList()) {
+                for (GoobiProperty ve : vl.getEigenschaftenList()) {
                     if (ve.getPropertyValue().contains(this.getTitel())) {
                         ve.setPropertyValue(ve.getPropertyValue().replaceAll(this.getTitel(), newTitle));
                     }
@@ -1819,7 +1820,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         /* Werkstückeigenschaften */
         if (getWerkstueckeList() != null && !getWerkstueckeList().isEmpty()) {
             for (Masterpiece w : this.getWerkstueckeList()) {
-                for (Masterpieceproperty we : w.getEigenschaftenList()) {
+                for (GoobiProperty we : w.getEigenschaftenList()) {
                     if (we.getPropertyValue().contains(this.getTitel())) {
                         we.setPropertyValue(we.getPropertyValue().replaceAll(this.getTitel(), newTitle));
                     }
@@ -2097,4 +2098,13 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public List<GoobiProperty> getProperties() {
+        return getEigenschaften();
+    }
+
+    @Override
+    public void setProperties(List<GoobiProperty> properties) {
+        setEigenschaften(properties);
+    }
 }

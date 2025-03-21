@@ -29,12 +29,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.easymock.EasyMock;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
-import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
 import org.junit.Before;
@@ -168,7 +169,7 @@ public class VariableReplacerTest extends AbstractTest {
         Templateproperty tp = new Templateproperty();
         tp.setPropertyName("templateProperty");
         tp.setPropertyValue("template value");
-        List<Templateproperty> tpl = new ArrayList<>();
+        List<GoobiProperty> tpl = new ArrayList<>();
         tpl.add(tp);
 
         List<Template> tl = new ArrayList<>();
@@ -194,7 +195,7 @@ public class VariableReplacerTest extends AbstractTest {
         Masterpieceproperty mp = new Masterpieceproperty();
         mp.setPropertyName("masterpieceProperty");
         mp.setPropertyValue("value");
-        List<Masterpieceproperty> mpl = new ArrayList<>();
+        List<GoobiProperty> mpl = new ArrayList<>();
         mpl.add(mp);
         m.setEigenschaften(mpl);
         assertEquals("value", replacer.replace("{product.masterpieceProperty}"));
@@ -207,17 +208,17 @@ public class VariableReplacerTest extends AbstractTest {
     public void testVocabularyProcessProperties() {
         VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
 
-        ProcessProperty appleProperty = new ProcessProperty();
+        DisplayProperty appleProperty = new DisplayProperty();
         appleProperty.setName("AppleProperty");
         appleProperty.setType(Type.VOCABULARYREFERENCE);
         appleProperty.setValue("13");
 
-        ProcessProperty bananaProperty = new ProcessProperty();
+        DisplayProperty bananaProperty = new DisplayProperty();
         bananaProperty.setName("BananaProperty");
         bananaProperty.setType(Type.VOCABULARYREFERENCE);
         bananaProperty.setValue("14");
 
-        ProcessProperty fruitsProperty = new ProcessProperty();
+        DisplayProperty fruitsProperty = new DisplayProperty();
         fruitsProperty.setName("FruitsProperty");
         fruitsProperty.setType(Type.VOCABULARYMULTIREFERENCE);
         fruitsProperty.setValue("13; 14");

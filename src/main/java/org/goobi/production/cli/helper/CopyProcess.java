@@ -39,6 +39,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -453,7 +454,7 @@ public class CopyProcess {
         if (tempProzess.getWerkstueckeSize() > 0) {
             /* erstes Werkstück durchlaufen */
             Masterpiece werk = tempProzess.getWerkstueckeList().get(0);
-            for (Masterpieceproperty eig : werk.getEigenschaften()) {
+            for (GoobiProperty eig : werk.getEigenschaften()) {
                 for (AdditionalField field : this.additionalFields) {
                     if (field.getTitel().equals(eig.getPropertyName())) {
                         field.setWert(eig.getPropertyValue());
@@ -465,7 +466,7 @@ public class CopyProcess {
         if (tempProzess.getVorlagenSize() > 0) {
             /* erste Vorlage durchlaufen */
             Template vor = tempProzess.getVorlagenList().get(0);
-            for (Templateproperty eig : vor.getEigenschaften()) {
+            for (GoobiProperty eig : vor.getEigenschaften()) {
                 for (AdditionalField field : this.additionalFields) {
                     if (field.getTitel().equals(eig.getPropertyName())) {
                         field.setWert(eig.getPropertyValue());
@@ -1291,7 +1292,7 @@ public class CopyProcess {
 
     private void addProperty(Template inVorlage, Templateproperty property) {
         if ("0".equals(property.getContainer())) {
-            for (Templateproperty ve : inVorlage.getEigenschaftenList()) {
+            for (GoobiProperty ve : inVorlage.getEigenschaftenList()) {
                 if (ve.getPropertyName().equals(property.getPropertyName()) && !"0".equals(ve.getContainer())) {
                     ve.setPropertyValue(property.getPropertyValue());
                     return;
@@ -1303,7 +1304,7 @@ public class CopyProcess {
         eig.setPropertyValue(property.getPropertyValue());
         eig.setContainer(property.getContainer());
         eig.setVorlage(inVorlage);
-        List<Templateproperty> eigenschaften = inVorlage.getEigenschaften();
+        List<GoobiProperty> eigenschaften = inVorlage.getEigenschaften();
         if (eigenschaften == null) {
             eigenschaften = new ArrayList<>();
         }
@@ -1312,7 +1313,7 @@ public class CopyProcess {
 
     private void addProperty(Process inProcess, Processproperty property) {
         if ("0".equals(property.getContainer())) {
-            for (Processproperty pe : inProcess.getEigenschaftenList()) {
+            for (GoobiProperty pe : inProcess.getEigenschaftenList()) {
                 if (pe.getPropertyName().equals(property.getPropertyName()) && !"0".equals(property.getContainer())) {
                     pe.setPropertyValue(property.getPropertyValue());
                     return;
@@ -1324,7 +1325,7 @@ public class CopyProcess {
         eig.setPropertyValue(property.getPropertyValue());
         eig.setContainer(property.getContainer());
         eig.setProzess(inProcess);
-        List<Processproperty> eigenschaften = inProcess.getEigenschaften();
+        List<GoobiProperty> eigenschaften = inProcess.getEigenschaften();
         if (eigenschaften == null) {
             eigenschaften = new ArrayList<>();
         }
@@ -1333,7 +1334,7 @@ public class CopyProcess {
 
     private void addProperty(Masterpiece inWerk, Masterpieceproperty property) {
         if ("0".equals(property.getContainer())) {
-            for (Masterpieceproperty we : inWerk.getEigenschaftenList()) {
+            for (GoobiProperty we : inWerk.getEigenschaftenList()) {
                 if (we.getPropertyName().equals(property.getPropertyName()) && !"0".equals(we.getContainer())) {
                     we.setPropertyValue(property.getPropertyValue());
                     return;
@@ -1345,7 +1346,7 @@ public class CopyProcess {
         eig.setPropertyValue(property.getPropertyValue());
         eig.setContainer(property.getContainer());
         eig.setWerkstueck(inWerk);
-        List<Masterpieceproperty> eigenschaften = inWerk.getEigenschaften();
+        List<GoobiProperty> eigenschaften = inWerk.getEigenschaften();
         if (eigenschaften == null) {
             eigenschaften = new ArrayList<>();
         }
