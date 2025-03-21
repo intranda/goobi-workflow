@@ -1,11 +1,11 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
-    
+
     var _debug = false;
-    
+
     goobiWorkflow.meScrollPos = {
         /**
-         * Initialize this module: Update the current view, 
+         * Initialize this module: Update the current view,
          * save and restore scroll positions.
          * @param {Object} data -- jsf data obj, available in `<f:ajax>`
          * @param {Object.<string>} [opts] -- options to be passed
@@ -49,7 +49,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         return keys[view] || keys['default'];
       },
 
-      /** Calculate the height of error messages 
+      /** Calculate the height of error messages
        * displayed at the top of the message editors center column.
        * When rerendering a view the number of message (and thus their height) may change.
        * Accounting for these changes, keeps the scroll position at the same level.
@@ -65,7 +65,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         return messageHeight;
       },
 
-      /** Store and restore the scroll position of a view. 
+      /** Store and restore the scroll position of a view.
        * This function is used in ajax calls.
        * @param {Object} data -- jsf data object, available in `<f:ajax>`
        * @param {boolean} saveScrollPos -- determines if the current scroll position is stored in session storage
@@ -141,9 +141,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         if(!restoredScrollPosAll) return;
 
         const oldPos = restoredScrollPosAll[key];
-
-        // Set box status (collapsed / open)
-        goobiWorkflowJS.box.getBoxStatus();
 
         // Set new scroll positions
         contentLeft.scrollTop = restoredScrollPosAll.meLeft;

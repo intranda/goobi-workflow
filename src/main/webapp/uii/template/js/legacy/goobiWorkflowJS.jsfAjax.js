@@ -90,8 +90,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             setTimeout(function() {
                             	$('*[data-fadeoutmessages="true"] li').fadeOut(1000);
                         	}, 1500);
-                            // get box status
-                            goobiWorkflowJS.box.getBoxStatus();
                             // init buttons
                             goobiWorkflowJS.buttons.init();
                             // init bookmarks
