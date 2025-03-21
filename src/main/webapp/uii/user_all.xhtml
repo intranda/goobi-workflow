@@ -173,22 +173,23 @@
 													<ui:repeat var="intern"
 														styleClass="#{not item.active?'font-light':''}"
 														rendered="#{item.benutzergruppenSize != 0}"
-														value="#{item.benutzergruppen}" layout="ordered list"
-														rowCountVar="rowCount" rowIndexVar="rowIndex">
+														value="#{item.benutzergruppen}"
+														varStatus="item">
 														<h:outputText value="#{intern.titel}" />
 														<h:outputText value=","
-															rendered="#{rowIndex + 1 lt rowCount}" />
+															rendered="#{!item.last}" />
 													</ui:repeat>
 												</td>
 												<td>
-													<ui:repeat var="intern"
+													<ui:repeat
+														var="intern"
 														styleClass="#{not item.active?'font-light':''}"
 														rendered="#{item.projekteSize != 0}"
-														value="#{item.projekte}" layout="ordered list"
-														rowCountVar="rowCount" rowIndexVar="rowIndex">
+														value="#{item.projekte}"
+														varStatus="item">
 														<h:outputText value="#{intern.titel}" />
-														<h:outputText value=","
-															rendered="#{rowIndex + 1 lt rowCount}" />
+														<h:outputText value=", "
+															rendered="#{!item.last}" />
 													</ui:repeat>
 												</td>
 												<td jsf:rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
