@@ -359,7 +359,10 @@
                         </div>
                     </div>
 
-                    <div class="form-row">
+                    <h:panelGroup
+                        rendered="#{view.viewId != '/uii/user_edit.xhtml' and view.viewId != '/uii/project_edit.xhtml'}"
+                        layout="block"
+                        styleClass="form-row">
                         <div class="form-label">
                             <h:outputText value="#{msgs.fileUpload}:" />
                         </div>
@@ -388,7 +391,7 @@
                                 </h:selectOneMenu>
                             </div>
                         </div>
-                    </div>
+                    </h:panelGroup>
                     <div class="box__actions px-2">
                         <button
                             jsf:id="addToLog"
