@@ -29,13 +29,15 @@
 
 
                 <!-- OCR -->
-                <div id="image__image-container">
+                <div id="image__image-container" class="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and Metadaten.treeProperties.showOcr eq 'true' ? 'pb-3' : ''}">
 
                     <h:panelGroup styleClass="image__image-container-ocr" rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and Metadaten.treeProperties.showOcr eq 'true'}">
                         <h:outputText value="OCR" styleClass="image__image-container-ocr-head" />
-                        <pre>
-                        	<h:outputText value="#{Metadaten.ocrResult}" escape="true" />
-                        </pre>
+                        <div class="p-1 border">
+                            <pre>
+                                <h:outputText value="#{Metadaten.ocrResult}" escape="true" />
+                            </pre>
+                        </div>
                     </h:panelGroup>
 
 
