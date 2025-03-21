@@ -27,7 +27,7 @@
                         class="btn"
                         data-bs-target="#metadataBoxBody"
                         data-bs-toggle="collapse"
-                        aria-expanded="true"
+                        aria-expanded="false"
                         aria-controls="metadataBoxBody">
                         <span
                             class="collapse-caret fa fa-angle-up"
@@ -37,7 +37,7 @@
                             aria-hidden="true" />
                     </button>
                 </section:header>
-                <div id="metadataBoxBody" class="collapse show">
+                <div id="metadataBoxBody" class="collapse">
                     <p class="p-3 border-bottom" jsf:rendered="#{empty Metadaten.myMetadaten}">
                         <h:outputText value="#{msgs.mets_no_metadata_assigned}" />
                     </p>

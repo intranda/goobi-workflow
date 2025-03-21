@@ -38,13 +38,20 @@
                                         <f:ajax render="pageallocation"/>
                                     </button>
                                 </ul>
-                                <button type="button" aria-label="#{msgs.minimizeBox}" class="btn" data-bs-target="#pageAllocationBoxBody" data-bs-toggle="collapse" aria-expanded="true" aria-controls="pageAllocationBoxBody">
+                                <button
+                                    type="button"
+                                    aria-label="#{msgs.minimizeBox}"
+                                    class="btn"
+                                    data-bs-target="#pageAllocationBoxBody"
+                                    data-bs-toggle="collapse"
+                                    aria-expanded="false"
+                                    aria-controls="pageAllocationBoxBody">
                                     <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
                                     <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
                                 </button>
                             </section:header-actions>
                         </section:header>
-                        <div id="pageAllocationBoxBody" class="collapse show">
+                        <div id="pageAllocationBoxBody" class="collapse">
                             <section:body>
                                 <h:panelGroup id="pageAssignmentGroup" layout="block">
                                     <h:panelGroup id="assignments" layout="block">

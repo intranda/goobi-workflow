@@ -27,7 +27,7 @@
                         class="btn"
                         data-bs-target="#corporateBoxBody"
                         data-bs-toggle="collapse"
-                        aria-expanded="true"
+                        aria-expanded="false"
                         aria-controls="corporateBoxBody">
                         <span
                             class="collapse-caret fa fa-angle-up"
@@ -37,7 +37,7 @@
                             aria-hidden="true" />
                     </button>
                 </section:header>
-                <div id="corporateBoxBody" class="collapse show">
+                <div id="corporateBoxBody" class="collapse">
                     <section:body>
                         <p class="p-3 border-bottom" jsf:rendered="#{empty Metadaten.corporates}">
                             <h:outputText value="#{msgs.mets_no_metadata_assigned}" />

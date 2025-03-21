@@ -13,12 +13,19 @@
         <h:panelGroup rendered="#{!(Metadaten.sizeOfMetadataGroups==0 and empty Metadaten.groups)}" layout="block" id="meEditGroupBox">
             <section:section type="outline">
                 <section:header icon="bars" title="#{msgs.metadataGroups}">
-                    <button type="button" aria-label="#{msgs.minimizeBox}" class="btn" data-bs-target="#metadataGroupBoxBody" data-bs-toggle="collapse" aria-expanded="true" aria-controls="metadataGroupBoxBody">
+                    <button
+                        type="button"
+                        aria-label="#{msgs.minimizeBox}"
+                        class="btn"
+                        data-bs-target="#metadataGroupBoxBody"
+                        data-bs-toggle="collapse"
+                        aria-expanded="false"
+                        aria-controls="metadataGroupBoxBody">
                         <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
                         <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
                     </button>
                 </section:header>
-                <div id="metadataGroupBoxBody" class="collapse show">
+                <div id="metadataGroupBoxBody" class="collapse">
                     <section:body>
                         <p class="p-3 m-0 border-bottom" jsf:rendered="#{empty Metadaten.groups}">
                             <h:outputText value="#{msgs.mets_no_metadatagroups_assigned}"/>
