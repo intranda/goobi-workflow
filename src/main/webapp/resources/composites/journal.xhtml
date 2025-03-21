@@ -24,32 +24,6 @@
 
 <composite:implementation>
 
-        <!-- Custom plugin styles -->
-        <!--
-        <link
-            type="text/css"
-            rel="stylesheet"
-            href="#{HelperForm.applicationWebsiteUrl}uii/css/index.css" />
-        -->
-
-        <script type="text/javascript">
-                                    /*
-                                        function switchExpanded( id ) {
-                                            console.log(1)
-                                            console.log( "called by: " + id );
-                                            var x = document.getElementById( id ).getAttribute( "aria-expanded" );
-                                            console.log( x )
-                                            if ( x == "true" ) {
-                                                x = "false"
-                                            }
-                                            else {
-                                                x = "true"
-                                            }
-                                            document.getElementById( id ).setAttribute( "aria-expanded", x );
-                                                                }
-                                     */
-                                </script>
-
         <!-- Get box title -->
         <c:if test="#{NavigationForm.uiStatus['toggleJournal'] == null or NavigationForm.uiStatus['toggleJournal'] == '' }">
             <c:set
@@ -93,7 +67,6 @@
                                     aria-label="#{msgs.filterProcessLog}"
                                     aria-haspopup="true"
                                     aria-expanded="false"
-                                    onclick="switchExpanded(this.id)"
                                     data-bs-toggle="dropdown">
                                     <span class="fa fa-columns btn-dropDownInBoxHeader" />
                                     <span class="caret"></span>
