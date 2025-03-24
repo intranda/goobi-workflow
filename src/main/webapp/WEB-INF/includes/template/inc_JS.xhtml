@@ -13,7 +13,7 @@
     <script src="template/js/static/intranda.js?v=1.2"></script>
 
     <!-- jQuery -->
-    <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" target="head" />
+    <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" />
 
     <!-- Reactive rx -->
     <script src="template/js/static/reactiveX/rx.lite.min.js"></script>
@@ -29,8 +29,8 @@
         //set the config part
         myfaces.config.no_portlet_env = true;
     </script>
-    <script src="../dist/js/legacy.min.js?v=#{HelperForm.buildVersion}" defer="true" />
-    <script src="../dist/js/main.min.js?v=#{HelperForm.buildVersion}" defer="true" />
+    <h:outputScript name="js/legacy.min.js?v=#{HelperForm.buildVersion}" />
+    <h:outputScript name="js/main.min.js?v=#{HelperForm.buildVersion}" />
     <script>
         // wrapping these initializations in an event listener is a workaround as we can't defer inline JS
         window.addEventListener('DOMContentLoaded', () => {

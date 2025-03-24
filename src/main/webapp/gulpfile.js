@@ -47,7 +47,7 @@ const sources = {
 }
 const targetFolder = {
     css: 'uii/template/css/dist/',
-    js: 'dist/js/',
+    js: 'resources/js/dist/',
     staticAssets: 'uii/',
     composites: 'resources/',
     taglibs: 'WEB-INF/taglibs/',
