@@ -56,7 +56,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             }
                             // init layout
                             goobiWorkflowJS.layout.init();
-                            if (data?.source?.dataset.renderimage=='true'){
+                            if (data?.source?.dataset.renderimage==='true'){
                                 // init object view
                                 goobiWorkflowJS.object.imageLoadHandler();
                                 // init thumbnails

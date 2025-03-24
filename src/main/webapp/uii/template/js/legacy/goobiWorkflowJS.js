@@ -39,7 +39,9 @@ var goobiWorkflowJS = ( function() {
         goobiWorkflowJS.tinymce.init(_defaults);
 
         // init object view --> needs ajax reload
-        goobiWorkflowJS.object.init();
+        if (config.isInitialLoad || config.reloadObject) {
+            goobiWorkflowJS.object.init();
+        }
 
         // init bookmarks --> needs ajax reload
         goobiWorkflowJS.bookmarks.init();

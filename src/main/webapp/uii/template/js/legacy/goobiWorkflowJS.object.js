@@ -1,6 +1,6 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
-    
+
     var _debug = false;
     var _defaults = {};
     var _viewImage = null;
@@ -21,7 +21,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             persistZoom: false,
             persistRotation: false,
             persistenceId: '',
-        }, 
+        },
         image: {
             mimeType: "image/jpeg",
             tileSource: '',
@@ -57,7 +57,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         },
         resourcesPath: "template/js/",
     };
-    
+
     goobiWorkflow.object = {
         /**
          * @description Method to initialize the object view.
@@ -69,7 +69,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
 
             // TODO: fix image controls
-            
+
             // init object view
             if ( $( '#mainImage' ).length > 0 ) {
                 this.imageLoadHandler();
@@ -95,7 +95,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 _viewImage.controls.reset(true);
             })
 
-       
+
 
         },
         /**
@@ -108,8 +108,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 console.log(new Error().stack);
             }
 
-            _mediaType = $( '#mediaType' ).val(); 
-            
+            _mediaType = $( '#mediaType' ).val();
+
             if ( _mediaType == 'image' || _mediaType == 'pdf' ) {
             	goobiWorkflowJS.object.freeJSResources();
                 let imageZoomPersistenzeId = $( '#persistenceId' ).val();
@@ -117,7 +117,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     if(_debug)console.log("persist image zoom with id ", imageZoomPersistenzeId);
                     _configViewer.global.persistenceId = imageZoomPersistenzeId;
                     _configViewer.global.persistZoom =  true;
-                    _configViewer.global.persistRotation = true;                    
+                    _configViewer.global.persistRotation = true;
                 }
                 var tileSource = $( '#tileSource' ).val();
                 if( _debug ) {
@@ -132,7 +132,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     _viewImage.controls.goHome();
                     if (_viewImage.observables) {
                         _viewImage.observables.firstTileLoaded.subscribe(
-                            () => {}, 
+                            () => {},
                             (error) => {
                                 console.error( 'imageLoadHandler: Error loading image', error );
                                 $( '#' + _configViewer.global.divId ).html( 'Failed to load image tile: ' + error.message );
@@ -144,7 +144,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     //precache next image
                     let tileSource = $("#tileSource_next").val();
                     let divId = "precacheNext";
-                    if(tileSource) {                        
+                    if(tileSource) {
                         this.preCache(tileSource, divId);
                     }
                 })
@@ -152,7 +152,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     //precache previous image
                     let tileSource = $("#tileSource_previous").val();
                     let divId = "precachePrevious";
-                    if(tileSource) {                        
+                    if(tileSource) {
                         this.preCache(tileSource, divId);
                     }
                 })
@@ -164,7 +164,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             else if ( _mediaType == 'object' ) {
                 $( '#imageLoader' ).show();
                 goobiWorkflowJS.layout.setObjectViewHeight();
-                _world = WorldGenerator.create(_worldConfig); 
+                _world = WorldGenerator.create(_worldConfig);
                 _world.loadObject( {
                     url: $( '#objectUrl' ).val(),
                     position: { x: 0, y: 0, z: 0 },
@@ -187,7 +187,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     $( '#imageLoader' ).fadeOut( 2000 );
                     console.error( 'imageLoadHandler: failed to load: ', error );
                 })
-            } 
+            }
             else if ( _mediaType == 'x3dom' ) {
                 var objectUrl = $( '#objectUrl' ).val();
                 $( '#imageLoader' ).show();
@@ -217,7 +217,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         isDrawArea() {
             return this.drawArea;
         },
-        
+
         /**
          * Initialize drawing and transforming areas within image
          */
@@ -239,8 +239,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 	this.highlight(overlay);
                 }
                 $('#disable-interaction-overlay').hide();
-            }.bind(this)); 
-                        
+            }.bind(this));
+
             this.transformer = new ImageView.Transform(_viewImage.viewer, _drawStyle, () => !this.isDrawArea());
             this.transformer.finishedTransforming().subscribe(function(overlay) {
                 this.setArea(overlay);
@@ -256,7 +256,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 			} else {
 				this.drawAreas([]);
 			}
-			
+
 			goobiWorkflow.jsfAjax.success.subscribe(data => {
 				let areaString = $("#pageareas").text();
 				if (this.areaString != areaString) {
@@ -270,7 +270,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 		            }
 		        }
 				//console.log("page area string", this.areaString);
-			}); 
+			});
 			this.initDeletePageAreas();
 		},
 		addOverlay(overlay) {
@@ -390,9 +390,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 					});
 		        };
 	        }
-        	
+
         	_viewImage.viewer.addHandler("canvas-click", this.deleteHandler);
-        	
+
         },
         endDeletePageMode() {
         	if(_debug)console.log("end delete page mode");
@@ -414,7 +414,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
        		$("#pageAreaName").val("");
             this.overlays = [];
             this.colors = new ImageView.ColorIterator(_colors);
-            
+
             var shouldDraw = false;
             for(var area of areas) {
                 if(!area.x) {
@@ -440,7 +440,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 	//new area. Update "Bildbereich" input
                 	$("#pageAreaName").val(area.label);
                 }
-            } 
+            }
             if(shouldDraw) {
                 $('#disable-interaction-overlay').show();
                 this.setDrawArea(true, area.id);
@@ -448,7 +448,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 this.setDrawArea(false, null);
             }
         },
-        highlight(overlay) { 
+        highlight(overlay) {
         	overlay.highlight = true;
         	overlay.style.fillColor = overlay.style.borderColor;
         	overlay.style.opacity = 0.3;
@@ -458,11 +458,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         	overlay.highlight = false;
         	overlay.style.fillColor = null;
         	_viewImage.viewer.forceRedraw();
-        }, 
+        },
         writeArea(overlay) {
             var area = {};
             var rect = ImageView.CoordinateConversion.convertRectFromOpenSeadragonToImage(overlay.rect, _viewImage.viewer, _viewImage.getOriginalImageSize());
-            if(rect) {                    
+            if(rect) {
                 area.areaId = overlay.areaId;
                 area.x = Math.round(rect.x);
                 area.y = Math.round(rect.y);
@@ -502,17 +502,17 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 		_preloadedImages[i].close()
                 	}
                 	_preloadedImages = []
-                	
+
                 }
 
                 return;
             }
         },
-        
+
         preCache(url, id) {
         	if(!document.querySelector('#'+id)) {
 	            let container = $("<div id='" + id + "' />")
-	            
+
 	            $("main").append(container);
         	}
             let viewConfig = {
@@ -523,13 +523,13 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             preload.load()
             .catch( error => console.log("error precaching url " + url));
             _preloadedImages.push(preload)
-            
+
         }
-        
-        
+
+
     };
 
-    
+
     return goobiWorkflow;
-    
+
 } )( goobiWorkflowJS || {}, jQuery );

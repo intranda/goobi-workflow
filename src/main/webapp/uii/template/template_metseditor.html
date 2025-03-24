@@ -152,7 +152,9 @@
                     thumbnails: {
                         maxParallelRequests : #{Metadaten.maxParallelThumbnailRequests}
                     }
-                }
+                },
+                isInitialLoad: true,
+                reloadObject: false,
             };
             faces.ajax.addOnEvent((data) => {
                 const ajaxstatus = data.status;
@@ -161,6 +163,8 @@
                 	return;
                 }
                 if (ajaxstatus === 'success') {
+                    goobiWorkflowConfig.reloadObject = data?.source?.dataset.renderimage === 'true';
+                    goobiWorkflowConfig.isInitialLoad = false;
                     goobiWorkflowJS.init( goobiWorkflowConfig );
                     goobiWorkflowJS.meScrollPos.restoreScrollPos();
                     gwHandleTooltip.init(data, {restore: false});
