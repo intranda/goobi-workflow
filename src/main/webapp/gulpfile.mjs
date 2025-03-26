@@ -55,7 +55,7 @@ const targetFolder = {
     css: 'uii/template/css/dist/',
     js: 'resources/js/dist/',
     staticAssets: 'uii/',
-    composites: 'resources/',
+    resources: 'resources/',
     taglibs: 'WEB-INF/taglibs/',
     includes: 'WEB-INF/includes/',
 }
@@ -76,7 +76,7 @@ function staticAssets() {
 
 function composites() {
     return src(sources.composites)
-        .pipe(dest(`${customLocation}${targetFolder.composites}`))
+        .pipe(dest(`${customLocation}${targetFolder.resources}`))
 };
 
 function taglibs() {
