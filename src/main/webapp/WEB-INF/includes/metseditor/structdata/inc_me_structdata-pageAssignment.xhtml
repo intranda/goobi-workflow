@@ -237,6 +237,7 @@
                                                     label="#{msgs.ersteSeite}">
                                                     <div class="d-flex w-100 my-auto">
                                                         <h:selectOneMenu
+                                                            id="pageSelectionFirstPage"
                                                             pt:aria-label="#{msgs.ersteSeite}"
                                                             rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                             value="#{Metadaten.pageSelectionFirstPage}"
@@ -249,10 +250,13 @@
                                                             class="btn font-light"
                                                             jsf:action="#{Metadaten.BildErsteSeiteAnzeigen}"
                                                             title="#{msgs.mets_showThisImage}"
-                                                            type="button">
+                                                            type="button"
+                                                            data-renderimage="true"
+                                                            data-bs-toggle="tooltip">
                                                             <util:icon icon="eye" />
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                            <f:ajax render=":openseadragonform" />
+                                                            <f:ajax
+                                                                execute="@this pageSelectionFirstPage"
+                                                                render=":openseadragonform" />
                                                         </button>
                                                     </div>
                                                 </form:field>
@@ -261,6 +265,7 @@
                                                     label="#{msgs.letzteSeite}">
                                                     <div class="d-flex w-100 my-auto">
                                                         <h:selectOneMenu
+                                                            id="pageSelectionLastPage"
                                                             pt:aria-label="#{msgs.letzteSeite}"
                                                             rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                             value="#{Metadaten.pageSelectionLastPage}"
@@ -273,10 +278,11 @@
                                                             class="btn font-light"
                                                             jsf:action="#{Metadaten.BildLetzteSeiteAnzeigen}"
                                                             title="#{msgs.mets_showThisImage}"
-                                                            type="button">
+                                                            type="button"
+                                                            data-renderimage="true"
+                                                            data-bs-toggle="tooltip">
                                                             <util:icon icon="eye" />
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                            <f:ajax render=":openseadragonform" />
+                                                            <f:ajax execute="@this pageSelectionLastPage" render=":openseadragonform" />
                                                         </button>
                                                     </div>
                                                 </form:field>
