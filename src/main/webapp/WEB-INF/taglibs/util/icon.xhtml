@@ -1,8 +1,16 @@
 <ui:composition
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
 >
-    <span
+    <c:set var="filled" value="#{filled == 'true' ? 'filled' : 'outline'}" />
+    <!-- <span
         class="fa fa-#{icon} #{styleClass != '' ? ' ' : ''}#{styleClass != '' ? styleClass : ''}"
-        aria-hidden="true" />
+        aria-hidden="true" /> -->
+    <span class="icon#{styleClass != null ? ' ' : ''}#{styleClass}" aria-hidden="true">
+        <svg>
+            <use xlink:href="#{resource['icons/symbol/icons-sprite.svg']}##{filled}-#{icon}" />
+        </svg>
+    </span>
 </ui:composition>

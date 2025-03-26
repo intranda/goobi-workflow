@@ -20,6 +20,12 @@
             <required>true</required>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+            <description>Whether the outline or filled variant of an icon should be used</description>
+            <name>filled</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>icon-text</tag-name>
