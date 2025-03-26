@@ -18,6 +18,23 @@ import * as rollup from 'rollup';
 import cleanup from 'rollup-plugin-cleanup';
 import terser from '@rollup/plugin-terser';
 
+const svgSprite = require('gulp-svg-sprite');
+const svgSpriteConfig = {
+    mode: {
+        symbol: {
+            sprite: 'icons-sprite'
+        },
+    },
+    shape: {
+        id: {
+            separator: '-',
+        },
+    },
+    svg: {
+        namespaceClassnames: false,
+    }
+}
+
 // provide custom asset location for watch task
 let customLocation = '';
 
@@ -53,6 +70,7 @@ const sources = {
 }
 const targetFolder = {
     css: 'uii/template/css/dist/',
+    icons: 'resources/icons/',
     js: 'resources/js/dist/',
     staticAssets: 'uii/',
     resources: 'resources/',
@@ -171,8 +189,17 @@ function prodJsRollup() {
         });
 };
 
+function icons() {
+    return src(
+        ['node_modules/@tabler/icons/icons/**/*.svg']
+        )
+        .pipe(svgSprite(svgSpriteConfig))
+        .pipe(dest(`${customLocation}${targetFolder.icons}`));
+}
+
 function dev() {
     loadConfig();
+    icons();
     watch(sources.legacyJS, { ignoreInitial: false }, jsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
@@ -182,6 +209,6 @@ function dev() {
     watch(sources.taglibs, { ignoreInitial: false }, taglibs);
     watch(sources.includes, { ignoreInitial: false }, includes);
 };
-const prod = parallel(jsLegacy, prodJsRollup, prodBSCss, prodCss);
+const prod = parallel(jsLegacy, prodJsRollup, prodBSCss, prodCss, icons,);
 
 export { dev, prod };

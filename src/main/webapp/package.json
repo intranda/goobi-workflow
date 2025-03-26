@@ -23,6 +23,7 @@
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^5.1.0",
     "gulp-sourcemaps": "^2.6.5",
+    "gulp-svg-sprite": "^2.0.3",
     "gulp-uglify-es": "^3.0.0",
     "rollup": "^4.9.2",
     "rollup-plugin-cleanup": "^3.2.1",
