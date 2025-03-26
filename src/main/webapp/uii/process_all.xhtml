@@ -6,12 +6,11 @@
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	template="/uii/template/template.html"
-
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	>
+	xmlns:util="http://goobi.io/util">
 
 	<ui:param
 		name="myPageTitle"
@@ -834,7 +833,7 @@
 																title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}"
 																data-bs-toggle="tooltip"
 																class="btn btn-blank">
-																<span class="fa fa-pencil" />
+																<util:icon icon="pencil" />
 																<f:setPropertyActionListener
 																	target="#{ProzessverwaltungForm.myProzess}"
 																	value="#{item}" />
@@ -895,7 +894,7 @@
 																pt:aria-label="#{msgs.metadatenBearbeiten}"
 																onclick="preventDoubleSubmit(this);  sessionStorage.removeItem('columnWidths');"
 																rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !item.temporaryMetadataFiles}">
-																<span class="fa fa-book" />
+																<util:icon icon="book" />
 																<f:param
 																	name="ProzesseID"
 																	value="#{item.id}" />
@@ -1093,7 +1092,7 @@
 																	class="btn btn-blank"
 																	jsf:disabled="#{!item.containsExportStep}"
 																	jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
-																	<span class="fa fa-globe" />
+																	<util:icon icon="globe" />
 																	<f:setPropertyActionListener
 																		target="#{ProzessverwaltungForm.myProzess}"
 																		value="#{item}" />
