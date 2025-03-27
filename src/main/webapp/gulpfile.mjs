@@ -18,22 +18,9 @@ import * as rollup from 'rollup';
 import cleanup from 'rollup-plugin-cleanup';
 import terser from '@rollup/plugin-terser';
 
-const svgSprite = require('gulp-svg-sprite');
-const svgSpriteConfig = {
-    mode: {
-        symbol: {
-            sprite: 'icons-sprite'
-        },
-    },
-    shape: {
-        id: {
-            separator: '-',
-        },
-    },
-    svg: {
-        namespaceClassnames: false,
-    }
-}
+const cheerio = require('cheerio');
+const through2 = require('through2');
+const svgmin = require('gulp-svgmin');
 
 // provide custom asset location for watch task
 let customLocation = '';
@@ -54,6 +41,7 @@ const sources = {
         './uii/template/js/**/*.js',
         '!./uii/template/js/legacy/**/*',
     ],
+    icons: ['node_modules/@tabler/icons/icons/**/*.svg'],
     staticAssets: [
         'uii/**/*.xhtml',
         'uii/**/*.html',
@@ -189,12 +177,36 @@ function prodJsRollup() {
         });
 };
 
+/*
+ * preprocess svgs as needed
+ */
+function processSvg(srcDir, destDir) {
+    return src(srcDir)
+        // optimize svgs
+        .pipe(svgmin({
+            plugins: [
+                { removeViewBox: false }
+            ]
+        }))
+        .pipe(through2.obj(function(file, encoding, callback) {
+            const $ = cheerio.load(file.contents.toString(), { xmlMode: true });
+
+            // add id attribute to allow for external reference
+            $('svg').attr('id', `icon`);
+            // remove width and height attributes for easier styling
+            $('svg').attr('width', ``);
+            $('svg').attr('height', ``);
+
+            file.contents = Buffer.from($.html());
+
+            this.push(file);
+            callback();
+        }))
+        .pipe(dest(destDir));
+};
+
 function icons() {
-    return src(
-        ['node_modules/@tabler/icons/icons/**/*.svg']
-        )
-        .pipe(svgSprite(svgSpriteConfig))
-        .pipe(dest(`${customLocation}${targetFolder.icons}`));
+    return processSvg(sources.icons, `${customLocation}${targetFolder.icons}`);
 }
 
 function dev() {
