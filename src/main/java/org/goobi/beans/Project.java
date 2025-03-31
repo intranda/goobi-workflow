@@ -36,6 +36,7 @@ import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.production.flow.statistics.StepInformation;
 
+import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.ProjectHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -412,6 +413,19 @@ public class Project extends AbstractJournal implements IPropertyHolder, Seriali
         setMetsSruUrl(source.getMetsSruUrl());
         setMetsIIIFUrl(source.getMetsIIIFUrl());
         dfgViewerUrl = source.getDfgViewerUrl();
+
+        // properties
+        for (IGoobiProperty property : source.getProperties()) {
+            GoobiProperty clone = new GoobiProperty(PropertyOwnerType.PROJECT);
+            clone.setContainer(property.getContainer());
+            clone.setCreationDate(new Date());
+            clone.setPropertyName(property.getTitel());
+            clone.setType(property.getType());
+            clone.setPropertyValue(property.getWert());
+            clone.setOwner(this);
+            getProperties().add(clone);
+
+        }
         try {
             ProjectManager.saveProject(this);
         } catch (DAOException e) {
