@@ -11,7 +11,7 @@
     <composite:interface/>
     <composite:implementation>
         <h:panelGroup rendered="#{!(Metadaten.sizeOfMetadataGroups==0 and empty Metadaten.groups)}" layout="block" id="meEditGroupBox">
-            <section:section type="outline">
+            <section:section type="#{empty Metadaten.groups ? 'outline' : 'neutral' }">
                 <section:header icon="bars" title="#{msgs.metadataGroups}">
                     <button
                         type="button"
@@ -19,13 +19,13 @@
                         class="btn"
                         data-bs-target="#metadataGroupBoxBody"
                         data-bs-toggle="collapse"
-                        aria-expanded="false"
+                        aria-expanded="true"
                         aria-controls="metadataGroupBoxBody">
                         <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
                         <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
                     </button>
                 </section:header>
-                <div id="metadataGroupBoxBody" class="collapse">
+                <div id="metadataGroupBoxBody" class="collapse show">
                     <section:body>
                         <p class="p-3 m-0 border-bottom" jsf:rendered="#{empty Metadaten.groups}">
                             <h:outputText value="#{msgs.mets_no_metadatagroups_assigned}"/>
@@ -87,7 +87,7 @@
                             </h:panelGroup>
                         </ui:repeat>
                         <h:panelGroup rendered="#{Metadaten.sizeOfMetadataGroups!=0}" layout="block" styleClass="p-3 d-flex justify-content-end">
-                            <button jsf:id="addGroup" class="btn btn-blank" jsf:action="#{Metadaten.AddGroup}" type="button">
+                            <button jsf:id="addGroup" class="btn btn-neutral-600" jsf:action="#{Metadaten.AddGroup}" type="button">
                                 #{msgs.AddNewGroup}
                                 <f:ajax render=":pageContentCenter"/>
                                 <f:setPropertyActionListener value="" target="#{Metadaten.currentGroup}"/>
