@@ -157,6 +157,7 @@ public class VariableReplacer {
     private static final String REGEX_PROCESSES = PREFIX + "processes\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_DB_META = PREFIX + "db_meta\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_DATETIME = PREFIX + "datetime\\.([^)}]+?)" + SUFFIX;
+    private static final String REGEX_PROJECT_PROPERTY = PREFIX + "project\\.([^)}]+?)" + SUFFIX;
 
     @Getter
     @Setter
@@ -460,6 +461,17 @@ public class VariableReplacer {
                     inString = tokenMatcher.replaceAll(token);
                 } catch (ConfigurationException e) {
                     log.error(e);
+                }
+            }
+        }
+
+        // replace project properties, usage: (project.PROPERTYTITLE)
+        for (MatchResult r : findRegexMatches(REGEX_PROJECT_PROPERTY, inString)) {
+            String propertyTitle = r.group(1);
+            for (GoobiProperty property : this.process.getProjekt().getProperties()) {
+                if (property.getPropertyName().equalsIgnoreCase(propertyTitle)) {
+                    inString = inString.replace(r.group(), property.getPropertyValue());
+                    break;
                 }
             }
         }
