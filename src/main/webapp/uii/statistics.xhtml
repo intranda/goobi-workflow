@@ -310,7 +310,7 @@
               </h:panelGroup>
             </div> <!-- /row -->
 
-
+            <h:panelGroup rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
               <div class="row mt-4" role="contentinfo">
                 <div class="col-12">
                   <section:section type="neutral">
@@ -511,7 +511,6 @@
                                               name="aria-label"
                                               value="#{ProjekteForm.projectProgressInterface.selectedSteps}" />
                                       </h:selectManyListbox>
-                                       
                                   </div>
                               </div>
                               <div class="col-12 col-md-6">
@@ -530,7 +529,6 @@
                                               name="aria-label"
                                               value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}" />
                                       </h:selectOneMenu>
-                                       
                                       <div class="form-check__wrapper">
                                       <h:selectBooleanCheckbox
                                           id="pcid13"
@@ -557,7 +555,6 @@
                                               <h:outputText value="#{msgs.rerender}" />
                                           </span>
                                       </button>
-                                       
                                   </div>
                               </div>
 
@@ -583,6 +580,7 @@
                   </section:section>
                 </div> <!-- /col -->
               </div> <!-- /row -->
+            </h:panelGroup>
 
 
             </h:form>

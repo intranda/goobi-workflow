@@ -26,10 +26,31 @@
             <!-- FIRST NAME -->
             <div class="form-row">
                 <!-- LABEL -->
-                <div class="form-label">
-                        <h:outputText
-                                styleClass="form-group__label"
-                                value="#{msgs.vorname}:"/>
+                <div class="form-label flex-wrap">
+                    <h:outputText
+                            styleClass="form-group__label"
+                            value="#{msgs.vorname}:"/>
+                    <h:panelGroup
+                        id="restrictBtn"
+                        rendered="#{cc.attrs.person.displayRestrictions}">
+                        <button
+                            type="button"
+                            class="btn#{cc.attrs.person.restricted == false ? ' btn--icon-light' : ''} d-flex flex-nowrap pt-1"
+                            jsf:id="toggle-restrictions"
+                            title="#{cc.attrs.person.restricted == false ? msgs.mets_notRestricted : msgs.mets_restricted }"
+                            data-bs-toggle="tooltip">
+                            <span class="fa fa-unlock" />
+                            <span class="fa #{cc.attrs.person.restricted == false ? 'fa fa-toggle-off' : 'fa fa-toggle-on toggle-on'} px-1" />
+                            <span class="fa fa-lock" />
+                            <f:ajax
+                                execute="restrictBtn"
+                                render="restrictBtn"
+                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Metadaten'})}" />
+                            <f:setPropertyActionListener
+                                value="#{not cc.attrs.person.restricted}"
+                                target="#{cc.attrs.person.restricted}" />
+                        </button>
+                    </h:panelGroup>
                 </div>
                 <!-- INPUT -->
                 <div class="form-input">

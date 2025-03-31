@@ -18,12 +18,19 @@
         <div id="meStructdataChangeBox" class="structdata__change pb-3">
             <section:section type="outline">
                 <section:header icon="bars" title="#{msgs.ausgewaehltesStrukturelement}">
-                    <button type="button" aria-label="#{msgs.minimizeBox}" class="btn" data-bs-target="#changeElementBoxBody" data-bs-toggle="collapse" aria-expanded="true" aria-controls="changeElementBoxBody">
+                    <button
+                        type="button"
+                        aria-label="#{msgs.minimizeBox}"
+                        class="btn"
+                        data-bs-target="#changeElementBoxBody"
+                        data-bs-toggle="collapse"
+                        aria-expanded="false"
+                        aria-controls="changeElementBoxBody">
                         <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
                         <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
                     </button>
                 </section:header>
-                <div id="changeElementBoxBody" class="collapse show">
+                <div id="changeElementBoxBody" class="collapse">
                     <section:body>
                         <h:panelGroup id="structEdit" layout="block" styleClass="p-3">
                             <ul class="p-0" role="list">
@@ -55,7 +62,7 @@
                                         </span>
                                         <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}"/>
                                         <f:setPropertyActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" target="#{Metadaten.modusStrukturelementVerschieben}"/>
-                                        <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render=":pageContentCenter"/>
+                                        <f:ajax onevent="data => goobiWorkflowJS.meScrollPos.init(data)" render=":pageContentCenter"/>
                                     </button>
                                 </li>
                                 <!-- ELEMENT IMPORT -->
@@ -66,7 +73,7 @@
                                         </span>
                                         <h:outputText value="#{msgs.copyDocstructFromOtherProcess}"/>
                                         <f:setPropertyActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" target="#{Metadaten.modusCopyDocstructFromOtherProcess}"/>
-                                        <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render=":pageContentCenter"/>
+                                        <f:ajax onevent="data => goobiWorkflowJS.meScrollPos.init(data)" render=":pageContentCenter"/>
                                     </button>
                                 </li>
 

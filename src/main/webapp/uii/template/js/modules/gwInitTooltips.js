@@ -101,7 +101,8 @@ export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(eleme
     trigger: 'manual',
     offset: [4, 4],
   });
-  let tooltipTimeOut;
+  let tooltipHideTimeout;
+  let tooltipShowTimeout;
 
   // close tooltip when the trigger element is clicked
   // this avoids tooltips on dropdown triggers obscuring dropdown content
@@ -120,23 +121,27 @@ export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(eleme
       // make sure no tooltips are open before opening a new one
       hideAllTooltips(element);
 
-      clearTimeout(tooltipTimeOut);
-      tooltip.show();
+      clearTimeout(tooltipHideTimeout);
+      tooltipShowTimeout = setTimeout(() => {
+        tooltip.show();
+        tooltip.tip.addEventListener('mouseleave', () => {
+          event.preventDefault;
+          event.stopPropagation;
 
-      tooltip.tip.addEventListener('mouseleave', () => {
-        event.preventDefault;
-        event.stopPropagation;
+          tooltipHideTimeout = timeout(tooltip, element, 200);
+        });
 
-        tooltipTimeOut = timeout(tooltip, element, 200);
-      });
+        window.addEventListener('keydown', (event) => {
+          event.preventDefault;
+          event.stopPropagation;
 
-      window.addEventListener('keydown', (event) => {
-        event.preventDefault;
-        event.stopPropagation;
-
-        if (event.key === 'Escape') {
-          tooltip.hide();
-        }
+          if (event.key === 'Escape') {
+            tooltip.hide();
+          }
+        });
+      }, 500);
+      element.addEventListener('mouseleave', () => {
+        clearTimeout(tooltipShowTimeout)
       });
 
     });
@@ -147,7 +152,7 @@ export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(eleme
       event.preventDefault;
       event.stopPropagation;
 
-      tooltipTimeOut = timeout(tooltip, element, 200);
+      tooltipHideTimeout = timeout(tooltip, element, 200);
 
     });
   });
@@ -166,7 +171,8 @@ const hoverablePopover = function keepPopoverOpenOnHoverOverContent(element) {
   let popover = new bootstrap.Popover(element, {
     trigger: 'manual'
   });
-  let popoverTimeOut;
+  let popoverHideTimeout;
+  let popoverShowTimeout;
 
   ['mouseenter', 'focusin'].forEach((eventType) => {
     element.addEventListener(eventType, (event) => {
@@ -175,22 +181,27 @@ const hoverablePopover = function keepPopoverOpenOnHoverOverContent(element) {
 
       // make sure no popovers are open before opening a new one
       hideAllPopovers();
-      clearTimeout(popoverTimeOut);
+      clearTimeout(popoverHideTimeout);
+      popoverShowTimeout = setTimeout(() => {
+        popover.show();
 
-      popover.show();
-
-      popover.tip.addEventListener('mouseleave', () => {
-        event.preventDefault;
-        event.stopPropagation;
-        popover.hide();
-      });
-      window.addEventListener('keydown', (event) => {
-        event.preventDefault;
-        event.stopPropagation;
-        if (event.key === 'Escape') {
+        popover.tip.addEventListener('mouseleave', () => {
+          event.preventDefault;
+          event.stopPropagation;
           popover.hide();
-        }
+        });
+        window.addEventListener('keydown', (event) => {
+          event.preventDefault;
+          event.stopPropagation;
+          if (event.key === 'Escape') {
+            popover.hide();
+          }
+        });
+      }, 500);
+      element.addEventListener('mouseleave', () => {
+        clearTimeout(popoverShowTimeout);
       });
+
     });
   });
 
@@ -198,7 +209,7 @@ const hoverablePopover = function keepPopoverOpenOnHoverOverContent(element) {
     element.addEventListener(eventType, (event) => {
       event.preventDefault;
       event.stopPropagation;
-      popoverTimeOut = timeout(popover, element, 200);
+      popoverHideTimeout = timeout(popover, element, 200);
     });
   });
 

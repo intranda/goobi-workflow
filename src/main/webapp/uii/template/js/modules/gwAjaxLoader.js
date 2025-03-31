@@ -10,8 +10,9 @@ export default gwAjaxLoader = ( function() {
       if (_debug) console.log('%c## Initialized gwAjaxLoader ##', 'color: #368ee0')
 
       // listen for jsf ajax envents
-      faces.ajax.addOnEvent((data) => _handleAjaxLoader(data, selector = _defaultSelector))
-
+      if (typeof faces !== 'undefined') {
+        faces.ajax.addOnEvent((data) => _handleAjaxLoader(data, selector = _defaultSelector))
+      }
     }
 
     function _handleAjaxLoader(data, selector) {

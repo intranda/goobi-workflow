@@ -22,7 +22,7 @@ checkModules() {
 }
 
 checkAssets() {
-    if [ ! -f "${path}dist/js/main.js" ]; then
+    if [ ! -f "${path}resources/js/dist/main.js" ]; then
         echo "Compiled JS not found. Running npm build..."
         runBuild
         exit 0

@@ -1,9 +1,21 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
-    
+
     var _debug = false;
     var _defaults = {};
     var _status = {};
+
+    const toggleBox = (id, isOpen) => {
+        const element = document.querySelector( '#' + id );
+        const toggle = document.querySelector('[aria-controls="' + id + '"]');
+        if (isOpen) {
+            element.classList.remove('show');
+            toggle.setAttribute('aria-expanded', 'false');
+        } else {
+            element.classList.add('show');
+            toggle.setAttribute('aria-expanded', 'true');
+        }
+    };
 
     goobiWorkflow.box = {
         /**
@@ -33,20 +45,20 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             if ( _debug ) {
                 console.log( 'EXECUTE: goobiWorkflowJS.box.getBoxStatus' );
             }
-            
-            var status = JSON.parse( sessionStorage.getItem( 'wf_boxStatus' ) );
-            
+
+            const status = JSON.parse( sessionStorage.getItem( 'wf_boxStatus' ) );
+
             if ( status != null ) {
-                $.each( status, function( element, status ) {
-                    if ( !status ) {
-                        $( '#' + element ).find( '[data-toggle="box-body"]' ).addClass( 'closed' );
-                        $( '#' + element ).find( '.module__box-body' ).hide();
-                    } else {
-                        $( '#' + element ).find( '[data-toggle="box-body"]' ).removeClass( 'closed' );
-                        $( '#' + element ).find( '.module__box-body' ).show();
+                for (const [id, open] of Object.entries(status)) {
+                    const element = document.querySelector( '#' + id );
+                    if (element) {
+                        const currentToggleState = element?.classList.contains('show');
+                        const targetToggleState = open;
+                        if (currentToggleState !== targetToggleState) {
+                            toggleBox(id, currentToggleState);
+                        }
                     }
-                    
-                } );
+                }
             }
         }
     };
@@ -60,13 +72,13 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setBoxStatus' );
         }
 
-        var status = JSON.parse( sessionStorage.getItem( 'wf_boxStatus' ) );
+        const status = JSON.parse( sessionStorage.getItem( 'wf_boxStatus' ) );
 
-        $( '.module__box--collapsable' ).each( function() {
-            var currId = $( this ).attr( 'id' );
-            var isClosed = $( this ).find( '[data-toggle="box-body"]' ).hasClass( 'closed' );
+        $( '.box .collapse' ).each( function() {
+            const currId = $( this ).attr( 'id' );
+            const isOpen = $( this ).hasClass( 'show' );
 
-            if ( isClosed ) {
+            if ( !isOpen ) {
                 status[ currId ] = false;
             }
             else {
@@ -86,14 +98,17 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setToggleBoxBodyEvent' );
         }
 
-        $( 'body' ).on( 'click', '.module__box--collapsable .module__box-title h1', function () {
-            $( this ).find( '[data-toggle="box-body"]' ).toggleClass( 'closed' );
-            $( this ).parents( '.module__box-title' ).next().slideToggle( 200, function() {
+        const toggleBoxes = document.querySelectorAll('.box .collapse');
+        toggleBoxes.forEach( box => {
+            box.addEventListener('hidden.bs.collapse', function () {
                 _setBoxStatus();
-            } );
+            });
+            box.addEventListener('shown.bs.collapse', function () {
+                _setBoxStatus();
+            });
         });
     }
-    
+
     return goobiWorkflow;
-    
+
 } )( goobiWorkflowJS || {}, jQuery );

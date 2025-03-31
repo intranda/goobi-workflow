@@ -24,32 +24,6 @@
 
 <composite:implementation>
 
-        <!-- Custom plugin styles -->
-        <!--
-        <link
-            type="text/css"
-            rel="stylesheet"
-            href="#{HelperForm.applicationWebsiteUrl}uii/css/index.css" />
-        -->
-
-        <script type="text/javascript">
-                                    /*
-                                        function switchExpanded( id ) {
-                                            console.log(1)
-                                            console.log( "called by: " + id );
-                                            var x = document.getElementById( id ).getAttribute( "aria-expanded" );
-                                            console.log( x )
-                                            if ( x == "true" ) {
-                                                x = "false"
-                                            }
-                                            else {
-                                                x = "true"
-                                            }
-                                            document.getElementById( id ).setAttribute( "aria-expanded", x );
-                                                                }
-                                     */
-                                </script>
-
         <!-- Get box title -->
         <c:if test="#{NavigationForm.uiStatus['toggleJournal'] == null or NavigationForm.uiStatus['toggleJournal'] == '' }">
             <c:set
@@ -93,14 +67,13 @@
                                     aria-label="#{msgs.filterProcessLog}"
                                     aria-haspopup="true"
                                     aria-expanded="false"
-                                    onclick="switchExpanded(this.id)"
                                     data-bs-toggle="dropdown">
                                     <span class="fa fa-columns btn-dropDownInBoxHeader" />
                                     <span class="caret"></span>
                                 </button>
 
                                 <ul class="dropdown-menu">
-                                    <li class="dropdonw-item">
+                                    <li>
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showDebugMessages"
@@ -115,7 +88,7 @@
                                                 value="#{not NavigationForm.uiStatus['process_log_level_debug']}" />
                                         </button>
                                     </li>
-                                    <li class="dropdonw-item">
+                                    <li>
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showFileMessages"
@@ -130,7 +103,7 @@
                                                 value="#{not NavigationForm.uiStatus['process_log_level_file']}" />
                                         </button>
                                     </li>
-                                    <li class="dropdonw-item">
+                                    <li>
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showInfoMessages"
@@ -146,7 +119,7 @@
                                         </button>
 
                                     </li>
-                                    <li class="dropdonw-item">
+                                    <li>
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showUserMessages"
@@ -161,7 +134,7 @@
                                                 value="#{not NavigationForm.uiStatus['process_log_level_user']}" />
                                         </button>
                                     </li>
-                                    <li class="dropdonw-item">
+                                    <li>
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showUserImportantMessages"
@@ -176,7 +149,7 @@
                                                 value="#{not NavigationForm.uiStatus['process_log_level_important']}" />
                                         </button>
                                     </li>
-                                    <li class="dropdonw-item">
+                                    <li>
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showWarnMessages"
@@ -192,7 +165,7 @@
                                         </button>
 
                                     </li>
-                                    <li class="dropdonw-item">
+                                    <li>
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showErrorMessages"
@@ -238,7 +211,9 @@
                     <button
                         jsf:id="adapt_display_folders"
                         data-toggle="tooltip"
-                        jsf:rendered="#{cc.attrs.showFolderSelection=!'false'}"
+                        jsf:rendered="#{cc.attrs.showFolderSelection=!'false'
+                            and view.viewId != '/uii/user_edit.xhtml'
+                            and view.viewId != '/uii/project_edit.xhtml'}"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         class="btn d-flex align-items-center btn--title-action-neutral">
@@ -384,7 +359,10 @@
                         </div>
                     </div>
 
-                    <div class="form-row">
+                    <h:panelGroup
+                        rendered="#{view.viewId != '/uii/user_edit.xhtml' and view.viewId != '/uii/project_edit.xhtml'}"
+                        layout="block"
+                        styleClass="form-row">
                         <div class="form-label">
                             <h:outputText value="#{msgs.fileUpload}:" />
                         </div>
@@ -413,7 +391,7 @@
                                 </h:selectOneMenu>
                             </div>
                         </div>
-                    </div>
+                    </h:panelGroup>
                     <div class="box__actions px-2">
                         <button
                             jsf:id="addToLog"

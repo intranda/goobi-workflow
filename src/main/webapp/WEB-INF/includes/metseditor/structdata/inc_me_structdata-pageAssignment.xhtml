@@ -38,13 +38,20 @@
                                         <f:ajax render="pageallocation"/>
                                     </button>
                                 </ul>
-                                <button type="button" aria-label="#{msgs.minimizeBox}" class="btn" data-bs-target="#pageAllocationBoxBody" data-bs-toggle="collapse" aria-expanded="true" aria-controls="pageAllocationBoxBody">
+                                <button
+                                    type="button"
+                                    aria-label="#{msgs.minimizeBox}"
+                                    class="btn"
+                                    data-bs-target="#pageAllocationBoxBody"
+                                    data-bs-toggle="collapse"
+                                    aria-expanded="false"
+                                    aria-controls="pageAllocationBoxBody">
                                     <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
                                     <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
                                 </button>
                             </section:header-actions>
                         </section:header>
-                        <div id="pageAllocationBoxBody" class="collapse show">
+                        <div id="pageAllocationBoxBody" class="collapse">
                             <section:body>
                                 <h:panelGroup id="pageAssignmentGroup" layout="block">
                                     <h:panelGroup id="assignments" layout="block">
@@ -230,6 +237,7 @@
                                                     label="#{msgs.ersteSeite}">
                                                     <div class="d-flex w-100 my-auto">
                                                         <h:selectOneMenu
+                                                            id="pageSelectionFirstPage"
                                                             pt:aria-label="#{msgs.ersteSeite}"
                                                             rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                             value="#{Metadaten.pageSelectionFirstPage}"
@@ -242,10 +250,13 @@
                                                             class="btn font-light"
                                                             jsf:action="#{Metadaten.BildErsteSeiteAnzeigen}"
                                                             title="#{msgs.mets_showThisImage}"
-                                                            type="button">
+                                                            type="button"
+                                                            data-renderimage="true"
+                                                            data-bs-toggle="tooltip">
                                                             <util:icon icon="eye" />
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                            <f:ajax render=":openseadragonform" />
+                                                            <f:ajax
+                                                                execute="@this pageSelectionFirstPage"
+                                                                render=":openseadragonform" />
                                                         </button>
                                                     </div>
                                                 </form:field>
@@ -254,6 +265,7 @@
                                                     label="#{msgs.letzteSeite}">
                                                     <div class="d-flex w-100 my-auto">
                                                         <h:selectOneMenu
+                                                            id="pageSelectionLastPage"
                                                             pt:aria-label="#{msgs.letzteSeite}"
                                                             rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                             value="#{Metadaten.pageSelectionLastPage}"
@@ -266,10 +278,11 @@
                                                             class="btn font-light"
                                                             jsf:action="#{Metadaten.BildLetzteSeiteAnzeigen}"
                                                             title="#{msgs.mets_showThisImage}"
-                                                            type="button">
+                                                            type="button"
+                                                            data-renderimage="true"
+                                                            data-bs-toggle="tooltip">
                                                             <util:icon icon="eye" />
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                            <f:ajax render=":openseadragonform" />
+                                                            <f:ajax execute="@this pageSelectionLastPage" render=":openseadragonform" />
                                                         </button>
                                                     </div>
                                                 </form:field>

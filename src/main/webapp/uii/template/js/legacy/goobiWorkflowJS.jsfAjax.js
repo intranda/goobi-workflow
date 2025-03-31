@@ -56,7 +56,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             }
                             // init layout
                             goobiWorkflowJS.layout.init();
-                            if (data?.source?.dataset.renderimage=='true'){
+                            if (data?.source?.dataset.renderimage==='true'){
                                 // init object view
                                 goobiWorkflowJS.object.imageLoadHandler();
                                 // init thumbnails
@@ -90,8 +90,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             setTimeout(function() {
                             	$('*[data-fadeoutmessages="true"] li').fadeOut(1000);
                         	}, 1500);
-                            // get box status
-                            goobiWorkflowJS.box.getBoxStatus();
                             // init buttons
                             goobiWorkflowJS.buttons.init();
                             // init bookmarks

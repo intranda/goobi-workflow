@@ -17,3 +17,8 @@
 .section-body-padded {
     padding: var(--section-padding);
 }
+
+.section:has(.collapse:not(.show)):has(.section-body-padded),
+.section:has(.collapse:not(.show)):has(.section-body) {
+  border-bottom: 0;
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html
+    lang="#{SpracheForm.locale}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    >
+
+    <h:head>
+        <!-- METADATA -->
+        <ui:include src="/WEB-INF/includes/template/inc_metadata.xhtml" />
+        <!-- CSS -->
+        <ui:include src="/WEB-INF/includes/template/inc_CSS.xhtml" />
+        <!-- Additional CSS for specific views -->
+        <ui:insert name="css" />
+        <!-- Javascript -->
+        <ui:include src="/WEB-INF/includes/template/inc_JS.xhtml" />
+
+    </h:head>
+
+    <ui:insert name="metadata" />
+
+    <h:body>
+        <f:view locale="#{SpracheForm.locale}">
+
+            <div id="ajaxloader" class='' style="display: none;">
+                <img src="template/img/goobi/ajaxloader2.gif" />
+            </div>
+
+            <ui:insert name="content" />
+
+            <style>
+                <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false"/>
+            </style>
+        </f:view>
+    </h:body>
+</html>

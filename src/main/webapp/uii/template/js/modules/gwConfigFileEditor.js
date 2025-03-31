@@ -34,11 +34,13 @@ const initConfigFileEditor = function initConfigFileEditor() {
 
 const loadEditorContent = function loadEditorContent() {
 	let configFileTextAreaBase64 = document.getElementById("configFileEditorForm:contentbox:configFileEditorBase64");
-	let string = configFileEditor.getValue();
-	if (debug){
-	  // console.log("Load: " + string);
+	if (configFileTextAreaBase64) {
+		let string = configFileEditor.getValue();
+		if (debug){
+		  // console.log("Load: " + string);
+		}
+		configFileTextAreaBase64.value = base64EncodeUnicode(string);
 	}
-	configFileTextAreaBase64.value = base64EncodeUnicode(string);
 }
 
 const base64EncodeUnicode = function base64EncodeUnicode(str) {
