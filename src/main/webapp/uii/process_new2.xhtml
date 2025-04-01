@@ -9,7 +9,8 @@
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:form="http://goobi.io/form">
 
 	<ui:param
 		name="myPageTitle"
@@ -199,17 +200,19 @@
 											</button>
 										</div>
 										<div class="damageBoxThumbnailsComment">
-											<h:inputTextarea
-												value="#{image.descriptionText}"
-												title="#{msgs.damageDocComment}"
-												styleClass="form-control damageBoxThumbnailsCommentField">
-												<f:passThroughAttribute
-													name="data-toggle"
-													value="tooltip" />
-												<f:ajax
-													event="change"
-													execute="@this" />
-											</h:inputTextarea>
+											<form:grow-wrap>
+												<h:inputTextarea
+													value="#{image.descriptionText}"
+													title="#{msgs.damageDocComment}"
+													styleClass="form-control damageBoxThumbnailsCommentField">
+													<f:passThroughAttribute
+														name="data-toggle"
+														value="tooltip" />
+													<f:ajax
+														event="change"
+														execute="@this" />
+												</h:inputTextarea>
+											</form:grow-wrap>
 										</div>
 									</div>
 								</ui:fragment>
