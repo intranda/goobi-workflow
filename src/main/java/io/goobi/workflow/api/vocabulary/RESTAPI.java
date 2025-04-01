@@ -7,6 +7,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
@@ -25,6 +27,7 @@ import jakarta.ws.rs.core.Response;
 import lombok.Setter;
 
 public class RESTAPI {
+    private static final Pattern BASE_URL_PATTERN = Pattern.compile("https?:\\/\\/\\w+(:\\d+)?");
     @Setter
     private static Client client = ClientBuilder.newBuilder()
             .register(MultiPartFeature.class)
@@ -38,7 +41,8 @@ public class RESTAPI {
 
     private String generateUrl(String endpoint, Object... parameters) {
         String url = endpoint;
-        if (!url.startsWith(baseUrl)) {
+        Matcher m = BASE_URL_PATTERN.matcher(endpoint);
+        if (!m.find()) {
             url = baseUrl + url;
         }
         List<String> queryParams = new ArrayList<>();
