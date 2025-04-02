@@ -229,6 +229,22 @@ public class ProcessManager implements IManager, Serializable {
         return new ArrayList<>();
     }
 
+    /**
+     * Returns a list of all batches without any assigned processes ordered by id/creation time.
+     * 
+     * @return
+     * @throws SQLException
+     */
+
+    public static List<Batch> getEmptyBatches() throws SQLException {
+        try {
+            return ProcessMysqlHelper.getEmptyBatches();
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return new ArrayList<>();
+    }
+
     public static Batch getBatchById(int id) {
 
         try {

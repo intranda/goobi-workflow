@@ -535,6 +535,22 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
+    public static List<Batch> getEmptyBatches() throws SQLException {
+        StringBuilder sql = new StringBuilder("SELECT * FROM batches WHERE NOT EXISTS (SELECT batchID FROM prozesse WHERE batchID = id)");
+
+        sql.append(" ORDER BY id desc ");
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql.toString(), resultSetToBatchListHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
     public static List<Batch> getBatches(int limit) throws SQLException {
         StringBuilder sql = new StringBuilder("SELECT * FROM batches");
 
