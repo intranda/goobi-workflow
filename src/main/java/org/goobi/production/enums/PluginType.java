@@ -44,7 +44,7 @@ public enum PluginType {
     Administration(11, "administration", IAdministrationPlugin.class),
     Workflow(13, "workflow", IWorkflowPlugin.class),
     MetadataEditor(14, "metadata", IMetadataEditorExtension.class),
-    Dockable(15, "dockable", IDockablePlugin.class);
+    Generic(15, "generic", IGenericPlugin.class);
 
     @Getter
     private int id;

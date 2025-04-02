@@ -13,7 +13,7 @@ import jakarta.faces.view.facelets.FaceletContext;
 import java.io.IOException;
 
 @Slf4j
-public abstract class AbstractDockablePlugin implements IDockablePlugin {
+public abstract class AbstractGenericPlugin implements IGenericPlugin {
     private UIComponent modal;
 
     public static void success(String message) {

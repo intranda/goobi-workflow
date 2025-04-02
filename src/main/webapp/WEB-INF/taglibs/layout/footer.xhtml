@@ -24,7 +24,7 @@
             </a>
             <h:outputText styleClass="ms-auto" />
             <ui:repeat
-                    value="#{DockableBean.dockablePlugins}"
+                    value="#{GenericPluginBean.genericPlugins}"
                     var="plugin"
             >
                 <ui:fragment rendered="#{plugin.isFooterDockable()}">
