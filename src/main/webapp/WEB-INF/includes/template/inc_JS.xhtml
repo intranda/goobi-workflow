@@ -44,7 +44,28 @@
                 gwResizableTable.init();
                 gwFocusOnLoad.init();
                 gwConfigEditor.init();
+                document.querySelectorAll('.grow-wrap').forEach( (wrap) => {
+                    const textarea = wrap.querySelector('textarea');
+                    // Sync wrap and textarea on load
+                    wrap.dataset.content = textarea.value;
+                    textarea.addEventListener('input', () => {
+                        wrap.dataset.content = textarea.value;
+                    });
+                });
             })();
         })
+        faces.ajax.addOnEvent((data) => {
+            const ajaxstatus = data.status;
+            if (ajaxstatus === 'success') {
+                document.querySelectorAll('.grow-wrap').forEach( (wrap) => {
+                    // Sync wrap and textarea on load
+                    const textarea = wrap.querySelector('textarea');
+                    wrap.dataset.content = textarea.value;
+                    textarea.addEventListener('input', () => {
+                        wrap.dataset.content = textarea.value;
+                    });
+                });
+            }
+        });
     </script>
 </ui:composition>

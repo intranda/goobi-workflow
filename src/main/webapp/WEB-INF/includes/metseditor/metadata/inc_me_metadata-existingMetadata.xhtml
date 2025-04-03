@@ -17,7 +17,7 @@
             id="meEditMetadataBox"
             rendered="#{!(Metadaten.sizeOfMetadata==0 and empty Metadaten.myMetadaten)}"
             styleClass="pb-2">
-            <section:section type="outline">
+            <section:section type="#{empty Metadaten.myMetadaten ? 'outline' : 'neutral' }">
                 <section:header
                     icon="bars"
                     title="#{msgs.metadaten}">
@@ -27,7 +27,7 @@
                         class="btn"
                         data-bs-target="#metadataBoxBody"
                         data-bs-toggle="collapse"
-                        aria-expanded="false"
+                        aria-expanded="true"
                         aria-controls="metadataBoxBody">
                         <span
                             class="collapse-caret fa fa-angle-up"
@@ -37,7 +37,7 @@
                             aria-hidden="true" />
                     </button>
                 </section:header>
-                <div id="metadataBoxBody" class="collapse">
+                <div id="metadataBoxBody" class="collapse show">
                     <p class="p-3 border-bottom" jsf:rendered="#{empty Metadaten.myMetadaten}">
                         <h:outputText value="#{msgs.mets_no_metadata_assigned}" />
                     </p>
@@ -56,7 +56,7 @@
                             <button
                                 type="button"
                                 jsf:id="addMetadata"
-                                class="btn btn-blank"
+                                class="btn btn-neutral-600"
                                 jsf:action="#{Metadaten.Hinzufuegen}">
                                 #{msgs.neuesMetadatumAnlegen}
                                 <f:setPropertyActionListener

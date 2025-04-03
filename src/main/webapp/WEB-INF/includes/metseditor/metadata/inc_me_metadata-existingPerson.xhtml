@@ -18,7 +18,7 @@
             id="meEditPersonBox"
             rendered="#{!(Metadaten.sizeOfRoles==0 and empty Metadaten.myPersonen)}"
             styleClass="pb-2">
-            <section:section type="#{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ? 'neutral' : 'outline'}">
+            <section:section type="#{empty Metadaten.myPersonen ? 'outline' : 'neutral'}">
                 <section:header
                     icon="bars"
                     title="#{msgs.personen}">
@@ -59,7 +59,7 @@
                         <div class="p-3 d-flex justify-content-end gap-2">
                             <button
                                 jsf:id="addPerson"
-                                class="btn btn-#{!empty Metadaten.myPersonen or Metadaten.sizeOfRoles!=0 ? 'neutral-600' : 'blank'}"
+                                class="btn btn-neutral-600"
                                 jsf:action="#{Metadaten.HinzufuegenPerson}"
                                 type="button">
                                 #{msgs.neuePersonAnlegen}

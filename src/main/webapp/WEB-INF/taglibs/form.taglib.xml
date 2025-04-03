@@ -147,4 +147,8 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+    <tag>
+        <tag-name>grow-wrap</tag-name>
+        <source>form/grow-wrap.xhtml</source>
+    </tag>
 </facelet-taglib>

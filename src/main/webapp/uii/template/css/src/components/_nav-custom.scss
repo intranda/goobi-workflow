@@ -54,8 +54,8 @@
     border-left: 2px solid var(--clr-primary-400);
 
     &:hover {
-      border-color: var(--clr-primary-600);
-      background-color: var(--clr-primary-600);
+      border-color: var(--clr-primary);
+      background-color: var(--clr-primary);
       color: var(--clr-white);
     }
   }
@@ -166,12 +166,13 @@
       position: absolute;
       top: 47px;
       right: 0;
-      background-color: var(--clr-primary-600);
+      background-color: var(--clr-primary);
       border-bottom-left-radius: var(--border-radius);
       border-bottom-right-radius: var(--border-radius);
+      z-index: 1000;
 
       .mobile-nav {
-        border-left: 1px solid var(--clr-primary-600);
+        border-left: 1px solid var(--clr-primary);
       }
 
       // Always show dropdown menus on mobile
@@ -182,8 +183,8 @@
         border: 0;
       }
       .nav-item {
-        background-color: var(--clr-primary-600);
-        padding-bottom: 1rem;
+        background-color: var(--clr-primary);
+        padding-block-end: 0;
 
         &.active {
           background-color: var(--clr-white);
@@ -195,17 +196,17 @@
         }
 
         .nav-link {
-          border-color: var(--clr-primary-600);
+          border-color: var(--clr-primary);
         }
 
         // Do not show active states when using the mobile menu
         &.dropdown.active {
-          background-color: var(--clr-primary-600);
+          background-color: var(--clr-primary);
           color: var(--clr-white);
         }
       }
       .dropdown-item {
-        background-color: var(--clr-primary-600);
+        background-color: var(--clr-primary);
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
         color: var(--clr-white);

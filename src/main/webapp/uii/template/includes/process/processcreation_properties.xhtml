@@ -9,7 +9,8 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:form="http://goobi.io/form">
     <composite:interface>
     </composite:interface>
     <composite:implementation>
@@ -53,13 +54,14 @@
                                 labelRequired="#{property.showProcessGroupAccessCondition == 'WRITEREQUIRED'}"/>
                         </div>
                         <div class="col-12 col-md-9">
-                            <h:inputTextarea
-                                id="textareaValue"
-                                rows="7"
-                                styleClass="form-control"
-                                value="#{property.value}"
-                                readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
-                            </h:inputTextarea>
+                            <form:grow-wrap>
+                                <h:inputTextarea
+                                    id="textareaValue"
+                                    styleClass="form-control"
+                                    value="#{property.value}"
+                                    readonly="#{property.showProcessGroupAccessCondition == 'READ'}">
+                                </h:inputTextarea>
+                            </form:grow-wrap>
                             <h:message
                                 for="textareaValue"
                                 showDetail="true"
@@ -224,6 +226,9 @@
         <script>
             function refocusAfterAjax (data) {
                 const element = document.getElementById(data.source.id);
+                if (!element) {
+                    return;
+                }
                 if (element.getAttribute('type') === 'text' || element.localName === 'textarea') {
                     const nextInput = element.closest('.row').nextElementSibling.querySelector('select, input, textarea');
                     nextInput?.focus();

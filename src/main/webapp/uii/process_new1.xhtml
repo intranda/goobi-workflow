@@ -8,7 +8,8 @@
     template="/uii/template/template.html"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:form="http://goobi.io/form">
 
 
     <ui:param
@@ -866,14 +867,15 @@
                             </div>
                             <div class="form-input">
                                 <div class="input-group">
-                                    <h:inputTextarea
-                                        id="journal"
-                                        styleClass="form-control metsEditorTextArea"
-                                        value="#{ProzesskopieForm.addToWikiField}"
-                                        required="false"
-                                        rows="3"
-                                        tabindex="0"
-                                        pt:aria-label="#{msgs.addToProcessLog}" />
+                                    <form:grow-wrap>
+                                        <h:inputTextarea
+                                            id="journal"
+                                            styleClass="form-control metsEditorTextArea"
+                                            value="#{ProzesskopieForm.addToWikiField}"
+                                            required="false"
+                                            tabindex="0"
+                                            pt:aria-label="#{msgs.addToProcessLog}" />
+                                    </form:grow-wrap>
                                     <label class="input-group-text py-0 align-self-stretch fs-400">
                                         <h:selectBooleanCheckbox
                                             id="journal-important"

@@ -7,8 +7,9 @@
 
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
- xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:form="http://goobi.io/form">
 
     <composite:interface>
 
@@ -213,7 +214,10 @@
                         data-toggle="tooltip"
                         jsf:rendered="#{cc.attrs.showFolderSelection=!'false'
                             and view.viewId != '/uii/user_edit.xhtml'
-                            and view.viewId != '/uii/project_edit.xhtml'}"
+                            and view.viewId != '/uii/project_edit.xhtml'
+                            and view.viewId != '/uii/task_edit.xhtml'
+                            and view.viewId != '/uii/institution_edit.xhtml'
+                        }"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         class="btn d-flex align-items-center btn--title-action-neutral">
@@ -341,12 +345,13 @@
                         </div>
                         <div class="form-input">
                             <div class="input-group">
-                                <h:inputTextarea
-                                    id="addToTextArea"
-                                    styleClass="form-control"
-                                    pt:aria-label="#{msgs.process_log_firstContent}"
-                                    rows="3"
-                                    value="#{cc.attrs.bean.content}" />
+                                <form:grow-wrap>
+                                    <h:inputTextarea
+                                        id="addToTextArea"
+                                        styleClass="form-control"
+                                        pt:aria-label="#{msgs.process_log_firstContent}"
+                                        value="#{cc.attrs.bean.content}" />
+                                </form:grow-wrap>
                                 <label class="input-group-text py-0 align-self-stretch fs-400">
                                     <h:selectBooleanCheckbox
                                         id="priorityCheck"

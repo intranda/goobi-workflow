@@ -19,6 +19,10 @@
     }
 }
 
+.modal-open .bookmarks {
+    z-index: 0;
+}
+
 .bookmarks__double {
     position: relative;
     &:hover .bookmark-remove {

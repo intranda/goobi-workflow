@@ -3,7 +3,7 @@ package org.goobi.production.plugin.interfaces;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.DockAnchor;
 
-public interface IDockablePlugin extends IPlugin {
+public interface IGenericPlugin extends IPlugin {
     default String getId() {
         return getTitle().replaceAll("\\s+", "");
     }
@@ -14,7 +14,7 @@ public interface IDockablePlugin extends IPlugin {
 
     @Override
     default PluginType getType() {
-        return PluginType.Dockable;
+        return PluginType.Generic;
     }
 
     default boolean isMenuBarDockable() { return isDockable(DockAnchor.MENU_BAR); }

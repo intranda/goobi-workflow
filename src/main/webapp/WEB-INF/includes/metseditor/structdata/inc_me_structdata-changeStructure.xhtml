@@ -220,7 +220,9 @@
                                                                 <h:outputText styleClass="form-group__label" value="#{msgs.suchbegriffe}:"/>
                                                             </div>
                                                             <div class="form-input">
-                                                                <h:inputTextarea pt:aria-label="#{msgs.suchbegriffe}" styleClass="form-control" value="#{Metadaten.additionalOpacPpns}"/>
+                                                                <form:grow-wrap>
+                                                                    <h:inputTextarea pt:aria-label="#{msgs.suchbegriffe}" styleClass="form-control" value="#{Metadaten.additionalOpacPpns}"/>
+                                                                </form:grow-wrap>
                                                             </div>
                                                         </div>
                                                     </section:body>

@@ -9,26 +9,26 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
-import org.goobi.production.plugin.interfaces.IDockablePlugin;
+import org.goobi.production.plugin.interfaces.IGenericPlugin;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Named("DockableBean")
+@Named("GenericPluginBean")
 @WindowScoped
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Log4j2
-public class DockableBean implements Serializable {
-    private List<IDockablePlugin> dockablePlugins;
+public class GenericPluginBean implements Serializable {
+    private List<IGenericPlugin> genericPlugins;
 
     @PostConstruct
     public void initialize() {
-        dockablePlugins = PluginLoader.getPluginList(PluginType.Dockable).stream()
-                .filter(IDockablePlugin.class::isInstance)
-                .map(p -> (IDockablePlugin) p)
+        genericPlugins = PluginLoader.getPluginList(PluginType.Generic).stream()
+                .filter(IGenericPlugin.class::isInstance)
+                .map(p -> (IGenericPlugin) p)
                 .toList();
-        dockablePlugins.forEach(p -> {
+        genericPlugins.forEach(p -> {
             try {
                 p.initialize();
             } catch (Exception e) {

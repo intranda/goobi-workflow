@@ -68,11 +68,12 @@
 			<form:field
 				label="#{msgs.user_config_customCss}"
 				help="#{msgs.help_user_config_customCss}">
-				<h:inputTextarea
-					id="customCss"
-					styleClass="form-control"
-					field="#{LoginForm.myBenutzer.customCss}"
-					rows="8" />
+				<form:grow-wrap>
+					<h:inputTextarea
+						id="customCss"
+						styleClass="form-control"
+						field="#{LoginForm.myBenutzer.customCss}" />
+				</form:grow-wrap>
 				<form:message target="customCss" />
 			</form:field>
 			<form:field
@@ -333,11 +334,13 @@
 	&lt;form:field
 		label=&quot;#{msgs.user_config_customCss}&quot;
 		help=&quot;#{msgs.help_user_config_customCss}&quot;&gt;
-		&lt;h:inputTextarea
-			id=&quot;customCss&quot;
-			styleClass=&quot;form-control&quot;
-			field=&quot;#{LoginForm.myBenutzer.customCss}&quot;
-			rows=&quot;8&quot; /&gt;
+		&lt;form:grow-wrap&gt;
+			&lt;h:inputTextarea
+				id=&quot;customCss&quot;
+				styleClass=&quot;form-control&quot;
+				field=&quot;#{LoginForm.myBenutzer.customCss}&quot;
+				rows=&quot;8&quot; /&gt;
+		&lt;/form:grow-wrap&gt;
 		&lt;form:message target=&quot;customCss&quot; /&gt;
 	&lt;/form:field&gt;
 	&lt;form:field

@@ -8,7 +8,8 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:section="http://goobi.io/section">
+	xmlns:section="http://goobi.io/section"
+	xmlns:form="http://goobi.io/form">
     <composite:interface />
     <composite:implementation>
         <ui:fragment rendered="#{Metadaten.modeAddGroup}">
@@ -69,14 +70,18 @@
                                             <label>#{metadata.typ}:</label>
                                         </div>
                                         <div class="form-input">
-                                            <h:inputTextarea
-                                                id="textarea"
-                                                styleClass="form-control"
-                                                value="#{metadata.value}"
-                                                immediate="true"
-                                                disabled="#{metadata.disableMetadataField}"
-                                                readonly="#{Metadaten.nurLesenModus}"
-                                                rendered="#{(metadata.outputType == 'textarea')}" />
+                                            <h:panelGroup
+                                                rendered="#{(metadata.outputType == 'textarea')}" >
+                                                <form:grow-wrap>
+                                                    <h:inputTextarea
+                                                        id="textarea"
+                                                        styleClass="form-control"
+                                                        value="#{metadata.value}"
+                                                        immediate="true"
+                                                        disabled="#{metadata.disableMetadataField}"
+                                                        readonly="#{Metadaten.nurLesenModus}" />
+                                                </form:grow-wrap>
+                                            </h:panelGroup>
                                             <h:inputText
                                                 id="text"
                                                 styleClass="form-control"

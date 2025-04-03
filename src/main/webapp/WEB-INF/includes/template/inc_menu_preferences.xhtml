@@ -26,7 +26,7 @@
                   </notification:area>
                 </ui:fragment>
                 <ui:repeat
-                    value="#{DockableBean.dockablePlugins}"
+                    value="#{GenericPluginBean.genericPlugins}"
                     var="plugin"
                     >
                     <ui:fragment rendered="#{plugin.isMenuBarDockable()}">
