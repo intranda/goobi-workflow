@@ -743,7 +743,11 @@
                 <!-- JOURNAL -->
                 <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-4'}">
                 <ui:fragment rendered="#{BenutzerverwaltungForm.myClass.id != null}">
-                    <intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="false" bean="#{BenutzerverwaltungForm.myClass}" />
+                    <intranda:journal
+                        showBigButton="true"
+                        showFolderSelection="false"
+                        showImageComments="false"
+                        bean="#{BenutzerverwaltungForm.myClass}" />
                 </ui:fragment>
                 </div>
                 <!-- // JOURNAL -->
