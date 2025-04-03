@@ -173,9 +173,8 @@ public class Project extends AbstractJournal implements IPropertyHolder, Seriali
     @Setter
     private String dfgViewerUrl = "";
 
-    @Getter
     @Setter
-    private List<GoobiProperty> properties;
+    private List<GoobiProperty> properties = new ArrayList<>();
 
     @Override
     public void lazyLoad() {
@@ -499,7 +498,7 @@ public class Project extends AbstractJournal implements IPropertyHolder, Seriali
 
     @Override
     public List<GoobiProperty> getProperties() {
-        if ((properties == null || properties.isEmpty()) && id != null) {
+        if ((properties.isEmpty()) && id != null) {
             properties = PropertyManager.getPropertiesForObject(id, PropertyOwnerType.PROJECT);
         }
         return properties;
