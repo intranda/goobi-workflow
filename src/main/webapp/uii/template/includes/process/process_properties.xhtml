@@ -1,0 +1,73 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:properties="http://goobi.io/properties">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+        <div class="flow">
+            <ui:include src="../calendarJavaScript.xhtml" />
+
+            <!-- LIST OF CONFIGURED METADATA -->
+            <ui:fragment rendered="#{ProzessverwaltungForm.sizeOfDisplayableMetadata != 0}">
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <intranda:box
+                            boxType="outline"
+                            boxPadding="false"
+                            icon="fa-list"
+                            title="#{msgs.descriptiveMetadata}">
+
+                            <table class="table table-hover table-bordered">
+                                <c:forEach
+                                    items="#{ProzessverwaltungForm.displayableMetadataMap}"
+                                    var="metadata">
+                                    <tr>
+                                        <td class="process_propertyName">
+                                            <span
+                                                title="#{metadata.key}"
+                                                data-toggle="tooltip">#{msgs[metadata.key]}</span>
+                                        </td>
+                                        <td class="process_propertyValue">
+                                            <c:forEach
+                                                items="#{metadata.value}"
+                                                var="metadataValue">
+                                                <h:outputText
+                                                    value="#{msgs[metadataValue]}"
+                                                    rendered="#{metadata.key == 'DocStruct'}" />
+                                                <h:outputText
+                                                    value="#{metadataValue}"
+                                                    rendered="#{metadata.key != 'DocStruct'}" />
+                                                <br />
+                                            </c:forEach>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </table>
+                        </intranda:box>
+                    </div>
+                </div>
+            </ui:fragment>
+            <!-- // LIST OF CONFIGURED METADATA -->
+
+
+            <!-- LIST OF PROPERTIES -->
+                <properties:wrapper bean="#{ProzessverwaltungForm}" />
+            <!-- // LIST OF PROPERTIES -->
+
+
+        </div>
+    </composite:implementation>
+</ui:composition>

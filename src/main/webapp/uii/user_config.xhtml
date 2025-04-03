@@ -3,11 +3,11 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    template="/uii/templatePG/templatePG.html"
+    template="/uii/template/template.html"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:form="http://goobi.io/form">
@@ -643,7 +643,7 @@
 
                             <!-- TAB 6 -->
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab6'}">
-                                <ui:include src="templatePG/includes/user_config_mail_configuration.xhtml" />
+                                <ui:include src="template/includes/user_config_mail_configuration.xhtml" />
                             </h:panelGroup>
 
 

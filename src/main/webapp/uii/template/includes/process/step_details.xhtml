@@ -1,0 +1,951 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+		<script
+			type="text/javascript"
+			src="template/js/static/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
+		<script
+			src="template/js/static/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}" />
+
+		<style>
+.CodeMirror {
+	border: 1px solid #ddd;
+	height: 100px;
+}
+</style>
+
+		<!-- BOX WITH TABLE FOR STEP DETAILS -->
+		<h:panelGroup
+			rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
+
+			<intranda:box
+				id="details"
+				boxType="primary"
+				boxPadding="false"
+				boxTitle="false">
+
+				<!-- BOX HEAD -->
+				<intranda:boxTitle
+					title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.schrittDetails.concat(' -').concat(ProzessverwaltungForm.myProzess.titel) : msgs.schrittDetails}"
+					icon="fa-list">
+					<div class="actions d-flex">
+						<button
+							jsf:id="reloadStep"
+							aria-label="#{msgs.reload}"
+							jsf:action="#{ProzessverwaltungForm.reload}"
+							class="btn d-flex align-items-center btn--title-action"
+							title="#{msgs.reload}"
+							jsf:rel="tooltip">
+							<span class="fa fa-refresh" />
+							<f:passThroughAttribute
+								name="data-toggle"
+								value="tooltip" />
+						</button>
+						<button
+							jsf:id="editStep"
+							title="#{msgs.bearbeiten}"
+							aria-label="#{msgs.bearbeiten}"
+							jsf:action="#{NavigationForm.Reload}"
+							jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+							class="btn d-flex align-items-center btn--title-action"
+							jsf:rel="tooltip">
+							<span class="fa fa-pencil" />
+							<f:passThroughAttribute
+								name="data-toggle"
+								value="tooltip" />
+							<f:setPropertyActionListener
+                                target="#{ProzessverwaltungForm.modusBearbeiten}"
+								value="schritt" />
+						</button>
+					</div>
+				</intranda:boxTitle>
+				<!-- // BOX HEAD -->
+
+				<!-- BOX CONTENT -->
+				<h:panelGrid
+
+					columns="2"
+					styleClass="table table-hover table-bordered">
+
+					<!-- TITLE -->
+					<h:outputText value="#{msgs.titel}:" />
+					<span
+						title="#{ProzessverwaltungForm.mySchritt.titel}"
+						data-toggle="tooltip">#{ProzessverwaltungForm.mySchritt.titelLokalisiert}</span>
+					<!-- // TITLE -->
+
+					<!-- ID -->
+					<h:outputText value="#{msgs.id}:" />
+					<h:outputText value="#{ProzessverwaltungForm.mySchritt.id}" />
+					<!-- // ID -->
+
+					<!-- ORDER -->
+					<h:outputText value="#{msgs.reihenfolge}:" />
+					<h:outputText
+						value="#{ProzessverwaltungForm.mySchritt.reihenfolge}" />
+					<!-- // ORDER -->
+
+					<!-- PRIORITY -->
+					<h:outputText value="#{msgs.prioritaet}:" />
+					<h:panelGroup>
+						<h:panelGroup
+							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 0}">
+							<span class="badge badge-intranda-ultralight">
+								#{msgs.normalePrioritaet} </span>
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 1}">
+							<span class="badge badge-intranda-orange">
+								<span class="fa fa-lightbulb-o" />
+								#{msgs.badgePriority1}
+							</span>
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 2}">
+							<span class="badge badge-intranda-orange">
+								<span class="fa fa-lightbulb-o" />
+								#{msgs.badgePriority2}
+							</span>
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 2 and ProzessverwaltungForm.mySchritt.prioritaet lt 10}">
+							<span class="badge badge-intranda-orange">
+								<span class="fa fa-lightbulb-o" />
+								#{msgs.badgePriority3}
+							</span>
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 9}">
+							<span class="badge badge-intranda-red">
+								<span class="fa fa-bullhorn" />
+								#{msgs.badgeCorrection}
+							</span>
+						</h:panelGroup>
+					</h:panelGroup>
+					<!-- // PRIORITY -->
+
+					<!-- TYPE -->
+					<h:outputText
+						value="#{msgs.typ}:"
+						rendered="#{ProzessverwaltungForm.mySchritt.typeSpecified}" />
+					<h:panelGroup
+						rendered="#{ProzessverwaltungForm.mySchritt.typeSpecified}">
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.metadaten}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typMetadaten}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.importMittelsFileUpload}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typImportFileUpload}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.exportDMS}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typExportDMS}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.schrittBeimAnnehmenAbschliessen}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenAbschliessen}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.beimAnnehmenModulStarten}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModul}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModulUndAbschliessen}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.imagesLesen}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typImagesLesen}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.imagesSchreiben}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typImagesSchreiben}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.beimAbschliessenVerifizieren}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typBeimAbschliessenVerifizieren}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.automatischerSchritt}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typAutomatisch}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.typeThumbnailStep}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typAutomaticThumbnail}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.typScriptStep}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.modulSchritt}: #{ProzessverwaltungForm.mySchritt.typModulName}"
+							rendered="#{ProzessverwaltungForm.mySchritt.typModulName!=null and ProzessverwaltungForm.mySchritt.typModulName!=''}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.stepPlugin}: #{ProzessverwaltungForm.mySchritt.stepPlugin}"
+							rendered="#{ProzessverwaltungForm.mySchritt.stepPlugin!=null and ProzessverwaltungForm.mySchritt.stepPlugin!=''}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.validationPlugin}"
+							rendered="#{ProzessverwaltungForm.mySchritt.validationPlugin!=null and ProzessverwaltungForm.mySchritt.validationPlugin!=''}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.timeDelayPlugin}"
+							rendered="#{ProzessverwaltungForm.mySchritt.delayStep!=null and ProzessverwaltungForm.mySchritt.delayStep!='' and ProzessverwaltungForm.mySchritt.delayStep}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.batchStep}"
+							rendered="#{ProzessverwaltungForm.mySchritt.batchStep}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.updateMetadataIndex}"
+							rendered="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.process_generateDocket}"
+							rendered="#{ProzessverwaltungForm.mySchritt.generateDocket}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs.httpStep}"
+							rendered="#{ProzessverwaltungForm.mySchritt.httpStep}" />
+						<h:outputText
+							styleClass="d-block"
+							value="#{msgs['queue_'.concat(ProzessverwaltungForm.mySchritt.messageQueue.toString())]}"
+							rendered="#{ProzessverwaltungForm.mySchritt.messageQueue ne 'NONE'}" />
+					</h:panelGroup>
+					<!-- // TYPE -->
+
+					<!-- SCRIPTS -->
+					<h:outputText
+						value="#{msgs.script}:"
+						rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and not empty ProzessverwaltungForm.mySchritt.allScriptPaths}" />
+					<h:panelGroup
+						rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and not empty ProzessverwaltungForm.mySchritt.allScriptPaths}">
+						<h:panelGroup styleClass="d-block">
+							<h:outputText
+								id="nameautomatisch"
+								value="#{ProzessverwaltungForm.mySchritt.scriptname1}" />
+							<h:outputText
+								id="txtautomatisch"
+								styleClass="font-light "
+								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad}" />
+						</h:panelGroup>
+
+						<h:panelGroup styleClass="d-block">
+							<h:outputText
+								id="nameautomatisch2"
+								value="#{ProzessverwaltungForm.mySchritt.scriptname2}" />
+							<h:outputText
+								id="txtautomatisch2"
+								styleClass="font-light "
+								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad2}" />
+						</h:panelGroup>
+
+						<h:panelGroup styleClass="d-block">
+							<h:outputText
+								id="nameautomatisch3"
+								value="#{ProzessverwaltungForm.mySchritt.scriptname3}" />
+							<h:outputText
+								id="txtautomatisch3"
+								styleClass="font-light "
+								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad3}" />
+						</h:panelGroup>
+
+						<h:panelGroup styleClass="d-block">
+							<h:outputText
+								id="nameautomatisch4"
+								value="#{ProzessverwaltungForm.mySchritt.scriptname4}" />
+							<h:outputText
+								id="txtautomatisch4"
+								styleClass="font-light "
+								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad4}" />
+						</h:panelGroup>
+
+						<h:panelGroup styleClass="d-block">
+							<h:outputText
+								id="nameautomatisch5"
+								value="#{ProzessverwaltungForm.mySchritt.scriptname5}" />
+							<h:outputText
+								id="txtautomatisch5"
+								styleClass="font-light "
+								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad5}" />
+						</h:panelGroup>
+					</h:panelGroup>
+					<!-- // SCRIPTS -->
+
+					<!-- STATUS -->
+					<h:outputText value="#{msgs.status}:" />
+					<h:panelGroup>
+						<div title="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}"
+							rel="tooltip"
+							data-toggle="tooltip"
+							class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.color)}"/>
+						<div class="ms-2 d-inline-block align-middle">
+						<h:outputText
+							value="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}" />
+						</div>
+					</h:panelGroup>
+					<!-- // STATUS -->
+
+				</h:panelGrid>
+				<!-- // BOX CONTENT -->
+
+			</intranda:box>
+
+		</h:panelGroup>
+		<!-- // BOX WITH TABLE FOR STEP DETAILS -->
+
+
+
+		<!-- BOX TO EDIT THE STEP DETAILS -->
+		<h:panelGroup
+			rendered="#{ProzessverwaltungForm.modusBearbeiten=='schritt'}">
+
+			<intranda:box
+				boxType="action"
+				boxForm="true"
+				boxPadding="false"
+				title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.details.concat(' - ').concat(ProzessverwaltungForm.myProzess.titel) : msgs.details}"
+				icon="fa-edit">
+
+				<!-- TITLE -->
+				<intranda:formInputText
+					id="title"
+					name="titel2"
+					label="#{msgs.titel}"
+					field="#{ProzessverwaltungForm.mySchritt.titel}"
+					help="#{msgs.helpProcessStepTitle}"
+					required="true" />
+
+				<!-- ORDER -->
+				<intranda:formInputText
+					id="order"
+					name="reihenfolge2"
+					label="#{msgs.reihenfolge}"
+					field="#{ProzessverwaltungForm.mySchritt.reihenfolge}"
+					help="#{msgs.helpProcessStepOrder}"
+					required="true" />
+
+				<!-- ALLOW PARALLEL -->
+				<intranda:formInputCheckBox
+					id="allowParallelTask"
+					label="#{msgs.allowParallelTask}"
+					field="#{ProzessverwaltungForm.createNewStepAllowParallelTask}"
+					help="#{msgs.helpProcessStepAllowParallelTask}"
+					name="allowParallelTask"
+					rendered="#{ProzessverwaltungForm.mySchritt.id == null}" />
+
+				<!-- PRIORITY -->
+				<intranda:formInputDropDown
+					id="priority"
+					label="#{msgs.prioritaet}"
+					field="#{ProzessverwaltungForm.mySchritt.prioritaet}"
+					help="#{msgs.helpProcessStepPriority}"
+					name="prioritaet"
+					selectItems="#{HelperForm.stepPriorityList}"
+					required="true" />
+
+				<!-- METADATA EDITOR -->
+				<intranda:formInputCheckBox
+					id="metadata"
+					label="#{msgs.metadaten}"
+					field="#{ProzessverwaltungForm.mySchritt.typMetadaten}"
+					help="#{msgs.helpProcessStepMetadata}"
+					name="metadataname" />
+
+				<!-- IMAGES READ -->
+				<intranda:formInputCheckBox
+					id="readImages"
+					label="#{msgs.imagesLesen}"
+					field="#{ProzessverwaltungForm.mySchritt.typImagesLesen}"
+					help="#{msgs.helpProcessStepReadImages}"
+					name="chkLesen" />
+
+				<!-- IMAGES WRITE -->
+				<!-- TODO Javascript onclick="if(this.checked) document.getElementById('chkLesen').checked=true;" -->
+				<intranda:formInputCheckBox
+					id="writeImages"
+					label="#{msgs.imagesSchreiben}"
+					field="#{ProzessverwaltungForm.mySchritt.typImagesSchreiben}"
+					help="#{msgs.helpProcessStepWriteImages}"
+					name="chkSchreiben" />
+
+				<!-- VALIDATION -->
+				<intranda:formInputCheckBox
+					id="verify"
+					label="#{msgs.beimAbschliessenVerifizieren}"
+					field="#{ProzessverwaltungForm.mySchritt.typBeimAbschliessenVerifizieren}"
+					help="#{msgs.helpProcessStepVerify}"
+					name="verifyname" />
+
+				<!-- EXPORT -->
+				<intranda:formInputCheckBox
+					id="exportDMS"
+					label="#{msgs.exportDMS}"
+					field="#{ProzessverwaltungForm.mySchritt.typExportDMS}"
+					help="#{msgs.helpProcessStepExport}"
+					name="export" />
+
+				<!-- FINISH DIRECTLY - not neeeded anymore
+				<intranda:formInputCheckBox
+					id="schrittBeimAnnehmenAbschliessen"
+					label="#{msgs.schrittBeimAnnehmenAbschliessen}"
+					field="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenAbschliessen}"
+					help="#{msgs.helpProcessStepFinish}"
+					name="chkmanuell1" />
+
+				<h:panelGroup rendered="#{false}">
+					<intranda:formInputCheckBox
+						id="beimAnnehmenModulStarten"
+						label="#{msgs.beimAnnehmenModulStarten}"
+						field="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModul}"
+						help="#{msgs.helpProcessStepStartModule}"
+						name="chkmanuell2" />
+					<intranda:formInputCheckBox
+						id="beimAnnehmenModulStartenUndSchrittAbschliessen"
+						label="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}"
+						field="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModulUndAbschliessen}"
+						help="#{msgs.helpProcessStepStartModuleAndFinish}"
+						name="chkmanuell3" />
+				</h:panelGroup>
+				-->
+
+				<!-- AUTOMATIC -->
+				<div class="row">
+
+					<div class="col-12 col-md-3">
+						<intranda:formLabel label="#{msgs.automatischerSchritt}"
+								labelFor="automatic" labelRequired="false"/>
+					</div>
+
+					<div class="col-12 col-md-9">
+						<h:selectBooleanCheckbox
+							forceId="true"
+							styleClass="form-check-input"
+							id="automatic"
+							onclick="txtAutomatischAnzeigen()"
+							value="#{ProzessverwaltungForm.mySchritt.typAutomatisch}" />
+
+
+						<div id="messageQueueDropDown" class="ms-3">
+							<h:selectOneMenu
+								id="messageQueue"
+								pt:aria-label="#{msgs.messageQueue}"
+								styleClass="form-select col-12"
+								value="#{ProzessverwaltungForm.mySchritt.messageQueue}"
+								tabindex="0">
+								<f:selectItems
+									value="#{ProzessverwaltungForm.possibleMessageQueues}"
+									var="item"
+									itemLabel="#{msgs['queue_'.concat(item.toString())]}" />
+							</h:selectOneMenu>
+							<h:message
+								for="messageQueue"
+								showDetail="true"
+								styleClass="help-inline font-danger" />
+						</div>
+						<!-- Help messages, inline + warning -->
+						<intranda:formHelp content="#{msgs.helpProcessStepAutomatic}" msgFor="automatic" />
+						<intranda:formHelp content="#{msgs.helpMessageQueueSelection}" />
+					</div>
+				</div>
+				<!-- // AUTOMATIC -->
+
+				<!-- THUMBS -->
+				<div class="row">
+					<div class="col-12 col-md-3">
+						<intranda:formLabel label="#{msgs.typeThumbnailStep}"
+								labelFor="autoThumbnail" labelRequired="false"/>
+					</div>
+
+					<div class="col-12 col-md-9">
+						<h:selectBooleanCheckbox
+							forceId="true"
+							styleClass="form-check-input"
+							id="autoThumbnail"
+							onclick="showThumbsSettings()"
+							value="#{ProzessverwaltungForm.mySchritt.typAutomaticThumbnail}" />
+						<intranda:formHelp content="#{msgs.helpProcessStepAutomaticThumbnail}" msgFor="autoThumbnail" />
+
+						<div id="thumbsSettings" class="ps-5 w-100">
+							<h:inputTextarea
+								id="ThumbSettings"
+								forceId="true"
+								rows="8"
+								value="#{ProzessverwaltungForm.mySchritt.automaticThumbnailSettingsYaml}"
+								styleClass="form-control"
+								required="false" />
+						</div>
+					</div>
+				</div>
+				<!-- // THUMBS -->
+
+				<!-- SCRIPTS -->
+				<div class="row">
+					<div class="col-12 col-md-3">
+						<intranda:formLabel label="#{msgs.ScriptSchritt}"
+								labelFor="chkautomatisch" labelRequired="false"/>
+					</div>
+
+					<div class="col-12 col-md-9">
+
+						<h:selectBooleanCheckbox
+							forceId="true"
+							styleClass="form-check-input"
+							id="chkautomatisch"
+							onclick="txtAutomatischAnzeigen()"
+							value="#{ProzessverwaltungForm.mySchritt.typScriptStep}" />
+						<intranda:formHelp content="#{msgs.helpProcessScripts}" msgFor="chkautomatisch" />
+
+
+						<div id="scripttable" class="ps-5">
+							<div class="row border border-0">
+								<div class="col-3 min-vh-0">
+									<h:outputText
+										id="scriptname2"
+										value="#{msgs.scriptname}" />
+								</div>
+								<div class="col-9 min-vh-0">
+									<h:outputText
+										id="scrpitpfad2"
+										value="#{msgs.scriptpath}" />
+								</div>
+								<div class="col-3">
+									<h:inputText
+										id="nameautomatisch"
+										pt:aria-label="#{msgs.scriptname}"
+										forceId="true"
+										styleClass="form-control"
+										value="#{ProzessverwaltungForm.mySchritt.scriptname1}" />
+								</div>
+								<div class="col-9">
+									<h:inputText
+										id="txtautomatisch"
+										pt:aria-label="#{msgs.scriptpath}"
+										forceId="true"
+										styleClass="form-control"
+										value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad}" />
+								</div>
+								<div class="col-sm-3">
+									<h:inputText
+										id="nameautomatisch2"
+										pt:aria-label="#{msgs.scriptname}"
+										forceId="true"
+										styleClass="form-control"
+										value="#{ProzessverwaltungForm.mySchritt.scriptname2}" />
+								</div>
+								<div class="col-sm-9">
+									<h:inputText
+										id="txtautomatisch2"
+										pt:aria-label="#{msgs.scriptpath}"
+										forceId="true"
+										styleClass="form-control"
+										value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad2}" />
+								</div>
+								<div class="col-sm-3">
+									<h:inputText
+										id="nameautomatisch3"
+										pt:aria-label="#{msgs.scriptname}"
+										forceId="true"
+										styleClass="form-control"
+										value="#{ProzessverwaltungForm.mySchritt.scriptname3}" />
+								</div>
+								<div class="col-sm-9">
+									<h:inputText
+										id="txtautomatisch3"
+										pt:aria-label="#{msgs.scriptpath}"
+										forceId="true"
+										styleClass="form-control"
+										value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad3}" />
+								</div>
+								<div class="col-sm-3">
+									<h:inputText
+										id="nameautomatisch4"
+										pt:aria-label="#{msgs.scriptname}"
+										forceId="true"
+										styleClass="form-control"
+										value="#{ProzessverwaltungForm.mySchritt.scriptname4}" />
+								</div>
+								<div class="col-sm-9">
+									<h:inputText
+										id="txtautomatisch4"
+										pt:aria-label="#{msgs.scriptpath}"
+										forceId="true"
+										styleClass="form-control"
+										value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad4}" />
+								</div>
+								<div class="col-sm-3">
+									<h:inputText
+										id="nameautomatisch5"
+										pt:aria-label="#{msgs.scriptname}"
+										forceId="true"
+										styleClass="form-control"
+										value="#{ProzessverwaltungForm.mySchritt.scriptname5}" />
+								</div>
+								<div class="col-sm-9">
+									<h:inputText
+										id="txtautomatisch5"
+										pt:aria-label="#{msgs.scriptpath}"
+										forceId="true"
+										styleClass="form-control"
+										value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad5}" />
+								</div>
+							</div>
+
+
+
+
+
+
+
+						</div>
+						<h:message
+							for="chkautomatisch"
+							style="color: red"
+							replaceIdWithLabel="true" />
+					</div>
+				</div>
+				<!-- // SCRIPTS -->
+
+				<!-- HTTP -->
+				<h:panelGroup
+					layout="block"
+					class="row"
+					style=""
+					id="httpControls">
+
+					<div class="col-12 col-md-3">
+						<intranda:formLabel label="#{msgs.HttpSchritt}"
+								labelFor="chkhttp" labelRequired="false"/>
+					</div>
+
+					<div class="col-12 col-md-9">
+						<h:selectBooleanCheckbox
+							styleClass="form-check-input"
+							id="chkhttp"
+							value="#{ProzessverwaltungForm.mySchritt.httpStep}">
+							<f:ajax
+								event="click"
+								render="httpControls"
+								execute="@this" />
+						</h:selectBooleanCheckbox>
+						<intranda:formHelp content="#{msgs.helpHttpStep}" msgFor="chkhttp" />
+
+						<ui:fragment rendered="#{ProzessverwaltungForm.mySchritt.httpStep}">
+							<div class="col-sm-12 mt-3 ms-5">
+								<div class="checkbox">
+									<label>
+									<h:selectBooleanCheckbox
+											styleClass="form-check-input"
+											id="chkhttpclosestep"
+											value="#{ProzessverwaltungForm.mySchritt.httpCloseStep}" />
+										#{msgs.httpCloseStep}
+									</label>
+								</div>
+								<h:message
+									for="chkhttpclosestep"
+									showDetail="true"
+									styleClass="help-inline font-danger" />
+								<intranda:formHelp content="#{msgs.helpHttpCloseStep}" />
+							</div>
+
+							<div
+								class="col-sm-12 mt-3 ms-5">
+								<label>#{msgs.httpMethod}</label>
+								<h:selectOneMenu
+									id="httpMethod"
+									forceId="true"
+									styleClass="form-control"
+									value="#{ProzessverwaltungForm.mySchritt.httpMethod}">
+									<f:selectItems
+										value="#{ProzessverwaltungForm.mySchritt.possibleHttpMethods}" />
+								</h:selectOneMenu>
+							</div>
+							<div class="col-sm-12 mt-3 ms-5">
+								<label>#{msgs.httpUrl}</label>
+								<h:inputText
+									id="httpUrl"
+									forceId="true"
+									styleClass="form-control"
+									value="#{ProzessverwaltungForm.mySchritt.httpUrl}" />
+							</div>
+							<div
+								class="col-sm-12 mt-3 ms-5">
+								<label>#{msgs.httpBody}</label>
+								<div class="checkbox">
+									<label> <h:selectBooleanCheckbox
+											id="chkhttpescapejson"
+											value="#{ProzessverwaltungForm.mySchritt.httpEscapeBodyJson}" />
+										#{msgs.httpEscapeBodyJson}
+									</label>
+								</div>
+								<h:inputTextarea
+									styleClass="form-control"
+									value="#{ProzessverwaltungForm.mySchritt.httpJsonBody}"
+									onkeyup="checkJSON(event)"></h:inputTextarea>
+								<h:outputText
+									id="jsonError"
+									style="display:none"
+									styleClass="help-inline font-danger"
+									value="#{msgs.stepInvalidJsonError}" />
+							</div>
+						</ui:fragment>
+						<h:message
+							for="chkautomatisch"
+							style="color: red"
+							replaceIdWithLabel="true" />
+					</div>
+				</h:panelGroup>
+				<!-- // HTTP -->
+
+				<!-- STATUS -->
+				<intranda:formInputDropDown
+					id="status"
+					label="#{msgs.status}"
+					field="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusAsString}"
+					help="#{msgs.helpProcessStepStatus}"
+					name="statusname"
+					selectItems="#{HelperForm.stepStatusList}"
+					required="true" />
+
+				<!-- BATCH -->
+				<intranda:formInputCheckBox
+					id="batchStep"
+					label="#{msgs.batchStep}"
+					field="#{ProzessverwaltungForm.mySchritt.batchStep}"
+					help="#{msgs.helpProcessStepBatch}"
+					name="batch" />
+
+				<!-- STEP PLUGIN -->
+				<intranda:formInputDropDownWithEmptyValue
+					id="stepPlugin"
+					label="#{msgs.stepPlugin}"
+					field="#{ProzessverwaltungForm.mySchritt.stepPlugin}"
+					help="#{msgs.helpProcessStepPlugin}"
+					name="stepplugin"
+					selectItems="#{ProzessverwaltungForm.possibleStepPlugins}"
+					required="false" />
+
+				<!-- VALIDATION PLUGIN -->
+				<intranda:formInputDropDownWithEmptyValue
+					id="validationPlugin"
+					label="#{msgs.validationPlugin}"
+					field="#{ProzessverwaltungForm.mySchritt.validationPlugin}"
+					help="#{msgs.helpProcessValidationPlugin}"
+					name="validationplugin"
+					selectItems="#{ProzessverwaltungForm.possibleValidationPlugins}"
+					required="false" />
+
+				<!-- DELAY PLUGIN -->
+				<intranda:formInputCheckBox
+					id="delay"
+					label="#{msgs.timeDelayPlugin}"
+					field="#{ProzessverwaltungForm.mySchritt.delayStep}"
+					help="#{msgs.helpTimeDelayPlugin}"
+					name="timeDelay" />
+
+				<!-- UPDATE DATABASE INDEX -->
+				<intranda:formInputCheckBox
+					id="metadataIndex"
+					label="#{msgs.updateMetadataIndex}"
+					field="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}"
+					help="#{msgs.helpUpdateMetadataIndex}"
+					name="updateMetadataIndex" />
+
+				<!-- DOWNLOAD DOCKET -->
+				<intranda:formInputCheckBox
+					id="generateDocket"
+					label="#{msgs.process_generateDocket}"
+					field="#{ProzessverwaltungForm.mySchritt.generateDocket}"
+					help="#{msgs.helpPrintDocket}"
+					name="generateDocketname" />
+
+				<div class="box__actions">
+
+					<!-- Cancel -->
+					<button
+						jsf:id="cancel"
+						class="btn btn-blank"
+						jsf:immediate="true"
+						jsf:action="#{NavigationForm.Reload}">
+						<h:outputText value="#{msgs.abbrechen}" />
+						<f:setPropertyActionListener
+							target="#{ProzessverwaltungForm.modusBearbeiten}"
+							value="" />
+					</button>
+
+					<!-- Save -->
+					<button
+						class="btn btn-success submitOnEnter"
+						jsf:id="save"
+						type="submit"
+						jsf:action="#{ProzessverwaltungForm.SchrittUebernehmen}">
+						<span class="fa fa-save" />
+						<span>
+							<h:outputText value="#{msgs.speichern}" />
+						</span>
+						<f:setPropertyActionListener
+							target="#{ProzessverwaltungForm.modusBearbeiten}"
+							value="" />
+					</button>
+
+
+					<!-- Delete -->
+					<button
+						jsf:id="delete"
+						class="btn btn-hot trigger-delete"
+						onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
+						jsf:action="#{ProzessverwaltungForm.SchrittLoeschen}"
+						jsf:rendered="#{ProzessverwaltungForm.mySchritt.id != null}">
+						<span class="fa fa-trash-o" />
+						<span>
+							<h:outputText value="#{msgs.loeschen}" />
+						</span>
+					</button>
+
+				</div>
+
+			</intranda:box>
+		</h:panelGroup>
+		<!-- // BOX TO EDIT THE STEP DETAILS -->
+
+
+		<script type="text/javascript">
+			if (window.attachEvent) {
+				window.attachEvent('onload',
+						function(){txtAutomatischAnzeigen(); initThumbCodeMirror(); showThumbsSettings();});
+			} else {
+				if (window.onload) {
+					var curronload = window.onload;
+					var newonload = function() {
+						curronload();
+						txtAutomatischAnzeigen();
+						initThumbCodeMirror();
+						showThumbsSettings();
+					};
+					window.onload = newonload;
+				} else {
+					window.onload = function() {
+						txtAutomatischAnzeigen();
+						initThumbCodeMirror();
+						showThumbsSettings();
+					}
+				}
+			}
+
+			function checkJSON(e) {
+				var errMsg = document
+						.querySelector("#myform\\:jsonError");
+				if (document
+						.querySelector("#myform\\:chkhttpescapejson").checked) {
+					var valid = true;
+					var val = e.target.value;
+					try {
+						JSON.parse(val);
+					} catch (error) {
+						valid = false;
+					}
+					if (!valid) {
+						errMsg.style.display = "block";
+					} else {
+						errMsg.style.display = "none";
+					}
+				} else {
+					errMsg.style.display = "none";
+				}
+			}
+
+			// Funktion, die Änderungen prüft
+			function chkManuellAutomatischSetzen(
+					element) {
+				//alert(element.id);
+				if (element.id != "chkmanuell1")
+					document
+							.getElementById("chkmanuell1").checked = false;
+				if (element.id != "chkmanuell2")
+					document
+							.getElementById("chkmanuell2").checked = false;
+				if (element.id != "chkmanuell3")
+					document
+							.getElementById("chkmanuell3").checked = false;
+				if (element.id != "chkmanuell4")
+					document
+							.getElementById("chkmanuell4").checked = false;
+				//  		if (element.id != "chkautomatisch") document.getElementById("chkautomatisch").checked=false;
+				txtAutomatischAnzeigen();
+				//element.checked=true;
+			}
+
+			function txtAutomatischAnzeigen() {
+				var myelement = document.querySelector("[id$='chkautomatisch']");
+
+				if (myelement != null) {
+					if (myelement.checked) {
+						document
+								.getElementById("scripttable").style.display = "block";
+					} else {
+						document
+								.getElementById("scripttable").style.display = "none";
+					}
+				}
+				var checkAuto = document
+						.querySelector('#automatic');
+				if (checkAuto != null) {
+					if (checkAuto.checked) {
+						$('#messageQueueDropDown')
+								.show();
+					} else {
+						$('#messageQueueDropDown')
+								.hide();
+					}
+				}
+			}
+
+			function showThumbsSettings(){
+				var element = document.querySelector("[id$='autoThumbnail']");
+				if(element != null){
+					if(element.checked){
+						document.getElementById("thumbsSettings").style.display="block";
+					}else{
+						document.getElementById("thumbsSettings").style.display="none";
+					}
+				}
+			}
+
+			var yamlCodeMirror;
+
+			function initThumbCodeMirror(){
+				var yamlTextArea = document.querySelector('[id$=ThumbSettings]');
+				if(yamlTextArea) {
+					yamlCodeMirror = CodeMirror.fromTextArea(yamlTextArea, {
+   						lineNumbers: true,
+   						mode: 'yaml'
+   					});
+					yamlCodeMirror.on('change', editor => {
+						yamlTextArea.innerHTML = editor.getValue();
+   				    });
+               	}
+			}
+		</script>
+	</composite:implementation>
+
+</ui:composition>

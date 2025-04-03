@@ -2,12 +2,13 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:section="http://goobi.io/section"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:form="http://goobi.io/form">
     <composite:interface/>
     <composite:implementation>
         <ui:fragment rendered="#{Metadaten.modusHinzufuegen}">
@@ -42,8 +43,18 @@
                                     <h:inputText id="myInput" pt:aria-label="#{msgs.wert}" styleClass="form-control" value="#{Metadaten.metadatum.value}" disabled="#{Metadaten.metadatum.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" rendered="#{(Metadaten.outputType == 'input' or                                             Metadaten.outputType == 'vocabularySearch' or                                             Metadaten.outputType == 'convertibleDate')                                             and !Metadaten.metadatum.normdata}">
                                     </h:inputText>
                                     <!-- TEXTAREA -->
-                                    <h:inputTextarea id="myTextarea" styleClass="form-control" value="#{Metadaten.metadatum.value}" disabled="#{Metadaten.metadatum.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" rendered="#{Metadaten.outputType == 'textarea'}">
-                                    </h:inputTextarea>
+                                    <h:panelGroup
+                                        rendered="#{Metadaten.outputType == 'textarea'}">
+                                        <form:grow-wrap>
+                                            <h:inputTextarea
+                                                id="myTextarea"
+                                                styleClass="form-control"
+                                                value="#{Metadaten.metadatum.value}"
+                                                disabled="#{Metadaten.metadatum.disableMetadataField}"
+                                                readonly="#{Metadaten.nurLesenModus}" >
+                                            </h:inputTextarea>
+                                        </form:grow-wrap>
+                                    </h:panelGroup>
                                     <!-- TEXTAREA FOR HTML -->
                                     <h:inputTextarea id="textareaHtml" styleClass="form-control textarea-html" value="#{Metadaten.metadatum.value}" disabled="#{Metadaten.metadatum.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" rendered="#{Metadaten.outputType == 'htmlInput'}">
                                     </h:inputTextarea>

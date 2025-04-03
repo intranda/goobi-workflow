@@ -5,10 +5,11 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/templatePG/templatePG.html"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    template="/uii/template/template.html"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:form="http://goobi.io/form">
 
 
     <ui:param
@@ -111,8 +112,7 @@
 
                             <div
                                 class="gw-table-fixed"
-                                tabindex="0"
-                                data-scrolldown="true">
+                                tabindex="0">
                                 <h:panelGrid
                                     columns="2"
                                     styleClass="table table-hover table-bordered"
@@ -189,8 +189,7 @@
 
                             <div
                                 class="gw-table gw-table-fixed"
-                                tabindex="0"
-                                data-scrolldown="true">
+                                tabindex="0">
                                 <div class="gw-table__wrapper">
                                     <h:dataTable
                                         var="item"
@@ -305,8 +304,7 @@
 
                             <div
                                 class="gw-table-fixed"
-                                tabindex="0"
-                                data-scrolldown="true">
+                                tabindex="0">
                                 <h:panelGroup rendered="#{ProzesskopieForm.existingProcess.journal.size()>0}">
                                     <table class="table table-hover table-bordered pt-2 pb-2">
                                         <ui:repeat
@@ -661,7 +659,7 @@
 
                                 <ui:fragment
                                     rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and !intern.multiselect}">
-                                  
+
                                     <intranda:formInputDropDown
                                         id="select"
                                         label="#{HelperForm.getTranslation ('import_', intern.titel)}"
@@ -671,7 +669,7 @@
                                         selectItems="#{intern.selectList}"
                                         displayAsRequired="#{intern.required}"
                                         required="false" />
-                                        
+
                                 </ui:fragment>
                                 <ui:fragment
                                     rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and intern.multiselect}">
@@ -727,7 +725,7 @@
                         boxForm="true"
                         icon="fa-list"
                         title="#{msgs.eigenschaften}">
-                        <ui:include src="templatePG/includes/process/processcreation_properties.xhtml">
+                        <ui:include src="template/includes/process/processcreation_properties.xhtml">
                             <ui:param
                                 name="properties"
                                 value="#{ProzesskopieForm.configuredProperties}" />
@@ -869,14 +867,15 @@
                             </div>
                             <div class="form-input">
                                 <div class="input-group">
-                                    <h:inputTextarea
-                                        id="journal"
-                                        styleClass="form-control metsEditorTextArea"
-                                        value="#{ProzesskopieForm.addToWikiField}"
-                                        required="false"
-                                        rows="3"
-                                        tabindex="0"
-                                        pt:aria-label="#{msgs.addToProcessLog}" />
+                                    <form:grow-wrap>
+                                        <h:inputTextarea
+                                            id="journal"
+                                            styleClass="form-control metsEditorTextArea"
+                                            value="#{ProzesskopieForm.addToWikiField}"
+                                            required="false"
+                                            tabindex="0"
+                                            pt:aria-label="#{msgs.addToProcessLog}" />
+                                    </form:grow-wrap>
                                     <label class="input-group-text py-0 align-self-stretch fs-400">
                                         <h:selectBooleanCheckbox
                                             id="journal-important"
@@ -930,7 +929,7 @@
                                 <h:outputText value="#{msgs.generieren}" />
                                 <f:ajax
                                     execute="@form"
-                                    render="@form" />
+                                    render="@all" />
                             </button>
                         </div>
                     </intranda:box>

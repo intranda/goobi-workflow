@@ -1,0 +1,155 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface />
+
+	<composite:implementation>
+
+		<!--
+		<ui:composition
+			xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+			xmlns:h="http://xmlns.jcp.org/jsf/html"
+			xmlns:f="http://xmlns.jcp.org/jsf/core"
+			xmlns:c="http://java.sun.com/jsp/jstl/core"
+			xmlns:o="http://omnifaces.org/ui"
+			xmlns:of="http://omnifaces.org/functions"
+			template="/uii/template/template.html"
+
+			xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+			xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+			<ui:param
+				name="myPageTitle"
+				value="YOUR PAGE" />
+
+			<ui:define name="breadcrumb">
+				<intranda:breadcrumb
+					id="index"
+					label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+					action="index"
+					navId="a0" />
+				<intranda:breadcrumb
+					id="docket_all"
+					label="#{myPageTitle}"
+					action="style"
+					noSeparator="#{true}" />
+			</ui:define>
+
+			<ui:define name="content">
+				<h:form id="myform">
+
+					<main class="row">
+						<div class="col-12">
+
+							<intranda:box
+								boxType="primary"
+								boxPadding="true"
+								icon="fa-search"
+								title="#{msgs.search}">
+
+								<h:outputText value="Box with boxType primary" />
+							</intranda:box>
+
+						</div>
+
+					</main>
+				</h:form>
+			</ui:define>
+
+		</ui:composition>
+		-->
+
+
+		<!-- CODE -->
+		<div class="accordion-item mt-3">
+			<h2 class="accordion-header">
+				<button
+					data-bs-target="#codeGeneral"
+					class="accordion-button btn btn-primary-400 collapsed"
+					type="button"
+					data-bs-toggle="collapse"
+					aria-expanded="false"
+					aria-controls="collapseOne">Code Snippet</button>
+			</h2>
+			<div
+				id="codeGeneral"
+				class="accordion-collapse collapse"
+				data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+
+					<pre
+						class="code--form-actions bg-neutral-500 text-white px-4"
+						style="border-radius: var(- -border-radius)">
+						<code class="microlight">
+&lt;ui:composition
+	xmlns=&quot;http://www.w3.org/1999/xhtml&quot;
+	xmlns:ui=&quot;http://xmlns.jcp.org/jsf/facelets&quot;
+	xmlns:h=&quot;http://xmlns.jcp.org/jsf/html&quot;
+	xmlns:f=&quot;http://xmlns.jcp.org/jsf/core&quot;
+	xmlns:c=&quot;http://java.sun.com/jsp/jstl/core&quot;
+	xmlns:o=&quot;http://omnifaces.org/ui&quot;
+	xmlns:of=&quot;http://omnifaces.org/functions&quot;
+	template=&quot;/uii/template/template.html&quot;
+	xmlns:intranda=&quot;http://xmlns.jcp.org/jsf/composite/composites&quot;
+	xmlns:jsf=&quot;http://xmlns.jcp.org/jsf&quot;&gt;
+
+	&lt;ui:param
+		name=&quot;myPageTitle&quot;
+		value=&quot;YOUR PAGE&quot; /&gt;
+
+	&lt;ui:define name=&quot;breadcrumb&quot;&gt;
+		&lt;intranda:breadcrumb
+			id=&quot;index&quot;
+			label=&quot;#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}&quot;
+			action=&quot;index&quot;
+			navId=&quot;a0&quot; /&gt;
+		&lt;intranda:breadcrumb
+			id=&quot;docket_all&quot;
+			label=&quot;#{myPageTitle}&quot;
+			action=&quot;style&quot;
+			noSeparator=&quot;#{true}&quot; /&gt;
+	&lt;/ui:define&gt;
+
+	&lt;ui:define name=&quot;content&quot;&gt;
+		&lt;h:form id=&quot;myform&quot;&gt;
+
+			&lt;main class=&quot;row&quot;&gt;
+				&lt;div class=&quot;col-12&quot;&gt;
+
+					&lt;intranda:box
+						boxType=&quot;primary&quot;
+						boxPadding=&quot;true&quot;
+						icon=&quot;fa-search&quot;
+						title=&quot;#{msgs.search}&quot;&gt;
+
+						&lt;h:outputText value=&quot;Box with boxType primary&quot; /&gt;
+					&lt;/intranda:box&gt;
+
+				&lt;/div&gt;
+
+			&lt;/main&gt;
+		&lt;/h:form&gt;
+	&lt;/ui:define&gt;
+
+&lt;/ui:composition&gt;
+						</code>
+					</pre>
+
+				</div>
+			</div>
+		</div>
+		<!-- // CODE -->
+
+	</composite:implementation>
+</ui:composition>

@@ -1,7 +1,7 @@
 <ui:composition
     xmlns:ui="http://java.sun.com/jsf/facelets"
 >
-    <div class="#{padding ? 'section-body-padded' : ''}#{styleClass != null ? ' ' : ''}#{styleClass != null ? styleClass : ''}">
+    <div class="#{padding ? 'section-body-padded' : 'section-body'}#{styleClass != null ? ' ' : ''}#{styleClass != null ? styleClass : ''}">
         <ui:insert />
     </div>
 </ui:composition>

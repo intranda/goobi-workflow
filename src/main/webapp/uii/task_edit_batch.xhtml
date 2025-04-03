@@ -5,9 +5,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/templatePG/templatePG.html"
-    
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    template="/uii/template/template.html"
+
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -43,7 +43,7 @@
 
             <!-- DETAILS OF STEP AND PROCESS -->
             <div class="col-sm-6">
-                <ui:include src="templatePG/includes/task/box_details.xhtml">
+                <ui:include src="template/includes/task/box_details.xhtml">
                     <ui:param
                         name="currentStep"
                         value="#{AktuelleSchritteForm.batchHelper.currentStep}" />
@@ -104,7 +104,7 @@
                     styleClass="mb-3"
                     id="propform2"
                     rendered="#{AktuelleSchritteForm.batchHelper.propertyListSize>0 or AktuelleSchritteForm.batchHelper.sizeOfDisplayableMetadata>0}">
-                    <ui:include src="templatePG/includes/task/box_properties.xhtml">
+                    <ui:include src="template/includes/task/box_properties.xhtml">
                         <ui:param
                             name="currentStep"
                             value="#{AktuelleSchritteForm.mySchritt}" />
@@ -126,7 +126,7 @@
 
 
                 <!-- ACTION BOX -->
-                <ui:include src="templatePG/includes/task/box_action.xhtml">
+                <ui:include src="template/includes/task/box_action.xhtml">
                     <ui:param
                         name="currentStep"
                         value="#{AktuelleSchritteForm.batchHelper.currentStep}" />
@@ -149,8 +149,8 @@
                         id="journal2"
                         enctype="multipart/form-data"
                         prependId="false">
-<intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="true" bean="#{AktuelleSchritteForm.batchHelper.currentStep.prozess}" /> 
-                 
+<intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="true" bean="#{AktuelleSchritteForm.batchHelper.currentStep.prozess}" />
+
 
                     </h:form>
                 </div>

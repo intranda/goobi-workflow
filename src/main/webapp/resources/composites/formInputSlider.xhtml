@@ -1,9 +1,16 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<!-- This is an updated legacy component used in the layoutwizzard. Use with caution.
+ 	 Do NOT include more than one instance of this component per view, as it would break
+	 the JS for any instances after the first. -->
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
 	<composite:interface>
 		<composite:attribute name="name" />
@@ -21,54 +28,68 @@
 		<composite:attribute name="fieldStyle" />
 		<composite:attribute name="required" default="false" />
 		<composite:attribute name="displayAsRequired" default="false" />
+        <composite:attribute name="displayLabel" default="true" />
 		<composite:attribute name="style" />
 		<composite:attribute name="readonly" default="false" />
 		<composite:attribute name="forceId" default="true" />
-		<composite:attribute name="classLeft" default="col-sm-3" />
-        <composite:attribute name="classRight" default="col-sm-9" />
+		<composite:attribute name="classLeft" default="col-12 col-md-3" />
+		<composite:attribute name="classRight" default="col-12 col-md-9" />
 	</composite:interface>
 
 	<composite:implementation>
 
-		<div class="form-group" style="">
-			<div class="#{cc.attrs.classLeft} control-label">
-				<h:outputLabel for="#{cc.attrs.name}" value="#{cc.attrs.label}">
-					<f:passThroughAttribute name="title" value="#{cc.attrs.labelPopover}"></f:passThroughAttribute>
-				</h:outputLabel>
-				<h:panelGroup
-					rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}">
-					<i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip"/>
-				</h:panelGroup>
+		<!-- ROW -->
+		<div class="row">
+
+			<!-- LABEL -->
+			<div class="#{cc.attrs.classLeft}" tabindex="-1">
+				<intranda:formLabel label="#{cc.attrs.label}" labelFor="#{cc.attrs.name}"
+					labelRequired="#{cc.attrs.required or cc.attrs.displayAsRequired}" rendered="#{cc.attrs.displayLabel}"/>
+				<composite:insertChildren />
 			</div>
+			<!-- // LABEL -->
+
+			<!-- CONTENT -->
 			<div class="#{cc.attrs.classRight} input-option-slider #{cc.attrs.identifier}">
-				<input id="slider_#{cc.attrs.identifier}" class="option-slider"
-					type="text"
-					data-slider-min="#{cc.attrs.lowerLimit}"
-					data-slider-max="#{cc.attrs.upperLimit}"
-					data-slider-step="#{cc.attrs.step}"
-					data-slider-scale="#{cc.attrs.scale}"
-					data-slider-value="#{cc.attrs.field}" /> <span class="prefix">#{cc.attrs.prefix}</span>
-				<h:inputText forceId="#{cc.attrs.forceId}"
-					styleClass="#{cc.attrs.fieldStyle} slider-input"
-					value="#{cc.attrs.field}" required="#{cc.attrs.required}"
-					readonly="#{cc.attrs.readonly}" />
-				<span class="suffix">#{cc.attrs.suffix}</span>
-				<h:message for="#{cc.attrs.name}" showDetail="true"
+				<div class="d-flex flex-nowrap gap-2 w-100">
+					<input
+						class="form-range my-auto"
+						type="range"
+						min="#{cc.attrs.lowerLimit}"
+						max="#{cc.attrs.upperLimit}"
+						step="#{cc.attrs.step}"
+						data-slider-identifier="slider_#{cc.attrs.identifier}"
+						oninput="sliderInputEvent(this)"
+						value="#{cc.attrs.field}" />
+					<span class="prefix">#{cc.attrs.prefix}</span>
+					<h:inputText
+						forceId="#{cc.attrs.forceId}"
+						styleClass="#{cc.attrs.fieldStyle} form-control"
+						value="#{cc.attrs.field}"
+						pt:data-slider-identifier="slider_#{cc.attrs.identifier}"
+						pt:oninput="textInputEvent(this)"
+						required="#{cc.attrs.required}"
+						readonly="#{cc.attrs.readonly}" />
+					<span class="suffix">#{cc.attrs.suffix}</span>
+				</div>
+				<h:message
+					for="#{cc.attrs.name}"
+					showDetail="true"
 					styleClass="help-inline font-danger" />
 				<intranda:formHelp content="#{cc.attrs.help}" />
 			</div>
 		</div>
 		<script type="text/javascript">
-            var slider = $( "#slider_#{cc.attrs.identifier}" ).bootstrapSlider();
-            slider.on( "change", function( slideEvt ) {
-                $( ".#{cc.attrs.identifier} .slider-input" ).val( slideEvt.value.newValue );
-            } );
-            $( ".#{cc.attrs.identifier} .slider-input" ).on( "change", function( event ) {
-                $( "#slider_#{cc.attrs.identifier}" ).bootstrapSlider( 'setValue', parseFloat( event.currentTarget.value ) );
-            } );
+		
+			function sliderInputEvent(sliderElement) {
+				let textInput = document.querySelector( `.input-option-slider .form-control[data-slider-identifier="\${sliderElement.dataset.sliderIdentifier}"]` );
+				textInput.value = sliderElement.value;
+			}
+			function textInputEvent(textElement) {
+				let sliderInput = document.querySelector( `.input-option-slider .form-range[data-slider-identifier="\${textElement.dataset.sliderIdentifier}"]` );
+				sliderInput.value = textElement.value;
+			}
         </script>
 	</composite:implementation>
 
 </ui:composition>
-
-

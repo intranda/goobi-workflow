@@ -1,0 +1,129 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:p="http://primefaces.org/ui"
+    >
+
+    <h3 class="mt-4">#{msgs.statistischeAuswertung}</h3>
+
+    <main class="row">
+        <!-- start date -->
+        <div class="col-sm-3">
+            <div class="form-group">
+                <h:outputLabel
+                    for="cal01"
+                    styleClass="control-label"
+                    value="#{msgs.zeitraum} #{msgs.from}" />
+                <div style="display: block">
+                    <intranda:formInputCalendar3
+                        id="startdate"
+                        name="startdate"
+                        field="#{messageQueueBean.sourceDateFrom}"
+                        required="false" />
+                </div>
+            </div>
+        </div>
+        <!-- end date -->
+        <div class="col-sm-3">
+            <div class="form-group">
+                <h:outputLabel
+                    for="cal02"
+                    styleClass="control-label"
+                    value="#{msgs.to}" />
+                <div style="display: block">
+                    <intranda:formInputCalendar3
+                        id="enddate"
+                        name="enddate"
+                        field="#{messageQueueBean.sourceDateTo}"
+                        required="false" />
+                </div>
+            </div>
+        </div>
+        <!-- Time unit -->
+        <div class="col-sm-3">
+            <div class="form-group">
+                <h:outputLabel
+                    for="field02"
+                    styleClass="control-label"
+                    value="#{msgs.einheiten}" />
+                <h:selectOneMenu
+                    id="field02"
+                    value="#{messageQueueBean.sourceTimeUnit}"
+                    converter="StatisticsTimeUnitConverter"
+                    styleClass="form-control"
+                    required="false">
+                    <f:selectItems
+                        value="#{messageQueueBean.allTimeUnits}"
+                        var="unit"
+                        itemLabel="#{msgs[unit]}"
+                        itemValue="#{unit}" />
+                </h:selectOneMenu>
+
+            </div>
+        </div>
+
+        <!-- ticket type -->
+        <div class="col-sm-3">
+            <div class="form-group">
+                <h:outputLabel
+                    for="field04"
+                    styleClass="control-label"
+                    value="#{msgs.ticketType}" />
+                <h:selectOneMenu
+                    id="field04"
+                    value="#{messageQueueBean.ticketType}"
+                    styleClass="form-control"
+                    required="false">
+                    <f:selectItems
+                        value="#{messageQueueBean.allTicketTypes}"
+                        var="unit"
+                        itemLabel="#{unit}"
+                        itemValue="#{unit}" />
+                </h:selectOneMenu>
+            </div>
+        </div>
+
+
+
+        <div class="form-actions">
+
+
+            <button
+                jsf:id="myStatisticButton"
+                type="submit"
+                title="#{msgs.calculateStatistics}"
+                jsf:action="#{messageQueueBean.calculateStatistics}"
+                class="btn btn-primary">
+                <span class="fa fa-cog" />
+                <span>
+                    <h:outputText value="#{msgs.calculateStatistics}" />
+                </span>
+
+            </button>
+        </div>
+
+    </main>
+
+    <div
+        class="card"
+        jsf:rendered="#{messageQueueBean.barModelPages != null}">
+        <h5>#{msgs.Pages}</h5>
+        <p:barChart
+            model="#{messageQueueBean.barModelPages}"
+            style="width: 100%; height: 500px;" />
+    </div>
+    <div
+        class="card"
+        jsf:rendered="#{messageQueueBean.barModelVolumes != null}">
+        <h5>#{msgs.volumes}</h5>
+        <p:barChart
+            model="#{messageQueueBean.barModelVolumes}"
+            style="width: 100%; height: 500px;" />
+    </div>
+
+</ui:composition>

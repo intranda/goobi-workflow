@@ -114,6 +114,9 @@ public class TreeNodeStruct3 extends TreeNode {
     public String getMetadataPopup() {
         StringBuilder answer = new StringBuilder();
 
+        if (displayableMetadata.isEmpty() && !validationErrorPresent) {
+            return "";
+        }
         answer.append("<ul role=\"list\" class=\"metseditor-structure-table\">");
         for (StringPair sp : displayableMetadata) {
             answer.append("<li class=\"metseditor-structure-table-label\">");
@@ -123,8 +126,8 @@ public class TreeNodeStruct3 extends TreeNode {
             answer.append("</li>");
         }
         if (validationErrorPresent) {
-            answer.append("<li class=\"font-red\">");
-            answer.append("<i class=\"fa fa-exclamation-circle\"></i>");
+            answer.append("<li class=\"text-danger\">");
+            answer.append("<span class=\"fa fa-exclamation-circle d-inline-block me-2\"></span>");
             answer.append(validationMessage);
             answer.append("</li>");
         }

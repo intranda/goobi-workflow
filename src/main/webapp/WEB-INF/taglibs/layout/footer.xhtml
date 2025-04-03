@@ -1,6 +1,7 @@
 <ui:composition
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+        xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
 >
     <footer class="footer">
         <div class="d-flex gap-3 justify-content-start align-items-center w-100">
@@ -21,8 +22,28 @@
             <a class="footer-text" href="https://community.goobi.io/" target="_blank">
                 Community
             </a>
+            <h:outputText styleClass="ms-auto" />
+            <ui:repeat
+                    value="#{GenericPluginBean.genericPlugins}"
+                    var="plugin"
+            >
+                <ui:fragment rendered="#{plugin.isFooterDockable()}">
+                        <button
+                                id="btn#{plugin.title}"
+                                class="nav-link"
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#pluginModal#{plugin.id}"
+                                data-bs-placement="bottom"
+                        >
+                                <span
+                                        aria-hidden="true"
+                                        class="fa #{plugin.icon} fa-2x"/>
+                        </button>
+                </ui:fragment>
+            </ui:repeat>
             <h:outputText
-                styleClass="ms-auto footer-text"
+                styleClass="footer-text"
                 value="#{msgs.version} #{HelperForm.version}" />
         </div>
     </footer>

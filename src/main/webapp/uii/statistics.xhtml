@@ -4,8 +4,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/templatePG/templatePG.html"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    template="/uii/template/template.html"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:section="http://goobi.io/section"
@@ -36,7 +36,7 @@
 
     <main id="statisticsView">
 
-            <ui:include src="templatePG/includes/calendarJavaScript.xhtml" />
+            <ui:include src="template/includes/calendarJavaScript.xhtml" />
 
             <h:form
               rendered="#{NavigationForm.aktuell == 'a40' and LoginForm.hasRole('Statistics_General')}"
@@ -310,7 +310,7 @@
               </h:panelGroup>
             </div> <!-- /row -->
 
-
+            <h:panelGroup rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
               <div class="row mt-4" role="contentinfo">
                 <div class="col-12">
                   <section:section type="neutral">
@@ -511,7 +511,6 @@
                                               name="aria-label"
                                               value="#{ProjekteForm.projectProgressInterface.selectedSteps}" />
                                       </h:selectManyListbox>
-                                       
                                   </div>
                               </div>
                               <div class="col-12 col-md-6">
@@ -530,7 +529,6 @@
                                               name="aria-label"
                                               value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}" />
                                       </h:selectOneMenu>
-                                       
                                       <div class="form-check__wrapper">
                                       <h:selectBooleanCheckbox
                                           id="pcid13"
@@ -557,7 +555,6 @@
                                               <h:outputText value="#{msgs.rerender}" />
                                           </span>
                                       </button>
-                                       
                                   </div>
                               </div>
 
@@ -583,6 +580,7 @@
                   </section:section>
                 </div> <!-- /col -->
               </div> <!-- /row -->
+            </h:panelGroup>
 
 
             </h:form>

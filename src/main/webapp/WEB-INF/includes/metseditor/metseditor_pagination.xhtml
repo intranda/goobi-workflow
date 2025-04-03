@@ -43,9 +43,8 @@
                                     <ui:repeat value="#{Metadaten.allPages}" var="page" id="pagesList">
 
                                         <div class="d-flex align-items-center justify-content-between">
-                                            <label class="d-flex flex-nowrap">
+                                            <label class="d-flex flex-nowrap#{page.type != 'div' ? ' ps-3' : ''}">
                                                 <h:selectBooleanCheckbox styleClass="form-check-input" pt:aria-label="#{msgs.auswahl2}" rendered="#{page.type == 'div'}" value="#{page.selected}" id="checkbox"/>
-                                                <h:panelGroup rendered="#{page.type != 'div'}"/>
                                                 <span title="#{page.imagename}" data-bs-toggle="tooltip">
                                                     #{page.physicalPageNo}:
                                                 </span>
@@ -213,12 +212,11 @@
                                             <ul role="list" class="p-0 m-0">
                                                 <li class="pb-2">
                                                     <div class="btn-group w-100">
-                                                        <button jsf:id="moveUp1" class="btn btn-blank" jsf:action="#{Metadaten.moveSelectedPages('up', 1)}" title="#{msgs.moveSeltectedPagesUp}" type="button">
+                                                        <button jsf:id="moveUp1" class="btn btn-blank" jsf:action="#{Metadaten.moveSelectedPages('up', 1)}" type="button">
                                                             <util:icon-text
                                                                 icon="chevron-up"
                                                                 text="#{msgs.moveSeltectedPagesUp}"
                                                                 styleClass="d-flex justify-content-start align-items-baseline" />
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                             <f:ajax execute="@form" render="pagePaginationList"/>
                                                         </button>
                                                         <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split flex-grow-0" data-bs-toggle="dropdown" aria-expanded="false">
@@ -256,12 +254,11 @@
 
                                                 <li class="pb-2">
                                                     <div class="btn-group w-100">
-                                                        <button jsf:id="moveDown1" class="btn btn-blank" jsf:action="#{Metadaten.moveSelectedPages('down', 1)}" title="#{msgs.moveSeltectedPagesDown}" type="button">
+                                                        <button jsf:id="moveDown1" class="btn btn-blank" jsf:action="#{Metadaten.moveSelectedPages('down', 1)}" type="button">
                                                             <util:icon-text
                                                                 icon="chevron-down"
-                                                                text="#{msgs.moveSeltectedPagesUp}"
+                                                                text="#{msgs.moveSeltectedPagesDown}"
                                                                 styleClass="d-flex justify-content-start align-items-baseline" />
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                             <f:ajax execute="@form" render="pagePaginationList"/>
                                                         </button>
                                                         <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split flex-grow-0" data-bs-toggle="dropdown" aria-expanded="false">
@@ -297,21 +294,19 @@
                                                     </div>
                                                 </li>
                                                 <li class="pb-2">
-                                                    <button jsf:id="deletePages" class="btn btn-blank w-100 d-flex justify-content-start" jsf:action="#{Metadaten.deleteSeltectedPages}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" title="#{msgs.deleteSeltectedPages}" type="button">
+                                                    <button jsf:id="deletePages" class="btn btn-blank w-100 d-flex justify-content-start" jsf:action="#{Metadaten.deleteSeltectedPages}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" type="button">
                                                         <util:icon-text
                                                             icon="trash-o"
                                                             text="#{msgs.deleteSeltectedPages}" />
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax execute="@form" render="@form :thumbnailsForm :openseadragonform :pageareas"/>
                                                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                                                     </button>
                                                 </li>
                                                 <li>
-                                                    <button jsf:id="reOrder" class="btn btn-blank w-100 d-flex justify-content-start" jsf:action="#{Metadaten.reOrderPagination}" jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()" title="#{msgs.reOrder}" type="button">
+                                                    <button jsf:id="reOrder" class="btn btn-blank w-100 d-flex justify-content-start" jsf:action="#{Metadaten.reOrderPagination}" jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()" type="button">
                                                         <util:icon-text
                                                             icon="refresh"
                                                             text="#{msgs.reOrder}" />
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax execute="@form" render=":progressform :thumbnailsForm :openseadragonform"/>
                                                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                                                     </button>

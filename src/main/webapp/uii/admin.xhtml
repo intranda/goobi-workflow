@@ -5,10 +5,11 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/templatePG/templatePG.html"
-    
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    template="/uii/template/template.html"
+
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:form="http://goobi.io/form">
 
     <ui:param name="myPageTitle" value="#{msgs.administrationsaufgaben}" />
 
@@ -39,11 +40,15 @@
                           <label class="control-label">#{msgs.message}:</label>
                       </div>
                       <div class="col-12 col-md-9">
-                        <h:inputTextarea styleClass="form-control focusable" value="#{SessionForm.logoutMessage}">
-                          <f:passThroughAttribute
-                           name="aria-label"
-                           value="#{msgs.message}" />
-                        </h:inputTextarea>
+                        <form:grow-wrap>
+                          <h:inputTextarea
+                            styleClass="form-control focusable"
+                            value="#{SessionForm.logoutMessage}">
+                            <f:passThroughAttribute
+                             name="aria-label"
+                             value="#{msgs.message}" />
+                          </h:inputTextarea>
+                        </form:grow-wrap>
                       </div>
                   </div>
 

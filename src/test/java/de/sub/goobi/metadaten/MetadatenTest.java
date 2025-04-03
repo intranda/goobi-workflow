@@ -1497,8 +1497,8 @@ public class MetadatenTest extends AbstractTest {
         fixture.setPageSelectionFirstPage("1");
         fixture.setBildNummer(1);
         fixture.BildErsteSeiteAnzeigen();
-        assertEquals(1, fixture.getImageIndex());
-        assertEquals(1, fixture.getBildNummer());
+        assertEquals(0, fixture.getImageIndex());
+        assertEquals(0, fixture.getBildNummer());
     }
 
     @Test

@@ -3,13 +3,14 @@
   xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
   xmlns:h="http://xmlns.jcp.org/jsf/html"
   xmlns:f="http://xmlns.jcp.org/jsf/core"
-  template="/uii/templatePG/templatePG.html"
-  
-  xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+  template="/uii/template/template.html"
+  xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
   >
 
     <ui:param name="myPageTitle" value="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" />
-
+    <ui:define name="css">
+      <link rel="stylesheet" href="template/css/lib/swagger-ui.css?v=#{HelperForm.buildVersion}"/>
+    </ui:define>
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" noSeparator="#{true}" />
     </ui:define>
@@ -19,8 +20,7 @@
 
     <ui:define name="content">
 
-    <link rel="stylesheet" href="template/css/swagger/swagger-ui.css?v=#{HelperForm.buildVersion}"/>
-    <script type="text/javascript" src="template/js/swagger/swagger-ui-bundle.js?v=#{HelperForm.buildVersion}"/>
+    <script type="text/javascript" src="template/js/static/swagger/swagger-ui-bundle.js?v=#{HelperForm.buildVersion}"/>
 
   		<div id="swagger-container"></div>
 

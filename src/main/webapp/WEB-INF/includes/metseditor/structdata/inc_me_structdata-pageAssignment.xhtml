@@ -2,7 +2,7 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
@@ -38,13 +38,20 @@
                                         <f:ajax render="pageallocation"/>
                                     </button>
                                 </ul>
-                                <button type="button" aria-label="#{msgs.minimizeBox}" class="btn" data-bs-target="#pageAllocationBoxBody" data-bs-toggle="collapse" aria-expanded="true" aria-controls="pageAllocationBoxBody">
+                                <button
+                                    type="button"
+                                    aria-label="#{msgs.minimizeBox}"
+                                    class="btn"
+                                    data-bs-target="#pageAllocationBoxBody"
+                                    data-bs-toggle="collapse"
+                                    aria-expanded="false"
+                                    aria-controls="pageAllocationBoxBody">
                                     <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
                                     <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
                                 </button>
                             </section:header-actions>
                         </section:header>
-                        <div id="pageAllocationBoxBody" class="collapse show">
+                        <div id="pageAllocationBoxBody" class="collapse">
                             <section:body>
                                 <h:panelGroup id="pageAssignmentGroup" layout="block">
                                     <h:panelGroup id="assignments" layout="block">
@@ -58,22 +65,46 @@
                                                 </div>
                                                 <div class="form-input">
                                                     <p:autoComplete scrollHeight="300" id="pagestart2" pt:aria-label="#{msgs.firstPage}" styleClass="flex-grow-1" inputStyleClass="form-control focusableChildCss rounded" forceId="true" value="#{Metadaten.pagesStartCurrentElement}" completeMethod="#{Metadaten.autocomplete}"/>
-                                                    <button jsf:id="takePreviousImage3" aria-label="#{msgs.previousImage}" class="btn font-light" jsf:action="#{Metadaten.startpage}" title="#{msgs.mets_takePreviousImage}" type="button">
+                                                    <button
+                                                        jsf:id="takePreviousImage3"
+                                                        aria-label="#{msgs.previousImage}"
+                                                        class="btn font-light"
+                                                        jsf:action="#{Metadaten.startpage}"
+                                                        title="#{msgs.mets_takePreviousImage}"
+                                                        type="button"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="left"
+                                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
                                                         <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax render="pagestart2"/>
                                                     </button>
-                                                    <button jsf:id="takeCurrentImage3" aria-label="#{msgs.lw_currentImage}" class="btn  font-light" jsf:action="#{Metadaten.startpage}" title="#{msgs.mets_takeCurrentImage}" type="button">
+                                                    <button
+                                                        jsf:id="takeCurrentImage3"
+                                                        aria-label="#{msgs.lw_currentImage}"
+                                                        class="btn font-light"
+                                                        jsf:action="#{Metadaten.startpage}"
+                                                        title="#{msgs.mets_takeCurrentImage}"
+                                                        type="button"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top"
+                                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
                                                         <span class="fa fa-picture-o" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax render="pagestart2"/>
                                                     </button>
-                                                    <button jsf:id="takeNextImage3" aria-label="#{msgs.nextImage}" class="btn font-light" jsf:action="#{Metadaten.startpage}" title="#{msgs.mets_takeNextImage}" type="button">
+                                                    <button
+                                                        jsf:id="takeNextImage3"
+                                                        aria-label="#{msgs.nextImage}"
+                                                        class="btn font-light"
+                                                        jsf:action="#{Metadaten.startpage}"
+                                                        title="#{msgs.mets_takeNextImage}"
+                                                        type="button"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="right"
+                                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
                                                         <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax render="pagestart2"/>
                                                     </button>
                                                 </div>
@@ -90,22 +121,47 @@
                                                         id="pageend2"
                                                         pt:aria-label="#{msgs.lastPage}"
                                                         styleClass="flex-grow-1" inputStyleClass="form-control focusableChildCss rounded" forceId="true" value="#{Metadaten.pagesEndCurrentElement}" completeMethod="#{Metadaten.autocomplete}"/>
-                                                    <button jsf:id="takePreviousImage4" aria-label="#{msgs.previousImage}" class="btn font-light" jsf:action="#{Metadaten.endpage}" title="#{msgs.mets_takePreviousImage}" type="button">
+                                                    <button
+                                                        jsf:id="takePreviousImage4"
+                                                        aria-label="#{msgs.previousImage}"
+                                                        class="btn font-light"
+                                                        jsf:action="#{Metadaten.endpage}"
+                                                        title="#{msgs.mets_takePreviousImage}"
+                                                        type="button"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="left"
+                                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
                                                         <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax render="pageend2"/>
                                                     </button>
-                                                    <button jsf:id="takeCurrentImage4" aria-label="#{msgs.lw_currentImage}" class="btn  font-light" jsf:action="#{Metadaten.endpage}" title="#{msgs.mets_takeCurrentImage}" type="button">
+                                                    <button
+                                                        jsf:id="takeCurrentImage4"
+                                                        aria-label="#{msgs.lw_currentImage}"
+                                                        class="btn  font-light"
+                                                        jsf:action="#{Metadaten.endpage}"
+                                                        title="#{msgs.mets_takeCurrentImage}"
+                                                        type="button"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="bottom"
+                                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
                                                         <span class="fa fa-picture-o" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                                         <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax render="pageend2"/>
                                                     </button>
-                                                    <button jsf:id="takeNextImage4" aria-label="#{msgs.nextImage}" class="btn font-light" jsf:action="#{Metadaten.endpage}" title="#{msgs.mets_takeNextImage}" type="button">
+                                                    <button
+                                                        jsf:id="takeNextImage4"
+                                                        aria-label="#{msgs.nextImage}"
+                                                        class="btn font-light"
+                                                        jsf:action="#{Metadaten.endpage}"
+                                                        title="#{msgs.mets_takeNextImage}"
+                                                        type="button"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="right"
+                                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
                                                         <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
                                                         <f:setPropertyActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                         <f:ajax render="pageend2"/>
                                                     </button>
                                                 </div>
@@ -145,9 +201,10 @@
                                                             aria-label="#{msgs.mets_addTheseImages}"
                                                             jsf:action="#{Metadaten.SeitenHinzu}"
                                                             class="btn font-light"
-                                                            title="#{msgs.mets_addTheseImages}">
+                                                            title="#{msgs.mets_addTheseImages}"
+                                                            data-bs-toggle="tooltip"
+                                                            data-bs-placement="top">
                                                             <util:icon icon="chevron-right" />
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                             <f:ajax execute="@form" render="assignments :treeform"/>
                                                         </button>
                                                         <button
@@ -155,9 +212,10 @@
                                                             aria-label="#{msgs.mets_removeTheseImages}"
                                                             jsf:action="#{Metadaten.SeitenWeg}"
                                                             class="btn font-light"
-                                                            title="#{msgs.mets_removeTheseImages}">
+                                                            title="#{msgs.mets_removeTheseImages}"
+                                                            data-bs-toggle="tooltip"
+                                                            data-bs-placement="bottom">
                                                             <util:icon icon="chevron-left" />
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                             <f:ajax execute="@form" render="assignments :treeform"/>
                                                         </button>
                                                     </div>
@@ -179,6 +237,7 @@
                                                     label="#{msgs.ersteSeite}">
                                                     <div class="d-flex w-100 my-auto">
                                                         <h:selectOneMenu
+                                                            id="pageSelectionFirstPage"
                                                             pt:aria-label="#{msgs.ersteSeite}"
                                                             rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                             value="#{Metadaten.pageSelectionFirstPage}"
@@ -188,9 +247,16 @@
                                                         <button
                                                             jsf:id="showFirst"
                                                             aria-label="#{msgs.mets_showThisImage}"
-                                                            class="btn font-light" jsf:action="#{Metadaten.BildErsteSeiteAnzeigen}" title="#{msgs.mets_showThisImage}" type="button">
+                                                            class="btn font-light"
+                                                            jsf:action="#{Metadaten.BildErsteSeiteAnzeigen}"
+                                                            title="#{msgs.mets_showThisImage}"
+                                                            type="button"
+                                                            data-renderimage="true"
+                                                            data-bs-toggle="tooltip">
                                                             <util:icon icon="eye" />
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                            <f:ajax
+                                                                execute="@this pageSelectionFirstPage"
+                                                                render=":openseadragonform" />
                                                         </button>
                                                     </div>
                                                 </form:field>
@@ -199,6 +265,7 @@
                                                     label="#{msgs.letzteSeite}">
                                                     <div class="d-flex w-100 my-auto">
                                                         <h:selectOneMenu
+                                                            id="pageSelectionLastPage"
                                                             pt:aria-label="#{msgs.letzteSeite}"
                                                             rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                             value="#{Metadaten.pageSelectionLastPage}"
@@ -211,9 +278,11 @@
                                                             class="btn font-light"
                                                             jsf:action="#{Metadaten.BildLetzteSeiteAnzeigen}"
                                                             title="#{msgs.mets_showThisImage}"
-                                                            type="button">
+                                                            type="button"
+                                                            data-renderimage="true"
+                                                            data-bs-toggle="tooltip">
                                                             <util:icon icon="eye" />
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                            <f:ajax execute="@this pageSelectionLastPage" render=":openseadragonform" />
                                                         </button>
                                                     </div>
                                                 </form:field>

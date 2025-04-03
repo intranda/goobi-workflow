@@ -1637,7 +1637,7 @@ public class ProzesskopieForm implements Serializable {
      */
     public String getPluginGui() {
         if (currentCatalogue == null || currentCatalogue.getOpacPlugin() == null) {
-            return "/uii/templatePG/includes/process/process_new_opac.xhtml";
+            return "/uii/template/includes/process/process_new_opac.xhtml";
         } else {
             return currentCatalogue.getOpacPlugin().getGui();
         }
@@ -1716,6 +1716,7 @@ public class ProzesskopieForm implements Serializable {
 
         StringTokenizer tokenizer = new StringTokenizer(titeldefinition, "+");
         ProcessTitleGenerator gen = new ProcessTitleGenerator();
+        gen.setSpecialCharacterReplacement(replacement);
         gen.setSeparator("");
         /* jetzt den Bandtitel parsen */
         while (tokenizer.hasMoreTokens()) {
@@ -1749,6 +1750,7 @@ public class ProzesskopieForm implements Serializable {
 
                         // Skip process title generation if a required field is not present
                         if (myField.isRequired() && value.isBlank()) {
+                            Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + myField.getTitel());
                             return;
                         }
                         gen.addToken(calcProcesstitelCheck(myField.getTitel(), value), ManipulationType.NORMAL);

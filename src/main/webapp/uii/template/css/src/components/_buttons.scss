@@ -1,0 +1,149 @@
+/* Styles for Buttons, Badges, Links */
+
+/* ========================================
+ * Buttons
+/* ======================================== */
+.btn-link {
+  text-decoration: none;
+  background-color: transparent;
+  border: 0;
+  &:has(.btn) {
+    align-items: center;
+    color: var(--clr-text-400);
+    display: flex;
+  }
+  .btn {
+    --bs-btn-padding-x: 0rem;
+    width: 29px;
+    margin-right: 5px;
+  }
+  .btn + span {
+    align-items: center;
+    display: inline-flex;
+  }
+
+  &:hover {
+    background-color: var(--clr-neutral-200);
+  }
+}
+
+.btn--plusMinus {
+        user-select: text;
+  &:hover {
+	i,
+    span {
+      color: var(--clr-primary-400);
+    }
+  }
+}
+
+.nav-item .btn-link:hover {
+  text-decoration: none;
+}
+
+button,
+.btn {
+  --bs-btn-disabled-bg: var(--clr-neutral-200);
+  --bs-btn-disabled-border-color: var(--clr-neutral-200);
+  --bs-btn-disabled-color: var(--clr-black);
+  --bs-btn-disabled-opacity: 0.65;
+  --bs-btn-font-size: var(--fs-400, 0.875rem);
+  --bs-btn-padding-y: 0.2343rem;
+  --bs-btn-padding-x: 0.46875rem;
+  border-radius: var(--border-radius, 2px);
+  &--title-action {
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-padding-y: 0.25rem;
+    --bs-btn-padding-x: 0.5rem;
+    // double declaration of custom properties b/c we have divs with btn-styling containing buttons
+    .btn {
+      --bs-btn-disabled-bg: transparent;
+      --bs-btn-disabled-color: var(--clr-white)
+    }
+  }
+
+  &:focus {
+    color: var(--bs-btn-color);
+  }
+  &:focus-visible {
+    color: var(--bs-btn-color);
+    outline-width: 2px;
+    outline-style: solid;
+    outline-color: var(--bs-btn-bg, var(--clr-neutral-300));
+    outline-offset: 2px;
+  }
+  &:active {
+    transform: scale(99%);
+  }
+}
+
+.button-row {
+  display: flex;
+  gap: 0.25rem;
+}
+
+/* ========================================
+ * Skip Link
+/* ======================================== */
+
+.skip-main {
+  position: absolute;
+  top: -50px;
+  height: 30px;
+  padding: 15px;
+  font-size: 25px;
+}
+
+.skip-main:focus {
+  position: relative;
+  top: 0px;
+}
+
+/* ========================================
+ * Collapses
+/* ======================================== */
+
+.collapse-custom {
+  /* reset default btn styles */
+  background: transparent;
+  padding: 0;
+  margin-bottom: 8px;
+  border: 0;
+  box-shadow: none;
+  /* align fa-angle-... + text */
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-dropDownInBoxHeader{
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+
+/* ========================================
+ * BS Overrides
+/* ======================================== */
+
+.btn-blank {
+  background-color: var(--clr-neutral-200);
+  border-color: var(--clr-neutral-200);
+}
+
+.btn-blank:hover {
+  background-color: var(--clr-neutral-300);
+  border-color: var(--clr-neutral-300);
+  color: var(--clr-text-400);
+}
+
+// dropdown buttons
+.dropdown-menu {
+  border-color: var(--clr-neutral-300);
+  .dropdown-item {
+    padding: 0.5rem 1rem;
+    &:hover,
+    &:focus {
+      background-color: var(--clr-neutral-200);
+    }
+  }
+}

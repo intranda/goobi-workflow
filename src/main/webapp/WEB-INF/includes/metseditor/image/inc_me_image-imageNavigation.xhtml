@@ -15,9 +15,16 @@
             <ul class="dataTables__paginator" role="list">
                 <!-- FIRST IMAGE -->
                 <li>
-                    <button jsf:action="#{Metadaten.imageLeftmost}" jsf:id="imageFirst" aria-label="#{msgs.firstImage}" class="btn btn-blank" title="#{Metadaten.pagesRTL?msgs.lastImage:msgs.firstImage}" type="button">
+                    <button
+                        jsf:action="#{Metadaten.imageLeftmost}"
+                        jsf:id="imageFirst"
+                        aria-label="#{msgs.firstImage}"
+                        class="btn btn-blank"
+                        title="#{Metadaten.pagesRTL?msgs.lastImage:msgs.firstImage}"
+                        type="button"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom">
                         <span class="fa fa-angle-double-left" aria-hidden="true"/>
-                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                         <f:ajax
                             execute="@form :pageareas"
                             render="@form :pageareas :altoEditAutocomplete" />
@@ -27,9 +34,16 @@
 
                 <!-- PREV-2 IMAGE -->
                 <li>
-                    <button jsf:action="#{Metadaten.imageLeft2}" jsf:id="prevImage2" aria-label="#{msgs.previousImage}" class="btn btn-blank" title="#{msgs.mets_navigateTwoImagesLeft}" type="button">
+                    <button
+                        jsf:action="#{Metadaten.imageLeft2}"
+                        jsf:id="prevImage2"
+                        aria-label="#{msgs.previousImage}"
+                        class="btn btn-blank"
+                        title="#{msgs.mets_navigateTwoImagesLeft}"
+                        type="button"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom">
                         <span class="fa fa-angle-left" aria-hidden="true"/>
-                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                         <f:ajax
                             execute="@form :pageareas"
                             render="@form :pageareas :altoEditAutocomplete"/>
@@ -74,9 +88,16 @@
                 </li>
                 <!-- IMAGE NEXT-2 -->
                 <li>
-                    <button jsf:action="#{Metadaten.imageRight2}" jsf:id="nextImage2" aria-label="#{msgs.nextImage}" class="btn btn-blank" title="#{msgs.mets_navigateTwoImagesRight}" type="button">
+                    <button
+                        jsf:action="#{Metadaten.imageRight2}"
+                        jsf:id="nextImage2"
+                        aria-label="#{msgs.nextImage}"
+                        class="btn btn-blank"
+                        title="#{msgs.mets_navigateTwoImagesRight}"
+                        type="button"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom">
                         <span class="fa fa-angle-right" aria-hidden="true"/>
-                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                         <f:ajax
                             execute="@form :pageareas"
@@ -86,9 +107,16 @@
 
                 <!-- IMAGE LAST -->
                 <li>
-                    <button jsf:action="#{Metadaten.imageRightmost}" jsf:id="imageLast" aria-label="#{msgs.lastImage}" class="btn btn-blank" title="#{Metadaten.pagesRTL?msgs.firstImage:msgs.lastImage}" type="button">
+                    <button
+                        jsf:action="#{Metadaten.imageRightmost}"
+                        jsf:id="imageLast"
+                        aria-label="#{msgs.lastImage}"
+                        class="btn btn-blank"
+                        title="#{Metadaten.pagesRTL?msgs.firstImage:msgs.lastImage}"
+                        type="button"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom">
                         <span class="fa fa-angle-double-right" aria-hidden="true"/>
-                        <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                         <f:ajax
                             execute="@form :pageareas"

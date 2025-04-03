@@ -1,20 +1,20 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -136,7 +136,7 @@ import ugh.exceptions.WriteException;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
- * 
+ *
  * @author Steffen Hankiewicz
  * @version 1.00 - 17.01.2005
  */
@@ -1095,7 +1095,7 @@ public class Metadaten implements Serializable {
     /**
      * This method is called when the "convert date" button is clicked on the website. It will brute-force convert the currently present date (if it
      * is present) into the Gregorian calendar, assuming the given calendar corresponds to the parameter given.
-     * 
+     *
      * @param dateType Type of the date given (valid are BRITISH, JULIAN and GREGORIAN)
      * @return An error message if the saving times out.
      */
@@ -2627,7 +2627,7 @@ public class Metadaten implements Serializable {
 
     /**
      * Set coordinates for existing page area rectangles
-     * 
+     *
      * @param json
      */
     public void setPageAreaCommand() {
@@ -2678,7 +2678,7 @@ public class Metadaten implements Serializable {
 
     /**
      * Get all page areas of current page
-     * 
+     *
      * @return
      */
     public String getPageAreas() {
@@ -3494,8 +3494,7 @@ public class Metadaten implements Serializable {
             }
         }
         try {
-            int localPageNumber = Integer.parseInt(this.pageSelectionFirstPage) - this.bildNummer + 1; // a field named "pageNumber" is already declared at line 403
-            setImageIndex(localPageNumber - 1);
+            setImageIndex(Integer.parseInt(this.pageSelectionFirstPage) - 1);
 
         } catch (Exception e) {
             log.error(e);
@@ -3518,8 +3517,7 @@ public class Metadaten implements Serializable {
             }
         }
         try {
-            int localPageNumber = Integer.parseInt(this.pageSelectionLastPage) - this.bildNummer + 1; // a field named "pageNumber" is already declared at line 403
-            setImageIndex(localPageNumber - 1);
+            setImageIndex(Integer.parseInt(this.pageSelectionLastPage) - 1);
         } catch (Exception exception) {
             log.warn(exception);
         }

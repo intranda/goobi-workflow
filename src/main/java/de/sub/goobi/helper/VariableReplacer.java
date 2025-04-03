@@ -36,17 +36,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.naming.ConfigurationException;
 
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedFieldInstance;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.text.StringTokenizer;
@@ -492,52 +492,95 @@ public class VariableReplacer {
 
         for (MatchResult r : findRegexMatches(REGEX_PROCESS, inString)) {
             String propertyTitle = r.group(1);
+            Optional<String> propertyTitleWithoutField = Optional.empty();
+            Optional<String> fieldName = Optional.empty();
+            if (propertyTitle.contains(".")) {
+                propertyTitleWithoutField = Optional.ofNullable(propertyTitle.substring(0, propertyTitle.indexOf('.')));
+                fieldName = Optional.ofNullable(propertyTitle.substring(propertyTitle.indexOf('.') + 1));
+            }
+            Optional<ProcessProperty> match = Optional.empty();
             List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
             for (ProcessProperty pe : ppList) {
-                if (pe.getName().equalsIgnoreCase(propertyTitle)) {
-                    Optional<String> newValue;
-                    if (Type.VOCABULARYREFERENCE.equals(pe.getType())) {
-                        newValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(pe.getValue()).getMainValue());
-                    } else if (Type.VOCABULARYMULTIREFERENCE.equals(pe.getType())) {
-                        if (!StringUtils.isBlank(pe.getValue())) {
-                            String value = pe.getValue();
-                            // weird case, but only use first value here
-                            if (value.contains("; ")) {
-                                value = value.substring(0, value.indexOf("; "));
-                            }
-                            newValue = Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(value).getMainValue());
-                        } else {
-                            newValue = Optional.empty();
-                        }
-                    } else {
-                        newValue = Optional.ofNullable(pe.getValue());
-                    }
-                    inString = inString.replace(r.group(), newValue.orElse(""));
+                if ((propertyTitleWithoutField.isPresent() && propertyTitleWithoutField.get().equalsIgnoreCase(pe.getName())) || pe.getName().equalsIgnoreCase(propertyTitle)) {
+                    match = Optional.ofNullable(pe);
                     break;
                 }
+            }
+            if (match.isPresent()) {
+                Type type = match.get().getType();
+                String value = match.get().getValue();
+                List<ExtendedVocabularyRecord> referencedRecords = Collections.emptyList();
+                if (Type.VOCABULARYREFERENCE.equals(type)) {
+                    referencedRecords = List.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(value)));
+                } else if (Type.VOCABULARYMULTIREFERENCE.equals(type)) {
+                    if (!StringUtils.isBlank(value)) {
+                        referencedRecords = new LinkedList<>();
+                        for (String ref : value.split("; ")) {
+                            referencedRecords.add(VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(ref)));
+                        }
+                    }
+                }
+                Optional<String> newValue = Optional.ofNullable(value);
+                if (!referencedRecords.isEmpty()) {
+                    if (fieldName.isEmpty()) {
+                        newValue = Optional.ofNullable(referencedRecords.get(0).getMainValue());
+                    } else {
+                        newValue = referencedRecords.get(0).getFieldValueForDefinitionName(fieldName.get());
+                    }
+                }
+                inString = inString.replace(r.group(), newValue.orElse(""));
             }
         }
 
         for (MatchResult r : findRegexMatches(REGEX_PROCESSES, inString)) {
             String propertyTitle = r.group(1);
-            List<String> newValues = new LinkedList<>();
+            Optional<String> propertyTitleWithoutField = Optional.empty();
+            Optional<String> fieldName = Optional.empty();
+            if (propertyTitle.contains(".")) {
+                propertyTitleWithoutField = Optional.ofNullable(propertyTitle.substring(0, propertyTitle.indexOf('.')));
+                fieldName = Optional.ofNullable(propertyTitle.substring(propertyTitle.indexOf('.') + 1));
+            }
+            Optional<ProcessProperty> match = Optional.empty();
             List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
             for (ProcessProperty pe : ppList) {
-                if (pe.getName().equalsIgnoreCase(propertyTitle)) {
-                    if (Type.VOCABULARYREFERENCE.equals(pe.getType())) {
-                        Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(pe.getValue()).getMainValue()).ifPresent(newValues::add);
-                    } else if (Type.VOCABULARYMULTIREFERENCE.equals(pe.getType())) {
-                        if (!StringUtils.isBlank(pe.getValue())) {
-                            for (String ref : pe.getValue().split("; ")) {
-                                Optional.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(ref).getMainValue()).ifPresent(newValues::add);
-                            }
-                        }
-                    } else {
-                        Optional.ofNullable(pe.getValue()).ifPresent(newValues::add);
-                    }
+                if ((propertyTitleWithoutField.isPresent() && propertyTitleWithoutField.get().equalsIgnoreCase(pe.getName())) || pe.getName().equalsIgnoreCase(propertyTitle)) {
+                    match = Optional.ofNullable(pe);
+                    break;
                 }
             }
-            inString = inString.replace(r.group(), String.join(separator, newValues));
+            if (match.isPresent()) {
+                Type type = match.get().getType();
+                String value = match.get().getValue();
+                List<ExtendedVocabularyRecord> referencedRecords = Collections.emptyList();
+                if (Type.VOCABULARYREFERENCE.equals(type)) {
+                    referencedRecords = List.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(value)));
+                } else if (Type.VOCABULARYMULTIREFERENCE.equals(type)) {
+                    if (!StringUtils.isBlank(value)) {
+                        referencedRecords = new LinkedList<>();
+                        for (String ref : value.split("; ")) {
+                            referencedRecords.add(VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(ref)));
+                        }
+                    }
+                }
+                List<String> newValues = new LinkedList<>();
+                if (referencedRecords.isEmpty()) {
+                    newValues = Arrays.stream(value.split("; ")).toList();
+                } else {
+                    Stream<Optional<ExtendedFieldInstance>> fields;
+                    if (fieldName.isPresent()) {
+                        final String fn = fieldName.get();
+                        fields = referencedRecords.stream()
+                                .map(rec -> rec.getFieldForDefinitionName(fn));
+                    } else {
+                        fields = referencedRecords.stream()
+                                .map(ExtendedVocabularyRecord::getMainField);
+                    }
+                    fields.filter(Optional::isPresent)
+                            .map(f -> f.get().getFieldValue())
+                            .forEachOrdered(newValues::add);
+                }
+                inString = inString.replace(r.group(), String.join(separator, newValues));
+            }
         }
 
         for (MatchResult r : findRegexMatches(REGEX_DB_META, inString)) {

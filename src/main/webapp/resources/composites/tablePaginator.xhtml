@@ -3,7 +3,6 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -16,51 +15,71 @@
 		<h:panelGroup
 			rendered="#{cc.attrs.paginator.totalResults > LoginForm.myBenutzer.tabellengroesse}">
 
-			<div class="pull-right">
+			<div class="dataTables__paginator">
 
-				<button class="btn font-size-s margin-sides-10"
-                    aria-label="#{msgs.firstPage}"
-					jsf:action="#{cc.attrs.paginator.cmdMoveFirst}" jsf:id="navfirst">
+				<button
+					class="btn btn-blank"
+          aria-label="#{msgs.firstPage}"
+					jsf:action="#{cc.attrs.paginator.cmdMoveFirst}"
+					disabled="#{cc.attrs.paginator.hasPreviousPage}"
+					jsf:id="navfirst"
+					onclick="gwResizableTable.reload()">
 					<span class="fa fa-angle-double-left" />
 					<f:ajax render="@form" />
 				</button>
-				<button class="btn btn-primary font-size-s navigator-previous"
-					jsf:action="#{cc.attrs.paginator.cmdMovePrevious}" jsf:id="navprev">
+				<button class="btn btn-primary-400"
+					jsf:action="#{cc.attrs.paginator.cmdMovePrevious}"
+					disabled="#{cc.attrs.paginator.hasPreviousPage}"
+					jsf:id="navprev"
+					onclick="gwResizableTable.reload()">
 					<span class="fa fa-angle-left" />
 					<h:outputText value=" #{msgs.pagePrevious}"/>
 					<f:ajax render="@form" />
 				</button>
 
-				<div class="margin-sides-10">
+				<div class="dataTables__paginator__page-count">
 					<!-- aktuelle Seite anzeigen -->
-					<h:outputText id="txtMoveTo1" forceId="true"
-						value="#{msgs.seite} #{cc.attrs.paginator.pageNumberCurrent} #{msgs.von} #{cc.attrs.paginator.pageNumberLast}"
-						onclick="document.getElementById('txtMoveTo2').style.display='inline';
-			       document.getElementById('txtMoveTo1').style.display='none';
-			       document.getElementById('txtMoveTo2').focus();
-			       document.getElementById('txtMoveTo2').select();" />
+					<button
+						type="button"
+						class="btn btn-link text-black"
+						id="txtMoveTo1"
+						onclick="document.querySelector('[id$=txtMoveTo2]').style.display='inline';
+			       			document.querySelector('[id$=txtMoveTo1]').style.display='none';
+							document.querySelector('[id$=txtMoveTo2]').focus();
+							document.querySelector('[id$=txtMoveTo2]').select();">
+						#{msgs.seite} #{cc.attrs.paginator.pageNumberCurrent} #{msgs.von} #{cc.attrs.paginator.pageNumberLast}
+					</button>
 
 					<!-- Seite direkt anspringen -->
-					<h:inputText id="txtMoveTo2" forceId="true"
+					<h:inputText
+						id="txtMoveTo2"
+						forceId="false"
 						value="#{cc.attrs.paginator.txtMoveTo}" style="display:none;width:30px"
 						required="true"
-						onblur="document.getElementById('txtMoveTo2').style.display='none';document.getElementById('txtMoveTo1').style.display='inline';"
-						onkeypress="return submitEnter('cmdMoveTo',event)" />
+						onblur="document.querySelector('[id$=txtMoveTo2]').style.display='none';document.querySelector('[id$=txtMoveTo1]').style.display='inline';"
+						onkeypress="return submitEnter(document.querySelector('[id$=cmdMoveTo]').id,event)" />
 					<h:commandButton action="#{NavigationForm.Reload}" id="cmdMoveTo"
-						forceId="true" value="go" style="display:none" >
+						forceId="false" value="go" style="display:none" >
 
 					</h:commandButton>
 				</div>
 
-				<button class="btn btn-primary font-size-s navigator-next"
-					jsf:action="#{cc.attrs.paginator.cmdMoveNext}" jsf:id="navnext">
+				<button class="btn btn-primary-400"
+					jsf:action="#{cc.attrs.paginator.cmdMoveNext}"
+					disabled="#{cc.attrs.paginator.hasNextPage}"
+					jsf:id="navnext"
+					onclick="gwResizableTable.reload()">
 					<h:outputText value="#{msgs.pageNext} "/>
 							<span class="fa fa-angle-right" />
 					<f:ajax render="@form" />
 				</button>
-				<button class="btn font-size-s margin-sides-10"
-                    aria-label="#{msgs.lastPage}"
-					jsf:action="#{cc.attrs.paginator.cmdMoveLast}" jsf:id="navlast">
+				<button
+					class="btn btn-blank"
+					aria-label="#{msgs.lastPage}"
+					disabled="#{cc.attrs.paginator.hasNextPage}"
+					jsf:action="#{cc.attrs.paginator.cmdMoveLast}"
+					jsf:id="navlast"
+					onclick="gwResizableTable.reload()">
 					<span class="fa fa-angle-double-right" />
 					<f:ajax render="@form" />
 				</button>

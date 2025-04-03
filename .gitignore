@@ -9,8 +9,8 @@ build/
 /src/main/webapp/node_modules/
 /src/main/webapp/META-INF/context.xml
 /src/main/webapp/dist/
-/src/main/webapp/uii/templatePG/css/dist/
 /src/main/webapp/uii/template/css/dist/
+/src/main/webapp/resources/js/dist/
 #/src/main/webapp/npm-debug.log
 
 # Eclipse

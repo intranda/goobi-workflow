@@ -5,12 +5,12 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
-	template="/uii/templatePG/templatePG.html"
-	
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	template="/uii/template/template.html"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:form="http://goobi.io/form">
 
 	<ui:param
 		name="myPageTitle"
@@ -41,29 +41,13 @@
 	<ui:define name="content">
 		<script
 			type="text/javascript"
-			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/openseadragon/openseadragon.min.js?v=#{HelperForm.buildVersion}"></script>
+			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/static/openseadragon/openseadragon.min.js?v=#{HelperForm.buildVersion}"></script>
 		<script
 			type="text/javascript"
-			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/openseadragon/openseadragon-viewerinputhook.js?v=#{HelperForm.buildVersion}"></script>
+			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/static/openseadragon/openseadragon-viewerinputhook.js?v=#{HelperForm.buildVersion}"></script>
 		<script
 			type="text/javascript"
-			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/q-promises/q.min.js?v=#{HelperForm.buildVersion}"></script>
-		<script
-			type="text/javascript"
-			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/reactiveX/rx.lite.min.js?v=#{HelperForm.buildVersion}"></script>
-
-		<!--
-		<script
-			src="template/js/imageView/imageView.image.js?v=#{HelperForm.buildVersion}"></script>
-		<script
-			src="template/js/imageView/imageView.tileSourceResolver.js?v=#{HelperForm.buildVersion}"></script>
-		<script
-			src="template/js/imageView/imageView.measures.js?v=#{HelperForm.buildVersion}"></script>
-		<script
-			src="template/js/imageView/imageView.controls.js?v=#{HelperForm.buildVersion}"></script>
-		<script
-			src="template/js/imageView/imageView.zoomSlider.js?v=#{HelperForm.buildVersion}"></script>
-		-->
+			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/static/q-promises/q.min.js?v=#{HelperForm.buildVersion}"></script>
 
 		<!-- FORM WITH BOX -->
 		<h:form
@@ -216,17 +200,19 @@
 											</button>
 										</div>
 										<div class="damageBoxThumbnailsComment">
-											<h:inputTextarea
-												value="#{image.descriptionText}"
-												title="#{msgs.damageDocComment}"
-												styleClass="form-control damageBoxThumbnailsCommentField">
-												<f:passThroughAttribute
-													name="data-toggle"
-													value="tooltip" />
-												<f:ajax
-													event="change"
-													execute="@this" />
-											</h:inputTextarea>
+											<form:grow-wrap>
+												<h:inputTextarea
+													value="#{image.descriptionText}"
+													title="#{msgs.damageDocComment}"
+													styleClass="form-control damageBoxThumbnailsCommentField">
+													<f:passThroughAttribute
+														name="data-toggle"
+														value="tooltip" />
+													<f:ajax
+														event="change"
+														execute="@this" />
+												</h:inputTextarea>
+											</form:grow-wrap>
 										</div>
 									</div>
 								</ui:fragment>

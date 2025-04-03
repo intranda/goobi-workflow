@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html
+	lang="#{SpracheForm.locale}"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ds="http://deltaspike.apache.org/jsf"
+    xmlns:notification="http://goobi.io/notification"
+	xmlns:layout="http://goobi.io/layout">
+
+    <h:head>
+        <!-- METADATA -->
+        <ui:include src="/WEB-INF/includes/template/inc_metadata.xhtml" />
+        <!-- CSS -->
+        <ui:include src="/WEB-INF/includes/template/inc_CSS.xhtml" />
+        <!-- Template Specific CSS -->
+        <link rel="stylesheet" href="template/css/lib/colorbox.css?v=#{HelperForm.buildVersion}" />
+        <link rel="stylesheet" href="template/css/lib/x3dom.css?v=1" />
+		<!-- Javascript -->
+		<ui:include src="/WEB-INF/includes/template/inc_JS.xhtml" />
+        <style>
+            #pageContentRight {
+                left: 0 !important;
+            }
+        </style>
+    </h:head>
+
+    <ui:insert name="metadata" />
+
+    <body class="#{LoginForm.myBenutzer == null?'login':'content-flow'}">
+    <ds:windowId/>
+        <f:view locale="#{SpracheForm.locale}">
+            <!-- USER NOT LOGGED IN -->
+            <ui:fragment rendered="#{LoginForm.myBenutzer==null}">
+                <ui:include src="/WEB-INF/includes/template/inc_login.xhtml" />
+            </ui:fragment>
+
+            <!-- USER LOGGED IN -->
+            <c:if test="#{LoginForm.myBenutzer!=null}">
+
+                <!-- PAGE WRAPPER -->
+
+                <div
+                    id="pageWrapper"
+                    class="page-wrapper content-flow" style="max-height: 100vh;">
+                    <!-- MENU -->
+                    <layout:header>
+
+                        <!-- NAVIGATION -->
+                        <nav aria-label="#{msgs.navigation}" id="navbarSupportedContent" class="navbar navbar-collapse collapse" role="navigation">
+                            <!-- METSEDITOR MENU -->
+                            <ui:insert name="metseditorMenu" />
+                        </nav>
+
+                        <!-- plugins -->
+                        <nav aria-label="#{msgs.navigation}" id="navigationPlugins" class="page-menu__navigation navigationActions" role="navigation">
+                            <!-- METSEDITOR MENU -->
+                            <ui:insert name="metseditorPlugins" />
+                        </nav>
+
+                        <!-- ACTIONS -->
+                        <nav aria-label="#{msgs.navigation} #{msgs.auswahl}" id="navigationActions" class="page-menu__actions navigationActions">
+                            <!-- METSEDITOR MENU ACTIONS -->
+                            <ui:insert name="metseditorMenuActions" />
+                        </nav>
+                    </layout:header>
+
+                    <!-- CONTENT WRAPPER -->
+                    <main
+                        id="content"
+                        class="d-flex flex-nowrap overflow-x-hidden"
+                        tabindex="-1"
+                        style="max-height: calc(100vh - 6rem); height:100%;">
+                        <!-- CONTENT LEFT -->
+                        <div
+                            id="pageContentLeft"
+                            class="resize-handle-end bg-light p-2 border-end border-primary overflow-y-scroll overflow-x-hidden">
+                                <!-- METSEDITOR STRUCTURE -->
+                                <ui:insert name="metseditorStructure" />
+                        </div>
+
+                        <!-- CONTENT CENTER -->
+                        <h:panelGroup
+                            id="pageContentCenter"
+                            styleClass="flex-grow-1 p-2 overflow-y-auto overflow-x-hidden border-end h-100 d-flex flex-column #{Metadaten.bildAnzeigen ? 'mx-2' : 'ms-2'}"
+                            layout="block">
+                            <!-- METSEDITOR CONTENT -->
+                            <ui:insert name="metseditorContent" />
+                        </h:panelGroup>
+
+                        <!-- CONTENT RIGHT -->
+                        <ui:fragment rendered="#{Metadaten.bildAnzeigen}">
+                            <div
+                                id="pageContentRight"
+                                class="d-none d-md-block resize-handle-start p-2 ">
+                                    <!-- METSEDITOR IMAGE -->
+                                    <ui:insert name="metseditorImage" />
+                            </div>
+                        </ui:fragment>
+                    </main>
+                <layout:footer />
+            </div>
+
+            </c:if>
+        </f:view>
+
+        <!-- JAVASCRIPT ASSETS -->
+        <script src="template/js/static/jquery.colorbox-min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/riot.min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/q-promises/q.min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/plugins/tinymce/tinymce.min.js"></script>
+        <!-- OPEN SEADRAGON AND IMAGE VIEW -->
+        <script src="template/js/static/openseadragon/openseadragon.min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/openseadragon/openseadragon-viewerinputhook.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/imageView.min.js?v=#{HelperForm.buildVersion}"></script>
+        <!-- 3D-MODELS -->
+        <script src="template/js/static/three/three.min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/OBJLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/MTLLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/PLYLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/STLLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/FBXLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/TDSLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/DRACOLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/loaders/GLTFLoader.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/controls/OrbitControls.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/three/dependencies/inflate.min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/x3dom/x3dom.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="template/js/static/objectView.min.js?v=#{HelperForm.buildVersion}"></script>
+
+        <!-- ALTO EDITOR -->
+        <script src="template/js/static/altoEditorUtils.js?v=#{HelperForm.buildVersion}" type="text/javascript"></script>
+        <script src="template/js/static/riot+compiler.min.js?v=#{HelperForm.buildVersion}" type="text/javascript"></script>
+        <script src="template/js/riot/alto-editor.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
+        <script src="template/js/riot/named-entity-selector.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
+        <script src="template/js/riot/autocomplete.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
+        <script>
+            goobiWorkflowConfig = {
+                currentView: "#{Metadaten.modusAnsicht}",
+                readOnlyMode: "#{Metadaten.nurLesenModus}",
+                autoSaveInterval: "#{LoginForm.myBenutzer.metsEditorTime}",
+                baseUrl: "#{HelperForm.servletPathWithHostAsUrl}",
+                openImageTitleText: "#{msgs.mets_showThisImage}",
+                setRepresentativeImageText: "#{msgs.mets_setRepresentativeImage}",
+                displayImageArea: #{Metadaten.bildAnzeigen},
+                navigationShortcut: "#{LoginForm.myBenutzer.shortcutPrefix}",
+                metseditor: {
+                    thumbnails: {
+                        maxParallelRequests : #{Metadaten.maxParallelThumbnailRequests}
+                    }
+                },
+                isInitialLoad: true,
+                reloadObject: false,
+            };
+            faces.ajax.addOnEvent((data) => {
+                const ajaxstatus = data.status;
+                const ajaxBehaviour = data.source.dataset.ajaxBehaviour;
+                if(ajaxBehaviour === "ignore") {
+                	return;
+                }
+                if (ajaxstatus === 'success') {
+                    goobiWorkflowConfig.reloadObject = data?.source?.dataset.renderimage === 'true';
+                    goobiWorkflowConfig.isInitialLoad = false;
+                    goobiWorkflowJS.init( goobiWorkflowConfig );
+                    goobiWorkflowJS.meScrollPos.restoreScrollPos();
+                    gwHandleTooltip.init(data, {restore: false});
+                    gwInitTooltips.init();
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                goobiWorkflowJS.init( goobiWorkflowConfig );
+                goobiWorkflowJS.meScrollPos.restoreScrollPos();
+                goobiWorkflowJS.navigation.init(goobiWorkflowConfig);
+            });
+        </script>
+    </body>
+</html>

@@ -40,6 +40,7 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
         assertEquals(10, generator.getBodyTokenLengthLimit());
         assertEquals(0, generator.getHeadTokenLengthLimit());
         assertEquals("_", generator.getSeparator());
+        assertEquals("_", generator.getSpecialCharacterReplacement());
     }
 
     @Test
@@ -259,7 +260,7 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
             assertFalse(tokens[3].length() <= limit);
             // body tokens that are not of type CAMEL_CASE_LENGTH_LIMITED should not be affected by the length limit
             assertFalse(tokens[2].length() <= limit);
-            // case CAMEL_CASE_LENGTH_LIMITED 
+            // case CAMEL_CASE_LENGTH_LIMITED
             assertTrue(tokens[1].length() <= limit);
         }
     }

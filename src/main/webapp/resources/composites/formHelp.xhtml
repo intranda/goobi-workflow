@@ -1,18 +1,20 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <composite:interface>
         <composite:attribute name="content" />
+        <composite:attribute name="msgFor" />
     </composite:interface>
 
     <composite:implementation>
-		<h:outputText 
-			styleClass="help-block font-light text-neutral-600" 
-			value="#{cc.attrs.content}" 
-			style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"/>
+		<div class="form__help">
+			<h:message for="#{cc.attrs.msgFor}" showDetail="true" styleClass="text-danger"/>
+			<h:outputText
+				styleClass="help-block font-light text-neutral-600"
+				value="#{cc.attrs.content}"
+				style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"/>
+		</div>
     </composite:implementation>
 
 </ui:composition>
-
-

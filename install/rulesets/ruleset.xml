@@ -3463,6 +3463,7 @@
     <metadata num="1o">_dateDigitization</metadata>
     <metadata num="1o">ResourceLink</metadata>
     <metadata num="1o">Copyright</metadata>
+    <metadata num="1o">_electronicEdition</metadata> 
   </DocStrctType>
   <DocStrctType>
     <Name>Obituary</Name>

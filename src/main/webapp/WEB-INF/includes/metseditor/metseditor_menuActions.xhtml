@@ -3,7 +3,6 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
@@ -22,7 +21,11 @@
 
                 <!-- PROCESS ID -->
                 <ui:fragment rendered="#{LoginForm.myBenutzer.metsDisplayProcessID}">
-                    <li class="nav-item">Goobi-ID: #{Metadaten.myProzess.id}</li>
+                    <li class="nav-item">
+                        <span class="nav-link">
+                            Goobi-ID: #{Metadaten.myProzess.id}
+                        </span>
+                    </li>
                 </ui:fragment>
                 <ui:fragment rendered="#{Metadaten.showOcrButton}">
                     <li class="nav-item d-none d-md-block">
@@ -242,7 +245,7 @@
                     </li>
                 </c:if>
 
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown d-none d-lg-block">
                     <button id="exit" type="button" class="nav-link dropdown-toggle" aria-expanded="false" aria-label="#{msgs.mets_leaveMetsEditor}" title="#{msgs.mets_leaveMetsEditor}" data-bs-toggle="dropdown">
                         <span class="fa fa-home fa-lg" aria-hidden="true"/>
                     </button>

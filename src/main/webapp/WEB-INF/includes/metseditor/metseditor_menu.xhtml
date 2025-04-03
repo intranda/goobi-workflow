@@ -3,7 +3,6 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
     <composite:interface/>
@@ -57,6 +56,34 @@
                         </h:commandLink>
                     </li>
                 </ui:fragment>
+                <div class="spacer nav-item d-lg-none p-1" />
+                <c:if test="#{not Metadaten.nurLesenModus}">
+                    <li class="nav-item d-lg-none">
+                        <h:commandLink
+                            id="saveAndExit"
+                            action="#{Metadaten.XMLschreiben}"
+                            onclick="goobiWorkflowJS.displayProgressBar(); goobiWorkflowJS.meScrollPos.destroyScrollPos()"
+                            styleClass="nav-link">
+                            #{msgs.speichernZurueck}
+                        </h:commandLink>
+                    </li>
+                </c:if>
+
+                <li class="nav-item d-lg-none">
+                    <h:commandLink
+                        onclick="goobiWorkflowJS.meScrollPos.destroyScrollPos()"
+                        id="exitOnly"
+                        action="#{Metadaten.goZurueck}"
+                        rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}"
+                        styleClass="nav-link">
+                        #{msgs.goBack}
+                    </h:commandLink>
+                    <h:panelGroup rendered="#{Metadaten.checkForNewerTemporaryMetadataFiles}">
+                        <button type="button" class="nav-link" title="#{msgs.goBack}" data-bs-toggle="modal" data-target="#unsavedChanges">
+                            #{msgs.goBack}
+                        </button>
+                    </h:panelGroup>
+                </li>
             </ul>
         </h:form>
     </composite:implementation>
