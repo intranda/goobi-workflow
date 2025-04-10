@@ -168,6 +168,9 @@ public class PropertyManager implements Serializable {
         List<GoobiProperty> propertyList = new ArrayList<>();
         try {
             propertyList = PropertyMysqlHelper.getPropertiesForObject(objectId, propertyType);
+            if (propertyList == null) {
+                propertyList = new ArrayList<>();
+            }
         } catch (SQLException e) {
             log.error(e);
         }
