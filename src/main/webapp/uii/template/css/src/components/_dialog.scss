@@ -19,6 +19,16 @@
     color: var(--section-color-text);
 }
 
+.modal-hot {
+    .modal-header {
+        background: var(--clr-danger);
+        color: var(--clr-white);
+        .btn {
+            color: var(--clr-white);
+        }
+    }
+}
+
 .dialog-modal {
     background: transparent;
     border: 0;
