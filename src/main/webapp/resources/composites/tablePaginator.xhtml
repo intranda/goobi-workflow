@@ -22,16 +22,14 @@
           aria-label="#{msgs.firstPage}"
 					jsf:action="#{cc.attrs.paginator.cmdMoveFirst}"
 					disabled="#{cc.attrs.paginator.hasPreviousPage}"
-					jsf:id="navfirst"
-					onclick="gwResizableTable.reload()">
+					jsf:id="navfirst">
 					<span class="fa fa-angle-double-left" />
 					<f:ajax render="@form" />
 				</button>
 				<button class="btn btn-primary-400"
 					jsf:action="#{cc.attrs.paginator.cmdMovePrevious}"
 					disabled="#{cc.attrs.paginator.hasPreviousPage}"
-					jsf:id="navprev"
-					onclick="gwResizableTable.reload()">
+					jsf:id="navprev">
 					<span class="fa fa-angle-left" />
 					<h:outputText value=" #{msgs.pagePrevious}"/>
 					<f:ajax render="@form" />
@@ -67,8 +65,7 @@
 				<button class="btn btn-primary-400"
 					jsf:action="#{cc.attrs.paginator.cmdMoveNext}"
 					disabled="#{cc.attrs.paginator.hasNextPage}"
-					jsf:id="navnext"
-					onclick="gwResizableTable.reload()">
+					jsf:id="navnext">
 					<h:outputText value="#{msgs.pageNext} "/>
 							<span class="fa fa-angle-right" />
 					<f:ajax render="@form" />
@@ -78,8 +75,7 @@
 					aria-label="#{msgs.lastPage}"
 					disabled="#{cc.attrs.paginator.hasNextPage}"
 					jsf:action="#{cc.attrs.paginator.cmdMoveLast}"
-					jsf:id="navlast"
-					onclick="gwResizableTable.reload()">
+					jsf:id="navlast">
 					<span class="fa fa-angle-double-right" />
 					<f:ajax render="@form" />
 				</button>

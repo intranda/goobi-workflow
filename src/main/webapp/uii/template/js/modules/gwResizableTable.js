@@ -1,5 +1,6 @@
 /**
- * This script allows users to resize the column widths of tables.
+ * This module allows users to resize the column widths of tables.
+ * @module gwResizableTable
  *
  * REQUIREMENTS:
  * 1. the table MUST have the class 'table-resizable' for the script to identify it.
@@ -240,8 +241,8 @@ const initialize = function initializeResizeTable(table) {
 /**
  * Initialize resizable tables if there are any.
  */
-const setup = function setupResizableTables() {
-    const tables = document.getElementsByClassName('table-resizable');
+export const init = function initializeResizeTables() {
+    const tables = document.querySelectorAll('.table-resizable');
     if (tables) {
         [...tables].forEach((table) => {
             loadColWidths(table);
@@ -249,19 +250,3 @@ const setup = function setupResizableTables() {
         });
     }
 };
-
-export default gwResizableTable = (() => {
-    function init() {
-        setup();
-    }
-    function reload(data = 'none') {
-        if (data.status === 'success') {
-            setup();
-        }
-    }
-
-    return {
-        init,
-        reload,
-    };
-})();
