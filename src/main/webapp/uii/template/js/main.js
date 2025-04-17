@@ -1,5 +1,4 @@
 // custom JS
-import './modules/gwAjaxLoader';
 import './modules/gwConfigFileEditor';
 import './modules/gwFocusOnLoad';
 import './modules/gwInitTooltips';
