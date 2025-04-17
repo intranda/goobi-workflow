@@ -10,37 +10,34 @@
     <meta name="version" content="#{HelperForm.applicationHeaderTitle} - #{HelperForm.buildVersion}" />
 
     <link rel="shortcut icon" href="#{HelperForm.contextPath}/uii/favicon.ico" />
-    <link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
- 	<link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/style.css?v=#{HelperForm.buildVersion}" />
-    <link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/themes.css?v=#{HelperForm.buildVersion}" />
-    <link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/intranda.css?v=#{HelperForm.buildVersion}" />
+	<link rel="stylesheet" href="uii/template/css/dist/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
+    <link rel="stylesheet" href="uii/template/css/dist/main.min.css?v=#{HelperForm.buildVersion}" />
 
     <title><h:outputText value="Goobi #{HelperForm.version}" /></title>
     <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" target="head" />
-	<meta http-equiv="Refresh" content="0; URL=uii/index.xhtml"/>
 </h:head>
 
-	<body class="login" style="height:300px;">
-		<div class="wrapper wide" style="height:300px;">
-			<h1>
-				<a href="index.xhtml"><h:outputText value="#{HelperForm.applicationHeaderTitle}" /></a>
-			</h1>
-			<div class="login-body" style="text-align:center;padding:70px;margin-bottom:5px;">
-				<img src="#{HelperForm.contextPath}/uii/template/img/goobi/ajaxloader2.gif" />
-				<p style="color:#aaa;font-weight:bold;">Goobi is loading</p>
+	<body class="login">
+		<main>
+			<div class="login-logout">
+				<div class="login-logout-body">
+					<h1 class="text-white">
+						<a href="index.xhtml"><h:outputText value="#{HelperForm.applicationHeaderTitle}" /></a>
+					</h1>
+
+					<div class="login-logout-box mt-3 mb-3 p-5 d-flex flex-column justify-content-between" style="height:274.3px;">
+						<img src="#{HelperForm.contextPath}/uii/template/img/goobi/ajaxloader2.gif" />
+						<p>Goobi is loading</p>
+                    </div>
+
+					<h:outputLink value="https://goobi.io/">
+                    	Goobi workflow - developed by intranda
+                    </h:outputLink>
+                    <h:outputText
+                        styleClass="float-end"
+                        value="#{msgs.version} #{HelperForm.version}" />
+				</div>
 			</div>
-			<a style="color: #FFFFFF;text-decoration:none;" href="https://goobi.io">Goobi workflow - developed by intranda</a>
-			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="v#{HelperForm.version}" />
-		</div>
+		</main>
 	</body>
 </html>
-
-
-
-
-
-
-
-
-
-
