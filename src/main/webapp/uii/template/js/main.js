@@ -4,7 +4,6 @@ import './modules/gwFocusOnLoad';
 import './modules/gwInitTooltips';
 import './modules/gwHandleTooltip';
 import './modules/gwNavigation';
-import './modules/gwToggleHelp';
 import { initFunctions } from './modules/inits';
 
 // Initialize all functions on initial page load

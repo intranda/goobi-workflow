@@ -52,7 +52,7 @@
                 <!-- Icon to enable help texts -->
                 <button
                     type="button"
-                    class="nav-link btn-link"
+                    class="nav-link btn-link#{NavigationForm.showHelp ? ' js-show-help' : ''}"
                     jsf:id="showHelp"
                     title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
                     aria-label="#{msgs.showHelpMessages}"
@@ -67,7 +67,7 @@
                     <f:ajax
                         render="@this"
                         execute="@form"
-                        onevent="function(data) { gwToggleHelp.init(data); gwHandleTooltip.init(data);}" />
+                        onevent="function(data) { gwHandleTooltip.init(data);}" />
                 </button>
 
                 <!-- Language dropdown -->
