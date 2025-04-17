@@ -263,6 +263,48 @@ public class VariableReplacerTest extends AbstractTest {
     }
 
     @Test
+    public void testProcessProperties() {
+        VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
+
+        ProcessProperty uniqueSingleProperty = new ProcessProperty();
+        uniqueSingleProperty.setName("Unique Single");
+        uniqueSingleProperty.setType(Type.TEXT);
+        uniqueSingleProperty.setValue("One");
+
+        ProcessProperty uniqueMultiProperty = new ProcessProperty();
+        uniqueMultiProperty.setName("Unique Multi");
+        uniqueMultiProperty.setType(Type.TEXT);
+        uniqueMultiProperty.setValue("One; Two");
+
+        ProcessProperty commonPropertyOne = new ProcessProperty();
+        commonPropertyOne.setName("Common");
+        commonPropertyOne.setType(Type.TEXT);
+        commonPropertyOne.setValue("One");
+
+        ProcessProperty commonPropertyTwo = new ProcessProperty();
+        commonPropertyTwo.setName("Common");
+        commonPropertyTwo.setType(Type.TEXT);
+        commonPropertyTwo.setValue("Two");
+
+        PropertyParser parser = EasyMock.createMock(PropertyParser.class);
+        EasyMock.expect(parser.getPropertiesForProcess(process)).andReturn(
+                List.of(uniqueSingleProperty, uniqueMultiProperty, commonPropertyOne, commonPropertyTwo)
+        ).anyTimes();
+        EasyMock.replay(parser);
+
+        PowerMock.mockStatic(PropertyParser.class);
+        EasyMock.expect(PropertyParser.getInstance()).andReturn(parser).anyTimes();
+        PowerMock.replayAll();
+
+        assertEquals("One", replacer.replace("{process.Unique Single}"));
+        assertEquals("One", replacer.replace("{process.Unique Multi}"));
+        assertEquals("One", replacer.replace("{process.Common}"));
+        assertEquals("One", replacer.replace("{processes.Unique Single}"));
+        assertEquals("One,Two", replacer.replace("{processes.Unique Multi}"));
+        assertEquals("One,Two", replacer.replace("{processes.Common}"));
+    }
+
+    @Test
     public void testCombineValues() {
         VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
         assertTrue(replacer.replace("{processpath}/thumbs/{processtitle}_media_1920").endsWith("metadata/1/thumbs/testprocess_media_1920"));
