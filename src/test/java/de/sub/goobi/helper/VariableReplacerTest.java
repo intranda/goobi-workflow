@@ -222,9 +222,13 @@ public class VariableReplacerTest extends AbstractTest {
         ExtendedFieldInstance appleField = EasyMock.createMock(ExtendedFieldInstance.class);
         EasyMock.expect(appleField.getFieldValue()).andReturn("Apple").anyTimes();
         EasyMock.replay(appleField);
+        ExtendedFieldInstance appleAbbreviationField = EasyMock.createMock(ExtendedFieldInstance.class);
+        EasyMock.expect(appleAbbreviationField.getFieldValue()).andReturn("A").anyTimes();
+        EasyMock.replay(appleAbbreviationField);
         ExtendedVocabularyRecord appleRecord = EasyMock.createMock(ExtendedVocabularyRecord.class);
         EasyMock.expect(appleRecord.getMainValue()).andReturn("Apple").anyTimes();
         EasyMock.expect(appleRecord.getMainField()).andReturn(Optional.of(appleField)).anyTimes();
+        EasyMock.expect(appleRecord.getFieldForDefinitionName("First Letter")).andReturn(Optional.of(appleAbbreviationField)).anyTimes();
         EasyMock.replay(appleRecord);
 
         ExtendedFieldInstance bananaField = EasyMock.createMock(ExtendedFieldInstance.class);
@@ -260,6 +264,7 @@ public class VariableReplacerTest extends AbstractTest {
         assertEquals("Banana", replacer.replace("{process.BananaProperty}"));
         assertEquals("Apple", replacer.replace("{process.FruitsProperty}"));
         assertEquals("Apple,Banana", replacer.replace("{processes.FruitsProperty}"));
+        assertEquals("A", replacer.replace("{process.AppleProperty.First Letter}"));
     }
 
     @Test
