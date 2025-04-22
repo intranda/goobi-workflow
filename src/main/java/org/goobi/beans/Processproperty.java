@@ -50,6 +50,14 @@ public class Processproperty extends GoobiProperty implements Serializable, Comp
         return this.prozess;
     }
 
+    public Integer getProcessId() {
+        return objectId;
+    }
+
+    public void setProcessId(Integer id) {
+        objectId = id;
+    }
+
     @Override
     public int compareTo(Processproperty o) {
         return propertyName.toLowerCase().compareTo(o.getPropertyName().toLowerCase());
