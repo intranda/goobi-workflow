@@ -29,13 +29,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 import de.sub.goobi.persistence.managers.ProcessManager;
-import lombok.Setter;
 
 @Deprecated
 public class Processproperty extends GoobiProperty implements Serializable, Comparable<Processproperty> {
     private static final long serialVersionUID = -2356566712752716107L;
 
-    @Setter
     private Process prozess;
 
     public Processproperty() {
@@ -48,6 +46,11 @@ public class Processproperty extends GoobiProperty implements Serializable, Comp
             prozess = ProcessManager.getProcessById(objectId);
         }
         return this.prozess;
+    }
+
+    public void setProzess(Process prozess) {
+        this.prozess = prozess;
+        setOwnerObject(prozess);
     }
 
     public Integer getProcessId() {

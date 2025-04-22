@@ -29,13 +29,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 import de.sub.goobi.persistence.managers.TemplateManager;
-import lombok.Setter;
 
 @Deprecated
 public class Templateproperty extends GoobiProperty implements Serializable {
     private static final long serialVersionUID = -5981263038302791497L;
 
-    @Setter
     private Template vorlage;
 
     public Templateproperty() {
@@ -48,5 +46,18 @@ public class Templateproperty extends GoobiProperty implements Serializable {
             vorlage = TemplateManager.getTemplateForTemplateID(objectId);
         }
         return this.vorlage;
+    }
+
+    public void setVorlage(Template vorlage) {
+        this.vorlage = vorlage;
+        setOwner(vorlage);
+    }
+
+    public Integer getTemplateId() {
+        return objectId;
+    }
+
+    public void setTemplateId(Integer templateId) {
+        objectId = templateId;
     }
 }

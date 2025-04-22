@@ -29,13 +29,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 import de.sub.goobi.persistence.managers.MasterpieceManager;
-import lombok.Setter;
 
 @Deprecated
 public class Masterpieceproperty extends GoobiProperty implements Serializable {
     private static final long serialVersionUID = -88407008893258729L;
 
-    @Setter
     private Masterpiece werkstueck;
 
     public Masterpieceproperty() {
@@ -50,4 +48,16 @@ public class Masterpieceproperty extends GoobiProperty implements Serializable {
         return this.werkstueck;
     }
 
+    public void setWerkstueck(Masterpiece werkstueck) {
+        this.werkstueck = werkstueck;
+        setOwnerObject(werkstueck);
+    }
+
+    public void setMasterpieceId(Integer masterpieceId) {
+        objectId = masterpieceId;
+    }
+
+    public Integer getMasterpieceId() {
+        return objectId;
+    }
 }
