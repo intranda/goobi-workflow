@@ -1101,7 +1101,12 @@ public class ProcessBean extends BasicBean implements Serializable {
             Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "Started export using 'ExportDMS'.");
         }
         try {
-            export.startExport(process);
+            boolean success = export.startExport(process);
+            if (!success) {
+                String message = "ExportDMS was not successfull";
+                Helper.setFehlerMeldung(message);
+                log.warn(message);
+            }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {

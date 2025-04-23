@@ -226,9 +226,13 @@ public class VariableReplacerTest extends AbstractTest {
         ExtendedFieldInstance appleField = EasyMock.createMock(ExtendedFieldInstance.class);
         EasyMock.expect(appleField.getFieldValue()).andReturn("Apple").anyTimes();
         EasyMock.replay(appleField);
+        ExtendedFieldInstance appleAbbreviationField = EasyMock.createMock(ExtendedFieldInstance.class);
+        EasyMock.expect(appleAbbreviationField.getFieldValue()).andReturn("A").anyTimes();
+        EasyMock.replay(appleAbbreviationField);
         ExtendedVocabularyRecord appleRecord = EasyMock.createMock(ExtendedVocabularyRecord.class);
         EasyMock.expect(appleRecord.getMainValue()).andReturn("Apple").anyTimes();
         EasyMock.expect(appleRecord.getMainField()).andReturn(Optional.of(appleField)).anyTimes();
+        EasyMock.expect(appleRecord.getFieldForDefinitionName("First Letter")).andReturn(Optional.of(appleAbbreviationField)).anyTimes();
         EasyMock.replay(appleRecord);
 
         ExtendedFieldInstance bananaField = EasyMock.createMock(ExtendedFieldInstance.class);
@@ -264,6 +268,50 @@ public class VariableReplacerTest extends AbstractTest {
         assertEquals("Banana", replacer.replace("{process.BananaProperty}"));
         assertEquals("Apple", replacer.replace("{process.FruitsProperty}"));
         assertEquals("Apple,Banana", replacer.replace("{processes.FruitsProperty}"));
+        assertEquals("A", replacer.replace("{process.AppleProperty.First Letter}"));
+    }
+
+    @Test
+    public void testProcessProperties() {
+        VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
+
+        DisplayProperty uniqueSingleProperty = new DisplayProperty();
+        uniqueSingleProperty.setName("Unique Single");
+        uniqueSingleProperty.setType(Type.TEXT);
+        uniqueSingleProperty.setValue("One");
+
+        DisplayProperty uniqueMultiProperty = new DisplayProperty();
+        uniqueMultiProperty.setName("Unique Multi");
+        uniqueMultiProperty.setType(Type.TEXT);
+        uniqueMultiProperty.setValue("One; Two");
+
+        DisplayProperty commonPropertyOne = new DisplayProperty();
+        commonPropertyOne.setName("Common");
+        commonPropertyOne.setType(Type.TEXT);
+        commonPropertyOne.setValue("One");
+
+        DisplayProperty commonPropertyTwo = new DisplayProperty();
+        commonPropertyTwo.setName("Common");
+        commonPropertyTwo.setType(Type.TEXT);
+        commonPropertyTwo.setValue("Two");
+
+        PropertyParser parser = EasyMock.createMock(PropertyParser.class);
+        EasyMock.expect(parser.getPropertiesForProcess(process))
+                .andReturn(
+                        List.of(uniqueSingleProperty, uniqueMultiProperty, commonPropertyOne, commonPropertyTwo))
+                .anyTimes();
+        EasyMock.replay(parser);
+
+        PowerMock.mockStatic(PropertyParser.class);
+        EasyMock.expect(PropertyParser.getInstance()).andReturn(parser).anyTimes();
+        PowerMock.replayAll();
+
+        assertEquals("One", replacer.replace("{process.Unique Single}"));
+        assertEquals("One", replacer.replace("{process.Unique Multi}"));
+        assertEquals("One", replacer.replace("{process.Common}"));
+        assertEquals("One", replacer.replace("{processes.Unique Single}"));
+        assertEquals("One,Two", replacer.replace("{processes.Unique Multi}"));
+        assertEquals("One,Two", replacer.replace("{processes.Common}"));
     }
 
     @Test
