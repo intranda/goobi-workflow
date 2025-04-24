@@ -1,7 +1,4 @@
 // custom JS
-import './modules/gwConfigFileEditor';
-import './modules/gwFocusOnLoad';
-import './modules/gwNavigation';
 import { initFunctions } from './modules/inits';
 
 // Initialize all functions on initial page load
