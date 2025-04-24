@@ -218,12 +218,7 @@
                                 class="fa fa-plus-circle"/>
                             <f:ajax
                                 render="@form"
-                                execute="@form"
-                                onevent="(data) => {
-                                    gwHandleTooltip.init(data, {restore: false});
-                                    gwInitTooltips.init(document.querySelector('#tasks'));
-                                    gwResizableTable.reload(data);
-                                }"/>
+                                execute="@form" />
                         </button>
                     </legend>
                     <div class="field-set-content">
@@ -287,12 +282,7 @@
                                             class="fa fa-trash"/>
                                         <f:ajax
                                             render="@form"
-                                            execute="@form"
-                                            onevent="(data) => {
-                                                gwHandleTooltip.init(data, {restore: false});
-                                                gwInitTooltips.init(document.querySelector('#tasks'));
-                                                gwResizableTable.reload(data);
-                                            }" />
+                                            execute="@form" />
                                     </button>
                                 </div>
                             </div>
