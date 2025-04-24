@@ -1,8 +1,6 @@
 // custom JS
 import './modules/gwConfigFileEditor';
 import './modules/gwFocusOnLoad';
-import './modules/gwInitTooltips';
-import './modules/gwHandleTooltip';
 import './modules/gwNavigation';
 import { initFunctions } from './modules/inits';
 

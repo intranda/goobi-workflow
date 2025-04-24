@@ -35,9 +35,6 @@
         // wrapping these initializations in an event listener is a workaround as we can't defer inline JS
         window.addEventListener('DOMContentLoaded', () => {
             (() => {
-                //TOOLTIPS
-                //Initialize Bootstrap tooltips
-                gwInitTooltips.init();
                 //Handle tooltips in the context of ajax calls (destroy + reinitialize. Usage: cp. for example inc_menu_preferences.xhtml)
                 gwFocusOnLoad.init();
                 gwConfigEditor.init();
