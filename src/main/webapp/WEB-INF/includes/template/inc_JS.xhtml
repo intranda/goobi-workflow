@@ -35,7 +35,6 @@
         // wrapping these initializations in an event listener is a workaround as we can't defer inline JS
         window.addEventListener('DOMContentLoaded', () => {
             (() => {
-                gwConfigEditor.init();
                 document.querySelectorAll('.grow-wrap').forEach( (wrap) => {
                     const textarea = wrap.querySelector('textarea');
                     // Sync wrap and textarea on load
