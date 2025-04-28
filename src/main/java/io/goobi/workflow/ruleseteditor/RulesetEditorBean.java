@@ -46,7 +46,9 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Ruleset;
 import org.jdom2.Element;
@@ -57,7 +59,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.StorageProviderInterface;
@@ -74,15 +75,16 @@ import io.goobi.workflow.ruleseteditor.xml.XMLError;
 import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 @Named
 @WindowScoped
+@Log4j2
 public class RulesetEditorBean implements Serializable {
 
     private static final long serialVersionUID = 2073532676953677578L;
 
-    @Getter
-    private String title = "intranda_administration_ruleset_editor";
+    private static final String CONFIGURATION_FILE = "goobi_ruleseteditor.xml";
 
     private List<Ruleset> rulesets;
 
@@ -128,7 +130,15 @@ public class RulesetEditorBean implements Serializable {
      * Constructor
      */
     public RulesetEditorBean() {
-        XMLConfiguration configuration = ConfigPlugins.getPluginConfig(this.title);
+        XMLConfiguration configuration = new XMLConfiguration();
+        configuration.setDelimiterParsingDisabled(true);
+        try {
+            configuration.load(new Helper().getGoobiConfigDirectory() + CONFIGURATION_FILE);
+        } catch (ConfigurationException e) {
+            log.error("Error while reading the configuration file " + CONFIGURATION_FILE, e);
+        }
+        configuration.setReloadingStrategy(new FileChangedReloadingStrategy());
+
         RulesetFileUtils.init(configuration);
     }
 
