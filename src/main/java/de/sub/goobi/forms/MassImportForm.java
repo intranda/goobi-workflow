@@ -58,8 +58,8 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IImportPluginVersion2;
 import org.goobi.production.plugin.interfaces.IImportPluginVersion3;
-import org.goobi.production.properties.ImportProperty;
 import org.goobi.production.properties.DisplayProperty;
+import org.goobi.production.properties.ImportProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -446,7 +446,7 @@ public class MassImportForm implements Serializable {
                 if (ImportReturnValue.ExportFinished.equals(io.getImportReturnValue())) {
                     // if exist, add process properties
                     for (DisplayProperty prop : configuredProperties) {
-
+                        @SuppressWarnings("deprecation")
                         Processproperty pe = new Processproperty();
                         pe.setPropertyName(prop.getValue());
                         pe.setPropertyValue(prop.getName());

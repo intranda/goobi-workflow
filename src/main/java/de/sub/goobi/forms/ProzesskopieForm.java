@@ -54,12 +54,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
@@ -978,8 +978,8 @@ public class ProzesskopieForm implements Serializable {
         this.prozessKopie.setSortHelperImages(this.guessedImages);
 
         for (DisplayProperty pt : configuredProperties) {
-            Processproperty pe = new Processproperty();
-            pe.setProzess(prozessKopie);
+            GoobiProperty pe = new GoobiProperty(PropertyOwnerType.PROCESS);
+            pe.setOwner(prozessKopie);
             pt.setProzesseigenschaft(pe);
             prozessKopie.getEigenschaften().add(pe);
             pt.transfer();

@@ -38,13 +38,11 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mail.SendMail;
-import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.StepBean;
@@ -201,8 +199,8 @@ public class BatchStepHelper implements Serializable {
                 return;
             }
             if (this.processProperty.getProzesseigenschaft() == null) {
-                Processproperty pe = new Processproperty();
-                pe.setProzess(this.currentStep.getProzess());
+                GoobiProperty pe = new GoobiProperty(PropertyOwnerType.PROCESS);
+                pe.setOwner(this.currentStep.getProzess());
                 this.processProperty.setProzesseigenschaft(pe);
                 this.currentStep.getProzess().getEigenschaften().add(pe);
             }
@@ -235,8 +233,8 @@ public class BatchStepHelper implements Serializable {
                 return;
             }
             if (this.processProperty.getProzesseigenschaft() == null) {
-                Processproperty pe = new Processproperty();
-                pe.setProzess(this.currentStep.getProzess());
+                GoobiProperty pe = new GoobiProperty(PropertyOwnerType.PROCESS);
+                pe.setOwner(this.currentStep.getProzess());
                 this.processProperty.setProzesseigenschaft(pe);
                 this.currentStep.getProzess().getEigenschaften().add(pe);
             }
@@ -303,8 +301,8 @@ public class BatchStepHelper implements Serializable {
                 containerAccess.put(pt.getContainer(), true);
             }
             if (pt.getProzesseigenschaft() == null) {
-                Processproperty pe = new Processproperty();
-                pe.setProzess(s.getProzess());
+                GoobiProperty pe = new GoobiProperty(PropertyOwnerType.PROCESS);
+                pe.setOwner(s.getProzess());
                 pt.setProzesseigenschaft(pe);
                 s.getProzess().getEigenschaften().add(pe);
                 pt.transfer();
@@ -512,7 +510,7 @@ public class BatchStepHelper implements Serializable {
                 temp.setBearbeitungsstatusEnum(StepStatus.ERROR);
                 temp.setCorrectionStep();
                 temp.setBearbeitungsende(new Date());
-                ErrorProperty se = new ErrorProperty();
+                GoobiProperty se = new GoobiProperty(PropertyOwnerType.ERROR);
 
                 String messageText;
                 if (StringUtils.isNotBlank(selectedErrorPropertyType)) {
@@ -529,7 +527,7 @@ public class BatchStepHelper implements Serializable {
                 }
                 se.setType(PropertyType.MESSAGE_ERROR);
                 se.setCreationDate(myDate);
-                se.setSchritt(temp);
+                se.setOwner(temp);
                 String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText;
                 String username;
                 if (ben != null) {
@@ -560,10 +558,10 @@ public class BatchStepHelper implements Serializable {
                     }
                     step.setCorrectionStep();
                     step.setBearbeitungsende(null);
-                    ErrorProperty seg = new ErrorProperty();
+                    GoobiProperty seg = new GoobiProperty(PropertyOwnerType.ERROR);
                     seg.setPropertyName(Helper.getTranslation("Korrektur notwendig"));
                     seg.setPropertyValue(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText);
-                    seg.setSchritt(step);
+                    seg.setOwner(step);
                     seg.setType(PropertyType.MESSAGE_IMPORTANT);
                     seg.setCreationDate(new Date());
                     step.getEigenschaften().add(seg);
@@ -677,11 +675,11 @@ public class BatchStepHelper implements Serializable {
                         step.setBearbeitungsende(null);
                         step.setBearbeitungszeitpunkt(now);
                     }
-                    ErrorProperty seg = new ErrorProperty();
+                    GoobiProperty seg = new GoobiProperty(PropertyOwnerType.ERROR);
                     seg.setPropertyName(Helper.getTranslation("Korrektur durchgefuehrt"));
                     seg.setPropertyValue("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
                             + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + messageText);
-                    seg.setSchritt(step);
+                    seg.setOwner(step);
                     seg.setType(PropertyType.MESSAGE_IMPORTANT);
                     seg.setCreationDate(new Date());
                     step.getEigenschaften().add(seg);

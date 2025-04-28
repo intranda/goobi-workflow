@@ -38,12 +38,9 @@ import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
@@ -65,10 +62,10 @@ public class BeanHelper implements Serializable {
     private static final long serialVersionUID = 8661143513583015230L;
 
     public void EigenschaftHinzufuegen(Process inProzess, String inTitel, String inWert) {
-        Processproperty eig = new Processproperty();
+        GoobiProperty eig = new GoobiProperty(PropertyOwnerType.PROCESS);
         eig.setPropertyName(inTitel);
         eig.setPropertyValue(inWert);
-        eig.setProzess(inProzess);
+        eig.setOwner(inProzess);
         List<GoobiProperty> eigenschaften = inProzess.getEigenschaften();
         if (eigenschaften == null) {
             eigenschaften = new ArrayList<>();
@@ -77,10 +74,10 @@ public class BeanHelper implements Serializable {
     }
 
     public void EigenschaftHinzufuegen(Template inVorlage, String inTitel, String inWert) {
-        Templateproperty eig = new Templateproperty();
+        GoobiProperty eig = new GoobiProperty(PropertyOwnerType.TEMPLATE);
         eig.setPropertyName(inTitel);
         eig.setPropertyValue(inWert);
-        eig.setVorlage(inVorlage);
+        eig.setOwner(inVorlage);
         List<GoobiProperty> eigenschaften = inVorlage.getEigenschaften();
         if (eigenschaften == null) {
             eigenschaften = new ArrayList<>();
@@ -89,10 +86,10 @@ public class BeanHelper implements Serializable {
     }
 
     public void EigenschaftHinzufuegen(Masterpiece inWerkstueck, String inTitel, String inWert) {
-        Masterpieceproperty eig = new Masterpieceproperty();
+        GoobiProperty eig = new GoobiProperty(PropertyOwnerType.MASTERPIECE);
         eig.setPropertyName(inTitel);
         eig.setPropertyValue(inWert);
-        eig.setWerkstueck(inWerkstueck);
+        eig.setOwner(inWerkstueck);
         List<GoobiProperty> eigenschaften = inWerkstueck.getEigenschaften();
         if (eigenschaften == null) {
             eigenschaften = new ArrayList<>();

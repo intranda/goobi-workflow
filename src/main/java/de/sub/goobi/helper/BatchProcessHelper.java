@@ -38,7 +38,6 @@ import org.goobi.beans.Batch;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
 
@@ -114,8 +113,8 @@ public class BatchProcessHelper implements Serializable {
                 return;
             }
             if (this.processProperty.getProzesseigenschaft() == null) {
-                Processproperty pe = new Processproperty();
-                pe.setProzess(this.currentProcess);
+                GoobiProperty pe = new GoobiProperty(PropertyOwnerType.PROCESS);
+                pe.setOwner(this.currentProcess);
                 this.processProperty.setProzesseigenschaft(pe);
                 this.currentProcess.getEigenschaften().add(pe);
             }
@@ -149,8 +148,8 @@ public class BatchProcessHelper implements Serializable {
                 return;
             }
             if (this.processProperty.getProzesseigenschaft() == null) {
-                Processproperty pe = new Processproperty();
-                pe.setProzess(this.currentProcess);
+                GoobiProperty pe = new GoobiProperty(PropertyOwnerType.PROCESS);
+                pe.setOwner(this.currentProcess);
                 this.processProperty.setProzesseigenschaft(pe);
                 currentProcess.getEigenschaften().add(pe);
             }
@@ -209,8 +208,8 @@ public class BatchProcessHelper implements Serializable {
 
         for (DisplayProperty pt : this.processPropertyList) {
             if (pt.getProzesseigenschaft() == null) {
-                Processproperty pe = new Processproperty();
-                pe.setProzess(process);
+                GoobiProperty pe = new GoobiProperty(PropertyOwnerType.PROCESS);
+                pe.setOwner(process);
                 pt.setProzesseigenschaft(pe);
                 process.getEigenschaften().add(pe);
                 pt.transfer();
