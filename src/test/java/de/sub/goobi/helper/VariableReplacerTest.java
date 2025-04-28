@@ -307,6 +307,8 @@ public class VariableReplacerTest extends AbstractTest {
         assertEquals("One", replacer.replace("{processes.Unique Single}"));
         assertEquals("One,Two", replacer.replace("{processes.Unique Multi}"));
         assertEquals("One,Two", replacer.replace("{processes.Common}"));
+        assertEquals("", replacer.replace("{process.Missing}"));
+        assertEquals("", replacer.replace("{processes.Missing}"));
     }
 
     @Test

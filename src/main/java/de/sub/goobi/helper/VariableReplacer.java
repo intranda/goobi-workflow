@@ -512,7 +512,7 @@ public class VariableReplacer {
             List<String> newValues = new LinkedList<>();
             for (ProcessProperty pp : processProperties) {
                 Type type = pp.getType();
-                String value = pp.getValue();
+                String value = Optional.ofNullable(pp.getValue()).orElse("");
                 List<ExtendedVocabularyRecord> referencedRecords = Collections.emptyList();
                 if (Type.VOCABULARYREFERENCE.equals(type)) {
                     referencedRecords = List.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(value)));
@@ -544,6 +544,8 @@ public class VariableReplacer {
 
             if (!newValues.isEmpty()) {
                 inString = inString.replace(r.group(), newValues.getFirst());
+            } else {
+                inString = inString.replace(r.group(), "");
             }
         }
 
@@ -570,7 +572,7 @@ public class VariableReplacer {
             List<String> newValues = new LinkedList<>();
             for (ProcessProperty pp : processProperties) {
                 Type type = pp.getType();
-                String value = pp.getValue();
+                String value = Optional.ofNullable(pp.getValue()).orElse("");
                 List<ExtendedVocabularyRecord> referencedRecords = Collections.emptyList();
                 if (Type.VOCABULARYREFERENCE.equals(type)) {
                     referencedRecords = List.of(VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(value)));
@@ -602,6 +604,8 @@ public class VariableReplacer {
 
             if (!newValues.isEmpty()) {
                 inString = inString.replace(r.group(), String.join(separator, newValues));
+            } else {
+                inString = inString.replace(r.group(), "");
             }
         }
 
