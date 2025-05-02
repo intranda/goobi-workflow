@@ -16,7 +16,7 @@
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package io.goobi.workflow.ruleseteditor.xml;
+package io.goobi.workflow.ruleseteditor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +30,14 @@ import lombok.Getter;
 public class ReportErrorsErrorHandler implements ErrorHandler {
 
     @Getter
-    private List<XMLError> errors;
+    private List<RulesetValidationError> errors;
 
     public ReportErrorsErrorHandler() {
         errors = new ArrayList<>();
     }
 
     private void addError(SAXParseException e, String severity) {
-        errors.add(new XMLError(e.getLineNumber(), e.getColumnNumber(), severity, e.getMessage()));
+        errors.add(new RulesetValidationError(e.getLineNumber(), e.getColumnNumber(), severity, e.getMessage()));
 
     }
 

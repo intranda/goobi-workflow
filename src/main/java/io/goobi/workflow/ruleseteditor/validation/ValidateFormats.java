@@ -26,7 +26,7 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
 import de.sub.goobi.helper.Helper;
-import io.goobi.workflow.ruleseteditor.xml.XMLError;
+import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 public class ValidateFormats {
 
@@ -36,10 +36,10 @@ public class ValidateFormats {
      * @param root The root element of the XML document to validate.
      * @param format The format of the export part which will be checked
      * @param name This value is either "name" or "InternalName" depends on the format
-     * @return A list of {@link XMLError} objects containing validation errors, if any.
+     * @return A list of {@link RulesetValidationError} objects containing validation errors, if any.
      */
-    public List<XMLError> validate(Element root, String format) {
-        List<XMLError> errors = new ArrayList<>();
+    public List<RulesetValidationError> validate(Element root, String format) {
+        List<RulesetValidationError> errors = new ArrayList<>();
         String name = "Name";
         if ("METS".equals(format) || "LIDO".equals(format)) {
             name = "InternalName";
@@ -62,13 +62,13 @@ public class ValidateFormats {
      * Checks if specific export elements in the given XML document are defined but not used.
      *
      * @param root The root element of the XML document.
-     * @param errors A list of {@link XMLError} objects to which validation errors are added.
+     * @param errors A list of {@link RulesetValidationError} objects to which validation errors are added.
      * @param type The type of the XML element to check (e.g., "DocStruct", "Metadata", "Person").
      * @param definition The expected definition of the element (e.g., "DocStrctType", "MetadataType").
      * @param format The format of the XML document.
      * @param name This value is either "name" or "InternalName" depends on the format
      */
-    private void checkElements(Element root, List<XMLError> errors, String type, String definition, String format, String name) {
+    private void checkElements(Element root, List<RulesetValidationError> errors, String type, String definition, String format, String name) {
         XPathFactory xpfac = XPathFactory.instance();
         XPathExpression<Element> xp = xpfac.compile("//Formats//" + format + "//" + type, Filters.element());
         List<Element> Elements = xp.evaluate(root);
@@ -82,7 +82,7 @@ public class ValidateFormats {
             if ("Person".equals(type)) {
                 XPathExpression<Element> xp2 = xpfac.compile("//MetadataType[@type='person' and Name='" + formatName + "']", Filters.element());
                 if (xp1.evaluate(root).size() < 1 && xp2.evaluate(root).size() < 1) {
-                    errors.add(new XMLError("ERROR",
+                    errors.add(new RulesetValidationError("ERROR",
                             Helper.getTranslation("ruleset_validation_used_but_undefined_" + type.toLowerCase() + "_for_export",
                                     formatName, format),
                             element.getAttributeValue("lineNumber")));
@@ -93,7 +93,7 @@ public class ValidateFormats {
             if ("Corporate".equals(type)) {
                 XPathExpression<Element> xp3 = xpfac.compile("//MetadataType[@type='corporate' and Name='" + formatName + "']", Filters.element());
                 if (xp1.evaluate(root).size() < 1 && xp3.evaluate(root).size() < 1) {
-                    errors.add(new XMLError("ERROR",
+                    errors.add(new RulesetValidationError("ERROR",
                             Helper.getTranslation("ruleset_validation_used_but_undefined_" + type.toLowerCase() + "_for_export",
                                     formatName, format),
                             element.getAttributeValue("lineNumber")));
@@ -103,7 +103,7 @@ public class ValidateFormats {
             // If a value of a Metadata, Group or DocStrct is not defined above throw out an error
             if (!"Person".equals(type) && !"Corporate".equals(type)) {
                 if (xp1.evaluate(root).size() < 1) {
-                    errors.add(new XMLError("ERROR",
+                    errors.add(new RulesetValidationError("ERROR",
                             Helper.getTranslation("ruleset_validation_used_but_undefined_" + type.toLowerCase() + "_for_export",
                                     formatName, format),
                             element.getAttributeValue("lineNumber")));

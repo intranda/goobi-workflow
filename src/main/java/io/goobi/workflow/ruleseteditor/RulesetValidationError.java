@@ -16,20 +16,20 @@
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package io.goobi.workflow.ruleseteditor.xml;
+package io.goobi.workflow.ruleseteditor;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class XMLError {
+public class RulesetValidationError {
     private int line;
     private int column;
     private String severity;
     private String message;
 
-    public XMLError(String severity, String message, String line) {
+    public RulesetValidationError(String severity, String message, String line) {
         this.severity = severity;
         this.message = message;
         this.line = parseLine(line);

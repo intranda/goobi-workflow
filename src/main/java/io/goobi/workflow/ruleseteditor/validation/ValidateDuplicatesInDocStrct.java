@@ -26,7 +26,7 @@ import java.util.Map;
 import org.jdom2.Element;
 
 import de.sub.goobi.helper.Helper;
-import io.goobi.workflow.ruleseteditor.xml.XMLError;
+import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 /**
  * Find duplicate metadata, group and allowedChildType values in <DocstrctType> Element and return those into the errors list
@@ -42,8 +42,8 @@ public class ValidateDuplicatesInDocStrct {
      * @param root The root XML element to be validated.
      * @return A list of XMLError objects containing details about any duplicate entries found during validation.
      */
-    public List<XMLError> validate(Element root) {
-        List<XMLError> errors = new ArrayList<>();
+    public List<RulesetValidationError> validate(Element root) {
+        List<RulesetValidationError> errors = new ArrayList<>();
         for (Element element : root.getChildren()) {
             checkDocStructNodesForDuplicates(errors, root, element);
         }
@@ -56,7 +56,7 @@ public class ValidateDuplicatesInDocStrct {
      * @param errors A list of XMLError objects to collect validation errors.
      * @param element The XML element to be checked for duplicates.
      */
-    private void checkDocStructNodesForDuplicates(List<XMLError> errors, Element root, Element element) {
+    private void checkDocStructNodesForDuplicates(List<RulesetValidationError> errors, Element root, Element element) {
         if (!"DocStrctType".equals(element.getName())) {
             return;
         }
@@ -84,13 +84,13 @@ public class ValidateDuplicatesInDocStrct {
                 // Check if the child element name is "group"
                 else if ("group".equals(childName)) {
                     errors.add(
-                            new XMLError("ERROR",
+                            new RulesetValidationError("ERROR",
                                     Helper.getTranslation("ruleset_validation_duplicates_group_group", childText, nameText),
                                     valueMap.get(childSignature)));
                 }
                 // Check if the child element name is "allowedchildtype"
                 else if ("allowedchildtype".equals(childName)) {
-                    errors.add(new XMLError("ERROR",
+                    errors.add(new RulesetValidationError("ERROR",
                             Helper.getTranslation("ruleset_validation_duplicates_group_allowedchildtype", childText, nameText),
                             valueMap.get(childSignature)));
                 }
@@ -110,7 +110,7 @@ public class ValidateDuplicatesInDocStrct {
      * @param childElementText
      * @param nameElementText
      */
-    private void findMetadataType(List<XMLError> errors, Element root, String childElementText, String nameElementText, String lineInfo) {
+    private void findMetadataType(List<RulesetValidationError> errors, Element root, String childElementText, String nameElementText, String lineInfo) {
         for (Element element : root.getChildren()) {
             if (!"MetadataType".equals(element.getName()) && !"group".equals(element.getName()) && !"metadata".equals(element.getName())) {
                 continue;
@@ -122,18 +122,18 @@ public class ValidateDuplicatesInDocStrct {
 
                 if ("person".equals(typeValue)) {
                     errors.add(
-                            new XMLError("ERROR", Helper.getTranslation("ruleset_validation_duplicates_person", childElementText, nameElementText),
+                            new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_duplicates_person", childElementText, nameElementText),
                                     lineInfo));
                     return;
                 }
                 if ("corporate".equals(typeValue)) {
                     errors.add(
-                            new XMLError("ERROR",
+                            new RulesetValidationError("ERROR",
                                     Helper.getTranslation("ruleset_validation_duplicates_corporate", childElementText, nameElementText), lineInfo));
                     return;
 
                 } else {
-                    errors.add(new XMLError("ERROR",
+                    errors.add(new RulesetValidationError("ERROR",
                             Helper.getTranslation("ruleset_validation_duplicates_metadata", childElementText, nameElementText), lineInfo));
                     return;
                 }

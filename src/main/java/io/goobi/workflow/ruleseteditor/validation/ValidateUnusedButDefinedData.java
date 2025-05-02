@@ -23,7 +23,7 @@ import java.util.List;
 import org.jdom2.Element;
 
 import de.sub.goobi.helper.Helper;
-import io.goobi.workflow.ruleseteditor.xml.XMLError;
+import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 public class ValidateUnusedButDefinedData {
 
@@ -33,8 +33,8 @@ public class ValidateUnusedButDefinedData {
      * @param root The root XML element to be validated.
      * @return A list of XMLError objects containing details about any duplicate entries found during validation.
      */
-    public List<XMLError> validate(org.jdom2.Element root) {
-        List<XMLError> errors = new ArrayList<>();
+    public List<RulesetValidationError> validate(org.jdom2.Element root) {
+        List<RulesetValidationError> errors = new ArrayList<>();
         List<String> allMetadataTypeNameValues = new ArrayList<>();
         List<String> allAllowedchildtypeValues = new ArrayList<>();
         List<String> allUnusedAllowedchildtypeValues = new ArrayList<>();
@@ -63,7 +63,7 @@ public class ValidateUnusedButDefinedData {
                         && allAllowedchildtypeValues.contains("DocStrctType:" + element.getChildText("Name").trim())
                         && !allUnusedAllowedchildtypeValues.contains(unusedValue)) {
                     allUnusedAllowedchildtypeValues.add(unusedValue.trim());
-                    errors.add(new XMLError("WARNING", Helper.getTranslation("ruleset_validation_unused_values_allowedchildtype",
+                    errors.add(new RulesetValidationError("WARNING", Helper.getTranslation("ruleset_validation_unused_values_allowedchildtype",
                             unusedValue.substring(unusedValue.lastIndexOf(":") + 1)), lineInfo));
                 }
             }
@@ -79,7 +79,7 @@ public class ValidateUnusedButDefinedData {
      * @param element
      * @param allMetadataTypeNameValues
      */
-    private void getAllMetadataTypeNameValues(List<XMLError> errors, Element element, List<String> allMetadataTypeNameValues,
+    private void getAllMetadataTypeNameValues(List<RulesetValidationError> errors, Element element, List<String> allMetadataTypeNameValues,
             List<String> allAllowedchildtypeValues) {
         if ("MetadataType".equals(element.getName()) || "Group".equals(element.getName())) {
             // Add the Name text to the list
@@ -103,7 +103,7 @@ public class ValidateUnusedButDefinedData {
      * @param element
      * @param allMetadataTypeNameValues
      */
-    private void searchInDocstrctTypesForUnusedValues(List<XMLError> errors, Element element, List<String> allMetadataTypeNameValues,
+    private void searchInDocstrctTypesForUnusedValues(List<RulesetValidationError> errors, Element element, List<String> allMetadataTypeNameValues,
             List<String> allAllowedchildtypeValues) {
 
         if (!"DocStrctType".equals(element.getName()) && !"Group".equals(element.getName())) {
@@ -157,7 +157,7 @@ public class ValidateUnusedButDefinedData {
      * @param root
      * @param text
      */
-    private void findMetadataType(List<XMLError> errors, Element root, String text) {
+    private void findMetadataType(List<RulesetValidationError> errors, Element root, String text) {
         for (Element element : root.getChildren()) {
             if ("Group".equals(element.getName()) || "MetadataType".equals(element.getName())) {
 
@@ -168,26 +168,26 @@ public class ValidateUnusedButDefinedData {
                     String nameText = nameChild.getText().trim();
 
                     if ("person".equals(type) && ("MetadataType:" + nameText).equals(text)) {
-                        errors.add(new XMLError("WARNING",
+                        errors.add(new RulesetValidationError("WARNING",
                                 Helper.getTranslation("ruleset_validation_unused_values_person", text.substring(text.lastIndexOf(":") + 1)),
                                 element.getAttributeValue("lineNumber")));
                         continue;
                     }
 
                     if ("corporate".equals(type) && ("MetadataType:" + nameText).equals(text)) {
-                        errors.add(new XMLError("WARNING",
+                        errors.add(new RulesetValidationError("WARNING",
                                 Helper.getTranslation("ruleset_validation_unused_values_corporate", text.substring(text.lastIndexOf(":") + 1)),
                                 element.getAttributeValue("lineNumber")));
                         continue;
                     }
 
                     if ("Group".equals("Group:" + nameText)) {
-                        errors.add(new XMLError("WARNING",
+                        errors.add(new RulesetValidationError("WARNING",
                                 Helper.getTranslation("ruleset_validation_unused_values_groups", text.substring(text.lastIndexOf(":") + 1)),
                                 element.getAttributeValue("lineNumber")));
                         continue;
                     } else if (("MetadataType:" + nameText).equals(text)) {
-                        errors.add(new XMLError("WARNING",
+                        errors.add(new RulesetValidationError("WARNING",
                                 Helper.getTranslation("ruleset_validation_unused_values_metadata", text.substring(text.lastIndexOf(":") + 1)),
                                 element.getAttributeValue("lineNumber")));
                         continue;

@@ -27,7 +27,7 @@ import java.util.Set;
 import org.jdom2.Element;
 
 import de.sub.goobi.helper.Helper;
-import io.goobi.workflow.ruleseteditor.xml.XMLError;
+import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 /**
  * Find used but undefined data
@@ -42,8 +42,8 @@ public class ValidateUsedButUndefinedData {
      * @param root The root XML element to be validated.
      * @return A list of XMLError objects containing details about any duplicate entries found during validation.
      */
-    public List<XMLError> validate(org.jdom2.Element root) {
-        List<XMLError> errors = new ArrayList<>();
+    public List<RulesetValidationError> validate(org.jdom2.Element root) {
+        List<RulesetValidationError> errors = new ArrayList<>();
         Map<String, String> allUsedValues = new HashMap<>();
         Set<String> allDefinedValues = new HashSet<>();
         List<String> allUndefinedValues = new ArrayList<>();
@@ -127,19 +127,19 @@ public class ValidateUsedButUndefinedData {
      * @param value
      * @param lineNumber
      */
-    private void createError(List<XMLError> errors, String value, String lineNumber) {
+    private void createError(List<RulesetValidationError> errors, String value, String lineNumber) {
         String[] parts = value.split(":", 2);
         String key = parts[0];
         String val = parts[1];
 
         if ("MetadataType".equals(key)) {
-            errors.add(new XMLError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_metadata", val),
+            errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_metadata", val),
                     lineNumber));
         } else if ("Group".equals(key)) {
-            errors.add(new XMLError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_gruppe", val),
+            errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_gruppe", val),
                     lineNumber));
         } else if ("DocStrctType".equals(key)) {
-            errors.add(new XMLError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_gruppe", val),
+            errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_gruppe", val),
                     lineNumber));
         }
     }

@@ -64,14 +64,16 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.StorageProviderInterface;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import io.goobi.workflow.ruleseteditor.validation.ValidateCardinality;
+import io.goobi.workflow.ruleseteditor.validation.ValidateDataDefinedMultipleTimes;
 import io.goobi.workflow.ruleseteditor.validation.ValidateDuplicatesInDocStrct;
 import io.goobi.workflow.ruleseteditor.validation.ValidateDuplicatesInGroups;
 import io.goobi.workflow.ruleseteditor.validation.ValidateFormats;
+import io.goobi.workflow.ruleseteditor.validation.ValidateNames;
+import io.goobi.workflow.ruleseteditor.validation.ValidateNamesInFormats;
 import io.goobi.workflow.ruleseteditor.validation.ValidateTopstructs;
+import io.goobi.workflow.ruleseteditor.validation.ValidateTranslations;
 import io.goobi.workflow.ruleseteditor.validation.ValidateUnusedButDefinedData;
 import io.goobi.workflow.ruleseteditor.validation.ValidateUsedButUndefinedData;
-import io.goobi.workflow.ruleseteditor.xml.ReportErrorsErrorHandler;
-import io.goobi.workflow.ruleseteditor.xml.XMLError;
 import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
@@ -121,7 +123,7 @@ public class RulesetEditorBean implements Serializable {
     private boolean validationError;
 
     @Getter
-    private transient List<XMLError> validationErrors;
+    private transient List<RulesetValidationError> validationErrors;
 
     @Getter
     private boolean showMore = false;
@@ -327,11 +329,11 @@ public class RulesetEditorBean implements Serializable {
     private boolean checkXML() throws ParserConfigurationException, SAXException, IOException {
         boolean ok = true;
 
-        List<XMLError> errors = new ArrayList<>();
+        List<RulesetValidationError> errors = new ArrayList<>();
         errors.addAll(checkXMLWellformed(this.currentRulesetFileContent));
 
         if (!errors.isEmpty()) {
-            for (XMLError error : errors) {
+            for (RulesetValidationError error : errors) {
                 Helper.setFehlerMeldung("rulesetEditor",
                         String.format("Line %d column %d: %s", error.getLine(), error.getColumn(), error.getMessage()), "");
 
@@ -350,7 +352,7 @@ public class RulesetEditorBean implements Serializable {
         return ok;
     }
 
-    private List<XMLError> checkXMLWellformed(String xml) throws ParserConfigurationException, SAXException, IOException {
+    private List<RulesetValidationError> checkXMLWellformed(String xml) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         factory.setValidating(false);
@@ -416,12 +418,28 @@ public class RulesetEditorBean implements Serializable {
             validationErrors.addAll(v5.validate(root, "LIDO"));
             validationErrors.addAll(v5.validate(root, "Marc"));
             validationErrors.addAll(v5.validate(root, "PicaPlus"));
+            
+            ValidateNamesInFormats v6 = new ValidateNamesInFormats();
+            validationErrors.addAll(v6.validate(root, "METS", "InternalName"));
+            validationErrors.addAll(v6.validate(root, "LIDO", "InternalName"));
 
-            ValidateUsedButUndefinedData v6 = new ValidateUsedButUndefinedData();
-            validationErrors.addAll(v6.validate(root));
+            validationErrors.addAll(v6.validate(root, "Marc", "Name"));
+            validationErrors.addAll(v6.validate(root, "PicaPlus", "Name"));
 
-            ValidateTopstructs v7 = new ValidateTopstructs();
+            ValidateUsedButUndefinedData v7 = new ValidateUsedButUndefinedData();
             validationErrors.addAll(v7.validate(root));
+
+            ValidateTopstructs v8 = new ValidateTopstructs();
+            validationErrors.addAll(v8.validate(root));
+            
+            ValidateTranslations v9 = new ValidateTranslations();
+            validationErrors.addAll(v9.validate(root));
+            
+            ValidateDataDefinedMultipleTimes v10 = new ValidateDataDefinedMultipleTimes();
+            validationErrors.addAll(v10.validate(root));
+            
+            ValidateNames v11 = new ValidateNames();
+            validationErrors.addAll(v11.validate(root));
 
             // ERROR: empty translations
             String errorDescription = Helper.getTranslation("ruleset_validation_empty_translation");
@@ -473,7 +491,7 @@ public class RulesetEditorBean implements Serializable {
         NodeList nodeList = (NodeList) xpathExpression.evaluate(document, XPathConstants.NODESET);
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
-            validationErrors.add(new XMLError(0, 0, severity, node.getTextContent() + " - " + errorType));
+            validationErrors.add(new RulesetValidationError(0, 0, severity, node.getTextContent() + " - " + errorType));
         }
     }
 
@@ -488,9 +506,9 @@ public class RulesetEditorBean implements Serializable {
             validator.validate(source);
         } catch (Exception e) {
             if (e instanceof SAXParseException se) {
-                validationErrors.add(new XMLError(se.getLineNumber(), 0, "ERROR", e.getMessage()));
+                validationErrors.add(new RulesetValidationError(se.getLineNumber(), 0, "ERROR", e.getMessage()));
             } else {
-                validationErrors.add(new XMLError(0, 0, "ERROR", e.getMessage()));
+                validationErrors.add(new RulesetValidationError(0, 0, "ERROR", e.getMessage()));
             }
 
         }
@@ -508,14 +526,14 @@ public class RulesetEditorBean implements Serializable {
                 }
             }
             if (minIndex != i) {
-                XMLError temp = validationErrors.get(i);
+                RulesetValidationError temp = validationErrors.get(i);
                 validationErrors.set(i, validationErrors.get(minIndex));
                 validationErrors.set(minIndex, temp);
             }
         }
     }
 
-    private int compareErrorSeverities(XMLError e1, XMLError e2) {
+    private int compareErrorSeverities(RulesetValidationError e1, RulesetValidationError e2) {
         if (isSpecialMetadataError(e1) && !isSpecialMetadataError(e2)) {
             return -1;
         } else if (!isSpecialMetadataError(e1) && isSpecialMetadataError(e2)) {
@@ -542,7 +560,7 @@ public class RulesetEditorBean implements Serializable {
     }
 
     // Return true if the message starts with cvc-complex-type
-    private boolean isSpecialMetadataError(XMLError error) {
+    private boolean isSpecialMetadataError(RulesetValidationError error) {
         return error.getMessage() != null && error.getMessage().contains("cvc-complex-type");
     }
 

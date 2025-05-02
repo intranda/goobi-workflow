@@ -26,7 +26,7 @@ import java.util.Map;
 import org.jdom2.Element;
 
 import de.sub.goobi.helper.Helper;
-import io.goobi.workflow.ruleseteditor.xml.XMLError;
+import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 /**
  * Find duplicate metadata and group values in <Groups> and return those into the error list
@@ -42,8 +42,8 @@ public class ValidateDuplicatesInGroups {
      * @param root The root XML element to be validated.
      * @return A list of XMLError objects containing details about any duplicate entries found during validation.
      */
-    public List<XMLError> validate(Element root) {
-        List<XMLError> errors = new ArrayList<>();
+    public List<RulesetValidationError> validate(Element root) {
+        List<RulesetValidationError> errors = new ArrayList<>();
         for (Element element : root.getChildren()) {
             checkForUnvalidGroups(errors, root, element);
         }
@@ -56,7 +56,7 @@ public class ValidateDuplicatesInGroups {
      * @param errors A list of XMLError objects to collect validation errors.
      * @param element The XML element to be checked for duplicates.
      */
-    private void checkForUnvalidGroups(List<XMLError> errors, Element root, Element element) {
+    private void checkForUnvalidGroups(List<RulesetValidationError> errors, Element root, Element element) {
         if (!"Group".equals(element.getName())) {
             return;
         }
@@ -79,7 +79,7 @@ public class ValidateDuplicatesInGroups {
                 // Check if the child element name is "group"
                 else if ("group".equals(childName)) {
                     errors.add(
-                            new XMLError("ERROR",
+                            new RulesetValidationError("ERROR",
                                     Helper.getTranslation("ruleset_validation_duplicates_group_metadata", childText,
                                             nameText),
                                     valueMap.get(childSignature)));
@@ -100,7 +100,7 @@ public class ValidateDuplicatesInGroups {
      * @param childElementText
      * @param nameElementText
      */
-    private void findMetadataType(List<XMLError> errors, Element root, String childElementText, String nameElementText, String lineInfo) {
+    private void findMetadataType(List<RulesetValidationError> errors, Element root, String childElementText, String nameElementText, String lineInfo) {
         for (Element element : root.getChildren()) {
 
             if (!"MetadataType".equals(element.getName()) || element.getChild("Name") == null) {
@@ -111,18 +111,18 @@ public class ValidateDuplicatesInGroups {
 
             // Check if the element is a person with the same name
             if ("person".equals(element.getAttributeValue("type")) && childElementText.equals(nameChild.getText().trim())) {
-                errors.add(new XMLError("ERROR",
+                errors.add(new RulesetValidationError("ERROR",
                         Helper.getTranslation("ruleset_validation_duplicates_group_person", childElementText, nameElementText), lineInfo));
                 return;
             }
 
             if ("corporate".equals(element.getAttributeValue("type")) && childElementText.equals(nameChild.getText().trim())) {
-                errors.add(new XMLError("ERROR",
+                errors.add(new RulesetValidationError("ERROR",
                         Helper.getTranslation("ruleset_validation_duplicates_group_corporate", childElementText, nameElementText), lineInfo));
                 return;
 
             } else if (childElementText.equals(nameChild.getText().trim())) {
-                errors.add(new XMLError("ERROR",
+                errors.add(new RulesetValidationError("ERROR",
                         Helper.getTranslation("ruleset_validation_duplicates_group_metadata", childElementText, nameElementText), lineInfo));
                 return;
             }
