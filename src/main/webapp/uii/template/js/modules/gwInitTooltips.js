@@ -1,57 +1,26 @@
 /**
- * @description Destroy ALL tooltips and initialize again.
- *
+ * Destroy ALL tooltips and initialize again.
+ * @module gwInitTooltips
  */
-export default gwInitTooltips = ( function() {
-  'use strict';
+const findTooltips = function findTooltips (scope = document, selectors = '[data-bs-toggle="tooltip"], [data-toggle="tooltip"]') {
+  return [...scope.querySelectorAll(selectors)]
+};
 
-  var _debug = false;
-  var _defaults = {
-    scope: document,
-    selectors: '[data-bs-toggle="tooltip"], [data-toggle="tooltip"]',
-  }
+const initTooltips = function initTooltips(scope = document) {
+  const tooltipTriggers = findTooltips(scope);
 
-  function init({ scope = _defaults.scope } = {}) {
-    _initTooltips(scope);
-    _initPopovers();
-  }
+  tooltipTriggers.map(function (tooltipTriggerEl) {
+    return hoverableTooltip(tooltipTriggerEl)
+  })
+};
 
-  /** @description find and return all elements that have a tooltip */
-  function _getTooltipTriggers(scope) {
-    var tooltipTriggerList =
-      [].slice.call(
-        scope.querySelectorAll(_defaults.selectors)
-      )
-    return tooltipTriggerList
-  }
-
-  /** @description Initialize tooltips.  */
-  function _initTooltips(scope) {
-    const tooltipTriggers = _getTooltipTriggers(scope);
-
-    // Initialize tooltips
-    tooltipTriggers.map(function (tooltipTriggerEl) {
-      return hoverableTooltip(tooltipTriggerEl)
-    })
-
-    // Debugging
-    if (_debug) console.log('%c### called gwInitTooltips._initTooltips.js ###', 'color: #368ee0')
-    if (_debug) console.log({ tooltipTriggers })
-  }
-
-  /** @description Initialize popovers.  */
-  function _initPopovers() {
-    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+const initPopovers = function initPopovers() {
+  const selector = '[data-bs-toggle="popover"]';
+  const popoverTargets = findTooltips(document, selector);
+  popoverTargets.map(function (popoverTriggerEl) {
     return hoverablePopover(popoverTriggerEl)
-    })
-  }
-
-  return {
-    init
-  }
-
-} )();
+  })
+};
 
 /**
  * Function to hide all open Bootstrap tooltips in the document
@@ -222,4 +191,9 @@ const timeout = function setTimeoutForHiding(target, element, duration) {
       target.hide();
     }
   }, duration);
+};
+
+export const init = function initTooltipsAndPopovers() {
+  initTooltips();
+  initPopovers();
 };

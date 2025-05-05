@@ -30,20 +30,11 @@
         myfaces.config.no_portlet_env = true;
     </script>
     <h:outputScript name="js/dist/legacy.min.js?v=#{HelperForm.buildVersion}" />
-    <h:outputScript name="js/dist/main.min.js?v=#{HelperForm.buildVersion}" />
+    <h:outputScript name="js/dist/main.min.js?v=#{HelperForm.buildVersion}" target="body" />
     <script>
         // wrapping these initializations in an event listener is a workaround as we can't defer inline JS
         window.addEventListener('DOMContentLoaded', () => {
             (() => {
-                //Show and hide goobi ajax loader
-                gwAjaxLoader.init();
-                //TOOLTIPS
-                //Initialize Bootstrap tooltips
-                gwInitTooltips.init();
-                //Handle tooltips in the context of ajax calls (destroy + reinitialize. Usage: cp. for example inc_menu_preferences.xhtml)
-                gwResizableTable.init();
-                gwFocusOnLoad.init();
-                gwConfigEditor.init();
                 document.querySelectorAll('.grow-wrap').forEach( (wrap) => {
                     const textarea = wrap.querySelector('textarea');
                     // Sync wrap and textarea on load
