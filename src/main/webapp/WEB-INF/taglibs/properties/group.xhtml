@@ -6,12 +6,14 @@
     xmlns:section="http://goobi.io/section"
     xmlns:properties="http://goobi.io/properties"
     xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
 >
     <c:set var="scope" value="#{
         fn:contains(bean, 'StepBean') ? 'step'
         : fn:contains(bean, 'BatchProcessHelper')? 'batch'
         : 'process'
     }" />
+    <!-- <c:set var="id" value="#{fn:replace(container.matches('^\\d+$') ? 'prop'.concat(container) : container, ' ' , '_')}" /> -->
 
     <div class="properties-group">
 
@@ -21,63 +23,39 @@
                 title="#{container.matches('^\\d+$') ? msgs.eigenschaften.concat(': ').concat(msgs.group).concat(' ').concat(msgs[container]) : msgs[container]}"
                 icon="list">
                 <div class="actions d-flex">
-                    <f:ajax
-                        execute="propertyEditArea propertyForm"
-                        render="propertyEditArea propertyForm"
-                        onevent="(data) => {
-                            if (data.status === 'success') {
-                                document.querySelector('#propertyEditModal').showModal();
-                            }
-                        }">
+                    <button
+                        type="button"
+                        jsf:id="EditModalButton#{groupId}"
+                        class="btn d-flex align-items-center btn--title-action"
+                        data-bs-toggle="modal"
+                        data-bs-target="#EditModal#{groupId}">
+                        <f:ajax
+                            execute="@this"
+                            render="propertyEditArea#{groupId}" />
                         <c:if test="#{add and scope != 'batch'}">
-                            <button
-                                jsf:action="#{bean.createNewProperty}"
-                                jsf:id="newProperty"
-                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
-                                title="#{msgs.eigenschaftHinzufuegen}"
-                                class="btn d-flex align-items-center btn--title-action"
-                                data-bs-toggle="tooltip">
-                                <f:setPropertyActionListener
-                                    target="#{bean.container}"
-                                    value="0" />
-                                <f:setPropertyActionListener
-                                    target="#{bean.modusBearbeiten}"
-                                    value="eigenschaft" />
-                                <span
-                                    aria-hidden="true"
-                                    class="fa fa-plus" />
-                            </button>
+                            <span
+                                aria-hidden="true"
+                                class="fa fa-plus" />
+                            <f:setPropertyActionListener
+                                target="#{bean.container}"
+                                value="0" />
+                            <f:setPropertyActionListener
+                                target="#{bean.modusBearbeiten}"
+                                value="eigenschaft" />
                         </c:if>
-                        <c:if test="#{scope == 'step' and !add}">
-                            <button
-                                class="btn d-flex align-items-center btn--title-action"
-                                data-bs-toggle="tooltip"
-                                jsf:action="step_edit"
-                                jsf:rendered="#{bean.containers[container].propertyList[0].type.name != 'metadata'}"
-                                title="#{msgs.bearbeiten}"
-                                jsf:id="editProperty2">
-                                <span
-                                    aria-hidden="true"
-                                    class="fa fa-pencil" />
+                        <c:if test="#{!add}">
+                            <span
+                                aria-hidden="true"
+                                class="fa fa-pencil" />
+                            <c:if test="#{scope == 'step'}">
                                 <f:setPropertyActionListener
                                     target="#{bean.container}"
                                     value="#{container}" />
                                 <f:setPropertyActionListener
                                     target="#{bean.modusBearbeiten}"
                                     value="eigenschaft" />
-                            </button>
-                        </c:if>
-                        <c:if test="#{scope == 'batch'}">
-                            <button
-                                class="btn d-flex align-items-center btn--title-action"
-                                data-bs-toggle="tooltip"
-                                jsf:action="batch_edit"
-                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
-                                title="#{msgs.bearbeiten}"
-                                jsf:id="editProperty2">
-                                <span
-                                    aria-hidden="true"
-                                    class="fa fa-pencil" />
+                            </c:if>
+                            <c:if test="#{scope == 'batch'}">
                                 <f:setPropertyActionListener
                                     target="#{bean.processProperty}"
                                     value="" />
@@ -87,32 +65,21 @@
                                 <f:setPropertyActionListener
                                     target="#{BatchForm.modusBearbeiten}"
                                     value="eigenschaft" />
-                            </button>
-                        </c:if>
-                        <c:if test="#{scope == 'process' and !add}">
-                            <button
-                                class="btn d-flex align-items-center btn--title-action"
-                                data-bs-toggle="tooltip"
-                                jsf:action="process_edit"
-                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
-                                title="#{msgs.bearbeiten}"
-                                jsf:id="editProperty2">
+                            </c:if>
+                            <c:if test="#{scope == 'process'}">
                                 <f:setPropertyActionListener
                                     target="#{bean.container}"
                                     value="#{container}" />
                                 <f:setPropertyActionListener
                                     target="#{bean.modusBearbeiten}"
                                     value="eigenschaft" />
-                                <span
-                                    aria-hidden="true"
-                                    class="fa fa-pencil" />
-                            </button>
+                            </c:if>
                         </c:if>
-                    </f:ajax>
-                    <f:ajax
-                        execute="propertyEditArea propertyForm"
-                        render="propertyEditArea propertyForm">
-                        <c:if test="#{scope == 'process' and !add}">
+                    </button>
+                    <c:if test="#{scope == 'process' and !add}">
+                        <f:ajax
+                            execute="propertyEditArea propertyForm"
+                            render="propertyEditArea propertyForm">
                             <button
                                 class="btn d-flex align-items-center btn--title-action"
                                 data-bs-toggle="tooltip"
@@ -128,21 +95,24 @@
                                     target="#{bean.container}"
                                     value="#{container}" />
                             </button>
-                        </c:if>
-                    </f:ajax>
+                        </f:ajax>
+                    </c:if>
                 </div>
-                <!-- </c:if> -->
             </section:header>
             <properties:properties>
                 <c:forEach
                     var="property"
-                    items="#{bean.containers[container].propertyList}">
+                    items="#{bean.containers[container].propertyList}"
+                    varStatus="iteration">
                     <properties:property
                         property="#{property}"
                         bean="#{bean}"
-                        editable="#{container == '0' ? true : false}" />
+                        editable="#{container == '0' ? true : false}"
+                        groupId="#{groupId}"
+                        id="#{iteration.index}" />
                 </c:forEach>
             </properties:properties>
         </section:section>
+        <properties:editDialog bean="#{bean}" groupId="#{groupId}" />
     </div>
 </ui:composition>
