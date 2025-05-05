@@ -30,7 +30,7 @@
         myfaces.config.no_portlet_env = true;
     </script>
     <h:outputScript name="js/dist/legacy.min.js?v=#{HelperForm.buildVersion}" />
-    <h:outputScript name="js/dist/main.min.js?v=#{HelperForm.buildVersion}" target="body" />
+    <h:outputScript name="js/dist/main.min.js?v=#{HelperForm.buildVersion}" />
     <script>
         // wrapping these initializations in an event listener is a workaround as we can't defer inline JS
         window.addEventListener('DOMContentLoaded', () => {
