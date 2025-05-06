@@ -1,7 +1,7 @@
 let configFileEditor;
 let debug = false;
 
-const initConfigFileEditor = function initConfigFileEditor() {
+export const init = function initConfigFileEditor() {
 	let configFileTextArea = document.getElementById("configFileEditorForm:contentbox:configFileEditor");
 	if (configFileTextArea) {
 		let type = "xml";
@@ -80,13 +80,3 @@ const loadEditorContentAndInit = function loadEditorContentAndInit() {
 	loadEditorContent();
 	initConfigFileEditor();
 }
-
-export default gwConfigEditor = (() => {
-	function init() {
-		initConfigFileEditor();
-	}
-	function loadContent() {
-		loadEditorContent();
-	}
-	return {init, loadContent}
-})();

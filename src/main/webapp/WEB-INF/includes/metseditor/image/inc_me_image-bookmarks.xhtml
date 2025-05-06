@@ -259,58 +259,58 @@
                         </li>
                     </ui:fragment>
                 </ul>
-                <div
-                    class="modal fade"
-                    id="bookmarkModal"
-                    tabindex="-1"
-                    role="dialog"
-                    aria-labelledby="bookmarkModalLabel">
-                    <div
-                        class="modal-dialog modal-lg modal-dialog-centered"
-                        role="document">
-                        <div class="modal-content">
-                            <section:section type="primary">
-                                <section:header
-                                    icon="image"
-                                    title="#{msgs.mets_bookmarkShow}"
-                                    titleId="bookmarkModalLabel">
-                                    <button
-                                        type="button"
-                                        class="btn text-white"
-                                        data-bs-dismiss="modal"
-                                        aria-label="Close">
-                                        <util:icon
-                                            icon="times" />
-                                    </button>
-                                </section:header>
-                                <section:body>
-                                    <h:panelGroup
-                                        layout="block"
-                                        id="bookmarksDisplay">
-                                        <h:panelGroup
-                                            layout="block"
-                                            id="bookmarksDisplayContent"
-                                            styleClass="d-flex justify-content-center align-items-center">
-                                            <img
-                                                class="img-fluid"
-                                                id="bookmarkCurrent"
-                                                src="" />
-                                        </h:panelGroup>
-                                    </h:panelGroup>
-                                </section:body>
-                            </section:section>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    const loadBookmark = (number) => {
-                        const bookmarkImageElement = document.querySelector(`[id$="bookmarkCurrent"]`);
-                        const buttonElement = document.querySelector('[id$="showBookmark' + number + '"]');
-                        const href = buttonElement.dataset.href;
-                        bookmarkImageElement.setAttribute('src', href);
-                    };
-                </script>
             </h:form>
         </div>
+        <div
+            class="modal fade"
+            id="bookmarkModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="bookmarkModalLabel">
+            <div
+                class="modal-dialog modal-lg modal-dialog-centered"
+                role="document">
+                <div class="modal-content">
+                    <section:section type="primary">
+                        <section:header
+                            icon="image"
+                            title="#{msgs.mets_bookmarkShow}"
+                            titleId="bookmarkModalLabel">
+                            <button
+                                type="button"
+                                class="btn text-white"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                                <util:icon
+                                    icon="times" />
+                            </button>
+                        </section:header>
+                        <section:body>
+                            <h:panelGroup
+                                layout="block"
+                                id="bookmarksDisplay">
+                                <h:panelGroup
+                                    layout="block"
+                                    id="bookmarksDisplayContent"
+                                    styleClass="d-flex justify-content-center align-items-center">
+                                    <img
+                                        class="img-fluid"
+                                        id="bookmarkCurrent"
+                                        src="" />
+                                </h:panelGroup>
+                            </h:panelGroup>
+                        </section:body>
+                    </section:section>
+                </div>
+            </div>
+        </div>
+        <script>
+            const loadBookmark = (number) => {
+                const bookmarkImageElement = document.querySelector(`[id$="bookmarkCurrent"]`);
+                const buttonElement = document.querySelector('[id$="showBookmark' + number + '"]');
+                const href = buttonElement.dataset.href;
+                bookmarkImageElement.setAttribute('src', href);
+            };
+        </script>
     </composite:implementation>
 </ui:composition>

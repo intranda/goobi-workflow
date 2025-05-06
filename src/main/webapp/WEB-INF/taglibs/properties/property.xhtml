@@ -40,7 +40,7 @@
             title="#{property.readValue}"
             target="_blank"
             rendered="#{property.type.name == 'link'}">
-        <h:outputText value="#{property.readValue}" />
+            <h:outputText value="#{property.readValue}" />
         </h:outputLink>
         <h:commandLink
             value="#{property.readValue}"
@@ -96,79 +96,52 @@
         </h:panelGroup>
         <c:if test="#{editable}">
             <button:row styleClass="ms-auto my-auto ps-2">
-                <f:ajax
-                    render="propertyEditArea"
-                    onevent="(data) => {
-                        if (data.status === 'success') {
-                            document.querySelector('#propertyEditModal').showModal();
-                        }
-                    }">
+                <button
+                    type="button"
+                    jsf:id="EditButton#{id}"
+                    class="btn btn-blank"
+                    data-bs-toggle="modal"
+                    data-bs-target="#EditModal#{groupId}">
+                    <f:ajax
+                        execute="@this"
+                        render="propertyEditArea#{groupId}" />
+                    <span
+                        aria-hidden="true"
+                        class="fa fa-pencil" />
                     <c:if test="#{scope == 'batch'}">
-                        <button
-                            class="btn btn-blank"
-                            data-bs-toggle="tooltip"
-                            jsf:action="batch_edit"
-                            title="#{msgs.bearbeiten}"
-                            jsf:id="editProperty"
-                            aria-label="#{msgs.bearbeiten}"
-                            jsf:rendered="#{proc.type.name != 'metadata'}">
-                            <span
-                                aria-hidden="true"
-                                class="fa fa-pencil" />
-                            <f:setPropertyActionListener
-                                target="#{bean.processProperty}"
-                                value="#{property}" />
-                            <f:setPropertyActionListener
-                                target="#{bean.container}"
-                                value="0" />
-                            <f:setPropertyActionListener
-                                target="#{BatchForm.modusBearbeiten}"
-                                value="eigenschaft" />
-                        </button>
+                        <f:setPropertyActionListener
+                            target="#{bean.processProperty}"
+                            value="#{property}" />
+                        <f:setPropertyActionListener
+                            target="#{bean.container}"
+                            value="0" />
+                        <f:setPropertyActionListener
+                            target="#{BatchForm.modusBearbeiten}"
+                            value="eigenschaft" />
                     </c:if>
                     <c:if test="#{scope == 'step'}">
-                        <button
-                            jsf:id="editProperty"
-                            jsf:action="task_edit"
-                            title="#{msgs.bearbeiten}"
-                            class="btn btn-blank"
-                            jsf:rendered="#{!isBatchStep and property.currentStepAccessCondition ne 'READ' and property.type.name != 'metadata'}">
-                            <span class="fa fa-pencil" />
-                            <f:setPropertyActionListener
-                                target="#{bean.processProperty}"
-                                value="#{property}" />
-                            <f:setPropertyActionListener
-                                target="#{bean.container}"
-                                value="0" />
-                            <f:setPropertyActionListener
-                                target="#{bean.modusBearbeiten}"
-                                value="eigenschaft" />
-                        </button>
+                        <f:setPropertyActionListener
+                            target="#{bean.processProperty}"
+                            value="#{property}" />
+                        <f:setPropertyActionListener
+                            target="#{bean.container}"
+                            value="0" />
+                        <f:setPropertyActionListener
+                            target="#{bean.modusBearbeiten}"
+                            value="eigenschaft" />
                     </c:if>
                     <c:if test="#{scope == 'process' and LoginForm.hasRole('Workflow_General_Details_Edit')}">
-                        <button
-                            class="btn btn-blank"
-                            data-bs-toggle="tooltip"
-                            jsf:action="process_edit"
-                            title="#{msgs.bearbeiten}"
-                            jsf:id="editProperty"
-                            aria-label="#{msgs.bearbeiten}"
-                            jsf:rendered="#{proc.type.name != 'metadata'}">
-                            <span
-                                aria-hidden="true"
-                                class="fa fa-pencil" />
-                            <f:setPropertyActionListener
-                                target="#{bean.processProperty}"
-                                value="#{property}" />
-                            <f:setPropertyActionListener
-                                target="#{bean.container}"
-                                value="0" />
-                            <f:setPropertyActionListener
-                                target="#{bean.modusBearbeiten}"
-                                value="eigenschaft" />
-                        </button>
+                        <f:setPropertyActionListener
+                            target="#{bean.processProperty}"
+                            value="#{property}" />
+                        <f:setPropertyActionListener
+                            target="#{bean.container}"
+                            value="0" />
+                        <f:setPropertyActionListener
+                            target="#{bean.modusBearbeiten}"
+                            value="eigenschaft" />
                     </c:if>
-                </f:ajax>
+                </button>
                 <f:ajax
                     render="propertyEditArea">
                     <button
