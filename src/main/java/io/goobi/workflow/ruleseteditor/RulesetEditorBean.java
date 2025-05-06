@@ -65,11 +65,11 @@ import de.sub.goobi.helper.StorageProviderInterface;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import io.goobi.workflow.ruleseteditor.validation.ValidateCardinality;
 import io.goobi.workflow.ruleseteditor.validation.ValidateDataDefinedMultipleTimes;
+import io.goobi.workflow.ruleseteditor.validation.ValidateDataNotMappedForExport;
 import io.goobi.workflow.ruleseteditor.validation.ValidateDuplicatesInDocStrct;
 import io.goobi.workflow.ruleseteditor.validation.ValidateDuplicatesInGroups;
 import io.goobi.workflow.ruleseteditor.validation.ValidateFormats;
 import io.goobi.workflow.ruleseteditor.validation.ValidateNames;
-import io.goobi.workflow.ruleseteditor.validation.ValidateNamesInFormats;
 import io.goobi.workflow.ruleseteditor.validation.ValidateTopstructs;
 import io.goobi.workflow.ruleseteditor.validation.ValidateTranslations;
 import io.goobi.workflow.ruleseteditor.validation.ValidateUnusedButDefinedData;
@@ -385,113 +385,62 @@ public class RulesetEditorBean implements Serializable {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(xmlBytes)) {
             parser.parse(new InputSource(bais), handler);
         }
-
-        DocumentBuilder builder = factory.newDocumentBuilder();
+        
         try (ByteArrayInputStream bais2 = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
-            Document document = builder.parse(bais2);
-            XPathFactory xPathFactory = XPathFactory.newInstance();
-            XPath xpath = xPathFactory.newXPath();
-
             // prepare jdom to execute several validations
             org.jdom2.Document jdomDocument = handler.getDocument();
             Element root = jdomDocument.getRootElement();
-
             // check duplicates inside of Docstructs
             ValidateDuplicatesInDocStrct v1 = new ValidateDuplicatesInDocStrct();
             validationErrors.addAll(v1.validate(root));
-
+            
             // check duplicates inside of Groups
             ValidateDuplicatesInGroups v2 = new ValidateDuplicatesInGroups();
             validationErrors.addAll(v2.validate(root));
-
+            
             // check values in num-attribute
             ValidateCardinality v3 = new ValidateCardinality();
             validationErrors.addAll(v3.validate(root));
-
+            
             // check the usage of undefined elements
             ValidateUnusedButDefinedData v4 = new ValidateUnusedButDefinedData();
             validationErrors.addAll(v4.validate(root));
-
-            // check formats for undefined elements
-            ValidateFormats v5 = new ValidateFormats();
-            validationErrors.addAll(v5.validate(root, "METS"));
-            validationErrors.addAll(v5.validate(root, "LIDO"));
-            validationErrors.addAll(v5.validate(root, "Marc"));
-            validationErrors.addAll(v5.validate(root, "PicaPlus"));
             
-            ValidateNamesInFormats v6 = new ValidateNamesInFormats();
-            validationErrors.addAll(v6.validate(root, "METS", "InternalName"));
-            validationErrors.addAll(v6.validate(root, "LIDO", "InternalName"));
-
-            validationErrors.addAll(v6.validate(root, "Marc", "Name"));
-            validationErrors.addAll(v6.validate(root, "PicaPlus", "Name"));
-
+            // check if all values in formats are defined
+            ValidateFormats v5 = new ValidateFormats();
+            validationErrors.addAll(v5.validate(root, "METS", "InternalName"));
+            validationErrors.addAll(v5.validate(root, "LIDO", "InternalName"));
+            validationErrors.addAll(v5.validate(root, "Marc", "Name"));
+            validationErrors.addAll(v5.validate(root, "PicaPlus", "Name"));
+            
+            // check if all values except in formats are defined
             ValidateUsedButUndefinedData v7 = new ValidateUsedButUndefinedData();
             validationErrors.addAll(v7.validate(root));
-
+            
+            // check if topstructs are used as allowedChildTypes
             ValidateTopstructs v8 = new ValidateTopstructs();
             validationErrors.addAll(v8.validate(root));
             
+            // check if translation values are empty
             ValidateTranslations v9 = new ValidateTranslations();
             validationErrors.addAll(v9.validate(root));
-            
+           
+            // check if data is defined multiple times
             ValidateDataDefinedMultipleTimes v10 = new ValidateDataDefinedMultipleTimes();
             validationErrors.addAll(v10.validate(root));
             
+            // check if name values are empty
             ValidateNames v11 = new ValidateNames();
             validationErrors.addAll(v11.validate(root));
-
-            // ERROR: empty translations
-            String errorDescription = Helper.getTranslation("ruleset_validation_empty_translation");
-            checkIssuesViaXPath(xpath, document, "//language[.='']/../Name", "ERROR", errorDescription);
-
-            // WARNING: Metadata defined twice
-            errorDescription = Helper.getTranslation("ruleset_validation_metadata_defined_twice");
-            checkIssuesViaXPath(xpath, document, "//MetadataType/Name[.=preceding::MetadataType/Name]", "WARNING", errorDescription);
-
-            // WARNING: DocStrctType defined twice
-            errorDescription = Helper.getTranslation("ruleset_validation_structure_data_defined_twice");
-            checkIssuesViaXPath(xpath, document, "//DocStrctType/Name[.=preceding::DocStrctType/Name]", "WARNING", errorDescription);
-
-            // WARNING: Groups defined twice
-            errorDescription = Helper.getTranslation("ruleset_validation_group_defined_twice");
-            checkIssuesViaXPath(xpath, document, "//Group/Name[.=preceding::Group/Name]", "WARNING", errorDescription);
-
-            // WARNING: allowedchildtype defined twice
-            errorDescription = Helper.getTranslation("ruleset_validation_allowedchildtype_defined_twice");
-            checkIssuesViaXPath(xpath, document, "//DocStrctType/allowedchildtype[.=preceding-sibling::allowedchildtype]", "WARNING",
-                    errorDescription);
-            checkIssuesViaXPath(xpath, document, "//DocStrctType/allowedchildtype[.=preceding-sibling::allowedchildtype]/../Name", "WARNING",
-                    errorDescription);
-
-            // WARNING: undefined but used for export
-            errorDescription = Helper.getTranslation("ruleset_validation_undefined_metadata_but_mapped_for_export");
-            checkIssuesViaXPath(xpath, document, "//METS/Metadata/InternalName[not(.=//MetadataType/Name)]", "WARNING", errorDescription);
-            errorDescription = Helper.getTranslation("ruleset_validation_undefined_structure_data_but_mapped_for_export");
-            checkIssuesViaXPath(xpath, document, "//METS/DocStruct/InternalName[not(.=//DocStrctType/Name)]", "WARNING", errorDescription);
-
-            // INFO: not mapped for export
-            errorDescription = Helper.getTranslation("ruleset_validation_structure_data_not_mapped_for_export");
-            checkIssuesViaXPath(xpath, document, "//DocStrctType/Name[not(.=//METS/DocStruct/InternalName)]",
-                    "INFO", errorDescription);
-            errorDescription = Helper.getTranslation("ruleset_validation_metadata_not_mapped_for_export");
-            checkIssuesViaXPath(xpath, document, "//MetadataType/Name[not(.=//METS/Metadata/InternalName)]",
-                    "INFO", errorDescription);
-
+            
+            // check if defined data is used in the export
+            ValidateDataNotMappedForExport v12 = new ValidateDataNotMappedForExport();
+            validationErrors.addAll(v12.validate(root, "METS"));
+            validationErrors.addAll(v12.validate(root, "LIDO"));
+            
+            // sort the errors by severity and then lines number
             sortValidationErrorsBySeverity();
 
-        } catch (SAXParseException e) {
-            //ignore this, because we collect the errors in the errorhandler and give them to the user.
-        }
-    }
-
-    private void checkIssuesViaXPath(XPath xpath, Document document, String expression, String severity, String errorType)
-            throws XPathExpressionException {
-        XPathExpression xpathExpression = xpath.compile(expression);
-        NodeList nodeList = (NodeList) xpathExpression.evaluate(document, XPathConstants.NODESET);
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            validationErrors.add(new RulesetValidationError(0, 0, severity, node.getTextContent() + " - " + errorType));
         }
     }
 
@@ -561,7 +510,7 @@ public class RulesetEditorBean implements Serializable {
 
     // Return true if the message starts with cvc-complex-type
     private boolean isSpecialMetadataError(RulesetValidationError error) {
-        return error.getMessage() != null && error.getMessage().contains("cvc-complex-type");
+        return error.getMessage() != null && error.getMessage().contains("cvc-");
     }
 
 }

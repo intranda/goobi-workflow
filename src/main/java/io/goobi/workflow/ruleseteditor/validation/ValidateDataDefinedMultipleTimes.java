@@ -3,18 +3,21 @@ package io.goobi.workflow.ruleseteditor.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.text.html.HTML.Attribute;
+
 import org.jdom2.Element;
 
 import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
-
 public class ValidateDataDefinedMultipleTimes {
 	/**
-	 * Validate the XML structure starting from the root element to find duplicate elements in xml
+	 * Validate the XML structure starting from the root element to find duplicate
+	 * elements in xml
 	 * 
 	 * @param root The root XML element to be validated.
-	 * @return errors A list of XMLError objects containing details about duplicate elements
+	 * @return errors A list of XMLError objects containing details about duplicate
+	 *         elements
 	 */
 	public List<RulesetValidationError> validate(org.jdom2.Element root) {
 		List<RulesetValidationError> errors = new ArrayList<>();
@@ -26,8 +29,10 @@ public class ValidateDataDefinedMultipleTimes {
 		return errors;
 
 	}
+
 	/**
 	 * Run through all elements of the same type and find duplicates
+	 * 
 	 * @param root
 	 * @param elementType
 	 * @param errors
@@ -46,21 +51,14 @@ public class ValidateDataDefinedMultipleTimes {
 						if (elementType.equals(nextElement.getName())) {
 							Element nextNameElement = nextElement.getChild("Name");
 							String nextName = nextNameElement.getText();
+							// An other error will be thrown
+							if (name == null || nextName == null) {
+								continue;
+							}
 							if (name.equals(nextName)) {
 								String lineNumber = nextNameElement.getAttributeValue("lineNumber");
 								String lineInfo = (lineNumber != null) ? lineNumber : "0";
-								String attributeValue = "";
-								// If it is a MetadataType, check if the attribute value the same
-								if (elementType.equals("MetadataType")) {
-									attributeValue = currentElement.getAttributeValue("type");
-									String nextAttributeValue = nextElement.getAttributeValue("type");
-									boolean bothNull = attributeValue == null && nextAttributeValue == null;
-									boolean bothEqual = attributeValue != null && attributeValue.equals(nextAttributeValue);
-									if (!(bothNull || bothEqual)) {
-									    continue;
-									}
-								}
-								createError(errors, elementType, attributeValue, nextName, lineInfo);
+								createError(errors, elementType, nextName, lineInfo);
 							}
 						}
 					}
@@ -68,17 +66,17 @@ public class ValidateDataDefinedMultipleTimes {
 			}
 		}
 	}
+
 	/**
-     * Create the errors for the duplicate values
-     *
-     * @param errors
-     * @param elementType
-     * @param attributeValue
-     * @param name
-     * @param lineInfo
-     */
-	private void createError(List<RulesetValidationError> errors, String elementType, String attributeValue, String name,
-			String lineInfo) {
+	 * Create the errors for the duplicate values
+	 *
+	 * @param errors
+	 * @param elementType
+	 * @param attributeValue
+	 * @param name
+	 * @param lineInfo
+	 */
+	private void createError(List<RulesetValidationError> errors, String elementType, String name, String lineInfo) {
 		if (elementType.equals("DocStrctType")) {
 			errors.add(new RulesetValidationError("WARNING",
 					Helper.getTranslation("ruleset_validation_valueDefinedMultipleTimes_docstruct", name), lineInfo));
@@ -86,19 +84,9 @@ public class ValidateDataDefinedMultipleTimes {
 			errors.add(new RulesetValidationError("WARNING",
 					Helper.getTranslation("ruleset_validation_valueDefinedMultipleTimes_group", name), lineInfo));
 		} else if (elementType.equals("MetadataType")) {
-			if (attributeValue == null) {
-				errors.add(new RulesetValidationError("WARNING",
-						Helper.getTranslation("ruleset_validation_valueDefinedMultipleTimes_metadata", name),
-						lineInfo));
-			} else if (attributeValue.equals("person")) {
-				errors.add(new RulesetValidationError("WARNING",
-						Helper.getTranslation("ruleset_validation_valueDefinedMultipleTimes_person", name),
-						lineInfo));
-			} else if (attributeValue.equals("corporate")) {
-				errors.add(new RulesetValidationError("WARNING",
-						Helper.getTranslation("ruleset_validation_valueDefinedMultipleTimes_corporate", name),
-						lineInfo));
-			}
+			errors.add(new RulesetValidationError("WARNING",
+					Helper.getTranslation("ruleset_validation_valueDefinedMultipleTimes_metadata", name), lineInfo));
+
 		}
 
 	}

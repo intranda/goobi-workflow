@@ -136,10 +136,10 @@ public class ValidateUsedButUndefinedData {
             errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_metadata", val),
                     lineNumber));
         } else if ("Group".equals(key)) {
-            errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_gruppe", val),
+            errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_group", val),
                     lineNumber));
         } else if ("DocStrctType".equals(key)) {
-            errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_gruppe", val),
+            errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_docstruct", val),
                     lineNumber));
         }
     }
