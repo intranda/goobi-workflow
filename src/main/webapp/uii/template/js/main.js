@@ -2,7 +2,9 @@
 import { initFunctions } from './modules/inits';
 
 // Initialize all functions on initial page load
-initFunctions();
+document.addEventListener('DOMContentLoaded', () => {
+    initFunctions();
+});
 // Initialize all functions after an ajax call
 faces.ajax.addOnEvent((data) => {
     switch (data.status) {

@@ -106,12 +106,13 @@
                                                         items="#{LoginForm.listOfCustomColumns}"
                                                         var="var">
                                                         <intranda:columnheader
+															ajaxRender="processAllBox:myform"
                                                             addClass="gw-table-fixed__sizeS"
-                                                            form="#{ProzessverwaltungForm}"
-                                                            ajaxRender="processAllProcessesBox:myform"
+                                                            form="#{AktuelleSchritteForm}"
+                                                            rendered="#{LoginForm.isDisplaySortfield(var)}"
+                                                            sortField="#{var}"
                                                             value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
-                                                            sortField="prioritaet desc, #{var}"
-                                                            rendered="#{LoginForm.isDisplaySortfield(var)}" />
+															/>
                                                         <intranda:columnheader
                                                             addClass="gw-table-fixed__sizeS"
                                                             sortable="false"

@@ -12,10 +12,10 @@
             <c:forEach var="container" items="#{bean.containerList}" varStatus="iteration">
                 <c:set var="fullWidth" value="#{(bean.containerList.size() % 2) != 0 and iteration.index == 0}" />
                 <c:if test="#{container == '0'}">
-                    <properties:group group="#{container}" add="true" bean="#{bean}" fullWidth="#{fullWidth}" />
+                    <properties:group group="#{container}" add="true" bean="#{bean}" fullWidth="#{fullWidth}" groupId="#{iteration.index}" />
                 </c:if>
                 <c:if test="#{container != '0'}">
-                    <properties:group group="#{container}" bean="#{bean}" fullWidth="#{fullWidth}" />
+                    <properties:group group="#{container}" bean="#{bean}" fullWidth="#{fullWidth}" groupId="#{iteration.index}" />
                 </c:if>
             </c:forEach>
         </div>
@@ -25,20 +25,6 @@
         : fn:contains(bean, 'BatchProcessHelper')? 'batch'
         : 'process'
     }" />
-    <h:panelGroup id="propertyEditArea" layout="block">
-        <dialog:modal id="propertyEditModal">
-            <c:if test="#{scope == 'batch'}">
-                <c:if test="#{BatchForm.modusBearbeiten == 'eigenschaft'}">
-                    <properties:editDialog bean="#{bean}" />
-                </c:if>
-            </c:if>
-            <c:if test="#{scope != 'batch'}">
-                <c:if test="#{bean.modusBearbeiten == 'eigenschaft'}">
-                    <properties:editDialog bean="#{bean}" />
-                </c:if>
-            </c:if>
-        </dialog:modal>
-    </h:panelGroup>
     <h:panelGroup id="vocabularyRecordDetails" layout="block">
         <dialog:modal id="vocabularyRecordDetailsModal">
             <dialog:header icon="info" title="#{msgs.vocabulary_entry_details_title}"></dialog:header>

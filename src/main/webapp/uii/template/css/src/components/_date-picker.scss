@@ -1,0 +1,4 @@
+// this is needed for primefaces datepickers in modals to not be obscured by modal backdrop
+.modal-open .ui-datepicker {
+    z-index: calc(var(--modal-zindex) + 1) !important;
+}

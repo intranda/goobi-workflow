@@ -32,7 +32,8 @@
   // Nav items
   .nav-item {
     color: var(--text-nav, var(--clr-white));
-    &.active {
+    &.active,
+    &:hover {
       background-color: var(--bg-body, var(--clr-white));
       color: var(--text-active);
     }
@@ -52,12 +53,6 @@
 
     // align border of .dropdown-menu with active (white) nav-link togglers
     border-left: 2px solid var(--clr-primary-400);
-
-    &:hover {
-      border-color: var(--clr-primary);
-      background-color: var(--clr-primary);
-      color: var(--clr-white);
-    }
   }
 
   // carret in nav-items which are dropdowns

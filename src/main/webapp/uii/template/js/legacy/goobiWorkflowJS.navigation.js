@@ -16,7 +16,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
             $.extend( true, _defaults, config );
 
-            console.log('init navigation');
             _setImageNavigationButtonEvents();
         }
     };
