@@ -35,11 +35,11 @@
     &.active,
     &:hover {
       background-color: var(--bg-body, var(--clr-white));
-      color: var(--text-active);
+      color: var(--text-white);
     }
     &:not(.active) {
       .dropdown-toggle.show {
-        --bs-navbar-active-color: var(--clr-white);
+        --bs-navbar-active-color: var(--text-400);
       }
     }
   }

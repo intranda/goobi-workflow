@@ -12,14 +12,28 @@
     <composite:interface />
 
     <composite:implementation>
-        <section:section type="outline">
-            <section:header
-                icon="bars"
-                title="#{msgs.metadaten}">
-            </section:header>
-            <section:body padding="true">
-                <h:outputText value="#{msgs.mets_no_metadata_assigned}" />
-            </section:body>
-        </section:section>
+        <h:panelGroup
+            layout="block"
+            rendered="#{
+                Metadaten.sizeOfCorporates==0
+                and Metadaten.sizeOfMetadata==0
+                and Metadaten.sizeOfRoles==0
+                and Metadaten.sizeOfMetadataGroups==0
+                and empty Metadaten.myMetadaten
+                and empty Metadaten.myPersonen
+                and empty Metadaten.corporates
+                and empty Metadaten.metadataGroups
+            }"
+        >
+            <section:section type="outline">
+                <section:header
+                    icon="bars"
+                    title="#{msgs.metadaten}">
+                </section:header>
+                <section:body padding="true">
+                    <h:outputText value="#{msgs.mets_no_metadata_assigned}" />
+                </section:body>
+            </section:section>
+        </h:panelGroup>
     </composite:implementation>
 </ui:composition>
