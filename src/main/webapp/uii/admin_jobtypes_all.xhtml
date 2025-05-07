@@ -31,15 +31,21 @@
             title="#{msgs.jobTypes}"
             boxPadding="true">
 
-            <div class="gw-table gw-table-fixed">
+            <div class="gw-table">
                 <div class="gw-table__wrapper" jsf:rendered="#{not empty JobTypesBean.jobTypes}">
-                    <h:dataTable value="#{JobTypesBean.jobTypes}" var="jobType" styleClass="table table-hover table-bordered">
+                    <h:dataTable value="#{JobTypesBean.jobTypes}" var="jobType" styleClass="table table-hover table-bordered table-resizable">
                         <h:column>
-                            <f:facet name="header">#{msgs.name}</f:facet>
+                            <f:facet name="header">
+                                #{msgs.name}
+                                <f:passThroughAttribute name="id" value="name" />
+                            </f:facet>
                             #{jobType.name}
                         </h:column>
                         <h:column>
-                        <f:facet name="header">#{msgs.steps}</f:facet>
+                        <f:facet name="header">
+                            #{msgs.steps}
+                            <f:passThroughAttribute name="id" value="steps" />
+                        </f:facet>
                             <ui:repeat var="stepTitle" value="#{jobType.stepNames}">
                                 <span class="badge text-success">
                                     #{stepTitle}
@@ -47,12 +53,18 @@
                             </ui:repeat>
                         </h:column>
                         <h:column>
-                            <f:facet name="header">#{msgs.status}</f:facet>
+                            <f:facet name="header">
+                                #{msgs.status}
+                                <f:passThroughAttribute name="id" value="status" />
+                            </f:facet>
                             <h:outputText rendered="#{jobType.paused}" value="#{msgs.jobtypes_paused}" />
                             <h:outputText rendered="#{not jobType.paused}" value="#{msgs.jobtypes_running}" />
                         </h:column>
-                        <h:column headerClass="gw-table-fixed__actions">
-                            <f:facet name="header" headerClass="gw-table-fixed__actions" >#{msgs.auswahl}</f:facet>
+                        <h:column headerClass="header__col-s">
+                            <f:facet name="header">
+                                #{msgs.auswahl}
+                                <f:passThroughAttribute name="id" value="auswahl" />
+                            </f:facet>
                             <div class="gw-table-fixed__actions__btns">
                                 <button class="btn btn-blank"
                                     title="#{msgs.bearbeiten}"

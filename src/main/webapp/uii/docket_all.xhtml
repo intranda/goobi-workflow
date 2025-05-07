@@ -32,7 +32,7 @@
 			icon="fa-print"
 		>
 
-		<div class="gw-table gw-table-fixed">
+		<div class="gw-table">
 			<div class="gw-table__search">
 				<div class="gw-table__search__length">
 					<h:outputText value="#{msgs.treffer}: #{DocketForm.paginator.totalResults}" />
@@ -42,26 +42,29 @@
 			<div class="gw-table__wrapper">
 
 			<!-- Datentabelle -->
-			<h:dataTable id="dockets" styleClass="table table-hover table-bordered" var="item" value="#{DocketForm.paginator.list}">
+			<h:dataTable id="dockets" styleClass="table table-hover table-bordered table-resizable" var="item" value="#{DocketForm.paginator.list}">
 
 				<h:column>
 					<f:facet name="header">
-					<h:outputText value="#{msgs.name}" />
-						</f:facet>
+						<h:outputText value="#{msgs.name}" />
+						<f:passThroughAttribute name="id" value="name" />
+					</f:facet>
 					<h:outputText value="#{item.name}" />
 				</h:column>
 
 				<h:column>
 					<f:facet name="header">
 						<h:outputText value="#{msgs.filename}" />
+						<f:passThroughAttribute name="id" value="filename" />
 					</f:facet>
 					<h:outputText value="#{item.file}" />
 				</h:column>
 
-				<h:column headerClass="gw-table-fixed__actions">
+				<h:column headerClass="header__col-s">
 
 					<f:facet name="header">
 						<h:outputText value="#{msgs.auswahl}" />
+						<f:passThroughAttribute name="id" value="auswahl" />
 					</f:facet>
 
 					<!-- Bearbeiten-Schaltknopf -->

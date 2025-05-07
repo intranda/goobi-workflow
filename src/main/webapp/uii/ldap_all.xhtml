@@ -33,7 +33,7 @@
 					>
 
 
-					<div class="gw-table gw-table-fixed">
+					<div class="gw-table">
 
 						<div class="gw-table__search">
 							<div class="gw-table__search__length">
@@ -44,12 +44,13 @@
 						<!-- TABLE -->
 						<div class="gw-table__wrapper">
 								<h:dataTable id="ldaps"
-									styleClass="table table-hover table-bordered"
+									styleClass="table table-hover table-bordered table-resizable"
 									var="item" value="#{LdapGruppenForm.paginator.list}">
 
 									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.authentication_title}" />
+											<f:passThroughAttribute name="id" value="title" />
 										</f:facet>
 										<h:outputText value="#{item.titel}" />
 									</h:column>
@@ -57,6 +58,7 @@
 									<h:column headerClass="hidden-xs" styleClass="hidden-xs">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.authentication_type}" />
+											<f:passThroughAttribute name="id" value="type" />
 										</f:facet>
 										<h:outputText value="#{msgs[item.authenticationType]}" />
 									</h:column>
@@ -64,6 +66,7 @@
 									<h:column styleClass="tableColumnMaxWidthMid">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.ldapUserDN}" />
+											<f:passThroughAttribute name="id" value="userDN" />
 										</f:facet>
 										<h:outputText value="#{item.userDN}" title="#{item.userDN}" rendered="#{item.authenticationType=='ldap'}" />
 									</h:column>
@@ -71,13 +74,15 @@
 									<h:column headerClass="hidden-xs" styleClass="hidden-xs">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.ldapLoginShell}" />
+											<f:passThroughAttribute name="id" value="loginShell" />
 										</f:facet>
 										<h:outputText value="#{item.loginShell}" />
 									</h:column>
 
-									<h:column headerClass="gw-table-fixed__actions">
+									<h:column headerClass="header__col-s">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
+											<f:passThroughAttribute name="id" value="actions" />
 										</f:facet>
 										<!-- Bearbeiten-Schaltknopf -->
 										<button

@@ -73,7 +73,7 @@
                                         <table
                                             role="grid"
                                             id="tableQuartz"
-                                            class="table table-bordered table-fixed table-hover">
+                                            class="table table-bordered table-fixed table-hover table-resizable">
 
                                             <thead>
                                                 <tr role="row">
@@ -98,61 +98,63 @@
 
                                                 <tr role="row">
                                                     <td>
-                                                        <span class="admin__tasks-quartz-table-row-data">
-                                                            <h:outputText value="#{msgs[entry.jobName]}" />
+                                                        <span class="d-flex justify-content-between">
+                                                            <span class="admin__tasks-quartz-table-row-data">
+                                                                <h:outputText value="#{msgs[entry.jobName]}" />
+                                                            </span>
+                                                            <span>
+                                                                <button
+                                                                    jsf:action="#{jobBean.triggerQuartzJob}"
+                                                                    jsf:rel="tooltip"
+                                                                    title="#{msgs.jobs_run_once_now}"
+                                                                    class="btn btn-blank float-end">
+                                                                    <span class="fa fa-step-forward" />
+                                                                    <f:passThroughAttribute
+                                                                        name="data-toggle"
+                                                                        value="tooltip" />
+                                                                    <f:setPropertyActionListener
+                                                                        target="#{jobBean.quartzJobDetails}"
+                                                                        value="#{entry}" />
+                                                                    <f:ajax
+                                                                        execute="@form"
+                                                                        render="@all" />
+                                                                </button>
+                                                                <button
+                                                                    jsf:rendered="#{entry.jobKey != null and !entry.paused}"
+                                                                    jsf:action="#{jobBean.pauseJob}"
+                                                                    jsf:rel="tooltip"
+                                                                    class="btn btn-blank me-2 float-end"
+                                                                    title="#{msgs.jobs_pause_job}">
+                                                                    <span class="fa fa-pause" />
+                                                                    <f:passThroughAttribute
+                                                                        name="data-toggle"
+                                                                        value="tooltip" />
+                                                                    <f:ajax
+                                                                        execute="@form"
+                                                                        render="@all" />
+                                                                    <f:setPropertyActionListener
+                                                                        target="#{jobBean.quartzJobDetails}"
+                                                                        value="#{entry}" />
+                                                                </button>
+                                                                <button
+                                                                    jsf:rendered="#{entry.jobKey != null and entry.paused}"
+                                                                    jsf:action="#{jobBean.resumeJob}"
+                                                                    jsf:rel="tooltip"
+                                                                    class="btn btn-blank me-2 float-end"
+                                                                    title="#{msgs.jobs_run_job}">
+                                                                    <span class="fa fa-play" />
+                                                                    <f:passThroughAttribute
+                                                                        name="data-toggle"
+                                                                        value="tooltip" />
+                                                                    <f:ajax
+                                                                        execute="@form"
+                                                                        render="@all" />
+                                                                    <f:setPropertyActionListener
+                                                                        target="#{jobBean.quartzJobDetails}"
+                                                                        value="#{entry}" />
+                                                                </button>
+                                                            </span>
                                                         </span>
-
-                                                        <button
-                                                            jsf:action="#{jobBean.triggerQuartzJob}"
-                                                            jsf:rel="tooltip"
-                                                            title="#{msgs.jobs_run_once_now}"
-                                                            class="btn btn-blank float-end">
-                                                            <span class="fa fa-step-forward" />
-                                                            <f:passThroughAttribute
-                                                                name="data-toggle"
-                                                                value="tooltip" />
-                                                            <f:setPropertyActionListener
-                                                                target="#{jobBean.quartzJobDetails}"
-                                                                value="#{entry}" />
-                                                            <f:ajax
-                                                                execute="@form"
-                                                                render="@all" />
-                                                        </button>
-                                                        <button
-                                                            jsf:rendered="#{entry.jobKey != null and !entry.paused}"
-                                                            jsf:action="#{jobBean.pauseJob}"
-                                                            jsf:rel="tooltip"
-                                                            class="btn btn-blank me-2 float-end"
-                                                            title="#{msgs.jobs_pause_job}">
-                                                            <span class="fa fa-pause" />
-                                                            <f:passThroughAttribute
-                                                                name="data-toggle"
-                                                                value="tooltip" />
-                                                            <f:ajax
-                                                                execute="@form"
-                                                                render="@all" />
-                                                            <f:setPropertyActionListener
-                                                                target="#{jobBean.quartzJobDetails}"
-                                                                value="#{entry}" />
-                                                        </button>
-                                                        <button
-                                                            jsf:rendered="#{entry.jobKey != null and entry.paused}"
-                                                            jsf:action="#{jobBean.resumeJob}"
-                                                            jsf:rel="tooltip"
-                                                            class="btn btn-blank me-2 float-end"
-                                                            title="#{msgs.jobs_run_job}">
-                                                            <span class="fa fa-play" />
-                                                            <f:passThroughAttribute
-                                                                name="data-toggle"
-                                                                value="tooltip" />
-                                                            <f:ajax
-                                                                execute="@form"
-                                                                render="@all" />
-                                                            <f:setPropertyActionListener
-                                                                target="#{jobBean.quartzJobDetails}"
-                                                                value="#{entry}" />
-                                                        </button>
-
                                                     </td>
                                                     <td>
                                                         <h:outputText value="#{entry.previousFireTimeAsString}" />
@@ -303,7 +305,7 @@
                                         <table
                                             role="grid"
                                             id="quartzHistoryTable"
-                                            class="table table-hover table-nomargin dataTable table-bordered responsive">
+                                            class="table table-hover table-nomargin dataTable table-bordered responsive table-resizable">
                                             <!-- ### Columnheader row ### -->
                                             <thead>
                                                 <tr role="row">
