@@ -18,9 +18,9 @@ import * as rollup from 'rollup';
 import cleanup from 'rollup-plugin-cleanup';
 import terser from '@rollup/plugin-terser';
 
-const cheerio = require('cheerio');
-const through2 = require('through2');
-const svgmin = require('gulp-svgmin');
+import * as cheerio from 'cheerio';
+import * as through2 from 'through2';
+import svgmin from 'gulp-svgmin';
 
 // provide custom asset location for watch task
 let customLocation = '';
