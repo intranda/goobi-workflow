@@ -68,7 +68,7 @@ public abstract class AbstractGenericPlugin implements IGenericPlugin {
 
     }
 
-    public UIComponent getModal() {
+    public synchronized UIComponent getModal() {
         if (this.modal == null && this.getModalPath() != null) {
             this.modal = generateModalComponent();
         }
