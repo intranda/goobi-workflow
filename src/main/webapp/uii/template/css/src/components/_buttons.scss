@@ -159,7 +159,8 @@ button,
 }
 
 .box__title .btn {
-  &:focus {
+  &:focus,
+  &:hover {
     border: 1px solid;
     color: inherit;
   }
