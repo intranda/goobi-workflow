@@ -157,3 +157,10 @@ button,
   background: rgba(0, 0, 0, 0.4);
   color: var(--clr-white);
 }
+
+.box__title .btn {
+  &:focus {
+    border: 1px solid;
+    color: inherit;
+  }
+}
