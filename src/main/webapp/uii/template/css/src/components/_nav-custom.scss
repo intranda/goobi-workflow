@@ -41,6 +41,10 @@
       .dropdown-toggle.show {
         --bs-navbar-active-color: var(--text-400);
       }
+      &:hover {
+        background-color: var(--clr-primary-600);
+        color: var(--clr-white);
+      }
     }
   }
 
