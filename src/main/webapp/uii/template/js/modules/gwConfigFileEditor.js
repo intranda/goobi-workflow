@@ -2,10 +2,10 @@ let configFileEditor;
 let debug = false;
 
 export const init = function initConfigFileEditor() {
-	let configFileTextArea = document.getElementById("configFileEditorForm:contentbox:configFileEditor");
+	let configFileTextArea = document.querySelector('[id$="configFileEditor"]');
 	if (configFileTextArea) {
 		let type = "xml";
-		let typeElement = document.getElementById("currentConfigFileType");
+		let typeElement = document.querySelector('[id$="currentConfigFileType"]');
 		if (typeElement) {
 			type = typeElement.innerHTML.trim();
 		}
@@ -18,7 +18,8 @@ export const init = function initConfigFileEditor() {
 				configFileEditor.refresh();
 			}, 100);
 			configFileEditor.on('change', editor => {
-				document.getElementById("configFileEditor").innerHTML = editor.getValue();
+				document.querySelector('[id$="configFileEditor"]').value = editor.getValue();
+				loadEditorContent();
 			});
 		}
 		document.addEventListener('DOMContentLoaded', function() {
@@ -33,11 +34,11 @@ export const init = function initConfigFileEditor() {
 }
 
 const loadEditorContent = function loadEditorContent() {
-	let configFileTextAreaBase64 = document.getElementById("configFileEditorForm:contentbox:configFileEditorBase64");
+	let configFileTextAreaBase64 = document.querySelector('[id$="configFileEditorBase64"]');
 	if (configFileTextAreaBase64) {
 		let string = configFileEditor.getValue();
 		if (debug){
-		  // console.log("Load: " + string);
+			// console.log("Load: " + string);
 		}
 		configFileTextAreaBase64.value = base64EncodeUnicode(string);
 	}
