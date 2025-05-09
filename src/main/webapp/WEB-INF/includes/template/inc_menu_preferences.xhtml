@@ -30,7 +30,7 @@
                     var="plugin"
                     >
                     <ui:fragment rendered="#{plugin.isMenuBarDockable()}">
-                        <li
+                        <a
                             class="nav-item"
                             data-bs-toggle="tooltip"
                             title="#{plugin.title}">
@@ -38,6 +38,7 @@
                                 id="btn#{plugin.title}"
                                 class="nav-link"
                                 type="button"
+                                title="#{plugin.title}"
                                 data-bs-toggle="modal"
                                 data-bs-target="#pluginModal#{plugin.id}"
                                 data-bs-placement="bottom"
@@ -46,7 +47,7 @@
                                     aria-hidden="true"
                                     class="fa #{plugin.icon} fa-2x"/>
                             </button>
-                        </li>
+                        </a>
                     </ui:fragment>
                 </ui:repeat>
                 <!-- Icon to enable help texts -->
