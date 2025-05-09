@@ -93,7 +93,8 @@
         console.log(opts)
         this.alignRtl =this.opts.alignRtl;
         let altoDiv = document.querySelector(opts.altoDivSelector);
-        let altoJson = altoDiv.innerText;
+        let altoJson = altoDiv.value;
+        console.log("load alto", altoJson);
         this.alto = JSON.parse(altoJson);
         this.lines = this.alto.lines;
         console.log(this.alto)
@@ -285,6 +286,7 @@
     }
 
     initNamedEntityEditor(element, config) {
+    console.log("init entity editor", this.alto);
         const opts = $.extend(true, {}, config, {
             wordSelector: ".altoword",
             wordContainerSelector: ".alto-edit",

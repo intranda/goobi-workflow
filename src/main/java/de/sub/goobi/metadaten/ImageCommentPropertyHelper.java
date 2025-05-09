@@ -70,7 +70,7 @@ public class ImageCommentPropertyHelper {
         removeExistingCommentsForImage(ic, comment.getImageFolder(), comment.getImageName());
 
         // Empty comment string is interpreted as removal
-        if (comment.getComment() != null  && !comment.getComment().isEmpty()) {
+        if (comment.getComment() != null && !comment.getComment().isEmpty()) {
             ic.comments.add(comment);
         }
 

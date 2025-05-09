@@ -3661,6 +3661,10 @@ public class Metadaten implements Serializable {
         return currentJsonAlto;
     }
 
+    public void setJsonAlto(String json) {
+        //do nothing
+    }
+
     private Path getCurrentAltoPath() throws SwapException, IOException {
         String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
         Path altoFile = Paths.get(myProzess.getOcrAltoDirectory(), ocrFileNew + ".xml");

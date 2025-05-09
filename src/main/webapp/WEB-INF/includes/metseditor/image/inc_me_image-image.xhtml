@@ -15,7 +15,9 @@
         <h:form
             prependId="false"
             id="openseadragonform">
-            <div id="jsonAlto" style="display: none;">#{Metadaten.jsonAlto}</div>
+            <h:panelGroup id="jsonAltoGroup">
+	            <h:inputText class="d-none" id="jsonAlto" value="#{Metadaten.jsonAlto}"/>
+            </h:panelGroup>
             <input
                 type="hidden"
                 id="tileSource"
