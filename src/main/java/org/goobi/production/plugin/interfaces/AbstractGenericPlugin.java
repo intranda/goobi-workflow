@@ -64,7 +64,7 @@ public abstract class AbstractGenericPlugin implements IGenericPlugin {
         return parent;
     }
 
-    public void setModal(UIComponent c) {
+    public synchronized void setModal(UIComponent c) {
 
     }
 
