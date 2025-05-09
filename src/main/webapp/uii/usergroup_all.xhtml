@@ -123,7 +123,7 @@
                                         <!-- // NAME COLUMN -->
 
                                         <!-- INSTITUTION COLUMN -->
-    									<h:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
+    									<h:column headerClass="header__col-l" rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
     											<f:facet name="header">
     													<h:outputText value="#{msgs.institution}" />
 														<f:passThroughAttribute name="id" value="institution" />

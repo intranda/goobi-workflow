@@ -34,14 +34,14 @@
             <div class="gw-table">
                 <div class="gw-table__wrapper" jsf:rendered="#{not empty JobTypesBean.jobTypes}">
                     <h:dataTable value="#{JobTypesBean.jobTypes}" var="jobType" styleClass="table table-hover table-bordered table-resizable">
-                        <h:column>
+                        <h:column headerClass="header__col-l">
                             <f:facet name="header">
                                 #{msgs.name}
                                 <f:passThroughAttribute name="id" value="name" />
                             </f:facet>
                             #{jobType.name}
                         </h:column>
-                        <h:column>
+                        <h:column headerClass="header__col-l">
                         <f:facet name="header">
                             #{msgs.steps}
                             <f:passThroughAttribute name="id" value="steps" />
@@ -52,7 +52,7 @@
                                 </span>
                             </ui:repeat>
                         </h:column>
-                        <h:column>
+                        <h:column headerClass="header__col-l">
                             <f:facet name="header">
                                 #{msgs.status}
                                 <f:passThroughAttribute name="id" value="status" />

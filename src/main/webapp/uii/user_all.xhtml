@@ -112,31 +112,36 @@
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.name}"
 														ajaxRender="allUsers:myform"
-                                                        sortField="benutzer.nachname, benutzer.vorname" />
+                                                        sortField="benutzer.nachname, benutzer.vorname"
+														addClass="header__col-l" />
 												<intranda:columnheader
 														name="login"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.login}"
 														ajaxRender="allUsers:myform"
-                                                        sortField="benutzer.login" />
+                                                        sortField="benutzer.login"
+														addClass="header__col-l" />
 												<intranda:columnheader
 														name="location"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.standort}"
 														ajaxRender="allUsers:myform"
-                                                        sortField="benutzer.standort" />
+                                                        sortField="benutzer.standort"
+														addClass="header__col-l" />
 												<intranda:columnheader
 														name="group"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.benutzergruppen}"
 														ajaxRender="allUsers:myform"
-                                                        sortField="groups" />
+                                                        sortField="groups"
+														addClass="header__col-l" />
 												<intranda:columnheader
 														name="projects"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.projekte}"
 														ajaxRender="allUsers:myform"
-                                                        sortField="projects" />
+                                                        sortField="projects"
+														addClass="header__col-l" />
 
 												<intranda:columnheader
 														name="institution"
@@ -144,11 +149,12 @@
 														value="#{msgs.institution}"
 														rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
 														ajaxRender="allUsers:myform"
-                                                        sortField="institution.shortName" />
+                                                        sortField="institution.shortName"
+														addClass="header__col-l" />
 												<intranda:columnheader
 														value="#{msgs.auswahl}"
 														sortable="false"
-														addClass="gw-table-fixed__actions"
+														addClass="header__col-s"
 												/>
 											</tr>
 										</thead>

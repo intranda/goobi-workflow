@@ -43,7 +43,7 @@
     			<!-- Datentabelle -->
     			<h:dataTable id="dockets" styleClass="table table-hover table-bordered table-resizable" var="item" value="#{goobiScriptTemplateBean.paginator.list}">
 
-    				<h:column>
+    				<h:column headerClass="header__col-l">
     					<f:facet name="header">
     						<h:outputText value="#{msgs.name}" />
 							<f:passThroughAttribute name="id" value="name" />
@@ -51,7 +51,7 @@
     					<h:outputText value="#{item.title}" />
     				</h:column>
 
-    				<h:column>
+    				<h:column headerClass="header__col-l">
     					<f:facet name="header">
     						<h:outputText value="#{msgs.description}" />
 							<f:passThroughAttribute name="id" value="description" />

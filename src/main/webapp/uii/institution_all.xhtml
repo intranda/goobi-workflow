@@ -61,7 +61,7 @@
                                     var="item"
                                     value="#{institutionBean.paginator.list}">
 
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.institution_longName}" />
                                             <f:passThroughAttribute name="id" value="longName" />
@@ -69,7 +69,7 @@
                                         <h:outputText value="#{item.longName}" />
                                     </h:column>
 
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.institution_shortName}" />
                                             <f:passThroughAttribute name="id" value="shortName" />
@@ -77,7 +77,7 @@
                                         <h:outputText value="#{item.shortName}" />
                                     </h:column>
 
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.regelsaetze}" />
                                             <f:passThroughAttribute name="id" value="regelsaetze" />
@@ -102,7 +102,7 @@
 
                                     </h:column>
 
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.dockets}" />
                                             <f:passThroughAttribute name="id" value="dockets" />
@@ -124,7 +124,7 @@
                                         </ui:repeat>
 
                                     </h:column>
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.authentication}" />
                                             <f:passThroughAttribute name="id" value="authentication" />
@@ -149,7 +149,7 @@
 
 
                                     </h:column>
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.instituiton_plugins}" />
                                             <f:passThroughAttribute name="id" value="plugins" />
