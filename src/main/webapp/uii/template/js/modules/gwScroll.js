@@ -1,4 +1,4 @@
-function scrollToTestLine(lineNumber) {
+function scrollToLine(lineNumber) {
 	const lines = document.querySelectorAll('.CodeMirror-linenumber');
 	const line = lines[parseInt(lineNumber)];
 	line.scrollIntoView({ block: 'center', inline: 'nearest' });

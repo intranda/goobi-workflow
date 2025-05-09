@@ -164,62 +164,27 @@
 										styleClass="alert alert-info"
 										value="#{msgs.ruleset_validation_no_issues}" />
 
-									<ui:repeat var="error"
-										value="#{rulesetEditorBean.validationErrors}">
-										<h:panelGroup rendered="#{error.severity eq 'ERROR'}"
-											layout="block" styleClass="alert alert-danger d-grid"
-											style="grid-template-columns: 1fr auto; align-items: start; gap: 0.5rem;">
+									<ui:repeat var="error" value="#{rulesetEditorBean.validationErrors}">
+	                                    
+	                                    <h:panelGroup rendered="#{error.severity ne 'INFO' or (error.severity eq 'INFO' and rulesetEditorBean.showMore)}"
+	                                        styleClass="alert #{error.severity eq 'WARNING'?'alert-warning':error.severity eq 'INFO'?'alert-secondary':'alert-danger'} d-block">
+	                                    
+		                                    <div class="row">
+		                                    	 <div class="col-9">
+				                                    <h:outputText
+				                                        value="#{error.message}"/>
+		                                    	 </div>
+		                                    	 <div class="col-3">
+			                                    	<button jsf:id="button_neutral-500"
+														class="btn btn-neutral-500 float-end" type="button"
+														onclick="scrollToLine(#{error.line})">
+														<h:outputText value="#{msgs.ruleset_validation_line}: #{error.line}" />
+													</button>
+		                                    	 </div>
+		                                    </div>
 
-											<h:outputText
-												value="#{error.message} #{error.line ne '0' ? ' ('.concat(msgs.ruleset_validation_line).concat(': ').concat(error.line).concat(')') : ''}" />
-
-											<div style="display: flex; gap: 0.25rem;">
-												<button jsf:id="button_neutral-500"
-													class="btn btn-neutral-500 me-2" type="button"
-													onclick="scrollToTestLine(#{error.line})">
-													<i class="fa fa-plus"></i> <span> <h:outputText
-															value="Scrollen" />
-													</span>
-												</button>
-
-											</div>
 										</h:panelGroup>
-										<h:panelGroup rendered="#{error.severity eq 'WARNING'}"
-											layout="block" styleClass="alert alert-warning d-grid"
-											style="grid-template-columns: 1fr auto; align-items: start; gap: 0.5rem;">
-
-											<h:outputText
-												value="#{error.message} #{error.line ne '0' ? ' ('.concat(msgs.ruleset_validation_line).concat(': ').concat(error.line).concat(')') : ''}" />
-
-											<div style="display: flex; gap: 0.25rem;">
-												<button jsf:id="button_neutral-500-warning"
-													class="btn btn-neutral-500 me-2" type="button"
-													onclick="scrollToTestLine(#{error.line})">
-													<i class="fa fa-plus"></i> <span> <h:outputText
-															value="Scrollen" />
-													</span>
-												</button>
-											</div>
-										</h:panelGroup>
-										<h:panelGroup
-											rendered="#{error.severity eq 'INFO' and rulesetEditorBean.showMore}"
-											layout="block" styleClass="alert alert-secondary d-grid"
-											style="grid-template-columns: 1fr auto; align-items: start; gap: 0.5rem;">
-
-											<h:outputText
-												value="#{error.message} #{error.line ne '0' ? ' ('.concat(msgs.ruleset_validation_line).concat(': ').concat(error.line).concat(')') : ''}" />
-
-											<div style="display: flex; gap: 0.25rem;">
-												<button jsf:id="button_neutral-500-info"
-													class="btn btn-neutral-500 me-2" type="button"
-													onclick="scrollToTestLine(#{error.line})">
-													<i class="fa fa-plus"></i> <span> <h:outputText
-															value="Scrollen" />
-													</span>
-												</button>
-											</div>
-										</h:panelGroup>
-									</ui:repeat>
+	                                </ui:repeat>
 								</div>
 
 							</intranda:box>
@@ -255,10 +220,11 @@
 									<button jsf:id="validate" class="btn btn-primary float-end"
 										jsf:action="#{rulesetEditorBean.validate}"
 										title="#{msgs.validieren}">
-										<i class="fa fa-check"></i> <span> <h:outputText
+										<i class="fa fa-check"></i> 
+										<span> <h:outputText
 												value="#{msgs.validieren}" />
 										</span>
-										<f:ajax render="validationResultsWrapper" />
+										<f:ajax execute="@all" render="validationResultsWrapper" />
 									</button>
 									<!-- Save-Button -->
 									<button jsf:id="save" class="btn btn-success float-end"
