@@ -1,8 +1,11 @@
 :root {
   --gw-clr-border: var(--clr-neutral-300);
   --gw-border: 1px solid var(--gw-clr-border);
-  --gw-border-radius: 2px;
+  --gw-border-radius: 0.375rem;
   --flow-space: 1rem;
+
+  --modal-zindex: 1055;
+  --bs-modal-zindex: var(--modal-zindex);
 
   /* legacy: */
   --border-radius: 2px;

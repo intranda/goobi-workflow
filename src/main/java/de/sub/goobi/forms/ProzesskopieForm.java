@@ -867,6 +867,7 @@ public class ProzesskopieForm implements Serializable {
             if (!pt.isValid()
                     || (AccessCondition.WRITEREQUIRED.equals(pt.getShowProcessGroupAccessCondition())
                             && StringUtils.isBlank(pt.getValue()))) {
+                valide = false;
                 Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + pt.getName() + " "
                         + Helper.getTranslation("ProcessCreationErrorFieldIsEmpty"));
             }

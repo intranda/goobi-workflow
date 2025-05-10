@@ -31,7 +31,7 @@
 			title="#{myPageTitle}"
 			icon="fa-clone">
 
-		<div class="gw-table gw-table-fixed">
+		<div class="gw-table">
 			<div class="gw-table__search">
 				<div class="gw-table__search__length">
 					<h:outputText value="#{msgs.treffer}: #{goobiScriptTemplateBean.paginator.totalResults}" />
@@ -41,26 +41,29 @@
 			<div class="gw-table__wrapper">
 
     			<!-- Datentabelle -->
-    			<h:dataTable id="dockets" styleClass="table table-hover table-bordered" var="item" value="#{goobiScriptTemplateBean.paginator.list}">
+    			<h:dataTable id="dockets" styleClass="table table-hover table-bordered table-resizable" var="item" value="#{goobiScriptTemplateBean.paginator.list}">
 
-    				<h:column>
+    				<h:column headerClass="header__col-l">
     					<f:facet name="header">
-    					<h:outputText value="#{msgs.name}" />
-    						</f:facet>
+    						<h:outputText value="#{msgs.name}" />
+							<f:passThroughAttribute name="id" value="name" />
+						</f:facet>
     					<h:outputText value="#{item.title}" />
     				</h:column>
 
-    				<h:column>
+    				<h:column headerClass="header__col-l">
     					<f:facet name="header">
     						<h:outputText value="#{msgs.description}" />
+							<f:passThroughAttribute name="id" value="description" />
     					</f:facet>
     					<h:outputText value="#{item.description}" />
     				</h:column>
 
-    				<h:column headerClass="gw-table-fixed__actions">
+    				<h:column headerClass="header__col-s">
 
     					<f:facet name="header">
     						<h:outputText value="#{msgs.auswahl}" />
+							<f:passThroughAttribute name="id" value="auswahl" />
     					</f:facet>
 
     					<!-- Bearbeiten-Schaltknopf -->

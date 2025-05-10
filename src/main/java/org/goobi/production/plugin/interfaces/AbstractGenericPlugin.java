@@ -64,11 +64,11 @@ public abstract class AbstractGenericPlugin implements IGenericPlugin {
         return parent;
     }
 
-    public void setModal(UIComponent c) {
+    public synchronized void setModal(UIComponent c) {
 
     }
 
-    public UIComponent getModal() {
+    public synchronized UIComponent getModal() {
         if (this.modal == null && this.getModalPath() != null) {
             this.modal = generateModalComponent();
         }

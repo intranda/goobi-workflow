@@ -27,7 +27,9 @@ Gulp expects the location of your Tomcat in a global configuration file. This fi
 
 ### Javascript
 
-New JS modules should be included in `uii/template/js/modules/`. Import new modules in `uii/templatesPG/js/main.js` so that Rollup can handle them.
+New JS modules should be included in `uii/template/js/modules/`. Import new modules in `uii/template/js/main.js` so that Rollup can handle them.
+
+In case your module contains any functions that may need to be re-run after AJAX calls, include the function in `modules/inits.js`.
 
 ### CSS
 

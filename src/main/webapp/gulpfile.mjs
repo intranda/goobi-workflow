@@ -1,16 +1,26 @@
-const { parallel, watch, src, dest } = require('gulp');
+import gulp from 'gulp';
+const { parallel, watch, src, dest } = gulp;
 
-const sass = require('gulp-sass')(require('sass'));
+import fs from 'fs';
+import os from 'os';
 
-const rename = require('gulp-rename');
+import * as dartSass from 'sass';
+import gulpSass from 'gulp-sass';
+const sass = gulpSass(dartSass);
 
-const concat = require('gulp-concat');
-const sourcemaps = require('gulp-sourcemaps');
-const uglify = require('gulp-uglify-es').default;
+import rename from 'gulp-rename';
 
-const rollup = require('rollup');
-const cleanup = require('rollup-plugin-cleanup');
-const terser = require('@rollup/plugin-terser');
+import concat from 'gulp-concat';
+import sourcemaps from 'gulp-sourcemaps';
+import uglify from 'gulp-uglify-es';
+
+import * as rollup from 'rollup';
+import cleanup from 'rollup-plugin-cleanup';
+import terser from '@rollup/plugin-terser';
+
+import * as cheerio from 'cheerio';
+import * as through2 from 'through2';
+import svgmin from 'gulp-svgmin';
 
 // provide custom asset location for watch task
 let customLocation = '';
@@ -31,6 +41,7 @@ const sources = {
         './uii/template/js/**/*.js',
         '!./uii/template/js/legacy/**/*',
     ],
+    icons: ['node_modules/@tabler/icons/icons/**/*.svg'],
     staticAssets: [
         'uii/**/*.xhtml',
         'uii/**/*.html',
@@ -47,9 +58,10 @@ const sources = {
 }
 const targetFolder = {
     css: 'uii/template/css/dist/',
+    icons: 'resources/icons/',
     js: 'resources/js/dist/',
     staticAssets: 'uii/',
-    composites: 'resources/',
+    resources: 'resources/',
     taglibs: 'WEB-INF/taglibs/',
     includes: 'WEB-INF/includes/',
 }
@@ -58,20 +70,19 @@ const targetFolder = {
 // load custom location from user config
 // this is a function so that CI does not fail if the file is not present
 function loadConfig() {
-    const fs = require("fs");
-    const homedir = require("os").homedir();
+    const homedir = os.homedir();
     const config = fs.readFileSync(homedir + '/.config/gulp_userconfig.json')
     customLocation = JSON.parse(config).tomcatLocation;
 };
 
-function static() {
+function staticAssets() {
     return src(sources.staticAssets)
         .pipe(dest(`${customLocation}${targetFolder.staticAssets}`))
 };
 
 function composites() {
     return src(sources.composites)
-        .pipe(dest(`${customLocation}${targetFolder.composites}`))
+        .pipe(dest(`${customLocation}${targetFolder.resources}`))
 };
 
 function taglibs() {
@@ -129,7 +140,7 @@ function jsLegacy() {
     return src([`${sources.legacyJS}goobiWorkflowJS.js`, `${sources.legacyJS}*.js`])
         .pipe(concat(`legacy.min.js`))
         .pipe(sourcemaps.init())
-        .pipe(uglify())
+        .pipe(uglify.default())
         .pipe(sourcemaps.write())
         .pipe(dest(`${customLocation}${targetFolder.js}`))
 };
@@ -166,15 +177,50 @@ function prodJsRollup() {
         });
 };
 
-exports.dev = function() {
+/*
+ * preprocess svgs as needed
+ */
+function processSvg(srcDir, destDir) {
+    return src(srcDir)
+        // optimize svgs
+        .pipe(svgmin({
+            plugins: [
+                { removeViewBox: false }
+            ]
+        }))
+        .pipe(through2.obj(function(file, encoding, callback) {
+            const $ = cheerio.load(file.contents.toString(), { xmlMode: true });
+
+            // add id attribute to allow for external reference
+            $('svg').attr('id', `icon`);
+            // remove width and height attributes for easier styling
+            $('svg').attr('width', ``);
+            $('svg').attr('height', ``);
+
+            file.contents = Buffer.from($.html());
+
+            this.push(file);
+            callback();
+        }))
+        .pipe(dest(destDir));
+};
+
+function icons() {
+    return processSvg(sources.icons, `${customLocation}${targetFolder.icons}`);
+}
+
+function dev() {
     loadConfig();
+    icons();
     watch(sources.legacyJS, { ignoreInitial: false }, jsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
     watch(sources.cssGlob, { ignoreInitial: false }, devCss);
-    watch(sources.staticAssets, { ignoreInitial: false }, static);
+    watch(sources.staticAssets, { ignoreInitial: false }, staticAssets);
     watch(sources.composites, { ignoreInitial: false }, composites);
     watch(sources.taglibs, { ignoreInitial: false }, taglibs);
     watch(sources.includes, { ignoreInitial: false }, includes);
 };
-exports.prod = parallel(jsLegacy, prodJsRollup, prodBSCss, prodCss);
+const prod = parallel(jsLegacy, prodJsRollup, prodBSCss, prodCss, icons,);
+
+export { dev, prod };

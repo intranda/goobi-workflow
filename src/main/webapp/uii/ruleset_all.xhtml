@@ -31,7 +31,7 @@
 						icon="fa-wrench"
 						boxType="primary">
 
-							<div class="gw-table gw-table-fixed">
+							<div class="gw-table">
 								<div class="gw-table__search">
 									<div class="gw-table__search__length">
 										<h:outputText value="#{msgs.treffer}: #{RegelsaetzeForm.paginator.totalResults}" />
@@ -41,26 +41,29 @@
 								<!-- Datentabelle -->
 							<div class="gw-table-fixed__wrapper">
 
-								<h:dataTable id="rulesets" styleClass="table table-hover table-bordered" var="item"
+								<h:dataTable id="rulesets" styleClass="table table-hover table-bordered table-resizable" var="item"
 									value="#{RegelsaetzeForm.paginator.list}">
 
-									<h:column>
+									<h:column headerClass="header__col-l">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.name}" />
+											<f:passThroughAttribute name="id" value="name" />
 										</f:facet>
 										<h:outputText value="#{item.titel}"/>
 									</h:column>
 
-									<h:column>
+									<h:column headerClass="header__col-l">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.filename}" />
+											<f:passThroughAttribute name="id" value="filename" />
 										</f:facet>
 										<h:outputText value="#{item.datei}" />
 									</h:column>
 
-									<h:column headerClass="gw-table-fixed__actions">
+									<h:column headerClass="header__col-s">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
+											<f:passThroughAttribute name="id" value="actions" />
 										</f:facet>
 
 										<div class="gw-table__actions__container">

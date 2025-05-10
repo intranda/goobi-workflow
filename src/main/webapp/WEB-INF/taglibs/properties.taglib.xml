@@ -30,14 +30,13 @@
             <description>The name of the bean carrying information on the properties</description>
             <name>bean</name>
             <required>true</required>
-            <!-- <type></type> -->
         </attribute>
-        <!-- <attribute>
-            <description></description>
-            <name></name>
-            <required></required>
+        <attribute>
+            <description>The id of the group</description>
+            <name>groupId</name>
+            <required>true</required>
             <type>java.lang.String</type>
-        </attribute> -->
+        </attribute>
     </tag>
     <tag>
         <tag-name>property</tag-name>
@@ -46,19 +45,23 @@
             <description></description>
             <name>property</name>
             <required>true</required>
-            <!-- <type></type> -->
         </attribute>
         <attribute>
             <description>The name of the bean carrying information on the properties. Needed if the properties should have individual edit/duplicate buttons</description>
             <name>bean</name>
             <required>false</required>
-            <!-- <type></type> -->
         </attribute>
         <attribute>
             <description>Whether the property should be editable</description>
             <name>editable</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>The id of the group containing the property</description>
+            <name>groupId</name>
+            <required>true</required>
+            <type>java.lang.String</type>
         </attribute>
     </tag>
     <tag>
@@ -81,6 +84,12 @@
             <description>The name of the bean carrying information on the properties</description>
             <name>bean</name>
             <required>true</required>
+        </attribute>
+        <attribute>
+            <description>The id of the group containing the edit dialog</description>
+            <name>groupId</name>
+            <required>true</required>
+            <type>java.lang.String</type>
         </attribute>
     </tag>
 </facelet-taglib>

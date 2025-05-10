@@ -339,8 +339,7 @@
 															<button
 																jsf:id="selected"
 																aria-label="#{msgs.auswahl2}"
-																class="btn btn-blank"
-																onclick="gwResizableTable.reload()">
+																class="btn btn-blank">
 																<i
 																	class="#{item.selected?'fa fa-check-square-o':'fa fa-square-o'}" />
 																<f:setPropertyActionListener
@@ -461,18 +460,20 @@
 																						value="#{msgs.titel}"
 																						style="white-space: normal;" />
 																				</f:facet>
-																				<div class="icon-text">
+																				<div>
 																					<h:panelGroup rendered="#{step.typAutomatisch}">
 																						<span
-																							class="fa fa-cogs font-light"
+																							class="fa fa-cogs font-light me-1"
 																							title="#{msgs.automatischerSchritt}"
-																							data-bs-toggle="tooltip" />
+																							data-bs-toggle="tooltip"
+																							style="width:1lh;" />
 																					</h:panelGroup>
 																					<h:panelGroup rendered="#{not step.typAutomatisch}">
 																						<span
-																							class="fa fa-user-o font-light #{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"
+																							class="fa fa-user-o font-light me-1 #{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"
 																							title="#{msgs.normalerSchritt}"
-																							data-bs-toggle="tooltip" />
+																							data-bs-toggle="tooltip"
+																							style="width:1lh;" />
 																					</h:panelGroup>
 																					<h:outputText
 																						value="#{step.titelLokalisiert}"

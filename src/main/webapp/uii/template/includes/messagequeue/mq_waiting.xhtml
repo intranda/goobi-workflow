@@ -4,7 +4,7 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    
+
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <div class="row">
@@ -18,16 +18,17 @@
 
                 <div class="col-12">
 
-                <div class="gw-table gw-table-fixed">
+                <div class="gw-table">
                   <div class="gw-table__wrapper">
 
                     <h:dataTable
-                        styleClass="table table-hover table-bordered"
+                        styleClass="table table-hover table-bordered table-resizable"
                         var="entry"
                         value="#{messageQueueBean.slowQueueContent}">
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.message_queue_ticket_type}" />
+                                <f:passThroughAttribute name="id" value="type" />
                             </f:facet>
                             <h:commandLink
                                 styleClass="text-400"
@@ -47,13 +48,15 @@
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.count}" />
+                                <f:passThroughAttribute name="id" value="count" />
                             </f:facet>
                             <h:outputText value="#{entry.value}" />
                         </h:column>
 
-                        <h:column headerClass="gw-table-fixed__actions">
+                        <h:column headerClass="header__col-s">
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.auswahl}" />
+                                <f:passThroughAttribute name="id" value="actions" />
                             </f:facet>
                             <div class="gw-table-fixed__actions__container">
                                 <button
@@ -88,18 +91,19 @@
 
                 <div class="col-12 mt-4">
 
-                      <div class="gw-table gw-table-fixed">
+                      <div class="gw-table">
                       <div class="gw-table__wrapper">
 
                         <h:dataTable
                             rendered="#{messageQueueBean.messageType != null}"
-                            styleClass="table table-hover table-bordered"
+                            styleClass="table table-hover table-bordered table-resizable"
                             var="ticket"
                             value="#{messageQueueBean.activeSlowQueryMesssages}">
 
                             <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_id}" />
+                                    <f:passThroughAttribute name="id" value="ticketId" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.messageId}" />
                             </h:column>
@@ -107,6 +111,7 @@
                             <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_type}" />
+                                    <f:passThroughAttribute name="id" value="ticketType" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.taskType}" />
                             </h:column>
@@ -114,6 +119,7 @@
                             <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_processId}" />
+                                    <f:passThroughAttribute name="id" value="processId" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.processId}" />
                             </h:column>
@@ -121,18 +127,21 @@
                             <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_stepId}" />
+                                    <f:passThroughAttribute name="id" value="stepId" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.stepId}" />
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_stepName}" />
+                                    <f:passThroughAttribute name="id" value="stepName" />
                                 </f:facet>
                                 <h:outputText value="#{ticket.stepName}" />
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.message_queue_ticket_properties}" />
+                                    <f:passThroughAttribute name="id" value="properties" />
                                 </f:facet>
                                 <ui:repeat
                                     var="prop"
@@ -141,9 +150,10 @@
                                     <br />
                                 </ui:repeat>
                             </h:column>
-                            <h:column headerClass="gw-table-fixed__actions">
+                            <h:column headerClass="header__col-s">
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.auswahl}" />
+                                    <f:passThroughAttribute name="id" value="auswahl" />
                                 </f:facet>
                                 <div class="gw-table-fixed__actions__container">
                                 <button

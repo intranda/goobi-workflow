@@ -145,8 +145,7 @@
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}">
                                                 <i class="fa #{configFileEditorBean.isWritable(item) ? 'fa-pencil' : 'fa-eye'}"></i>
                                                 <f:ajax
-                                                    render="@form"
-                                                    onevent="function() { gwConfigEditor.init();}" />
+                                                    render="@form" />
                                             </button>
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{configFileEditorBean.currentConfigFile != null}">
@@ -154,14 +153,12 @@
                                                 jsf:id="edit2"
                                                 class="btn #{configFileEditorBean.isActiveConfigFile(item) ? 'btn-primary' : 'btn-blank'}"
                                                 type="button"
-                                                jsf:onclick="gwConfigEditor.loadContent()"
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}"
                                                 title="#{configFileEditorBean.isWritable(item) ? msgs.administration_config_file_editor_edit_file : msgs.administration_config_file_editor_show_file}">
                                                 <i class="fa #{configFileEditorBean.isWritable(item) ? 'fa-pencil' : 'fa-eye'}"></i>
                                                 <f:ajax
                                                     render="@form"
-                                                    execute="@form"
-                                                    onevent="function() { gwConfigEditor.init();}" />
+                                                    execute="@form" />
                                             </button>
                                         </h:panelGroup>
                                     </h:column>
@@ -228,8 +225,7 @@
                                             required="false">
                                             <f:ajax
                                                 listener="#{configFileEditorBean.uploadFile}"
-                                                render="@form"
-                                                onevent="function() { gwConfigEditor.init();}" />
+                                                render="@form" />
                                         </h:inputFile>
                                     </label>
 
@@ -294,13 +290,11 @@
                                         jsf:id="save"
                                         class="btn btn-success float-end"
                                         jsf:action="#{configFileEditorBean.save}"
-                                        title="#{msgs.uebernehmen}"
-                                        onclick="gwConfigEditor.loadContent()">
+                                        title="#{msgs.uebernehmen}">
                                         <i class="fa fa-save margin-right-5"></i>
                                         <span>
                                             <h:outputText value="#{msgs.save}" />
                                         </span>
-                                        <f:ajax render="@form" />
                                     </button>
                                 </div>
                                 <!-- Text editor -->
@@ -316,10 +310,9 @@
                                         value="#{configFileEditorBean.currentConfigFileFileContent}" />
                                     <h:inputText
                                         id="configFileEditorBase64"
-                                        style="display: none;"
                                         pt:aria-label="configFileEditorBase64"
                                         forceId="true"
-                                        styleClass="form-control"
+                                        styleClass="visually-hidden"
                                         value="#{configFileEditorBean.currentConfigFileFileContentBase64}" />
                                 </div>
                             </div>

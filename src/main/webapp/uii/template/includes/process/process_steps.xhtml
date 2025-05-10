@@ -219,16 +219,20 @@
 												target="#{item.panelAusgeklappt}" />
 											<f:ajax render="possibleActions1" />
 											<h:panelGroup rendered="#{item.typAutomatisch}">
-												<i
-													class="fa fa-cogs font-light me-3"
+												<span
+													aria-hidden="true"
+													class="fa fa-cogs font-light mx-1"
 													title="#{msgs.automatischerSchritt}"
-													data-toggle="tooltip"></i>
+													data-toggle="tooltip"
+													style="width:1lh;" />
 											</h:panelGroup>
 											<h:panelGroup rendered="#{not item.typAutomatisch}">
-												<i
-													class="fa fa-user-o font-light me-3"
+												<span
+													aria-hidden="true"
+													class="fa fa-user-o font-light mx-1"
 													title="#{msgs.normalerSchritt}"
-													data-toggle="tooltip"></i>
+													data-toggle="tooltip"
+													style="width:1lh;" />
 											</h:panelGroup>
 											<h:outputText
 												value="#{item.titelLokalisiert}"
@@ -581,8 +585,7 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<f:ajax render="@form"
-											onevent="(data) => {gwHandleTooltip.init(data); gwInitTooltips.init();}" />
+										<f:ajax render="@form"  />
 									</button>
 
 									<!-- Bearbeitungsstatus hoch und runter -->
@@ -603,8 +606,7 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<f:ajax render="@form"
-											onevent="(data) => {gwHandleTooltip.init(data); gwInitTooltips.init();}" />
+										<f:ajax render="@form"  />
 									</button>
 
 

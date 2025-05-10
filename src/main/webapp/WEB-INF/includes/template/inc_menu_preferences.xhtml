@@ -30,7 +30,7 @@
                     var="plugin"
                     >
                     <ui:fragment rendered="#{plugin.isMenuBarDockable()}">
-                        <li
+                        <a
                             class="nav-item"
                             data-bs-toggle="tooltip"
                             title="#{plugin.title}">
@@ -38,6 +38,7 @@
                                 id="btn#{plugin.title}"
                                 class="nav-link"
                                 type="button"
+                                title="#{plugin.title}"
                                 data-bs-toggle="modal"
                                 data-bs-target="#pluginModal#{plugin.id}"
                                 data-bs-placement="bottom"
@@ -46,13 +47,13 @@
                                     aria-hidden="true"
                                     class="fa #{plugin.icon} fa-2x"/>
                             </button>
-                        </li>
+                        </a>
                     </ui:fragment>
                 </ui:repeat>
                 <!-- Icon to enable help texts -->
                 <button
                     type="button"
-                    class="nav-link btn-link"
+                    class="nav-item nav-link btn-link#{NavigationForm.showHelp ? ' js-show-help' : ''}"
                     jsf:id="showHelp"
                     title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
                     aria-label="#{msgs.showHelpMessages}"
@@ -66,8 +67,7 @@
                         value="#{not NavigationForm.showHelp}" />
                     <f:ajax
                         render="@this"
-                        execute="@form"
-                        onevent="function(data) { gwToggleHelp.init(data); gwHandleTooltip.init(data);}" />
+                        execute="@form" />
                 </button>
 
                 <!-- Language dropdown -->
@@ -76,8 +76,7 @@
                     title="#{msgs.spracheAendern}"
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
-                    data-bs-trigger="hover"
-                    onclick="gwNavigation.toggleLangTooltip(this)">
+                    data-bs-trigger="hover">
 
                     <a
                         class="nav-link dropdown-toggle"

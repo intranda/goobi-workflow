@@ -41,7 +41,7 @@
 				</h:form>
 			</layout:header>
 
-				<div class="container-fluid" id="content" style="padding-bottom:20px">
+				<div class="container-fluid" id="content" style="padding-bottom:20px;">
 					<div id="main" style="margin-right: 0px;">
 						<div class="flow container-fluid">
 
@@ -180,6 +180,13 @@
 						</div>
 					</div>
 				</div>
+				<a href="#top" class="scroll-top js-scroll-top">
+					<span class="visually-hidden">Scroll to top</span>
+					<span class="scroll-top-icon fa fa-angle-up" aria-hidden="true" />
+					<svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102" aria-hidden="true">
+						<path style="--scrollProgess: 50; --dashArray: 50" d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
+					</svg>
+				</a>
 				<layout:footer />
 				<c:forEach
 						items="#{GenericPluginBean.genericPlugins}"

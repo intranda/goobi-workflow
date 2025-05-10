@@ -3,7 +3,7 @@
                 xmlns:composite="http://xmlns.jcp.org/jsf/composite"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
-                
+
                 xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
@@ -22,16 +22,14 @@
                         aria-label="#{msgs.firstPage}"
                         jsf:action="#{cc.attrs.paginator.cmdMoveFirst}"
                         disabled="#{cc.attrs.paginator.getHasPreviousPage()}"
-                        jsf:id="navfirst"
-                        onclick="gwResizableTable.reload()">
+                        jsf:id="navfirst">
                     <span class="fa fa-angle-double-left"/>
                     <f:ajax render="@form"/>
                 </button>
                 <button class="btn btn-primary-400"
                         jsf:action="#{cc.attrs.paginator.cmdMovePrevious}"
                         disabled="#{cc.attrs.paginator.getHasPreviousPage()}"
-                        jsf:id="navprev"
-                        onclick="gwResizableTable.reload()">
+                        jsf:id="navprev">
                     <span class="fa fa-angle-left"/>
                     <h:outputText value=" #{msgs.pagePrevious}"/>
                     <f:ajax render="@form"/>
@@ -61,8 +59,7 @@
                 <button class="btn btn-primary-400"
                         jsf:action="#{cc.attrs.paginator.cmdMoveNext}"
                         disabled="#{cc.attrs.paginator.getHasNextPage()}"
-                        jsf:id="navnext"
-                        onclick="gwResizableTable.reload()">
+                        jsf:id="navnext">
                     <h:outputText value="#{msgs.pageNext} "/>
                     <span class="fa fa-angle-right"/>
                     <f:ajax render="@form"/>
@@ -72,8 +69,7 @@
                         aria-label="#{msgs.lastPage}"
                         disabled="#{cc.attrs.paginator.getHasNextPage()}"
                         jsf:action="#{cc.attrs.paginator.cmdMoveLast}"
-                        jsf:id="navlast"
-                        onclick="gwResizableTable.reload()">
+                        jsf:id="navlast">
                     <span class="fa fa-angle-double-right"/>
                     <f:ajax render="@form"/>
                 </button>

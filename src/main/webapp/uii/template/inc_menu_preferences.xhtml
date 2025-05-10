@@ -26,26 +26,27 @@
                   </notification:area>
                 </ui:fragment>
                 <!-- Icon to enable help texts -->
-                <button
-                    type="button"
-                    class="nav-link btn-link"
-                    jsf:id="showHelp"
-                    title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-                    aria-label="#{msgs.showHelpMessages}"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
-                    data-goobi="handle-tooltip"
-                    style="width: 2.75rem;">
+                <div class="nav-item">
+                    <button
+                        type="button"
+                        jsf:id="showHelp"
+                        title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
+                        aria-label="#{msgs.showHelpMessages}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        data-goobi="handle-tooltip"
+                        style="width: 2.75rem;">
 
-                    <span class="fa #{not NavigationForm.showHelp ? 'fa-question' : 'fa-question-circle'}" />
-                    <f:setPropertyActionListener
-                        target="#{NavigationForm.showHelp}"
-                        value="#{not NavigationForm.showHelp}" />
-                    <f:ajax
-                        render="@this"
-                        execute="@form"
-                        onevent="function(data) { gwToggleHelp.init(data); gwHandleTooltip.init(data);}" />
-                </button>
+                        <span class="fa #{not NavigationForm.showHelp ? 'fa-question' : 'fa-question-circle'}" />
+                        <f:setPropertyActionListener
+                            target="#{NavigationForm.showHelp}"
+                            value="#{not NavigationForm.showHelp}" />
+                        <f:ajax
+                            render="@this"
+                            execute="@form"
+                            onevent="function(data) { gwHandleTooltip.init(data);}" />
+                    </button>
+                </div>
 
                 <!-- Language dropdown -->
                 <div
@@ -53,8 +54,7 @@
                     title="#{msgs.spracheAendern}"
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
-                    data-bs-trigger="hover"
-                    onclick="gwNavigation.toggleLangTooltip(this)">
+                    data-bs-trigger="hover">
 
                     <a
                         class="nav-link dropdown-toggle"

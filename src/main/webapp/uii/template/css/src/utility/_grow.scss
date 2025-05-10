@@ -28,6 +28,7 @@
     flex: 1 1 auto;
     width: 1%;
     min-width: 0;
+    word-break: break-word;
 }
 
 .input-group > .grow-wrap:has(+ .form-control) > textarea,

@@ -35,7 +35,7 @@
 						title="#{myPageTitle}"
 						boxPadding="true">
 
-							<div class="gw-table gw-table-fixed">
+							<div class="gw-table">
 
                                 <!-- HITS -->
                                 <div class="gw-table__search">
@@ -48,13 +48,16 @@
 
 								<!-- TABLE WITH ALL GROUPS -->
 								<div class="gw-table__wrapper">
-    								<h:dataTable id="usergrouptable" styleClass="table table-hover table-bordered"
+    								<h:dataTable
+										id="usergrouptable"
+										styleClass="table table-hover table-bordered table-resizable"
     									var="item" value="#{BenutzergruppenForm.paginator.list}">
 
     									<!-- NAME COLUMN -->
-                                        <h:column>
+                                        <h:column headerClass="header__col-xxl">
     										<f:facet name="header">
     											<h:outputText value="#{msgs.name}" />
+												<f:passThroughAttribute name="id" value="name" />
     										</f:facet>
 
                                             <ui:include
@@ -120,18 +123,20 @@
                                         <!-- // NAME COLUMN -->
 
                                         <!-- INSTITUTION COLUMN -->
-    									<h:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
+    									<h:column headerClass="header__col-l" rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
     											<f:facet name="header">
     													<h:outputText value="#{msgs.institution}" />
+														<f:passThroughAttribute name="id" value="institution" />
     											</f:facet>
     											<h:outputText value="#{item.institution.shortName}" />
     									</h:column>
                                         <!-- // INSTITUTION COLUMN -->
 
                                         <!-- ACTION COLUMN -->
-    									<h:column headerClass="gw-table-fixed__actions">
+    									<h:column headerClass="header__col-s">
     										<f:facet name="header">
     											<h:outputText value="#{msgs.auswahl}" />
+												<f:passThroughAttribute name="id" value="action" />
     										</f:facet>
 
     										<div class="gw-table__actions__container">
