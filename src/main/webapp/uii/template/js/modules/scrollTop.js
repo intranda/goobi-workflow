@@ -3,6 +3,9 @@ export const initScrollTop = () => {
     let offset = 50;
     let scrollTop = document.querySelector('.js-scroll-top');
     let progressPath = document.querySelector('.js-scroll-top path');
+    if (progressPath === null) {
+        return;
+    }
     let pathLength = progressPath.getTotalLength();
     let dashArray = pathLength + ' ' + pathLength;
     let dashOffset = pathLength;
