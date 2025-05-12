@@ -22,7 +22,7 @@
     "gulp-concat": "^2.6.1",
     "gulp-less": "^5.0.0",
     "gulp-rename": "^2.0.0",
-    "gulp-sass": "^5.1.0",
+    "gulp-sass": "^6.0.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-svg-sprite": "^2.0.3",
     "gulp-svgmin": "^4.1.0",
