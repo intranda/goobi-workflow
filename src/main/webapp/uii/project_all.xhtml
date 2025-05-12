@@ -33,7 +33,7 @@
 						icon="fa-compass"
 					>
 
-							<div class="gw-table gw-table-fixed">
+							<div class="gw-table">
 
 								<!-- SEARCH -->
 								<div class="gw-table__search">
@@ -48,42 +48,47 @@
 								<div class="gw-table__wrapper">
 									<h:dataTable
 										id="projectList"
-										styleClass="table table-hover table-bordered"
+										styleClass="table table-hover table-bordered table-resizable"
 										var="item"
 										value="#{ProjekteForm.paginator.list}"
 										>
 
-									<h:column>
+									<h:column headerClass="header__col-l">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.name}" />
+											<f:passThroughAttribute name="id" value="name" />
 										</f:facet>
 										<h:outputText value="#{item.titel}" />
 									</h:column>
 
-									<h:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
+									<h:column  headerClass="header__col-l" rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
 											<f:facet name="header">
 													<h:outputText value="#{msgs.institution}" />
+													<f:passThroughAttribute name="id" value="institution" />
 											</f:facet>
 											<h:outputText value="#{item.institution.shortName}" />
 									</h:column>
 
-									<h:column headerClass="hidden-xs" styleClass="hidden-xs" style="max-width:180px;">
+									<h:column  headerClass="header__col-l">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.internesSpeicherformat}" />
+											<f:passThroughAttribute name="id" value="internesSpeicherformat" />
 										</f:facet>
 										<h:outputText value="#{item.fileFormatInternal}" />
 									</h:column>
 
-									<h:column headerClass="hidden-xs" styleClass="hidden-xs"  style="max-width:180px;">
+									<h:column  headerClass="header__col-l">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.dmsExportformat}" />
+											<f:passThroughAttribute name="id" value="dmsExportformat" />
 										</f:facet>
 										<h:outputText value="#{item.fileFormatDmsExport}" />
 									</h:column>
 
-									<h:column>
+									<h:column headerClass="header__col-l">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.status}" />
+											<f:passThroughAttribute name="id" value="status" />
 										</f:facet>
 										<h:panelGroup  rendered="#{item.projectIsArchived}"  class="badge badge-intranda-red">
 											<span class="fa fa-lock" /> <span>#{msgs.inactive}</span>
@@ -93,9 +98,10 @@
 										</h:panelGroup>
 									</h:column>
 
-									<h:column headerClass="gw-table-fixed__actions">
+									<h:column headerClass="header__col-s">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
+											<f:passThroughAttribute name="id" value="auswahl" />
 										</f:facet>
 
 										<div class="gw-table__actions__container">

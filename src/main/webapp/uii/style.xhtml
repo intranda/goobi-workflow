@@ -111,6 +111,18 @@
 			</section>
 			<!-- // INTERACTIVE -->
 
+			<!-- ICONS -->
+			<section class="icons">
+				<h2>Icons</h2>
+				<article
+					class="flow"
+					style="grid-column: 1/-1">
+					<h3 class="description">Icon Semantics</h3>
+					<ui:include src="template/includes/style_guide/icons.xhtml" />
+				</article>
+			</section>
+			<!-- // ICONS -->
+
 			<!-- BOXES -->
 			<section class="colors">
 				<h2>Boxes</h2>
@@ -155,6 +167,12 @@
 			<!-- TABLES -->
 			<section class="forms">
 				<h2>Tables</h2>
+
+				<p style="grid-column: 1/-1">
+					For tables to be resizable, make sure that they have a unique id.
+					Column widths are stored and retrieved from localstorage by the id of the table.
+					Any column needs an id as well for the resizing to be persistent.
+				</p>
 
 				<article
 					class="flow"

@@ -1,0 +1,244 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
+
+	<composite:interface />
+
+	<composite:implementation>
+        <h4 class="description">
+            Icons for Buttons
+        </h4>
+        <table class="gw-table table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th class="header__col-l">Meaning</th>
+                    <th class="header__col-xl">New Tabler Icon</th>
+                    <th class="header__col-xl">Old Font Awesome Icon</th>
+                </tr>
+            </thead>
+            <tr>
+                <td>Delete</td>
+                <td>
+                    <util:icon icon="trash" />
+                    <span>
+                        trash
+                    </span>
+                </td>
+                <td>
+                    <span class="fa fa-trash" aria-hidden="true" />
+                    <span>
+                        trash
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>Edit</td>
+                <td>
+                    <util:icon icon="pencil" />
+                    <span>
+                        pencil
+                    </span>
+                </td>
+                <td>
+                    <span class="fa fa-pencil" aria-hidden="true" />
+                    <span>
+                        pencil
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>Save</td>
+                <td>
+                    <util:icon icon="device-floppy" />
+                    <span>
+                        device-floppy
+                    </span>
+                </td>
+                <td>
+                    <span class="fa fa-save" aria-hidden="true" />
+                    <span>
+                        save
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>Search</td>
+                <td>
+                    <util:icon icon="search" />
+                    <span>
+                        search
+                    </span>
+                </td>
+                <td>
+                    <span class="fa fa-search" aria-hidden="true" />
+                    <span>
+                        search
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>Update</td>
+                <td>
+                    <util:icon icon="refresh" />
+                    <span>
+                        refresh
+                    </span>
+                </td>
+                <td>
+                    <span class="fa fa-refresh" aria-hidden="true" />
+                    <span>
+                        refresh
+                    </span>
+                </td>
+            </tr>
+        </table>
+        <h4 class="description">
+            Icons for Paginators
+        </h4>
+        <table class="gw-table table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th class="header__col-l">Meaning</th>
+                    <th class="header__col-xl">New Tabler Icon</th>
+                    <th class="header__col-xl">Old Font Awesome Icon</th>
+                </tr>
+            </thead>
+            <tr>
+                <td>First Page</td>
+                <td>
+                    <util:icon icon="chevron-left-pipe" />
+                    <span>
+                        chevron-left-pipe
+                    </span>
+                </td>
+                <td>
+                    <span class="fa fa-angle-double-left" aria-hidden="true" />
+                    <span>
+                        angle-double-left
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>Move Two Pages Left</td>
+                <td>
+                    <util:icon icon="chevrons-left" />
+                    <span>
+                        chevrons-left
+                    </span>
+                </td>
+                <td>
+                    <span class="fa fa-angle-left" aria-hidden="true" />
+                    <span>
+                        angle-left
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>Previous Page</td>
+                <td>
+                    <util:icon icon="chevron-left" />
+                    <span>
+                        chevron-left
+                    </span>
+                </td>
+                <td>
+                    <span class="fa fa-angle-left" aria-hidden="true" />
+                    <span>
+                        angle-left
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>Next Page</td>
+                <td>
+                    <util:icon icon="chevron-right" />
+                    <span>
+                        chevron-right
+                    </span>
+                </td>
+                <td>
+                    <span class="fa fa-angle-right" aria-hidden="true" />
+                    <span>
+                        angle-right
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>Move Two Pages Right</td>
+                <td>
+                    <util:icon icon="chevrons-right" />
+                    <span>
+                        chevrons-right
+                    </span>
+                </td>
+                <td>
+                    <span class="fa fa-angle-right" aria-hidden="true" />
+                    <span>
+                        angle-right
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>Last Page</td>
+                <td>
+                    <util:icon icon="chevron-right-pipe" />
+                    <span>
+                        chevron-right-pipe
+                    </span>
+                </td>
+                <td>
+                    <span class="fa fa-angle-double-right" aria-hidden="true" />
+                    <span>
+                        angle-double-right
+                    </span>
+                </td>
+            </tr>
+        </table>
+        <h4 class="description">
+            Icon Variants
+        </h4>
+        <util:icon icon="trash" /><span>regular/outline</span>
+        <br/>
+        <util:icon icon="trash" filled="true" /><span>filled</span>
+        <p>
+            Not all icons have a filled variant.
+            Refer to the <a href="https://tabler.io/icons" target="_blank">Tabler Icons</a> documentation for more information.
+        </p>
+        <div class="accordion-item mt-3">
+			<h2 class="accordion-header">
+				<button
+					data-bs-target="#iconCode"
+					class="accordion-button btn btn-primary-400 collapsed"
+					type="button"
+					data-bs-toggle="collapse"
+					aria-expanded="false"
+					aria-controls="collapseOne">Code Snippet</button>
+			</h2>
+			<div
+				id="iconCode"
+				class="accordion-collapse collapse"
+				data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+
+					<pre
+						class="code--form-actions bg-neutral-500 text-white px-4"
+						style="border-radius: var(- -border-radius)">
+						<code class="microlight">
+&lt;util:icon icon="trash" /&gt;
+&lt;util:icon icon="trash" filled="true" /&gt;
+                        </code>
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </composite:implementation>
+</ui:composition>

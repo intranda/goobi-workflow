@@ -11,6 +11,7 @@ build/
 /src/main/webapp/dist/
 /src/main/webapp/uii/template/css/dist/
 /src/main/webapp/resources/js/dist/
+/src/main/webapp/resources/icons/
 #/src/main/webapp/npm-debug.log
 
 # Eclipse

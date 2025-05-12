@@ -295,7 +295,6 @@
                                         <span>
                                             <h:outputText value="#{msgs.save}" />
                                         </span>
-                                        <f:ajax render="@form" />
                                     </button>
                                 </div>
                                 <!-- Text editor -->
@@ -311,10 +310,9 @@
                                         value="#{configFileEditorBean.currentConfigFileFileContent}" />
                                     <h:inputText
                                         id="configFileEditorBase64"
-                                        style="display: none;"
                                         pt:aria-label="configFileEditorBase64"
                                         forceId="true"
-                                        styleClass="form-control"
+                                        styleClass="visually-hidden"
                                         value="#{configFileEditorBean.currentConfigFileFileContentBase64}" />
                                 </div>
                             </div>

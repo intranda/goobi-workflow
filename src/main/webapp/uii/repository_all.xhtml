@@ -43,7 +43,7 @@
                         title="#{msgs.intranda_administration_repositories}"
                         icon="fa-cloud-download">
 
-                        <div class="gw-table gw-table-fixed">
+                        <div class="gw-table">
                             <div class="gw-table__search">
                                 <div class="gw-table__search__length">
                                     <h:outputText value="#{msgs.treffer}: #{harvesterBean.paginator.totalResults}" />
@@ -55,36 +55,40 @@
                                 <!-- Datentabelle -->
                                 <h:dataTable
                                     id="repositories"
-                                    styleClass="table table-hover table-bordered"
+                                    styleClass="table table-hover table-bordered table-resizable"
                                     var="item"
                                     value="#{harvesterBean.paginator.list}">
 
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.name}" />
+                                            <f:passThroughAttribute name="id" value="name" />
                                         </f:facet>
                                         <h:outputText value="#{item.name}" />
                                     </h:column>
 
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.url}" />
+                                            <f:passThroughAttribute name="id" value="url" />
                                         </f:facet>
                                         <h:outputText value="#{item.url}" />
                                     </h:column>
 
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.intranda_administration_repository_type}" />
+                                            <f:passThroughAttribute name="id" value="repositoryType" />
                                         </f:facet>
                                         <h:outputText value="#{item.repositoryType}" />
                                     </h:column>
 
 
-                                    <h:column headerClass="gw-table-fixed__actions">
+                                    <h:column headerClass="header__col-s">
 
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.auswahl}" />
+                                            <f:passThroughAttribute name="id" value="actions" />
                                         </f:facet>
 
                                         <!-- Bearbeiten-Schaltknopf -->

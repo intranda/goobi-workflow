@@ -43,7 +43,7 @@
                         icon="fa-building"
                         >
 
-                            <div class="gw-table gw-table-fixed">
+                            <div class="gw-table">
                                 <div class="gw-table__search">
 
                                     <div class="gw-table__search__length">
@@ -57,27 +57,30 @@
                                 <!-- Datentabelle -->
                                 <h:dataTable
                                     id="ldaps"
-                                    styleClass="table table-hover table-bordered"
+                                    styleClass="table table-hover table-bordered table-resizable"
                                     var="item"
                                     value="#{institutionBean.paginator.list}">
 
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.institution_longName}" />
+                                            <f:passThroughAttribute name="id" value="longName" />
                                         </f:facet>
                                         <h:outputText value="#{item.longName}" />
                                     </h:column>
 
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.institution_shortName}" />
+                                            <f:passThroughAttribute name="id" value="shortName" />
                                         </f:facet>
                                         <h:outputText value="#{item.shortName}" />
                                     </h:column>
 
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.regelsaetze}" />
+                                            <f:passThroughAttribute name="id" value="regelsaetze" />
                                         </f:facet>
                                         <h:outputText
                                             value="#{msgs.institution_allSelected}"
@@ -99,9 +102,10 @@
 
                                     </h:column>
 
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.dockets}" />
+                                            <f:passThroughAttribute name="id" value="dockets" />
                                         </f:facet>
                                         <h:outputText
                                             value="#{msgs.institution_allSelected}"
@@ -120,9 +124,10 @@
                                         </ui:repeat>
 
                                     </h:column>
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.authentication}" />
+                                            <f:passThroughAttribute name="id" value="authentication" />
                                         </f:facet>
                                         <h:outputText
                                             value="#{msgs.institution_allSelected}"
@@ -144,9 +149,10 @@
 
 
                                     </h:column>
-                                    <h:column>
+                                    <h:column headerClass="header__col-l">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.instituiton_plugins}" />
+                                            <f:passThroughAttribute name="id" value="plugins" />
                                         </f:facet>
                                         <h:outputText
                                             value="#{msgs.institution_allSelected}"
@@ -230,9 +236,10 @@
 
 
 
-                                    <h:column headerClass="gw-table-fixed__actions">
+                                    <h:column headerClass="header__col-s">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.auswahl}" />
+                                            <f:passThroughAttribute name="id" value="actions" />
                                         </f:facet>
 
                                         <div class="gw-table__actions__container">

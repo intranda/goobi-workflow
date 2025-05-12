@@ -38,7 +38,7 @@
                                 <li>
                                     <button jsf:id="nodeUp" class="btn btn-link" jsf:action="#{Metadaten.KnotenUp}" role="button">
                                         <span class="btn btn-blank">
-                                            <util:icon icon="arrow-up" />
+                                            <span class="fa fa-arrow-up" aria-hidden="true" />
                                         </span>
                                         <h:outputText value="#{msgs.docstructNachObenSchieben}"/>
                                         <f:ajax execute="@form" render="@form :treeform"/>
@@ -48,7 +48,7 @@
                                 <li>
                                     <button jsf:id="nodeDown" class="btn btn-link" jsf:action="#{Metadaten.KnotenDown}" type="button">
                                         <span class="btn btn-blank">
-                                            <util:icon icon="arrow-down" />
+                                            <span class="fa fa-arrow-down" aria-hidden="true" />
                                         </span>
                                         <h:outputText value="#{msgs.docstructNachUntenSchieben}"/>
                                         <f:ajax execute="@form" render="@form :treeform"/>
@@ -58,7 +58,7 @@
                                 <li>
                                     <button jsf:id="moveNode" class="btn btn-link" jsf:action="metseditor">
                                         <span class="btn btn-blank">
-                                            <util:icon icon="arrows" />
+                                            <span class="fa fa-arrows" aria-hidden="true" />
                                         </span>
                                         <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}"/>
                                         <f:setPropertyActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" target="#{Metadaten.modusStrukturelementVerschieben}"/>
@@ -69,7 +69,7 @@
                                 <li>
                                     <button jsf:id="copyNode" class="btn btn-link" jsf:action="metseditor" role="button">
                                         <span class="btn btn-blank">
-                                            <util:icon icon="puzzle-piece" />
+                                            <span class="fa fa-puzzle-piece" aria-hidden="true" />
                                         </span>
                                         <h:outputText value="#{msgs.copyDocstructFromOtherProcess}"/>
                                         <f:setPropertyActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" target="#{Metadaten.modusCopyDocstructFromOtherProcess}"/>
@@ -87,7 +87,7 @@
                                             data-bs-target="#changeDocstructTypeModal"
                                             type="button">
                                             <span class="btn btn-blank">
-                                                <util:icon icon="exchange" />
+                                                <span class="fa fa-exchange" aria-hidden="true"/>
                                             </span>
                                             <h:outputText value="#{msgs.docstructTypeAendern}"/>
                                         </button>
@@ -107,7 +107,7 @@
                                                             title="#{msgs.docstructTypeAendern}">
                                                             <section:header-actions>
                                                                 <button type="button" class="btn text-white" title="Cancel" data-bs-dismiss="modal">
-                                                                    <util:icon icon="times" />
+                                                                    <span class="fa fa-times" aria-hidden="true"/>
                                                                 </button>
                                                             </section:header-actions>
                                                         </section:header>
@@ -143,7 +143,7 @@
                                     <li>
                                         <button jsf:id="deleteNode" class="btn btn-link" jsf:action="#{Metadaten.KnotenDelete}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" role="button">
                                             <span class="btn btn-blank">
-                                                <util:icon icon="trash" />
+                                                <span class="fa fa-trash" aria-hidden="true"/>
                                             </span>
                                             <h:outputText value="#{msgs.strukturelementLoeschen}"/>
                                             <f:ajax execute="@form" render="@form :treeform :openseadragonform:pageareas"/>
@@ -153,7 +153,7 @@
                                     <li>
                                         <button jsf:id="duplicateNode" class="btn btn-link" jsf:action="#{Metadaten.duplicateNode}" type="button">
                                             <span class="btn btn-blank">
-                                                <util:icon icon="files-o" />
+                                                <span class="fa fa-files-o" aria-hidden="true"/>
                                             </span>
                                             <h:outputText value="#{msgs.duplicateStructureElement}"/>
                                             <f:ajax execute="@form" render="@form :treeform"/>
@@ -167,7 +167,7 @@
                                         data-bs-toggle="modal"
                                         data-bs-target="#opacModal">
                                         <span class="btn btn-blank">
-                                            <util:icon icon="download" />
+                                            <span class="fa fa-download" aria-hidden="true"/>
                                         </span>
                                         <h:outputText value="#{msgs.strukturelementeAusOpacHinzufuegen}"/>
                                     </button>
@@ -187,7 +187,7 @@
                                                         title="#{msgs.strukturelementeAusOpacHinzufuegen}">
                                                         <button type="button" class="btn text-white"
                                                             title="Cancel" data-bs-dismiss="modal">
-                                                            <util:icon icon="times" />
+                                                            <span class="fa fa-times" aria-hidden="true"/>
                                                         </button>
                                                     </section:header>
                                                     <section:body>
@@ -254,7 +254,7 @@
                                 <li>
                                     <button jsf:id="seitenVonUnterelementenZuweisen" class="btn btn-link" jsf:action="#{Metadaten.SeitenVonChildrenUebernehmen}">
                                         <span class="btn btn-blank">
-                                            <util:icon icon="check-circle-o" />
+                                            <span class="fa fa-check-circle-o" aria-hidden="true"/>
                                         </span>
                                         <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}"/>
                                         <f:ajax execute="@form" render="@form :treeform"/>
@@ -265,13 +265,13 @@
                                     <li>
                                         <button class="btn btn-link start-area-edition" type="button" aria-label="#{msgs.mets_createPageArea}" onclick="goobiWorkflowJS.object.startDrawArea(this, 'current')">
                                             <span class="btn btn-blank">
-                                                <util:icon icon="crop" />
+                                                <span class="fa fa-crop" aria-hidden="true"/>
                                             </span>
                                             <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}"/>
                                        </button>
                                        <button class="btn btn-link cancel-area-edition above-overlay" style="display: none; position:relative;" type="button" onclick="goobiWorkflowJS.object.cancelDrawArea(this)">
                                             <span class="btn btn-blank">
-                                                <util:icon icon="ban" />
+                                                <span class="fa fa-ban" aria-hidden="true"/>
                                             </span>
                                             <h:outputText value="#{msgs.mets_cancelPageArea}"/>
                                        </button>
@@ -280,7 +280,7 @@
                                     <li>
                                         <button class="btn btn-link" type="button" data-pagearea-delete="start" data-renderimage="true">
                                             <span class="btn btn-blank">
-                                                <util:icon icon="eraser" />
+                                                <span class="fa fa-eraser" aria-hidden="true"/>
                                             </span>
                                             <h:outputText value="#{msgs.mets_deletePageArea}"/>
                                         </button>

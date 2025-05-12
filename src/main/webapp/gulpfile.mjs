@@ -18,6 +18,10 @@ import * as rollup from 'rollup';
 import cleanup from 'rollup-plugin-cleanup';
 import terser from '@rollup/plugin-terser';
 
+import * as cheerio from 'cheerio';
+import * as through2 from 'through2';
+import svgmin from 'gulp-svgmin';
+
 // provide custom asset location for watch task
 let customLocation = '';
 
@@ -37,6 +41,7 @@ const sources = {
         './uii/template/js/**/*.js',
         '!./uii/template/js/legacy/**/*',
     ],
+    icons: ['node_modules/@tabler/icons/icons/**/*.svg'],
     staticAssets: [
         'uii/**/*.xhtml',
         'uii/**/*.html',
@@ -53,9 +58,10 @@ const sources = {
 }
 const targetFolder = {
     css: 'uii/template/css/dist/',
+    icons: 'resources/icons/',
     js: 'resources/js/dist/',
     staticAssets: 'uii/',
-    composites: 'resources/',
+    resources: 'resources/',
     taglibs: 'WEB-INF/taglibs/',
     includes: 'WEB-INF/includes/',
 }
@@ -76,7 +82,7 @@ function staticAssets() {
 
 function composites() {
     return src(sources.composites)
-        .pipe(dest(`${customLocation}${targetFolder.composites}`))
+        .pipe(dest(`${customLocation}${targetFolder.resources}`))
 };
 
 function taglibs() {
@@ -171,8 +177,41 @@ function prodJsRollup() {
         });
 };
 
+/*
+ * preprocess svgs as needed
+ */
+function processSvg(srcDir, destDir) {
+    return src(srcDir)
+        // optimize svgs
+        .pipe(svgmin({
+            plugins: [
+                { removeViewBox: false }
+            ]
+        }))
+        .pipe(through2.obj(function(file, encoding, callback) {
+            const $ = cheerio.load(file.contents.toString(), { xmlMode: true });
+
+            // add id attribute to allow for external reference
+            $('svg').attr('id', `icon`);
+            // remove width and height attributes for easier styling
+            $('svg').attr('width', ``);
+            $('svg').attr('height', ``);
+
+            file.contents = Buffer.from($.html());
+
+            this.push(file);
+            callback();
+        }))
+        .pipe(dest(destDir));
+};
+
+function icons() {
+    return processSvg(sources.icons, `${customLocation}${targetFolder.icons}`);
+}
+
 function dev() {
     loadConfig();
+    icons();
     watch(sources.legacyJS, { ignoreInitial: false }, jsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
@@ -182,6 +221,6 @@ function dev() {
     watch(sources.taglibs, { ignoreInitial: false }, taglibs);
     watch(sources.includes, { ignoreInitial: false }, includes);
 };
-const prod = parallel(jsLegacy, prodJsRollup, prodBSCss, prodCss);
+const prod = parallel(jsLegacy, prodJsRollup, prodBSCss, prodCss, icons,);
 
 export { dev, prod };

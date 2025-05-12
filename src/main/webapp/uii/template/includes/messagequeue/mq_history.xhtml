@@ -11,7 +11,7 @@
     <h3 class="mt-4">#{msgs.jobs_quartzHistory}</h3>
 
     <main class="row">
-        <div class="gw-table gw-table-fixed">
+        <div class="gw-table">
             <div class="gw-table__search">
                 <div class="gw-table__search__length">
                     <h:outputText value="#{msgs.treffer}: #{messageQueueBean.paginator.totalResults}" />
@@ -47,7 +47,7 @@
 
             <table
                 role="grid"
-                class="table table-hover table-nomargin dataTable table-bordered responsive">
+                class="table table-hover table-bordered table-resizable">
                 <thead>
                     <tr role="row">
                         <intranda:columnheader

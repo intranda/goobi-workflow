@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <composite:interface>
@@ -12,14 +12,14 @@
     <composite:implementation>
 
 		<ui:fragment rendered="#{!cc.attrs.labelRequired}">
-			<label for="#{cc.attrs.labelFor}" class="form__label">
+			<label for="#{component.namingContainer.parent.namingContainer.clientId}:#{cc.attrs.labelFor}" class="form__label">
 				#{cc.attrs.label}
 			</label>
 		</ui:fragment>
 
 		<ui:fragment rendered="#{cc.attrs.labelRequired}">
 			<label
-				for="#{cc.attrs.labelFor}"
+				for="#{component.namingContainer.parent.namingContainer.clientId}:#{cc.attrs.labelFor}"
 				class="form__label">
 				#{cc.attrs.label}
                 <span class="ms-2 text-primary fa fa-asterisk" aria-hidden="true" title="#{msgs.requiredField}" data-bs-toggle="tooltip" data-bs-placement="right" />
