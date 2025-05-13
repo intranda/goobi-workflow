@@ -132,6 +132,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         const contentLeft = document.querySelector('#pageContentLeft');
         const contentCenter = document.querySelector('#pageContentCenter');
 
+        [contentLeft, contentCenter].forEach((el) => {
+          el.addEventListener('scroll', function() {
+            goobiWorkflowJS.meScrollPos.storeScrollPos();
+          });
+        });
+
         // Get scroll position from session storage
         const view = goobiWorkflowConfig.currentView;
         const key = this.getScrollPosKey(view)
@@ -145,8 +151,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         // Set new scroll positions
         contentLeft.scrollTop = restoredScrollPosAll.meLeft;
         contentCenter.scrollTop = oldPos + this.getErrorMsgHeight();
-
-
 
         // Debugging
         if (_debug) {
