@@ -47,3 +47,7 @@
     stroke-dasharray: var(--dashArray);
     stroke-dashoffset: var(--scrollProgess);
 }
+
+.scroll-top + .footer {
+    margin-block-start: 1rem;
+}
