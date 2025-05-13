@@ -3475,6 +3475,8 @@ public class Metadaten implements Serializable {
             }
         }
         StructSeitenErmitteln(this.myDocStruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
+
         return null;
     }
 
