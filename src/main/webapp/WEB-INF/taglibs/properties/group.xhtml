@@ -16,103 +16,104 @@
     <!-- <c:set var="id" value="#{fn:replace(container.matches('^\\d+$') ? 'prop'.concat(container) : container, ' ' , '_')}" /> -->
 
     <div class="properties-group">
-
-        <section:section
-            type="outline">
-            <section:header
-                title="#{container.matches('^\\d+$') ? msgs.eigenschaften.concat(': ').concat(msgs.group).concat(' ').concat(msgs[container]) : msgs[container]}"
-                icon="list">
-                <div class="actions d-flex">
-                    <button
-                        type="button"
-                        jsf:id="EditModalButton#{groupId}"
-                        class="btn d-flex align-items-center btn--title-action"
-                        data-bs-toggle="modal"
-                        data-bs-target="#EditModal#{groupId}">
-                        <f:ajax
-                            execute="@this"
-                            render="propertyEditArea#{groupId}" />
-                        <c:if test="#{add and scope != 'batch'}">
-                            <span
-                                aria-hidden="true"
-                                class="fa fa-plus" />
-                            <f:setPropertyActionListener
-                                target="#{bean.container}"
-                                value="0" />
-                            <f:setPropertyActionListener
-                                target="#{bean.modusBearbeiten}"
-                                value="eigenschaft" />
-                        </c:if>
-                        <c:if test="#{!add}">
-                            <span
-                                aria-hidden="true"
-                                class="fa fa-pencil" />
-                            <c:if test="#{scope == 'step'}">
-                                <f:setPropertyActionListener
-                                    target="#{bean.container}"
-                                    value="#{container}" />
-                                <f:setPropertyActionListener
-                                    target="#{bean.modusBearbeiten}"
-                                    value="eigenschaft" />
-                            </c:if>
-                            <c:if test="#{scope == 'batch'}">
-                                <f:setPropertyActionListener
-                                    target="#{bean.processProperty}"
-                                    value="" />
-                                <f:setPropertyActionListener
-                                    target="#{bean.container}"
-                                    value="#{container}" />
-                                <f:setPropertyActionListener
-                                    target="#{BatchForm.modusBearbeiten}"
-                                    value="eigenschaft" />
-                            </c:if>
-                            <c:if test="#{scope == 'process'}">
-                                <f:setPropertyActionListener
-                                    target="#{bean.container}"
-                                    value="#{container}" />
-                                <f:setPropertyActionListener
-                                    target="#{bean.modusBearbeiten}"
-                                    value="eigenschaft" />
-                            </c:if>
-                        </c:if>
-                    </button>
-                    <c:if test="#{scope == 'process' and !add}">
-                        <f:ajax
-                            execute="propertyEditArea propertyForm"
-                            render="propertyEditArea propertyForm">
-                            <button
-                                class="btn d-flex align-items-center btn--title-action"
-                                data-bs-toggle="tooltip"
-                                jsf:id="duplicateProperty2"
-                                aria-label="#{msgs.duplicate}"
-                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
-                                jsf:action="#{bean.duplicateContainer}"
-                                title="#{msgs.duplicate}">
+        <h:form id="propertyForm">
+            <section:section
+                type="outline">
+                <section:header
+                    title="#{container.matches('^\\d+$') ? msgs.eigenschaften.concat(': ').concat(msgs.group).concat(' ').concat(msgs[container]) : msgs[container]}"
+                    icon="list">
+                    <div class="actions d-flex">
+                        <button
+                            type="button"
+                            jsf:id="EditModalButton#{groupId}"
+                            class="btn d-flex align-items-center btn--title-action"
+                            data-bs-toggle="modal"
+                            data-bs-target="#EditModal#{groupId}">
+                            <f:ajax
+                                execute="@this"
+                                render="propertyEditArea#{groupId}" />
+                            <c:if test="#{add and scope != 'batch'}">
                                 <span
                                     aria-hidden="true"
-                                    class="fa fa-clipboard" />
+                                    class="fa fa-plus" />
                                 <f:setPropertyActionListener
                                     target="#{bean.container}"
-                                    value="#{container}" />
-                            </button>
-                        </f:ajax>
-                    </c:if>
-                </div>
-            </section:header>
-            <properties:properties>
-                <c:forEach
-                    var="property"
-                    items="#{bean.containers[container].propertyList}"
-                    varStatus="iteration">
-                    <properties:property
-                        property="#{property}"
-                        bean="#{bean}"
-                        editable="#{container == '0' ? true : false}"
-                        groupId="#{groupId}"
-                        id="#{iteration.index}" />
-                </c:forEach>
-            </properties:properties>
-        </section:section>
+                                    value="0" />
+                                <f:setPropertyActionListener
+                                    target="#{bean.modusBearbeiten}"
+                                    value="eigenschaft" />
+                            </c:if>
+                            <c:if test="#{!add}">
+                                <span
+                                    aria-hidden="true"
+                                    class="fa fa-pencil" />
+                                <c:if test="#{scope == 'step'}">
+                                    <f:setPropertyActionListener
+                                        target="#{bean.container}"
+                                        value="#{container}" />
+                                    <f:setPropertyActionListener
+                                        target="#{bean.modusBearbeiten}"
+                                        value="eigenschaft" />
+                                </c:if>
+                                <c:if test="#{scope == 'batch'}">
+                                    <f:setPropertyActionListener
+                                        target="#{bean.processProperty}"
+                                        value="" />
+                                    <f:setPropertyActionListener
+                                        target="#{bean.container}"
+                                        value="#{container}" />
+                                    <f:setPropertyActionListener
+                                        target="#{BatchForm.modusBearbeiten}"
+                                        value="eigenschaft" />
+                                </c:if>
+                                <c:if test="#{scope == 'process'}">
+                                    <f:setPropertyActionListener
+                                        target="#{bean.container}"
+                                        value="#{container}" />
+                                    <f:setPropertyActionListener
+                                        target="#{bean.modusBearbeiten}"
+                                        value="eigenschaft" />
+                                </c:if>
+                            </c:if>
+                        </button>
+                        <c:if test="#{scope == 'process' and !add}">
+                            <f:ajax
+                                execute="propertyEditArea propertyForm"
+                                render="propertyEditArea propertyForm">
+                                <button
+                                    class="btn d-flex align-items-center btn--title-action"
+                                    data-bs-toggle="tooltip"
+                                    jsf:id="duplicateProperty2"
+                                    aria-label="#{msgs.duplicate}"
+                                    jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
+                                    jsf:action="#{bean.duplicateContainer}"
+                                    title="#{msgs.duplicate}">
+                                    <span
+                                        aria-hidden="true"
+                                        class="fa fa-clipboard" />
+                                    <f:setPropertyActionListener
+                                        target="#{bean.container}"
+                                        value="#{container}" />
+                                </button>
+                            </f:ajax>
+                        </c:if>
+                    </div>
+                </section:header>
+                <properties:properties>
+                    <c:forEach
+                        var="property"
+                        items="#{bean.containers[container].propertyList}"
+                        varStatus="iteration">
+                        <properties:property
+                            property="#{property}"
+                            bean="#{bean}"
+                            editable="#{container == '0' ? true : false}"
+                            groupId="#{groupId}"
+                            id="#{iteration.index}" />
+                    </c:forEach>
+                </properties:properties>
+            </section:section>
+        </h:form>
         <properties:editDialog bean="#{bean}" groupId="#{groupId}" />
     </div>
 </ui:composition>

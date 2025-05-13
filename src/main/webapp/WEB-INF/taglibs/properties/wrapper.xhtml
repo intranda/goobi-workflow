@@ -7,7 +7,7 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 >
     <c:set var="evenContainers" value="#{bean.containerList.size() % 2 == 0}" />
-    <h:form id="propertyForm" class="properties-form">
+    <div class="properties-form">
         <div class="properties-wrapper#{evenContainers ? ' group-count-even' : ' group-count-uneven'}">
             <c:forEach var="container" items="#{bean.containerList}" varStatus="iteration">
                 <c:set var="fullWidth" value="#{(bean.containerList.size() % 2) != 0 and iteration.index == 0}" />
@@ -19,7 +19,7 @@
                 </c:if>
             </c:forEach>
         </div>
-    </h:form>
+    </div>
     <c:set var="scope" value="#{
         fn:contains(bean, 'StepBean') ? 'step'
         : fn:contains(bean, 'BatchProcessHelper')? 'batch'
