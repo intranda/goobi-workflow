@@ -275,8 +275,8 @@
                         <section:footer>
                             <button:row styleClass="w-100 p-3">
                                 <f:ajax
-                                    execute="@form"
-                                    render="propertyForm#{groupId}">
+                                    execute="@this"
+                                    render="propertyForm#{groupId} propertyWrapper">
                                     <c:if test="#{scope != 'batch' and scope != 'step'}">
                                         <!-- Delete -->
                                         <button
