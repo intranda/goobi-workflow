@@ -78,8 +78,8 @@
                         </button>
                         <c:if test="#{scope == 'process' and !add}">
                             <f:ajax
-                                execute="propertyEditArea propertyForm#{groupId}"
-                                render="propertyEditArea propertyForm#{groupId}">
+                                execute="@this"
+                                render="propertyWrapper">
                                 <button
                                     class="btn d-flex align-items-center btn--title-action"
                                     data-bs-toggle="tooltip"
