@@ -56,13 +56,22 @@
                                 items="#{bean.containerProperties}">
                                 <h:panelGroup>
                                     <h:panelGroup rendered="#{myprocess_item.isNew}">
-                                        <intranda:formInputText
-                                            name="title"
-                                            label="#{msgs.titel}"
-                                            field="#{myprocess_item.name}"
-                                            help="#{msgs.helpPropertyTitle}"
-                                            required="true"
-                                            pt:autofocus="true" />
+                                        <div class="form-row">
+                                            <div class="form-label">
+                                                <h:outputLabel
+                                                    for="title"
+                                                    styleClass="control-label"
+                                                    value="#{msgs.eigenschaftHinzufuegen}" />
+                                            </div>
+                                            <div class="form-input">
+                                                <h:inputText
+                                                    styleClass="form-control"
+                                                    id="title"
+                                                    label="#{msgs.title}"
+                                                    value="#{myprocess_item.name}"
+                                                    autofocus="true" />
+                                            </div>
+                                        </div>
                                     </h:panelGroup>
                                 </h:panelGroup>
                                 <!-- text -->
@@ -275,9 +284,9 @@
                         <section:footer>
                             <button:row styleClass="w-100 p-3">
                                 <f:ajax
-                                    execute="@form"
-                                    render="propertyForm">
-                                    <c:if test="#{scope != 'batch'}">
+                                    execute="@this"
+                                    render="propertyForm#{groupId} propertyWrapper">
+                                    <c:if test="#{scope != 'batch' and scope != 'step'}">
                                         <!-- Delete -->
                                         <button
                                             jsf:id="delete"
@@ -293,23 +302,27 @@
                                             </span>
                                         </button>
                                     </c:if>
-                                    <button
-                                        type="button"
-                                        data-bs-dismiss="modal"
-                                        jsf:id="cancel"
-                                        class="btn btn-blank ms-auto">
-                                        <h:outputText value="#{msgs.abbrechen}" />
-                                        <c:if test="#{scope == 'batch'}">
-                                            <f:setPropertyActionListener
-                                                target="#{BatchForm.modusBearbeiten}"
-                                                value="" />
-                                        </c:if>
-                                        <c:if test="#{scope != 'batch'}">
-                                            <f:setPropertyActionListener
-                                                target="#{bean.modusBearbeiten}"
-                                                value="" />
-                                        </c:if>
-                                    </button>
+                                </f:ajax>
+                                <button
+                                    type="button"
+                                    data-bs-dismiss="modal"
+                                    jsf:id="cancel"
+                                    class="btn btn-blank ms-auto">
+                                    <h:outputText value="#{msgs.abbrechen}" />
+                                    <c:if test="#{scope == 'batch'}">
+                                        <f:setPropertyActionListener
+                                            target="#{BatchForm.modusBearbeiten}"
+                                            value="" />
+                                    </c:if>
+                                    <c:if test="#{scope != 'batch'}">
+                                        <f:setPropertyActionListener
+                                            target="#{bean.modusBearbeiten}"
+                                            value="" />
+                                    </c:if>
+                                </button>
+                                <f:ajax
+                                    execute="@form"
+                                    render="propertyForm#{groupId}">
                                     <c:if test="#{scope == 'batch'}">
                                         <button
                                             jsf:id="saveAll"
