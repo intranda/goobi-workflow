@@ -16,7 +16,7 @@
     <!-- <c:set var="id" value="#{fn:replace(container.matches('^\\d+$') ? 'prop'.concat(container) : container, ' ' , '_')}" /> -->
 
     <div class="properties-group">
-        <h:form id="propertyForm">
+        <h:form id="propertyForm#{groupId}">
             <section:section
                 type="outline">
                 <section:header
@@ -78,8 +78,8 @@
                         </button>
                         <c:if test="#{scope == 'process' and !add}">
                             <f:ajax
-                                execute="propertyEditArea propertyForm"
-                                render="propertyEditArea propertyForm">
+                                execute="propertyEditArea propertyForm#{groupId}"
+                                render="propertyEditArea propertyForm#{groupId}">
                                 <button
                                     class="btn d-flex align-items-center btn--title-action"
                                     data-bs-toggle="tooltip"
