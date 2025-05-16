@@ -454,3 +454,36 @@ fieldSet:disabled .badge > a {
     padding: 0.3125rem 0.75rem;
   }
 }
+
+.form-slider-wrapper,
+.form-slider-text {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--flow-space, 1em);
+}
+
+.form-slider-wrapper {
+  width: 100%;
+  & input {
+    margin-block: auto;
+  }
+}
+
+.form-slider-text {
+  flex: 0 0 30%;
+  justify-content: space-around;
+  & .prefix,
+  & .suffix {
+    flex: 0 1 25%;
+  }
+  & .prefix + .form-control:has(+ .suffix) {
+    flex: 0 1 50%;
+  }
+  &:not(:has(.prefix)) .form-control:has(+ .suffix),
+  &:has(.prefix) .form-control:not(:has(+ .suffix)) {
+    flex: 0 1 75%;
+  }
+  &:not(:has(.prefix)) .form-control:not(:has(+ .suffix)) {
+    flex: 1 1 auto;
+  }
+}
