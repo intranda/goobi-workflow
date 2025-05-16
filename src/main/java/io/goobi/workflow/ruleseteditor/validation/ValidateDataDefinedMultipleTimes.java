@@ -56,9 +56,9 @@ public class ValidateDataDefinedMultipleTimes {
 								continue;
 							}
 							if (name.equals(nextName)) {
-								String lineNumber = nextNameElement.getAttributeValue("lineNumber");
+								String lineNumber = nextNameElement.getAttributeValue("goobi_lineNumber");
 								String lineInfo = (lineNumber != null) ? lineNumber : "0";
-								createError(errors, elementType, nextName, lineInfo);
+								createError(errors, elementType, nextName, lineInfo, nextNameElement);
 							}
 						}
 					}
@@ -76,16 +76,16 @@ public class ValidateDataDefinedMultipleTimes {
 	 * @param name
 	 * @param lineInfo
 	 */
-	private void createError(List<RulesetValidationError> errors, String elementType, String name, String lineInfo) {
+	private void createError(List<RulesetValidationError> errors, String elementType, String name, String lineInfo, Element element) {
 		if (elementType.equals("DocStrctType")) {
 			errors.add(new RulesetValidationError("WARNING",
-					Helper.getTranslation("ruleset_validation_valueDefinedMultipleTimes_docstruct", name), lineInfo));
+					Helper.getTranslation("ruleset_validation_valueDefinedMultipleTimes_docstruct", name), lineInfo, 2,element));
 		} else if (elementType.equals("Group")) {
 			errors.add(new RulesetValidationError("WARNING",
-					Helper.getTranslation("ruleset_validation_valueDefinedMultipleTimes_group", name), lineInfo));
+					Helper.getTranslation("ruleset_validation_valueDefinedMultipleTimes_group", name), lineInfo,2, element));
 		} else if (elementType.equals("MetadataType")) {
 			errors.add(new RulesetValidationError("WARNING",
-					Helper.getTranslation("ruleset_validation_valueDefinedMultipleTimes_metadata", name), lineInfo));
+					Helper.getTranslation("ruleset_validation_valueDefinedMultipleTimes_metadata", name), lineInfo,2 ,element));
 
 		}
 

@@ -44,7 +44,7 @@ public class ValidateUsedButUndefinedData {
      */
     public List<RulesetValidationError> validate(org.jdom2.Element root) {
         List<RulesetValidationError> errors = new ArrayList<>();
-        Map<String, String> allUsedValues = new HashMap<>();
+        Map<String, List<Object>> allUsedValues = new HashMap<>();
         Set<String> allDefinedValues = new HashSet<>();
         List<String> allUndefinedValues = new ArrayList<>();
 
@@ -58,8 +58,10 @@ public class ValidateUsedButUndefinedData {
             }
         }
         for (String value : allUndefinedValues) {
-            String lineNumber = allUsedValues.get(value);
-            createError(errors, value, lineNumber);
+        	List<Object> data = allUsedValues.get(value);
+        	String lineNumber = (String) data.get(0);
+        	Element element = (Element) data.get(1);
+        	createError(errors, value, lineNumber, element);
         }
 
         return errors;
@@ -71,7 +73,7 @@ public class ValidateUsedButUndefinedData {
      * @param root
      * @param allUsedValues
      */
-    private void getAllUsedValues(Element root, Map<String, String> allUsedValues) {
+    private void getAllUsedValues(Element root, Map<String, List<Object>> allUsedValues) {
         // Run through all root Children
         for (Element element : root.getChildren()) {
             // Only go into DocStrcts and Groups
@@ -83,21 +85,30 @@ public class ValidateUsedButUndefinedData {
                     // Add all group, metadata and allowedchildtype to the M
                     if ("group".equals(childElement.getName())) {
                         String value = "Group:" + childElement.getText().trim();
-                        String lineNumber = childElement.getAttributeValue("lineNumber");
+                        String lineNumber = childElement.getAttributeValue("goobi_lineNumber");
                         String lineInfo = (lineNumber != null) ? lineNumber : "0";
-                        allUsedValues.put(value, lineInfo);
+                        List<Object> data = new ArrayList<>();
+                        data.add(lineInfo);
+                        data.add(childElement);
+                        allUsedValues.put(value, data);
 
                     } else if ("metadata".equals(childElement.getName().trim())) {
                         String value = "MetadataType:" + childElement.getText().trim();
-                        String lineNumber = childElement.getAttributeValue("lineNumber");
+                        String lineNumber = childElement.getAttributeValue("goobi_lineNumber");
                         String lineInfo = (lineNumber != null) ? lineNumber : "0";
-                        allUsedValues.put(value, lineInfo);
+                        List<Object> data = new ArrayList<>();
+                        data.add(lineInfo);
+                        data.add(childElement);
+                        allUsedValues.put(value, data);
 
                     } else if ("allowedchildtype".equals(childElement.getName())) {
                         String value = "DocStrctType:" + childElement.getText().trim();
-                        String lineNumber = childElement.getAttributeValue("lineNumber");
+                        String lineNumber = childElement.getAttributeValue("goobi_lineNumber");
                         String lineInfo = (lineNumber != null) ? lineNumber : "0";
-                        allUsedValues.put(value, lineInfo);
+                        List<Object> data = new ArrayList<>();
+                        data.add(lineInfo);
+                        data.add(childElement);
+                        allUsedValues.put(value, data);
                     }
                 }
             }
@@ -127,20 +138,20 @@ public class ValidateUsedButUndefinedData {
      * @param value
      * @param lineNumber
      */
-    private void createError(List<RulesetValidationError> errors, String value, String lineNumber) {
+    private void createError(List<RulesetValidationError> errors, String value, String lineNumber, Element element) {
         String[] parts = value.split(":", 2);
         String key = parts[0];
         String val = parts[1];
 
         if ("MetadataType".equals(key)) {
             errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_metadata", val),
-                    lineNumber));
+                    lineNumber,12, element));
         } else if ("Group".equals(key)) {
             errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_group", val),
-                    lineNumber));
+                    lineNumber,12, element));
         } else if ("DocStrctType".equals(key)) {
             errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_docstruct", val),
-                    lineNumber));
+                    lineNumber,12, element));
         }
     }
 

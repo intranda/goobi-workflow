@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jdom2.Element;
@@ -38,7 +39,7 @@ public class ValidateDataNotMappedForExport {
 	 */
 	public List<RulesetValidationError> validate(org.jdom2.Element root, String format) {
 		List<RulesetValidationError> errors = new ArrayList<>();
-        Map<String, String> allUsedValues = new HashMap<>();
+		Map<String, List<Object>> allUsedValues = new HashMap<>();
         Set<String> allDefinedValues = new HashSet<>();
 
 		for (Element element : root.getChildren()) {
@@ -57,10 +58,13 @@ public class ValidateDataNotMappedForExport {
 		        }
 			}
 		}
-		for (Map.Entry<String, String> entry : allUsedValues.entrySet()) {
+		for (Entry<String, List<Object>> entry : allUsedValues.entrySet()) {
 		    String usedKey = entry.getKey();
 		    if (!allDefinedValues.contains(usedKey)) {
-		        createError(errors, usedKey, entry.getValue());
+		    	List<Object> valueList = entry.getValue();
+		    	String lineNumber = (String) valueList.get(0);
+		    	Element element = (Element) valueList.get(1);
+		    	createError(errors, usedKey, lineNumber, element);
 		    }
 		}
 		return errors;
@@ -72,14 +76,14 @@ public class ValidateDataNotMappedForExport {
 	 * @param allUsedValues
 	 * @param formatName
 	 */
-	private void collectNamesInFormat(Element parent, Map<String, String> allUsedValues, String formatName) {
+	private void collectNamesInFormat(Element parent, Map<String, List<Object>> allUsedValues, String formatName) {
 	    for (Element child : parent.getChildren()) {
 	        String name = child.getName();
 
 	        if ("Metadata".equals(name) || "Person".equals(name) || "Corporate".equals(name)
 	                || "DocStruct".equals(name) || "Group".equals(name)) {
 
-	            String lineNumber = child.getAttributeValue("lineNumber");
+	            String lineNumber = child.getAttributeValue("goobi_lineNumber");
 	            String lineInfo = (lineNumber != null) ? lineNumber : "0";
 
 	            Element nameElement = child.getChild("InternalName");
@@ -94,7 +98,10 @@ public class ValidateDataNotMappedForExport {
 	                	name = "DocStrctType";
 	                }
 	                String key = name + ":" + value;
-	                allUsedValues.put(key, lineInfo);
+	                List<Object> valueList = new ArrayList<>();
+	                valueList.add(lineInfo);       
+	                valueList.add(nameElement);    
+	                allUsedValues.put(key, valueList);
 	            }
 	            // In LIDO there can be <Metadata> inside a Group
 	            if ("Group".equals(name) && "LIDO".equals(formatName)) {
@@ -113,19 +120,19 @@ public class ValidateDataNotMappedForExport {
      * @param value
      * @param lineNumber
      */
-    private void createError(List<RulesetValidationError> errors, String value, String lineNumber) {
+    private void createError(List<RulesetValidationError> errors, String value, String lineNumber, Element element) {
         String[] parts = value.split(":", 2);
         String key = parts[0];
         String val = parts[1];
         if ("MetadataType".equals(key)) {
             errors.add(new RulesetValidationError("INFO", Helper.getTranslation("ruleset_validation_usedButUnMappedForExport_metadata", val),
-                    lineNumber));
+                    lineNumber, 3, element));
         } else if ("Group".equals(key)) {
             errors.add(new RulesetValidationError("INFO", Helper.getTranslation("ruleset_validation_usedButUnMappedForExport_group", val),
-                    lineNumber));
+                    lineNumber,3, element));
         } else if ("DocStrctType".equals(key)) {
             errors.add(new RulesetValidationError("INFO", Helper.getTranslation("ruleset_validation_usedButUnMappedForExport_docstruct", val),
-                    lineNumber));
+                    lineNumber,3,element));
         }
     }
 }

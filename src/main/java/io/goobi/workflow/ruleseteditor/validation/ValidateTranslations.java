@@ -22,16 +22,16 @@ public class ValidateTranslations {
 		for (Element element : root.getChildren()) {
 			for (Element language : element.getChildren("language")) {
                 if(language.getText().equals("")) {
-                    String lineNumber = language.getAttributeValue("lineNumber");
+                    String lineNumber = language.getAttributeValue("goobi_lineNumber");
                     String lineInfo = (lineNumber != null) ? lineNumber : "0";
-                	createError(errors, element.getChild("Name").getText(), lineInfo);
+                	createError(errors, element.getChild("Name").getText(), lineInfo, element);
                 }
             }
 		}
 		
 		return errors;
 	}
-	private void createError(List<RulesetValidationError> errors, String name, String lineInfo) {
-        errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_emptyTranslation", name), lineInfo));
+	private void createError(List<RulesetValidationError> errors, String name, String lineInfo, Element element) {
+        errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_emptyTranslation", name), lineInfo, 10,element));
     }
 }

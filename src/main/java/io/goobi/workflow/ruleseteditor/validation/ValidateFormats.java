@@ -42,7 +42,7 @@ public class ValidateFormats {
 	 */
 	public List<RulesetValidationError> validate(Element root, String format, String nameValue) {
 		List<RulesetValidationError> errors = new ArrayList<>();
-		Map<String, String> allUsedValues = new HashMap<>();
+		Map<String, List<Object>> allUsedValues = new HashMap<>();
 		Set<String> allDefinedValues = new HashSet<>();
 
 		checkElements(root, errors, "DocStruct", "DocStrctType", format, nameValue, allUsedValues);
@@ -79,9 +79,11 @@ public class ValidateFormats {
 			}
 		}
 		// Go through the Map of allUsedValues and compare it with the definedValues List
-		for (Map.Entry<String, String> entry : allUsedValues.entrySet()) {
+		for (Map.Entry<String, List<Object>> entry : allUsedValues.entrySet()) {
 			boolean foundMatch = false;
-			String fullValue = entry.getValue();
+			List<Object> valueList = entry.getValue();
+			String fullValue = (String) valueList.get(0);
+		    Element element = (Element) valueList.get(1);
 			String[] parts = fullValue.split(":", 3);
 
 			String usedElementType = parts[0];
@@ -106,7 +108,7 @@ public class ValidateFormats {
 			}
 			if (!foundMatch) {
 				createError(errors, usedElementType, usedElementAttributeValue, usedElementNameValue, entry.getKey(),
-						format);
+						format, element);
 			}
 		}
 
@@ -130,7 +132,7 @@ public class ValidateFormats {
 	 * @param allUsed    Value hashmap where all used values should add into it
 	 */
 	private void checkElements(Element root, List<RulesetValidationError> errors, String type, String definition,
-			String format, String name, Map<String, String> allUsedValues) {
+			String format, String name, Map<String, List<Object>> allUsedValues) {
 		Element formats = root.getChild("Formats");
 		if (formats != null) {
 			Element formatElement = formats.getChild(format);
@@ -140,7 +142,7 @@ public class ValidateFormats {
 					Element nameElement = elem.getChild(name);
 					if (nameElement != null) {
 						String value = nameElement.getTextTrim();
-						String lineNumber = elem.getAttributeValue("lineNumber");
+						String lineNumber = elem.getAttributeValue("goobi_lineNumber");
 						if (type.equals("Metadata")) {
 							type = "MetadataType";
 						} else if (type.equals("DocStruct")) {
@@ -150,7 +152,10 @@ public class ValidateFormats {
 						} else if (type.equals("Corporate")) {
 							type = "MetadataType:corporate";
 						}
-						allUsedValues.put(lineNumber, type + ":" + value);
+						List<Object> valueList = new ArrayList<>();
+						valueList.add(type + ":" + value);
+						valueList.add(elem);
+						allUsedValues.put(lineNumber, valueList);
 
 					}
 				}
@@ -168,31 +173,31 @@ public class ValidateFormats {
 	 * @param formatNameValue
 	 */
 	private void createError(List<RulesetValidationError> errors, String usedElementType,
-			String usedElementAttributeValue, String usedElementNameValue, String lineNumber, String formatName) {
+			String usedElementAttributeValue, String usedElementNameValue, String lineNumber, String formatName, Element element) {
 		if ("MetadataType".equals(usedElementType)) {
 			if (usedElementAttributeValue == null) {
 				errors.add(new RulesetValidationError("ERROR",
 						Helper.getTranslation("ruleset_validation_used_but_undefined_metadata_for_export",
 								usedElementNameValue, formatName),
-						lineNumber));
+						lineNumber,6, element));
 			} else {
 				if (usedElementAttributeValue.equals("person")) {
 					errors.add(new RulesetValidationError("ERROR",
 							Helper.getTranslation("ruleset_validation_used_but_undefined_person_for_export",
 									usedElementNameValue, formatName),
-							lineNumber));
+							lineNumber, 6, element));
 				} else if (usedElementAttributeValue.equals("corporate")) {
 					errors.add(new RulesetValidationError("ERROR",
 							Helper.getTranslation("ruleset_validation_used_but_undefined_corporate_for_export",
 									usedElementNameValue, formatName),
-							lineNumber));
+							lineNumber,6, element));
 				}
 			}
 		} else if ("Group".equals(usedElementType)) {
 			errors.add(new RulesetValidationError("ERROR",
 					Helper.getTranslation("ruleset_validation_used_but_undefined_group_for_export",
 							usedElementNameValue, formatName),
-					lineNumber));
+					lineNumber,6, element));
 		}
 	}
 }

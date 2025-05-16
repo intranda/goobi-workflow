@@ -37,7 +37,7 @@ public class ReportErrorsErrorHandler implements ErrorHandler {
     }
 
     private void addError(SAXParseException e, String severity) {
-        errors.add(new RulesetValidationError(e.getLineNumber(), e.getColumnNumber(), severity, e.getMessage()));
+        errors.add(new RulesetValidationError(e.getLineNumber(), e.getColumnNumber(), severity, e.getMessage(), null, null));
 
     }
 

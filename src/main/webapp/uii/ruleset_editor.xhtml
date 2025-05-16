@@ -179,6 +179,15 @@
 														class="btn btn-neutral-500 float-end" type="button"
 														onclick="scrollToLine(#{error.line})">
 														<h:outputText value="#{msgs.ruleset_validation_line}: #{error.line}" />
+													</button>	
+													<button jsf:id="button_action" 
+														rendered="#{error.errorType eq 'DATA_DEFINED_MULTIPLE_TIMES' or error.errorType eq 'DATA_NOT_USED_FOR_EXPORT' or error.errorType eq 'DUPLICATES_IN_DOCSTRCT' or error.errorType eq 'DUPLICATES_IN_GROUP' or error.errorType eq 'VALIDATE_FORMATS' or error.errorType eq 'INVALID_TOPSTRCT_USAGE' or error.errorType eq 'UNUSED_BUT_DEFINED' or error.errorType eq 'USED_BUT_UNDEFINED'}"
+														class="btn btn-action me-2"
+														jsf:action="#{rulesetEditorBean.handleAction(error)}">
+														<i class="fa fa-plus"></i>
+														<span>
+															<h:outputText value="action" />
+														</span>
 													</button>
 		                                    	 </div>
 		                                    </div>

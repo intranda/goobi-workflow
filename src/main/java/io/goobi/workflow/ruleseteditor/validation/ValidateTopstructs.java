@@ -53,7 +53,7 @@ public class ValidateTopstructs {
 				Element nameElement = element.getChild("Name");
 				if (nameElement != null) {
 					String name = nameElement.getText();
-					String lineNumber = nameElement.getAttributeValue("lineNumber");
+					String lineNumber = nameElement.getAttributeValue("goobi_lineNumber");
 					String lineInfo = (lineNumber != null) ? lineNumber : "0";
 					allTopstructs.put(name, lineInfo);
 				}
@@ -68,9 +68,9 @@ public class ValidateTopstructs {
 					// if an allowedchildtype's name equals one name of the all Topstrcs map it is
 					// not allowed there
 					if (allTopstructs.containsKey(allowedChildTypeText)) {
-						String lineNumber = allowedChildType.getAttributeValue("lineNumber");
+						String lineNumber = allowedChildType.getAttributeValue("goobi_lineNumber");
 						String lineInfo = (lineNumber != null) ? lineNumber : "0";
-						createError(errors, allowedChildTypeText, lineInfo);
+						createError(errors, allowedChildTypeText, lineInfo, element);
 					}
 				}
 			}
@@ -86,8 +86,8 @@ public class ValidateTopstructs {
 	 * @param name
 	 * @param lineInfo
 	 */
-	private void createError(List<RulesetValidationError> errors, String name, String lineInfo) {
+	private void createError(List<RulesetValidationError> errors, String name, String lineInfo, Element element) {
 		errors.add(new RulesetValidationError("ERROR",
-				Helper.getTranslation("ruleset_validation_unallowedUsageOfTopstruct", name), lineInfo));
+				Helper.getTranslation("ruleset_validation_unallowedUsageOfTopstruct", name), lineInfo, 9,element));
 	}
 }

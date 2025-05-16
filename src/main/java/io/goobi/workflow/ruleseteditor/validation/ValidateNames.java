@@ -37,14 +37,14 @@ public class ValidateNames {
 					String lineInfo = (lineNumber != null) ? lineNumber : "0";
 
 					errors.add(new RulesetValidationError("ERROR",
-							Helper.getTranslation("ruleset_validation_missing_name", element.getName()), lineInfo));
+							Helper.getTranslation("ruleset_validation_missing_name", element.getName()), lineInfo, 7,element));
 					continue;
 				}
 				if (nameElement.getTextTrim().isEmpty()) {
-					String lineNumber = nameElement.getAttributeValue("lineNumber");
+					String lineNumber = nameElement.getAttributeValue("goobi_lineNumber");
 					String lineInfo = (lineNumber != null) ? lineNumber : "0";
 					errors.add(new RulesetValidationError("ERROR",
-							Helper.getTranslation("ruleset_validation_empty_name", element.getName()), lineInfo));
+							Helper.getTranslation("ruleset_validation_empty_name", element.getName()), lineInfo, 8,element));
 				}
 			}
 		}

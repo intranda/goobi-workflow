@@ -55,7 +55,7 @@ public class ValidateUnusedButDefinedData {
         }
         for (String unusedValue : allAllowedchildtypeValues) {
             for (Element element : root.getChildren()) {
-                String lineNumber = element.getAttributeValue("lineNumber");
+                String lineNumber = element.getAttributeValue("goobi_lineNumber");
                 String lineInfo = (lineNumber != null) ? lineNumber.trim() : "0";
                 // Check if the element is a DocStrctType and if the Name value is inside the allAllowedchildtypeValues.
                 // If so it will be added to allUnusedAllowedchildtypeValues and a message will be displayed
@@ -64,7 +64,7 @@ public class ValidateUnusedButDefinedData {
                         && !allUnusedAllowedchildtypeValues.contains(unusedValue)) {
                     allUnusedAllowedchildtypeValues.add(unusedValue.trim());
                     errors.add(new RulesetValidationError("WARNING", Helper.getTranslation("ruleset_validation_unused_values_allowedchildtype",
-                            unusedValue.substring(unusedValue.lastIndexOf(":") + 1)), lineInfo));
+                            unusedValue.substring(unusedValue.lastIndexOf(":") + 1)), lineInfo,10, element));
                 }
             }
         }
@@ -170,26 +170,26 @@ public class ValidateUnusedButDefinedData {
                     if ("person".equals(type) && ("MetadataType:" + nameText).equals(text)) {
                         errors.add(new RulesetValidationError("WARNING",
                                 Helper.getTranslation("ruleset_validation_unused_values_person", text.substring(text.lastIndexOf(":") + 1)),
-                                element.getAttributeValue("lineNumber")));
+                                element.getAttributeValue("goobi_lineNumber"),11, element));
                         continue;
                     }
 
                     if ("corporate".equals(type) && ("MetadataType:" + nameText).equals(text)) {
                         errors.add(new RulesetValidationError("WARNING",
                                 Helper.getTranslation("ruleset_validation_unused_values_corporate", text.substring(text.lastIndexOf(":") + 1)),
-                                element.getAttributeValue("lineNumber")));
+                                element.getAttributeValue("goobi_lineNumber"),11, element));
                         continue;
                     }
 
                     if ("Group".equals("Group:" + nameText)) {
                         errors.add(new RulesetValidationError("WARNING",
                                 Helper.getTranslation("ruleset_validation_unused_values_groups", text.substring(text.lastIndexOf(":") + 1)),
-                                element.getAttributeValue("lineNumber")));
+                                element.getAttributeValue("lineNumber"),11, element));
                         continue;
                     } else if (("MetadataType:" + nameText).equals(text)) {
                         errors.add(new RulesetValidationError("WARNING",
                                 Helper.getTranslation("ruleset_validation_unused_values_metadata", text.substring(text.lastIndexOf(":") + 1)),
-                                element.getAttributeValue("lineNumber")));
+                                element.getAttributeValue("goobi_lineNumber"),11, element));
                         continue;
                     }
                 }

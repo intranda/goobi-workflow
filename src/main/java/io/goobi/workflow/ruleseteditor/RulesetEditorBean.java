@@ -59,10 +59,17 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import org.jdom2.Content;
+import org.jdom2.Text;
+import org.jdom2.Element;
+import java.util.Iterator;
+import java.util.List;
+
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.StorageProviderInterface;
 import de.sub.goobi.persistence.managers.RulesetManager;
+import io.goobi.workflow.ruleseteditor.validation.FixDataDefinedMultipleTimes;
 import io.goobi.workflow.ruleseteditor.validation.ValidateCardinality;
 import io.goobi.workflow.ruleseteditor.validation.ValidateDataDefinedMultipleTimes;
 import io.goobi.workflow.ruleseteditor.validation.ValidateDataNotMappedForExport;
@@ -325,7 +332,52 @@ public class RulesetEditorBean implements Serializable {
             this.currentRulesetFileContent = null;
         }
     }
+    
+    public void handleAction(RulesetValidationError error) {
 
+    	try {
+    		 // Use sax to add lineNumber as attributes
+    		String xml = currentRulesetFileContent;
+    		SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+    		saxFactory.setNamespaceAware(true);
+    		
+    		SAXParser parser = saxFactory.newSAXParser();
+            LineNumberHandler handler = new LineNumberHandler();
+            parser.parse(new InputSource(new StringReader(xml)), handler);
+    		
+            org.jdom2.Document doc = handler.getDocument();
+            Element root = doc.getRootElement();
+            
+            // Fix errors
+            if(error.getErrorType() == RulesetValidationError.errorType.DATA_DEFINED_MULTIPLE_TIMES) {
+            	FixDataDefinedMultipleTimes f1 = new FixDataDefinedMultipleTimes();
+            	f1.fix(root, error);
+            }
+            
+            
+            removeLineNumbers(root);
+            
+            // Output the new xml
+            org.jdom2.output.XMLOutputter outputter = new org.jdom2.output.XMLOutputter();
+            String updatedXml = outputter.outputString(doc);
+            this.currentRulesetFileContent = updatedXml;
+            
+            // validate the new xml
+    		this.validate();
+    		
+    	} catch (Exception e){
+    		System.out.println(e);
+    	}
+    }
+    
+    // Recursivly go through all elements and remove the goobi_lineNumber attribute
+    private void removeLineNumbers(Element element) {
+        element.removeAttribute("goobi_lineNumber");
+        for (Element child : element.getChildren()) {
+            removeLineNumbers(child);
+        }
+    }
+    
     private boolean checkXML() throws ParserConfigurationException, SAXException, IOException {
         boolean ok = true;
 
@@ -391,6 +443,10 @@ public class RulesetEditorBean implements Serializable {
             org.jdom2.Document jdomDocument = handler.getDocument();
             Element root = jdomDocument.getRootElement();
             // check duplicates inside of Docstructs
+            
+            ValidateNames v11 = new ValidateNames();
+            validationErrors.addAll(v11.validate(root));
+            
             ValidateDuplicatesInDocStrct v1 = new ValidateDuplicatesInDocStrct();
             validationErrors.addAll(v1.validate(root));
             
@@ -429,10 +485,6 @@ public class RulesetEditorBean implements Serializable {
             ValidateDataDefinedMultipleTimes v10 = new ValidateDataDefinedMultipleTimes();
             validationErrors.addAll(v10.validate(root));
             
-            // check if name values are empty
-            ValidateNames v11 = new ValidateNames();
-            validationErrors.addAll(v11.validate(root));
-            
             // check if defined data is used in the export
             ValidateDataNotMappedForExport v12 = new ValidateDataNotMappedForExport();
             validationErrors.addAll(v12.validate(root, "METS"));
@@ -443,7 +495,7 @@ public class RulesetEditorBean implements Serializable {
 
         }
     }
-
+    
     private void checkRulesetXsd(String xml) {
         String xsdUrl = "https://github.com/intranda/ugh/raw/master/ugh/ruleset_schema.xsd";
 
@@ -455,9 +507,9 @@ public class RulesetEditorBean implements Serializable {
             validator.validate(source);
         } catch (Exception e) {
             if (e instanceof SAXParseException se) {
-                validationErrors.add(new RulesetValidationError(se.getLineNumber(), 0, "ERROR", e.getMessage()));
+                validationErrors.add(new RulesetValidationError(se.getLineNumber(), 0, "ERROR", e.getMessage(), null, null));
             } else {
-                validationErrors.add(new RulesetValidationError(0, 0, "ERROR", e.getMessage()));
+                validationErrors.add(new RulesetValidationError(0, 0, "ERROR", e.getMessage(), null, null));
             }
 
         }

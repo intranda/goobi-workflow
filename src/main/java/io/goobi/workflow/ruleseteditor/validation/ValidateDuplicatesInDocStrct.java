@@ -70,7 +70,7 @@ public class ValidateDuplicatesInDocStrct {
             String childText = childElement.getText().trim();
             String childSignature = childName + ":" + childText;
 
-            String lineNumber = childElement.getAttributeValue("lineNumber");
+            String lineNumber = childElement.getAttributeValue("goobi_lineNumber");
             String lineInfo = (lineNumber != null) ? lineNumber.trim() : "0";
 
             // Check if the childSignature already exists in the set
@@ -86,13 +86,13 @@ public class ValidateDuplicatesInDocStrct {
                     errors.add(
                             new RulesetValidationError("ERROR",
                                     Helper.getTranslation("ruleset_validation_duplicates_group_group", childText, nameText),
-                                    valueMap.get(childSignature)));
+                                    valueMap.get(childSignature), 4, childElement));
                 }
                 // Check if the child element name is "allowedchildtype"
                 else if ("allowedchildtype".equals(childName)) {
                     errors.add(new RulesetValidationError("ERROR",
                             Helper.getTranslation("ruleset_validation_duplicates_group_allowedchildtype", childText, nameText),
-                            valueMap.get(childSignature)));
+                            valueMap.get(childSignature),4, childElement));
                 }
             } else {
                 // Add the signature to the Map
@@ -123,18 +123,18 @@ public class ValidateDuplicatesInDocStrct {
                 if ("person".equals(typeValue)) {
                     errors.add(
                             new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_duplicates_person", childElementText, nameElementText),
-                                    lineInfo));
+                                    lineInfo,4, element));
                     return;
                 }
                 if ("corporate".equals(typeValue)) {
                     errors.add(
                             new RulesetValidationError("ERROR",
-                                    Helper.getTranslation("ruleset_validation_duplicates_corporate", childElementText, nameElementText), lineInfo));
+                                    Helper.getTranslation("ruleset_validation_duplicates_corporate", childElementText, nameElementText), lineInfo,4, element));
                     return;
 
                 } else {
                     errors.add(new RulesetValidationError("ERROR",
-                            Helper.getTranslation("ruleset_validation_duplicates_metadata", childElementText, nameElementText), lineInfo));
+                            Helper.getTranslation("ruleset_validation_duplicates_metadata", childElementText, nameElementText), lineInfo,4,  element));
                     return;
                 }
             }

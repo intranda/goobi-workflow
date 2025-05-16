@@ -82,11 +82,11 @@ public class ValidateDuplicatesInGroups {
                             new RulesetValidationError("ERROR",
                                     Helper.getTranslation("ruleset_validation_duplicates_group_metadata", childText,
                                             nameText),
-                                    valueMap.get(childSignature)));
+                                    valueMap.get(childSignature), 5, childElement));
                 }
             } else {
                 // Add the signature to the map
-                valueMap.put(childSignature, childElement.getAttributeValue("lineNumber"));
+                valueMap.put(childSignature, childElement.getAttributeValue("goobi_lineNumber"));
             }
         }
     }
@@ -112,18 +112,18 @@ public class ValidateDuplicatesInGroups {
             // Check if the element is a person with the same name
             if ("person".equals(element.getAttributeValue("type")) && childElementText.equals(nameChild.getText().trim())) {
                 errors.add(new RulesetValidationError("ERROR",
-                        Helper.getTranslation("ruleset_validation_duplicates_group_person", childElementText, nameElementText), lineInfo));
+                        Helper.getTranslation("ruleset_validation_duplicates_group_person", childElementText, nameElementText), lineInfo,5, element));
                 return;
             }
 
             if ("corporate".equals(element.getAttributeValue("type")) && childElementText.equals(nameChild.getText().trim())) {
                 errors.add(new RulesetValidationError("ERROR",
-                        Helper.getTranslation("ruleset_validation_duplicates_group_corporate", childElementText, nameElementText), lineInfo));
+                        Helper.getTranslation("ruleset_validation_duplicates_group_corporate", childElementText, nameElementText), lineInfo,5, element));
                 return;
 
             } else if (childElementText.equals(nameChild.getText().trim())) {
                 errors.add(new RulesetValidationError("ERROR",
-                        Helper.getTranslation("ruleset_validation_duplicates_group_metadata", childElementText, nameElementText), lineInfo));
+                        Helper.getTranslation("ruleset_validation_duplicates_group_metadata", childElementText, nameElementText), lineInfo,5, element));
                 return;
             }
 

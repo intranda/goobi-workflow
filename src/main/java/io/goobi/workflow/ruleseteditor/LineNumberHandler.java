@@ -50,7 +50,7 @@ public class LineNumberHandler extends DefaultHandler {
         Element element = new Element(qName);
 
         if (locator != null) {
-            element.setAttribute("lineNumber", String.valueOf(locator.getLineNumber()));
+            element.setAttribute("goobi_lineNumber", String.valueOf(locator.getLineNumber()));
         }
 
         for (int i = 0; i < attributes.getLength(); i++) {
