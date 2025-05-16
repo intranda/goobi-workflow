@@ -9,6 +9,7 @@
     <c:set var="evenContainers" value="#{bean.containerList.size() % 2 == 0}" />
     <div class="properties-form">
         <h:panelGroup
+            layout="block"
             id="propertyWrapper"
             class="properties-wrapper#{evenContainers ? ' group-count-even' : ' group-count-uneven'}">
             <c:forEach var="container" items="#{bean.containerList}" varStatus="iteration">
