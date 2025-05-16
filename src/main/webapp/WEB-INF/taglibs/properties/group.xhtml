@@ -25,25 +25,38 @@
                     <div class="actions d-flex">
                         <button
                             type="button"
-                            jsf:id="EditModalButton#{groupId}"
+                            jsf:action="#{bean.createNewProperty}"
+                            jsf:id="newProperty"
+                            jsf:rendered="#{
+                                LoginForm.hasRole('Workflow_General_Details_Edit')
+                                and add and scope != 'batch'}"
+                            title="#{msgs.eigenschaftHinzufuegen}"
                             class="btn d-flex align-items-center btn--title-action"
                             data-bs-toggle="modal"
                             data-bs-target="#EditModal#{groupId}">
+                            <span
+                                aria-hidden="true"
+                                class="fa fa-plus" />
+                            <f:setPropertyActionListener
+                                target="#{bean.container}"
+                                value="0" />
+                            <f:setPropertyActionListener
+                                target="#{bean.modusBearbeiten}"
+                                value="eigenschaft" />
                             <f:ajax
                                 execute="@this"
                                 render="propertyEditArea#{groupId}" />
-                            <c:if test="#{add and scope != 'batch'}">
-                                <span
-                                    aria-hidden="true"
-                                    class="fa fa-plus" />
-                                <f:setPropertyActionListener
-                                    target="#{bean.container}"
-                                    value="0" />
-                                <f:setPropertyActionListener
-                                    target="#{bean.modusBearbeiten}"
-                                    value="eigenschaft" />
-                            </c:if>
-                            <c:if test="#{!add}">
+                        </button>
+                        <c:if test="#{!add}">
+                            <button
+                                type="button"
+                                jsf:id="EditModalButton#{groupId}"
+                                class="btn d-flex align-items-center btn--title-action"
+                                data-bs-toggle="modal"
+                                data-bs-target="#EditModal#{groupId}">
+                                <f:ajax
+                                    execute="@this"
+                                    render="propertyEditArea#{groupId}" />
                                 <span
                                     aria-hidden="true"
                                     class="fa fa-pencil" />
@@ -74,12 +87,12 @@
                                         target="#{bean.modusBearbeiten}"
                                         value="eigenschaft" />
                                 </c:if>
-                            </c:if>
-                        </button>
+                            </button>
+                        </c:if>
                         <c:if test="#{scope == 'process' and !add}">
                             <f:ajax
                                 execute="@this"
-                                render="propertyWrapper">
+                                render="propertyEditArea propertyForm#{groupId}">
                                 <button
                                     class="btn d-flex align-items-center btn--title-action"
                                     data-bs-toggle="tooltip"
