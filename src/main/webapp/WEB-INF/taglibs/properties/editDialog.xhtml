@@ -277,7 +277,7 @@
                                 <f:ajax
                                     execute="@form"
                                     render="propertyForm">
-                                    <c:if test="#{scope != 'batch'}">
+                                    <c:if test="#{scope != 'batch' and scope != 'step'}">
                                         <!-- Delete -->
                                         <button
                                             jsf:id="delete"
