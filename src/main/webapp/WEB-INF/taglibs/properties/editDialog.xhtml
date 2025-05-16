@@ -293,23 +293,27 @@
                                             </span>
                                         </button>
                                     </c:if>
-                                    <button
-                                        type="button"
-                                        data-bs-dismiss="modal"
-                                        jsf:id="cancel"
-                                        class="btn btn-blank ms-auto">
-                                        <h:outputText value="#{msgs.abbrechen}" />
-                                        <c:if test="#{scope == 'batch'}">
-                                            <f:setPropertyActionListener
-                                                target="#{BatchForm.modusBearbeiten}"
-                                                value="" />
-                                        </c:if>
-                                        <c:if test="#{scope != 'batch'}">
-                                            <f:setPropertyActionListener
-                                                target="#{bean.modusBearbeiten}"
-                                                value="" />
-                                        </c:if>
-                                    </button>
+                                </f:ajax>
+                                <button
+                                    type="button"
+                                    data-bs-dismiss="modal"
+                                    jsf:id="cancel"
+                                    class="btn btn-blank ms-auto">
+                                    <h:outputText value="#{msgs.abbrechen}" />
+                                    <c:if test="#{scope == 'batch'}">
+                                        <f:setPropertyActionListener
+                                            target="#{BatchForm.modusBearbeiten}"
+                                            value="" />
+                                    </c:if>
+                                    <c:if test="#{scope != 'batch'}">
+                                        <f:setPropertyActionListener
+                                            target="#{bean.modusBearbeiten}"
+                                            value="" />
+                                    </c:if>
+                                </button>
+                                <f:ajax
+                                    execute="@form"
+                                    render="propertyForm#{groupId}">
                                     <c:if test="#{scope == 'batch'}">
                                         <button
                                             jsf:id="saveAll"
