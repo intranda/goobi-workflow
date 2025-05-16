@@ -143,13 +143,15 @@
                     </c:if>
                 </button>
                 <f:ajax
-                    render="propertyEditArea">
+                    render="propertyForm#{groupId}">
                     <button
+                        type="button"
                         jsf:action="#{bean.duplicateProperty}"
                         class="btn btn-blank"
                         title="#{msgs.duplicate}"
-                        jsf:id="duplicateProperty"
-                        jsf:rendered="#{proc.type.name != 'metadata' and scope == 'process' and LoginForm.hasRole('Workflow_General_Details_Edit')}">
+                        jsf:id="duplicateProperty#{id}"
+                        jsf:rendered="#{proc.type.name != 'metadata' and scope == 'process' and LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                        data-bs-toggle="tooltip">
                         <span
                             aria-hidden="true"
                             class="fa fa-clipboard" />
