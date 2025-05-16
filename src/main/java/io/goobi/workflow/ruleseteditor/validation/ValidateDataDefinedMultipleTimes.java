@@ -58,7 +58,7 @@ public class ValidateDataDefinedMultipleTimes {
 							if (name.equals(nextName)) {
 								String lineNumber = nextNameElement.getAttributeValue("goobi_lineNumber");
 								String lineInfo = (lineNumber != null) ? lineNumber : "0";
-								createError(errors, elementType, nextName, lineInfo, nextNameElement);
+								createError(errors, elementType, nextName, lineInfo, nextElement);
 							}
 						}
 					}

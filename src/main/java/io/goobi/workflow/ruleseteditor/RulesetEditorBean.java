@@ -69,7 +69,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.StorageProviderInterface;
 import de.sub.goobi.persistence.managers.RulesetManager;
-import io.goobi.workflow.ruleseteditor.validation.FixDataDefinedMultipleTimes;
+import io.goobi.workflow.ruleseteditor.validation.RemoveFromXml;
 import io.goobi.workflow.ruleseteditor.validation.ValidateCardinality;
 import io.goobi.workflow.ruleseteditor.validation.ValidateDataDefinedMultipleTimes;
 import io.goobi.workflow.ruleseteditor.validation.ValidateDataNotMappedForExport;
@@ -336,7 +336,7 @@ public class RulesetEditorBean implements Serializable {
     public void handleAction(RulesetValidationError error) {
 
     	try {
-    		 // Use sax to add lineNumber as attributes
+    		// Use sax to add lineNumber as attributes
     		String xml = currentRulesetFileContent;
     		SAXParserFactory saxFactory = SAXParserFactory.newInstance();
     		saxFactory.setNamespaceAware(true);
@@ -349,11 +349,13 @@ public class RulesetEditorBean implements Serializable {
             Element root = doc.getRootElement();
             
             // Fix errors
-            if(error.getErrorType() == RulesetValidationError.errorType.DATA_DEFINED_MULTIPLE_TIMES) {
-            	FixDataDefinedMultipleTimes f1 = new FixDataDefinedMultipleTimes();
-            	f1.fix(root, error);
+            if(error.getErrorType() == RulesetValidationError.errorType.DATA_DEFINED_MULTIPLE_TIMES || error.getErrorType() == RulesetValidationError.errorType.DATA_NOT_USED_FOR_EXPORT ||  error.getErrorType() == RulesetValidationError.errorType.UNUSED_BUT_DEFINED) {
+            	RemoveFromXml r1 = new RemoveFromXml();
+            	r1.fix(root, error, true);
+            } else if (error.getErrorType() == RulesetValidationError.errorType.DUPLICATES_IN_DOCSTRCT || error.getErrorType() == RulesetValidationError.errorType.DUPLICATES_IN_GROUP || error.getErrorType()== RulesetValidationError.errorType.INVALID_TOPSTRCT_USAGE) {
+            	RemoveFromXml r1 = new RemoveFromXml();
+            	r1.fix(root, error, false);
             }
-            
             
             removeLineNumbers(root);
             
@@ -457,7 +459,7 @@ public class RulesetEditorBean implements Serializable {
             // check values in num-attribute
             ValidateCardinality v3 = new ValidateCardinality();
             validationErrors.addAll(v3.validate(root));
-            
+
             // check the usage of undefined elements
             ValidateUnusedButDefinedData v4 = new ValidateUnusedButDefinedData();
             validationErrors.addAll(v4.validate(root));
