@@ -170,11 +170,11 @@
 	                                        styleClass="alert #{error.severity eq 'WARNING'?'alert-warning':error.severity eq 'INFO'?'alert-secondary':'alert-danger'} d-block">
 	                                    
 		                                    <div class="row">
-		                                    	 <div class="col-9">
+		                                    	 <div class="col-8">
 				                                    <h:outputText
 				                                        value="#{error.message}"/>
 		                                    	 </div>
-		                                    	 <div class="col-3">
+		                                    	 <div class="col-4">
 			                                    	<button jsf:id="button_neutral-500"
 														class="btn btn-neutral-500 float-end" type="button"
 														onclick="scrollToLine(#{error.line})">

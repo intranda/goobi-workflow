@@ -26,7 +26,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class LineNumberHandler extends DefaultHandler {
+public class LineNumberHandler extends DefaultHandler{
 
     private Locator locator;
     private Document document;

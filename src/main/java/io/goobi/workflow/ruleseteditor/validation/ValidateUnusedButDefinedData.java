@@ -55,16 +55,20 @@ public class ValidateUnusedButDefinedData {
         }
         for (String unusedValue : allAllowedchildtypeValues) {
             for (Element element : root.getChildren()) {
-                String lineNumber = element.getAttributeValue("goobi_lineNumber");
+            	if(element.getChild("Name") == null) {
+            		continue;
+            	}
+                String lineNumber = element.getChild("Name").getAttributeValue("goobi_lineNumber");
                 String lineInfo = (lineNumber != null) ? lineNumber.trim() : "0";
                 // Check if the element is a DocStrctType and if the Name value is inside the allAllowedchildtypeValues.
                 // If so it will be added to allUnusedAllowedchildtypeValues and a message will be displayed
                 if ("DocStrctType".equals(element.getName())
-                        && allAllowedchildtypeValues.contains("DocStrctType:" + element.getChildText("Name").trim())
-                        && !allUnusedAllowedchildtypeValues.contains(unusedValue)) {
+                    && unusedValue.equals("DocStrctType:" + element.getChildText("Name").trim())
+                    && !allUnusedAllowedchildtypeValues.contains(unusedValue)) {
                     allUnusedAllowedchildtypeValues.add(unusedValue.trim());
                     errors.add(new RulesetValidationError("WARNING", Helper.getTranslation("ruleset_validation_unused_values_allowedchildtype",
-                            unusedValue.substring(unusedValue.lastIndexOf(":") + 1)), lineInfo,10, element));
+                            unusedValue.substring(unusedValue.lastIndexOf(":") + 1)), lineInfo,11, element.getChild("Name")));
+                   
                 }
             }
         }

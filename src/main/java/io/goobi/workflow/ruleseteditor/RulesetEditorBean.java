@@ -40,11 +40,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -52,18 +48,9 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Ruleset;
 import org.jdom2.Element;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import org.jdom2.Content;
-import org.jdom2.Text;
-import org.jdom2.Element;
-import java.util.Iterator;
-import java.util.List;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -334,10 +321,9 @@ public class RulesetEditorBean implements Serializable {
     }
     
     public void handleAction(RulesetValidationError error) {
-
     	try {
     		// Use sax to add lineNumber as attributes
-    		String xml = currentRulesetFileContent;
+    		String xml = maskXmlComments(currentRulesetFileContent);
     		SAXParserFactory saxFactory = SAXParserFactory.newInstance();
     		saxFactory.setNamespaceAware(true);
     		
@@ -349,7 +335,7 @@ public class RulesetEditorBean implements Serializable {
             Element root = doc.getRootElement();
             
             // Fix errors
-            if(error.getErrorType() == RulesetValidationError.errorType.DATA_DEFINED_MULTIPLE_TIMES || error.getErrorType() == RulesetValidationError.errorType.DATA_NOT_USED_FOR_EXPORT ||  error.getErrorType() == RulesetValidationError.errorType.UNUSED_BUT_DEFINED) {
+            if(error.getErrorType() == RulesetValidationError.errorType.DATA_DEFINED_MULTIPLE_TIMES || error.getErrorType() == RulesetValidationError.errorType.DATA_NOT_USED_FOR_EXPORT ||  error.getErrorType() == RulesetValidationError.errorType.UNUSED_BUT_DEFINED || error.getErrorType() == RulesetValidationError.errorType.USED_BUT_UNDEFINED ||  error.getErrorType() == RulesetValidationError.errorType.VALIDATE_FORMATS) {
             	RemoveFromXml r1 = new RemoveFromXml();
             	r1.fix(root, error, true);
             } else if (error.getErrorType() == RulesetValidationError.errorType.DUPLICATES_IN_DOCSTRCT || error.getErrorType() == RulesetValidationError.errorType.DUPLICATES_IN_GROUP || error.getErrorType()== RulesetValidationError.errorType.INVALID_TOPSTRCT_USAGE) {
@@ -362,13 +348,14 @@ public class RulesetEditorBean implements Serializable {
             // Output the new xml
             org.jdom2.output.XMLOutputter outputter = new org.jdom2.output.XMLOutputter();
             String updatedXml = outputter.outputString(doc);
-            this.currentRulesetFileContent = updatedXml;
+            
+            this.currentRulesetFileContent = unmaskXmlComments(updatedXml);
             
             // validate the new xml
     		this.validate();
     		
     	} catch (Exception e){
-    		System.out.println(e);
+    		log.error(e);
     	}
     }
     
@@ -378,6 +365,15 @@ public class RulesetEditorBean implements Serializable {
         for (Element child : element.getChildren()) {
             removeLineNumbers(child);
         }
+    }
+    
+    // Replace the <!-- of a comment with a <goobi_comment> and the </goobi_comment> --> part so they are ignored by sax aren't deleted
+    private String maskXmlComments(String input) {
+        return input.replaceAll("(?s)<!--\\s*(.*?)\\s*-->", "<goobi_comment>$1</goobi_comment>");
+    }
+    
+    private String unmaskXmlComments(String input) {
+        return input.replaceAll("(?s)<goobi_comment>(.*?)</goobi_comment>", "<!-- $1 -->");
     }
     
     private boolean checkXML() throws ParserConfigurationException, SAXException, IOException {
@@ -444,11 +440,11 @@ public class RulesetEditorBean implements Serializable {
             // prepare jdom to execute several validations
             org.jdom2.Document jdomDocument = handler.getDocument();
             Element root = jdomDocument.getRootElement();
-            // check duplicates inside of Docstructs
             
             ValidateNames v11 = new ValidateNames();
             validationErrors.addAll(v11.validate(root));
-            
+
+            // check duplicates inside of Docstructs 
             ValidateDuplicatesInDocStrct v1 = new ValidateDuplicatesInDocStrct();
             validationErrors.addAll(v1.validate(root));
             
