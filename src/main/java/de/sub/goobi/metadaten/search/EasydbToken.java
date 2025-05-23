@@ -36,4 +36,11 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EasydbToken {
     private String token;
+
+    private String access_token;
+    private long expires_in;
+    private String refresh_token;
+
+    private String scope;
+    private String token_type;
 }
