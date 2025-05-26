@@ -1,5 +1,6 @@
 package de.sub.goobi.metadaten.search;
 
+import java.time.LocalDateTime;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -63,7 +64,7 @@ public class EasyDBSearch {
     // search url
     private String searchRquestPath = "/api/v1/search";
     // authentication method
-    private String authenticationMethod = "easydb";
+    private String authenticationUrl;
     // login name
     private String login;
     // password
@@ -127,8 +128,8 @@ public class EasyDBSearch {
         try (Client client = setupClient()) {
             WebTarget easydbRoot = client.target(url);
 
-            if (token == null) {
-                authenticate(easydbRoot);
+            if (token == null || LocalDateTime.now().isAfter(token.getCreationDate().plusSeconds(token.getExpires_in()))) {
+                authenticate(client);
             }
 
             List<EasydbSearchField> searchFieldList = request.getSearch();
@@ -210,9 +211,9 @@ public class EasyDBSearch {
      * @param easydbRoot
      */
 
-    private void authenticate(WebTarget easydbRoot) {
+    private void authenticate(Client client) {
 
-        WebTarget authentication = easydbRoot.path("/api/oauth2/token");
+        WebTarget authentication = client.target(authenticationUrl);
 
         Form formData = new Form();
         formData.param("grant_type", "password");
@@ -245,6 +246,8 @@ public class EasyDBSearch {
 
         enableDebugging = config.getBoolean("/debug", false);
         url = config.getString(this.createInstancePath("url"));
+
+        authenticationUrl = config.getString(this.createInstancePath("authenticationUrl"));
         login = config.getString(this.createInstancePath("username"));
         password = config.getString(this.createInstancePath("password"));
 
@@ -417,5 +420,4 @@ public class EasyDBSearch {
         }
         return maxPage;
     }
-
 }

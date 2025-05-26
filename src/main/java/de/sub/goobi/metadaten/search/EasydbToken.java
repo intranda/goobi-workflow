@@ -1,5 +1,7 @@
 package de.sub.goobi.metadaten.search;
 
+import java.time.LocalDateTime;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -35,6 +37,8 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EasydbToken {
+
+    private LocalDateTime creationDate = LocalDateTime.now();
 
     private String access_token;
     private long expires_in;
