@@ -122,6 +122,7 @@
                                             <h:outputText value="#{msgs.administration_config_file_editor_file_name}" />
                                         </f:facet>
                                         <h:outputText
+                                            styleClass="#{configFileEditorBean.isActiveConfigFile(item) ? 'text-active' : ''}"
                                             value="#{item.fileName}"
                                             title="#{item.configDirectory.directory}#{item.fileName}" />
                                     </h:column>
@@ -129,7 +130,9 @@
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.zuletztBearbeitet}" />
                                         </f:facet>
-                                        <h:outputText value="#{configFileEditorBean.getLastModifiedDateOfConfigurationFile(item)}" />
+                                        <h:outputText
+                                            styleClass="#{configFileEditorBean.isActiveConfigFile(item) ? 'text-active' : ''}"
+                                            value="#{configFileEditorBean.getLastModifiedDateOfConfigurationFile(item)}" />
                                     </h:column>
                                     <h:column headerClass="gw-table-fixed__sizeXXS">
                                         <f:facet name="header">
@@ -151,7 +154,7 @@
                                         <h:panelGroup rendered="#{configFileEditorBean.currentConfigFile != null}">
                                             <button
                                                 jsf:id="edit2"
-                                                class="btn #{configFileEditorBean.isActiveConfigFile(item) ? 'btn-primary' : 'btn-blank'}"
+                                                class="btn #{configFileEditorBean.isActiveConfigFile(item) ? 'btn-primary disabled' : 'btn-blank'}"
                                                 type="button"
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}"
                                                 title="#{configFileEditorBean.isWritable(item) ? msgs.administration_config_file_editor_edit_file : msgs.administration_config_file_editor_show_file}">
@@ -397,11 +400,8 @@
                     jsf:id="test"
                     jsf:rendered="#{configFileEditorBean.configFileContentChanged}">
                     <script>
-																					$(
-																							'#saveDialog')
-																							.modal(
-																									'show')
-																				</script>
+                        $('#saveDialog').modal('show')
+                    </script>
                 </div>
             </div>
         </h:form>
