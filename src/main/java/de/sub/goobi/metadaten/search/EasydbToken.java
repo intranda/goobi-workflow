@@ -35,7 +35,6 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EasydbToken {
-    private String token;
 
     private String access_token;
     private long expires_in;

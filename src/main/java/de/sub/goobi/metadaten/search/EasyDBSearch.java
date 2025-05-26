@@ -42,7 +42,6 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Metadata;
@@ -69,6 +68,8 @@ public class EasyDBSearch {
     private String login;
     // password
     private String password;
+    private String clientId;
+    private String clientSecret;
     // ordered list of all fields to display in UI
     private List<String> displayableFields;
 
@@ -189,7 +190,7 @@ public class EasyDBSearch {
             }
 
             searchResponse = easydbRoot.path(searchRquestPath)
-                    .queryParam("token", token.getToken())
+                    .queryParam("token", token.getAccess_token())
                     //                .queryParam("pretty", 1)
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .post(Entity.json(request), EasydbSearchResponse.class);
@@ -210,14 +211,19 @@ public class EasyDBSearch {
      */
 
     private void authenticate(WebTarget easydbRoot) {
-        token = easydbRoot.path(sessionTokenPath).request(MediaType.APPLICATION_JSON_TYPE).get(EasydbToken.class);
-        token = easydbRoot.path(sessionAuthenticationPath)
-                .queryParam("token", token.getToken())
-                .queryParam("login", login)
-                .queryParam("method", authenticationMethod)
-                .queryParam("password", password)
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .post(null, EasydbToken.class);
+
+        WebTarget authentication = easydbRoot.path("/api/oauth2/token");
+
+        Form formData = new Form();
+        formData.param("grant_type", "password");
+        formData.param("scope", "offline");
+        formData.param("client_id", clientId);
+        formData.param("client_secret", clientSecret);
+        formData.param("username", login);
+        formData.param("password", password);
+
+        token = authentication.request().post(Entity.entity(formData, MediaType.APPLICATION_FORM_URLENCODED), EasydbToken.class);
+
     }
 
     /**
@@ -241,6 +247,9 @@ public class EasyDBSearch {
         url = config.getString(this.createInstancePath("url"));
         login = config.getString(this.createInstancePath("username"));
         password = config.getString(this.createInstancePath("password"));
+
+        clientId = config.getString(this.createInstancePath("clientId"));
+        clientSecret = config.getString(this.createInstancePath("clientSecret"));
 
         request = new EasydbSearchRequest();
         String objectType = config.getString(this.createSearchPath("objectType"));
@@ -407,34 +416,6 @@ public class EasyDBSearch {
             maxPage = searchResponse.getCount() / request.getLimit() + 1;
         }
         return maxPage;
-    }
-
-    // tests
-    public static void main(String[] args) {
-        EasyDBSearch easyDBSearch = new EasyDBSearch();
-
-        Client c = easyDBSearch.setupClient();
-
-        WebTarget authentication = c.target("https://example.com/")
-                .path("/api/oauth2/token");
-
-        Form formData = new Form();
-        formData.param("grant_type", "password");
-        formData.param("scope", "offline");
-        formData.param("client_id", "client name");
-        formData.param("client_secret", "secret");
-        formData.param("username", "user name");
-        formData.param("password", "password");
-
-        Response resp = authentication.request().post(Entity.entity(formData, MediaType.APPLICATION_FORM_URLENCODED));
-
-        if (resp.getStatus() == 200) {
-            EasydbToken token = resp.readEntity(EasydbToken.class);
-            // from here on use the new token for all easydb requests
-            System.out.println(token.getAccess_token());
-
-        }
-
     }
 
 }
