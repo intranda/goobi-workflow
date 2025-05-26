@@ -17,7 +17,11 @@ export const init = function initConfigFileEditor() {
 			setTimeout(function() {
 				configFileEditor.refresh();
 			}, 100);
-			configFileEditor.on('change', editor => {
+			configFileEditor.on('update', editor => {
+				document.querySelector('[id$="configFileEditor"]').value = editor.getValue();
+				loadEditorContent();
+			});
+			configFileEditor.on('blur', editor => {
 				document.querySelector('[id$="configFileEditor"]').value = editor.getValue();
 				loadEditorContent();
 			});
