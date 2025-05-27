@@ -64,6 +64,8 @@ public class EasyDBSearch {
     // search url
     private String searchRquestPath = "/api/v1/search";
     // authentication method
+    private String authenticationMethod = "easydb";
+
     private String authenticationUrl;
     // login name
     private String login;
@@ -99,6 +101,8 @@ public class EasyDBSearch {
 
     private EasydbSearchField pool = null;
 
+    private boolean useLegacyAuthentication = false;
+
     /**
      * Set the easydb instance. The parameter must match an <id> element in the configuration file
      * 
@@ -129,7 +133,11 @@ public class EasyDBSearch {
             WebTarget easydbRoot = client.target(url);
 
             if (token == null || LocalDateTime.now().isAfter(token.getCreationDate().plusSeconds(token.getExpires_in()))) {
-                authenticate(client);
+                if (useLegacyAuthentication) {
+                    authenticate(easydbRoot);
+                } else {
+                    authenticate(client);
+                }
             }
 
             List<EasydbSearchField> searchFieldList = request.getSearch();
@@ -211,6 +219,16 @@ public class EasyDBSearch {
      * @param easydbRoot
      */
 
+    private void authenticate(WebTarget easydbRoot) {
+        token = easydbRoot.path(sessionAuthenticationPath)
+                .queryParam("token", token.getToken())
+                .queryParam("login", login)
+                .queryParam("method", authenticationMethod)
+                .queryParam("password", password)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .post(null, EasydbToken.class);
+    }
+
     private void authenticate(Client client) {
 
         WebTarget authentication = client.target(authenticationUrl);
@@ -246,6 +264,7 @@ public class EasyDBSearch {
 
         enableDebugging = config.getBoolean("/debug", false);
         url = config.getString(this.createInstancePath("url"));
+        useLegacyAuthentication = config.getBoolean(createInstancePath("legacyAuthentication"), false);
 
         authenticationUrl = config.getString(this.createInstancePath("authenticationUrl"));
         login = config.getString(this.createInstancePath("username"));

@@ -46,4 +46,12 @@ public class EasydbToken {
 
     private String scope;
     private String token_type;
+
+    public String getToken() {
+        return access_token;
+    }
+
+    public void setToken(String token) {
+        access_token = token;
+    }
 }
