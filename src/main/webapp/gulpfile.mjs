@@ -179,7 +179,7 @@ function prodJsRollup() {
                 format: 'iife',
                 sourcemap: true,
                 plugins: [terser({
-                    mangle:false
+                    mangle:true
                 })]
             });
         });
