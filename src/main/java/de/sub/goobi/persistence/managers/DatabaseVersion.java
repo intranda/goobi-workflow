@@ -471,14 +471,14 @@ public class DatabaseVersion {
             sb = new StringBuilder();
             sb.append(
                     "INSERT INTO properties (property_name, property_value, required, datatype, object_id, object_type, creation_date, container) ");
-            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, vorlagenID, 'template', creationDate,  container FROM  ( ");
+            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, vorlagenID, 'process', creationDate,  container FROM  ( ");
             sb.append("SELECT * from vorlageneigenschaften) x;");
             DatabaseVersion.runSql(sb.toString());
 
             sb = new StringBuilder();
             sb.append(
                     "INSERT INTO properties (property_name, property_value, required, datatype, object_id, object_type, creation_date, container) ");
-            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, werkstueckeID, 'masterpiece', creationDate,  container FROM  (");
+            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, werkstueckeID, 'process', creationDate,  container FROM  (");
             sb.append("SELECT * from werkstueckeeigenschaften) x;");
             DatabaseVersion.runSql(sb.toString());
 
@@ -488,6 +488,8 @@ public class DatabaseVersion {
             DatabaseVersion.runSql("drop table schritteeigenschaften;");
             DatabaseVersion.runSql("drop table vorlageneigenschaften;");
             DatabaseVersion.runSql("drop table werkstueckeeigenschaften;");
+            DatabaseVersion.runSql("drop table werkstuecke;");
+            DatabaseVersion.runSql("drop table vorlagen;");
 
         } finally {
             if (connection != null) {
