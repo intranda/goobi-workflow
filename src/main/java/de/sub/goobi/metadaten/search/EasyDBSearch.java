@@ -1,5 +1,6 @@
 package de.sub.goobi.metadaten.search;
 
+import java.time.LocalDateTime;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -40,6 +41,7 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.MediaType;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
@@ -63,10 +65,14 @@ public class EasyDBSearch {
     private String searchRquestPath = "/api/v1/search";
     // authentication method
     private String authenticationMethod = "easydb";
+
+    private String authenticationUrl;
     // login name
     private String login;
     // password
     private String password;
+    private String clientId;
+    private String clientSecret;
     // ordered list of all fields to display in UI
     private List<String> displayableFields;
 
@@ -94,6 +100,8 @@ public class EasyDBSearch {
     private EasydbResponseObject selectedRecord;
 
     private EasydbSearchField pool = null;
+
+    private boolean useLegacyAuthentication = false;
 
     /**
      * Set the easydb instance. The parameter must match an <id> element in the configuration file
@@ -124,8 +132,12 @@ public class EasyDBSearch {
         try (Client client = setupClient()) {
             WebTarget easydbRoot = client.target(url);
 
-            if (token == null) {
-                authenticate(easydbRoot);
+            if (token == null || LocalDateTime.now().isAfter(token.getCreationDate().plusSeconds(token.getExpires_in()))) {
+                if (useLegacyAuthentication) {
+                    authenticate(easydbRoot);
+                } else {
+                    authenticate(client);
+                }
             }
 
             List<EasydbSearchField> searchFieldList = request.getSearch();
@@ -187,7 +199,7 @@ public class EasyDBSearch {
             }
 
             searchResponse = easydbRoot.path(searchRquestPath)
-                    .queryParam("token", token.getToken())
+                    .queryParam("token", token.getAccess_token())
                     //                .queryParam("pretty", 1)
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .post(Entity.json(request), EasydbSearchResponse.class);
@@ -208,7 +220,6 @@ public class EasyDBSearch {
      */
 
     private void authenticate(WebTarget easydbRoot) {
-        token = easydbRoot.path(sessionTokenPath).request(MediaType.APPLICATION_JSON_TYPE).get(EasydbToken.class);
         token = easydbRoot.path(sessionAuthenticationPath)
                 .queryParam("token", token.getToken())
                 .queryParam("login", login)
@@ -216,6 +227,22 @@ public class EasyDBSearch {
                 .queryParam("password", password)
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .post(null, EasydbToken.class);
+    }
+
+    private void authenticate(Client client) {
+
+        WebTarget authentication = client.target(authenticationUrl);
+
+        Form formData = new Form();
+        formData.param("grant_type", "password");
+        formData.param("scope", "offline");
+        formData.param("client_id", clientId);
+        formData.param("client_secret", clientSecret);
+        formData.param("username", login);
+        formData.param("password", password);
+
+        token = authentication.request().post(Entity.entity(formData, MediaType.APPLICATION_FORM_URLENCODED), EasydbToken.class);
+
     }
 
     /**
@@ -237,8 +264,14 @@ public class EasyDBSearch {
 
         enableDebugging = config.getBoolean("/debug", false);
         url = config.getString(this.createInstancePath("url"));
+        useLegacyAuthentication = config.getBoolean(createInstancePath("legacyAuthentication"), false);
+
+        authenticationUrl = config.getString(this.createInstancePath("authenticationUrl"));
         login = config.getString(this.createInstancePath("username"));
         password = config.getString(this.createInstancePath("password"));
+
+        clientId = config.getString(this.createInstancePath("clientId"));
+        clientSecret = config.getString(this.createInstancePath("clientSecret"));
 
         request = new EasydbSearchRequest();
         String objectType = config.getString(this.createSearchPath("objectType"));
@@ -405,15 +438,5 @@ public class EasyDBSearch {
             maxPage = searchResponse.getCount() / request.getLimit() + 1;
         }
         return maxPage;
-    }
-
-    // tests
-    public static void main(String[] args) {
-        EasyDBSearch easyDBSearch = new EasyDBSearch();
-        easyDBSearch.setSearchInstance("1");
-        easyDBSearch.setSearchBlock("complexExample");
-        easyDBSearch.prepare();
-        easyDBSearch.setSearchValue("Bronze");
-        easyDBSearch.search();
     }
 }
