@@ -60,19 +60,7 @@
                     <!-- Schritte -->
                     <ui:include src="template/includes/process/process_steps.xhtml" />
 
-                    <!-- Vorlagen -->
-                    <f:subview
-                        id="subVorlage"
-                        rendered="#{ProzessverwaltungForm.myProzess.vorlagenSize != 0}">
-                        <ui:include src="template/includes/process/process_templates.xhtml" />
-                    </f:subview>
-
-                    <!-- Werkstuecke -->
-                    <f:subview
-                        id="subWerk"
-                        rendered="#{ProzessverwaltungForm.myProzess.werkstueckeSize != 0}">
-                        <ui:include src="template/includes/process/process_workpieces.xhtml" />
-                    </f:subview>
+                   
                 </f:subview>
 
             </h:form>
