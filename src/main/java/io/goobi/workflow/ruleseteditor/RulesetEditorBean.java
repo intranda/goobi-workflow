@@ -341,14 +341,14 @@ public class RulesetEditorBean implements Serializable {
             Element root = doc.getRootElement();
             
             // Fix errors
-            if(error.getErrorType() == RulesetValidationError.errorType.DATA_DEFINED_MULTIPLE_TIMES || error.getErrorType() == RulesetValidationError.errorType.DATA_NOT_USED_FOR_EXPORT ||  error.getErrorType() == RulesetValidationError.errorType.UNUSED_BUT_DEFINED || error.getErrorType() == RulesetValidationError.errorType.USED_BUT_UNDEFINED ||  error.getErrorType() == RulesetValidationError.errorType.VALIDATE_FORMATS && value == 0) {
+            if((error.getErrorType() == RulesetValidationError.errorType.DATA_DEFINED_MULTIPLE_TIMES || error.getErrorType() == RulesetValidationError.errorType.DATA_NOT_USED_FOR_EXPORT ||  error.getErrorType() == RulesetValidationError.errorType.UNUSED_BUT_DEFINED || error.getErrorType() == RulesetValidationError.errorType.USED_BUT_UNDEFINED ||  error.getErrorType() == RulesetValidationError.errorType.VALIDATE_FORMATS) && value == 0) {
             	FixRemoveFromXml f1 = new FixRemoveFromXml();
             	f1.fix(root, error, true);
-            } else if (error.getErrorType() == RulesetValidationError.errorType.DUPLICATES_IN_DOCSTRCT || error.getErrorType() == RulesetValidationError.errorType.DUPLICATES_IN_GROUP || error.getErrorType()== RulesetValidationError.errorType.INVALID_TOPSTRCT_USAGE && value == 0) {
+            } else if ((error.getErrorType() == RulesetValidationError.errorType.DUPLICATES_IN_DOCSTRCT || error.getErrorType() == RulesetValidationError.errorType.DUPLICATES_IN_GROUP || error.getErrorType()== RulesetValidationError.errorType.INVALID_TOPSTRCT_USAGE) && value == 0) {
             	FixRemoveFromXml f1 = new FixRemoveFromXml();
             	f1.fix(root, error, false);
             } 
-            if(error.getErrorType() == RulesetValidationError.errorType.USED_BUT_UNDEFINED && value == 1) {
+            if((error.getErrorType() == RulesetValidationError.errorType.USED_BUT_UNDEFINED || error.getErrorType() == RulesetValidationError.errorType.VALIDATE_FORMATS) && value == 1) {
             	FixAddMetadaType f2 = new FixAddMetadaType();
             	f2.fix(root,error);
             }
@@ -406,7 +406,7 @@ public class RulesetEditorBean implements Serializable {
 	    while (matcher.find()) {
 	        String escapedContent = matcher.group(1);
 	        String originalContent = StringEscapeUtils.unescapeXml(escapedContent);
-	        matcher.appendReplacement(result, "<!-- " + Matcher.quoteReplacement(originalContent) + " -->");
+	        matcher.appendReplacement(result, "<!--" + Matcher.quoteReplacement(originalContent) + "-->");
 	    }
 
 	    matcher.appendTail(result);

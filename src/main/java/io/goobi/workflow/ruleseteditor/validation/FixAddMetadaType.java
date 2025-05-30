@@ -9,6 +9,8 @@ public class FixAddMetadaType {
 	public void fix(Element root, RulesetValidationError error) {
 		// get the part of the message value before the -
 		String partBeforeDash = error.getMessage().split("-")[0].trim();
+		
+		System.out.println("test");
 
 		List<Element> allChildren = root.getChildren();
 		Element lastMetadataType = null;
