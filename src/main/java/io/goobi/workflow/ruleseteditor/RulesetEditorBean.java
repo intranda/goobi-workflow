@@ -382,6 +382,7 @@ public class RulesetEditorBean implements Serializable {
 			this.validate();
 
 		} catch (Exception e) {
+			Helper.setFehlerMeldung("Error while trying to fix the problem", e);
 			log.error(e);
 		}
 	}
