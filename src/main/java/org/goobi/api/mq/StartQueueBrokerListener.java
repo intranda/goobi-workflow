@@ -62,67 +62,76 @@ public class StartQueueBrokerListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         if (config.isStartInternalMessageBroker()) {
-            // JMX/RMI part taken from: https://vafer.org/blog/20061010091658/
-            String address = "localhost";
-            int namingPort = 1099;
-            int protocolPort = 0;
-            try {
-                RMIServerSocketFactory serverFactory = new RMIServerSocketFactoryImpl(InetAddress.getByName(address));
+            Thread.ofVirtual().name("GoobiInternalMessageBroker").start(() -> {
+                log.debug("Initializing internal RMI server...");
+                // JMX/RMI part taken from: https://vafer.org/blog/20061010091658/
+                String address = "localhost";
+                int namingPort = 1099;
+                int protocolPort = 0;
+                try {
+                    RMIServerSocketFactory serverFactory = new RMIServerSocketFactoryImpl(InetAddress.getByName(address));
 
-                LocateRegistry.createRegistry(namingPort, null, serverFactory);
+                    LocateRegistry.createRegistry(namingPort, null, serverFactory);
 
-                StringBuilder url = new StringBuilder();
-                url.append("service:jmx:");
-                url.append("rmi://").append(address).append(':').append(protocolPort).append("/jndi/");
-                url.append("rmi://").append(address).append(':').append(namingPort).append("/connector");
+                    StringBuilder url = new StringBuilder();
+                    url.append("service:jmx:");
+                    url.append("rmi://").append(address).append(':').append(protocolPort).append("/jndi/");
+                    url.append("rmi://").append(address).append(':').append(namingPort).append("/connector");
 
-                Map<String, Object> env = new HashMap<>();
-                env.put(RMIConnectorServer.RMI_SERVER_SOCKET_FACTORY_ATTRIBUTE, serverFactory);
+                    Map<String, Object> env = new HashMap<>();
+                    env.put(RMIConnectorServer.RMI_SERVER_SOCKET_FACTORY_ATTRIBUTE, serverFactory);
 
-                rmiServer = new RMIConnectorServer(
-                        new JMXServiceURL(url.toString()),
-                        env,
-                        ManagementFactory.getPlatformMBeanServer());
+                    rmiServer = new RMIConnectorServer(
+                            new JMXServiceURL(url.toString()),
+                            env,
+                            ManagementFactory.getPlatformMBeanServer());
 
-                rmiServer.start();
+                    log.debug("Starting internal RMI server...");
+                    rmiServer.start();
+                    log.debug("Internal RMI server started");
+                } catch (IOException e1) {
+                    log.error("error starting JMX connector. Will not start internal MessageBroker. Exception: {}", e1);
+                    return;
+                }
+                String activeMqConfig = config.getActiveMQConfigPath();
+                try {
+                    log.debug("Starting internal MessageBroker...");
+                    broker = BrokerFactory.createBroker("xbean:file:" + activeMqConfig, false);
+                    broker.setUseJmx(true);
+                    broker.start();
+                    log.debug("Internal MessageBroker started");
+                } catch (Exception e) {
+                    log.error(e);
+                }
 
-            } catch (IOException e1) {
-                log.error("error starting JMX connector. Will not start internal MessageBroker. Exception: {}", e1);
-                return;
-            }
-            String activeMqConfig = config.getActiveMQConfigPath();
-            try {
-                broker = BrokerFactory.createBroker("xbean:file:" + activeMqConfig, false);
-                broker.setUseJmx(true);
-                broker.start();
-
-            } catch (Exception e) {
-                log.error(e);
-            }
-
-            try {
-                for (int i = 0; i < config.getNumberOfParallelMessages(); i++) {
+                try {
+                    log.debug("Registering internal MessageBroker listeners...");
+                    for (int i = 0; i < config.getNumberOfParallelMessages(); i++) {
+                        GoobiDefaultQueueListener listener = new GoobiDefaultQueueListener();
+                        listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), QueueType.SLOW_QUEUE);
+                        this.listeners.add(listener);
+                    }
                     GoobiDefaultQueueListener listener = new GoobiDefaultQueueListener();
-                    listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), QueueType.SLOW_QUEUE);
+                    listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), QueueType.FAST_QUEUE);
                     this.listeners.add(listener);
+
+                    dlqListener = new GoobiInternalDLQListener();
+                    dlqListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), QueueType.DEAD_LETTER_QUEUE);
+
+                    GoobiCommandListener commandListener = new GoobiCommandListener();
+                    commandListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
+
+                    if (config.isAllowExternalQueue() && "SQS".equalsIgnoreCase(config.getExternalQueueType())) {
+                        GoobiExternalJobQueueDLQListener externalDlqListener = new GoobiExternalJobQueueDLQListener();
+                        externalDlqListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
+                    }
+                    log.debug("Internal MessageBroker listeners registered");
+                } catch (JMSException e) {
+                    log.error(e);
                 }
-                GoobiDefaultQueueListener listener = new GoobiDefaultQueueListener();
-                listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), QueueType.FAST_QUEUE);
-                this.listeners.add(listener);
-
-                dlqListener = new GoobiInternalDLQListener();
-                dlqListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), QueueType.DEAD_LETTER_QUEUE);
-
-                GoobiCommandListener commandListener = new GoobiCommandListener();
-                commandListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
-
-                if (config.isAllowExternalQueue() && "SQS".equalsIgnoreCase(config.getExternalQueueType())) {
-                    GoobiExternalJobQueueDLQListener externalDlqListener = new GoobiExternalJobQueueDLQListener();
-                    externalDlqListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
-                }
-            } catch (JMSException e) {
-                log.error(e);
-            }
+            });
+        } else {
+            log.info("MessageBroker will not be started. Set 'MessageBrokerStart=true' in the 'goobi_config.properties' to start it.");
         }
     }
 
