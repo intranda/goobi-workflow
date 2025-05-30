@@ -31,9 +31,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
-import org.goobi.beans.Templateproperty;
 
 import de.sub.goobi.helper.enums.PropertyType;
 import lombok.extern.log4j.Log4j2;
@@ -128,38 +126,6 @@ class PropertyMysqlHelper implements Serializable {
         }
     };
 
-    private static final ResultSetHandler<List<Templateproperty>> resultSetToTemplatePropertyListHandler =
-            new ResultSetHandler<>() {
-                @Override
-                public List<Templateproperty> handle(ResultSet resultSet) throws SQLException {
-                    List<Templateproperty> properties = new ArrayList<>();
-                    try {
-                        while (resultSet.next()) {
-                            properties.add(PropertyMysqlHelper.parseTemplateProperty(resultSet));
-                        }
-                    } finally {
-                        resultSet.close();
-                    }
-                    return properties;
-                }
-            };
-
-    private static final ResultSetHandler<List<Masterpieceproperty>> resultSetToMasterpiecePropertyListHandler =
-            new ResultSetHandler<>() {
-                @Override
-                public List<Masterpieceproperty> handle(ResultSet resultSet) throws SQLException {
-                    List<Masterpieceproperty> properties = new ArrayList<>();
-                    try {
-                        while (resultSet.next()) {
-                            properties.add(PropertyMysqlHelper.parseMasterpieceProperty(resultSet));
-                        }
-                    } finally {
-                        resultSet.close();
-                    }
-                    return properties;
-                }
-            };
-
     private static Processproperty parseProcessProperty(ResultSet result) throws SQLException {
         Processproperty property = new Processproperty();
         property.setId(result.getInt("id"));
@@ -181,42 +147,6 @@ class PropertyMysqlHelper implements Serializable {
     private static GoobiProperty parseProperty(ResultSet result) throws SQLException {
         PropertyOwnerType pot = PropertyOwnerType.getByTitle(result.getString("object_type"));
         GoobiProperty property = new GoobiProperty(pot);
-        property.setId(result.getInt("id"));
-        property.setPropertyName(result.getString("property_name"));
-        property.setPropertyValue(result.getString("property_value"));
-        property.setRequired(result.getBoolean("required"));
-        property.setType(PropertyType.getById(result.getInt("datatype")));
-        property.setObjectId(result.getInt("object_id"));
-        Timestamp time = result.getTimestamp("creation_date");
-        Date creationDate = null;
-        if (time != null) {
-            creationDate = new Date(time.getTime());
-        }
-        property.setCreationDate(creationDate);
-        property.setContainer(result.getString("container"));
-        return property;
-    }
-
-    private static Templateproperty parseTemplateProperty(ResultSet result) throws SQLException {
-        Templateproperty property = new Templateproperty();
-        property.setId(result.getInt("id"));
-        property.setPropertyName(result.getString("property_name"));
-        property.setPropertyValue(result.getString("property_value"));
-        property.setRequired(result.getBoolean("required"));
-        property.setType(PropertyType.getById(result.getInt("datatype")));
-        property.setObjectId(result.getInt("object_id"));
-        Timestamp time = result.getTimestamp("creation_date");
-        Date creationDate = null;
-        if (time != null) {
-            creationDate = new Date(time.getTime());
-        }
-        property.setCreationDate(creationDate);
-        property.setContainer(result.getString("container"));
-        return property;
-    }
-
-    private static Masterpieceproperty parseMasterpieceProperty(ResultSet result) throws SQLException {
-        Masterpieceproperty property = new Masterpieceproperty();
         property.setId(result.getInt("id"));
         property.setPropertyName(result.getString("property_name"));
         property.setPropertyValue(result.getString("property_value"));
@@ -317,92 +247,6 @@ class PropertyMysqlHelper implements Serializable {
 
     public static List<String> getDistinctPropertyTitles() throws SQLException {
         return getPropertyTitles(PropertyOwnerType.PROCESS);
-    }
-
-    public static List<String> getDistinctTemplatePropertyTitles() throws SQLException {
-        return getPropertyTitles(PropertyOwnerType.TEMPLATE);
-
-    }
-
-    public static List<String> getDistinctMasterpiecePropertyTitles() throws SQLException {
-        return getPropertyTitles(PropertyOwnerType.MASTERPIECE);
-    }
-
-    public static List<Templateproperty> getTemplateProperties(int templateId) throws SQLException {
-        String sql = "select * from properties where object_type = 'template' and object_id = ? order by property_name, creation_date";
-        Connection connection = null;
-        Object[] param = { templateId };
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql, resultSetToTemplatePropertyListHandler, param);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
-    }
-
-    public static void saveTemplateproperty(Templateproperty property) throws SQLException {
-        if (property.getObjectId() == null && property.getVorlage() != null) {
-            property.setObjectId(property.getVorlage().getId());
-        }
-        if (property.getId() == null) {
-            insertTemplateproperty(property);
-        } else {
-            updateTemplateproperty(property);
-        }
-    }
-
-    private static void updateTemplateproperty(Templateproperty property) throws SQLException {
-        updateProperty(property);
-
-    }
-
-    private static void insertTemplateproperty(Templateproperty property) throws SQLException {
-        insertProperty(property);
-    }
-
-    public static void deleteTemplateProperty(Templateproperty property) throws SQLException {
-        deleteProperty(property);
-    }
-
-    public static List<Masterpieceproperty> getMasterpieceProperties(int templateId) throws SQLException {
-        String sql =
-                "SELECT * FROM properties WHERE object_id = ? AND object_type = 'masterpiece' ORDER BY container, property_name, creation_date desc";
-        Connection connection = null;
-        Object[] param = { templateId };
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql, resultSetToMasterpiecePropertyListHandler, param);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
-    }
-
-    public static void saveMasterpieceProperty(Masterpieceproperty property) throws SQLException {
-        if (property.getObjectId() == null && property.getWerkstueck() != null) {
-            property.setObjectId(property.getWerkstueck().getId());
-        }
-
-        if (property.getId() == null) {
-            insertMasterpieceproperty(property);
-        } else {
-            updateMasterpieceproperty(property);
-        }
-    }
-
-    static void updateMasterpieceproperty(Masterpieceproperty property) throws SQLException {
-        updateProperty(property);
-    }
-
-    static void insertMasterpieceproperty(Masterpieceproperty property) throws SQLException {
-        insertProperty(property);
-    }
-
-    static void deleteMasterpieceProperty(Masterpieceproperty property) throws SQLException {
-        deleteProperty(property);
     }
 
     static void saveProperty(GoobiProperty property) throws SQLException {

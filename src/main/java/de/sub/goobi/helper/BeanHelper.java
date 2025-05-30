@@ -37,10 +37,8 @@ import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
-import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
-import org.goobi.beans.Template;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
@@ -67,30 +65,6 @@ public class BeanHelper implements Serializable {
         eig.setPropertyValue(inWert);
         eig.setOwner(inProzess);
         List<GoobiProperty> eigenschaften = inProzess.getEigenschaften();
-        if (eigenschaften == null) {
-            eigenschaften = new ArrayList<>();
-        }
-        eigenschaften.add(eig);
-    }
-
-    public void EigenschaftHinzufuegen(Template inVorlage, String inTitel, String inWert) {
-        GoobiProperty eig = new GoobiProperty(PropertyOwnerType.TEMPLATE);
-        eig.setPropertyName(inTitel);
-        eig.setPropertyValue(inWert);
-        eig.setOwner(inVorlage);
-        List<GoobiProperty> eigenschaften = inVorlage.getEigenschaften();
-        if (eigenschaften == null) {
-            eigenschaften = new ArrayList<>();
-        }
-        eigenschaften.add(eig);
-    }
-
-    public void EigenschaftHinzufuegen(Masterpiece inWerkstueck, String inTitel, String inWert) {
-        GoobiProperty eig = new GoobiProperty(PropertyOwnerType.MASTERPIECE);
-        eig.setPropertyName(inTitel);
-        eig.setPropertyValue(inWert);
-        eig.setOwner(inWerkstueck);
-        List<GoobiProperty> eigenschaften = inWerkstueck.getEigenschaften();
         if (eigenschaften == null) {
             eigenschaften = new ArrayList<>();
         }
@@ -180,36 +154,6 @@ public class BeanHelper implements Serializable {
         prozessKopie.setSchritte(mySchritte);
     }
 
-    public void WerkstueckeKopieren(Process prozessVorlage, Process prozessKopie) {
-        List<Masterpiece> myWerkstuecke = new ArrayList<>();
-        for (Masterpiece werk : prozessVorlage.getWerkstuecke()) {
-            /* --------------------------------
-             * Details des Werkstücks
-             * --------------------------------*/
-            Masterpiece werkneu = new Masterpiece();
-            werkneu.setProzess(prozessKopie);
-
-            /* --------------------------------
-             * Eigenschaften des Schritts
-             * --------------------------------*/
-            List<GoobiProperty> myEigenschaften = new ArrayList<>();
-            for (GoobiProperty eig : werk.getEigenschaften()) {
-                GoobiProperty eigneu = new GoobiProperty(PropertyOwnerType.MASTERPIECE);
-                eigneu.setRequired(eig.isRequired());
-                eigneu.setType(eig.getType());
-                eigneu.setPropertyName(eig.getPropertyName());
-                eigneu.setPropertyValue(eig.getPropertyValue());
-                eigneu.setOwner(werkneu);
-                myEigenschaften.add(eigneu);
-            }
-            werkneu.setEigenschaften(myEigenschaften);
-
-            /* Schritt speichern */
-            myWerkstuecke.add(werkneu);
-        }
-        prozessKopie.setWerkstuecke(myWerkstuecke);
-    }
-
     public void EigenschaftenKopieren(Process prozessVorlage, Process prozessKopie) {
         List<GoobiProperty> myEigenschaften = new ArrayList<>();
         for (GoobiProperty eig : prozessVorlage.getEigenschaftenList()) {
@@ -222,61 +166,6 @@ public class BeanHelper implements Serializable {
             myEigenschaften.add(eigneu);
         }
         prozessKopie.setEigenschaften(myEigenschaften);
-    }
-
-    public void ScanvorlagenKopieren(Process prozessVorlage, Process prozessKopie) {
-        List<Template> myVorlagen = new ArrayList<>();
-        for (Template vor : prozessVorlage.getVorlagen()) {
-            /* --------------------------------
-             * Details der Vorlage
-             * --------------------------------*/
-            Template vorneu = new Template();
-            vorneu.setHerkunft(vor.getHerkunft());
-            vorneu.setProzess(prozessKopie);
-
-            /* --------------------------------
-             * Eigenschaften des Schritts
-             * --------------------------------*/
-            List<GoobiProperty> myEigenschaften = new ArrayList<>();
-            for (GoobiProperty eig : vor.getEigenschaften()) {
-                GoobiProperty eigneu = new GoobiProperty(PropertyOwnerType.TEMPLATE);
-                eigneu.setRequired(eig.isRequired());
-                eigneu.setType(eig.getType());
-                eigneu.setPropertyName(eig.getPropertyName());
-                eigneu.setPropertyValue(eig.getPropertyValue());
-                eigneu.setOwner(vorneu);
-                myEigenschaften.add(eigneu);
-            }
-            vorneu.setEigenschaften(myEigenschaften);
-
-            /* Schritt speichern */
-            myVorlagen.add(vorneu);
-        }
-        prozessKopie.setVorlagen(myVorlagen);
-    }
-
-    public String WerkstueckEigenschaftErmitteln(Process myProzess, String inEigenschaft) {
-        String werkstueckEigenschaft = "";
-        for (Masterpiece myWerkstueck : myProzess.getWerkstueckeList()) {
-            for (GoobiProperty eigenschaft : myWerkstueck.getEigenschaftenList()) {
-                if (eigenschaft.getPropertyName().equals(inEigenschaft)) {
-                    werkstueckEigenschaft = eigenschaft.getPropertyValue();
-                }
-            }
-        }
-        return werkstueckEigenschaft;
-    }
-
-    public String ScanvorlagenEigenschaftErmitteln(Process myProzess, String inEigenschaft) {
-        String scanvorlagenEigenschaft = "";
-        for (Template myVorlage : myProzess.getVorlagenList()) {
-            for (GoobiProperty eigenschaft : myVorlage.getEigenschaftenList()) {
-                if (eigenschaft.getPropertyName().equals(inEigenschaft)) {
-                    scanvorlagenEigenschaft = eigenschaft.getPropertyValue();
-                }
-            }
-        }
-        return scanvorlagenEigenschaft;
     }
 
     /**
@@ -366,8 +255,6 @@ public class BeanHelper implements Serializable {
         newProcess.setDocket(template.getDocket());
         newProcess.setExportValidator(template.getExportValidator());
         SchritteKopieren(template, newProcess);
-        ScanvorlagenKopieren(template, newProcess);
-        WerkstueckeKopieren(template, newProcess);
         EigenschaftenKopieren(template, newProcess);
 
         // add template information

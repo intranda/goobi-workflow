@@ -38,10 +38,8 @@ import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
-import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
-import org.goobi.beans.Template;
 import org.joda.time.LocalDate;
 
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -124,15 +122,6 @@ class ProcessMysqlHelper implements Serializable {
             List<GoobiProperty> properties = o.getEigenschaften();
             for (GoobiProperty pe : properties) {
                 PropertyManager.saveProperty(pe);
-            }
-
-            for (Masterpiece object : o.getWerkstuecke()) {
-                MasterpieceManager.saveMasterpiece(object);
-            }
-
-            List<Template> templates = o.getVorlagen();
-            for (Template template : templates) {
-                TemplateManager.saveTemplate(template);
             }
 
             for (JournalEntry logEntry : o.getJournal()) {
@@ -220,16 +209,6 @@ class ProcessMysqlHelper implements Serializable {
             // delete properties
             for (GoobiProperty object : o.getEigenschaften()) {
                 PropertyManager.deleteProperty(object);
-            }
-
-            // delete templates
-            for (Template object : o.getVorlagen()) {
-                TemplateManager.deleteTemplate(object);
-            }
-
-            // delete masterpieces
-            for (Masterpiece object : o.getWerkstuecke()) {
-                MasterpieceManager.deleteMasterpiece(object);
             }
 
             StepManager.deleteAllSteps(o.getSchritte());

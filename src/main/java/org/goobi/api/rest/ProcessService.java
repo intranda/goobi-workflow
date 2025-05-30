@@ -652,8 +652,6 @@ public class ProcessService implements IRestAuthentication {
         newProcess.setDocket(template.getDocket());
         newProcess.setExportValidator(template.getExportValidator());
         helper.SchritteKopieren(template, newProcess);
-        helper.ScanvorlagenKopieren(template, newProcess);
-        helper.WerkstueckeKopieren(template, newProcess);
         helper.EigenschaftenKopieren(template, newProcess);
 
         // update task edition dates

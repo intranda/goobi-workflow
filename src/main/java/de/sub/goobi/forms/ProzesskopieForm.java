@@ -58,12 +58,10 @@ import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
-import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
-import org.goobi.beans.Template;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.StringPair;
@@ -313,8 +311,6 @@ public class ProzesskopieForm implements Serializable {
          *  Kopie der Processvorlage anlegen
          */
         this.bHelper.SchritteKopieren(this.prozessVorlage, this.prozessKopie);
-        this.bHelper.ScanvorlagenKopieren(this.prozessVorlage, this.prozessKopie);
-        this.bHelper.WerkstueckeKopieren(this.prozessVorlage, this.prozessKopie);
 
         configuredProperties = PropertyParser.getInstance().getProcessCreationProperties(prozessKopie, prozessVorlage.getTitel());
 
@@ -700,15 +696,6 @@ public class ProzesskopieForm implements Serializable {
         }
         Process tempProcess = ProcessManager.getProcessById(this.auswahl);
 
-        if (tempProcess.getWerkstueckeSize() > 0) {
-            /* erstes Werkstück durchlaufen */
-            fillTemplateFromMasterpiece(tempProcess);
-        }
-
-        if (tempProcess.getVorlagenSize() > 0) {
-            fillTemplateFromTemplate(tempProcess);
-        }
-
         if (tempProcess.getEigenschaftenSize() > 0) {
             fillTemplateFromProperties(tempProcess);
         }
@@ -748,32 +735,6 @@ public class ProzesskopieForm implements Serializable {
             }
             if ("digitalCollection".equals(pe.getPropertyName())) {
                 digitalCollections.add(pe.getPropertyValue());
-            }
-        }
-    }
-
-    private void fillTemplateFromTemplate(Process tempProcess) {
-        /* erste Vorlage durchlaufen */
-        Template vor = tempProcess.getVorlagenList().get(0);
-        for (GoobiProperty eig : vor.getEigenschaften()) {
-            for (AdditionalField field : this.additionalFields) {
-                if (field.getTitel().equals(eig.getPropertyName())) {
-                    setFieldValue(field, eig.getPropertyValue());
-                }
-            }
-        }
-    }
-
-    private void fillTemplateFromMasterpiece(Process tempProcess) {
-        Masterpiece werk = tempProcess.getWerkstueckeList().get(0);
-        for (GoobiProperty eig : werk.getEigenschaften()) {
-            for (AdditionalField field : this.additionalFields) {
-                if (field.getTitel().equals(eig.getPropertyName())) {
-                    setFieldValue(field, eig.getPropertyValue());
-                }
-                if ("DocType".equals(eig.getPropertyName())) {
-                    docType = eig.getPropertyValue();
-                }
             }
         }
     }
@@ -1357,33 +1318,6 @@ public class ProzesskopieForm implements Serializable {
     }
 
     private void addProperties() {
-        /*
-         * -------------------------------- Vorlageneigenschaften initialisieren --------------------------------
-         */
-        Template vor;
-        if (this.prozessKopie.getVorlagenSize() > 0) {
-            vor = this.prozessKopie.getVorlagenList().get(0);
-        } else {
-            vor = new Template();
-            vor.setProzess(this.prozessKopie);
-            List<Template> vorlagen = new ArrayList<>();
-            vorlagen.add(vor);
-            this.prozessKopie.setVorlagen(vorlagen);
-        }
-
-        /*
-         * -------------------------------- Werkstückeigenschaften initialisieren --------------------------------
-         */
-        Masterpiece werk;
-        if (this.prozessKopie.getWerkstueckeSize() > 0) {
-            werk = this.prozessKopie.getWerkstueckeList().get(0);
-        } else {
-            werk = new Masterpiece();
-            werk.setProzess(this.prozessKopie);
-            List<Masterpiece> werkstuecke = new ArrayList<>();
-            werkstuecke.add(werk);
-            this.prozessKopie.setWerkstuecke(werkstuecke);
-        }
 
         /*
          * -------------------------------- jetzt alle zusätzlichen Felder durchlaufen und die Werte hinzufügen --------------------------------
@@ -1399,13 +1333,8 @@ public class ProzesskopieForm implements Serializable {
                     values.add(field.getWert());
                 }
                 for (String value : values) {
-                    if ("work".equals(field.getFrom()) || "werk".equals(field.getFrom())) {
-                        bh.EigenschaftHinzufuegen(werk, field.getTitel(), value);
-                    }
-                    if ("template".equals(field.getFrom()) || "vorlage".equals(field.getFrom())) {
-                        bh.EigenschaftHinzufuegen(vor, field.getTitel(), value);
-                    }
-                    if ("process".equals(field.getFrom()) || "prozess".equals(field.getFrom())) {
+
+                    if (StringUtils.isNotBlank(field.getFrom())) {
                         bh.EigenschaftHinzufuegen(this.prozessKopie, field.getTitel(), value);
                     }
                 }
@@ -1416,10 +1345,10 @@ public class ProzesskopieForm implements Serializable {
             bh.EigenschaftHinzufuegen(prozessKopie, "digitalCollection", col);
         }
         /* Doctype */
-        bh.EigenschaftHinzufuegen(werk, "DocType", this.docType);
+        bh.EigenschaftHinzufuegen(prozessKopie, "DocType", this.docType);
         /* Tiffheader */
-        bh.EigenschaftHinzufuegen(werk, "TifHeaderImagedescription", this.tifHeaderImagedescription);
-        bh.EigenschaftHinzufuegen(werk, "TifHeaderDocumentname", this.tifHeaderDocumentname);
+        bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderImagedescription", this.tifHeaderImagedescription);
+        bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderDocumentname", this.tifHeaderDocumentname);
         bh.EigenschaftHinzufuegen(prozessKopie, "Template", prozessVorlage.getTitel());
         bh.EigenschaftHinzufuegen(prozessKopie, "TemplateID", String.valueOf(prozessVorlage.getId()));
     }

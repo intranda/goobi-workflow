@@ -79,13 +79,11 @@ import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.JournalManager;
-import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import io.goobi.workflow.xslt.XsltPreparatorMetadata;
@@ -148,10 +146,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     private Date erstellungsdatum;
     @Setter
     private List<Step> schritte;
-    @Setter
-    private List<Masterpiece> werkstuecke;
-    @Setter
-    private List<Template> vorlagen;
+
     @Setter
     private List<GoobiProperty> eigenschaften;
     @Getter
@@ -280,20 +275,6 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             }
         }
         return false;
-    }
-
-    public List<Template> getVorlagen() {
-        if ((vorlagen == null || vorlagen.isEmpty()) && id != null) {
-            vorlagen = TemplateManager.getTemplatesForProcess(id);
-        }
-        return this.vorlagen;
-    }
-
-    public List<Masterpiece> getWerkstuecke() {
-        if ((werkstuecke == null || werkstuecke.isEmpty()) && id != null) {
-            werkstuecke = MasterpieceManager.getMasterpiecesForProcess(id);
-        }
-        return this.werkstuecke;
     }
 
     public List<GoobiProperty> getEigenschaften() {
@@ -777,25 +758,6 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     public List<GoobiProperty> getEigenschaftenList() {
         return getEigenschaften();
-    }
-
-    public int getWerkstueckeSize() {
-
-        return getWerkstuecke().size();
-    }
-
-    public List<Masterpiece> getWerkstueckeList() {
-
-        return getWerkstuecke();
-    }
-
-    public int getVorlagenSize() {
-        return this.getVorlagen().size();
-    }
-
-    public List<Template> getVorlagenList() {
-
-        return getVorlagen();
     }
 
     public Integer getSortHelperArticles() {
@@ -1443,8 +1405,6 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         setTitel(source.getTitel() + "_copy");
 
         this.bhelp.SchritteKopieren(source, this);
-        this.bhelp.ScanvorlagenKopieren(source, this);
-        this.bhelp.WerkstueckeKopieren(source, this);
         this.bhelp.EigenschaftenKopieren(source, this);
         LoginBean loginForm = Helper.getLoginBean();
 
@@ -1807,26 +1767,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                 }
             }
         }
-        /* Scanvorlageneigenschaften */
-        if (getVorlagenList() != null && !getVorlagenList().isEmpty()) {
-            for (Template vl : this.getVorlagenList()) {
-                for (GoobiProperty ve : vl.getEigenschaftenList()) {
-                    if (ve.getPropertyValue().contains(this.getTitel())) {
-                        ve.setPropertyValue(ve.getPropertyValue().replaceAll(this.getTitel(), newTitle));
-                    }
-                }
-            }
-        }
-        /* Werkstückeigenschaften */
-        if (getWerkstueckeList() != null && !getWerkstueckeList().isEmpty()) {
-            for (Masterpiece w : this.getWerkstueckeList()) {
-                for (GoobiProperty we : w.getEigenschaftenList()) {
-                    if (we.getPropertyValue().contains(this.getTitel())) {
-                        we.setPropertyValue(we.getPropertyValue().replaceAll(this.getTitel(), newTitle));
-                    }
-                }
-            }
-        }
+
         try {
             // renaming image directories
             String imageDirectoryName = getImagesDirectory();

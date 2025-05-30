@@ -564,16 +564,6 @@ public class MySQLHelper implements Serializable {
                     "LEFT JOIN (SELECT prozesseID, MAX(WERT) AS value FROM properties WHERE properties.object_type='process' AND properties.property_name = '");
             sql.append(fieldname);
             sql.append("' GROUP BY prozesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
-        } else if (order.startsWith("{template.")) {
-            sql.append("LEFT JOIN (SELECT  ProzesseID, MAX(WERT) AS value FROM properties LEFT JOIN vorlagen ON ");
-            sql.append("vorlagen.VorlagenID = properties.object_id AND properties.object_type='template'  WHERE property_name = '");
-            sql.append(fieldname);
-            sql.append("' GROUP BY ProzesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
-        } else if (order.startsWith("{product.")) {
-            sql.append("LEFT JOIN (SELECT  ProzesseID, MAX(WERT) AS value FROM properties LEFT JOIN werkstuecke ON ");
-            sql.append("werkstuecke.werkstueckeID = properties.object_id WHERE properties.object_type = 'masterpiece' AND property_name = '");
-            sql.append(fieldname);
-            sql.append("' GROUP BY ProzesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
         }
         if (reverse) {
             sortfield = " case when field.value = '' or field.value is null then 1 else 0 end, field.value desc ";

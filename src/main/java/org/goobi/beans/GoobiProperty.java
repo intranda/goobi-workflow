@@ -28,11 +28,9 @@ import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.TemplateManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -76,8 +74,6 @@ public class GoobiProperty implements IGoobiProperty, Serializable {
     public enum PropertyOwnerType {
 
         PROCESS("process"),
-        TEMPLATE("template"),
-        MASTERPIECE("masterpiece"),
         USER("user"),
         ERROR("error"),
         PROJECT("project");
@@ -166,9 +162,7 @@ public class GoobiProperty implements IGoobiProperty, Serializable {
                 case ERROR:
                     ownerObject = StepManager.getStepById(objectId);
                     break;
-                case MASTERPIECE:
-                    ownerObject = MasterpieceManager.getMasterpieceForTemplateID(objectId);
-                    break;
+
                 case PROCESS:
                     ownerObject = ProcessManager.getProcessById(objectId);
                     break;
@@ -179,9 +173,7 @@ public class GoobiProperty implements IGoobiProperty, Serializable {
                         log.error(e);
                     }
                     break;
-                case TEMPLATE:
-                    ownerObject = TemplateManager.getTemplateForTemplateID(objectId);
-                    break;
+
                 default:
                     break;
             }

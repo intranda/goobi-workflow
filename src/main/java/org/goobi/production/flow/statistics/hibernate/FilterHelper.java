@@ -394,31 +394,7 @@ public class FilterHelper {
      * @param tok part of filter string to use
      ****************************************************************************/
     protected static String filterScanTemplate(String tok, boolean negate) {
-        /* Filtering by signature */
-        String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
-        if (!negate) {
-            if (ts.length > 1) {
-                return " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select object_id from properties where object_type = 'template' AND properties.property_value like '"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter
-                        + "' AND properties.property_name LIKE '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0])
-                        + rightTruncationCharacter + "'))";
-
-            } else {
-                return " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select object_id from properties where object_type = 'template' AND properties.property_value like '"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
-
-            }
-        } else if (ts.length > 1) {
-            return " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select object_id from properties where object_type = 'template' AND properties.property_value like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter
-                    + "' AND properties.property_name LIKE '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0])
-                    + rightTruncationCharacter + "'))";
-
-        } else {
-            return " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select object_id from properties where object_type = 'template' AND properties.property_value like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
-
-        }
+        return filterProcessProperty(tok, negate);
     }
 
     protected static String filterStepProperty(String tok, boolean negate) {
@@ -665,31 +641,7 @@ public class FilterHelper {
      * @param tok part of filter string to use
      ****************************************************************************/
     protected static String filterWorkpiece(String tok, boolean negate) {
-        /* filter according signature */
-        String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
-        if (!negate) {
-            if (ts.length > 1) {
-                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select object_id from properties where object_type = 'masterpiece' AND properties.property_value like '"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter
-                        + "' AND properties.property_name LIKE '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0])
-                        + rightTruncationCharacter + "'))";
-            } else {
-
-                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select object_id from properties where object_type = 'masterpiece' AND properties.property_value like '"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
-            }
-        } else if (ts.length > 1) {
-            return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID not in (select object_id from properties where object_type = 'masterpiece' AND properties.property_value like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter
-                    + "' AND properties.property_name LIKE '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0])
-                    + rightTruncationCharacter + "'))";
-
-        } else {
-
-            return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID not in (select object_id from properties where object_type = 'masterpiece' AND properties.property_value like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
-
-        }
+        return filterProcessProperty(tok, negate);
     }
 
     private static StringBuilder checkStringBuilder(StringBuilder filter, boolean conjunction) {

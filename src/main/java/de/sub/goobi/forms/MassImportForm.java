@@ -828,8 +828,6 @@ public class MassImportForm implements Serializable {
 
         BeanHelper bHelper = new BeanHelper();
         bHelper.SchritteKopieren(template, p);
-        bHelper.ScanvorlagenKopieren(template, p);
-        bHelper.WerkstueckeKopieren(template, p);
         bHelper.EigenschaftenKopieren(template, p);
 
         return p;

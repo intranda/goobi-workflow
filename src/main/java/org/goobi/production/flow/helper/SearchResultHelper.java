@@ -112,42 +112,6 @@ public class SearchResultHelper {
             }
         }
 
-        List<String> templateTitles = PropertyManager.getDistinctTemplatePropertyTitles();
-        if (!templateTitles.isEmpty()) {
-            List<SelectItem> subList = new ArrayList<>();
-
-            for (String title : templateTitles) {
-                if (columnWhiteList.contains(title)) {
-                    String key = "vorlageneigenschaften." + title;
-                    subList.add(new SelectItem(key, Helper.getTranslation(key)));
-                }
-            }
-            if (!subList.isEmpty()) {
-                String key = "templateData";
-                String translation = Helper.getTranslation(key);
-                possibleColumns.add(new SelectItem(key, translation, translation, true));
-                possibleColumns.addAll(subList);
-            }
-        }
-
-        List<String> masterpiecePropertyTitles = PropertyManager.getDistinctMasterpiecePropertyTitles();
-        if (!masterpiecePropertyTitles.isEmpty()) {
-            List<SelectItem> subList = new ArrayList<>();
-
-            for (String title : masterpiecePropertyTitles) {
-                if (columnWhiteList.contains(title)) {
-                    String key = "werkstueckeeigenschaften." + title;
-                    subList.add(new SelectItem(key, Helper.getTranslation(key)));
-                }
-            }
-            if (!subList.isEmpty()) {
-                String key = "masterpieceData";
-                String translation = Helper.getTranslation(key);
-                possibleColumns.add(new SelectItem(key, translation, translation, true));
-                possibleColumns.addAll(subList);
-            }
-        }
-
         List<String> metadataTitles = MetadataManager.getDistinctMetadataNames();
         if (!metadataTitles.isEmpty()) {
             List<SelectItem> subList = new ArrayList<>();

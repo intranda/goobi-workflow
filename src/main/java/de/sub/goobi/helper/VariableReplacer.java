@@ -53,10 +53,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.text.StringTokenizer;
 import org.goobi.beans.GoobiProperty;
-import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
-import org.goobi.beans.Template;
 import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
@@ -480,12 +478,10 @@ public class VariableReplacer {
 
         for (MatchResult r : findRegexMatches(REGEX_PRODUCT, inString)) {
             String propertyTitle = r.group(1);
-            for (Masterpiece ws : this.process.getWerkstueckeList()) {
-                for (GoobiProperty we : ws.getEigenschaftenList()) {
-                    if (we.getPropertyName().equalsIgnoreCase(propertyTitle)) {
-                        inString = inString.replace(r.group(), we.getPropertyValue());
-                        break;
-                    }
+            for (GoobiProperty we : process.getEigenschaftenList()) {
+                if (we.getPropertyName().equalsIgnoreCase(propertyTitle)) {
+                    inString = inString.replace(r.group(), we.getPropertyValue());
+                    break;
                 }
             }
         }
@@ -494,12 +490,10 @@ public class VariableReplacer {
 
         for (MatchResult r : findRegexMatches(REGEX_TEMPLATE, inString)) {
             String propertyTitle = r.group(1);
-            for (Template v : this.process.getVorlagenList()) {
-                for (GoobiProperty ve : v.getEigenschaftenList()) {
-                    if (ve.getPropertyName().equalsIgnoreCase(propertyTitle)) {
-                        inString = inString.replace(r.group(), ve.getPropertyValue());
-                        break;
-                    }
+            for (GoobiProperty ve : process.getEigenschaftenList()) {
+                if (ve.getPropertyName().equalsIgnoreCase(propertyTitle)) {
+                    inString = inString.replace(r.group(), ve.getPropertyValue());
+                    break;
                 }
             }
         }

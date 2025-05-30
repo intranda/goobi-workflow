@@ -397,10 +397,6 @@ public class Helper implements Serializable, ServletContextListener {
             value = getMessage(language, key.replace("metadata.", ""));
         } else if (key.startsWith("prozesseeigenschaften.")) {
             value = getMessage(language, key.replace("prozesseeigenschaften.", ""));
-        } else if (key.startsWith("vorlageneigenschaften.")) {
-            value = getMessage(language, key.replace("vorlageneigenschaften.", ""));
-        } else if (key.startsWith("werkstueckeeigenschaften.")) {
-            value = getMessage(language, key.replace("werkstueckeeigenschaften.", ""));
         }
 
         if (value.isEmpty()) {

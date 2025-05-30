@@ -78,12 +78,10 @@ import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
-import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
-import org.goobi.beans.Template;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.goobiScript.GoobiScriptManager;
@@ -146,14 +144,12 @@ import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.GoobiScriptTemplateManager;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.JournalManager;
-import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import io.goobi.workflow.xslt.XsltPreparatorDocket;
@@ -224,15 +220,11 @@ public class ProcessBean extends BasicBean implements Serializable {
     @Getter
     @Setter
     private User myBenutzer;
-    @Getter
-    @Setter
-    private Template myVorlage;
+
     @Getter
     @Setter
     private GoobiProperty myVorlageEigenschaft;
-    @Getter
-    @Setter
-    private Masterpiece myWerkstueck;
+
     @Getter
     @Setter
     private GoobiProperty myWerkstueckEigenschaft;
@@ -733,31 +725,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public String VorlageEigenschaftLoeschen() {
-
-        myVorlage.getEigenschaften().remove(myVorlageEigenschaft);
-        PropertyManager.deleteProperty(myVorlageEigenschaft);
-        return "";
-    }
-
-    public String WerkstueckEigenschaftLoeschen() {
-        myWerkstueck.getEigenschaften().remove(myWerkstueckEigenschaft);
-        PropertyManager.deleteProperty(myWerkstueckEigenschaft);
-        return "";
-    }
-
     public String ProzessEigenschaftNeu() {
         myProzessEigenschaft = new GoobiProperty(PropertyOwnerType.PROCESS);
-        return "";
-    }
-
-    public String VorlageEigenschaftNeu() {
-        myVorlageEigenschaft = new GoobiProperty(PropertyOwnerType.TEMPLATE);
-        return "";
-    }
-
-    public String WerkstueckEigenschaftNeu() {
-        myWerkstueckEigenschaft = new GoobiProperty(PropertyOwnerType.MASTERPIECE);
         return "";
     }
 
@@ -767,24 +736,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             myProzessEigenschaft.setOwner(myProzess);
         }
         PropertyManager.saveProperty(myProzessEigenschaft);
-        return "";
-    }
-
-    public String VorlageEigenschaftUebernehmen() {
-        if (!myVorlage.getEigenschaften().contains(myVorlageEigenschaft)) {
-            myVorlage.getEigenschaften().add(myVorlageEigenschaft);
-            myVorlageEigenschaft.setOwner(myVorlage);
-        }
-        PropertyManager.saveProperty(myVorlageEigenschaft);
-        return "";
-    }
-
-    public String WerkstueckEigenschaftUebernehmen() {
-        if (!myWerkstueck.getEigenschaften().contains(myWerkstueckEigenschaft)) {
-            myWerkstueck.getEigenschaften().add(myWerkstueckEigenschaft);
-            myWerkstueckEigenschaft.setOwner(myWerkstueck);
-        }
-        PropertyManager.saveProperty(myWerkstueckEigenschaft);
         return "";
     }
 
@@ -972,53 +923,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
         updateUserPaginator();
         return "";
-    }
-
-    /*
-     * Vorlagen
-     */
-
-    public String VorlageNeu() {
-        this.myVorlage = new Template();
-        this.myProzess.getVorlagen().add(this.myVorlage);
-        this.myVorlage.setProzess(this.myProzess);
-        TemplateManager.saveTemplate(myVorlage);
-        return PAGE_PROCESS_EDIT_TEMPLATE;
-    }
-
-    public String VorlageUebernehmen() {
-        TemplateManager.saveTemplate(myVorlage);
-        return "";
-    }
-
-    public String VorlageLoeschen() {
-        this.myProzess.getVorlagen().remove(this.myVorlage);
-        TemplateManager.deleteTemplate(myVorlage);
-
-        return PAGE_PROCESS_EDIT;
-    }
-
-    /*
-     * werkstücke
-     */
-
-    public String WerkstueckNeu() {
-        this.myWerkstueck = new Masterpiece();
-        this.myProzess.getWerkstuecke().add(this.myWerkstueck);
-        this.myWerkstueck.setProzess(this.myProzess);
-        MasterpieceManager.saveMasterpiece(myWerkstueck);
-        return PAGE_PROCESS_EDIT_WORKPIECE;
-    }
-
-    public String WerkstueckUebernehmen() {
-        MasterpieceManager.saveMasterpiece(myWerkstueck);
-        return "";
-    }
-
-    public String WerkstueckLoeschen() {
-        this.myProzess.getWerkstuecke().remove(this.myWerkstueck);
-        MasterpieceManager.deleteMasterpiece(myWerkstueck);
-        return PAGE_PROCESS_EDIT;
     }
 
     /*
@@ -1332,14 +1236,6 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public void setMySchrittReload(Step mySchritt) {
         setMySchritt(mySchritt);
-    }
-
-    public void setMyVorlageReload(Template myVorlage) {
-        this.myVorlage = myVorlage;
-    }
-
-    public void setMyWerkstueckReload(Masterpiece myWerkstueck) {
-        this.myWerkstueck = myWerkstueck;
     }
 
     public String decrementOrder() {
