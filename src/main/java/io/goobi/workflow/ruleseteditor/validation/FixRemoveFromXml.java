@@ -5,7 +5,7 @@ import org.jdom2.Element;
 
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
-public class RemoveFromXml {
+public class FixRemoveFromXml {
 	/**
 	 * Remove the Element from the xml
 	 * 

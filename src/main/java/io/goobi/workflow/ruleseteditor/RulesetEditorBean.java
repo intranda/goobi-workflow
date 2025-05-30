@@ -42,6 +42,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.codec.language.bm.RuleType;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
@@ -56,7 +57,9 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.StorageProviderInterface;
 import de.sub.goobi.persistence.managers.RulesetManager;
-import io.goobi.workflow.ruleseteditor.validation.RemoveFromXml;
+import io.goobi.workflow.ruleseteditor.validation.FixAddMetadaType;
+import io.goobi.workflow.ruleseteditor.validation.FixChangeCardinality;
+import io.goobi.workflow.ruleseteditor.validation.FixRemoveFromXml;
 import io.goobi.workflow.ruleseteditor.validation.ValidateCardinality;
 import io.goobi.workflow.ruleseteditor.validation.ValidateDataDefinedMultipleTimes;
 import io.goobi.workflow.ruleseteditor.validation.ValidateDataNotMappedForExport;
@@ -320,7 +323,7 @@ public class RulesetEditorBean implements Serializable {
         }
     }
     
-    public void handleAction(RulesetValidationError error) {
+    public void handleAction(RulesetValidationError error, int value) {
     	try {
     		// Use sax to add lineNumber as attributes
     		String xml = maskXmlComments(currentRulesetFileContent);
@@ -335,12 +338,20 @@ public class RulesetEditorBean implements Serializable {
             Element root = doc.getRootElement();
             
             // Fix errors
-            if(error.getErrorType() == RulesetValidationError.errorType.DATA_DEFINED_MULTIPLE_TIMES || error.getErrorType() == RulesetValidationError.errorType.DATA_NOT_USED_FOR_EXPORT ||  error.getErrorType() == RulesetValidationError.errorType.UNUSED_BUT_DEFINED || error.getErrorType() == RulesetValidationError.errorType.USED_BUT_UNDEFINED ||  error.getErrorType() == RulesetValidationError.errorType.VALIDATE_FORMATS) {
-            	RemoveFromXml r1 = new RemoveFromXml();
-            	r1.fix(root, error, true);
-            } else if (error.getErrorType() == RulesetValidationError.errorType.DUPLICATES_IN_DOCSTRCT || error.getErrorType() == RulesetValidationError.errorType.DUPLICATES_IN_GROUP || error.getErrorType()== RulesetValidationError.errorType.INVALID_TOPSTRCT_USAGE) {
-            	RemoveFromXml r1 = new RemoveFromXml();
-            	r1.fix(root, error, false);
+            if(error.getErrorType() == RulesetValidationError.errorType.DATA_DEFINED_MULTIPLE_TIMES || error.getErrorType() == RulesetValidationError.errorType.DATA_NOT_USED_FOR_EXPORT ||  error.getErrorType() == RulesetValidationError.errorType.UNUSED_BUT_DEFINED || error.getErrorType() == RulesetValidationError.errorType.USED_BUT_UNDEFINED ||  error.getErrorType() == RulesetValidationError.errorType.VALIDATE_FORMATS && value == 0) {
+            	FixRemoveFromXml f1 = new FixRemoveFromXml();
+            	f1.fix(root, error, true);
+            } else if (error.getErrorType() == RulesetValidationError.errorType.DUPLICATES_IN_DOCSTRCT || error.getErrorType() == RulesetValidationError.errorType.DUPLICATES_IN_GROUP || error.getErrorType()== RulesetValidationError.errorType.INVALID_TOPSTRCT_USAGE && value == 0) {
+            	FixRemoveFromXml f1 = new FixRemoveFromXml();
+            	f1.fix(root, error, false);
+            } 
+            if(error.getErrorType() == RulesetValidationError.errorType.USED_BUT_UNDEFINED && value == 1) {
+            	FixAddMetadaType f2 = new FixAddMetadaType();
+            	f2.fix(root,error);
+            }
+            if(error.getErrorType() == RulesetValidationError.errorType.INVALID_CARDINALITY) {
+            	FixChangeCardinality f3 = new FixChangeCardinality();
+            	f3.fix(root,error, value);
             }
             
             removeLineNumbers(root);

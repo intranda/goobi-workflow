@@ -33,11 +33,11 @@ public class ValidateNames {
 			if (!"Formats".equals(element.getName())) {
 				Element nameElement = element.getChild("Name");
 				if (nameElement == null) {
-					String lineNumber = element.getAttributeValue("lineNumber");
-					String lineInfo = (lineNumber != null) ? lineNumber : "0";
+	                String fallbackLineNumber = element.getAttributeValue("goobi_lineNumber");
+	                String fallbackLineInfo = (fallbackLineNumber != null) ? fallbackLineNumber : "0";
 
 					errors.add(new RulesetValidationError("ERROR",
-							Helper.getTranslation("ruleset_validation_missing_name", element.getName()), lineInfo, 7,element));
+							Helper.getTranslation("ruleset_validation_missing_name", element.getName()), fallbackLineInfo, 7,element));
 					continue;
 				}
 				if (nameElement.getTextTrim().isEmpty()) {

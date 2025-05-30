@@ -48,7 +48,6 @@ public class ValidateUnusedButDefinedData {
             // Go through all children of the element and search for unused values
             searchInDocstrctTypesForUnusedValues(errors, element, allMetadataTypeNameValues, allAllowedchildtypeValues);
         }
-
         // Add all unused values to the errors list
         for (String unusedValue : allMetadataTypeNameValues) {
             findMetadataType(errors, root, unusedValue);
@@ -87,7 +86,10 @@ public class ValidateUnusedButDefinedData {
             List<String> allAllowedchildtypeValues) {
         if ("MetadataType".equals(element.getName()) || "Group".equals(element.getName())) {
             // Add the Name text to the list
-            allMetadataTypeNameValues.add(element.getName() + ":" + element.getChild("Name").getText().trim());
+        	Element nameElement = element.getChild("Name");
+            if (nameElement != null && nameElement.getText() != null && !nameElement.getText().trim().isEmpty()) {
+                allMetadataTypeNameValues.add(element.getName() + ":" + nameElement.getText().trim());
+            }
         } else if ("DocStrctType".equals(element.getName())) {
             List<Element> allowedChildTypeElements = element.getChildren("Name");
             for (Element child : allowedChildTypeElements) {
@@ -95,7 +97,10 @@ public class ValidateUnusedButDefinedData {
                 if (topStructValue != null && "true".equals(topStructValue)) {
                     continue;
                 }
-                allAllowedchildtypeValues.add(element.getName() + ":" + child.getText().trim());
+
+                if (child != null && child.getText() != null && !child.getText().trim().isEmpty()) {
+                    allAllowedchildtypeValues.add(element.getName() + ":" + child.getText().trim());
+                }
             }
         }
     }
@@ -141,14 +146,14 @@ public class ValidateUnusedButDefinedData {
             // Group used in same group
             if ("Group".equals(element.getName())) {
                 if ("group".equals(childElement.getName()) && allMetadataTypeNameValues.contains("Group:" + childElement.getText().trim())) {
-
                     allMetadataTypeNameValues.remove("Group:" + childElement.getText().trim());
                 }
             }
             // Groups in DocstrcyTypes
-            else if (!childElement.getText().equals(element.getChildText("Name").trim())) {
-
-                allMetadataTypeNameValues.remove("Group:" + childElement.getText().trim());
+            if ("DocStrctType".equals(element.getName())) {
+                if ("group".equals(childElement.getName())) {
+                    allMetadataTypeNameValues.remove("Group:" + childElement.getText().trim());
+                }
             }
 
         }

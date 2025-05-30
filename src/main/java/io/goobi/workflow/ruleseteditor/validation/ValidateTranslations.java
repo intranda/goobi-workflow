@@ -21,7 +21,7 @@ public class ValidateTranslations {
 		
 		for (Element element : root.getChildren()) {
 			for (Element language : element.getChildren("language")) {
-                if(language.getText().equals("")) {
+				if(language.getText().trim().isEmpty()) {
                     String lineNumber = language.getAttributeValue("goobi_lineNumber");
                     String lineInfo = (lineNumber != null) ? lineNumber : "0";
                 	createError(errors, element.getChild("Name").getText(), lineInfo, element);

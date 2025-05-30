@@ -32,41 +32,48 @@ import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 public class ValidateDataNotMappedForExport {
 	/**
-	 * Find all values inside the formats which are <InternalName> values and are not used in a docStrctType
+	 * Find all values that are defined but not used inside the formats as <InternalName> values
 	 * @param root
 	 * @param format
 	 * @return
 	 */
 	public List<RulesetValidationError> validate(org.jdom2.Element root, String format) {
 		List<RulesetValidationError> errors = new ArrayList<>();
-		Map<String, List<Object>> allUsedValues = new HashMap<>();
-        Set<String> allDefinedValues = new HashSet<>();
+		Map<String, List<Object>> allUsedValuesInFormats = new HashMap<>();
+		Map<String, Element> allDefinedValues = new HashMap<>();
 
 		for (Element element : root.getChildren()) {
 			if ("Formats".equals(element.getName())) {
 				Element formatElement = element.getChild(format);
 				if (formatElement != null) {
-					collectNamesInFormat(formatElement, allUsedValues, format);
+					collectNamesInFormat(formatElement, allUsedValuesInFormats, format);
 				}
 			}
 		}
-		for(Element element : root.getChildren()) {
-			if("DocStrctType".equals(element.getName())) {
+		// If no value was used the format might not be used at all
+		if (allUsedValuesInFormats.isEmpty()) {
+		    return errors; 
+		}
+		
+		// Go throguh all DocStrct, Groups and MetadataType Elements and get their names in the Set
+		for (Element element : root.getChildren()) {
+			if("DocStrctType".equals(element.getName()) || "MetadataType".equals(element.getName()) || "Group".equals(element.getName())){
 				Element nameElement = element.getChild("Name");
-		        if (nameElement != null && !nameElement.getTextTrim().isEmpty()) {
-		            allDefinedValues.add(nameElement.getText());
-		        }
+				String elementName = element.getName();
+				 if (nameElement != null && !nameElement.getTextTrim().isEmpty()) {
+			            allDefinedValues.put(elementName + ":" + nameElement.getText(), element);
+			        }
 			}
 		}
-		for (Entry<String, List<Object>> entry : allUsedValues.entrySet()) {
-		    String usedKey = entry.getKey();
-		    if (!allDefinedValues.contains(usedKey)) {
-		    	List<Object> valueList = entry.getValue();
-		    	String lineNumber = (String) valueList.get(0);
-		    	Element element = (Element) valueList.get(1);
-		    	createError(errors, usedKey, lineNumber, element);
+		
+		for (Map.Entry<String, Element> entry : allDefinedValues.entrySet()) {
+		    if (!allUsedValuesInFormats.containsKey(entry.getKey())) {
+				String lineNumber = entry.getValue().getAttributeValue("goobi_lineNumber");
+				String lineInfo = (lineNumber != null) ? lineNumber : "0";
+		        createError(errors, entry.getKey(), lineInfo, entry.getValue());
 		    }
 		}
+		
 		return errors;
 	}
 	
@@ -76,7 +83,7 @@ public class ValidateDataNotMappedForExport {
 	 * @param allUsedValues
 	 * @param formatName
 	 */
-	private void collectNamesInFormat(Element parent, Map<String, List<Object>> allUsedValues, String formatName) {
+	private void collectNamesInFormat(Element parent, Map<String, List<Object>> allUsedValuesInFormats, String formatName) {
 	    for (Element child : parent.getChildren()) {
 	        String name = child.getName();
 
@@ -93,7 +100,6 @@ public class ValidateDataNotMappedForExport {
 	                	name = "MetadataType";
 	                } else if(name.equals("Group")) {
 	                	name = "Group";
-	                	//VLT To:DO
 	                } else if(name.equals("DocStruct")) {
 	                	name = "DocStrctType";
 	                }
@@ -101,14 +107,14 @@ public class ValidateDataNotMappedForExport {
 	                List<Object> valueList = new ArrayList<>();
 	                valueList.add(lineInfo);       
 	                valueList.add(nameElement);    
-	                allUsedValues.put(key, valueList);
+	                allUsedValuesInFormats.put(key, valueList);
 	            }
 	            // In LIDO there can be <Metadata> inside a Group
 	            if ("Group".equals(name) && "LIDO".equals(formatName)) {
-	                collectNamesInFormat(child, allUsedValues, formatName);
+	                collectNamesInFormat(child, allUsedValuesInFormats, formatName);
 	            }
 	        } else {
-	            collectNamesInFormat(child, allUsedValues, formatName);
+	            collectNamesInFormat(child, allUsedValuesInFormats, formatName);
 	        }
 	    }
 	}

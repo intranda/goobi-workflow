@@ -7,7 +7,8 @@
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:util="http://goobi.io/util">
 
 	<ui:param name="myPageTitle"
 		value="#{msgs.intranda_administration_ruleset_editor}" />
@@ -132,7 +133,11 @@
 						</div>
 						<!-- // TABLE WITH FILE LIST -->
 					</intranda:box>
-					<!-- // BOX WITH FILES -->
+				<!-- // LEFT AREA -->
+
+
+				<!-- RIGHT AREA -->
+				<!-- // BOX WITH FILES -->
 
 					<!-- BOX WITH VALIDATION RESULTS -->
 					<div class="mt-3" jsf:id="validationResultsWrapper">
@@ -176,36 +181,112 @@
 		                                    	 </div>
 		                                    	 <div class="col-4">
 			                                    	<button jsf:id="button_neutral-500"
-														class="btn btn-neutral-500 float-end" type="button"
+														class="btn btn-primary float-end" type="button"
 														onclick="scrollToLine(#{error.line})">
 														<h:outputText value="#{msgs.ruleset_validation_line}: #{error.line}" />
-													</button>	
-													<button jsf:id="button_action" 
-														rendered="#{error.errorType eq 'DATA_DEFINED_MULTIPLE_TIMES' or error.errorType eq 'DATA_NOT_USED_FOR_EXPORT' or error.errorType eq 'DUPLICATES_IN_DOCSTRCT' or error.errorType eq 'DUPLICATES_IN_GROUP' or error.errorType eq 'VALIDATE_FORMATS' or error.errorType eq 'INVALID_TOPSTRCT_USAGE' or error.errorType eq 'UNUSED_BUT_DEFINED' or error.errorType eq 'USED_BUT_UNDEFINED'}"
-														class="btn btn-action me-2"
-														jsf:action="#{rulesetEditorBean.handleAction(error)}">
-														<i class="fa fa-plus"></i>
-														<span>
-															<h:outputText value="action" />
-														</span>
 													</button>
+													<div
+														class="d-inline"
+														title="Weitere Optionen"
+														data-bs-toggle="tooltip">
+														<h:panelGroup layout="block"
+    													styleClass="d-inline"
+    													rendered="#{error.errorType eq 'DUPLICATES_IN_DOCSTRCT' or  error.errorType eq 'DUPLICATES_IN_GROUP' or error.errorType eq 'VALIDATE_FORMATS' or  error.errorType eq 'INVALID_TOPSTRCT_USAGE' or  error.errorType eq 'UNUSED_BUT_DEFINED' or error.errorType eq 'USED_BUT_UNDEFINED' or error.errorType eq 'INVALID_CARDINALITY'}">
+														
+														<button
+															jsf:id="additionalOptionsDropdown"
+															aria-label="Weitere Optionen"
+															aria-haspopup="true"
+															aria-expanded="false"
+															onclick="switchExpanded(this.id)"
+															type="button"
+															class="btn btn-neutral-500 dropdown-toggle float-end me-2"
+															data-bs-toggle="dropdown">
+															<util:icon icon="square-check"/>
+														</button>
+
+														<ul class="dropdown-menu">
+														<li>
+            												<h:panelGroup rendered="#{error.errorType eq 'DUPLICATES_IN_GROUP' or error.errorType eq 'USED_BUT_UNDEFINED' or error.errorType eq 'UNUSED_BUT_DEFINED' or error.errorType eq 'VALIDATE_FORMATS'}">
+               													<button jsf:id="btn_mets"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'USED_BUT_UNDEFINED' or error.errorType eq 'VALIDATE_FORMATS'}">
+               													<button jsf:id="btn_define"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 1)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_defineMetadataType}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'INVALID_CARDINALITY'}">
+               													<button jsf:id="btn_changeCardinality1"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 1)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_setCardinalityValue_1o}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'INVALID_CARDINALITY'}">
+               													<button jsf:id="btn_btn_changeCardinality2"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 2)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_setCardinalityValue_star}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'INVALID_CARDINALITY'}">
+               													<button jsf:id="btn_btn_changeCardinality3"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 3)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_setCardinalityValue_1m}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'INVALID_CARDINALITY'}">
+               													<button jsf:id="btn_btn_changeCardinality4"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 4)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_setCardinalityValue_plus}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+														</ul>
+														</h:panelGroup>
+													</div>
 		                                    	 </div>
 		                                    </div>
 
 										</h:panelGroup>
 	                                </ui:repeat>
 								</div>
-
 							</intranda:box>
 						</div>
 					</div>
 					<!-- // BOX WITH VALIDATION RESULTS -->
 
 				</div>
-				<!-- // LEFT AREA -->
-
-
-				<!-- RIGHT AREA -->
 				<div class="col-sm-12 col-md-8" id="rightarea">
 					<h:panelGroup
 						rendered="#{rulesetEditorBean.currentRuleset != null}">

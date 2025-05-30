@@ -50,15 +50,17 @@ public class ValidateDataDefinedMultipleTimes {
 						Element nextElement = allElements.get(j);
 						if (elementType.equals(nextElement.getName())) {
 							Element nextNameElement = nextElement.getChild("Name");
-							String nextName = nextNameElement.getText();
-							// An other error will be thrown
-							if (name == null || nextName == null) {
-								continue;
-							}
-							if (name.equals(nextName)) {
-								String lineNumber = nextNameElement.getAttributeValue("goobi_lineNumber");
-								String lineInfo = (lineNumber != null) ? lineNumber : "0";
-								createError(errors, elementType, nextName, lineInfo, nextElement);
+							if (nextNameElement != null && nextNameElement.getText() != null) {
+								String nextName = nextNameElement.getText();
+								// An other error will be thrown
+								if (name == null || nextName == null) {
+									continue;
+								}
+								if (name.equals(nextName)) {
+									String lineNumber = nextNameElement.getAttributeValue("goobi_lineNumber");
+									String lineInfo = (lineNumber != null) ? lineNumber : "0";
+									createError(errors, elementType, nextName, lineInfo, nextElement);
+								}
 							}
 						}
 					}
