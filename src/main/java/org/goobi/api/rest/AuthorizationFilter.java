@@ -126,6 +126,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         validPath = validPath || pathInfo.startsWith("/tmp/image/");
         validPath = validPath || pathInfo.startsWith("/messages/");
         validPath = validPath || pathInfo.matches("/processes/\\d+?/images.*");
+        validPath = validPath || pathInfo.startsWith("/plugins/");
         validPath = validPath || pathInfo.endsWith("/openapi.json");
         if (validPath && hasJsfContext(req)) {
             return;

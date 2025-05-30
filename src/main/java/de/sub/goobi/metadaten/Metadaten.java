@@ -2934,6 +2934,7 @@ public class Metadaten implements Serializable {
             return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         doublePage = false;
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         return null;
     }
 
@@ -3475,6 +3476,8 @@ public class Metadaten implements Serializable {
             }
         }
         StructSeitenErmitteln(this.myDocStruct);
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
+
         return null;
     }
 

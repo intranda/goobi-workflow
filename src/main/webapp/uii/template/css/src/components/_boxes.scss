@@ -243,6 +243,7 @@
     --box-padding-title: 8px 8px 8px 10px;
     background: transparent;
     color: var(--bs-body-color);
+    border-bottom: 0.15rem solid var(--clr-neutral-300);
   }
   .btn--title-action {
     border-color: var(--clr-neutral-300);

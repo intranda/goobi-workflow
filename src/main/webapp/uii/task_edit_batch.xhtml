@@ -68,7 +68,11 @@
                             field="#{AktuelleSchritteForm.batchHelper.processName}"
                             help="#{msgs.helpUserDashboard}"
                             name="dashboardName"
-                            selectItems="#{AktuelleSchritteForm.batchHelper.processNameList}" />
+                            selectItems="#{AktuelleSchritteForm.batchHelper.processNameList}"
+                            var="var"
+                            itemLabel="#{var}"
+                            itemValue="#{var}"
+                             />
 
                         <div class="box__actions">
                             <button

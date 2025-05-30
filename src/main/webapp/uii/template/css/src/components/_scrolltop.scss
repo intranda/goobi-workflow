@@ -1,4 +1,5 @@
 .scroll-top {
+    background: white;
     color: var(--clr-primary-400);
     position: sticky;
     right: 1rem;
@@ -45,4 +46,8 @@
     transition: stroke-dashoffset 10ms linear;
     stroke-dasharray: var(--dashArray);
     stroke-dashoffset: var(--scrollProgess);
+}
+
+.scroll-top + .footer {
+    margin-block-start: 1rem;
 }
