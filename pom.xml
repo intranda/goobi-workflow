@@ -10,7 +10,6 @@
     </parent>
     <artifactId>workflow-core</artifactId>
     <packaging>war</packaging>
-    <version>properties</version>
     <repositories>
         <repository>
             <id>intranda-public</id>
