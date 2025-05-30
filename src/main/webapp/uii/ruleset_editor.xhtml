@@ -187,13 +187,14 @@
 													</button>
 													<div
 														class="d-inline"
-														title="Weitere Optionen"
 														data-bs-toggle="tooltip">
 														<h:panelGroup layout="block"
     													styleClass="d-inline"
     													rendered="#{error.errorType eq 'DUPLICATES_IN_DOCSTRCT' or  error.errorType eq 'DUPLICATES_IN_GROUP' or error.errorType eq 'VALIDATE_FORMATS' or  error.errorType eq 'INVALID_TOPSTRCT_USAGE' or  error.errorType eq 'UNUSED_BUT_DEFINED' or error.errorType eq 'USED_BUT_UNDEFINED' or error.errorType eq 'INVALID_CARDINALITY'}">
 														
 														<button
+													
+															title = "#{msgs.additionalOptions}"
 															jsf:id="additionalOptionsDropdown"
 															aria-label="Weitere Optionen"
 															aria-haspopup="true"
