@@ -37,10 +37,8 @@ import org.goobi.beans.Docket;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
-import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
-import org.goobi.beans.Template;
 import org.goobi.beans.User;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.junit.Before;
@@ -59,12 +57,10 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
-import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.TemplateManager;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
@@ -72,7 +68,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.net.ssl.*", "javax.management.*" })
 @RunWith(PowerMockRunner.class)
 
-@PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
+@PrepareForTest({ PropertyManager.class, ProcessManager.class, MetadataManager.class,
         HistoryAnalyserJob.class, StepManager.class, Helper.class })
 public class ProzesskopieFormTest extends AbstractTest {
 
@@ -417,22 +413,6 @@ public class ProzesskopieFormTest extends AbstractTest {
 
     @SuppressWarnings("unchecked")
     private void prepareMocking() throws Exception {
-        Template template = new Template();
-        List<Template> templateList = new ArrayList<>();
-        templateList.add(template);
-
-        PowerMock.mockStatic(TemplateManager.class);
-        EasyMock.expect(TemplateManager.getTemplatesForProcess(EasyMock.anyInt())).andReturn(templateList).anyTimes();
-
-        PowerMock.replay(TemplateManager.class);
-
-        Masterpiece master = new Masterpiece();
-        List<Masterpiece> masterList = new ArrayList<>();
-        masterList.add(master);
-
-        PowerMock.mockStatic(MasterpieceManager.class);
-        EasyMock.expect(MasterpieceManager.getMasterpiecesForProcess(EasyMock.anyInt())).andReturn(masterList).anyTimes();
-        PowerMock.replay(MasterpieceManager.class);
 
         GoobiProperty prop = new GoobiProperty(PropertyOwnerType.PROCESS);
         List<GoobiProperty> propList = new ArrayList<>();

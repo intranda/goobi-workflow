@@ -396,30 +396,6 @@ public class FilterHelperTest extends AbstractTest {
     }
 
     @Test
-    public void testFilterScanTemplateWithoutNegate() {
-        String tok = "template:Title:Value";
-        String expectedQuery =
-                " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select object_id from properties where object_type = 'template' AND properties.property_value like '%Value%' AND properties.property_name LIKE '%Title%'))";
-
-        String result = FilterHelper.filterScanTemplate(tok, false);
-
-        // Assert that the generated SQL query matches the expected query without negation
-        assertEquals(expectedQuery, result);
-    }
-
-    @Test
-    public void testFilterScanTemplateWithNegate() {
-        String tok = "template:Title:Value";
-        String expectedQuery =
-                " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select object_id from properties where object_type = 'template' AND properties.property_value like '%Value%' AND properties.property_name LIKE '%Title%'))";
-
-        String result = FilterHelper.filterScanTemplate(tok, true);
-
-        // Assert that the generated SQL query matches the expected query with negation
-        assertEquals(expectedQuery, result);
-    }
-
-    @Test
     public void testFilterStepPropertyWithoutNegate() {
         String tok = "stepproperty:Title:Value";
         String expectedQuery =
@@ -605,43 +581,6 @@ public class FilterHelperTest extends AbstractTest {
         String result = FilterHelper.filterIds(tok, negate);
 
         // Assert that the generated SQL query is empty when the token is empty
-        assertEquals(expectedQuery, result);
-    }
-
-    @Test
-    public void testFilterWorkpiece() {
-        String tok = "workpiece:title:value";
-        boolean negate = false;
-        String expectedQuery =
-                " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select object_id from properties where object_type = 'masterpiece' AND properties.property_value like '%value%' AND properties.property_name LIKE '%title%'))";
-        String result = FilterHelper.filterWorkpiece(tok, negate);
-
-        // Assert that the generated SQL query matches the expected query with a valid signature and no negation
-        assertEquals(expectedQuery, result);
-    }
-
-    @Test
-    public void testFilterWorkpieceWithNegation() {
-        String tok = "workpiece:title:value";
-        boolean negate = true;
-        String expectedQuery =
-                " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID not in (select object_id from properties where object_type = 'masterpiece' AND properties.property_value like '%value%' AND properties.property_name LIKE '%title%'))";
-
-        String result = FilterHelper.filterWorkpiece(tok, negate);
-
-        // Assert that the generated SQL query matches the expected query with a valid signature and negation
-        assertEquals(expectedQuery, result);
-    }
-
-    @Test
-    public void testFilterWorkpieceWithNoTitle() {
-        String tok = "workpiece:value";
-        boolean negate = false;
-        String expectedQuery =
-                " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select object_id from properties where object_type = 'masterpiece' AND properties.property_value like '%value%'))";
-        String result = FilterHelper.filterWorkpiece(tok, negate);
-
-        // Assert that the generated SQL query matches the expected query with no title in the signature and no negation
         assertEquals(expectedQuery, result);
     }
 

@@ -24,17 +24,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.easymock.EasyMock;
-import org.goobi.beans.GoobiProperty;
-import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
-import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
 import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
@@ -165,40 +159,6 @@ public class VariableReplacerTest extends AbstractTest {
     @Test
     public void testReplaceProperties() {
         VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
-
-        Templateproperty tp = new Templateproperty();
-        tp.setPropertyName("templateProperty");
-        tp.setPropertyValue("template value");
-        List<GoobiProperty> tpl = new ArrayList<>();
-        tpl.add(tp);
-
-        List<Template> tl = new ArrayList<>();
-        Template t = new Template();
-        t.setId(1);
-        t.setProcessId(1);
-        t.setProzess(process);
-        tl.add(t);
-        t.setEigenschaften(tpl);
-
-        process.setVorlagen(tl);
-
-        assertEquals("template value", replacer.replace("{template.templateProperty}"));
-
-        Masterpiece m = new Masterpiece();
-        m.setId(1);
-        m.setProcessId(1);
-        m.setProzess(process);
-        List<Masterpiece> ml = new ArrayList<>();
-        ml.add(m);
-        process.setWerkstuecke(ml);
-
-        Masterpieceproperty mp = new Masterpieceproperty();
-        mp.setPropertyName("masterpieceProperty");
-        mp.setPropertyValue("value");
-        List<GoobiProperty> mpl = new ArrayList<>();
-        mpl.add(mp);
-        m.setEigenschaften(mpl);
-        assertEquals("value", replacer.replace("{product.masterpieceProperty}"));
 
         assertEquals("", replacer.replace("{folder.notExisting}"));
         assertTrue(replacer.replace("{folder.master}").contains("testprocess_master"));

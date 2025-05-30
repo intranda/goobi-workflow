@@ -201,38 +201,6 @@ public class ProcessTest extends AbstractTest {
     }
 
     @Test
-    public void testWerkstuecke() {
-        Process process = new Process();
-
-        List<Masterpiece> masterpieces = new ArrayList<>();
-        Masterpiece masterpiece1 = new Masterpiece();
-        Masterpiece masterpiece2 = new Masterpiece();
-        masterpieces.add(masterpiece1);
-        masterpieces.add(masterpiece2);
-        process.setWerkstuecke(masterpieces);
-
-        assertEquals(2, process.getWerkstuecke().size());
-        assertTrue(process.getWerkstuecke().contains(masterpiece1));
-        assertTrue(process.getWerkstuecke().contains(masterpiece2));
-    }
-
-    @Test
-    public void testVorlagen() {
-        Process process = new Process();
-
-        List<Template> templates = new ArrayList<>();
-        Template template1 = new Template();
-        Template template2 = new Template();
-        templates.add(template1);
-        templates.add(template2);
-        process.setVorlagen(templates);
-
-        assertEquals(2, process.getVorlagen().size());
-        assertTrue(process.getVorlagen().contains(template1));
-        assertTrue(process.getVorlagen().contains(template2));
-    }
-
-    @Test
     public void testEigenschaften() {
         Process process = new Process();
 
@@ -612,44 +580,6 @@ public class ProcessTest extends AbstractTest {
         List<GoobiProperty> list = new ArrayList<>();
         process.setEigenschaften(list);
         assertSame(list, process.getEigenschaftenList());
-    }
-
-    @Test
-    public void testGetWerkstueckeSize() {
-        Process process = new Process();
-        process.setWerkstuecke(new ArrayList<>());
-        assertEquals(0, process.getWerkstueckeSize());
-        List<Masterpiece> list = new ArrayList<>();
-        list.add(new Masterpiece());
-        process.setWerkstuecke(list);
-        assertEquals(1, process.getWerkstueckeSize());
-    }
-
-    @Test
-    public void testGetWerkstueckeList() {
-        Process process = new Process();
-        List<Masterpiece> list = new ArrayList<>();
-        process.setWerkstuecke(list);
-        assertSame(list, process.getWerkstueckeList());
-    }
-
-    @Test
-    public void testGetVorlagenSize() {
-        Process process = new Process();
-        process.setVorlagen(new ArrayList<>());
-        assertEquals(0, process.getVorlagenSize());
-        List<Template> list = new ArrayList<>();
-        list.add(new Template());
-        process.setVorlagen(list);
-        assertEquals(1, process.getVorlagenSize());
-    }
-
-    @Test
-    public void testGetVorlagenList() {
-        Process process = new Process();
-        List<Template> list = new ArrayList<>();
-        process.setVorlagen(list);
-        assertSame(list, process.getVorlagenList());
     }
 
     @Test

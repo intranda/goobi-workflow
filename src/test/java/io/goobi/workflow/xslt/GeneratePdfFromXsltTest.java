@@ -49,10 +49,8 @@ import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
-import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
-import org.goobi.beans.Template;
 import org.goobi.beans.User;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
@@ -81,18 +79,16 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.InstitutionManager;
-import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PropertyManager.class, StepManager.class, TemplateManager.class, MasterpieceManager.class, HistoryManager.class,
+@PrepareForTest({ PropertyManager.class, StepManager.class, HistoryManager.class,
         MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class, InstitutionManager.class, UserManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class GeneratePdfFromXsltTest extends AbstractTest {
@@ -164,8 +160,6 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
         PowerMock.mockStatic(PropertyManager.class);
         PowerMock.mockStatic(StepManager.class);
-        PowerMock.mockStatic(TemplateManager.class);
-        PowerMock.mockStatic(MasterpieceManager.class);
         PowerMock.mockStatic(HistoryManager.class);
         PowerMock.mockStatic(MetadataManager.class);
 
@@ -194,35 +188,6 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         process.setSchritte(steps);
 
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(steps);
-        Template template = new Template();
-        GoobiProperty tp = new GoobiProperty(PropertyOwnerType.TEMPLATE);
-        tp.setPropertyName("title");
-        tp.setPropertyValue("value");
-        GoobiProperty tp2 = new GoobiProperty(PropertyOwnerType.TEMPLATE);
-        tp2.setPropertyName("Signatur");
-        tp2.setPropertyValue("value");
-        List<GoobiProperty> tpl = new ArrayList<>();
-        tpl.add(tp);
-        tpl.add(tp2);
-        template.setEigenschaften(tpl);
-        List<Template> tl = new ArrayList<>();
-        tl.add(template);
-
-        EasyMock.expect(TemplateManager.getTemplatesForProcess(EasyMock.anyInt())).andReturn(tl);
-
-        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(steps);
-
-        Masterpiece masterpiece = new Masterpiece();
-        GoobiProperty mp = new GoobiProperty(PropertyOwnerType.MASTERPIECE);
-        mp.setPropertyName("title");
-        mp.setPropertyValue("value");
-        List<GoobiProperty> mpl = new ArrayList<>();
-        mpl.add(mp);
-        masterpiece.setEigenschaften(mpl);
-        List<Masterpiece> ml = new ArrayList<>();
-        ml.add(masterpiece);
-
-        EasyMock.expect(MasterpieceManager.getMasterpiecesForProcess(EasyMock.anyInt())).andReturn(ml);
 
         List<HistoryEvent> hel = new ArrayList<>();
         HistoryEvent he = new HistoryEvent();
