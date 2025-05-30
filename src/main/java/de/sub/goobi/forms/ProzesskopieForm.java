@@ -431,7 +431,9 @@ public class ProzesskopieForm implements Serializable {
 
     private AdditionalField readAdditionalFieldConfiguration(HierarchicalConfiguration item) {
         AdditionalField fa = new AdditionalField();
-        fa.setFrom(item.getString("@from"));
+        if (StringUtils.isNotBlank(item.getString("@from")) || item.getBoolean("@property")) {
+            fa.setProperty(true);
+        }
         fa.setTitel(item.getString("."));
         fa.setRequired(item.getBoolean("@required", false));
         fa.setIsdoctype(item.getString("@isdoctype"));
@@ -441,7 +443,7 @@ public class ProzesskopieForm implements Serializable {
         fa.setFieldType(item.getString("@type", "text"));
         fa.setPattern(item.getString("@pattern"));
 
-        if (StringUtils.isNotBlank(item.getString("@metadata")) && item.getBoolean("@ughbinding", true)) {
+        if (StringUtils.isNotBlank(item.getString("@metadata"))) {
             fa.setUghbinding(true);
             fa.setDocstruct(item.getString("@docstruct", "topstruct"));
             fa.setMetadata(item.getString("@metadata"));
@@ -1334,7 +1336,7 @@ public class ProzesskopieForm implements Serializable {
                 }
                 for (String value : values) {
 
-                    if (StringUtils.isNotBlank(field.getFrom())) {
+                    if (field.isProperty()) {
                         bh.EigenschaftHinzufuegen(this.prozessKopie, field.getTitel(), value);
                     }
                 }

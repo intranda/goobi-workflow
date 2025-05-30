@@ -255,7 +255,9 @@ public class CopyProcess {
         List<HierarchicalConfiguration> itemList = cp.getList("createNewProcess/itemlist/item");
         for (HierarchicalConfiguration item : itemList) {
             AdditionalField fa = new AdditionalField();
-            fa.setFrom(item.getString("@from"));
+            if (StringUtils.isNotBlank(item.getString("@from")) || item.getBoolean("@property")) {
+                fa.setProperty(true);
+            }
             fa.setTitel(item.getString("."));
             fa.setRequired(item.getBoolean("@required", false));
             fa.setIsdoctype(item.getString("@isdoctype"));
@@ -270,9 +272,9 @@ public class CopyProcess {
             /*
              * -------------------------------- Bindung an ein Metadatum eines Docstructs --------------------------------
              */
-            if (item.getBoolean("@ughbinding", false)) {
+            if (StringUtils.isNotBlank(item.getString("@metadata"))) {
                 fa.setUghbinding(true);
-                fa.setDocstruct(item.getString("@docstruct"));
+                fa.setDocstruct(item.getString("@docstruct", "topstruct"));
                 fa.setMetadata(item.getString("@metadata"));
             }
 
@@ -887,7 +889,7 @@ public class CopyProcess {
             for (AdditionalField field : this.additionalFields) {
                 if (field.getShowDependingOnDoctype(getDocType())) {
 
-                    if (StringUtils.isNotBlank(field.getFrom())) {
+                    if (field.isProperty()) {
                         bh.EigenschaftHinzufuegen(this.prozessKopie, field.getTitel(), field.getWert());
                     }
                 }

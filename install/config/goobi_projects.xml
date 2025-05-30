@@ -16,87 +16,87 @@ Sequence for determining the right <project> element:
     <!-- used for any project starting with 'Sample' -->
     <createNewProcess>
       <itemlist>
-        <item from="process" multiselect="true">
+        <item property="true" multiselect="true">
                     Creator of digital edition
                     <select label="CHANGEME">CHANGEME</select>
 
                 </item>
-        <item from="process" multiselect="false">
+        <item property="true" multiselect="false">
                     FontType
                     <select label="Antiqua"> Antiqua </select>
                     <select label="Fracture"> Fracture </select>
                 </item>
         <!-- Title for Monograph and Periodical -->
-        <item docstruct="topstruct" from="process" isnotdoctype="multivolume" metadata="TitleDocMain" required="true" ughbinding="true"> Title </item>
-        <item docstruct="topstruct" isnotdoctype="multivolume" metadata="TitleDocMainShort" required="true" ughbinding="true"> Sorting title</item>
+        <item docstruct="topstruct" property="true" isnotdoctype="multivolume" metadata="TitleDocMain" required="true"> Title </item>
+        <item docstruct="topstruct" isnotdoctype="multivolume" metadata="TitleDocMainShort" required="true"> Sorting title</item>
         <!-- Title just for the Multivolume -->
-        <item docstruct="topstruct" from="process" isdoctype="multivolume" metadata="TitleDocMain" required="true" ughbinding="true"> Title </item>
-        <item docstruct="topstruct" isdoctype="multivolume" metadata="TitleDocMainShort" required="true" ughbinding="true"> Sorting title</item>
+        <item docstruct="topstruct" property="true" isdoctype="multivolume" metadata="TitleDocMain" required="true"> Title </item>
+        <item docstruct="topstruct" isdoctype="multivolume" metadata="TitleDocMainShort" required="true"> Sorting title</item>
         <!-- Authors and Creators -->
-        <item docstruct="topstruct" from="process" isdoctype="monograph\|manuscript\|multivolume\|periodical" metadata="ListOfCreators" ughbinding="false">Authors</item>
+        <item docstruct="topstruct" property="true" isdoctype="monograph\|manuscript\|multivolume\|periodical" metadata="ListOfCreators">Authors</item>
         <!-- Identifer -->
-        <item docstruct="topstruct" from="process" isnotdoctype="periodical" metadata="TSL_ATS" ughbinding="false">ATS</item>
-        <item docstruct="topstruct" from="process" isdoctype="periodical" metadata="TSL_ATS" ughbinding="false">TSL</item>
-        <item docstruct="topstruct" from="process" isdoctype="multivolume" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (c)</item>
-        <item docstruct="topstruct" from="process" isdoctype="multivolume" metadata="CatalogIDDigital" required="true" ughbinding="true">Identifier digital (c)</item>
-        <item docstruct="topstruct" from="process" isdoctype="monograph\|manuscript" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (a)</item>
-        <item docstruct="topstruct" from="process" isdoctype="monograph" metadata="CatalogIDDigital" required="true" ughbinding="true"> Identifier digital (a)</item>
-        <item docstruct="topstruct" from="process" isdoctype="periodical" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (b)</item>
-        <item docstruct="topstruct" from="process" isdoctype="periodical" metadata="CatalogIDDigital" required="true" ughbinding="true"> Identifier digital (b)</item>
-        <item docstruct="topstruct" isdoctype="periodical" metadata="ISSN" required="true" ughbinding="true"> ISSN </item>
-        <item docstruct="firstchild" from="process" isdoctype="periodical" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (volume)</item>
-        <item docstruct="firstchild" from="process" isdoctype="periodical" metadata="CatalogIDDigital" required="true" ughbinding="true">Identifier digital (volume)</item>
+        <item docstruct="topstruct" property="true" isnotdoctype="periodical" metadata="TSL_ATS">ATS</item>
+        <item docstruct="topstruct" property="true" isdoctype="periodical" metadata="TSL_ATS">TSL</item>
+        <item docstruct="topstruct" property="true" isdoctype="multivolume" metadata="CatalogIDSource" required="true">Identifier analogue (c)</item>
+        <item docstruct="topstruct" property="true" isdoctype="multivolume" metadata="CatalogIDDigital" required="true">Identifier digital (c)</item>
+        <item docstruct="topstruct" property="true" isdoctype="monograph\|manuscript" metadata="CatalogIDSource" required="true">Identifier analogue (a)</item>
+        <item docstruct="topstruct" property="true" isdoctype="monograph" metadata="CatalogIDDigital" required="true"> Identifier digital (a)</item>
+        <item docstruct="topstruct" property="true" isdoctype="periodical" metadata="CatalogIDSource" required="true">Identifier analogue (b)</item>
+        <item docstruct="topstruct" property="true" isdoctype="periodical" metadata="CatalogIDDigital" required="true"> Identifier digital (b)</item>
+        <item docstruct="topstruct" isdoctype="periodical" metadata="ISSN" required="true"> ISSN </item>
+        <item docstruct="firstchild" property="true" isdoctype="periodical" metadata="CatalogIDSource" required="true">Identifier analogue (volume)</item>
+        <item docstruct="firstchild" property="true" isdoctype="periodical" metadata="CatalogIDDigital" required="true">Identifier digital (volume)</item>
         <!-- Title, number and authors for Multivolumes and Periodicals -->
-        <item docstruct="firstchild" from="process" isdoctype="multivolume\|periodical" metadata="TitleDocMain" required="true" ughbinding="true"> Title (volume)</item>
-        <item docstruct="firstchild" isdoctype="multivolume\|periodical" metadata="TitleDocMainShort" required="true" ughbinding="true"> Sorting title (volume)</item>
-        <item docstruct="firstchild" from="process" isdoctype="multivolume" metadata="ListOfCreators" ughbinding="false"> Authors (volume)</item>
-        <item docstruct="firstchild" from="process" isnotdoctype="monograph\|manuscript" metadata="CurrentNo" ughbinding="true"> Volume number </item>
-        <item docstruct="firstchild" from="process" isnotdoctype="monograph\|manuscript" metadata="CurrentNoSorting" ughbinding="true"> Sorting number</item>
-        <item from="process" isdoctype="multivolume\|periodical" required="true"> Label number </item>
-        <item docstruct="firstchild" from="process" isdoctype="multivolume" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (f) </item>
-        <item docstruct="firstchild" from="process" isdoctype="multivolume" metadata="CatalogIDDigital" required="true" ughbinding="true">Identifier digital (f) </item>
+        <item docstruct="firstchild" property="true" isdoctype="multivolume\|periodical" metadata="TitleDocMain" required="true"> Title (volume)</item>
+        <item docstruct="firstchild" isdoctype="multivolume\|periodical" metadata="TitleDocMainShort" required="true"> Sorting title (volume)</item>
+        <item docstruct="firstchild" property="true" isdoctype="multivolume" metadata="ListOfCreators"> Authors (volume)</item>
+        <item docstruct="firstchild" property="true" isnotdoctype="monograph\|manuscript" metadata="CurrentNo"> Volume number </item>
+        <item docstruct="firstchild" property="true" isnotdoctype="monograph\|manuscript" metadata="CurrentNoSorting"> Sorting number</item>
+        <item property="true" isdoctype="multivolume\|periodical" required="true"> Label number </item>
+        <item docstruct="firstchild" property="true" isdoctype="multivolume" metadata="CatalogIDSource" required="true">Identifier analogue (f) </item>
+        <item docstruct="firstchild" property="true" isdoctype="multivolume" metadata="CatalogIDDigital" required="true">Identifier digital (f) </item>
         <!-- Other metadata for all -->
-        <item docstruct="topstruct" from="process" isdoctype="monograph\|manuscript\|multivolume\|periodical" metadata="PlaceOfPublication" ughbinding="true"> Publishing place </item>
-        <item docstruct="topstruct" from="process" isdoctype="monograph\|manuscript" metadata="PublicationYear" ughbinding="true"> Publishing year </item>
-        <item docstruct="firstchild" from="process" isdoctype="periodical\|multivolume" metadata="PublicationYear" ughbinding="true">Publishing year </item>
-        <item docstruct="firstchild" from="process" isdoctype="multivolume\|periodical" metadata="PublisherName" ughbinding="true"> Publishing house </item>
-        <item docstruct="topstruct" from="process" isdoctype="monograph" metadata="PublisherName" ughbinding="true"> Publishing house </item>
-        <item from="process" isdoctype="periodical\|multivolume" ughbinding="true" docstruct="firstchild" metadata="shelfmarksource"> Shelfmark </item>
-        <item from="process" isdoctype="monograph\|map\|manuscript" ughbinding="true" docstruct="topstruct" metadata="shelfmarksource"> Shelfmark </item>
+        <item docstruct="topstruct" property="true" isdoctype="monograph\|manuscript\|multivolume\|periodical" metadata="PlaceOfPublication"> Publishing place </item>
+        <item docstruct="topstruct" property="true" isdoctype="monograph\|manuscript" metadata="PublicationYear"> Publishing year </item>
+        <item docstruct="firstchild" property="true" isdoctype="periodical\|multivolume" metadata="PublicationYear">Publishing year </item>
+        <item docstruct="firstchild" property="true" isdoctype="multivolume\|periodical" metadata="PublisherName"> Publishing house </item>
+        <item docstruct="topstruct" property="true" isdoctype="monograph" metadata="PublisherName"> Publishing house </item>
+        <item property="true" isdoctype="periodical\|multivolume" docstruct="firstchild" metadata="shelfmarksource"> Shelfmark </item>
+        <item property="true" isdoctype="monograph\|map\|manuscript" docstruct="topstruct" metadata="shelfmarksource"> Shelfmark </item>
         <!-- ZVDD Anpassungen -->
-        <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" metadata="_dateDigitization" multiselect="true" required="true" ughbinding="true">
+        <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" metadata="_dateDigitization" multiselect="true" required="true">
                     Digitisation date
                     <select label="2024">2024</select>
                 </item>
-        <item docstruct="firstchild" isdoctype="periodical\|multivolume" metadata="_dateDigitization" multiselect="true" required="true" ughbinding="true">
+        <item docstruct="firstchild" isdoctype="periodical\|multivolume" metadata="_dateDigitization" multiselect="true" required="true">
                     Digitisation date
                     <select label="2024">2024</select>
                 </item>
-        <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" metadata="_electronicEdition" multiselect="true" required="true" ughbinding="true">
+        <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" metadata="_electronicEdition" multiselect="true" required="true">
                     Electronic ed.
                     <select label="[Electronic ed.]"> [Electronic ed.] </select>
                 </item>
-        <item docstruct="firstchild" isdoctype="periodical\|multivolume" metadata="_electronicEdition" multiselect="true" required="true" ughbinding="true">
+        <item docstruct="firstchild" isdoctype="periodical\|multivolume" metadata="_electronicEdition" multiselect="true" required="true">
                     Electronic ed.
                     <select label="[Electronic ed.]"> [Electronic ed.]</select>
                 </item>
-        <item metadata="_electronicPublisher" multiselect="true" required="true" ughbinding="true">
+        <item metadata="_electronicPublisher" multiselect="true" required="true">
                     Creator of digital edition
                     <select label="CHANGEME"> CHANGEME </select>
                 </item>
-        <item metadata="_placeOfElectronicOrigin" multiselect="true" required="true" ughbinding="true">
+        <item metadata="_placeOfElectronicOrigin" multiselect="true" required="true">
                     Place of digital edition
                     <select label="CHANGEME"> CHANGEME </select>
                 </item>
-        <item metadata="_digitalOrigin" multiselect="true" required="true" ughbinding="true">
+        <item metadata="_digitalOrigin" multiselect="true" required="true">
                     Digital origin
                     <select label="reformatted digital"> reformatted digital </select>
                 </item>
-        <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" from="vorlage" metadata="PhysicalLocation" multiselect="true" required="true" ughbinding="true">
+        <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" from="vorlage" metadata="PhysicalLocation" multiselect="true" required="true">
                     Physical location
                     <select label="CHANGEME"> CHANGEME </select>
                 </item>
-        <item docstruct="firstchild" isdoctype="periodical\|multivolume" from="vorlage" metadata="PhysicalLocation" multiselect="true" required="true" ughbinding="true">
+        <item docstruct="firstchild" isdoctype="periodical\|multivolume" from="vorlage" metadata="PhysicalLocation" multiselect="true" required="true">
                     Physical location
                     <select label="CHANGEME"> CHANGEME </select>
                 </item>

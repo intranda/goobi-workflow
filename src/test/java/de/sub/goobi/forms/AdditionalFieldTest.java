@@ -72,12 +72,11 @@ public class AdditionalFieldTest extends AbstractTest {
     }
 
     @Test
-    public void testFrom() {
+    public void testProperty() {
         AdditionalField af = new AdditionalField();
-        assertNotNull(af.getFrom());
-        assertEquals("process", af.getFrom());
-        af.setFrom("from");
-        assertEquals("from", af.getFrom());
+        assertFalse(af.isProperty());
+        af.setProperty(true);
+        assertTrue(af.isProperty());
     }
 
     @Test
