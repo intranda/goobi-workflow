@@ -6,6 +6,7 @@ import { focusOnLoad } from './gwFocusOnLoad';
 import { toggleHelp } from './gwToggleHelp';
 import { init as initConfigFileEditor } from './gwConfigFileEditor';
 import { initScrollTop } from './scrollTop';
+import { init as initScrollToLine } from './scrollToLine';
 
 export const initFunctions = function initFunctions() {
     initializeAjaxLoader();
@@ -14,6 +15,7 @@ export const initFunctions = function initFunctions() {
     dropdownTooltips();
     initConfigFileEditor();
     initScrollTop();
+    initScrollToLine();
 
     focusOnLoad();
     toggleHelp();

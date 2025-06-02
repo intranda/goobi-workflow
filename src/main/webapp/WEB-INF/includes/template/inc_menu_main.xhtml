@@ -291,7 +291,14 @@
                                         action="config_file_editor.xhtml"
                                         rendered="#{LoginForm.hasRole('Admin_config_file_editor') and NavigationForm.showConfigEditor}"
                                         icon="fa fa-key"/>
-
+                                <!-- ruleset editor -->
+                                <intranda:menuItem
+                                        id="aRulesetEditor"
+                                        parentMenu="menu_administration"
+                                        label="#{msgs.intranda_administration_ruleset_editor}"
+                                        action="ruleset_editor.xhtml"
+                                        rendered="#{LoginForm.hasRole('Admin_ruleset_editor') and NavigationForm.showConfigEditor}"
+                                        icon="fa fa-key"/>
 
                                 <!-- SWAGGER-API -->
                                 <intranda:menuItem
