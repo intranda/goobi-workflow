@@ -1,9 +1,8 @@
 const scrollToLine = (lineNumber) => {
 	const lines = document.querySelectorAll('.CodeMirror-linenumber');
-	const activeLines = document.querySelectorAll('.cm-activeline');
 	const line = lines[lineNumber];
 	line.scrollIntoView({ block: 'center', inline: 'nearest' });
-	activeLines.forEach(activeLine => {
+	lines.forEach(activeLine => {
 		activeLine.style.backgroundColor = ''; // Reset background color
 	});
 	line.style.backgroundColor = 'yellow'; // Highlight the active line
