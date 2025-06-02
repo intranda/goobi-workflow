@@ -170,19 +170,21 @@
 										value="#{msgs.ruleset_validation_no_issues}" />
 
 									<ui:repeat var="error" value="#{rulesetEditorBean.validationErrors}">
-	                                    
+
 	                                    <h:panelGroup rendered="#{error.severity ne 'INFO' or (error.severity eq 'INFO' and rulesetEditorBean.showMore)}"
 	                                        styleClass="alert #{error.severity eq 'WARNING'?'alert-warning':error.severity eq 'INFO'?'alert-secondary':'alert-danger'} d-block">
-	                                    
+
 		                                    <div class="row">
 		                                    	 <div class="col-8">
 				                                    <h:outputText
 				                                        value="#{error.message}"/>
 		                                    	 </div>
 		                                    	 <div class="col-4">
-			                                    	<button jsf:id="button_neutral-500"
-														class="btn btn-primary float-end" type="button"
-														onclick="scrollToLine(#{error.line})">
+			                                    	<button
+														jsf:id="button_neutral-500"
+														class="btn btn-primary float-end"
+														type="button"
+														data-scroll-to-line="#{error.line}">
 														<h:outputText value="#{msgs.ruleset_validation_line}: #{error.line}" />
 													</button>
 													<div
@@ -261,7 +263,7 @@
                    													<span>#{msgs.ruleset_validation_fix_deleteThisElement_validateFormats}</span>
                 												</button>
            													</h:panelGroup>
-       													 </li>	 
+       													 </li>
        													 <li>
             												<h:panelGroup rendered="#{error.errorType eq 'USED_BUT_UNDEFINED'}">
                													<button jsf:id="btn_mets_5"
@@ -366,7 +368,7 @@
 									<button jsf:id="validate" class="btn btn-primary float-end"
 										jsf:action="#{rulesetEditorBean.validate}"
 										title="#{msgs.validieren}">
-										<i class="fa fa-check"></i> 
+										<i class="fa fa-check"></i>
 										<span> <h:outputText
 												value="#{msgs.validieren}" />
 										</span>
