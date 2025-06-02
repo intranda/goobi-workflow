@@ -207,19 +207,74 @@
 
 														<ul class="dropdown-menu">
 														<li>
-            												<h:panelGroup rendered="#{error.errorType eq 'INVALID_TOPSTRCT_USAGE' or error.errorType eq 'DUPLICATES_IN_DOCSTRCT' or error.errorType eq 'DUPLICATES_IN_GROUP' or error.errorType eq 'USED_BUT_UNDEFINED' or error.errorType eq 'UNUSED_BUT_DEFINED' or error.errorType eq 'VALIDATE_FORMATS'}">
+            												<h:panelGroup rendered="#{error.errorType eq 'INVALID_TOPSTRCT_USAGE'}">
                													<button jsf:id="btn_mets"
    												                     onclick="preventDoubleSubmit(this);"
      												                 class="dropdown-item"
      												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
      													             <util:icon icon="circle-check"/>
-                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement}</span>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement_invalidTopStrctUsage}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'DUPLICATES_IN_DOCSTRCT'}">
+               													<button jsf:id="btn_mets_1"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement_duplicateInDocStrct}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'DUPLICATES_IN_GROUP'}">
+               													<button jsf:id="btn_mets_2"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement_duplicateInGroup}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'UNUSED_BUT_DEFINED'}">
+               													<button jsf:id="btn_mets_3"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement_unusedButDefined}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'VALIDATE_FORMATS'}">
+               													<button jsf:id="btn_mets_4"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement_validateFormats}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>	 
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'USED_BUT_UNDEFINED'}">
+               													<button jsf:id="btn_mets_5"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement_usedButUndefined}</span>
                 												</button>
            													</h:panelGroup>
        													 </li>
        													 <li>
             												<h:panelGroup rendered="#{error.errorType eq 'USED_BUT_UNDEFINED' or error.errorType eq 'VALIDATE_FORMATS'}">
-               													<button jsf:id="btn_define"
+               													<button jsf:id="btn_mets_6"
    												                     onclick="preventDoubleSubmit(this);"
      												                 class="dropdown-item"
      												                 jsf:action="#{rulesetEditorBean.handleAction(error, 1)}">
@@ -230,7 +285,7 @@
        													 </li>
        													 <li>
             												<h:panelGroup rendered="#{error.errorType eq 'INVALID_CARDINALITY'}">
-               													<button jsf:id="btn_changeCardinality1"
+               													<button jsf:id="btn_mets_7"
    												                     onclick="preventDoubleSubmit(this);"
      												                 class="dropdown-item"
      												                 jsf:action="#{rulesetEditorBean.handleAction(error, 1)}">
@@ -241,7 +296,7 @@
        													 </li>
        													 <li>
             												<h:panelGroup rendered="#{error.errorType eq 'INVALID_CARDINALITY'}">
-               													<button jsf:id="btn_btn_changeCardinality2"
+               													<button jsf:id="btn_mets_8"
    												                     onclick="preventDoubleSubmit(this);"
      												                 class="dropdown-item"
      												                 jsf:action="#{rulesetEditorBean.handleAction(error, 2)}">
@@ -252,7 +307,7 @@
        													 </li>
        													 <li>
             												<h:panelGroup rendered="#{error.errorType eq 'INVALID_CARDINALITY'}">
-               													<button jsf:id="btn_btn_changeCardinality3"
+               													<button jsf:id="btn_mets_9"
    												                     onclick="preventDoubleSubmit(this);"
      												                 class="dropdown-item"
      												                 jsf:action="#{rulesetEditorBean.handleAction(error, 3)}">
@@ -263,7 +318,7 @@
        													 </li>
        													 <li>
             												<h:panelGroup rendered="#{error.errorType eq 'INVALID_CARDINALITY'}">
-               													<button jsf:id="btn_btn_changeCardinality4"
+               													<button jsf:id="btn_mets_10"
    												                     onclick="preventDoubleSubmit(this);"
      												                 class="dropdown-item"
      												                 jsf:action="#{rulesetEditorBean.handleAction(error, 4)}">

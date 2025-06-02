@@ -13,6 +13,7 @@ public class FixRemoveFromXml {
 	 * @param error
 	 */
 	public void fix(Element root, RulesetValidationError error, boolean deleteParent) {
+		System.out.println(error);
 	    Element toRemove = findElementByLineNumber(root, error.getLine());
 	    
 	    if (toRemove != null) {
