@@ -55,7 +55,13 @@ public class ValidateFormats {
 		if ("PicaPlus".equals(format)) {
 			checkElements(root, errors, "Corporate", "MetadataType", format, nameValue, allUsedValues);
 		}
-		checkElements(root, errors, "Group", "Group", format, nameValue, allUsedValues);
+		Element formats = root.getChild("Formats");
+		if (formats != null) {
+		    Element formatElement = formats.getChild(format);
+		    if (formatElement != null) {
+		        checkGroupsRecursive(formatElement, format, nameValue, allUsedValues);
+		    }
+		}
 
 		// Run through the Elements and build a String containing the
 		// elementName:elementChild("Name") and if it is a MetadataType also collect the
@@ -78,12 +84,13 @@ public class ValidateFormats {
 				}
 			}
 		}
-		// Go through the Map of allUsedValues and compare it with the definedValues List
+		// Go through the Map of allUsedValues and compare it with the definedValues
+		// List
 		for (Map.Entry<String, List<Object>> entry : allUsedValues.entrySet()) {
 			boolean foundMatch = false;
 			List<Object> valueList = entry.getValue();
 			String fullValue = (String) valueList.get(0);
-		    Element element = (Element) valueList.get(1);
+			Element element = (Element) valueList.get(1);
 			String[] parts = fullValue.split(":", 3);
 
 			String usedElementType = parts[0];
@@ -162,6 +169,44 @@ public class ValidateFormats {
 			}
 		}
 	}
+	/**
+	 * Function to recursivly check groups in groups in lido for undefined values
+	 * @param parent
+	 * @param format
+	 * @param nameValue
+	 * @param allUsedValues
+	 */
+	private void checkGroupsRecursive(Element parent, String format, String nameValue,
+			Map<String, List<Object>> allUsedValues) {
+		List<Element> groups = parent.getChildren("Group");
+		for (Element group : groups) {
+			Element nameElement = group.getChild(nameValue);
+			if (nameElement != null) {
+				String value = nameElement.getTextTrim();
+				String lineNumber = group.getAttributeValue("goobi_lineNumber");
+
+				List<Object> valueList = new ArrayList<>();
+				valueList.add("Group:" + value);
+				valueList.add(group);
+				allUsedValues.put(lineNumber, valueList);
+			}
+			List<Element> metadataElements = group.getChildren("Metadata");
+	        for (Element metadata : metadataElements) {
+	            Element metadataName = metadata.getChild(nameValue);
+	            if (metadataName != null) {
+	                String value = metadataName.getTextTrim();
+	                String lineNumber = metadata.getAttributeValue("goobi_lineNumber");
+
+	                List<Object> valueList = new ArrayList<>();
+	                valueList.add("MetadataType:" + value);
+	                valueList.add(metadata);
+	                allUsedValues.put(lineNumber, valueList);
+	            }
+	        }
+			
+			checkGroupsRecursive(group, format, nameValue, allUsedValues);
+		}
+	}
 
 	/**
 	 * Create the errors for the found undefined values
@@ -173,13 +218,14 @@ public class ValidateFormats {
 	 * @param formatNameValue
 	 */
 	private void createError(List<RulesetValidationError> errors, String usedElementType,
-			String usedElementAttributeValue, String usedElementNameValue, String lineNumber, String formatName, Element element) {
+			String usedElementAttributeValue, String usedElementNameValue, String lineNumber, String formatName,
+			Element element) {
 		if ("MetadataType".equals(usedElementType)) {
 			if (usedElementAttributeValue == null) {
 				errors.add(new RulesetValidationError("ERROR",
 						Helper.getTranslation("ruleset_validation_used_but_undefined_metadata_for_export",
 								usedElementNameValue, formatName),
-						lineNumber,6, element));
+						lineNumber, 6, element));
 			} else {
 				if (usedElementAttributeValue.equals("person")) {
 					errors.add(new RulesetValidationError("ERROR",
@@ -190,14 +236,14 @@ public class ValidateFormats {
 					errors.add(new RulesetValidationError("ERROR",
 							Helper.getTranslation("ruleset_validation_used_but_undefined_corporate_for_export",
 									usedElementNameValue, formatName),
-							lineNumber,6, element));
+							lineNumber, 6, element));
 				}
 			}
 		} else if ("Group".equals(usedElementType)) {
 			errors.add(new RulesetValidationError("ERROR",
 					Helper.getTranslation("ruleset_validation_used_but_undefined_group_for_export",
 							usedElementNameValue, formatName),
-					lineNumber,6, element));
+					lineNumber, 6, element));
 		}
 	}
 }
