@@ -5,7 +5,16 @@
  *
  * @module codemirror
  */
-import { EditorView, basicSetup } from "codemirror";
+import { basicSetup } from "codemirror";
+import {
+    EditorState,
+    StateField,
+    StateEffect,
+} from "@codemirror/state";
+import {
+    EditorView,
+    Decoration,
+} from "@codemirror/view";
 import { indentUnit } from "@codemirror/language";
 import { javascript } from "@codemirror/lang-javascript";
 import { xml } from "@codemirror/lang-xml";
@@ -24,6 +33,8 @@ export const initCodemirror = () => {
     });
 };
 
+let view;
+
 const editorFromTextArea = (textArea, language = 'xml') => {
     const languageMap = {
         javascript: javascript(),
@@ -33,18 +44,21 @@ const editorFromTextArea = (textArea, language = 'xml') => {
         yaml: yaml(),
         properties: properties(),
     };
-    let view = new EditorView({
-        doc: textArea.value,
-        extensions: [
-            basicSetup,
-            languageMap[language],
-            EditorView.updateListener.of((update) => {
-                if (update.docChanged) {
-                    updateReferenceInput(textArea.id, update.state.doc.toString());
-                }
-            }),
-            indentUnit.of('    '), // Set the indentation unit to 4 spaces
-        ],
+    view = new EditorView({
+        state: EditorState.create({
+            doc: textArea.value,
+            extensions: [
+                basicSetup,
+                languageMap[language],
+                EditorView.updateListener.of((update) => {
+                    if (update.docChanged) {
+                        updateReferenceInput(textArea.id, update.state.doc.toString());
+                    }
+                }),
+                indentUnit.of('    '), // Set the indentation unit to 4 spaces
+                highlight,
+            ],
+        }),
         parent: textArea.parentNode
     });
     textArea.parentNode.insertBefore(view.dom, textArea);
@@ -68,4 +82,46 @@ const base64EncodeUnicode = function base64EncodeUnicode(str) {
 		return String.fromCharCode('0x' + p1);
 	});
 	return btoa(utf8Bytes);
-}
+};
+
+const addLineHighlight = StateEffect.define();
+const lineHighlight = Decoration.line({
+    attributes: { style: 'background-color: yellow;' },
+});
+
+const highlight = StateField.define({
+    create() {
+        return Decoration.none;
+    },
+    update(lines, tr) {
+        lines = lines.map(tr.changes);
+        for (let effect of tr.effects) {
+            if (effect.is(addLineHighlight)) {
+                // reset previous highlights
+                lines = Decoration.none;
+                lines = lines.update({ add: [lineHighlight.range(effect.value)] })
+            }
+        }
+        return lines;
+    },
+    provide: (f) => EditorView.decorations.from(f),
+});
+
+export const highlightLine = (lineNumber) => {
+    const line = view.state.doc.line(lineNumber).from;
+    view.dispatch({
+        effects: addLineHighlight.of(line)
+    });
+    console.log(view.lineBlockAt(line))
+};
+
+export const scrollToLine = (lineNumber) => {
+    const line = view.state.doc.line(lineNumber).from;
+    const editorElement = document.querySelector('.cm-editor');
+    const editorOffsetTop = editorElement.offsetTop;
+    window.scrollTo({
+        top: view.lineBlockAt(line).top - editorOffsetTop,
+        left: 0,
+        behavior: 'smooth',
+    });
+};
