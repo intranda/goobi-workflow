@@ -5,8 +5,8 @@
  *
  * @module codemirror
  */
-
 import { EditorView, basicSetup } from "codemirror";
+import { indentUnit } from "@codemirror/language";
 import { javascript } from "@codemirror/lang-javascript";
 import { xml } from "@codemirror/lang-xml";
 import { json } from "@codemirror/lang-json";
@@ -43,6 +43,7 @@ const editorFromTextArea = (textArea, language = 'xml') => {
                     updateReferenceInput(textArea.id, update.state.doc.toString());
                 }
             }),
+            indentUnit.of('    '), // Set the indentation unit to 4 spaces
         ],
         parent: textArea.parentNode
     });
