@@ -80,6 +80,10 @@
     }
   }
 
+  .active > .dropdown-menu:not(.dropdown-menu-end) {
+    transform:translateX(-2px);
+  }
+
   // Menu item dropdown styles
   .dropdown-menu {
     margin-top: 0;
@@ -88,10 +92,7 @@
     border-bottom-right-radius: var(--border-radius);
     border-color: var(--clr-primary-400);
     border-width: 2px;
-    transform: translateX(-2px);
-    &.dropdown-menu-end {
-      transform: translateX(0);
-    }
+    transform: translateX(0);
 
     li {
       font-size: 0.75rem;
