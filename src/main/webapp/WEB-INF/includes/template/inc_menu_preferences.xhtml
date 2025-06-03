@@ -70,6 +70,61 @@
                         execute="@form" />
                 </button>
 
+                <!-- Search Dropdown -->
+                <div
+                    class="nav-item dropdown header-search"
+                    title="#{msgs.nachEinemBandSuchen}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    data-bs-trigger="hover">
+                    <button
+                        class="nav-link dropdown-toggle"
+                        type="button"
+                        id="searchDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        data-focus-on-click="#headerSearch">
+                        <span class="fa fa-search" />
+                    </button>
+                    <div
+                        class="dropdown-menu"
+                        aria-labelledby="searchDropdown">
+                        <div class="header-search-container">
+                            <h:outputLabel
+                                for="headerSearch"
+                                styleClass="control-label "
+                                value="#{msgs.nachEinemBandSuchen}:" />
+                            <h:inputText
+                                id="headerSearch"
+                                pt:aria-label="#{msgs.search}"
+                                styleClass="form-control"
+                                value="#{ProzessverwaltungForm.filter}" />
+                            <button
+                                class="btn btn-success"
+                                jsf:id="absenden"
+                                type="submit"
+                                jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                <span
+                                    class="fa fa-search"
+                                    aria-hidden="true" />
+                                <span>
+                                    <h:outputText value="#{msgs.search}" />
+                                </span>
+                                <f:setPropertyActionListener
+                                    target="#{ProzessverwaltungForm.modusAnzeige}"
+                                    value="aktuell"  />
+                                <f:setPropertyActionListener
+                                    target="#{NavigationForm.aktuell}"
+                                    value="a22" />
+                                <f:setPropertyActionListener
+                                    target="#{NavigationForm.parentMenu}"
+                                    value="menu_workflow"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Language dropdown -->
                 <div
                     class="nav-item dropdown language-select"

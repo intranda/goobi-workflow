@@ -1,0 +1,38 @@
+.header-search {
+    position: revert;
+    .dropdown-menu {
+        width: 100vw;
+    }
+}
+
+.header-search-container {
+    align-items: center;
+    display: flex;
+    gap: var(--flow-space, 1rem);
+    padding: calc(var(--flow-space, 1rem) / 2);
+    & .btn {
+        align-items: center;
+        display: flex;
+        flex-wrap: nowrap;
+    }
+}
+
+@media screen and (min-width: 590px) {
+    .header-search {
+        position: relative;
+        .dropdown-menu {
+            width: 400px;
+            left: 0;
+            right: 0;
+        }
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .header-search {
+        .dropdown-menu {
+            left: auto;
+            right: 0;
+        }
+    }
+}
