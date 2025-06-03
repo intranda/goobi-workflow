@@ -25,21 +25,6 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<script type="text/javascript"
-			src="template/js/static/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
-		<script type="text/javascript"
-			src="template/js/static/codemirror/mode/properties/properties.js?v=#{HelperForm.buildVersion}" />
-		<script type="text/javascript"
-			src="template/js/static/codemirror/mode/xml/xml.js?v=#{HelperForm.buildVersion}" />
-		<script type="text/javascript"
-			src="template/js/legacy/ruleset_editor.js" />
-		<script type="text/javascript" src="template/js/modules/gwScroll.js" />
-
-		<style>
-.CodeMirror {
-	height: auto;
-}
-</style>
 
 		<!-- The area for messages that came from the backend -->
 		<h:messages for="rulesetEditor" escape="false"
@@ -156,8 +141,9 @@
 											jsf:rel="tooltip"
 											jsf:action="#{rulesetEditorBean.toggleShowMore}"
 											title="#{rulesetEditorBean.showMore ? msgs.ruleset_validation_show_more : msgs.ruleset_validation_show_less}">
-											<i
-												class="fa #{rulesetEditorBean.showMore ? 'fa-angle-up' : 'fa-angle-down'}"></i>
+											<span
+												aria-hidden="true"
+												class="fa #{rulesetEditorBean.showMore ? 'fa-angle-up' : 'fa-angle-down'}" />
 											<f:ajax render="validationResults" />
 										</button>
 									</div>
@@ -360,7 +346,8 @@
 									<button jsf:id="cancel" class="btn btn-blank float-end"
 										jsf:action="#{rulesetEditorBean.cancel}"
 										title="#{msgs.cancel}">
-										<span> <h:outputText value="#{msgs.cancel}" />
+										<span>
+											<h:outputText value="#{msgs.cancel}" />
 										</span>
 										<f:ajax render="rulesetEditorForm" />
 									</button>
@@ -368,9 +355,11 @@
 									<button jsf:id="validate" class="btn btn-primary float-end"
 										jsf:action="#{rulesetEditorBean.validate}"
 										title="#{msgs.validieren}">
-										<i class="fa fa-check"></i>
-										<span> <h:outputText
-												value="#{msgs.validieren}" />
+										<span
+											aria-hidden="true"
+											class="fa fa-check" />
+										<span>
+											#{msgs.validieren}
 										</span>
 										<f:ajax execute="@all" render="validationResultsWrapper" />
 									</button>
@@ -378,26 +367,35 @@
 									<button jsf:id="save" class="btn btn-success float-end"
 										jsf:action="#{rulesetEditorBean.save}"
 										title="#{msgs.uebernehmen}">
-										<i class="fa fa-save"></i> <span> <h:outputText
-												value="#{msgs.save}" />
+										<span
+											aria-hidden="true"
+											class="fa fa-save" />
+										<span>
+											#{msgs.save}
 										</span>
 										<!--<f:ajax render="" />-->
 									</button>
 								</div>
 								<!-- Text editor -->
 								<div id="rulesetEditorBorder" style="border: 1px solid #ddd;">
-									<h:inputTextarea id="rulesetEditor" style="resize: none;"
-										pt:aria-label="rulesetEditor" forceId="true"
+									<h:inputTextarea
+										id="rulesetEditor"
+										style="resize: none;"
+										pt:aria-label="rulesetEditor"
+										forceId="true"
 										styleClass="form-control"
-										value="#{rulesetEditorBean.currentRulesetFileContent}" />
-									<h:inputText id="rulesetEditorBase64" style="display: none;"
-										pt:aria-label="rulesetEditorBase64" forceId="true"
+										value="#{rulesetEditorBean.currentRulesetFileContent}"
+                                        pt:data-codemirror-target="true"
+                                        pt:data-codemirror-language="xml" />
+									<h:inputText
+										id="rulesetEditorBase64"
+										style="display: none;"
+										pt:aria-label="rulesetEditorBase64"
+										forceId="true"
 										styleClass="form-control"
-										value="#{rulesetEditorBean.currentRulesetFileContentBase64}" />
+										value="#{rulesetEditorBean.currentRulesetFileContentBase64}"
+                                        pt:data-codemirror-reference="#{cc.clientId}:rulesetEditor" />
 								</div>
-								<script type="text/javascript">
-									initRulesetEditor();
-								</script>
 							</div>
 						</intranda:box>
 					</h:panelGroup>
