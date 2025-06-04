@@ -96,7 +96,6 @@
 												<i
 													class="fa #{rulesetEditorBean.isRulesetWritable(item) ? 'fa-pencil' : 'fa-eye'}"
 													style="width: 15px;"></i>
-												<f:ajax render="rulesetEditorForm" />
 											</button>
 										</h:panelGroup>
 										<h:panelGroup
@@ -109,7 +108,6 @@
 												<i
 													class="fa #{rulesetEditorBean.isRulesetWritable(item) ? 'fa-pencil' : 'fa-eye'}"
 													style="width: 15px;"></i>
-												<f:ajax render="@form" execute="@form" />
 											</button>
 										</h:panelGroup>
 									</h:column>
@@ -349,7 +347,6 @@
 										<span>
 											<h:outputText value="#{msgs.cancel}" />
 										</span>
-										<f:ajax render="rulesetEditorForm" />
 									</button>
 									<!-- Validate-Button -->
 									<button jsf:id="validate" class="btn btn-primary float-end"
@@ -361,7 +358,6 @@
 										<span>
 											#{msgs.validieren}
 										</span>
-										<f:ajax execute="@all" render="validationResultsWrapper" />
 									</button>
 									<!-- Save-Button -->
 									<button jsf:id="save" class="btn btn-success float-end"
@@ -373,7 +369,6 @@
 										<span>
 											#{msgs.save}
 										</span>
-										<!--<f:ajax render="" />-->
 									</button>
 								</div>
 								<!-- Text editor -->
