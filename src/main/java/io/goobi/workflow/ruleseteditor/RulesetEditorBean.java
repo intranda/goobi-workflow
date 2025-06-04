@@ -18,10 +18,7 @@
 
 package io.goobi.workflow.ruleseteditor;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
@@ -44,6 +41,12 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import javax.xml.xpath.XPathExpressionException;
 
+import com.google.common.base.Stopwatch;
+import jakarta.annotation.PostConstruct;
+import org.apache.commons.codec.language.bm.RuleType;
+import org.apache.commons.text.StringEscapeUtils;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
@@ -86,6 +89,9 @@ public class RulesetEditorBean implements Serializable {
     private static final long serialVersionUID = 2073532676953677578L;
 
     private static final String CONFIGURATION_FILE = "goobi_ruleseteditor.xml";
+
+    private Schema rulesetSchema;
+    private Validator rulesetValidator;
 
     private List<Ruleset> rulesets;
 
@@ -141,6 +147,21 @@ public class RulesetEditorBean implements Serializable {
         configuration.setReloadingStrategy(new FileChangedReloadingStrategy());
 
         RulesetFileUtils.init(configuration);
+    }
+
+    @PostConstruct
+    public void init() throws IOException, SAXException {
+        String schemaPath = "ugh/ruleset_schema.xsd"; // kein führender Slash!
+
+        try (InputStream schemaStream = getClass().getClassLoader().getResourceAsStream(schemaPath)) {
+            if (schemaStream == null) {
+                throw new FileNotFoundException("Ruleset schema resource not found in classpath: " + schemaPath);
+            }
+
+            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            rulesetSchema = schemaFactory.newSchema(new StreamSource(schemaStream));
+            rulesetValidator = rulesetSchema.newValidator();
+        }
     }
 
     public String getCurrentEditorTitle() {
@@ -541,22 +562,23 @@ public class RulesetEditorBean implements Serializable {
     }
 
     private void checkRulesetXsd(String xml) {
-        String xsdUrl = "https://github.com/intranda/ugh/raw/master/ugh/ruleset_schema.xsd";
+        Stopwatch stopwatch = Stopwatch.createStarted();
 
         try {
-            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = schemaFactory.newSchema(new StreamSource(new URI(xsdUrl).toURL().openStream()));
-            Validator validator = schema.newValidator();
             StreamSource source = new StreamSource(new StringReader(xml));
-            validator.validate(source);
+            rulesetValidator.validate(source);
         } catch (Exception e) {
             if (e instanceof SAXParseException se) {
-                validationErrors.add(new RulesetValidationError(se.getLineNumber(), 0, "ERROR", e.getMessage(), null, null));
+                validationErrors.add(new RulesetValidationError(
+                        se.getLineNumber(), 0, "ERROR", e.getMessage(), null, null));
             } else {
-                validationErrors.add(new RulesetValidationError(0, 0, "ERROR", e.getMessage(), null, null));
+                validationErrors.add(new RulesetValidationError(
+                        0, 0, "ERROR", e.getMessage(), null, null));
             }
-
         }
+
+        stopwatch.stop();
+        log.debug("Validation took: {}", stopwatch.elapsed());
     }
 
     private void sortValidationErrorsBySeverity() {
