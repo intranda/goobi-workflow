@@ -59,7 +59,7 @@
                     }
             }"/>
         </h:commandLink>
-        <h:panelGroup rendered="#{property.type.name == 'vocabularymultireference'}">
+        <c:if test="#{property.type.name == 'vocabularymultireference'}">
             <c:forEach
                 var="val"
                 items="#{property.vocabularySelectionBean.selection}">
@@ -81,7 +81,7 @@
                     }"/>
                 </h:commandLink>
             </c:forEach>
-        </h:panelGroup>
+        </c:if>
         <h:panelGroup rendered="#{property.type.name == 'boolean'}">
             <h:panelGroup rendered="#{property.readValue eq 'true'}">
                 <span
