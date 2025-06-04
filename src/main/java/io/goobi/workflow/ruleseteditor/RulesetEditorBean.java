@@ -19,7 +19,6 @@
 package io.goobi.workflow.ruleseteditor;
 
 import java.io.*;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -43,7 +42,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 import com.google.common.base.Stopwatch;
 import jakarta.annotation.PostConstruct;
-import org.apache.commons.codec.language.bm.RuleType;
 import org.apache.commons.text.StringEscapeUtils;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
