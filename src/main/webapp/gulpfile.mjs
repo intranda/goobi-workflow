@@ -17,6 +17,7 @@ import uglify from 'gulp-uglify-es';
 import * as rollup from 'rollup';
 import cleanup from 'rollup-plugin-cleanup';
 import terser from '@rollup/plugin-terser';
+import nodeResolve from '@rollup/plugin-node-resolve';
 
 import * as cheerio from 'cheerio';
 import * as through2 from 'through2';
@@ -150,12 +151,15 @@ function devJsRollup() {
     return rollup
         .rollup({
             input: './uii/template/js/main.js',
-            plugins: [cleanup()]
+            plugins: [
+                cleanup(),
+                nodeResolve(),
+            ],
         })
         .then(bundle => {
             return bundle.write({
                 file: `${customLocation}${targetFolder.js}main.min.js`,
-                format: 'es',
+                format: 'iife',
             });
         });
 };
@@ -164,15 +168,18 @@ function prodJsRollup() {
     return rollup
         .rollup({
             input: './uii/template/js/main.js',
-            plugins: [cleanup()]
+            plugins: [
+                cleanup(),
+                nodeResolve(),
+            ],
         })
         .then(bundle => {
             return bundle.write({
                 file: `${targetFolder.js}main.min.js`,
-                format: 'es',
+                format: 'iife',
                 sourcemap: true,
                 plugins: [terser({
-                    mangle:false
+                    mangle:true
                 })]
             });
         });

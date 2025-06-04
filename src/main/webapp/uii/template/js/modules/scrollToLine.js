@@ -1,12 +1,8 @@
-const scrollToLine = (lineNumber) => {
-	const lines = document.querySelectorAll('.CodeMirror-linenumber');
-	const line = lines[lineNumber];
-	line.scrollIntoView({ block: 'center', inline: 'nearest' });
-	lines.forEach(activeLine => {
-		activeLine.style.backgroundColor = ''; // Reset background color
-	});
-	line.style.backgroundColor = 'yellow'; // Highlight the active line
-}
+import {
+	highlightLine,
+	scrollToLine,
+} from "./codemirror";
+
 
 export const init = () => {
 	const elements = document.querySelectorAll('[data-scroll-to-line]');
@@ -23,6 +19,7 @@ export const init = () => {
 				targetLine = targetLine.substring(1);
 			}
 			targetLine = parseInt(targetLine, 10);
+			highlightLine(targetLine);
 			scrollToLine(targetLine);
 		});
 	});
