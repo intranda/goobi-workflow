@@ -70,6 +70,27 @@
                         execute="@form" />
                 </button>
 
+                <!-- toggle contrast mode -->
+                <button
+                    type="button"
+                    class="nav-item nav-link btn-link"
+                    jsf:id="toggleContrastMode"
+                    jsf:action="#{NavigationForm.Reload}"
+                    title="#{msgs.toggleContrastMode}"
+                    aria-label="#{msgs.toggleContrastMode}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    data-toggle-accessibility-mode="true">
+                    <span
+                        aria-hidden="true"
+                        class="fa fa-adjust" />
+                    <f:ajax
+                        render="@this" />
+                    <f:setPropertyActionListener
+                        target="#{LoginForm.myBenutzer.uiMode}"
+                        value="#{LoginForm.myBenutzer.uiMode == 'regular' ? 'accessibility' : 'regular'}" />
+                </button>
+
                 <!-- Search Dropdown -->
                 <div
                     class="nav-item dropdown header-search"

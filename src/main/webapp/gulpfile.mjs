@@ -29,9 +29,10 @@ let customLocation = '';
 const sources = {
     bsCss: 'uii/template/css/src/bootstrap.scss',
     css: 'uii/template/css/src/',
+    cssAccessibility: 'uii/template/css/src/accessibility.scss',
     cssGlob: [
         'uii/template/css/src/',
-        '!uii/template/css/src/bootstrap.scss'
+        '!uii/template/css/src/bootstrap.scss',
     ],
     cssDeps: [
         'node_modules/bootstrap/scss/',

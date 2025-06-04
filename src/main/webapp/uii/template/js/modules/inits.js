@@ -10,6 +10,7 @@ import { init as initScrollToLine } from './scrollToLine';
 import { initFocusOnClick } from './focusOnClick';
 import { initSubmitOnEnter } from './submitOnEnter';
 import { initMirrorValueTo } from './mirrorValueTo';
+import { initAccessibilityModeButton } from './accessibilityMode';
 
 export const initFunctions = function initFunctions() {
     initializeAjaxLoader();
@@ -22,6 +23,7 @@ export const initFunctions = function initFunctions() {
     initFocusOnClick();
     initSubmitOnEnter();
     initMirrorValueTo();
+    initAccessibilityModeButton();
 
     focusOnLoad();
     toggleHelp();

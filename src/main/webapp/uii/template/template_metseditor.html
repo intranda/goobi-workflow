@@ -11,6 +11,12 @@
     xmlns:ds="http://deltaspike.apache.org/jsf"
     xmlns:notification="http://goobi.io/notification"
 	xmlns:layout="http://goobi.io/layout">
+	<c:set var="accessibilityMode"
+		value="#{
+			LoginForm.myBenutzer == null ?
+			HelperForm.renderAccessibilityCss  ? ' accessibility-mode' : ''
+			: LoginForm.myBenutzer.uiMode=='accessibility' ? ' accessibility-mode' : ''
+		}" />
 
     <h:head>
         <!-- METADATA -->
@@ -31,7 +37,7 @@
 
     <ui:insert name="metadata" />
 
-    <body class="#{LoginForm.myBenutzer == null?'login':'content-flow'}">
+    <body class="#{LoginForm.myBenutzer == null?'login':'content-flow'}#{accessibilityMode}">
     <ds:windowId/>
         <f:view locale="#{SpracheForm.locale}">
             <!-- USER NOT LOGGED IN -->

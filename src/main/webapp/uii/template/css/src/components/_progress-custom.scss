@@ -3,6 +3,9 @@
   height: 15px;
   justify-content: center;
   margin-top: 0.4375rem;
+  --color-progress-success: #5cb85c;
+  --color-progress-warning: #f0ad4e;
+  --color-progress-danger: #d9534f;
 }
 
 .progress {
@@ -17,15 +20,15 @@
  */
 
 .progress-bar-success {
-  background-color: #5cb85c;
+  background-color: var(--color-progress-success, #5cb85c);
 }
 
 .progress-bar-warning {
-  background-color: #f0ad4e;
+  background-color: var(--color-progress-warning, #f0ad4e);
 }
 
 .progress-bar-danger {
-  background-color: #d9534f;
+  background-color: var(--color-progress-danger, #d9534f);
 }
 
 /* ------------- progress, color rectangles, buttons in list --------------- */
@@ -42,6 +45,12 @@
 .statusRectangle{
   height: 16px;
   width: 16px;
+  --color-status-done: #339933;
+  --color-status-open: #e8860c;
+  --color-status-inwork: #ffbf21;
+  --color-status-locked: #e51400;
+  --color-status-error: #e51400;
+  --color-status-deactivated: #ccc;
 }
 
 
@@ -61,31 +70,31 @@ grau: #dddddd
 */
 
 .status-done {
-  background: #339933 none repeat scroll 0 0;
+  background: var(--color-status-done, #339933) none repeat scroll 0 0;
 }
 
 .status-open {
-  background: #e8860c none repeat scroll 0 0;
+  background: var(--color-status-open, #e8860c) none repeat scroll 0 0;
 }
 
 .status-inwork,
 .status-inflight {
-  background: #ffbf21 none repeat scroll 0 0;
+  background: var(--color-status-inwork, #ffbf21) none repeat scroll 0 0;
 }
 
 .status-locked {
-  background: #e51400 none repeat scroll 0 0;
+  background: var(--color-status-locked, #e51400) none repeat scroll 0 0;
 }
 
 .status-error {
-  background: #eee none repeat scroll 0 0;
+  background: var(--color-status-error, #eee) none repeat scroll 0 0;
   background-image: linear-gradient(
     45deg,
-    #e51400 25%,
+    var(--color-status-error, #e51400) 25%,
     transparent 25%,
     transparent 50%,
-    #e51400 50%,
-    #e51400 75%,
+    var(--color-status-error, #e51400) 50%,
+    var(--color-status-error, #e51400) 75%,
     transparent 75%,
     transparent
   );
@@ -109,117 +118,4 @@ grau: #dddddd
     transparent
   );
   background-size: 10px 10px;
-}
-
-/*--------------- Easy Readability ---------------- */
-
-.colors.small13 > [class*="easy-read-status-"] {
-  height: initial;
-  width: initial;
-}
-
-[class*="easy-read-status-"] {
-  padding-left: 15px;
-  position: relative;
-  &::before {
-    background: var(--easy-read-color, transparent) none repeat scroll 0 0;
-    border: 1px solid black;
-    content: '';
-    height: 13px;
-    left: 0px;
-    position: absolute;
-    top: 2px;
-    width: 13px;
-  }
-}
-
-.easy-read-status-done::before {
-  --easy-read-color: black;
-}
-
-.easy-read-status-open::before {
-  --easy-read-color: #ddd;
-}
-
-.easy-read-status-inwork::before,
-.easy-read-status-inflight::before {
-  --easy-read-color: #bbb;
-}
-
-.easy-read-status-locked::before {
-  --easy-read-color: white;
-}
-
-.easy-read-status-error::before {
-  --easy-read-color: #eee;
-  background-image: linear-gradient(
-    45deg,
-    black 25%,
-    transparent 25%,
-    transparent 50%,
-    black 50%,
-    black 75%,
-    transparent 75%,
-    transparent
-  );
-  background-size: 7px 7px;
-}
-
-.easy-read-status-deactivated::before {
-  --easy-read-color: #eee;
-  background-image: linear-gradient(
-    0deg,
-    #ccc 25%,
-    transparent 25%,
-    transparent 50%,
-    #ccc 50%,
-    #ccc 75%,
-    transparent 75%,
-    transparent
-  );
-  background-size: 14px 14px;
-}
-
-.easy-read-progressbar-status-locked {
-  background: white none repeat scroll 0 0;
-  border-bottom: 1px solid black;
-  border-top: 1px solid black;
-  border-right: 1px solid black;
-  box-shadow: none;
-}
-
-.easy-read-progressbar-status-open {
-  background: #ccc none repeat scroll 0 0;
-  border-bottom: 1px solid black;
-  border-top: 1px solid black;
-  border-right: 1px solid black;
-  box-shadow: none;
-}
-
-.easy-read-progressbar-status-done {
-  background: black none repeat scroll 0 0;
-  border-bottom: 1px solid black;
-  border-top: 1px solid black;
-  border-left: 1px solid black;
-  border-right: 1px solid black;
-  box-shadow: none;
-}
-
-.easy-read-progressbar-status-error {
-  background-color: black;
-  background-image: linear-gradient(
-    45deg,
-    #eee 25%,
-    transparent 25%,
-    transparent 50%,
-    #eee 50%,
-    #eee 75%,
-    transparent 75%,
-    transparent
-  );
-  background-size: 10px 10px;
-  border-bottom: 1px solid black;
-  border-top: 1px solid black;
-  border-right: 1px solid black;
-  box-shadow: none;
 }
