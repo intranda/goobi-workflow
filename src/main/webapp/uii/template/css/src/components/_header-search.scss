@@ -12,7 +12,7 @@
 .header-search-container {
     align-items: center;
     display: flex;
-    gap: var(--flow-space, 1rem);
+    gap: calc(var(--flow-space, 1rem) / 2);
     padding: calc(var(--flow-space, 1rem) / 2);
     & .btn {
         align-items: center;
