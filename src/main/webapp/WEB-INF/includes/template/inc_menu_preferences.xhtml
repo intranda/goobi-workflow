@@ -127,7 +127,7 @@
                                     LoginForm.hasRole('Workflow_General_Search') ? '#processSearch' : ''
                                 }"
                                 pt:data-mirror-value-to="[&quot;#headerSearchTasks&quot;,&quot;#headerSearchProcesses&quot;]" />
-                            <h:inputText
+                                <h:inputText
                                 id="headerSearchTasks"
                                 pt:aria-label="#{msgs.filterTasks}"
                                 styleClass="visually-hidden"
@@ -143,9 +143,6 @@
                                 type="submit"
                                 jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
                                 jsf:rendered="#{LoginForm.hasRole('Task_Menu')}">
-                                <span
-                                    class="fa fa-search"
-                                    aria-hidden="true" />
                                 <span>
                                     <h:outputText value="#{msgs.schritte}" />
                                 </span>
@@ -162,9 +159,6 @@
                                 type="submit"
                                 jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                                 jsf:rendered="#{LoginForm.hasRole('Workflow_General_Search')}">
-                                <span
-                                    class="fa fa-search"
-                                    aria-hidden="true" />
                                 <span>
                                     <h:outputText value="#{msgs.aktuelleProzesse}" />
                                 </span>

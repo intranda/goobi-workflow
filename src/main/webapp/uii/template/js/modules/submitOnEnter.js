@@ -5,7 +5,7 @@ export const initSubmitOnEnter = () => {
     }
     elements.forEach(element => {
         const targetSelector = element.getAttribute('data-submit-on-enter');
-        if (JSON.parse(targetSelector)) {
+        if (!targetSelector.startsWith('#')) {
             element.addEventListener('keydown', () => {
                 const targetsObject = JSON.parse(targetSelector);
                 if (Object.keys(targetsObject).length === 0) {
@@ -34,7 +34,7 @@ export const initSubmitOnEnter = () => {
             });
         };
         element.addEventListener('keyup', (event) => {
-            if (JSON.parse(targetSelector)) {
+            if (!targetSelector.startsWith('#')) {
                 const targetsObject = JSON.parse(targetSelector);
                 if (Object.keys(targetsObject).length === 0) {
                     return;
