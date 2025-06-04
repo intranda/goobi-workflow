@@ -8,6 +8,8 @@ import { init as initConfigFileEditor } from './gwConfigFileEditor';
 import { initScrollTop } from './scrollTop';
 import { init as initScrollToLine } from './scrollToLine';
 import { initFocusOnClick } from './focusOnClick';
+import { initSubmitOnEnter } from './submitOnEnter';
+import { initMirrorValueTo } from './mirrorValueTo';
 
 export const initFunctions = function initFunctions() {
     initializeAjaxLoader();
@@ -18,6 +20,8 @@ export const initFunctions = function initFunctions() {
     initScrollTop();
     initScrollToLine();
     initFocusOnClick();
+    initSubmitOnEnter();
+    initMirrorValueTo();
 
     focusOnLoad();
     toggleHelp();
