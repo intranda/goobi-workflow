@@ -138,14 +138,14 @@
 									<!--  MODAL FOR METDATA POPUP  -->
 									<h:panelGroup
 										rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.myProzess.temporaryMetadataFiles}">
-										<a
-											class="btn text_head"
+										<button
+											type="button"
+											class="btn d-flex align-items-center btn--title-action"
 											title="#{msgs.metadatenBearbeiten}"
-											href="#"
 											data-bs-toggle="modal"
 											data-bs-target="#myModal-#{count}">
 											<span class="fa fa-book" />
-										</a>
+										</button>
 									</h:panelGroup>
 									<div
 										class="modal fade"
@@ -157,20 +157,20 @@
 											class="modal-dialog"
 											role="document">
 											<div class="modal-content">
-												<div class="modal-header">
-													<a
-														href="#"
-														class="btn btn-blue pull-right"
-														title="#{msgs.cancel}"
-														data-toggle="tooltip"
-														data-dismiss="modal">
-														<span class="fa fa-times" />
-													</a>
+												<div class="modal-header bg-primary-400 text-white">
 													<h4
 														class="modal-title"
 														id="myModalLabel2">
 														<h:outputText value="#{msgs.metseditorOpen}" />
 													</h4>
+													<button
+														type="button"
+														class="btn"
+														title="#{msgs.cancel}"
+														data-bs-toggle="tooltip"
+														data-bs-dismiss="modal">
+														<span class="fa fa-times" />
+													</button>
 												</div>
 												<div class="modal-body">
 													<h:outputText
@@ -184,9 +184,11 @@
 														jsf:id="action15a"
 														title="#{msgs.discard}"
 														jsf:rel="tooltip"
-														class="btn btn-lightred pull-left">
+														class="btn btn-hot me-auto text-white">
 														<span class="fa fa-trash-o margin-right-10" />
-														<h:outputText value="#{msgs.discard}" />
+														<span>
+															#{msgs.discard}
+														</span>
 														<f:passThroughAttribute
 															name="data-toggle"
 															value="tooltip" />
@@ -220,14 +222,17 @@
 													</button>
 
 													<button
+														type="button"
 														onclick="sessionStorage.removeItem('columnWidths');"
 														jsf:action="#{Metadaten.XMLlesen}"
 														jsf:id="action15b"
 														title="#{msgs.overwrite}"
 														jsf:rel="tooltip"
-														class="btn btn-green">
+														class="btn btn-success text-white">
 														<span class="fa fa-floppy-o margin-right-10" />
-														<h:outputText value="#{msgs.overwrite}" />
+														<span>
+															#{msgs.overwrite}
+														</span>
 														<f:passThroughAttribute
 															name="data-toggle"
 															value="tooltip" />
