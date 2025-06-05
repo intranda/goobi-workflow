@@ -738,144 +738,112 @@
 
                             </h:panelGroup>
                             <h:panelGroup rendered="#{ProjekteForm.displayMode eq 'tab5'}">
-                                <dl:list>
-                                    <ui:repeat
-                                        var="item"
-                                        value="#{ProjekteForm.myProjekt.properties}"
-                                        varStatus="status">
-                                        <dl:term>#{item.titel}</dl:term>
-                                        <dl:description>
-                                            #{item.wert}
-                                            <button:row position="end">
-                                                <button
-                                                    type="button"
-                                                    jsf:id="editProperty"
-                                                    class="btn btn-blank"
-                                                    jsf:rel="tooltip"
-                                                    jsf:action="#{NavigationForm.Reload}"
-                                                    title="#{msgs.bearbeiten}"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#EditModalProjectProperties">
-                                                    <span class="fa fa-pencil" />
-                                                    <f:setPropertyActionListener
-                                                        target="#{ProjekteForm.currentProperty}"
-                                                        value="#{item}" />
-
-                                                </button>
-                                            </button:row>
-                                        </dl:description>
-                                    </ui:repeat>
-                                </dl:list>
-                                <div
-                                    class="section-footer p-3 border-bottom">
-                                    <button
-                                        type="button"
-                                        jsf:id="newProperty"
-                                        class="btn btn-action"
-                                        jsf:rel="tooltip"
-                                        title="#{msgs.eigenschaftHinzufuegen}"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#EditModalProjectProperties">
-                                        <span class="fa fa-plus" />
-                                        <span>#{msgs.eigenschaftHinzufuegen}</span>
-                                        <f:passThroughAttribute
-                                            name="data-toggle"
-                                            value="tooltip" />
-                                    </button>
-                                </div>
-                                <div
-                                    id="EditModalProjectProperties"
-                                    class="modal fade"
-                                    tabindex="-1"
-                                    role="dialog"
-                                    aria-labelledby="EditModalLabelProjectProperties">
-                                    <div
-                                        class="modal-dialog modal-lg"
-                                        role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-action text-white">
-                                                <h5
-                                                    id="EditModalLabelProjectProperties"
-                                                    class="modal-title">
-                                                    #{msgs.eigenschaftBearbeiten}
-                                                </h5>
-                                                <button
-                                                    type="button"
-                                                    class="btn text-white"
-                                                    data-bs-dismiss="modal"
-                                                    aria-label="#{msgs.schliessen}">
-                                                    <span
-                                                        aria-hidden="true"
-                                                        class="fa fa-times" />
-                                                </button>
-                                            </div>
-                                            <h:panelGroup
-                                                layout="block"
-                                                id="propertyEditAreaProjectProperties"
-                                                styleClass="modal-body p-0">
-                                                <intranda:formInputText
-                                                    id="propertyTitle"
-                                                    name="propertyTitle"
-                                                    label="#{msgs.titel}"
-                                                    field="#{ProjekteForm.currentProperty.propertyName}"
-                                                    help="#{msgs.helpPropertyTitle}"
-                                                    required="true" />
-                                                <intranda:formInputText
-                                                    id="propertyValue"
-                                                    name="propertyValue"
-                                                    label="#{msgs.wert}"
-                                                    field="#{ProjekteForm.currentProperty.propertyValue}"
-                                                    help="#{msgs.helpPropertyValue}"
-                                                    required="true" />
-
-                                                <div class="box__actions">
-                                                    <!-- CANCEL -->
+                                <ui:fragment rendered="#{NavigationForm.uiStatus.projectProperty ne 'editProperties'}">
+                                    <dl:list>
+                                        <ui:repeat
+                                            var="item"
+                                            value="#{ProjekteForm.myProjekt.properties}"
+                                            varStatus="status">
+                                            <dl:term>#{item.titel}</dl:term>
+                                            <dl:description>
+                                                #{item.wert}
+                                                <button:row position="end">
                                                     <button
-                                                        jsf:id="cancelProperty"
+                                                        jsf:id="editProperty"
                                                         class="btn btn-blank"
-                                                        jsf:immediate="true"
+                                                        title="#{msgs.bearbeiten}"
+                                                        data-bs-toggle="tooltip"
                                                         jsf:action="#{NavigationForm.Reload}">
-                                                        <h:outputText value="#{msgs.abbrechen}" />
+                                                        <span class="fa fa-pencil" />
+                                                        <f:setPropertyActionListener
+                                                            target="#{ProjekteForm.currentProperty}"
+                                                            value="#{item}" />
                                                         <f:setPropertyActionListener
                                                             target="#{NavigationForm.uiStatus.projectProperty}"
-                                                            value="" />
+                                                            value="editProperties" />
                                                     </button>
-
-                                                    <!-- SAVE -->
-                                                    <button
-                                                        class="btn btn-success submitOnEnter"
-                                                        jsf:id="saveProperty"
-                                                        type="submit"
-                                                        jsf:action="#{ProjekteForm.saveProperty}">
-                                                        <span class="fa fa-save" />
-                                                        <span>
-                                                            <h:outputText value="#{msgs.speichern}" />
-                                                        </span>
-                                                        <f:setPropertyActionListener
-                                                            target="#{NavigationForm.uiStatus.projectProperty}"
-                                                            value="" />
-                                                    </button>
-
-                                                    <!-- DELETE -->
-                                                    <button
-                                                        jsf:id="deleteProperty"
-                                                        class="btn btn-hot trigger-delete"
-                                                        onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
-                                                        jsf:action="#{ProjekteForm.deleteProperty}"
-                                                        jsf:rendered="#{ProjekteForm.currentProperty.id != null}">
-                                                        <span class="fa fa-trash-o" />
-                                                        <span>
-                                                            <h:outputText value="#{msgs.loeschen}" />
-                                                        </span>
-                                                        <f:setPropertyActionListener
-                                                            target="#{NavigationForm.uiStatus.projectProperty}"
-                                                            value="" />
-                                                    </button>
-                                                </div>
-                                            </h:panelGroup>
-                                        </div>
+                                                </button:row>
+                                            </dl:description>
+                                        </ui:repeat>
+                                    </dl:list>
+                                    <div
+                                        class="section-footer p-3 border-bottom">
+                                        <button
+                                            jsf:action="#{ProjekteForm.newProperty}"
+                                            jsf:id="newProperty"
+                                            class="btn btn-action">
+                                            <span class="fa fa-plus" />
+                                            <span>#{msgs.eigenschaftHinzufuegen}</span>
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus.projectProperty}"
+                                                value="editProperties" />
+                                        </button>
                                     </div>
-                                </div>
+                                </ui:fragment>
+                                <ui:fragment rendered="#{NavigationForm.uiStatus.projectProperty == 'editProperties'}">
+                                    <intranda:formInputText
+                                        id="propertyTitle"
+                                        name="propertyTitle"
+                                        label="#{msgs.titel}"
+                                        field="#{ProjekteForm.currentProperty.propertyName}"
+                                        help="#{msgs.helpPropertyTitle}"
+                                        required="true" />
+                                    <intranda:formInputText
+                                        id="propertyValue"
+                                        name="propertyValue"
+                                        label="#{msgs.wert}"
+                                        field="#{ProjekteForm.currentProperty.propertyValue}"
+                                        help="#{msgs.helpPropertyValue}"
+                                        required="true" />
+
+                                    <div class="box__actions">
+                                        <!-- CANCEL -->
+                                        <button
+                                            jsf:id="cancelProperty"
+                                            class="btn btn-blank"
+                                                jsf:immediate="true"
+                                            jsf:action="#{NavigationForm.Reload}">
+                                            <h:outputText value="#{msgs.abbrechen}" />
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus.projectProperty}"
+                                                value="" />
+                                        </button>
+
+                                        <!-- SAVE -->
+                                        <button
+                                            class="btn btn-success submitOnEnter"
+                                            jsf:id="saveProperty"
+                                            type="submit"
+                                            jsf:action="#{ProjekteForm.saveProperty}">
+                                            <span class="fa fa-save" />
+                                            <span>
+                                                <h:outputText value="#{msgs.speichern}" />
+                                            </span>
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus.projectProperty}"
+                                                value="" />
+                                        </button>
+
+                                        <!-- DELETE -->
+                                        <button
+                                            jsf:id="deleteProperty"
+                                            class="btn btn-hot trigger-delete"
+                                            onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
+                                            jsf:action="#{ProjekteForm.deleteProperty}"
+                                            jsf:rendered="#{ProjekteForm.currentProperty.id != null}">
+                                            <span class="fa fa-trash-o" />
+                                            <span>
+                                                <h:outputText value="#{msgs.loeschen}" />
+                                            </span>
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus.projectProperty}"
+                                                value="" />
+                                        </button>
+                                    </div>
+                                </ui:fragment>
 
 
                             </h:panelGroup>
