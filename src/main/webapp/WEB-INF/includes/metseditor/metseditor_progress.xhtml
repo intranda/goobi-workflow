@@ -20,21 +20,17 @@
                 aria-labelledby="unsavedChangesLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title" id="unsavedChangesLabel">
+                        <div class="modal-header bg-primary text-white">
+                            <h3 class="modal-title" id="unsavedChangesLabel">
                                 <h:outputText value="#{msgs.metseditorFinish}" />
-                            </h1>
+                            </h3>
 
                           <button
                             type="button"
-                            class="close"
+                            class="btn text-white"
                             data-dismiss="modal"
                             aria-label="Close">
-                            <span aria-hidden="true">
-                                <h:outputText
-                                    value="&amp;times;"
-                                    escape="false" />
-                            </span>
+                            <span aria-hidden="true" class="fa fa-times" />
                         </button>
                         </div>
                         <div class="modal-body">
@@ -44,7 +40,7 @@
                         <div class="modal-footer">
                             <button
                                 jsf:id="discard"
-                                class="btn btn--red"
+                                class="btn btn-hot"
                                 jsf:action="#{Metadaten.discard}"
                                 title="#{msgs.discard}"
                                 data-bs-toggle="tooltip">
@@ -56,7 +52,7 @@
 
                             <button
                                 jsf:id="overwrite"
-                                class="btn btn--green"
+                                class="btn btn-success"
                                 jsf:action="#{Metadaten.XMLschreiben}"
                                 onclick="goobiWorkflowJS.progress.displayProgressBar()"
                                 title="#{msgs.overwrite}"
