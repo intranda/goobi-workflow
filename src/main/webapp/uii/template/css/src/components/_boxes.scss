@@ -85,6 +85,10 @@
       font-size: 1.25rem;
     }
   }
+  &:has(.tabs) {
+    flex-wrap: wrap;;
+    row-gap: calc(var(--flow-space, 1em) / 2);
+  }
 }
 
 .box--padded .box__body,
@@ -155,8 +159,8 @@
     gap: 0.5rem;
     padding: 2px;
     list-style: none;
+    margin-inline: auto 8px;
     margin-bottom: 0;
-    margin-right: 8px;
     align-items: center;
     .tab {
       display: flex;
