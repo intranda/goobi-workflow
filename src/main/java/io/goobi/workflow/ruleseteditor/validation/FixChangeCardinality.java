@@ -14,18 +14,18 @@ public class FixChangeCardinality {
 	 * @param value This value was given through the press of the correction button and the js
 	 */
 	public void fix(Element root, RulesetValidationError error, int value) {
-	    Attribute numAttribute = findElementByLineNumber(root, error.getLine()).getAttribute("num");
-	    if(numAttribute != null) {
-	    	if(value == 1) {
-	    		numAttribute.setValue("1o");
-	    	} else if(value == 2) {
-	    		numAttribute.setValue("*");
-	    	} else if(value == 3) {
-	    		numAttribute.setValue("1m");
-	    	} else if(value == 4) {
-	    		numAttribute.setValue("+");
-	    	}
-	    }
+		Element element = findElementByLineNumber(root, error.getLine());
+		if(element != null) {
+			// TODO: Replace these numeric values with an enum
+			var numValue = switch (value) {
+				case 1 -> "1o";
+				case 2 -> "*";
+				case 3 -> "1m";
+				case 4 -> "+";
+				default -> throw new IllegalArgumentException("Invalid value: " + value);
+			};
+			element.setAttribute("num", numValue);
+		}
 	}
 
 
