@@ -464,7 +464,7 @@ public class RulesetEditorBean implements Serializable {
         return eh.getErrors();
     }
 
-    private void checkRulesetValid(String xml) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+    private void checkRulesetValid(String xml) throws ParserConfigurationException, SAXException, IOException {
         // Use sax to add lineNumber as attributes
         SAXParserFactory saxFactory = SAXParserFactory.newInstance();
         SAXParser parser = saxFactory.newSAXParser();
@@ -477,6 +477,9 @@ public class RulesetEditorBean implements Serializable {
 
         try (ByteArrayInputStream bais = new ByteArrayInputStream(xmlBytes)) {
             parser.parse(new InputSource(bais), handler);
+        } catch (SAXParseException e) {
+            validationErrors.add(new RulesetValidationError(e.getLineNumber(), e.getColumnNumber(), "FATAL", e.getMessage(), null, null));
+            return;
         }
 
         try (ByteArrayInputStream bais2 = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
