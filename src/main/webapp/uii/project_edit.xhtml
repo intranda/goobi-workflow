@@ -820,7 +820,7 @@
                                             jsf:action="#{ProjekteForm.saveProperty}">
                                             <span class="fa fa-save" />
                                             <span>
-                                                <h:outputText value="#{msgs.speichern}" />
+                                                <h:outputText value="#{msgs.propertySave}" />
                                             </span>
                                             <f:setPropertyActionListener
                                                 target="#{NavigationForm.uiStatus.projectProperty}"
@@ -836,7 +836,7 @@
                                             jsf:rendered="#{ProjekteForm.currentProperty.id != null}">
                                             <span class="fa fa-trash-o" />
                                             <span>
-                                                <h:outputText value="#{msgs.loeschen}" />
+                                                <h:outputText value="#{msgs.propertyDelete}" />
                                             </span>
                                             <f:setPropertyActionListener
                                                 target="#{NavigationForm.uiStatus.projectProperty}"
