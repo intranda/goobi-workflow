@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
+    version="2.0">
+    <namespace>http://goobi.io/dl</namespace>
+    <tag>
+        <tag-name>list</tag-name>
+        <source>description-list/list.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>term</tag-name>
+        <source>description-list/term.xhtml</source>
+    </tag>
+    <tag>
+        <tag-name>description</tag-name>
+        <source>description-list/description.xhtml</source>
+    </tag>
+</facelet-taglib>
