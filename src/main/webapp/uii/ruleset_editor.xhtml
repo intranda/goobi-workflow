@@ -1,0 +1,462 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	template="/uii/template/template.html"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:util="http://goobi.io/util">
+
+	<ui:param name="myPageTitle"
+		value="#{msgs.intranda_administration_ruleset_editor}" />
+
+	<ui:define name="breadcrumb" role="navigation">
+		<intranda:breadcrumb id="index"
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index" navId="a0" />
+		<intranda:breadcrumb id="ruleset_editor" label="#{myPageTitle}"
+			action="ruleset_editor" noSeparator="#{true}" />
+	</ui:define>
+
+	<ui:define name="info">
+	</ui:define>
+
+	<ui:define name="content">
+
+		<!-- The area for messages that came from the backend -->
+		<h:messages for="rulesetEditor" escape="false"
+			errorClass="alert alert-danger" infoClass="alert alert-info"
+			warnClass="alert alert-warning" showDetail="true" showSummary="true"
+			tooltip="true" styleClass="messages" />
+
+		<!-- Without permission -->
+		<ui:fragment rendered="#{!LoginForm.hasRole('Admin_ruleset_editor')}">
+			<intranda:box boxType="neutral" boxPadding="true" icon="fa-plug"
+				title="#{msgs[rulesetEditorBean.title]}">
+
+				<div class="alert alert-danger alert-dismissable">
+					<h:outputText
+						value="#{msgs.plugin_administration_missingPermission} Admin_ruleset_editor" />
+				</div>
+			</intranda:box>
+		</ui:fragment>
+
+		<!-- With permission -->
+		<h:form id="rulesetEditorForm"
+			rendered="#{LoginForm.hasRole('Admin_ruleset_editor')}">
+
+			<div class="row">
+				<div class="col-sm-12 col-md-4 mb-3" id="leftarea">
+
+					<!-- BOX WITH FILES -->
+					<intranda:box boxType="primary" boxPadding="false"
+						icon="fa-files-o"
+						title="#{msgs.plugin_administration_ruleset_editor_ruleset_selection}">
+
+						<!-- TABLE WITH FILE LIST -->
+						<div class="gw-table gw-table-fixed">
+							<div class="gw-table__wrapper">
+								<h:dataTable id="ruleset_table"
+									styleClass="table table-bordered table-fixed table-hover"
+									var="item" value="#{rulesetEditorBean.rulesets}">
+									<h:column headerClass="gw-table-fixed__sizeXXS">
+										<f:facet name="header">
+											<h:outputText value="#{msgs.regelsatz}" />
+										</f:facet>
+										<h:outputText value="#{item.titel}" />
+									</h:column>
+									<h:column headerClass="gw-table-fixed__sizeXXS">
+										<f:facet name="header">
+											<h:outputText value="#{msgs.datei}" />
+										</f:facet>
+										<h:outputText value="#{item.datei}" />
+									</h:column>
+									<h:column headerClass="gw-table-fixed__sizeS">
+										<f:facet name="header">
+											<h:outputText value="#{msgs.zuletztBearbeitet}" />
+										</f:facet>
+										<h:outputText
+											value="#{rulesetEditorBean.getLastModifiedDateOfRuleset(item)}" />
+									</h:column>
+									<h:column headerClass="gw-table-fixed__sizeXXS">
+										<f:facet name="header">
+											<h:outputText value="#{msgs.auswahl}" />
+										</f:facet>
+										<!-- Edit-Ruleset-Button -->
+										<h:panelGroup
+											rendered="#{rulesetEditorBean.currentRuleset == null}">
+											<button jsf:id="edit"
+												class="btn #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
+												title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}"
+												jsf:rel="tooltip"
+												jsf:action="#{rulesetEditorBean.editRuleset(item)}">
+												<i
+													class="fa #{rulesetEditorBean.isRulesetWritable(item) ? 'fa-pencil' : 'fa-eye'}"
+													style="width: 15px;"></i>
+											</button>
+										</h:panelGroup>
+										<h:panelGroup
+											rendered="#{rulesetEditorBean.currentRuleset != null}">
+											<button jsf:id="edit2"
+												class="btn #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
+												type="button"
+												jsf:action="#{rulesetEditorBean.editRuleset(item)}"
+												title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}">
+												<i
+													class="fa #{rulesetEditorBean.isRulesetWritable(item) ? 'fa-pencil' : 'fa-eye'}"
+													style="width: 15px;"></i>
+											</button>
+										</h:panelGroup>
+									</h:column>
+								</h:dataTable>
+							</div>
+						</div>
+						<!-- // TABLE WITH FILE LIST -->
+					</intranda:box>
+				<!-- // LEFT AREA -->
+
+
+				<!-- RIGHT AREA -->
+				<!-- // BOX WITH FILES -->
+
+					<!-- BOX WITH VALIDATION RESULTS -->
+					<div class="mt-3" jsf:id="validationResultsWrapper">
+						<div jsf:rendered="#{rulesetEditorBean.validationErrors != null}">
+
+							<intranda:box boxType="outline" boxPadding="true"
+								boxTitle="false" id="validationResults">
+
+								<intranda:boxTitle
+									title="#{msgs.plugin_administration_ruleset_editor_validation_result}"
+									icon="fa-check-circle-o">
+
+									<div class="actions d-flex">
+										<button jsf:id="buttonShowMore"
+											class="btn d-flex align-items-center btn--title-action-neutral"
+											jsf:rel="tooltip"
+											jsf:action="#{rulesetEditorBean.toggleShowMore}"
+											title="#{rulesetEditorBean.showMore ? msgs.ruleset_validation_show_more : msgs.ruleset_validation_show_less}">
+											<span
+												aria-hidden="true"
+												class="fa #{rulesetEditorBean.showMore ? 'fa-angle-up' : 'fa-angle-down'}" />
+											<f:ajax render="validationResults" />
+										</button>
+									</div>
+								</intranda:boxTitle>
+
+								<div class="p-2">
+									<h:outputText
+										rendered="#{rulesetEditorBean.validationErrors.size() == 0}"
+										styleClass="alert alert-info"
+										value="#{msgs.ruleset_validation_no_issues}" />
+
+									<ui:repeat var="error" value="#{rulesetEditorBean.validationErrors}">
+
+	                                    <h:panelGroup rendered="#{error.severity ne 'INFO' or (error.severity eq 'INFO' and rulesetEditorBean.showMore)}"
+	                                        styleClass="alert #{error.severity eq 'WARNING'?'alert-warning':error.severity eq 'INFO'?'alert-secondary':'alert-danger'} d-block">
+
+		                                    <div class="row">
+		                                    	 <div class="col-8">
+				                                    <h:outputText
+				                                        value="#{error.message}"/>
+		                                    	 </div>
+		                                    	 <div class="col-4">
+			                                    	<button
+														jsf:id="button_neutral-500"
+														class="btn btn-primary float-end"
+														type="button"
+														data-scroll-to-line="#{error.line}">
+														<h:outputText value="#{msgs.ruleset_validation_line}: #{error.line}" />
+													</button>
+													<div
+														class="d-inline"
+														data-bs-toggle="tooltip">
+														<h:panelGroup layout="block"
+    													styleClass="d-inline"
+    													rendered="false">
+    													<!--rendered="#{error.errorType eq 'DUPLICATES_IN_DOCSTRCT' or  error.errorType eq 'DUPLICATES_IN_GROUP' or error.errorType eq 'VALIDATE_FORMATS' or  error.errorType eq 'INVALID_TOPSTRCT_USAGE' or  error.errorType eq 'UNUSED_BUT_DEFINED' or error.errorType eq 'USED_BUT_UNDEFINED' or error.errorType eq 'INVALID_CARDINALITY'}">
+														-->
+														<button
+															title = "#{msgs.additionalOptions}"
+															jsf:id="additionalOptionsDropdown"
+															aria-label="Weitere Optionen"
+															aria-haspopup="true"
+															aria-expanded="false"
+															onclick="switchExpanded(this.id)"
+															type="button"
+															class="btn btn-neutral-500 dropdown-toggle float-end me-2"
+															data-bs-toggle="dropdown">
+															<util:icon icon="square-check"/>
+														</button>
+
+														<ul class="dropdown-menu">
+														<li>
+            												<h:panelGroup rendered="#{error.errorType eq 'INVALID_TOPSTRCT_USAGE'}">
+               													<button jsf:id="btn_mets"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement_invalidTopStrctUsage}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'DUPLICATES_IN_DOCSTRCT'}">
+               													<button jsf:id="btn_mets_1"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement_duplicateInDocStrct}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'DUPLICATES_IN_GROUP'}">
+               													<button jsf:id="btn_mets_2"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement_duplicateInGroup}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'UNUSED_BUT_DEFINED'}">
+               													<button jsf:id="btn_mets_3"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement_unusedButDefined}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'VALIDATE_FORMATS'}">
+               													<button jsf:id="btn_mets_4"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement_validateFormats}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'USED_BUT_UNDEFINED'}">
+               													<button jsf:id="btn_mets_5"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 0)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_deleteThisElement_usedButUndefined}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'USED_BUT_UNDEFINED' or error.errorType eq 'VALIDATE_FORMATS'}">
+               													<button jsf:id="btn_mets_6"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 1)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_defineMetadataType}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'INVALID_CARDINALITY'}">
+               													<button jsf:id="btn_mets_7"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 1)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_setCardinalityValue_1o}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'INVALID_CARDINALITY'}">
+               													<button jsf:id="btn_mets_8"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 2)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_setCardinalityValue_star}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'INVALID_CARDINALITY'}">
+               													<button jsf:id="btn_mets_9"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 3)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_setCardinalityValue_1m}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+       													 <li>
+            												<h:panelGroup rendered="#{error.errorType eq 'INVALID_CARDINALITY'}">
+               													<button jsf:id="btn_mets_10"
+   												                     onclick="preventDoubleSubmit(this);"
+     												                 class="dropdown-item"
+     												                 jsf:action="#{rulesetEditorBean.handleAction(error, 4)}">
+     													             <util:icon icon="circle-check"/>
+                   													<span>#{msgs.ruleset_validation_fix_setCardinalityValue_plus}</span>
+                												</button>
+           													</h:panelGroup>
+       													 </li>
+														</ul>
+														</h:panelGroup>
+													</div>
+		                                    	 </div>
+		                                    </div>
+
+										</h:panelGroup>
+	                                </ui:repeat>
+								</div>
+							</intranda:box>
+						</div>
+					</div>
+					<!-- // BOX WITH VALIDATION RESULTS -->
+
+				</div>
+				<div class="col-sm-12 col-md-8" id="rightarea">
+					<h:panelGroup
+						rendered="#{rulesetEditorBean.currentRuleset != null}">
+						<intranda:box id="contentbox" boxType="action" boxPadding="true"
+							icon="fa-wrench" title="#{rulesetEditorBean.currentEditorTitle}">
+
+
+							<div id="boxUntilBottom">
+								<!-- The message area for saved-successfully-messages -->
+								<!-- Buttons on top of text editor -->
+								<div class="form-actions mt-0 mb-3">
+									<!-- Cancel-Button -->
+									<button jsf:id="cancel" class="btn btn-blank float-end"
+										jsf:action="#{rulesetEditorBean.cancel}"
+										title="#{msgs.cancel}">
+										<span>
+											<h:outputText value="#{msgs.cancel}" />
+										</span>
+									</button>
+									<!-- Validate-Button -->
+									<button jsf:id="validate" class="btn btn-primary float-end"
+										jsf:action="#{rulesetEditorBean.validate}"
+										title="#{msgs.validieren}">
+										<span
+											aria-hidden="true"
+											class="fa fa-check" />
+										<span>
+											#{msgs.validieren}
+										</span>
+									</button>
+									<!-- Save-Button -->
+									<button jsf:id="save" class="btn btn-success float-end"
+										jsf:action="#{rulesetEditorBean.save}"
+										title="#{msgs.uebernehmen}">
+										<span
+											aria-hidden="true"
+											class="fa fa-save" />
+										<span>
+											#{msgs.save}
+										</span>
+									</button>
+								</div>
+								<!-- Text editor -->
+								<div id="rulesetEditorBorder" style="border: 1px solid #ddd;">
+									<h:inputTextarea
+										id="rulesetEditor"
+										style="resize: none;"
+										pt:aria-label="rulesetEditor"
+										forceId="true"
+										styleClass="form-control"
+										value="#{rulesetEditorBean.currentRulesetFileContent}"
+                                        pt:data-codemirror-target="true"
+                                        pt:data-codemirror-language="xml" />
+									<h:inputText
+										id="rulesetEditorBase64"
+										style="display: none;"
+										pt:aria-label="rulesetEditorBase64"
+										forceId="true"
+										styleClass="form-control"
+										value="#{rulesetEditorBean.currentRulesetFileContentBase64}"
+                                        pt:data-codemirror-reference="#{cc.clientId}:rulesetEditor" />
+								</div>
+							</div>
+						</intranda:box>
+					</h:panelGroup>
+					<!-- Box for non-selected file -->
+					<h:panelGroup
+						rendered="#{rulesetEditorBean.currentRuleset == null}">
+
+						<intranda:box boxType="outline" boxPadding="false"
+							icon="fa-wrench" title="#{msgs.noFileSelected}">
+
+							<div style="background-color: #eee; height: 250px;" />
+						</intranda:box>
+
+					</h:panelGroup>
+				</div>
+				<!-- // RIGHT AREA -->
+
+				<!-- MODAL TO ASK FOR SAVING -->
+				<div class="modal fade" id="saveDialog" tabindex="-1" role="modal"
+					aria-labelledby="myDialogLabel"
+					jsf:rendered="#{rulesetEditorBean.rulesetContentChanged}">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+
+							<!-- MODAL HEADER -->
+							<div class="modal-header bg-primary-400 text-white">
+								<h4 class="modal-title" id="myDialogLabel">
+									<h:outputText
+										value="#{msgs.plugin_administration_ruleset_editor_unsaved_changes}" />
+								</h4>
+								<button type="button" class="btn-close btn-close-white"
+									data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<!-- // MODAL HEADER -->
+
+							<!-- MODAL BODY -->
+							<div class="modal-body">
+								<p>#{msgs.plugin_administration_ruleset_editor_save_unsaved_changes}</p>
+							</div>
+							<!-- // MODAL BODY -->
+
+							<!-- MODAL FOOTER -->
+							<div class="modal-footer">
+								<button class="btn btn-hot" jsf:id="ignoreChangedFile"
+									jsf:action="#{rulesetEditorBean.editRulesetIgnore}">
+									<i class="fa fa-trash-o"></i> <span> #{msgs.discard} </span>
+								</button>
+								<button class="btn btn-success" jsf:id="saveWhenChangedFile"
+									jsf:action="#{rulesetEditorBean.save}">
+									<i class="fa fa-save"></i> <span> #{msgs.save} </span>
+								</button>
+							</div>
+							<!-- // MODAL FOOTER -->
+
+						</div>
+					</div>
+				</div>
+				<!-- // MODAL TO ASK FOR SAVING -->
+
+				<div jsf:id="test"
+					jsf:rendered="#{rulesetEditorBean.rulesetContentChanged}">
+					<script>
+						$('#saveDialog').modal('show')
+					</script>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,9 @@
+<config>
+    
+    <!-- By editing a ruleset file in the browser GUI, a backup file will be stored in the backup directory -->
+    <rulesetBackupDirectory>/opt/digiverso/goobi/rulesets/backup/</rulesetBackupDirectory>
+
+    <!-- backup files will be stored as ruleset.xml.1, ruleset.xml.2, ..., ruleset.xml.n -->
+    <numberOfBackupFiles>10</numberOfBackupFiles>
+    
+</config>

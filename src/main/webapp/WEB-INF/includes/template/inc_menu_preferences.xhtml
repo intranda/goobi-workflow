@@ -70,6 +70,112 @@
                         execute="@form" />
                 </button>
 
+                <!-- toggle contrast mode -->
+                <button
+                    type="button"
+                    class="nav-item nav-link btn-link"
+                    jsf:id="toggleContrastMode"
+                    jsf:action="#{NavigationForm.Reload}"
+                    title="#{msgs.toggleContrastMode}"
+                    aria-label="#{msgs.toggleContrastMode}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    data-toggle-accessibility-mode="true">
+                    <span
+                        aria-hidden="true"
+                        class="fa fa-adjust" />
+                    <f:ajax
+                        render="@this" />
+                    <f:setPropertyActionListener
+                        target="#{LoginForm.myBenutzer.uiMode}"
+                        value="#{LoginForm.myBenutzer.uiMode == 'regular' ? 'accessibility' : 'regular'}" />
+                </button>
+
+                <!-- Search Dropdown -->
+                <div
+                    class="nav-item dropdown header-search"
+                    title="#{msgs.nachEinemBandSuchen}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    data-bs-trigger="hover"
+                    jsf:rendered="#{LoginForm.hasRole('Workflow_General_Search') or LoginForm.hasRole('Task_Menu')}">
+                    <button
+                        class="nav-link dropdown-toggle"
+                        type="button"
+                        id="searchDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        data-focus-on-click="#headerSearch">
+                        <span class="fa fa-search" />
+                    </button>
+                    <div
+                        class="dropdown-menu #{LoginForm.hasRole('Task_Menu') and LoginForm.hasRole('Workflow_General_Search') ? 'search-dropdown-wide' : 'search-dropdown-narrow'}"
+                        aria-labelledby="searchDropdown">
+                        <div class="header-search-container">
+                            <h:outputLabel
+                                for="headerSearch"
+                                styleClass="control-label"
+                                value="#{msgs.search}:" />
+                            <h:inputText
+                                id="headerSearch"
+                                pt:aria-label="#{msgs.search}"
+                                styleClass="form-control"
+                                pt:data-submit-on-enter="#{
+                                    LoginForm.hasRole('Task_Menu') and LoginForm.hasRole('Workflow_General_Search') ? '{&quot;default&quot;:&quot;#taskSearch&quot;,&quot;ctrl&quot;:&quot;#processSearch&quot;}' :
+                                    LoginForm.hasRole('Task_Menu') ? '#taskSearch' :
+                                    LoginForm.hasRole('Workflow_General_Search') ? '#processSearch' : ''
+                                }"
+                                pt:data-mirror-value-to="[&quot;#headerSearchTasks&quot;,&quot;#headerSearchProcesses&quot;]" />
+                                <h:inputText
+                                id="headerSearchTasks"
+                                pt:aria-label="#{msgs.filterTasks}"
+                                styleClass="visually-hidden"
+                                value="#{AktuelleSchritteForm.filter}" />
+                            <h:inputText
+                                id="headerSearchProcesses"
+                                pt:aria-label="#{msgs.filterProcesses}"
+                                styleClass="visually-hidden"
+                                value="#{ProzessverwaltungForm.filter}" />
+                            <button
+                                class="btn btn-success"
+                                jsf:id="taskSearch"
+                                type="submit"
+                                jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                jsf:rendered="#{LoginForm.hasRole('Task_Menu')}">
+                                <span>
+                                    <h:outputText value="#{msgs.schritte}" />
+                                </span>
+                                <f:setPropertyActionListener
+                                        target="#{NavigationForm.aktuell}"
+                                        value="a20"/>
+                                <f:setPropertyActionListener
+                                        target="#{NavigationForm.parentMenu}"
+                                        value="menu_tasks"/>
+                            </button>
+                            <button
+                                class="btn btn-success"
+                                jsf:id="processSearch"
+                                type="submit"
+                                jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Search')}">
+                                <span>
+                                    <h:outputText value="#{msgs.aktuelleProzesse}" />
+                                </span>
+                                <f:setPropertyActionListener
+                                    target="#{ProzessverwaltungForm.modusAnzeige}"
+                                    value="aktuell"  />
+                                <f:setPropertyActionListener
+                                    target="#{NavigationForm.aktuell}"
+                                    value="a22" />
+                                <f:setPropertyActionListener
+                                    target="#{NavigationForm.parentMenu}"
+                                    value="menu_workflow"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Language dropdown -->
                 <div
                     class="nav-item dropdown language-select"

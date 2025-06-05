@@ -12,6 +12,12 @@
     xmlns:ds="http://deltaspike.apache.org/jsf"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:layout="http://goobi.io/layout">
+	<c:set var="accessibilityMode"
+		value="#{
+			LoginForm.myBenutzer == null ?
+			HelperForm.renderAccessibilityCss  ? ' accessibility-mode' : ''
+			: LoginForm.myBenutzer.uiMode=='accessibility' ? ' accessibility-mode' : ''
+		}" />
 	<h:head>
 		<!-- METADATA -->
 		<ui:include src="/WEB-INF/includes/template/inc_metadata.xhtml" />
@@ -26,7 +32,7 @@
 
 	<ui:insert name="metadata" />
 
-	<h:body styleClass="sidebar-right content-flow template">
+	<h:body styleClass="sidebar-right content-flow template#{accessibilityMode}">
 	<ds:windowId/>
 		<f:view locale="#{SpracheForm.locale}">
 			<layout:header>

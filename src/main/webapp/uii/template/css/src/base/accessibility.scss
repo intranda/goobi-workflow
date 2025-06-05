@@ -1,13 +1,105 @@
 /* ==========================================
  * This CSS will be loaded optionally
- * => if `WCAG complient mode` is enabled (user settings)
+ * => if `enhanced accessibility` is enabled (user settings)
  * ======================================= */
 
-:root {
+
+body.accessibility-mode {
   --clr-primary-400: #1f79cc;
   --clr-neutral-400: #767676;
   --clr-action: #cb4e00;
+  --clr-box-action: #cb4e00;
+  --clr-box-primary: #1f79cc;
+
+  .badge-intranda-ultralight {
+    background-color: var(--clr-neutral-400) !important;
+  }
+
+  .badge-light-orange {
+    color: var(--clr-action) !important;
+    border-color: var(--clr-action) !important;
+  }
+
+  // high contrast progress indicators
+  // formerly: easy-read or low_vision mode
+  .colors.small13 > [class*="easy-read-status-"] {
+    height: initial;
+    width: initial;
+  }
+
+  .statusRectangle,
+  .statusSmall {
+    align-items: center;
+    border: 1px solid black;
+    display: inline-flex;
+    height: 1em;
+    width: 1em;
+    --color-status-done: black;
+    --color-status-open: #ddd;
+    --color-status-inwork: #bbb;
+    --color-status-locked: white;
+    --color-status-error: black;
+    --color-status-deactivated: #eee;
+    & .accessibility-enhancement-text {
+      margin-left: 1.5em;
+    }
+    & + .accessibility-enhancement-text {
+      display: inline;
+      margin-left: 0.5em;
+      vertical-align: middle;
+    }
+  }
+
+  .status-error {
+    background-color: white;
+  }
+
+  .status-deactivated {
+    background-color: black;
+    background-image: repeating-linear-gradient(
+      0deg,
+      var(--color-status-deactivated),
+      var(--color-status-deactivated) 3px,
+      transparent 3px,
+      transparent 6px
+    );
+  }
+
+  .progress__container {
+    display: flex;
+    height: 15px;
+    justify-content: center;
+    margin-top: 0.4375rem;
+    --color-progress-success: black;
+    --color-progress-warning: #ddd;
+    --color-progress-danger: white;
+  }
+
+  .progress-bar {
+    border: 1px solid black;
+    border-inline-end-width: 0;
+    box-shadow: none;
+    &:last-of-type {
+      border-inline-end-width: 1px;
+    }
+  }
+
+  .progress-bar-locked {
+    background-color: var(--color-progress-success);
+  }
+
+  .progress-bar-error {
+    background-color: var(--color-progress-success);
+    background-image: repeating-linear-gradient(
+      45deg,
+      var(--color-progress-warning),
+      var(--color-progress-warning) 5px,
+      transparent 5px,
+      transparent 10px
+    );
+  }
 }
+
 
 /* FOR REFERENCE => Old styles */
 
