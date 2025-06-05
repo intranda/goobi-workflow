@@ -85,11 +85,10 @@ public abstract class RulesetFileUtils {
         try {
             Charset charset = RulesetFileUtils.standardCharset;
             return FileUtils.readFileToString(new File(fileName), charset);
-        } catch (IOException | IllegalArgumentException ioException) {
-            ioException.printStackTrace();
+        } catch (IOException | IllegalArgumentException e) {
             String message = "RulesetEditorAdministrationPlugin could not read file " + fileName;
-            log.error(message);
-            Helper.setFehlerMeldung("rulesetEditor", message, "");
+            log.error(message, e);
+            Helper.setFehlerMeldung("rulesetEditor", message, e);
             return "";
         }
     }
@@ -103,11 +102,10 @@ public abstract class RulesetFileUtils {
             Charset charset = RulesetFileUtils.standardCharset;
             FileUtils.write(new File(fileName), content, charset);
             Helper.setMeldung("rulesetEditor", Helper.getTranslation("plugin_administration_ruleset_editor_saved_ruleset_file"), "");
-        } catch (IOException | IllegalArgumentException ioException) {
-            ioException.printStackTrace();
+        } catch (IOException | IllegalArgumentException e) {
             String message = "RulesetEditorAdministrationPlugin could not write file " + fileName;
-            log.error(message);
-            Helper.setFehlerMeldung("rulesetEditor", message, "");
+            log.error(message, e);
+            Helper.setFehlerMeldung("rulesetEditor", message, e);
         }
     }
 
@@ -115,9 +113,8 @@ public abstract class RulesetFileUtils {
         Path path = Paths.get(directoryName);
         try {
             StorageProvider.getInstance().createDirectories(path);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-            log.error("RulesetEditorAdministrationPlugin could not create directory " + directoryName);
+        } catch (IOException e) {
+            log.error("RulesetEditorAdministrationPlugin could not create directory {}", directoryName, e);
         }
     }
 

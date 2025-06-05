@@ -175,13 +175,14 @@ public class RulesetEditorBean implements Serializable {
         this.rulesetDates = new ArrayList<>();
         StorageProviderInterface storageProvider = StorageProvider.getInstance();
         for (int index = 0; index < this.rulesets.size(); index++) {
+            String pathName = RulesetFileUtils.getRulesetDirectory() + this.rulesets.get(index).getDatei();
             try {
-                String pathName = RulesetFileUtils.getRulesetDirectory() + this.rulesets.get(index).getDatei();
                 long lastModified = storageProvider.getLastModifiedDate(Paths.get(pathName));
                 SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
                 this.rulesetDates.add(formatter.format(lastModified));
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
+            } catch (IllegalArgumentException | IOException e) {
+                String message = "RulesetEditorAdministrationPlugin could not read modification date of file " + pathName;
+                log.error(message, e);
                 this.rulesetDates.add("[no date available]");
             }
         }
