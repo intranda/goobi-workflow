@@ -43,12 +43,9 @@ import javax.xml.xpath.XPathExpressionException;
 import com.google.common.base.Stopwatch;
 import jakarta.annotation.PostConstruct;
 import org.apache.commons.text.StringEscapeUtils;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Ruleset;
 import org.jdom2.Element;
@@ -88,8 +85,7 @@ public class RulesetEditorBean implements Serializable {
 
     private static final String CONFIGURATION_FILE = "goobi_ruleseteditor.xml";
 
-    private Schema rulesetSchema;
-    private Validator rulesetValidator;
+    private transient Validator rulesetValidator;
 
     private List<Ruleset> rulesets;
 
@@ -149,6 +145,7 @@ public class RulesetEditorBean implements Serializable {
 
     @PostConstruct
     public void init() throws IOException, SAXException {
+        Schema rulesetSchema;
         String schemaPath = "ugh/ruleset_schema.xsd"; // kein führender Slash!
 
         try (InputStream schemaStream = getClass().getClassLoader().getResourceAsStream(schemaPath)) {
@@ -309,7 +306,7 @@ public class RulesetEditorBean implements Serializable {
         this.rulesetContentChanged = false;
     }
 
-    public void validate() throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+    public void validate() throws ParserConfigurationException, SAXException, IOException {
         validationErrors = new ArrayList<>();
         checkRulesetXsd(this.currentRulesetFileContent);
         checkRulesetValid(this.currentRulesetFileContent);
@@ -486,6 +483,7 @@ public class RulesetEditorBean implements Serializable {
     private void checkRulesetValid(String xml) throws ParserConfigurationException, SAXException, IOException {
         // Use sax to add lineNumber as attributes
         SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+        saxFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         SAXParser parser = saxFactory.newSAXParser();
         LineNumberHandler handler = new LineNumberHandler();
         byte[] xmlBytes = xml.getBytes(StandardCharsets.UTF_8);
