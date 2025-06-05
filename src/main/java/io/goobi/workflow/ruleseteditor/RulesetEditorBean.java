@@ -463,7 +463,7 @@ public class RulesetEditorBean implements Serializable {
     }
 
     private List<RulesetValidationError> checkXMLWellformed(String xml) throws ParserConfigurationException, SAXException, IOException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); //NOSONAR false positive, already properly fixed
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         factory.setValidating(false);
         factory.setNamespaceAware(true);
@@ -483,7 +483,7 @@ public class RulesetEditorBean implements Serializable {
 
     private void checkRulesetValid(String xml) throws ParserConfigurationException, SAXException, IOException {
         // Use sax to add lineNumber as attributes
-        SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+        SAXParserFactory saxFactory = SAXParserFactory.newInstance(); //NOSONAR false positive, already properly fixed
         saxFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         SAXParser parser = saxFactory.newSAXParser();
         LineNumberHandler handler = new LineNumberHandler();
