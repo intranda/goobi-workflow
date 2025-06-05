@@ -18,73 +18,74 @@
 
 package io.goobi.workflow.ruleseteditor;
 
+import org.jdom2.Element;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.jdom2.Element;
 
 @Data
 @AllArgsConstructor
 public class RulesetValidationError {
-	private int line;
-	private int column;
-	private String severity;
-	private String message;
-	private Element element;
-	private errorType errorType;
+    private int line;
+    private int column;
+    private String severity;
+    private String message;
+    private Element element;
+    private ErrorType errorType;
 
-	public RulesetValidationError(String severity, String message, String line, int error, Element element) {
-		this.severity = severity;
-		this.message = message;
-		this.line = parseLine(line);
-		this.errorType = errorType.fromCode(error);
-		this.element = element;
-		column = 0;
-	}
+    public RulesetValidationError(String severity, String message, String line, int error, Element element) {
+        this.severity = severity;
+        this.message = message;
+        this.line = parseLine(line);
+        this.errorType = ErrorType.fromCode(error);
+        this.element = element;
+        column = 0;
+    }
 
-	private int parseLine(String line) {
-		if (line == null || line.trim().isEmpty()) {
-			return 0;
-		}
-		try {
-			return Integer.parseInt(line.trim());
-		} catch (NumberFormatException e) {
-			return 0;
-		}
-	}
+    private int parseLine(String line) {
+        if (line == null || line.trim().isEmpty()) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(line.trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
 
-	public static enum errorType {
-		UNKNOWN(0),
-	    INVALID_CARDINALITY(1),
-	    DATA_DEFINED_MULTIPLE_TIMES(2),
-	    DATA_NOT_USED_FOR_EXPORT(3),
-	    DUPLICATES_IN_DOCSTRCT(4),
-	    DUPLICATES_IN_GROUP(5),
-	    VALIDATE_FORMATS(6),
-	    MISSING_NAME(7),
-	    EMPTY_NAME(8),
-	    INVALID_TOPSTRCT_USAGE(9),
-		EMPTY_TRANSLATION(10),
-		UNUSED_BUT_DEFINED(11),
-		USED_BUT_UNDEFINED(12);
+    public static enum ErrorType {
+        UNKNOWN(0),
+        INVALID_CARDINALITY(1),
+        DATA_DEFINED_MULTIPLE_TIMES(2),
+        DATA_NOT_USED_FOR_EXPORT(3),
+        DUPLICATES_IN_DOCSTRCT(4),
+        DUPLICATES_IN_GROUP(5),
+        VALIDATE_FORMATS(6),
+        MISSING_NAME(7),
+        EMPTY_NAME(8),
+        INVALID_TOPSTRCT_USAGE(9),
+        EMPTY_TRANSLATION(10),
+        UNUSED_BUT_DEFINED(11),
+        USED_BUT_UNDEFINED(12);
 
-		private final int code;
+        private final int code;
 
-		errorType(int code) {
-			this.code = code;
-		}
-		
-		public int getCode() {
-		    return code;
-		}
+        ErrorType(int code) {
+            this.code = code;
+        }
 
-		public static errorType fromCode(int code) {
-			for (errorType t : values()) {
-				if (t.getCode() == code) {
-					return t;
-				}
-			}
-			return UNKNOWN;
-		}
+        public int getCode() {
+            return code;
+        }
 
-	}
+        public static ErrorType fromCode(int code) {
+            for (ErrorType t : values()) {
+                if (t.getCode() == code) {
+                    return t;
+                }
+            }
+            return UNKNOWN;
+        }
+
+    }
 }

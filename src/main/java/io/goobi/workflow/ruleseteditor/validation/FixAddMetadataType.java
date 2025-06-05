@@ -5,7 +5,7 @@ import java.util.List;
 
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
-public class FixAddMetadaType {
+public class FixAddMetadataType {
 	public void fix(Element root, RulesetValidationError error) {
 		// get the part of the message value before the -
 		String partBeforeDash = error.getMessage().split("-")[0].trim();
