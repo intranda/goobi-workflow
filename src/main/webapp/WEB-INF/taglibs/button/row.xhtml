@@ -2,7 +2,12 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
 >
-    <span class="button-row#{styleClass != '' ? ' ' : ''}#{styleClass != '' ? styleClass : ''}">
+    <span
+        class="
+            button-row
+            #{styleClass != '' ? ' ' : ''}
+            #{styleClass != '' ? styleClass : ''}
+            #{position == 'end' ? 'button-row-end' : ''}">
         <ui:insert />
     </span>
 </ui:composition>

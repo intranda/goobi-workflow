@@ -14,5 +14,11 @@
             <required>true</required>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+            <description>The position the button row should have. Default: inline-start, option: end for inline-end.</description>
+            <name>position</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
 </facelet-taglib>
