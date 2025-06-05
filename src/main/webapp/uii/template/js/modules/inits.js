@@ -11,6 +11,7 @@ import { initSubmitOnEnter } from './submitOnEnter';
 import { initMirrorValueTo } from './mirrorValueTo';
 import { initAccessibilityModeButton } from './accessibilityMode';
 import { initCodemirror } from './codemirror';
+import { initShowDevelopertools } from './showDeveloperTools';
 
 export const initFunctions = function initFunctions() {
     initializeAjaxLoader();
@@ -24,6 +25,7 @@ export const initFunctions = function initFunctions() {
     initMirrorValueTo();
     initAccessibilityModeButton();
     initCodemirror();
+    initShowDevelopertools();
 
     focusOnLoad();
     toggleHelp();
