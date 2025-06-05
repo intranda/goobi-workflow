@@ -24,9 +24,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.goobi.beans.Masterpieceproperty;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Processproperty;
-import org.goobi.beans.Templateproperty;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -34,6 +34,7 @@ import lombok.extern.log4j.Log4j2;
 public class PropertyManager implements Serializable {
     private static final long serialVersionUID = 900347502238407686L;
 
+    @Deprecated
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) {
         List<Processproperty> propertyList = new ArrayList<>();
         try {
@@ -44,6 +45,7 @@ public class PropertyManager implements Serializable {
         return propertyList;
     }
 
+    @Deprecated
     public static Processproperty getProcessPropertyById(int propertyId) {
         try {
             return PropertyMysqlHelper.getProcessPropertyById(propertyId);
@@ -53,6 +55,7 @@ public class PropertyManager implements Serializable {
         return null;
     }
 
+    @Deprecated
     public static void saveProcessProperty(Processproperty pe) {
         try {
             PropertyMysqlHelper.saveProcessproperty(pe);
@@ -60,6 +63,8 @@ public class PropertyManager implements Serializable {
             log.error(e);
         }
     }
+
+    @Deprecated
 
     public static void deleteProcessProperty(Processproperty pe) {
         try {
@@ -79,80 +84,51 @@ public class PropertyManager implements Serializable {
         return titleList;
     }
 
-    public static List<String> getDistinctTemplatePropertyTitles() {
-        List<String> titleList = new ArrayList<>();
+    public static List<GoobiProperty> getPropertiesForObject(int objectId, PropertyOwnerType propertyType) {
+        List<GoobiProperty> propertyList = new ArrayList<>();
         try {
-            titleList = PropertyMysqlHelper.getDistinctTemplatePropertyTitles();
-        } catch (SQLException e) {
-            log.error(e);
-        }
-        return titleList;
-    }
-
-    public static List<String> getDistinctMasterpiecePropertyTitles() {
-        List<String> titleList = new ArrayList<>();
-        try {
-            titleList = PropertyMysqlHelper.getDistinctMasterpiecePropertyTitles();
-        } catch (SQLException e) {
-            log.error(e);
-        }
-        return titleList;
-    }
-
-    public static List<Templateproperty> getTemplateProperties(int templateId) {
-        List<Templateproperty> propertyList = new ArrayList<>();
-        try {
-            propertyList = PropertyMysqlHelper.getTemplateProperties(templateId);
+            propertyList = PropertyMysqlHelper.getPropertiesForObject(objectId, propertyType);
+            if (propertyList == null) {
+                propertyList = new ArrayList<>();
+            }
         } catch (SQLException e) {
             log.error(e);
         }
         return propertyList;
     }
 
-    public static Templateproperty saveTemplateProperty(Templateproperty property) {
+    public static GoobiProperty getPropertById(int propertyId) {
         try {
-            property = PropertyMysqlHelper.saveTemplateproperty(property);
-            return property;
+            return PropertyMysqlHelper.getPropertyById(propertyId);
         } catch (SQLException e) {
             log.error(e);
         }
         return null;
     }
 
-    public static void deleteTemplateProperty(Templateproperty property) {
+    public static void saveProperty(GoobiProperty pe) {
         try {
-            PropertyMysqlHelper.deleteTemplateProperty(property);
+            PropertyMysqlHelper.saveProperty(pe);
         } catch (SQLException e) {
             log.error(e);
         }
     }
 
-    public static List<Masterpieceproperty> getMasterpieceProperties(int templateId) {
-        List<Masterpieceproperty> propertyList = new ArrayList<>();
+    public static void deleteProperty(GoobiProperty pe) {
         try {
-            propertyList = PropertyMysqlHelper.getMasterpieceProperties(templateId);
-        } catch (SQLException e) {
-            log.error(e);
-        }
-        return propertyList;
-    }
-
-    public static Masterpieceproperty saveMasterpieceProperty(Masterpieceproperty property) {
-        try {
-            property = PropertyMysqlHelper.saveMasterpieceProperty(property);
-            return property;
-        } catch (SQLException e) {
-            log.error(e);
-        }
-        return null;
-    }
-
-    public static void deleteMasterpieceProperty(Masterpieceproperty property) {
-        try {
-            PropertyMysqlHelper.deleteMasterpieceProperty(property);
+            PropertyMysqlHelper.deleteProperty(pe);
         } catch (SQLException e) {
             log.error(e);
         }
     }
 
+    public static List<String> getPropertyTitles(PropertyOwnerType propertyType) {
+        List<String> titleList = new ArrayList<>();
+        try {
+            titleList = PropertyMysqlHelper.getPropertyTitles(propertyType);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return titleList;
+    }
 }

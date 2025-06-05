@@ -37,27 +37,24 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang3.StringUtils;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
 import org.goobi.beans.JournalEntry;
-import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.Step;
-import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
-import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.jaxen.JaxenException;
 import org.jdom2.Attribute;
@@ -476,8 +473,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
 
         List<Element> processProperties = new ArrayList<>();
-        List<ProcessProperty> propertyList = PropertyParser.getInstance().getPropertiesForProcess(process);
-        for (ProcessProperty prop : propertyList) {
+        List<DisplayProperty> propertyList = PropertyParser.getInstance().getPropertiesForProcess(process);
+        for (DisplayProperty prop : propertyList) {
             Element property = new Element(ELEMENT_PROPERTY, namespace);
             property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getName());
             if (prop.getValue() != null) {
@@ -541,86 +538,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
 
         // template information
-        Element templates = new Element(ELEMENT_ORIGINALS, namespace);
-        List<Element> templateElements = new ArrayList<>();
-        for (Template v : process.getVorlagenList()) {
-            Element template = new Element(ELEMENT_ORIGINAL, namespace);
-            template.setAttribute(ATTRIBUTE_ORIGINAL_ID, String.valueOf(v.getId()));
 
-            List<Element> templateProperties = new ArrayList<>();
-            for (Templateproperty prop : v.getEigenschaftenList()) {
-                Element property = new Element(ELEMENT_PROPERTY, namespace);
-                property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel());
-                if (prop.getWert() != null) {
-                    property.setAttribute(ATTRIBUTE_VALUE, prop.getWert());
-                } else {
-                    property.setAttribute(ATTRIBUTE_VALUE, "");
-                }
-
-                Element label = new Element(ELEMENT_LABEL, namespace);
-
-                label.setText(prop.getTitel());
-                property.addContent(label);
-
-                templateProperties.add(property);
-                if ("Signatur".equals(prop.getTitel())) {
-                    Element secondProperty = new Element(ELEMENT_PROPERTY, namespace);
-                    secondProperty.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel() + "Encoded");
-                    if (prop.getWert() != null) {
-                        secondProperty.setAttribute(ATTRIBUTE_VALUE, "vorl:" + prop.getWert());
-                        Element secondLabel = new Element(ELEMENT_LABEL, namespace);
-                        secondLabel.setText(prop.getTitel());
-                        secondProperty.addContent(secondLabel);
-                        templateProperties.add(secondProperty);
-                    }
-                }
-            }
-            if (!templateProperties.isEmpty()) {
-                Element properties = new Element(ELEMENT_PROPERTIES, namespace);
-                properties.addContent(templateProperties);
-                template.addContent(properties);
-            }
-            templateElements.add(template);
-        }
-        if (templateElements != null) {
-            templates.addContent(templateElements);
-            elements.add(templates);
-        }
-
-        // digital document information
-        Element digdoc = new Element(ELEMENT_DIGITAL_DOCUMENTS, namespace);
-        List<Element> docElements = new ArrayList<>();
-        for (Masterpiece w : process.getWerkstueckeList()) {
-            Element dd = new Element(ELEMENT_DIGITAL_DOCUMENT, namespace);
-            dd.setAttribute(ATTRIBUTE_DIGITAL_DOCUMENT_ID, String.valueOf(w.getId()));
-
-            List<Element> docProperties = new ArrayList<>();
-            for (Masterpieceproperty prop : w.getEigenschaftenList()) {
-                Element property = new Element(ELEMENT_PROPERTY, namespace);
-                property.setAttribute(ATTRIBUTE_PROPERTY_IDENTIFIER, prop.getTitel());
-                if (prop.getWert() != null) {
-                    property.setAttribute(ATTRIBUTE_VALUE, prop.getWert());
-                } else {
-                    property.setAttribute(ATTRIBUTE_VALUE, "");
-                }
-
-                Element label = new Element(ELEMENT_LABEL, namespace);
-
-                label.setText(prop.getTitel());
-                property.addContent(label);
-                docProperties.add(property);
-            }
-            if (!docProperties.isEmpty()) {
-                Element properties = new Element(ELEMENT_PROPERTIES, namespace);
-                properties.addContent(docProperties);
-                dd.addContent(properties);
-            }
-            docElements.add(dd);
-        }
-        if (docElements != null) {
-            digdoc.addContent(docElements);
-            elements.add(digdoc);
-        }
         // history
         List<HistoryEvent> eventList = HistoryManager.getHistoryEvents(process.getId());
         if (eventList != null && !eventList.isEmpty()) {
@@ -1044,15 +962,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         if (!process.getEigenschaften().isEmpty()) {
             rootElement.addContent(getProcessPropertyData(process));
         }
-        // template properties
-        if (!process.getVorlagenList().isEmpty()) {
-            rootElement.addContent(getTemplatePropertyData(process));
-        }
 
-        // workpiece properties
-        if (!process.getWerkstueckeList().isEmpty()) {
-            rootElement.addContent(getWorkpiecePropertyData(process));
-        }
         // tasks
         Element tasks = new Element(ELEMENT_TASKS, xmlns);
         rootElement.addContent(tasks);
@@ -1247,80 +1157,6 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     }
 
     /**
-     * create an element containing a list of all workpiece properties
-     * 
-     * @param process
-     * @return
-     */
-    private Element getWorkpiecePropertyData(Process process) {
-        Element properties = new Element(ELEMENT_WORKPIECE, xmlns);
-
-        for (Masterpiece template : process.getWerkstueckeList()) {
-            for (Masterpieceproperty property : template.getEigenschaften()) {
-                Element element = new Element(ELEMENT_PROPERTY, xmlns);
-
-                // werkstueckeeigenschaften.werkstueckeeigenschaftenID
-                element.setAttribute(ATTRIBUTE_ID, String.valueOf(property.getId()));
-                // werkstueckeeigenschaften.container
-                element.setAttribute(ATTRIBUTE_CONTAINER, String.valueOf(property.getContainer()));
-
-                // werkstueckeeigenschaften.creationDate
-                Element propertyCreationDate = new Element(ELEMENT_CREATION_DATE, xmlns);
-                propertyCreationDate.setText(dateConverter.format(property.getCreationDate()));
-                element.addContent(propertyCreationDate);
-
-                // werkstueckeeigenschaften.Titel
-                Element propertyName = new Element(ELEMENT_NAME, xmlns);
-                propertyName.setText(property.getTitel());
-                element.addContent(propertyName);
-
-                // werkstueckeeigenschaften.WERT
-                Element propertyValue = new Element(ELEMENT_VALUE, xmlns);
-                propertyValue.setText(property.getWert());
-                element.addContent(propertyValue);
-            }
-        }
-        return properties;
-    }
-
-    /**
-     * create an element containing a list of all template properties
-     * 
-     * @param process
-     * @return
-     */
-    private Element getTemplatePropertyData(Process process) {
-        Element properties = new Element(ELEMENT_TEMPLATES, xmlns);
-
-        for (Template template : process.getVorlagenList()) {
-            for (Templateproperty property : template.getEigenschaften()) {
-                Element element = new Element(ELEMENT_PROPERTY, xmlns);
-
-                // vorlageneigenschaften.vorlageneigenschaftenID
-                element.setAttribute(ATTRIBUTE_ID, String.valueOf(property.getId()));
-                // vorlageneigenschaften.container
-                element.setAttribute(ATTRIBUTE_CONTAINER, String.valueOf(property.getContainer()));
-
-                // vorlageneigenschaften.creationDate
-                Element propertyCreationDate = new Element(ELEMENT_CREATION_DATE, xmlns);
-                propertyCreationDate.setText(dateConverter.format(property.getCreationDate()));
-                element.addContent(propertyCreationDate);
-
-                // vorlageneigenschaften.Titel
-                Element propertyName = new Element(ELEMENT_NAME, xmlns);
-                propertyName.setText(property.getTitel());
-                element.addContent(propertyName);
-
-                // vorlageneigenschaften.WERT
-                Element propertyValue = new Element(ELEMENT_VALUE, xmlns);
-                propertyValue.setText(property.getWert());
-                element.addContent(propertyValue);
-            }
-        }
-        return properties;
-    }
-
-    /**
      * create an element containing a list of all process properties
      * 
      * @param process
@@ -1329,7 +1165,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     private Element getProcessPropertyData(Process process) {
         Element properties = new Element(ELEMENT_PROPERTIES, xmlns);
 
-        for (Processproperty property : process.getEigenschaften()) {
+        for (GoobiProperty property : process.getEigenschaften()) {
             Element element = new Element(ELEMENT_PROPERTY, xmlns);
 
             // prozesseeigenschaften.prozesseeigenschaftenID
@@ -1344,12 +1180,12 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
             // prozesseeigenschaften.Titel
             Element propertyName = new Element(ELEMENT_NAME, xmlns);
-            propertyName.setText(property.getTitel());
+            propertyName.setText(property.getPropertyName());
             element.addContent(propertyName);
 
             // prozesseeigenschaften.WERT
             Element propertyValue = new Element(ELEMENT_VALUE, xmlns);
-            propertyValue.setText(property.getWert());
+            propertyValue.setText(property.getPropertyValue());
             element.addContent(propertyValue);
             properties.addContent(element);
         }

@@ -14,40 +14,20 @@
  * 
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
  */
 
-package org.goobi.api.rest.model;
+package org.goobi.beans;
 
-import java.util.Date;
+import java.util.List;
 
-import org.goobi.beans.GoobiProperty;
+public interface IPropertyHolder {
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+    public Integer getId();
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.Getter;
-import lombok.Setter;
+    public void setId(Integer id);
 
-@XmlRootElement(name = "property")
-@JsonInclude(value = JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Getter
-@Setter
-public class RestPropertyResource {
+    public List<GoobiProperty> getProperties();
 
-    private Integer id;
-    private String name;
-    private String value;
-    private Date creationDate;
-
-    public RestPropertyResource() {
-    }
-
-    public RestPropertyResource(GoobiProperty property) {
-        id = property.getId();
-        name = property.getPropertyName();
-        value = property.getPropertyValue();
-        creationDate = property.getCreationDate();
-    }
+    public void setProperties(List<GoobiProperty> properties);
 }

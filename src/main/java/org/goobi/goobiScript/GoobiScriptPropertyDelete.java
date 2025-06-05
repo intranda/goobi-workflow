@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.production.enums.GoobiScriptResultType;
 
 import de.sub.goobi.helper.Helper;
@@ -81,15 +81,15 @@ public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements I
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
 
-        for (Processproperty pp : p.getEigenschaften()) {
-            if (pp.getTitel().equals(propertyName)) {
-                PropertyManager.deleteProcessProperty(pp);
+        for (GoobiProperty pp : p.getEigenschaften()) {
+            if (pp.getPropertyName().equals(propertyName)) {
+                PropertyManager.deleteProperty(pp);
                 gsr.setResultMessage("Property deleted.");
                 gsr.setResultType(GoobiScriptResultType.OK);
                 break;
             }
         }
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+        if (GoobiScriptResultType.RUNNING.equals(gsr.getResultType())) {
             gsr.setResultType(GoobiScriptResultType.OK);
             gsr.setResultMessage("Property not found: " + propertyName);
         }

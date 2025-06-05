@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.production.cli.helper.StringPair;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -125,10 +125,10 @@ public class RestProcessResource {
         initializeMetadataList(process.getMetadataList());
     }
 
-    private void initializePropertiesList(List<Processproperty> properties) {
-        for (Processproperty property : properties) {
-            String name = property.getTitel();
-            String value = property.getWert();
+    private void initializePropertiesList(List<GoobiProperty> properties) {
+        for (GoobiProperty property : properties) {
+            String name = property.getPropertyName();
+            String value = property.getPropertyValue();
             Map<String, String> propertyMap = new HashMap<>();
             propertyMap.put("name", name);
             propertyMap.put("value", value);

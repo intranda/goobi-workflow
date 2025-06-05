@@ -200,20 +200,20 @@ class UserMysqlHelper implements Serializable {
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getVorname(), ro.getNachname(),
                         ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(), ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(),
                         ro.getSessiontimeout(), ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), ro.getLdaplogin(),
-                                ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
-                                ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
-                                ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(),
-                                ro.isDisplaySwappingColumn(), ro.isDisplayNumberOfImages(), ro.isHideCorrectionTasks(),
+                        ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
+                        ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
+                        ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(),
+                        ro.isDisplaySwappingColumn(), ro.isDisplayNumberOfImages(), ro.isHideCorrectionTasks(),
 
-                                ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(), ro.getMetsEditorTime(),
-                                        ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(),
-                                        ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
-                                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
-                                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
-                                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
-                                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
-                                        ro.getStatus().getName(), additionalData, ro.getAdditionalSearchFields());
+                        ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(), ro.getMetsEditorTime(),
+                        ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(),
+                        ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
+                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
+                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
+                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
+                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
+                        ro.getStatus().getName(), additionalData, ro.getAdditionalSearchFields());
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -278,18 +278,19 @@ class UserMysqlHelper implements Serializable {
                 run.update(connection, sql.toString(), ro.getVorname(), ro.getNachname(), ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(),
                         ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(), ro.getSessiontimeout(),
                         ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), ro.getLdaplogin(), ro.isDisplayAutomaticTasks(),
-                                ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
-                                ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
-                                ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isDisplayNumberOfImages(),
-                                ro.isHideCorrectionTasks(), ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
-                                        ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(),
-                                        ro.isMetsLinkImage(), ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
-                                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
-                                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
-                                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
-                                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
-                                        ro.getStatus().getName(), additionalData, ro.getAdditionalSearchFields());
+                        ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
+                        ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
+                        ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
+                        ro.isDisplayNumberOfImages(),
+                        ro.isHideCorrectionTasks(), ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
+                        ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(),
+                        ro.isMetsLinkImage(), ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
+                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
+                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
+                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
+                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
+                        ro.getStatus().getName(), additionalData, ro.getAdditionalSearchFields());
 
             }
 
@@ -391,7 +392,7 @@ class UserMysqlHelper implements Serializable {
     public static List<String> getFilterForUser(int userId) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM benutzereigenschaften WHERE Titel = '_filter' AND BenutzerID = ?");
+        sql.append("SELECT * FROM properties WHERE property_name = '_filter' AND object_id = ?");
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { userId };
@@ -412,13 +413,13 @@ class UserMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            String propNames = "Titel, Wert, IstObligatorisch, DatentypenID, Auswahl, creationDate, BenutzerID";
-            Object[] param = { "_filter", filter, false, 5, null, datetime, userId };
-            String sql = "INSERT INTO " + "benutzereigenschaften" + " (" + propNames + ") VALUES ( ?, ?,? ,? ,? ,?,? )";
-            if (log.isTraceEnabled()) {
-                log.trace(sql + ", " + Arrays.toString(param));
-            }
-            run.update(connection, sql, param);
+
+            StringBuilder sql = new StringBuilder();
+            sql.append(
+                    "INSERT INTO properties (property_name, property_value, required, datatype, object_id, object_type, creation_date, container) ");
+            sql.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
+
+            run.update(connection, sql.toString(), "_filter", filter, false, 5, userId, "user", datetime, 0);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -431,12 +432,8 @@ class UserMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            Object[] param = { userId, filter };
-            String sql = "DELETE FROM benutzereigenschaften WHERE Titel = '_filter' AND BenutzerID = ? AND Wert = ?";
-            if (log.isTraceEnabled()) {
-                log.trace(sql + ", " + Arrays.toString(param));
-            }
-            run.update(connection, sql, param);
+            String sql = "DELETE FROM properties WHERE Titel = '_filter' AND object_id = ? and object_type = 'user' AND property_value = ?";
+            run.update(connection, sql, userId, filter);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -575,7 +572,7 @@ class UserMysqlHelper implements Serializable {
         }
     }
 
-    public static final ResultSetHandler<Boolean> checkForResultHandler = new ResultSetHandler<Boolean>() {
+    public static final ResultSetHandler<Boolean> checkForResultHandler = new ResultSetHandler<>() {
 
         @Override
         public Boolean handle(ResultSet rs) throws SQLException {
@@ -587,7 +584,7 @@ class UserMysqlHelper implements Serializable {
         }
     };
 
-    public static final ResultSetHandler<List<String>> resultSetToFilterListtHandler = new ResultSetHandler<List<String>>() {
+    public static final ResultSetHandler<List<String>> resultSetToFilterListtHandler = new ResultSetHandler<>() {
         @Override
         public List<String> handle(ResultSet rs) throws SQLException {
             List<String> answer = new ArrayList<>();

@@ -35,6 +35,8 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mq.QueueType;
 import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -375,10 +377,10 @@ class StepMysqlHelper implements Serializable {
         s.setHttpEscapeBodyJson(rs.getBoolean("httpEscapeBodyJson"));
         s.setMessageQueue(QueueType.getByName(rs.getString("messageQueue")));
         // load error properties
-        List<ErrorProperty> stepList = getErrorPropertiesForStep(s.getId());
+        List<GoobiProperty> stepList = getErrorPropertiesForStep(s.getId());
         if (!stepList.isEmpty()) {
-            for (ErrorProperty property : stepList) {
-                property.setSchritt(s);
+            for (GoobiProperty property : stepList) {
+                property.setOwner(s);
             }
             s.setEigenschaften(stepList);
         }
@@ -392,13 +394,12 @@ class StepMysqlHelper implements Serializable {
             List<ErrorProperty> properties = new ArrayList<>();
             try {
                 while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
-                    int id = rs.getInt("schritteeigenschaftenID");
-                    String title = rs.getString("Titel");
-                    String value = rs.getString("Wert");
-                    Boolean mandatory = rs.getBoolean("IstObligatorisch");
-                    int type = rs.getInt("DatentypenID");
-                    String choice = rs.getString("Auswahl");
-                    Timestamp time = rs.getTimestamp("creationDate");
+                    int id = rs.getInt("id");
+                    String title = rs.getString("property_name");
+                    String value = rs.getString("property_value");
+                    Boolean mandatory = rs.getBoolean("required");
+                    int type = rs.getInt("datatype");
+                    Timestamp time = rs.getTimestamp("creation_date");
                     Date creationDate = null;
                     if (time != null) {
                         creationDate = new Date(time.getTime());
@@ -406,11 +407,10 @@ class StepMysqlHelper implements Serializable {
                     String container = rs.getString("container");
                     ErrorProperty ve = new ErrorProperty();
                     ve.setId(id);
-                    ve.setTitel(title);
-                    ve.setWert(value);
-                    ve.setIstObligatorisch(mandatory);
+                    ve.setPropertyName(title);
+                    ve.setPropertyValue(value);
+                    ve.setRequired(mandatory);
                     ve.setType(PropertyType.getById(type));
-                    ve.setAuswahl(choice);
                     ve.setCreationDate(creationDate);
                     ve.setContainer(container);
                     properties.add(ve);
@@ -453,8 +453,8 @@ class StepMysqlHelper implements Serializable {
 
     public static void deleteStep(Step o) throws SQLException {
         if (o.getId() != null) {
-            for (ErrorProperty property : o.getEigenschaften()) {
-                deleteErrorProperty(property);
+            for (GoobiProperty property : o.getEigenschaften()) {
+                PropertyMysqlHelper.deleteProperty(property);
             }
 
             String schritteberechtigtebenutzer = "DELETE FROM schritteberechtigtebenutzer WHERE schritteID = ?";
@@ -510,8 +510,8 @@ class StepMysqlHelper implements Serializable {
         }
 
         if (o.getEigenschaftenSize() > 0) {
-            for (ErrorProperty property : o.getEigenschaften()) {
-                saveErrorProperty(property);
+            for (GoobiProperty property : o.getEigenschaften()) {
+                PropertyMysqlHelper.saveProperty(property);
             }
         }
 
@@ -526,74 +526,18 @@ class StepMysqlHelper implements Serializable {
 
     private static void saveErrorProperty(ErrorProperty property) throws SQLException {
         if (property.getId() == null) {
-            String sql =
-                    "INSERT INTO schritteeigenschaften (Titel, WERT, IstObligatorisch, DatentypenID, Auswahl, schritteID, creationDate, container) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            Object[] param = { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(),
-                    property.getAuswahl(), property.getSchritt().getId(),
-                    property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
-            Connection connection = null;
-            try {
-                connection = MySQLHelper.getInstance().getConnection();
-                QueryRunner run = new QueryRunner();
-                if (log.isTraceEnabled()) {
-                    log.trace(sql + ", " + Arrays.toString(param));
-                }
-                Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
-                if (id != null) {
-                    property.setId(id);
-                }
-            } finally {
-                if (connection != null) {
-                    MySQLHelper.closeConnection(connection);
-                }
-            }
-
+            PropertyMysqlHelper.insertProperty(property);
         } else {
-            String sql =
-                    "UPDATE schritteeigenschaften set Titel = ?,  WERT = ?, IstObligatorisch = ?, DatentypenID = ?, Auswahl = ?, schritteID = ?, creationDate = ?, container = ? WHERE schritteeigenschaftenID = "
-                            + property.getId();
-            Object[] param = { property.getTitel(), property.getWert(), property.isIstObligatorisch(), property.getType().getId(),
-                    property.getAuswahl(), property.getSchritt().getId(),
-                    property.getCreationDate() == null ? null : new Timestamp(property.getCreationDate().getTime()), property.getContainer() };
-            Connection connection = null;
-            try {
-                connection = MySQLHelper.getInstance().getConnection();
-                QueryRunner run = new QueryRunner();
-                run.update(connection, sql, param);
-            } finally {
-                if (connection != null) {
-                    MySQLHelper.closeConnection(connection);
-                }
-            }
+            PropertyMysqlHelper.updateProperty(property);
         }
     }
 
-    private static List<ErrorProperty> getErrorPropertiesForStep(int stepId) throws SQLException {
-        String sql = "SELECT * FROM schritteeigenschaften WHERE schritteID = " + stepId;
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner run = new QueryRunner();
-            return run.query(connection, sql, resultSetToErrorPropertyListHandler);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
+    private static List<GoobiProperty> getErrorPropertiesForStep(int stepId) throws SQLException {
+        return PropertyMysqlHelper.getPropertiesForObject(stepId, PropertyOwnerType.ERROR);
     }
 
     private static void deleteErrorProperty(ErrorProperty property) throws SQLException {
-        String sql = "DELETE FROM schritteeigenschaften WHERE schritteeigenschaftenID = " + property.getId();
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner run = new QueryRunner();
-            run.update(connection, sql);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
+        PropertyMysqlHelper.deleteProperty(property);
     }
 
     private static void insertStep(Step o) throws SQLException {
@@ -1360,7 +1304,7 @@ class StepMysqlHelper implements Serializable {
         }
 
         // delete error properties
-        String deleteProperties = "DELETE FROM schritteeigenschaften WHERE schritteID in (" + ids.toString() + ")";
+        String deleteProperties = "DELETE FROM properties WHERE object_type = 'error' AND object_id in (" + ids.toString() + ")";
         // delete assigned users
         String deleteUserAssignment = "DELETE FROM schritteberechtigtebenutzer WHERE schritteID in (" + ids.toString() + ")";
         // delete assigned user groups

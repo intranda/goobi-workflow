@@ -32,20 +32,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.production.flow.statistics.StepInformation;
 
+import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.ProjectHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProjectManager;
+import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class Project extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Project> {
+public class Project extends AbstractJournal implements IPropertyHolder, Serializable, DatabaseObject, Comparable<Project> {
     private static final long serialVersionUID = -8543713331407761617L;
     @Getter
     @Setter
@@ -170,6 +173,9 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
     @Setter
     private String dfgViewerUrl = "";
 
+    @Setter
+    private List<GoobiProperty> properties = new ArrayList<>();
+
     @Override
     public void lazyLoad() {
 
@@ -184,6 +190,7 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         this.dmsImportCreateProcessFolder = false;
         this.fileFormatInternal = "Mets";
         this.fileFormatDmsExport = "Mets";
+        properties = new ArrayList<>();
     }
 
     /**
@@ -405,6 +412,19 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
         setMetsSruUrl(source.getMetsSruUrl());
         setMetsIIIFUrl(source.getMetsIIIFUrl());
         dfgViewerUrl = source.getDfgViewerUrl();
+
+        // properties
+        for (IGoobiProperty property : source.getProperties()) {
+            GoobiProperty clone = new GoobiProperty(PropertyOwnerType.PROJECT);
+            clone.setContainer(property.getContainer());
+            clone.setCreationDate(new Date());
+            clone.setPropertyName(property.getTitel());
+            clone.setType(property.getType());
+            clone.setPropertyValue(property.getWert());
+            clone.setOwner(this);
+            getProperties().add(clone);
+
+        }
         try {
             ProjectManager.saveProject(this);
         } catch (DAOException e) {
@@ -474,6 +494,14 @@ public class Project extends AbstractJournal implements Serializable, DatabaseOb
             cloneIndex++;
         } while (existingProjectTitles.contains(newProjectTitle + cloneIndex));
         return newProjectTitle + cloneIndex;
+    }
+
+    @Override
+    public List<GoobiProperty> getProperties() {
+        if ((properties.isEmpty()) && id != null) {
+            properties = PropertyManager.getPropertiesForObject(id, PropertyOwnerType.PROJECT);
+        }
+        return properties;
     }
 
 }

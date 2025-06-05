@@ -30,8 +30,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.production.enums.GoobiScriptResultType;
 
 import de.sub.goobi.helper.Helper;
@@ -94,10 +95,10 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
         boolean matched = false;
-        for (Processproperty pp : p.getEigenschaften()) {
-            if (pp.getTitel().equals(propertyName)) {
-                pp.setWert(value);
-                PropertyManager.saveProcessProperty(pp);
+        for (GoobiProperty pp : p.getEigenschaften()) {
+            if (pp.getPropertyName().equals(propertyName)) {
+                pp.setPropertyValue(value);
+                PropertyManager.saveProperty(pp);
                 gsr.setResultMessage("Property updated.");
                 gsr.setResultType(GoobiScriptResultType.OK);
                 matched = true;
@@ -105,11 +106,11 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
             }
         }
         if (!matched) {
-            Processproperty pp = new Processproperty();
-            pp.setTitel(propertyName);
-            pp.setWert(value);
-            pp.setProzess(p);
-            PropertyManager.saveProcessProperty(pp);
+            GoobiProperty pp = new GoobiProperty(PropertyOwnerType.PROCESS);
+            pp.setPropertyName(propertyName);
+            pp.setPropertyValue(value);
+            pp.setOwner(p);
+            PropertyManager.saveProperty(pp);
             gsr.setResultMessage("Property created.");
             gsr.setResultType(GoobiScriptResultType.OK);
         }

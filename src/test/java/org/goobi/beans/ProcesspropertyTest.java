@@ -39,17 +39,13 @@ public class ProcesspropertyTest extends AbstractTest {
     public void testIstObligatorisch() {
         Processproperty property = new Processproperty();
 
-        // tests whether 'null' is replaced by 'false'
-        property.setIstObligatorisch(null);
-        assertEquals(property.isIstObligatorisch(), false);
-
         // tests whether 'false' is returned correctly
-        property.setIstObligatorisch(false);
-        assertEquals(property.isIstObligatorisch(), false);
+        property.setRequired(false);
+        assertEquals(property.isRequired(), false);
 
         // tests whether 'true' is returned correctly
-        property.setIstObligatorisch(true);
-        assertEquals(property.isIstObligatorisch(), true);
+        property.setRequired(true);
+        assertEquals(property.isRequired(), true);
     }
 
     @Test
@@ -96,14 +92,14 @@ public class ProcesspropertyTest extends AbstractTest {
     @Test
     public void testGetNormalizedTitle() {
         Processproperty property = new Processproperty();
-        property.setTitel("\tMy Title\t");
+        property.setPropertyName("\tMy Title\t");
         assertEquals("My_Title", property.getNormalizedTitle());
     }
 
     @Test
     public void testGetNormalizedValue() {
         Processproperty property = new Processproperty();
-        property.setTitel("\tMy Value\t");
+        property.setPropertyName("\tMy Value\t");
         assertEquals("My_Value", property.getNormalizedTitle());
     }
 
@@ -112,12 +108,15 @@ public class ProcesspropertyTest extends AbstractTest {
         Date date = new Date();
         Processproperty property1 = new Processproperty();
         property1.setId(1);
+        property1.setObjectId(1);
         property1.setCreationDate(date);
         Processproperty property2 = new Processproperty();
         property2.setId(1);
+        property2.setObjectId(1);
         property2.setCreationDate(date);
         Processproperty property3 = new Processproperty();
         property3.setId(2);
+        property3.setObjectId(2);
         property3.setCreationDate(date);
         // test that property 1 has the same hash code as itself
         assertEquals(property1.hashCode(), property1.hashCode());
@@ -134,9 +133,9 @@ public class ProcesspropertyTest extends AbstractTest {
         property1.setContainer("1");
         property1.setCreationDate(new Date());
         property1.setType(PropertyType.BOOLEAN);
-        property1.setProcessId(1);
-        property1.setTitel("Title");
-        property1.setWert("Value");
+        property1.setObjectId(1);
+        property1.setPropertyName("Title");
+        property1.setPropertyValue("Value");
         Processproperty property2 = new Processproperty();
         property2.setId(2);
         Processproperty property3 = new Processproperty();
@@ -146,11 +145,11 @@ public class ProcesspropertyTest extends AbstractTest {
         Processproperty property5 = new Processproperty();
         property5.setType(PropertyType.NUMBER);
         Processproperty property6 = new Processproperty();
-        property6.setProcessId(2);
+        property6.setObjectId(2);
         Processproperty property7 = new Processproperty();
-        property7.setTitel("Title 2");
+        property7.setPropertyName("Title 2");
         Processproperty property8 = new Processproperty();
-        property8.setWert("Value 2");
+        property8.setPropertyValue("Value 2");
         // test that property1 has the same hash code as itself
         assertEquals(property1.hashCode(), property1.hashCode());
         // test that property1 has a different hash code to all other properties

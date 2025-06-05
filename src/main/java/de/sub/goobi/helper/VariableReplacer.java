@@ -36,7 +36,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,30 +49,27 @@ import java.util.stream.Stream;
 
 import javax.naming.ConfigurationException;
 
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedFieldInstance;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.text.StringTokenizer;
-import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
-import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
-import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
+import org.goobi.production.properties.Type;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedFieldInstance;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import org.goobi.production.properties.Type;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
@@ -153,6 +155,7 @@ public class VariableReplacer {
     private static final String REGEX_PROCESSES = PREFIX + "processes\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_DB_META = PREFIX + "db_meta\\.([^)}]+?)" + SUFFIX;
     private static final String REGEX_DATETIME = PREFIX + "datetime\\.([^)}]+?)" + SUFFIX;
+    private static final String REGEX_PROJECT_PROPERTY = PREFIX + "project\\.([^)}]+?)" + SUFFIX;
 
     @Getter
     @Setter
@@ -460,16 +463,25 @@ public class VariableReplacer {
             }
         }
 
+        // replace project properties, usage: (project.PROPERTYTITLE)
+        for (MatchResult r : findRegexMatches(REGEX_PROJECT_PROPERTY, inString)) {
+            String propertyTitle = r.group(1);
+            for (GoobiProperty property : this.process.getProjekt().getProperties()) {
+                if (property.getPropertyName().equalsIgnoreCase(propertyTitle)) {
+                    inString = inString.replace(r.group(), property.getPropertyValue());
+                    break;
+                }
+            }
+        }
+
         // replace WerkstueckEigenschaft, usage: (product.PROPERTYTITLE)
 
         for (MatchResult r : findRegexMatches(REGEX_PRODUCT, inString)) {
             String propertyTitle = r.group(1);
-            for (Masterpiece ws : this.process.getWerkstueckeList()) {
-                for (Masterpieceproperty we : ws.getEigenschaftenList()) {
-                    if (we.getTitel().equalsIgnoreCase(propertyTitle)) {
-                        inString = inString.replace(r.group(), we.getWert());
-                        break;
-                    }
+            for (GoobiProperty we : process.getEigenschaftenList()) {
+                if (we.getPropertyName().equalsIgnoreCase(propertyTitle)) {
+                    inString = inString.replace(r.group(), we.getPropertyValue());
+                    break;
                 }
             }
         }
@@ -478,20 +490,17 @@ public class VariableReplacer {
 
         for (MatchResult r : findRegexMatches(REGEX_TEMPLATE, inString)) {
             String propertyTitle = r.group(1);
-            for (Template v : this.process.getVorlagenList()) {
-                for (Templateproperty ve : v.getEigenschaftenList()) {
-                    if (ve.getTitel().equalsIgnoreCase(propertyTitle)) {
-                        inString = inString.replace(r.group(), ve.getWert());
-                        break;
-                    }
+            for (GoobiProperty ve : process.getEigenschaftenList()) {
+                if (ve.getPropertyName().equalsIgnoreCase(propertyTitle)) {
+                    inString = inString.replace(r.group(), ve.getPropertyValue());
+                    break;
                 }
             }
         }
-
         // replace Prozesseigenschaft, usage: (process.PROPERTYTITLE)
         for (MatchResult r : findRegexMatches(REGEX_PROCESS, inString)) {
             String propertyTitle = r.group(1);
-            List<ProcessProperty> processProperties;
+            List<DisplayProperty> processProperties;
             Optional<String> propertyFieldName = Optional.empty();
             if (propertyTitle.contains(".")) {
                 String propertyName = propertyTitle.substring(0, propertyTitle.indexOf('.'));
@@ -510,7 +519,7 @@ public class VariableReplacer {
             }
 
             List<String> newValues = new LinkedList<>();
-            for (ProcessProperty pp : processProperties) {
+            for (DisplayProperty pp : processProperties) {
                 Type type = pp.getType();
                 String value = Optional.ofNullable(pp.getValue()).orElse("");
                 List<ExtendedVocabularyRecord> referencedRecords = Collections.emptyList();
@@ -551,7 +560,7 @@ public class VariableReplacer {
 
         for (MatchResult r : findRegexMatches(REGEX_PROCESSES, inString)) {
             String propertyTitle = r.group(1);
-            List<ProcessProperty> processProperties;
+            List<DisplayProperty> processProperties;
             Optional<String> propertyFieldName = Optional.empty();
             if (propertyTitle.contains(".")) {
                 String propertyName = propertyTitle.substring(0, propertyTitle.indexOf('.'));
@@ -570,7 +579,7 @@ public class VariableReplacer {
             }
 
             List<String> newValues = new LinkedList<>();
-            for (ProcessProperty pp : processProperties) {
+            for (DisplayProperty pp : processProperties) {
                 Type type = pp.getType();
                 String value = Optional.ofNullable(pp.getValue()).orElse("");
                 List<ExtendedVocabularyRecord> referencedRecords = Collections.emptyList();

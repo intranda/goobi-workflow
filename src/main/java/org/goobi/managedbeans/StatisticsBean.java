@@ -37,10 +37,8 @@ import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -121,24 +119,6 @@ public class StatisticsBean implements Serializable {
      */
     public Long getAnzahlSchritte() {
         return (long) StepManager.countAllSteps();
-    }
-
-    /**
-     * Returns the number of templates in the goobi database. If a database error occurs, 0 is returned.
-     * 
-     * @return The number of templates or 0 in case of a database error
-     */
-    public Long getAnzahlVorlagen() {
-        return (long) TemplateManager.countTemplates();
-    }
-
-    /**
-     * Returns the number of masterpieces in the goobi database. If a database error occurs, 0 is returned.
-     * 
-     * @return The number of masterpieces or 0 in case of a database error
-     */
-    public Long getAnzahlWerkstuecke() {
-        return (long) MasterpieceManager.countMasterpieces();
     }
 
     /**

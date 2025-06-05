@@ -45,6 +45,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
@@ -64,8 +65,8 @@ import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 import org.goobi.production.properties.AccessCondition;
+import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.IProperty;
-import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.ShowStepCondition;
 import org.goobi.production.properties.Type;
@@ -167,10 +168,10 @@ public class StepBean extends BasicBean implements Serializable {
     private Map<String, PropertyListObject> containers = new TreeMap<>();
     @Getter
     private String container;
-    private List<ProcessProperty> processPropertyList;
+    private List<DisplayProperty> processPropertyList;
     @Getter
     @Setter
-    private ProcessProperty processProperty;
+    private DisplayProperty processProperty;
     @Getter
     private HashMap<String, Boolean> containerAccess;
 
@@ -529,7 +530,7 @@ public class StepBean extends BasicBean implements Serializable {
             }
         }
         if (processPropertyList != null) {
-            for (ProcessProperty prop : processPropertyList) {
+            for (DisplayProperty prop : processPropertyList) {
                 if (AccessCondition.WRITEREQUIRED.equals(prop.getCurrentStepAccessCondition()) && StringUtils.isBlank(prop.getReadValue())) {
                     Helper.setFehlerMeldung(
                             Helper.getTranslation("Eigenschaft") + " " + prop.getName() + " " + Helper.getTranslation("requiredValue"));
@@ -620,7 +621,7 @@ public class StepBean extends BasicBean implements Serializable {
             temp.setBearbeitungsende(new Date());
             ErrorProperty se = new ErrorProperty();
 
-            se.setTitel(Helper.getTranslation("Korrektur notwendig"));
+            se.setPropertyName(Helper.getTranslation("Korrektur notwendig"));
             String messageText;
             if (StringUtils.isNotBlank(selectedErrorPropertyType)) {
                 messageText = errorPropertyTypes.get(selectedErrorPropertyType).replace("{}", problemMessage);
@@ -632,7 +633,7 @@ public class StepBean extends BasicBean implements Serializable {
             if (ben != null) {
                 suffix = " (" + ben.getNachVorname() + ")";
             }
-            se.setWert(messageText + suffix);
+            se.setPropertyName(messageText + suffix);
             se.setType(PropertyType.MESSAGE_ERROR);
             se.setCreationDate(myDate);
             se.setSchritt(temp);
@@ -665,8 +666,8 @@ public class StepBean extends BasicBean implements Serializable {
                 step.setCorrectionStep();
                 step.setBearbeitungsende(null);
                 ErrorProperty seg = new ErrorProperty();
-                seg.setTitel(Helper.getTranslation("Korrektur notwendig"));
-                seg.setWert(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText + suffix);
+                seg.setPropertyName(Helper.getTranslation("Korrektur notwendig"));
+                seg.setPropertyValue(Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + messageText + suffix);
                 seg.setSchritt(step);
                 seg.setType(PropertyType.MESSAGE_IMPORTANT);
                 seg.setCreationDate(new Date());
@@ -762,13 +763,13 @@ public class StepBean extends BasicBean implements Serializable {
 
                 }
                 ErrorProperty seg = new ErrorProperty();
-                seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
+                seg.setPropertyName(Helper.getTranslation("Korrektur durchgefuehrt"));
                 String suffix = "";
                 if (user != null) {
                     step.setBearbeitungsbenutzer(user);
                     suffix = (" (" + user.getNachVorname() + ")");
                 }
-                seg.setWert(message + suffix);
+                seg.setPropertyValue(message + suffix);
                 seg.setSchritt(step);
                 seg.setType(PropertyType.MESSAGE_IMPORTANT);
                 seg.setCreationDate(new Date());
@@ -1135,7 +1136,7 @@ public class StepBean extends BasicBean implements Serializable {
         }
     }
 
-    public List<ProcessProperty> getProcessProperties() {
+    public List<DisplayProperty> getProcessProperties() {
         return this.processPropertyList;
     }
 
@@ -1164,7 +1165,7 @@ public class StepBean extends BasicBean implements Serializable {
         this.containers = new TreeMap<>();
         this.processPropertyList = PropertyParser.getInstance().getPropertiesForStep(this.mySchritt);
 
-        for (ProcessProperty pt : this.processPropertyList) {
+        for (DisplayProperty pt : this.processPropertyList) {
 
             boolean match = true;
             for (ShowStepCondition cond : pt.getShowStepConditions()) {
@@ -1172,7 +1173,7 @@ public class StepBean extends BasicBean implements Serializable {
                     // check if condition matches
                     match = false;
                     for (StringPair sp : cond.getDisplayCondition()) {
-                        for (ProcessProperty other : processPropertyList) {
+                        for (DisplayProperty other : processPropertyList) {
                             if (other.getName().equals(sp.getOne())) {
                                 Optional<String> otherValue = Optional.empty();
                                 if (Type.VOCABULARYREFERENCE.equals(other.getType())) {
@@ -1232,7 +1233,7 @@ public class StepBean extends BasicBean implements Serializable {
         }
 
         if (valid) {
-            for (ProcessProperty p : this.processPropertyList) {
+            for (DisplayProperty p : this.processPropertyList) {
                 if (p.getProzesseigenschaft() == null) {
                     Processproperty pe = new Processproperty();
                     pe.setProzess(this.mySchritt.getProzess());
@@ -1245,21 +1246,21 @@ public class StepBean extends BasicBean implements Serializable {
                 }
             }
             Process p = this.mySchritt.getProzess();
-            List<Processproperty> props = p.getEigenschaftenList();
-            for (Processproperty pe : props) {
-                if (pe.getTitel() == null) {
+            List<GoobiProperty> props = p.getEigenschaftenList();
+            for (GoobiProperty pe : props) {
+                if (pe.getPropertyName() == null) {
                     p.getEigenschaften().remove(pe);
                 }
             }
 
-            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+            PropertyManager.saveProperty(processProperty.getProzesseigenschaft());
             Helper.setMeldung("propertiesSaved");
         }
     }
 
     public void saveCurrentProperty() {
-        List<ProcessProperty> ppList = getContainerProperties();
-        for (ProcessProperty pp : ppList) {
+        List<DisplayProperty> ppList = getContainerProperties();
+        for (DisplayProperty pp : ppList) {
             this.processProperty = pp;
             if (!this.processProperty.isValid()) {
                 String value = Helper.getTranslation("propertyNotValid", processProperty.getName());
@@ -1275,17 +1276,17 @@ public class StepBean extends BasicBean implements Serializable {
             }
             this.processProperty.transfer();
 
-            List<Processproperty> props = this.mySchritt.getProzess().getEigenschaftenList();
-            for (Processproperty pe : props) {
-                if (pe.getTitel() == null) {
+            List<GoobiProperty> props = this.mySchritt.getProzess().getEigenschaftenList();
+            for (GoobiProperty pe : props) {
+                if (pe.getPropertyName() == null) {
                     this.mySchritt.getProzess().getEigenschaften().remove(pe);
                 }
             }
             if (!this.mySchritt.getProzess().getEigenschaften().contains(this.processProperty.getProzesseigenschaft())) {
                 this.mySchritt.getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
-                this.processProperty.getProzesseigenschaft().setProzess(this.mySchritt.getProzess());
+                this.processProperty.getProzesseigenschaft().setOwner(this.mySchritt.getProzess());
             }
-            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+            PropertyManager.saveProperty(processProperty.getProzesseigenschaft());
         }
         Helper.setMeldung("propertiesSaved");
         loadProcessProperties();
@@ -1302,8 +1303,8 @@ public class StepBean extends BasicBean implements Serializable {
         return this.processPropertyList.size();
     }
 
-    public List<ProcessProperty> getSortedProperties() {
-        Comparator<ProcessProperty> comp = new ProcessProperty.CompareProperties();
+    public List<DisplayProperty> getSortedProperties() {
+        Comparator<DisplayProperty> comp = new DisplayProperty.CompareProperties();
         Collections.sort(this.processPropertyList, comp);
         return this.processPropertyList;
     }
@@ -1311,28 +1312,28 @@ public class StepBean extends BasicBean implements Serializable {
     public void deleteProperty() {
         this.processPropertyList.remove(this.processProperty);
         this.mySchritt.getProzess().getEigenschaften().remove(this.processProperty.getProzesseigenschaft());
-        List<Processproperty> props = this.mySchritt.getProzess().getEigenschaftenList();
-        for (Processproperty pe : props) {
-            if (pe.getTitel() == null) {
+        List<GoobiProperty> props = this.mySchritt.getProzess().getEigenschaftenList();
+        for (GoobiProperty pe : props) {
+            if (pe.getPropertyName() == null) {
                 this.mySchritt.getProzess().getEigenschaften().remove(pe);
             }
         }
 
-        PropertyManager.deleteProcessProperty(processProperty.getProzesseigenschaft());
+        PropertyManager.deleteProperty(processProperty.getProzesseigenschaft());
         loadProcessProperties();
     }
 
     public void duplicateProperty() {
-        ProcessProperty pt = this.processProperty.getClone("0");
+        DisplayProperty pt = this.processProperty.getClone("0");
         this.processPropertyList.add(pt);
         this.processProperty = pt;
         saveCurrentProperty();
         loadProcessProperties();
     }
 
-    public List<ProcessProperty> getContainerlessProperties() {
-        List<ProcessProperty> answer = new ArrayList<>();
-        for (ProcessProperty pp : this.processPropertyList) {
+    public List<DisplayProperty> getContainerlessProperties() {
+        List<DisplayProperty> answer = new ArrayList<>();
+        for (DisplayProperty pp : this.processPropertyList) {
             if ("0".equals(pp.getContainer())) {
                 boolean match = true;
                 for (ShowStepCondition cond : pp.getShowStepConditions()) {
@@ -1340,7 +1341,7 @@ public class StepBean extends BasicBean implements Serializable {
                         // check if condition matches
                         match = false;
                         for (StringPair sp : cond.getDisplayCondition()) {
-                            for (ProcessProperty other : processPropertyList) {
+                            for (DisplayProperty other : processPropertyList) {
                                 if (other.getName().equals(sp.getOne())) {
                                     Optional<String> otherValue = Optional.empty();
                                     if (Type.VOCABULARYREFERENCE.equals(other.getType())) {
@@ -1378,11 +1379,11 @@ public class StepBean extends BasicBean implements Serializable {
         }
     }
 
-    public List<ProcessProperty> getContainerProperties() {
-        List<ProcessProperty> answer = new ArrayList<>();
+    public List<DisplayProperty> getContainerProperties() {
+        List<DisplayProperty> answer = new ArrayList<>();
 
         if (this.container != null && !"0".equals(container)) {
-            for (ProcessProperty pp : this.processPropertyList) {
+            for (DisplayProperty pp : this.processPropertyList) {
                 if (this.container.equals(pp.getContainer())) {
                     boolean match = true;
                     for (ShowStepCondition cond : pp.getShowStepConditions()) {
@@ -1390,7 +1391,7 @@ public class StepBean extends BasicBean implements Serializable {
                             // check if condition matches
                             match = false;
                             for (StringPair sp : cond.getDisplayCondition()) {
-                                for (ProcessProperty other : processPropertyList) {
+                                for (DisplayProperty other : processPropertyList) {
                                     if (other.getName().equals(sp.getOne())) {
                                         Optional<String> otherValue = Optional.empty();
                                         if (Type.VOCABULARYREFERENCE.equals(other.getType())) {
@@ -1427,9 +1428,9 @@ public class StepBean extends BasicBean implements Serializable {
 
     public String duplicateContainer() {
         String currentContainer = this.processProperty.getContainer();
-        List<ProcessProperty> plist = new ArrayList<>();
+        List<DisplayProperty> plist = new ArrayList<>();
         // search for all properties in container
-        for (ProcessProperty pt : this.processPropertyList) {
+        for (DisplayProperty pt : this.processPropertyList) {
             if (pt.getContainer().equals(currentContainer)) {
                 plist.add(pt);
             }
@@ -1450,8 +1451,8 @@ public class StepBean extends BasicBean implements Serializable {
             }
         }
         // clone properties
-        for (ProcessProperty pt : plist) {
-            ProcessProperty newProp = pt.getClone(newContainerNumber);
+        for (DisplayProperty pt : plist) {
+            DisplayProperty newProp = pt.getClone(newContainerNumber);
             this.processPropertyList.add(newProp);
             this.processProperty = newProp;
             if (this.processProperty.getProzesseigenschaft() == null) {
@@ -1462,7 +1463,7 @@ public class StepBean extends BasicBean implements Serializable {
             }
             this.processProperty.transfer();
 
-            PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
+            PropertyManager.saveProperty(processProperty.getProzesseigenschaft());
         }
         Helper.setMeldung("propertySaved");
         loadProcessProperties();

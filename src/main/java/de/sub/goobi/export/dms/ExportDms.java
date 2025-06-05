@@ -125,8 +125,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
          */
         Fileformat gdzfile;
         Fileformat exportValidationFile;
-        ExportFileformat newfile =
-                MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
 
         ExportFileformat exportValidationNewfile =
                 MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
@@ -370,13 +368,19 @@ public class ExportDms extends ExportMets implements IExportPlugin {
     }
 
     private boolean executeValidation(Process myProzess, Path temporaryFile, String command) throws InterruptedException, IOException {
+
+        Stream<String> errorStream = null;
+        InputStreamReader errorStreamReader = null;
+        BufferedReader reader = null;
         try {
-            java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(command);
+            String[] com = { command };
+            java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(com);
             Integer exitVal = exportValidationProcess.waitFor();
 
             InputStream errorInputStream = exportValidationProcess.getErrorStream();
-            InputStreamReader errorStreamReader = new InputStreamReader(errorInputStream);
-            Stream<String> errorStream = new BufferedReader(errorStreamReader).lines();
+            errorStreamReader = new InputStreamReader(errorInputStream);
+            reader = new BufferedReader(errorStreamReader);
+            errorStream = reader.lines();
             String errorStreamAsString = errorStream.collect(Collectors.joining());
 
             // exitVal 0 indicates success, 1 indicates errors in the XML
@@ -409,6 +413,15 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             // delete the now no longer required generated .xml
             if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
                 StorageProvider.getInstance().deleteFile(temporaryFile);
+            }
+            if (errorStream != null) {
+                errorStream.close();
+            }
+            if (errorStreamReader != null) {
+                errorStreamReader.close();
+            }
+            if (reader != null) {
+                reader.close();
             }
         }
         return true;

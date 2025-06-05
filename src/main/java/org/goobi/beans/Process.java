@@ -49,6 +49,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.io.BackupFileManager;
 import org.goobi.io.FileListFilter;
@@ -78,13 +79,11 @@ import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.JournalManager;
-import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import io.goobi.workflow.xslt.XsltPreparatorMetadata;
@@ -111,7 +110,7 @@ import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 @Log4j2
-public class Process extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Process>, IJournal {
+public class Process extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Process>, IJournal, IPropertyHolder {
     private static final long serialVersionUID = -6503348094655786275L;
 
     private static final String META_FILE = "meta.xml";
@@ -147,12 +146,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     private Date erstellungsdatum;
     @Setter
     private List<Step> schritte;
+
     @Setter
-    private List<Masterpiece> werkstuecke;
-    @Setter
-    private List<Template> vorlagen;
-    @Setter
-    private List<Processproperty> eigenschaften;
+    private List<GoobiProperty> eigenschaften;
     @Getter
     @Setter
     private String sortHelperStatus;
@@ -281,23 +277,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         return false;
     }
 
-    public List<Template> getVorlagen() {
-        if ((vorlagen == null || vorlagen.isEmpty()) && id != null) {
-            vorlagen = TemplateManager.getTemplatesForProcess(id);
-        }
-        return this.vorlagen;
-    }
-
-    public List<Masterpiece> getWerkstuecke() {
-        if ((werkstuecke == null || werkstuecke.isEmpty()) && id != null) {
-            werkstuecke = MasterpieceManager.getMasterpiecesForProcess(id);
-        }
-        return this.werkstuecke;
-    }
-
-    public List<Processproperty> getEigenschaften() {
+    public List<GoobiProperty> getEigenschaften() {
         if ((eigenschaften == null || eigenschaften.isEmpty()) && id != null) {
-            eigenschaften = PropertyManager.getProcessPropertiesForProcess(id);
+            eigenschaften = PropertyManager.getPropertiesForObject(id, PropertyOwnerType.PROCESS);
         }
         return this.eigenschaften;
     }
@@ -774,27 +756,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         return getEigenschaften().size();
     }
 
-    public List<Processproperty> getEigenschaftenList() {
+    public List<GoobiProperty> getEigenschaftenList() {
         return getEigenschaften();
-    }
-
-    public int getWerkstueckeSize() {
-
-        return getWerkstuecke().size();
-    }
-
-    public List<Masterpiece> getWerkstueckeList() {
-
-        return getWerkstuecke();
-    }
-
-    public int getVorlagenSize() {
-        return this.getVorlagen().size();
-    }
-
-    public List<Template> getVorlagenList() {
-
-        return getVorlagen();
     }
 
     public Integer getSortHelperArticles() {
@@ -1442,8 +1405,6 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         setTitel(source.getTitel() + "_copy");
 
         this.bhelp.SchritteKopieren(source, this);
-        this.bhelp.ScanvorlagenKopieren(source, this);
-        this.bhelp.WerkstueckeKopieren(source, this);
         this.bhelp.EigenschaftenKopieren(source, this);
         LoginBean loginForm = Helper.getLoginBean();
 
@@ -1800,32 +1761,13 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
         /* Prozesseigenschaften */
         if (getEigenschaftenList() != null && !getEigenschaftenList().isEmpty()) {
-            for (Processproperty pe : this.getEigenschaftenList()) {
-                if (pe != null && pe.getWert() != null && pe.getWert().contains(this.getTitel())) {
-                    pe.setWert(pe.getWert().replaceAll(this.getTitel(), newTitle));
+            for (GoobiProperty pe : this.getEigenschaftenList()) {
+                if (pe != null && pe.getPropertyValue() != null && pe.getPropertyValue().contains(this.getTitel())) {
+                    pe.setPropertyValue(pe.getPropertyValue().replaceAll(this.getTitel(), newTitle));
                 }
             }
         }
-        /* Scanvorlageneigenschaften */
-        if (getVorlagenList() != null && !getVorlagenList().isEmpty()) {
-            for (Template vl : this.getVorlagenList()) {
-                for (Templateproperty ve : vl.getEigenschaftenList()) {
-                    if (ve.getWert().contains(this.getTitel())) {
-                        ve.setWert(ve.getWert().replaceAll(this.getTitel(), newTitle));
-                    }
-                }
-            }
-        }
-        /* Werkstückeigenschaften */
-        if (getWerkstueckeList() != null && !getWerkstueckeList().isEmpty()) {
-            for (Masterpiece w : this.getWerkstueckeList()) {
-                for (Masterpieceproperty we : w.getEigenschaftenList()) {
-                    if (we.getWert().contains(this.getTitel())) {
-                        we.setWert(we.getWert().replaceAll(this.getTitel(), newTitle));
-                    }
-                }
-            }
-        }
+
         try {
             // renaming image directories
             String imageDirectoryName = getImagesDirectory();
@@ -2097,4 +2039,13 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public List<GoobiProperty> getProperties() {
+        return getEigenschaften();
+    }
+
+    @Override
+    public void setProperties(List<GoobiProperty> properties) {
+        setEigenschaften(properties);
+    }
 }

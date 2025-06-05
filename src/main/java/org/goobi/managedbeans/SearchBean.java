@@ -72,15 +72,7 @@ public class SearchBean implements Serializable {
 
     @Getter
     @Setter
-    private List<String> masterpiecePropertyTitles = new ArrayList<>(); // werk:
-
-    @Getter
-    @Setter
     private List<String> metadataTitles = new ArrayList<>();
-
-    @Getter
-    @Setter
-    private List<String> templatePropertyTitles = new ArrayList<>();// vorl:
 
     @Getter
     @Setter
@@ -133,12 +125,6 @@ public class SearchBean implements Serializable {
             log.error(exception);
         }
 
-        this.masterpiecePropertyTitles.add(Helper.getTranslation(NOT_SELECTED));
-        this.masterpiecePropertyTitles.addAll(PropertyManager.getDistinctMasterpiecePropertyTitles());
-
-        this.templatePropertyTitles.add(Helper.getTranslation(NOT_SELECTED));
-        this.templatePropertyTitles.addAll(PropertyManager.getDistinctTemplatePropertyTitles());
-
         this.processPropertyTitles.add(Helper.getTranslation(NOT_SELECTED));
         this.processPropertyTitles.addAll(PropertyManager.getDistinctProcessPropertyTitles());
 
@@ -164,9 +150,6 @@ public class SearchBean implements Serializable {
             fieldnameList.add(new SelectItem("INSTITUTION", Helper.getTranslation("institution")));
         }
 
-        fieldnameList.add(new SelectItem("TEMPLATE", Helper.getTranslation("templateProperties")));
-
-        fieldnameList.add(new SelectItem("WORKPIECE", Helper.getTranslation("masterpieceProperties")));
         fieldnameList.add(new SelectItem("BATCH", Helper.getTranslation("batch")));
         fieldnameList.add(new SelectItem("METADATA", Helper.getTranslation("metadata")));
 

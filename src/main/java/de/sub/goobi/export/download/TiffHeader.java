@@ -30,8 +30,7 @@ import java.sql.SQLException;
 
 import javax.naming.NamingException;
 
-import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -56,24 +55,20 @@ public class TiffHeader {
      * Erzeugen des Tiff-Headers anhand des übergebenen Prozesses Einlesen der Eigenschaften des Werkstücks bzw. der Scanvorlage
      */
     public TiffHeader(Process inProzess) {
-        if (inProzess.getWerkstueckeSize() > 0) {
-            Masterpiece myWerkstueck = inProzess.getWerkstueckeList().get(0);
-            if (myWerkstueck.getEigenschaftenSize() > 0) {
-                for (Masterpieceproperty eig : myWerkstueck.getEigenschaftenList()) {
+        for (GoobiProperty eig : inProzess.getEigenschaftenList()) {
 
-                    if ("TifHeaderDocumentname".equals(eig.getTitel())) {
-                        this.tifHeaderDocumentname = eig.getWert();
-                    }
-                    if ("TifHeaderImagedescription".equals(eig.getTitel())) {
-                        this.tifHeaderImagedescription = eig.getWert();
-                    }
+            if ("TifHeaderDocumentname".equals(eig.getPropertyName())) {
+                this.tifHeaderDocumentname = eig.getPropertyValue();
+            }
+            if ("TifHeaderImagedescription".equals(eig.getPropertyName())) {
+                this.tifHeaderImagedescription = eig.getPropertyValue();
+            }
 
-                    if ("Artist".equals(eig.getTitel())) {
-                        this.artist = eig.getWert();
-                    }
-                }
+            if ("Artist".equals(eig.getPropertyName())) {
+                this.artist = eig.getPropertyValue();
             }
         }
+
     }
 
     /**

@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.goobi.api.mq.QueueType;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -458,9 +459,9 @@ public class StepTest extends AbstractTest {
         Step step = new Step();
 
         // Prepare the list:
-        List<ErrorProperty> list = new ArrayList<>();
-        ErrorProperty item1 = new ErrorProperty();
-        ErrorProperty item2 = new ErrorProperty();
+        List<GoobiProperty> list = new ArrayList<>();
+        GoobiProperty item1 = new GoobiProperty(PropertyOwnerType.ERROR);
+        GoobiProperty item2 = new GoobiProperty(PropertyOwnerType.ERROR);
         list.add(item1);
         list.add(item2);
 

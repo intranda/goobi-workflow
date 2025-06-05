@@ -61,9 +61,9 @@ import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.AltoChange;
 import org.goobi.beans.AuthorityData;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.ImageComment;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.SimpleAlto;
 import org.goobi.beans.Step;
 import org.goobi.managedbeans.LoginBean;
@@ -4048,11 +4048,11 @@ public class Metadaten implements Serializable {
     public List<String> getAllOpacCatalogues() {
         if (catalogues == null) {
             String processTemplateName = "";
-            List<Processproperty> properties = myProzess.getEigenschaften();
+            List<GoobiProperty> properties = myProzess.getEigenschaften();
             if (properties != null) {
-                for (Processproperty pp : properties) {
-                    if ("Template".equals(pp.getTitel())) {
-                        processTemplateName = pp.getWert();
+                for (GoobiProperty pp : properties) {
+                    if ("Template".equals(pp.getPropertyName())) {
+                        processTemplateName = pp.getPropertyValue();
                     }
                 }
             }
