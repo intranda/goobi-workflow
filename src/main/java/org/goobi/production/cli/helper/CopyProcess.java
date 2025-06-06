@@ -255,7 +255,7 @@ public class CopyProcess {
         List<HierarchicalConfiguration> itemList = cp.getList("createNewProcess/itemlist/item");
         for (HierarchicalConfiguration item : itemList) {
             AdditionalField fa = new AdditionalField();
-            if (StringUtils.isNotBlank(item.getString("@from")) || item.getBoolean("@property")) {
+            if (StringUtils.isNotBlank(item.getString("@from")) || item.getBoolean("@property", false)) {
                 fa.setProperty(true);
             }
             fa.setTitel(item.getString("."));
