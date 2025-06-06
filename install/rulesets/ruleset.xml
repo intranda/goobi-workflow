@@ -4192,13 +4192,13 @@
         <picaSubTag type="identifier">7</picaSubTag>
       </Person>
       <Person>
-        <Name>AuthorCorporate</Name>
+        <Name>Author</Name>
         <picaMainTag>028C</picaMainTag>
         <picaSubTag type="firstname">d</picaSubTag>
         <picaSubTag type="lastname">a</picaSubTag>
         <picaSubTag type="identifier">7</picaSubTag>
       </Person>
-      <Person>
+      <Corporate>
         <Name>CorporateAuthor</Name>
         <picaMainTag>029A</picaMainTag>
         <picaSubTag type="mainName">a</picaSubTag>
@@ -4207,8 +4207,8 @@
         <picaSubTag type="partName">d</picaSubTag>
         <picaSubTag type="partName">n</picaSubTag>
         <picaSubTag type="identifier">7</picaSubTag>
-      </Person>
-      <Person>
+      </Corporate>                 
+      <Corporate>
         <Name>CorporateAuthor</Name>
         <picaMainTag>029B</picaMainTag>
         <picaSubTag type="mainName">a</picaSubTag>
@@ -4217,8 +4217,8 @@
         <picaSubTag type="partName">d</picaSubTag>
         <picaSubTag type="partName">n</picaSubTag>
         <picaSubTag type="identifier">7</picaSubTag>
-      </Person>
-      <Person>
+      </Corporate>
+      <Corporate>
         <Name>CorporateAuthor</Name>
         <picaMainTag>029C</picaMainTag>
         <picaSubTag type="mainName">a</picaSubTag>
@@ -4227,7 +4227,7 @@
         <picaSubTag type="partName">d</picaSubTag>
         <picaSubTag type="partName">n</picaSubTag>
         <picaSubTag type="identifier">7</picaSubTag>
-      </Person>
+      </Corporate>
       <Metadata>
         <Name>Sublocation</Name>
         <picaMainTag>209A</picaMainTag>
