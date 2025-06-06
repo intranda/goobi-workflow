@@ -13,7 +13,7 @@ public class FixRemoveFromXml {
 	 * @param error
 	 */
 	public void fix(Element root, RulesetValidationError error, boolean deleteParent) {
-	    Element toRemove = findElementByLineNumber(root, error.getLine());
+	    Element toRemove = findElementByLineNumber(root, error);
 	    
 	    if (toRemove != null) {
 	        if (deleteParent) {
@@ -21,7 +21,7 @@ public class FixRemoveFromXml {
 	            if (parent != null) {
 	                Element grandParent = parent.getParentElement();
 	                if (grandParent != null) {
-	                	parent.removeContent(toRemove);
+	                	grandParent.removeContent(parent);
 	                }
 	            }
 	        } else {
@@ -40,11 +40,11 @@ public class FixRemoveFromXml {
 	 * @param targetLine
 	 * @return
 	 */
-	private Element findElementByLineNumber(Element current, int targetLine) {
+	private Element findElementByLineNumber(Element current, RulesetValidationError error) {
 		String lineAttr = current.getAttributeValue("goobi_lineNumber");
-		if (lineAttr != null && Integer.parseInt(lineAttr) == targetLine) {
+		if (lineAttr != null && Integer.parseInt(lineAttr) == error.getLine()) {
 
-			if (("Name".equals(current.getName()) || "InternalName".equals(current.getName())) == false) {
+			if ((("Name".equals(current.getName()) || "InternalName".equals(current.getName())) == false) && error.getErrorType() == RulesetValidationError.ErrorType.VALIDATE_FORMATS ) {
 				Element nameChild = findFirstNameChild(current);
 				if (nameChild != null) {
 					return nameChild;
@@ -54,7 +54,7 @@ public class FixRemoveFromXml {
 		}
 
 		for (Element child : current.getChildren()) {
-			Element result = findElementByLineNumber(child, targetLine);
+			Element result = findElementByLineNumber(child, error);
 			if (result != null) {
 				return result;
 			}
