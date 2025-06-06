@@ -21,13 +21,13 @@ public class FixRemoveFromXml {
 	            if (parent != null) {
 	                Element grandParent = parent.getParentElement();
 	                if (grandParent != null) {
-	                    removeElementWithWhitespace(grandParent, parent);
+	                	parent.removeContent(toRemove);
 	                }
 	            }
 	        } else {
 	            Element parent = toRemove.getParentElement();
 	            if (parent != null) {
-	                removeElementWithWhitespace(parent, toRemove);
+	            	parent.removeContent(toRemove);
 	            }
 	        }
 	    }
@@ -82,21 +82,5 @@ public class FixRemoveFromXml {
 		}
 
 		return null;
-	}
-	
-	private void removeElementWithWhitespace(Element parent, Element toRemove) {
-	    int index = parent.indexOf(toRemove);
-
-	    if (index > 0) {
-	        org.jdom2.Content previous = parent.getContent(index - 1);
-	        if (previous instanceof org.jdom2.Text) {
-	            org.jdom2.Text text = (org.jdom2.Text) previous;
-	            if (text.getTextTrim().isEmpty()) {
-	                parent.removeContent(previous);
-	            }
-	        }
-	    }
-
-	    parent.removeContent(toRemove);
 	}
 }

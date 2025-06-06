@@ -384,6 +384,7 @@ public class RulesetEditorBean implements Serializable {
 
             // Output the new xml
             org.jdom2.output.XMLOutputter outputter = new org.jdom2.output.XMLOutputter();
+            outputter.setFormat(org.jdom2.output.Format.getPrettyFormat());
             String updatedXml = outputter.outputString(doc);
 
             this.currentRulesetFileContent = unmaskXmlComments(updatedXml);
