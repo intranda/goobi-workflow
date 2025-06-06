@@ -20,7 +20,7 @@ public class FixAddMetadataType {
 		}
 		if (lastMetadataType != null) { 
 			Element newElement = new Element("MetadataType");
-			if(error.getErrorType().equals(RulesetValidationError.ErrorType.VALIDATE_FORMATS) && (error.getElement().getParentElement().getName().equals("PicaPlus") || error.getElement().getParentElement().getName().equals("Marc")) && (error.getElement().getName().equals("Person") ||error.getElement().getName().equals("Corporate"))) {
+			if(error.getErrorType() == RulesetValidationError.ErrorType.VALIDATE_FORMATS && (error.getElement().getParentElement().getName().equals("PicaPlus") || error.getElement().getParentElement().getName().equals("Marc")) && (error.getElement().getName().equals("Person") ||error.getElement().getName().equals("Corporate"))) {
 				newElement.setAttribute("type", error.getElement().getName().toLowerCase());
 			}
 			Element name = new Element("Name").setText(partBeforeDash);
