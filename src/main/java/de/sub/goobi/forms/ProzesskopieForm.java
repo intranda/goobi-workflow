@@ -431,7 +431,7 @@ public class ProzesskopieForm implements Serializable {
 
     private AdditionalField readAdditionalFieldConfiguration(HierarchicalConfiguration item) {
         AdditionalField fa = new AdditionalField();
-        if (StringUtils.isNotBlank(item.getString("@from")) || item.getBoolean("@property")) {
+        if (StringUtils.isNotBlank(item.getString("@from")) || item.getBoolean("@property", false)) {
             fa.setProperty(true);
         }
         fa.setTitel(item.getString("."));
