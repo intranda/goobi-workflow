@@ -3,6 +3,9 @@
  * => if `enhanced accessibility` is enabled (user settings)
  * ======================================= */
 
+.accessibility-enhancement-text {
+  display: none;
+}
 
 body.accessibility-mode {
   --clr-primary-400: #1f79cc;
@@ -10,6 +13,10 @@ body.accessibility-mode {
   --clr-action: #cb4e00;
   --clr-box-action: #cb4e00;
   --clr-box-primary: #1f79cc;
+
+  .accessibility-enhancement-text {
+    display: inline;
+  }
 
   .badge-intranda-ultralight {
     background-color: var(--clr-neutral-400) !important;
@@ -44,7 +51,6 @@ body.accessibility-mode {
       margin-left: 1.5em;
     }
     & + .accessibility-enhancement-text {
-      display: inline;
       margin-left: 0.5em;
       vertical-align: middle;
     }
