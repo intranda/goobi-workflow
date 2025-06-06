@@ -251,7 +251,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <c:if test="#{not Metadaten.nurLesenModus}">
-                            <li class="nav-item">
+                            <li>
                                 <h:commandLink
                                     id="saveAndExit"
                                     action="#{Metadaten.XMLschreiben}"
@@ -263,7 +263,7 @@
                             </li>
                         </c:if>
 
-                        <li class="nav-item">
+                        <li>
                             <h:commandLink
                                 onclick="goobiWorkflowJS.meScrollPos.destroyScrollPos()"
                                 id="exitOnly"
