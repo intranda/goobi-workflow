@@ -360,12 +360,12 @@ public class RulesetEditorBean implements Serializable {
             if ((error.getErrorType() == RulesetValidationError.ErrorType.DATA_DEFINED_MULTIPLE_TIMES
                     || error.getErrorType() == RulesetValidationError.ErrorType.DATA_NOT_USED_FOR_EXPORT
                     || error.getErrorType() == RulesetValidationError.ErrorType.UNUSED_BUT_DEFINED
-                    || error.getErrorType() == RulesetValidationError.ErrorType.USED_BUT_UNDEFINED
                     || error.getErrorType() == RulesetValidationError.ErrorType.VALIDATE_FORMATS) && value == 0) {
                 FixRemoveFromXml f1 = new FixRemoveFromXml();
                 f1.fix(root, error, true);
             } else if ((error.getErrorType() == RulesetValidationError.ErrorType.DUPLICATES_IN_DOCSTRCT
                     || error.getErrorType() == RulesetValidationError.ErrorType.DUPLICATES_IN_GROUP
+                    || error.getErrorType() == RulesetValidationError.ErrorType.USED_BUT_UNDEFINED
                     || error.getErrorType() == RulesetValidationError.ErrorType.INVALID_TOPSTRCT_USAGE) && value == 0) {
                 FixRemoveFromXml f1 = new FixRemoveFromXml();
                 f1.fix(root, error, false);
