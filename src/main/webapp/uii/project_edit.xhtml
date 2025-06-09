@@ -7,8 +7,9 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
-
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:dl="http://goobi.io/dl"
+    xmlns:button="http://goobi.io/button">
 
     <ui:param
         name="myPageTitle"
@@ -69,7 +70,8 @@
                             icon="fa-compass">
 
                             <ul class="tabs">
-                                <li class="tab #{ProjekteForm.displayMode eq ''?'active':''}"><h:commandLink
+                                <li class="tab #{ProjekteForm.displayMode eq ''?'active':''}">
+                                    <h:commandLink
                                         id="general"
                                         action="#{NavigationForm.Reload}"
                                         value="#{msgs.general}">
@@ -79,8 +81,10 @@
                                         <f:ajax
                                             render=":myform"
                                             execute=":myform" />
-                                    </h:commandLink></li>
-                                <li class="tab #{ProjekteForm.displayMode eq 'tab2'?'active':''}"><h:commandLink
+                                    </h:commandLink>
+                                </li>
+                                <li class="tab #{ProjekteForm.displayMode eq 'tab2'?'active':''}">
+                                    <h:commandLink
                                         id="technicalData"
                                         action="#{NavigationForm.Reload}"
                                         value="#{msgs.technischeDaten}">
@@ -90,8 +94,10 @@
                                         <f:ajax
                                             render=":myform"
                                             execute=":myform" />
-                                    </h:commandLink></li>
-                                <li class="tab #{ProjekteForm.displayMode eq 'tab3'?'active':''}"><h:commandLink
+                                    </h:commandLink>
+                                </li>
+                                <li class="tab #{ProjekteForm.displayMode eq 'tab3'?'active':''}">
+                                    <h:commandLink
                                         id="contentSettings"
                                         action="#{NavigationForm.Reload}"
                                         value="#{msgs.contentSettings}">
@@ -101,9 +107,9 @@
                                         <f:ajax
                                             render=":myform"
                                             execute=":myform" />
-                                    </h:commandLink></li>
-                                <li
-                                    class="tab #{ProjekteForm.displayMode eq 'tab4' or ProjekteForm.displayMode eq 'filegroups'?'active':''}">
+                                    </h:commandLink>
+                                </li>
+                                <li class="tab #{ProjekteForm.displayMode eq 'tab4' or ProjekteForm.displayMode eq 'filegroups'?'active':''}">
                                     <h:commandLink
                                         id="filegroups"
                                         action="#{NavigationForm.Reload}"
@@ -116,6 +122,21 @@
                                             execute=":myform" />
                                     </h:commandLink>
                                 </li>
+
+                                <li class="tab #{ProjekteForm.displayMode eq 'tab5'?'active':''}">
+                                    <h:commandLink
+                                        action="#{NavigationForm.Reload}"
+                                        value="#{msgs.eigenschaften}"
+                                        disabled="#{ProjekteForm.myProjekt.id == null}">
+                                        <f:setPropertyActionListener
+                                            target="#{ProjekteForm.displayMode}"
+                                            value="tab5" />
+                                        <f:ajax
+                                            render="@form"
+                                            execute="@form" />
+                                    </h:commandLink>
+                                </li>
+
                             </ul>
 
                         </intranda:boxTitle>
@@ -129,7 +150,7 @@
                                     name="titel"
                                     label="#{msgs.titel}"
                                     field="#{ProjekteForm.newProjectTitle}"
-                                    help="#{msgs.helpProjectTitle}"/>
+                                    help="#{msgs.helpProjectTitle}" />
 
                                 <intranda:formInputText
                                     id="projectIdentifier"
@@ -483,19 +504,19 @@
                                     label="#{msgs.metsIIIFURL}"
                                     field="#{ProjekteForm.myProjekt.metsIIIFUrl}"
                                     help="#{msgs.helpMetsIIIFUrl}"
-                                    required="false"
-                                 />
+                                    required="false" />
 
-                                    <!-- DFG-Viewer URL -->
-                                    <intranda:formInputText
-                                        id="dfgViewerUrl"
-                                        name="dfgViewerUrl"
-                                        label="#{msgs.metsDfgViewerUrl}"
-                                        field="#{ProjekteForm.myProjekt.dfgViewerUrl}"
-                                        help="#{msgs.helpMetsDfgViewerUrl}"
-                                        required="false" />
+                                <!-- DFG-Viewer URL -->
+                                <intranda:formInputText
+                                    id="dfgViewerUrl"
+                                    name="dfgViewerUrl"
+                                    label="#{msgs.metsDfgViewerUrl}"
+                                    field="#{ProjekteForm.myProjekt.dfgViewerUrl}"
+                                    help="#{msgs.helpMetsDfgViewerUrl}"
+                                    required="false" />
                             </h:panelGroup>
-                            <h:panelGroup id="filegroups1"
+                            <h:panelGroup
+                                id="filegroups1"
                                 rendered="#{ProjekteForm.displayMode eq 'tab4' or ProjekteForm.displayMode eq 'filegroups'}">
 
                                 <!-- ===================== file groups ====================== -->
@@ -510,206 +531,327 @@
                                     </div>
 
 
-                                        <h:panelGroup id="filegroups2" styleClass="col-12 col-md-9" rendered="#{ProjekteForm.displayMode eq 'filegroups'}">
+                                    <h:panelGroup
+                                        id="filegroups2"
+                                        styleClass="col-12 col-md-9"
+                                        rendered="#{ProjekteForm.displayMode eq 'filegroups'}">
 
-                                            <intranda:box
-                                                boxType="action"
-                                                boxSmall="true"
-                                                title="#{msgs.metsfilegroups}"
-                                                icon="fa-table"
-                                                boxForm="true"
-                                                boxPadding="false"
-                                                id="filegroupbox">
+                                        <intranda:box
+                                            boxType="action"
+                                            boxSmall="true"
+                                            title="#{msgs.metsfilegroups}"
+                                            icon="fa-table"
+                                            boxForm="true"
+                                            boxPadding="false"
+                                            id="filegroupbox">
+
+                                            <intranda:formInputText
+                                                id="name"
+                                                name="nameName"
+                                                label="#{msgs.name}"
+                                                field="#{ProjekteForm.myFilegroup.name}"
+                                                help="#{msgs.helpFilegroupName}" />
+
+                                            <intranda:formInputText
+                                                id="url"
+                                                name="path"
+                                                label="#{msgs.path}"
+                                                field="#{ProjekteForm.myFilegroup.path}"
+                                                help="#{msgs.helpFilegroupPath}" />
+
+                                            <h:panelGroup id="mime_suffix">
+                                                <intranda:formInputText
+                                                    rendered="#{not ProjekteForm.myFilegroup.useOriginalFiles}"
+                                                    id="mimetype"
+                                                    name="mimetypeName"
+                                                    label="#{msgs.mimetype}"
+                                                    field="#{ProjekteForm.myFilegroup.mimetype}"
+                                                    help="#{msgs.helpFilegroupMimetype}" />
 
                                                 <intranda:formInputText
-                                                    id="name"
-                                                    name="nameName"
-                                                    label="#{msgs.name}"
-                                                    field="#{ProjekteForm.myFilegroup.name}"
-                                                    help="#{msgs.helpFilegroupName}" />
+                                                    rendered="#{not ProjekteForm.myFilegroup.useOriginalFiles}"
+                                                    id="suffix"
+                                                    name="suffixName"
+                                                    label="#{msgs.suffix}"
+                                                    field="#{ProjekteForm.myFilegroup.suffix}"
+                                                    help="#{msgs.helpFilegroupSuffix}" />
+                                            </h:panelGroup>
 
-                                                <intranda:formInputText
-                                                    id="url"
-                                                    name="path"
-                                                    label="#{msgs.path}"
-                                                    field="#{ProjekteForm.myFilegroup.path}"
-                                                    help="#{msgs.helpFilegroupPath}" />
+                                            <intranda:formInputText
+                                                id="folder"
+                                                name="folderName"
+                                                label="#{msgs.validationAgainstFolder}"
+                                                field="#{ProjekteForm.myFilegroup.folder}"
+                                                required="false"
+                                                help="#{msgs.helpFilegroupValidationAgainstFolder}" />
 
-                                                <h:panelGroup id="mime_suffix">
-                                                    <intranda:formInputText
-                                                        rendered="#{not ProjekteForm.myFilegroup.useOriginalFiles}"
-                                                        id="mimetype"
-                                                        name="mimetypeName"
-                                                        label="#{msgs.mimetype}"
-                                                        field="#{ProjekteForm.myFilegroup.mimetype}"
-                                                        help="#{msgs.helpFilegroupMimetype}" />
+                                            <intranda:formInputCheckBoxAjax
+                                                id="useOriginalFiles"
+                                                label="#{msgs.projectfilegroup_useOriginalFiles}"
+                                                field="#{ProjekteForm.myFilegroup.useOriginalFiles}"
+                                                help="#{msgs.helpProjectfilegroup_UseOriginalFiles}"
+                                                name="useOriginalFilesName"
+                                                ajaxEvent="click"
+                                                ajaxRender="myform:projecteditbox:filegroupbox:mime_suffix" />
 
-                                                    <intranda:formInputText
-                                                        rendered="#{not ProjekteForm.myFilegroup.useOriginalFiles}"
-                                                        id="suffix"
-                                                        name="suffixName"
-                                                        label="#{msgs.suffix}"
-                                                        field="#{ProjekteForm.myFilegroup.suffix}"
-                                                        help="#{msgs.helpFilegroupSuffix}" />
-                                                </h:panelGroup>
+                                            <intranda:formInputText
+                                                id="ignoreMimetypes"
+                                                name="ignoreMimetypesName"
+                                                label="#{msgs.projectfilegroup_ignoreMimetypes}"
+                                                field="#{ProjekteForm.myFilegroup.ignoreMimetypes}"
+                                                required="false"
+                                                help="#{msgs.helpProjectfilegroup_IgnoreMimetypes}" />
 
-                                                <intranda:formInputText
-                                                    id="folder"
-                                                    name="folderName"
-                                                    label="#{msgs.validationAgainstFolder}"
-                                                    field="#{ProjekteForm.myFilegroup.folder}"
-                                                    required="false"
-                                                    help="#{msgs.helpFilegroupValidationAgainstFolder}" />
+                                            <div class="form-actions">
 
-                                                <intranda:formInputCheckBoxAjax
-                                                    id="useOriginalFiles"
-                                                    label="#{msgs.projectfilegroup_useOriginalFiles}"
-                                                    field="#{ProjekteForm.myFilegroup.useOriginalFiles}"
-                                                    help="#{msgs.helpProjectfilegroup_UseOriginalFiles}"
-                                                    name="useOriginalFilesName"
-                                                    ajaxEvent="click"
-                                                    ajaxRender="myform:projecteditbox:filegroupbox:mime_suffix" />
+                                                <!-- Abbrechen-Schaltknopf -->
+                                                <button
+                                                    jsf:id="cancelFileformat"
+                                                    class="btn btn-blank"
+                                                    jsf:immediate="true"
+                                                    jsf:action="#{ProjekteForm.filegroupCancel}">
+                                                    <span>
+                                                        <h:outputText value="#{msgs.abbrechen}" />
+                                                    </span>
+                                                    <f:setPropertyActionListener
+                                                        target="#{ProjekteForm.displayMode}"
+                                                        value="tab4" />
+                                                    <f:ajax render=":myform" />
+                                                </button>
 
-                                                <intranda:formInputText
-                                                    id="ignoreMimetypes"
-                                                    name="ignoreMimetypesName"
-                                                    label="#{msgs.projectfilegroup_ignoreMimetypes}"
-                                                    field="#{ProjekteForm.myFilegroup.ignoreMimetypes}"
-                                                    required="false"
-                                                    help="#{msgs.helpProjectfilegroup_IgnoreMimetypes}" />
+                                                <!-- Speichern-Schaltknopf -->
+                                                <button
+                                                    jsf:id="saveFileformat"
+                                                    class="btn btn-success"
+                                                    jsf:action="#{ProjekteForm.filegroupSave}"
+                                                    title="#{msgs.uebernehmen}">
+                                                    <span class="fa fa-save" />
+                                                    <span>
+                                                        <h:outputText value="#{msgs.save}" />
+                                                    </span>
+                                                    <f:setPropertyActionListener
+                                                        target="#{ProjekteForm.displayMode}"
+                                                        value="tab4" />
 
-                                                <div class="form-actions">
+                                                </button>
 
-                                                    <!-- Abbrechen-Schaltknopf -->
-                                                    <button
-                                                        jsf:id="cancelFileformat"
-                                                        class="btn btn-blank"
-                                                        jsf:immediate="true"
-                                                        jsf:action="#{ProjekteForm.filegroupCancel}"> <span>
-                                                            <h:outputText value="#{msgs.abbrechen}" />
-                                                    </span> <f:setPropertyActionListener
-                                                            target="#{ProjekteForm.displayMode}"
-                                                            value="tab4" />
-                                                            <f:ajax render=":myform" />
-                                                    </button>
+                                            </div>
 
-                                                    <!-- Speichern-Schaltknopf -->
-                                                    <button
-                                                        jsf:id="saveFileformat"
-                                                        class="btn btn-success"
-                                                        jsf:action="#{ProjekteForm.filegroupSave}"
-                                                        title="#{msgs.uebernehmen}">
-                                                        <span class="fa fa-save" /> <span> <h:outputText
-                                                                value="#{msgs.save}" />
-                                                        </span>
-                                                        <f:setPropertyActionListener
-                                                            target="#{ProjekteForm.displayMode}"
-                                                            value="tab4" />
+                                        </intranda:box>
 
-                                                    </button>
-
-                                                </div>
-
-                                            </intranda:box>
-
-                                        </h:panelGroup>
+                                    </h:panelGroup>
 
 
-                                        <h:panelGroup id="filegroups" styleClass="col-12 col-md-9" rendered="#{ProjekteForm.displayMode ne 'filegroups'}">
+                                    <h:panelGroup
+                                        id="filegroups"
+                                        styleClass="col-12 col-md-9"
+                                        rendered="#{ProjekteForm.displayMode ne 'filegroups'}">
 
-                                            <intranda:box
-                                                boxScope="box-mets-filegroups"
-                                                boxType="neutral"
-                                                boxSmall="true"
-                                                boxPadding="true"
-                                                title="#{msgs.metsfilegroups}"
-                                                icon="fa-table">
+                                        <intranda:box
+                                            boxScope="box-mets-filegroups"
+                                            boxType="neutral"
+                                            boxSmall="true"
+                                            boxPadding="true"
+                                            title="#{msgs.metsfilegroups}"
+                                            icon="fa-table">
 
-                                                    <h:dataTable
-                                                        id="fileformats"
-                                                        styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
-                                                        var="item"
-                                                        value="#{ProjekteForm.fileGroupList}">
+                                            <h:dataTable
+                                                id="fileformats"
+                                                styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                                                var="item"
+                                                value="#{ProjekteForm.fileGroupList}">
 
-                                                        <h:column>
-                                                            <div
-                                                                class="d-flex justify-content-between align-items-center">
+                                                <h:column>
+                                                    <div class="d-flex justify-content-between align-items-center">
 
-                                                                <div>#{item.name}</div>
+                                                        <div>#{item.name}</div>
 
-                                                                <div class="d-flex gap-2">
+                                                        <div class="d-flex gap-2">
 
-                                                                    <!-- Edit-Schaltknopf -->
-                                                                    <button
-                                                                        jsf:id="edit"
-                                                                        class="btn btn-neutral-600"
-                                                                        title="#{msgs.filegroupBearbeiten}"
-                                                                        jsf:rel="tooltip"
-                                                                        jsf:action="#{ProjekteForm.filegroupEdit}">
-                                                                        <span class="fa fa-edit" />
-                                                                        <f:setPropertyActionListener
-                                                                            target="#{ProjekteForm.myFilegroup}"
-                                                                            value="#{item}" />
-                                                                        <f:setPropertyActionListener
-                                                                            target="#{ProjekteForm.displayMode}"
-                                                                            value="filegroups" />
-                                                                        <f:ajax render=":myform" />
-                                                                    </button>
+                                                            <!-- Edit-Schaltknopf -->
+                                                            <button
+                                                                jsf:id="edit"
+                                                                class="btn btn-neutral-600"
+                                                                title="#{msgs.filegroupBearbeiten}"
+                                                                jsf:rel="tooltip"
+                                                                jsf:action="#{ProjekteForm.filegroupEdit}">
+                                                                <span class="fa fa-edit" />
+                                                                <f:setPropertyActionListener
+                                                                    target="#{ProjekteForm.myFilegroup}"
+                                                                    value="#{item}" />
+                                                                <f:setPropertyActionListener
+                                                                    target="#{ProjekteForm.displayMode}"
+                                                                    value="filegroups" />
+                                                                <f:ajax render=":myform" />
+                                                            </button>
 
-                                                                    <!-- Löschen-Schaltknopf -->
-                                                                    <button
-                                                                        jsf:id="delete"
-                                                                        class="btn btn-hot"
-                                                                        title="#{msgs.filegroupLoeschen}"
-                                                                        jsf:rel="tooltip"
-                                                                        jsf:action="#{ProjekteForm.filegroupDelete}">
-                                                                        <span class="fa fa-trash-o" />
-                                                                        <f:setPropertyActionListener
-                                                                            target="#{ProjekteForm.myFilegroup}"
-                                                                            value="#{item}" />
-                                                                        <f:ajax render=":myform" />
-                                                                    </button>
+                                                            <!-- Löschen-Schaltknopf -->
+                                                            <button
+                                                                jsf:id="delete"
+                                                                class="btn btn-hot"
+                                                                title="#{msgs.filegroupLoeschen}"
+                                                                jsf:rel="tooltip"
+                                                                jsf:action="#{ProjekteForm.filegroupDelete}">
+                                                                <span class="fa fa-trash-o" />
+                                                                <f:setPropertyActionListener
+                                                                    target="#{ProjekteForm.myFilegroup}"
+                                                                    value="#{item}" />
+                                                                <f:ajax render=":myform" />
+                                                            </button>
 
-                                                                </div>
-
-                                                            </div>
-                                                            <!-- end flex container -->
-
-                                                        </h:column>
-
-                                                    </h:dataTable>
-
-                                                    <div class="form__actions">
-
-                                                        <!-- Neu-Schaltknopf -->
-                                                        <button
-                                                            jsf:id="newFileformat"
-                                                            class="me-auto btn btn-neutral-600"
-                                                            jsf:action="#{ProjekteForm.filegroupAdd}"
-                                                            jsf:immediate="true">
-                                                            <span class="fa fa-plus" /> <span> <h:outputText
-                                                                    value="#{msgs.filegroupHinzufuegen}" />
-                                                            </span>
-                                                            <f:setPropertyActionListener
-                                                                target="#{ProjekteForm.displayMode}"
-                                                                value="filegroups" />
-                                                            <f:ajax render=":myform" />
-                                                        </button>
+                                                        </div>
 
                                                     </div>
-                                                    <!-- end form__actions -->
+                                                    <!-- end flex container -->
 
-                                            </intranda:box>
+                                                </h:column>
 
-                                            <intranda:formHelp content="#{msgs.helpMetsfilegroups}" />
-                                        </h:panelGroup>
+                                            </h:dataTable>
 
-                                    </div>
+                                            <div class="form__actions">
+
+                                                <!-- Neu-Schaltknopf -->
+                                                <button
+                                                    jsf:id="newFileformat"
+                                                    class="me-auto btn btn-neutral-600"
+                                                    jsf:action="#{ProjekteForm.filegroupAdd}"
+                                                    jsf:immediate="true">
+                                                    <span class="fa fa-plus" />
+                                                    <span>
+                                                        <h:outputText value="#{msgs.filegroupHinzufuegen}" />
+                                                    </span>
+                                                    <f:setPropertyActionListener
+                                                        target="#{ProjekteForm.displayMode}"
+                                                        value="filegroups" />
+                                                    <f:ajax render=":myform" />
+                                                </button>
+
+                                            </div>
+                                            <!-- end form__actions -->
+
+                                        </intranda:box>
+
+                                        <intranda:formHelp content="#{msgs.helpMetsfilegroups}" />
+                                    </h:panelGroup>
+
+                                </div>
 
                             </h:panelGroup>
+                            <h:panelGroup rendered="#{ProjekteForm.displayMode eq 'tab5'}">
+                                <ui:fragment rendered="#{NavigationForm.uiStatus.projectProperty ne 'editProperties'}">
+                                    <dl:list>
+                                        <ui:repeat
+                                            var="item"
+                                            value="#{ProjekteForm.myProjekt.properties}"
+                                            varStatus="status">
+                                            <dl:term>#{item.titel}</dl:term>
+                                            <dl:description>
+                                                #{item.wert}
+                                                <button:row position="end">
+                                                    <button
+                                                        jsf:id="editProperty"
+                                                        class="btn btn-blank"
+                                                        title="#{msgs.bearbeiten}"
+                                                        data-bs-toggle="tooltip"
+                                                        jsf:action="#{NavigationForm.Reload}">
+                                                        <span class="fa fa-pencil" />
+                                                        <f:setPropertyActionListener
+                                                            target="#{ProjekteForm.currentProperty}"
+                                                            value="#{item}" />
+                                                        <f:setPropertyActionListener
+                                                            target="#{NavigationForm.uiStatus.projectProperty}"
+                                                            value="editProperties" />
+                                                    </button>
+                                                </button:row>
+                                            </dl:description>
+                                        </ui:repeat>
+                                    </dl:list>
+                                    <div
+                                        class="section-footer p-3 border-bottom">
+                                        <button
+                                            jsf:action="#{ProjekteForm.newProperty}"
+                                            jsf:id="newProperty"
+                                            class="btn btn-action">
+                                            <span class="fa fa-plus" />
+                                            <span>#{msgs.eigenschaftHinzufuegen}</span>
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus.projectProperty}"
+                                                value="editProperties" />
+                                        </button>
+                                    </div>
+                                </ui:fragment>
+                                <ui:fragment rendered="#{NavigationForm.uiStatus.projectProperty == 'editProperties'}">
+                                    <intranda:formInputText
+                                        id="propertyTitle"
+                                        name="propertyTitle"
+                                        label="#{msgs.titel}"
+                                        field="#{ProjekteForm.currentProperty.propertyName}"
+                                        help="#{msgs.helpPropertyTitle}"
+                                        required="true" />
+                                    <intranda:formInputText
+                                        id="propertyValue"
+                                        name="propertyValue"
+                                        label="#{msgs.wert}"
+                                        field="#{ProjekteForm.currentProperty.propertyValue}"
+                                        help="#{msgs.helpPropertyValue}"
+                                        required="true" />
+
+                                    <div class="box__actions">
+                                        <!-- CANCEL -->
+                                        <button
+                                            jsf:id="cancelProperty"
+                                            class="btn btn-blank"
+                                                jsf:immediate="true"
+                                            jsf:action="#{NavigationForm.Reload}">
+                                            <h:outputText value="#{msgs.abbrechen}" />
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus.projectProperty}"
+                                                value="" />
+                                        </button>
+
+                                        <!-- SAVE -->
+                                        <button
+                                            class="btn btn-success submitOnEnter"
+                                            jsf:id="saveProperty"
+                                            type="submit"
+                                            jsf:action="#{ProjekteForm.saveProperty}">
+                                            <span class="fa fa-save" />
+                                            <span>
+                                                <h:outputText value="#{msgs.propertySave}" />
+                                            </span>
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus.projectProperty}"
+                                                value="" />
+                                        </button>
+
+                                        <!-- DELETE -->
+                                        <button
+                                            jsf:id="deleteProperty"
+                                            class="btn btn-hot trigger-delete"
+                                            onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
+                                            jsf:action="#{ProjekteForm.deleteProperty}"
+                                            jsf:rendered="#{ProjekteForm.currentProperty.id != null}">
+                                            <span class="fa fa-trash-o" />
+                                            <span>
+                                                <h:outputText value="#{msgs.propertyDelete}" />
+                                            </span>
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.uiStatus.projectProperty}"
+                                                value="" />
+                                        </button>
+                                    </div>
+                                </ui:fragment>
+
+
+                            </h:panelGroup>
+
                         </div>
 
-                        <h:panelGroup rendered="#{ProjekteForm.displayMode ne 'filegroups'}">
+                        <h:panelGroup
+                            rendered="#{ProjekteForm.displayMode ne 'filegroups' and NavigationForm.uiStatus.projectProperty ne 'editProperties'}">
                             <intranda:formButtonArea
                                 id="buttons"
                                 form="#{ProjekteForm}"
@@ -723,10 +865,14 @@
 
                 <!-- JOURNAL -->
                 <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-5'}">
-                   <ui:fragment rendered="#{ProjekteForm.myProjekt.id != null}">
+                    <ui:fragment rendered="#{ProjekteForm.myProjekt.id != null}">
 
-                <intranda:journal showBigButton="true" showFolderSelection="false" showImageComments="false" bean="#{ProjekteForm.myProjekt}" />
-                </ui:fragment>
+                        <intranda:journal
+                            showBigButton="true"
+                            showFolderSelection="false"
+                            showImageComments="false"
+                            bean="#{ProjekteForm.myProjekt}" />
+                    </ui:fragment>
 
                 </div>
                 <!-- JOURNAL -->

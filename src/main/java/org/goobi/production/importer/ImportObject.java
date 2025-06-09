@@ -29,9 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.goobi.beans.Batch;
-import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
-import org.goobi.beans.Templateproperty;
 import org.goobi.production.enums.ImportReturnValue;
 
 import lombok.Data;
@@ -53,7 +51,5 @@ public class ImportObject {
 
     // additional information
     private List<Processproperty> processProperties = new ArrayList<>();
-    private List<Masterpieceproperty> workProperties = new ArrayList<>();
-    private List<Templateproperty> templateProperties = new ArrayList<>();
 
 }

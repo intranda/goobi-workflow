@@ -394,31 +394,7 @@ public class FilterHelper {
      * @param tok part of filter string to use
      ****************************************************************************/
     protected static String filterScanTemplate(String tok, boolean negate) {
-        /* Filtering by signature */
-        String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
-        if (!negate) {
-            if (ts.length > 1) {
-                return " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter
-                        + "' AND vorlageneigenschaften.Titel LIKE '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0])
-                        + rightTruncationCharacter + "'))";
-
-            } else {
-                return " prozesse.prozesseID in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
-
-            }
-        } else if (ts.length > 1) {
-            return " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter
-                    + "' AND vorlageneigenschaften.Titel LIKE '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0])
-                    + rightTruncationCharacter + "'))";
-
-        } else {
-            return " prozesse.prozesseID not in (select prozesseID from vorlagen where vorlagenID in (select vorlagenID from vorlageneigenschaften where vorlageneigenschaften.WERT like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
-
-        }
+        return filterProcessProperty(tok, negate);
     }
 
     protected static String filterStepProperty(String tok, boolean negate) {
@@ -426,21 +402,21 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
             if (ts.length > 1) {
-                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like ''"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND Titel like '"
+                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select object_id from properties where object_type = 'error' AND property_value like ''"
+                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND property_name like '"
                         + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
 
             } else {
-                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like '"
+                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select object_id from properties where object_type = 'error' AND property_value like '"
                         + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
             }
         } else if (ts.length > 1) {
-            return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND Titel like '"
+            return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select object_id from properties where object_type = 'error' AND property_value like '"
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND property_name like '"
                     + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
 
         } else {
-            return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '"
+            return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select object_id from properties where object_type = 'error' AND property_value like '"
                     + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
         }
     }
@@ -511,22 +487,22 @@ public class FilterHelper {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         if (!negate) {
             if (ts.length > 1) {
-                return "prozesse.ProzesseID in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Titel like '"
+                return "prozesse.ProzesseID in (select object_id from properties where object_type = 'process' AND properties.property_name like '"
                         + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter
-                        + "' AND prozesseeigenschaften.Wert like '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1])
+                        + "' AND properties.property_value like '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1])
                         + rightTruncationCharacter + "' )";
 
             } else {
-                return "prozesse.ProzesseID in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Wert like '"
+                return "prozesse.ProzesseID in (select object_id from properties where object_type = 'process' AND properties.property_value like '"
                         + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
             }
         } else if (ts.length > 1) {
-            return "prozesse.ProzesseID not in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Titel like  '"
+            return "prozesse.ProzesseID not in (select object_id from properties where object_type = 'process' AND properties.property_name like  '"
                     + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter
-                    + "' AND prozesseeigenschaften.Wert like '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1])
+                    + "' AND properties.property_value like '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1])
                     + rightTruncationCharacter + "' )";
         } else {
-            return "prozesse.ProzesseID not in (select prozesseID from prozesseeigenschaften where prozesseeigenschaften.Wert like '"
+            return "prozesse.ProzesseID not in (select object_id from properties where object_type = 'process' AND properties.property_value like '"
                     + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
         }
     }
@@ -665,31 +641,7 @@ public class FilterHelper {
      * @param tok part of filter string to use
      ****************************************************************************/
     protected static String filterWorkpiece(String tok, boolean negate) {
-        /* filter according signature */
-        String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
-        if (!negate) {
-            if (ts.length > 1) {
-                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter
-                        + "' AND werkstueckeeigenschaften.Titel LIKE '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0])
-                        + rightTruncationCharacter + "'))";
-            } else {
-
-                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
-            }
-        } else if (ts.length > 1) {
-            return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter
-                    + "' AND werkstueckeeigenschaften.Titel LIKE '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0])
-                    + rightTruncationCharacter + "'))";
-
-        } else {
-
-            return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
-
-        }
+        return filterProcessProperty(tok, negate);
     }
 
     private static StringBuilder checkStringBuilder(StringBuilder filter, boolean conjunction) {

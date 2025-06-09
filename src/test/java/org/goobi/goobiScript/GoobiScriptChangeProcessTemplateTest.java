@@ -27,8 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.easymock.EasyMock;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -100,19 +101,18 @@ public class GoobiScriptChangeProcessTemplateTest extends AbstractTest {
         EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
         EasyMock.expect(ProcessManager.getProcessByExactTitle(EasyMock.anyString())).andReturn(template).anyTimes();
 
-        List<Processproperty> props = new ArrayList<>();
+        List<GoobiProperty> props = new ArrayList<>();
 
-        Processproperty p1 = new Processproperty();
-        p1.setTitel("Template");
-        p1.setWert("abc");
-        Processproperty p2 = new Processproperty();
-        p2.setTitel("TemplateID");
-        p2.setWert("111");
+        GoobiProperty p1 = new GoobiProperty(PropertyOwnerType.PROCESS);
+        p1.setPropertyName("Template");
+        p1.setPropertyValue("abc");
+        GoobiProperty p2 = new GoobiProperty(PropertyOwnerType.PROCESS);
+        p2.setPropertyName("TemplateID");
+        p2.setPropertyValue("111");
         props.add(p1);
         props.add(p2);
 
-        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(props).anyTimes();
-
+        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.anyObject())).andReturn(props).anyTimes();
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(templatesteps).anyTimes();
         StepManager.deleteStep(EasyMock.anyObject());
         StepManager.deleteStep(EasyMock.anyObject());

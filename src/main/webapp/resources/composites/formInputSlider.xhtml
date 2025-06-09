@@ -51,9 +51,9 @@
 
 			<!-- CONTENT -->
 			<div class="#{cc.attrs.classRight} input-option-slider #{cc.attrs.identifier}">
-				<div class="d-flex flex-nowrap gap-2 w-100">
+				<div class="form-slider-wrapper">
 					<input
-						class="form-range my-auto w-50"
+						class="form-range form-slider-slider"
 						type="range"
 						min="#{cc.attrs.lowerLimit}"
 						max="#{cc.attrs.upperLimit}"
@@ -61,25 +61,22 @@
 						data-slider-identifier="slider_#{cc.attrs.identifier}"
 						oninput="sliderInputEvent(this)"
 						value="#{cc.attrs.field}" />
-					<span class="d-flex flex-nowrap gap-2 w-50">
+					<span class="form-slider-text">
 						<span
-							class="prefix my-auto w-25"
+							class="prefix my-auto"
 							jsf:rendered="#{cc.attrs.prefix.length() > 0}">
 							#{cc.attrs.prefix}
 						</span>
 						<h:inputText
 							forceId="#{cc.attrs.forceId}"
-							styleClass="#{cc.attrs.fieldStyle} form-control my-auto#{
-								cc.attrs.prefix.length() > 0 and cc.attrs.suffix.length() > 0 ? ' w-50' :
-								cc.attrs.prefix.length() > 0 or cc.attrs.suffix.length() > 0 ? ' w-75' : ' w-100'
-							}"
+							styleClass="#{cc.attrs.fieldStyle} form-control"
 							value="#{cc.attrs.field}"
 							pt:data-slider-identifier="slider_#{cc.attrs.identifier}"
 							pt:oninput="textInputEvent(this)"
 							required="#{cc.attrs.required}"
 							readonly="#{cc.attrs.readonly}" />
 						<span
-							class="suffix my-auto w-25"
+							class="suffix my-auto"
 							jsf:rendered="#{cc.attrs.suffix.length() > 0}">
 							#{cc.attrs.suffix}
 						</span>

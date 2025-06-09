@@ -28,11 +28,10 @@ package org.goobi.beans;
 import java.io.Serializable;
 import java.util.Date;
 
-import de.sub.goobi.helper.enums.PropertyType;
 import lombok.Getter;
 import lombok.Setter;
 
-public class UserProperty extends AbstractProperty implements Serializable {
+public class UserProperty extends GoobiProperty implements Serializable {
     private static final long serialVersionUID = -2356566712752716107L;
 
     @Getter
@@ -40,8 +39,7 @@ public class UserProperty extends AbstractProperty implements Serializable {
     private User benutzer;
 
     public UserProperty() {
-        this.istObligatorisch = false;
-        this.datentyp = PropertyType.STRING.getId();
+        super(PropertyOwnerType.USER);
         this.creationDate = new Date();
     }
 

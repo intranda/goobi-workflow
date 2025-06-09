@@ -212,7 +212,7 @@
                                                 title="#{msgs.statusGesperrt}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"
-                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
+                                                class="d-inline-block align-middle statusRectangle #{item.bearbeitungsstatusEnum.color}" />
 
                                             <!-- OPEN -->
                                             <div
@@ -220,7 +220,7 @@
                                                 title="#{msgs.statusOffen}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"
-                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
+                                                class="d-inline-block align-middle statusRectangle #{item.bearbeitungsstatusEnum.color}" />
 
                                             <!-- DONE AND ANONYMIZED -->
                                             <div
@@ -228,7 +228,7 @@
                                                 title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"
-                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
+                                                class="d-inline-block align-middle statusRectangle #{item.bearbeitungsstatusEnum.color}" />
 
                                             <!-- INWORK AND ANONYMIZED -->
                                             <div
@@ -236,7 +236,7 @@
                                                 title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"
-                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
+                                                class="d-inline-block align-middle statusRectangle #{item.bearbeitungsstatusEnum.color}" />
 
                                             <!-- DONE AND NOT ANONYMIZED -->
                                             <div
@@ -244,7 +244,7 @@
                                                 title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"
-                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
+                                                class="d-inline-block align-middle statusRectangle #{item.bearbeitungsstatusEnum.color}" />
 
                                             <!-- INWORK AND NOT ANONYMIZED -->
                                             <div
@@ -252,7 +252,7 @@
                                                 title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"
-                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
+                                                class="d-inline-block align-middle statusRectangle #{item.bearbeitungsstatusEnum.color}" />
 
                                             <!-- ERROR -->
                                             <div
@@ -260,7 +260,7 @@
                                                 title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"
-                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
+                                                class="d-inline-block align-middle statusRectangle #{item.bearbeitungsstatusEnum.color}" />
 
                                             <!-- DEACTIVATED -->
                                             <div
@@ -268,7 +268,7 @@
                                                 title="#{msgs.statusDeactivated}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"
-                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
+                                                class="d-inline-block align-middle statusRectangle #{item.bearbeitungsstatusEnum.color}" />
 
                                             <!-- INFLIGHT -->
                                             <div
@@ -276,11 +276,10 @@
                                                 title="#{msgs.statusInFlight}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"
-                                                class="d-inline-block align-middle statusRectangle #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}" />
+                                                class="d-inline-block align-middle statusRectangle #{item.bearbeitungsstatusEnum.color}" />
 
                                             <div
-                                                class="ms-3 d-inline-block align-middle"
-                                                jsf:rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}">
+                                                class="accessibility-enhancement-text">
                                                 <h:outputText value="#{item.bearbeitungsstatusEnum.title}" />
                                             </div>
 

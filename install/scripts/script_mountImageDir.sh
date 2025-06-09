@@ -27,7 +27,7 @@ echo "Mounting: $LINKNAME";
 ## create dir as root because its chrooted
 sudo /bin/mkdir "$LINKNAME"
 
-sudo /bin/chown ${TOMCAT_USER}.${TOMCAT_GROUP} "$LINKNAME"
+sudo /bin/chown ${TOMCAT_USER}:${TOMCAT_GROUP} "$LINKNAME"
 
 if [ "${USER}" = "root" ]
 then

@@ -82,6 +82,10 @@ button,
   gap: 0.25rem;
 }
 
+.button-row-end {
+  margin-inline-start: auto;
+}
+
 /* ========================================
  * Skip Link
 /* ======================================== */
@@ -164,4 +168,10 @@ button,
     border: 1px solid;
     color: inherit;
   }
+}
+
+.btn-highlight {
+  border-color: var(--clr-white);
+  outline: 2px solid var(--bs-btn-bg);
+  transition: all 0.1s ease-in-out;
 }

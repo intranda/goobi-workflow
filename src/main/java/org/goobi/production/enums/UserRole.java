@@ -81,6 +81,7 @@ public enum UserRole {
     Admin_Quartz,
     Admin_ApiKey,
     Admin_Templates,
+    Admin_ruleset_editor,
     Admin_config_file_editor;
 
     public static List<String> getAllRoles() {

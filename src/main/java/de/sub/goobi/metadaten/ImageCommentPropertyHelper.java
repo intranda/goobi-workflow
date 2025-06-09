@@ -99,7 +99,7 @@ public class ImageCommentPropertyHelper {
         Processproperty currentProperty = prepareProcessproperty(IMAGE_COMMENTS_PROPERTY_NAME);
         String newPropertyValue = createPropertyValue(ic);
         log.debug("newPropertyValue = " + newPropertyValue);
-        currentProperty.setWert(newPropertyValue);
+        currentProperty.setPropertyValue(newPropertyValue);
         PropertyManager.saveProcessProperty(currentProperty);
     }
 
@@ -110,20 +110,20 @@ public class ImageCommentPropertyHelper {
     private Processproperty prepareProcessproperty(String propertyTitle) {
         List<Processproperty> props = PropertyManager.getProcessPropertiesForProcess(process.getId());
         for (Processproperty p : props) {
-            if (propertyTitle.equals(p.getTitel())) {
+            if (propertyTitle.equals(p.getPropertyName())) {
                 return p;
             }
         }
 
         // no such property exists, create a new one
         Processproperty property = new Processproperty();
-        property.setProcessId(process.getId());
-        property.setTitel(propertyTitle);
+        property.setObjectId(process.getId());
+        property.setPropertyName(propertyTitle);
         return property;
     }
 
     private ImageComments loadImageCommentsFromProcessProperty(Processproperty property) {
-        String propertyValue = property.getWert();
+        String propertyValue = property.getPropertyValue();
         if (propertyValue == null) {
             return new ImageComments();
         }

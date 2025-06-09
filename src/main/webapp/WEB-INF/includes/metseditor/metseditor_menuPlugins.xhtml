@@ -27,16 +27,15 @@
             </script>
             <ul class="navbar-nav" role="list">
 
-                <li class="nav-item">
+                <li class="nav-item dropdown">
                     <button
                         id="configDropdown"
                         type="button"
-                        class="btn btn--icon dropdown-toggle"
+                        class="nav-link dropdown-toggle"
                         aria-label="#{msgs.plugins}"
                         title=""
                         aria-haspopup="true"
                         aria-expanded="false"
-                        onclick="switchExpanded(this.id)"
                         data-show="submenu">
                         <span class="mr-1">
                             #{msgs.plugins}
@@ -44,7 +43,7 @@
                     </button>
 
 
-                    <ul class="clean submenu" style="display: none;">
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <ui:repeat
                             var="extension"
                             value="#{Metadaten.extensions}">

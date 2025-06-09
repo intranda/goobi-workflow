@@ -37,11 +37,12 @@ import org.goobi.api.rest.model.RestPropertyResource;
 import org.goobi.api.rest.model.RestStepResource;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Docket;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
@@ -65,20 +66,18 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.JournalManager;
-import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import jakarta.ws.rs.core.Response;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, TemplateManager.class,
-        MasterpieceManager.class, StepManager.class, UsergroupManager.class, CloseStepHelper.class, JournalManager.class, Helper.class,
+@PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, StepManager.class,
+        UsergroupManager.class, CloseStepHelper.class, JournalManager.class, Helper.class,
         MetadataManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ProcessServiceTest extends AbstractTest {
@@ -149,12 +148,12 @@ public class ProcessServiceTest extends AbstractTest {
         step.setPrioritaet(1);
         step.setProcessId(1);
 
-        Processproperty property = new Processproperty();
-        property.setProzess(process);
-        property.setProcessId(1);
+        GoobiProperty property = new GoobiProperty(PropertyOwnerType.PROCESS);
+        property.setOwner(process);
+        property.setObjectId(1);
         property.setCreationDate(new Date());
-        property.setTitel("title");
-        property.setWert("value");
+        property.setPropertyName("title");
+        property.setPropertyValue("value");
 
         entry = new JournalEntry(1, 1, new Date(), "user", LogType.INFO, "content", "filename", EntryType.PROCESS, null);
         List<JournalEntry> journal = new ArrayList<>();
@@ -178,21 +177,18 @@ public class ProcessServiceTest extends AbstractTest {
         PowerMock.mockStatic(DocketManager.class);
         EasyMock.expect(DocketManager.getDocketByName(EasyMock.anyString())).andReturn(otherDocket).anyTimes();
 
-        List<Processproperty> props = new ArrayList<>();
+        List<GoobiProperty> props = new ArrayList<>();
         props.add(property);
 
         PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(props).anyTimes();
-        EasyMock.expect(PropertyManager.getProcessPropertyById(EasyMock.anyInt())).andReturn(property).anyTimes();
-        PowerMock.mockStatic(TemplateManager.class);
-        EasyMock.expect(TemplateManager.getTemplatesForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
-        PowerMock.mockStatic(MasterpieceManager.class);
-        EasyMock.expect(MasterpieceManager.getMasterpiecesForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
+        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.anyObject())).andReturn(props).anyTimes();
 
-        PropertyManager.saveProcessProperty(EasyMock.anyObject());
-        PropertyManager.saveProcessProperty(EasyMock.anyObject());
-        PropertyManager.deleteProcessProperty(EasyMock.anyObject());
-        PropertyManager.deleteProcessProperty(EasyMock.anyObject());
+        EasyMock.expect(PropertyManager.getPropertById(EasyMock.anyInt())).andReturn(property).anyTimes();
+
+        PropertyManager.saveProperty(EasyMock.anyObject());
+        PropertyManager.saveProperty(EasyMock.anyObject());
+        PropertyManager.deleteProperty(EasyMock.anyObject());
+        PropertyManager.deleteProperty(EasyMock.anyObject());
 
         PowerMock.mockStatic(StepManager.class);
         EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();

@@ -9,6 +9,12 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:ds="http://deltaspike.apache.org/jsf">
+	<c:set var="accessibilityMode"
+		value="#{
+			LoginForm.myBenutzer == null ?
+			HelperForm.renderAccessibilityCss  ? ' accessibility-mode' : ''
+			: LoginForm.myBenutzer.uiMode=='accessibility' ? ' accessibility-mode' : ''
+		}" />
 <h:head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -40,7 +46,7 @@
     <link rel="apple-touch-icon-precomposed" href="template/img/apple-touch-icon.png" />
 </h:head>
 
-<h:body styleClass="login">
+<h:body styleClass="login#{accessibilityMode}">
 	<f:view locale="#{SpracheForm.locale}">
 		 <ui:insert name="content" />
 	</f:view>

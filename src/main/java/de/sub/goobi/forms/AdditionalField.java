@@ -47,8 +47,10 @@ public class AdditionalField {
     @Setter
     @Getter
     private boolean required = false;
+
     @Getter
-    private String from = "process";
+    @Setter
+    private boolean property;
     @Getter
     @Setter
     private List<SelectItem> selectList;
@@ -106,12 +108,6 @@ public class AdditionalField {
             this.wert = newValue + this.initEnd;
         } else {
             this.wert = this.initStart + newValue + this.initEnd;
-        }
-    }
-
-    public void setFrom(String infrom) {
-        if (infrom != null && infrom.length() != 0) {
-            this.from = infrom;
         }
     }
 

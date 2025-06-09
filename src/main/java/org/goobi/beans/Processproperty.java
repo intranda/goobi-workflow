@@ -28,38 +28,42 @@ package org.goobi.beans;
 import java.io.Serializable;
 import java.util.Date;
 
-import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import lombok.Setter;
 
-public class Processproperty extends AbstractProperty implements Serializable, Comparable<Processproperty> {
+@Deprecated
+public class Processproperty extends GoobiProperty implements Serializable, Comparable<Processproperty> {
     private static final long serialVersionUID = -2356566712752716107L;
 
-    @Setter
     private Process prozess;
-    @Setter
-    private int processId;
 
     public Processproperty() {
-        this.istObligatorisch = false;
-        this.datentyp = PropertyType.STRING.getId();
+        super(PropertyOwnerType.PROCESS);
         this.creationDate = new Date();
     }
 
     public Process getProzess() {
         if (prozess == null) {
-            prozess = ProcessManager.getProcessById(processId);
+            prozess = ProcessManager.getProcessById(objectId);
         }
         return this.prozess;
     }
 
-    @Override
-    public int compareTo(Processproperty o) {
-        return this.getTitel().toLowerCase().compareTo(o.getTitel().toLowerCase());
+    public void setProzess(Process prozess) {
+        this.prozess = prozess;
+        setOwnerObject(prozess);
     }
 
     public Integer getProcessId() {
-        return processId;
+        return objectId;
+    }
+
+    public void setProcessId(Integer id) {
+        objectId = id;
+    }
+
+    @Override
+    public int compareTo(Processproperty o) {
+        return propertyName.toLowerCase().compareTo(o.getPropertyName().toLowerCase());
     }
 
     @Override
@@ -68,11 +72,10 @@ public class Processproperty extends AbstractProperty implements Serializable, C
         int result = 1;
         result = prime * result + ((getContainer() == null) ? 0 : getContainer().hashCode());
         result = prime * result + ((creationDate == null) ? 0 : creationDate.hashCode());
-        result = prime * result + ((datentyp == null) ? 0 : datentyp.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + processId;
-        result = prime * result + ((titel == null) ? 0 : titel.hashCode());
-        result = prime * result + ((wert == null) ? 0 : wert.hashCode());
+        result = prime * result + ((objectId == null) ? 0 : objectId);
+        result = prime * result + ((propertyName == null) ? 0 : propertyName.hashCode());
+        result = prime * result + ((propertyValue == null) ? 0 : propertyValue.hashCode());
         return result;
     }
 
@@ -105,28 +108,22 @@ public class Processproperty extends AbstractProperty implements Serializable, C
         } else if (!creationDate.equals(other.creationDate)) {
             return false;
         }
-        if (datentyp == null) {
-            if (other.datentyp != null) {
-                return false;
-            }
-        } else if (!datentyp.equals(other.datentyp)) {
+
+        if (objectId != other.objectId) {
             return false;
         }
-        if (processId != other.processId) {
-            return false;
-        }
-        if (titel == null) {
-            if (other.titel != null) {
+        if (propertyName == null) {
+            if (other.propertyName != null) {
                 return false;
             }
-        } else if (!titel.equals(other.titel)) {
+        } else if (!propertyName.equals(other.propertyName)) {
             return false;
         }
-        if (wert == null) {
-            if (other.wert != null) {
+        if (propertyValue == null) {
+            if (other.propertyValue != null) {
                 return false;
             }
-        } else if (!wert.equals(other.wert)) {
+        } else if (!propertyValue.equals(other.propertyValue)) {
             return false;
         }
         return true;

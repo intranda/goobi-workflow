@@ -93,7 +93,7 @@ export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(eleme
       clearTimeout(tooltipHideTimeout);
       tooltipShowTimeout = setTimeout(() => {
         tooltip.show();
-        tooltip.tip.addEventListener('mouseleave', () => {
+        tooltip?.tip?.addEventListener('mouseleave', () => {
           event.preventDefault;
           event.stopPropagation;
 
@@ -154,7 +154,7 @@ const hoverablePopover = function keepPopoverOpenOnHoverOverContent(element) {
       popoverShowTimeout = setTimeout(() => {
         popover.show();
 
-        popover.tip.addEventListener('mouseleave', () => {
+        popover?.tip?.addEventListener('mouseleave', () => {
           event.preventDefault;
           event.stopPropagation;
           popover.hide();

@@ -59,7 +59,7 @@
                     }
             }"/>
         </h:commandLink>
-        <h:panelGroup rendered="#{property.type.name == 'vocabularymultireference'}">
+        <c:if test="#{property.type.name == 'vocabularymultireference'}">
             <c:forEach
                 var="val"
                 items="#{property.vocabularySelectionBean.selection}">
@@ -81,7 +81,7 @@
                     }"/>
                 </h:commandLink>
             </c:forEach>
-        </h:panelGroup>
+        </c:if>
         <h:panelGroup rendered="#{property.type.name == 'boolean'}">
             <h:panelGroup rendered="#{property.readValue eq 'true'}">
                 <span
@@ -143,13 +143,15 @@
                     </c:if>
                 </button>
                 <f:ajax
-                    render="propertyEditArea">
+                    render="propertyForm#{groupId}">
                     <button
+                        type="button"
                         jsf:action="#{bean.duplicateProperty}"
                         class="btn btn-blank"
                         title="#{msgs.duplicate}"
-                        jsf:id="duplicateProperty"
-                        jsf:rendered="#{proc.type.name != 'metadata' and scope == 'process' and LoginForm.hasRole('Workflow_General_Details_Edit')}">
+                        jsf:id="duplicateProperty#{id}"
+                        jsf:rendered="#{proc.type.name != 'metadata' and scope == 'process' and LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                        data-bs-toggle="tooltip">
                         <span
                             aria-hidden="true"
                             class="fa fa-clipboard" />

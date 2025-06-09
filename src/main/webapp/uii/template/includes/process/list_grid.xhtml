@@ -86,7 +86,7 @@
                                         title="#{msgs.statusAbgeschlossen}"
                                         aria-label="#{item.fortschritt3}% #{msgs.statusAbgeschlossen}"
                                         data-toggle="tooltip"
-                                        class="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-done'):('progress-bar-success'))}"
+                                        class="progress-bar progress-bar-success"
                                         style="width: #{item.fortschritt3}%" />
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{item.fortschritt2 gt 0}">
@@ -94,7 +94,7 @@
                                         title="#{msgs.statusOffen}"
                                         aria-label="#{item.fortschritt2}% #{msgs.statusOffen}"
                                         data-toggle="tooltip"
-                                        class="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-open'):('progress-bar-warning'))}"
+                                        class="progress-bar progress-bar-warning"
                                         style="width: #{item.fortschritt2}%" />
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{item.fortschrittError gt 0}">
@@ -102,7 +102,7 @@
                                         title="#{msgs.statusError}"
                                         aria-label="#{item.fortschrittError}% #{msgs.statusError}"
                                         data-toggle="tooltip"
-                                        class="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} "
+                                        class="progress-bar progress-bar-danger progressbar-status-error"
                                         style="width: #{item.fortschrittError}%" />
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{item.fortschritt1 gt 0}">
@@ -110,7 +110,7 @@
                                         title="#{msgs.statusGesperrt}"
                                         aria-label="#{item.fortschritt1}% #{msgs.statusGesperrt}"
                                         data-toggle="tooltip"
-                                        class="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} "
+                                        class="progress-bar progress-bar-danger"
                                         style="width: #{item.fortschritt1}%" />
                                 </h:panelGroup>
                             </div>
@@ -203,21 +203,21 @@
                                             <ul class="colors small13">
                                                 <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'LOCKED'}">
                                                     <li
-                                                        class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+                                                        class="statusSmall #{step.bearbeitungsstatusEnum.color}"
                                                         title="#{msgs.statusGesperrt}"
                                                         data-toggle="tooltip"
                                                         rel="tooltip"></li>
                                                 </h:panelGroup>
                                                 <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'OPEN'}">
                                                     <li
-                                                        class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+                                                        class="statusSmall #{step.bearbeitungsstatusEnum.color}"
                                                         title="#{msgs.statusOffen}"
                                                         rel="tooltip"></li>
                                                 </h:panelGroup>
                                                 <h:panelGroup
                                                     rendered="#{step.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
                                                     <li
-                                                        class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+                                                        class="statusSmall #{step.bearbeitungsstatusEnum.color}"
                                                         data-toggle="tooltip"
                                                         rel="tooltip"
                                                         title="#{step.bearbeitungsstatusEnum.title} #{step.editTypeEnum.title}"></li>
@@ -225,7 +225,7 @@
                                                 <h:panelGroup
                                                     rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
                                                     <li
-                                                        class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+                                                        class="statusSmall #{step.bearbeitungsstatusEnum.color}"
                                                         data-toggle="tooltip"
                                                         rel="tooltip"
                                                         title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}"></li>
@@ -233,7 +233,7 @@
                                                 <h:panelGroup
                                                     rendered="#{step.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
                                                     <li
-                                                        class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+                                                        class="statusSmall #{step.bearbeitungsstatusEnum.color}"
                                                         data-toggle="tooltip"
                                                         rel="tooltip"
                                                         title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}"></li>
@@ -241,7 +241,7 @@
                                                 <h:panelGroup
                                                     rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
                                                     <li
-                                                        class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+                                                        class="statusSmall #{step.bearbeitungsstatusEnum.color}"
                                                         data-toggle="tooltip"
                                                         rel="tooltip"
                                                         title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}"></li>
@@ -249,7 +249,7 @@
                                                 <h:panelGroup
                                                     rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
                                                     <li
-                                                        class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+                                                        class="statusSmall #{step.bearbeitungsstatusEnum.color}"
                                                         data-toggle="tooltip"
                                                         rel="tooltip"
                                                         title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}"></li>
@@ -257,22 +257,21 @@
                                                 <h:panelGroup
                                                     rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and HelperForm.anonymized}">
                                                     <li
-                                                        class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+                                                        class="statusSmall #{step.bearbeitungsstatusEnum.color}"
                                                         data-toggle="tooltip"
                                                         rel="tooltip"
                                                         title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}"></li>
                                                 </h:panelGroup>
                                                 <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'}">
                                                     <li
-                                                        class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+                                                        class="statusSmall #{step.bearbeitungsstatusEnum.color}"
                                                         title="#{step.bearbeitungsstatusEnum.title}"
                                                         data-toggle="tooltip"
                                                         rel="tooltip"></li>
                                                 </h:panelGroup>
                                             </ul>
                                             <h:outputText
-                                                value="#{step.bearbeitungsstatusEnum.title}"
-                                                rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}" />
+                                                value="#{step.bearbeitungsstatusEnum.title}" />
                                         </h:column>
                                     </h:dataTable>
                                 </h:panelGroup>

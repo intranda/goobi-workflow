@@ -45,8 +45,9 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.easymock.EasyMock;
 import org.goobi.api.display.enums.DisplayType;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -1352,10 +1353,10 @@ public class MetadatenTest extends AbstractTest {
     @Test
     public void testImportSubElementsFromOpac() throws Exception {
         Metadaten fixture = initMetadaten();
-        Processproperty pp = new Processproperty();
-        pp.setTitel("Template");
-        pp.setWert("test");
-        List<Processproperty> props = new ArrayList<>();
+        GoobiProperty pp = new GoobiProperty(PropertyOwnerType.PROCESS);
+        pp.setPropertyName("Template");
+        pp.setPropertyValue("test");
+        List<GoobiProperty> props = new ArrayList<>();
         props.add(pp);
         process.setEigenschaften(props);
         List<String> catalogues = fixture.getAllOpacCatalogues();
@@ -1371,10 +1372,10 @@ public class MetadatenTest extends AbstractTest {
     @Test
     public void testImportMetadataFromOpac() throws Exception {
         Metadaten fixture = initMetadaten();
-        Processproperty pp = new Processproperty();
-        pp.setTitel("Template");
-        pp.setWert("test");
-        List<Processproperty> props = new ArrayList<>();
+        GoobiProperty pp = new GoobiProperty(PropertyOwnerType.PROCESS);
+        pp.setPropertyName("Template");
+        pp.setPropertyValue("test");
+        List<GoobiProperty> props = new ArrayList<>();
         props.add(pp);
         process.setEigenschaften(props);
         List<String> catalogues = fixture.getAllOpacCatalogues();
@@ -1655,10 +1656,10 @@ public class MetadatenTest extends AbstractTest {
     @Test
     public void testGetOpacKatalog() throws Exception {
         Metadaten fixture = initMetadaten();
-        Processproperty pp = new Processproperty();
-        pp.setTitel("Template");
-        pp.setWert("test");
-        List<Processproperty> props = new ArrayList<>();
+        GoobiProperty pp = new GoobiProperty(PropertyOwnerType.PROCESS);
+        pp.setPropertyName("Template");
+        pp.setPropertyValue("test");
+        List<GoobiProperty> props = new ArrayList<>();
         props.add(pp);
         process.setEigenschaften(props);
         assertEquals("KXP", fixture.getOpacKatalog());
@@ -1667,10 +1668,10 @@ public class MetadatenTest extends AbstractTest {
     @Test
     public void testGetAllSearchFields() throws Exception {
         Metadaten fixture = initMetadaten();
-        Processproperty pp = new Processproperty();
-        pp.setTitel("Template");
-        pp.setWert("test");
-        List<Processproperty> props = new ArrayList<>();
+        GoobiProperty pp = new GoobiProperty(PropertyOwnerType.PROCESS);
+        pp.setPropertyName("Template");
+        pp.setPropertyValue("test");
+        List<GoobiProperty> props = new ArrayList<>();
         props.add(pp);
         process.setEigenschaften(props);
 

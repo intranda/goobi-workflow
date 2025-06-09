@@ -29,9 +29,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.easymock.EasyMock;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
-import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.Type;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +56,8 @@ public class BatchProcessHelperTest extends AbstractTest {
 
     private List<Process> processList;
 
+    private GoobiProperty pp;
+
     @Before
     public void setUp() throws Exception {
         processList = new ArrayList<>();
@@ -70,9 +73,10 @@ public class BatchProcessHelperTest extends AbstractTest {
         process.setTitel("process");
         process.setId(1);
 
-        Processproperty pp = new Processproperty();
+        pp = new GoobiProperty(PropertyOwnerType.PROCESS);
         pp.setContainer("1");
-        List<Processproperty> pplist = new ArrayList<>();
+        pp.setOwner(process);
+        List<GoobiProperty> pplist = new ArrayList<>();
         pplist.add(pp);
         process.setEigenschaften(pplist);
 
@@ -82,9 +86,10 @@ public class BatchProcessHelperTest extends AbstractTest {
         process2.setTitel("process2");
         process2.setId(2);
 
-        Processproperty pp2 = new Processproperty();
-        List<Processproperty> pplist2 = new ArrayList<>();
+        GoobiProperty pp2 = new GoobiProperty(PropertyOwnerType.PROCESS);
+        List<GoobiProperty> pplist2 = new ArrayList<>();
         pplist2.add(pp2);
+        pp2.setOwner(process2);
         process2.setEigenschaften(pplist2);
 
         processList.add(process2);
@@ -127,8 +132,8 @@ public class BatchProcessHelperTest extends AbstractTest {
     @Test
     public void testProcessPropertyList() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<ProcessProperty> list = new ArrayList<>();
-        ProcessProperty pp = new ProcessProperty();
+        List<DisplayProperty> list = new ArrayList<>();
+        DisplayProperty pp = new DisplayProperty();
         list.add(pp);
         helper.setProcessPropertyList(list);
         assertEquals(list.size(), helper.getProcessPropertyList().size());
@@ -137,7 +142,7 @@ public class BatchProcessHelperTest extends AbstractTest {
     @Test
     public void testProcessProperty() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        ProcessProperty pp = new ProcessProperty();
+        DisplayProperty pp = new DisplayProperty();
         helper.setProcessProperty(pp);
         assertEquals(pp, helper.getProcessProperty());
 
@@ -146,8 +151,8 @@ public class BatchProcessHelperTest extends AbstractTest {
     @Test
     public void testPropertyListSize() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<ProcessProperty> list = new ArrayList<>();
-        ProcessProperty pp = new ProcessProperty();
+        List<DisplayProperty> list = new ArrayList<>();
+        DisplayProperty pp = new DisplayProperty();
         list.add(pp);
         helper.setProcessPropertyList(list);
         assertEquals(list.size(), helper.getPropertyListSize());
@@ -156,8 +161,8 @@ public class BatchProcessHelperTest extends AbstractTest {
     @Test
     public void testProcessProperties() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<ProcessProperty> list = new ArrayList<>();
-        ProcessProperty pp = new ProcessProperty();
+        List<DisplayProperty> list = new ArrayList<>();
+        DisplayProperty pp = new DisplayProperty();
         list.add(pp);
         helper.setProcessPropertyList(list);
         assertEquals(list.size(), helper.getProcessProperties().size());
@@ -184,11 +189,12 @@ public class BatchProcessHelperTest extends AbstractTest {
     @Test
     public void testSaveCurrentProperty() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        ProcessProperty pp = new ProcessProperty();
+        DisplayProperty pp = new DisplayProperty();
         pp.setContainer("0");
         pp.setType(Type.TEXT);
         pp.setValue("value");
         pp.setName("name");
+        pp.setProzesseigenschaft(this.pp);
         helper.setProcessProperty(pp);
         helper.saveCurrentProperty();
     }
@@ -196,7 +202,7 @@ public class BatchProcessHelperTest extends AbstractTest {
     @Test
     public void testSaveCurrentPropertyForAll() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        ProcessProperty pp = new ProcessProperty();
+        DisplayProperty pp = new DisplayProperty();
         pp.setContainer("0");
         pp.setType(Type.TEXT);
         pp.setValue("value");
@@ -222,14 +228,14 @@ public class BatchProcessHelperTest extends AbstractTest {
     @Test
     public void testSortedProperties() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<ProcessProperty> fixture = helper.getSortedProperties();
+        List<DisplayProperty> fixture = helper.getSortedProperties();
         assertEquals(2, fixture.size());
     }
 
     @Test
     public void testContainerlessProperties() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<ProcessProperty> fixture = helper.getContainerlessProperties();
+        List<DisplayProperty> fixture = helper.getContainerlessProperties();
         assertEquals(1, fixture.size());
 
     }
@@ -237,8 +243,8 @@ public class BatchProcessHelperTest extends AbstractTest {
     @Test
     public void testContainer() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<ProcessProperty> list = new ArrayList<>();
-        ProcessProperty pp = new ProcessProperty();
+        List<DisplayProperty> list = new ArrayList<>();
+        DisplayProperty pp = new DisplayProperty();
         pp.setContainer("1");
         pp.setType(Type.TEXT);
         pp.setValue("value");
@@ -253,12 +259,13 @@ public class BatchProcessHelperTest extends AbstractTest {
     @Test
     public void testDuplicateContainerForSingle() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<ProcessProperty> list = new ArrayList<>();
-        ProcessProperty pp = new ProcessProperty();
+        List<DisplayProperty> list = new ArrayList<>();
+        DisplayProperty pp = new DisplayProperty();
         pp.setContainer("1");
         pp.setType(Type.TEXT);
         pp.setValue("value");
         pp.setName("name");
+        pp.setProzesseigenschaft(this.pp);
         list.add(pp);
         helper.setProcessPropertyList(list);
         helper.setContainer("1");
@@ -268,8 +275,8 @@ public class BatchProcessHelperTest extends AbstractTest {
     @Test
     public void testDuplicateContainerForAll() {
         BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<ProcessProperty> list = new ArrayList<>();
-        ProcessProperty pp = new ProcessProperty();
+        List<DisplayProperty> list = new ArrayList<>();
+        DisplayProperty pp = new DisplayProperty();
         pp.setContainer("1");
         pp.setType(Type.TEXT);
         pp.setValue("value");
@@ -282,9 +289,11 @@ public class BatchProcessHelperTest extends AbstractTest {
 
     private void prepareMocking() {
         PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
-        PropertyManager.saveProcessProperty(EasyMock.anyObject(Processproperty.class));
-        PropertyManager.saveProcessProperty(EasyMock.anyObject(Processproperty.class));
+        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.anyObject()))
+                .andReturn(new ArrayList<>())
+                .anyTimes();
+        PropertyManager.saveProperty(EasyMock.anyObject(GoobiProperty.class));
+        PropertyManager.saveProperty(EasyMock.anyObject(GoobiProperty.class));
 
         PowerMock.mockStatic(MetadataManager.class);
         EasyMock.expect(MetadataManager.getAllMetadataValues(EasyMock.anyInt(), EasyMock.anyString())).andReturn(new ArrayList<>()).anyTimes();

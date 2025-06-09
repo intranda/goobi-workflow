@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -200,44 +201,12 @@ public class ProcessTest extends AbstractTest {
     }
 
     @Test
-    public void testWerkstuecke() {
-        Process process = new Process();
-
-        List<Masterpiece> masterpieces = new ArrayList<>();
-        Masterpiece masterpiece1 = new Masterpiece();
-        Masterpiece masterpiece2 = new Masterpiece();
-        masterpieces.add(masterpiece1);
-        masterpieces.add(masterpiece2);
-        process.setWerkstuecke(masterpieces);
-
-        assertEquals(2, process.getWerkstuecke().size());
-        assertTrue(process.getWerkstuecke().contains(masterpiece1));
-        assertTrue(process.getWerkstuecke().contains(masterpiece2));
-    }
-
-    @Test
-    public void testVorlagen() {
-        Process process = new Process();
-
-        List<Template> templates = new ArrayList<>();
-        Template template1 = new Template();
-        Template template2 = new Template();
-        templates.add(template1);
-        templates.add(template2);
-        process.setVorlagen(templates);
-
-        assertEquals(2, process.getVorlagen().size());
-        assertTrue(process.getVorlagen().contains(template1));
-        assertTrue(process.getVorlagen().contains(template2));
-    }
-
-    @Test
     public void testEigenschaften() {
         Process process = new Process();
 
-        List<Processproperty> properties = new ArrayList<>();
-        Processproperty property1 = new Processproperty();
-        Processproperty property2 = new Processproperty();
+        List<GoobiProperty> properties = new ArrayList<>();
+        GoobiProperty property1 = new GoobiProperty(PropertyOwnerType.PROCESS);
+        GoobiProperty property2 = new GoobiProperty(PropertyOwnerType.PROCESS);
         properties.add(property1);
         properties.add(property2);
         process.setEigenschaften(properties);
@@ -599,8 +568,8 @@ public class ProcessTest extends AbstractTest {
         Process process = new Process();
         process.setEigenschaften(new ArrayList<>());
         assertEquals(0, process.getEigenschaftenSize());
-        List<Processproperty> list = new ArrayList<>();
-        list.add(new Processproperty());
+        List<GoobiProperty> list = new ArrayList<>();
+        list.add(new GoobiProperty(PropertyOwnerType.PROCESS));
         process.setEigenschaften(list);
         assertEquals(1, process.getEigenschaftenSize());
     }
@@ -608,47 +577,9 @@ public class ProcessTest extends AbstractTest {
     @Test
     public void testGetEigenschaftenList() {
         Process process = new Process();
-        List<Processproperty> list = new ArrayList<>();
+        List<GoobiProperty> list = new ArrayList<>();
         process.setEigenschaften(list);
         assertSame(list, process.getEigenschaftenList());
-    }
-
-    @Test
-    public void testGetWerkstueckeSize() {
-        Process process = new Process();
-        process.setWerkstuecke(new ArrayList<>());
-        assertEquals(0, process.getWerkstueckeSize());
-        List<Masterpiece> list = new ArrayList<>();
-        list.add(new Masterpiece());
-        process.setWerkstuecke(list);
-        assertEquals(1, process.getWerkstueckeSize());
-    }
-
-    @Test
-    public void testGetWerkstueckeList() {
-        Process process = new Process();
-        List<Masterpiece> list = new ArrayList<>();
-        process.setWerkstuecke(list);
-        assertSame(list, process.getWerkstueckeList());
-    }
-
-    @Test
-    public void testGetVorlagenSize() {
-        Process process = new Process();
-        process.setVorlagen(new ArrayList<>());
-        assertEquals(0, process.getVorlagenSize());
-        List<Template> list = new ArrayList<>();
-        list.add(new Template());
-        process.setVorlagen(list);
-        assertEquals(1, process.getVorlagenSize());
-    }
-
-    @Test
-    public void testGetVorlagenList() {
-        Process process = new Process();
-        List<Template> list = new ArrayList<>();
-        process.setVorlagen(list);
-        assertSame(list, process.getVorlagenList());
     }
 
     @Test

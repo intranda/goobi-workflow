@@ -127,9 +127,9 @@ public class SpracheForm implements Serializable {
         String[] languageCode = langCodeCombined.split("_");
         Locale locale = null;
         if (languageCode.length == 2) {
-            locale = new Locale(languageCode[0], languageCode[1]);
+            locale = Locale.of(languageCode[0], languageCode[1]);
         } else {
-            locale = new Locale(languageCode[0]);
+            locale = Locale.of(languageCode[0]);
         }
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         context.getViewRoot().setLocale(locale);

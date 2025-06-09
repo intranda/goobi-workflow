@@ -28,24 +28,18 @@ package org.goobi.production.cli.helper;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import javax.naming.NamingException;
-
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
-import org.goobi.beans.Masterpiece;
-import org.goobi.beans.Masterpieceproperty;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
-import org.goobi.beans.Template;
-import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.importer.ImportObject;
@@ -185,8 +179,6 @@ public class CopyProcess {
          * -------------------------------- Kopie der Prozessvorlage anlegen --------------------------------
          */
         this.bhelp.SchritteKopieren(this.prozessVorlage, this.prozessKopie);
-        this.bhelp.ScanvorlagenKopieren(this.prozessVorlage, this.prozessKopie);
-        this.bhelp.WerkstueckeKopieren(this.prozessVorlage, this.prozessKopie);
         this.bhelp.EigenschaftenKopieren(this.prozessVorlage, this.prozessKopie);
 
         return this.naviFirstPage;
@@ -224,8 +216,6 @@ public class CopyProcess {
          * -------------------------------- Kopie der Prozessvorlage anlegen --------------------------------
          */
         this.bhelp.SchritteKopieren(this.prozessVorlage, this.prozessKopie);
-        this.bhelp.ScanvorlagenKopieren(this.prozessVorlage, this.prozessKopie);
-        this.bhelp.WerkstueckeKopieren(this.prozessVorlage, this.prozessKopie);
         this.bhelp.EigenschaftenKopieren(this.prozessVorlage, this.prozessKopie);
 
         initializePossibleDigitalCollections();
@@ -265,7 +255,9 @@ public class CopyProcess {
         List<HierarchicalConfiguration> itemList = cp.getList("createNewProcess/itemlist/item");
         for (HierarchicalConfiguration item : itemList) {
             AdditionalField fa = new AdditionalField();
-            fa.setFrom(item.getString("@from"));
+            if (StringUtils.isNotBlank(item.getString("@from")) || item.getBoolean("@property", false)) {
+                fa.setProperty(true);
+            }
             fa.setTitel(item.getString("."));
             fa.setRequired(item.getBoolean("@required", false));
             fa.setIsdoctype(item.getString("@isdoctype"));
@@ -280,9 +272,9 @@ public class CopyProcess {
             /*
              * -------------------------------- Bindung an ein Metadatum eines Docstructs --------------------------------
              */
-            if (item.getBoolean("@ughbinding", false)) {
+            if (StringUtils.isNotBlank(item.getString("@metadata"))) {
                 fa.setUghbinding(true);
-                fa.setDocstruct(item.getString("@docstruct"));
+                fa.setDocstruct(item.getString("@docstruct", "topstruct"));
                 fa.setMetadata(item.getString("@metadata"));
             }
 
@@ -437,66 +429,6 @@ public class CopyProcess {
         this.additionalFields = new ArrayList<>();
         this.tifHeader_documentname = "";
         this.tifHeader_imagedescription = "";
-    }
-
-    /**
-     * Auswahl des Prozesses auswerten
-     * 
-     * @throws DAOException
-     * @throws NamingException
-     * @throws SQLException ============================================================ == ==
-     */
-
-    public String readMetadataFromTemplate() throws DAOException {
-        /* den ausgewählten Prozess laden */
-        Process tempProzess = ProcessManager.getProcessById(this.auswahl);
-        if (tempProzess.getWerkstueckeSize() > 0) {
-            /* erstes Werkstück durchlaufen */
-            Masterpiece werk = tempProzess.getWerkstueckeList().get(0);
-            for (Masterpieceproperty eig : werk.getEigenschaften()) {
-                for (AdditionalField field : this.additionalFields) {
-                    if (field.getTitel().equals(eig.getTitel())) {
-                        field.setWert(eig.getWert());
-                    }
-                }
-            }
-        }
-
-        if (tempProzess.getVorlagenSize() > 0) {
-            /* erste Vorlage durchlaufen */
-            Template vor = tempProzess.getVorlagenList().get(0);
-            for (Templateproperty eig : vor.getEigenschaften()) {
-                for (AdditionalField field : this.additionalFields) {
-                    if (field.getTitel().equals(eig.getTitel())) {
-                        field.setWert(eig.getWert());
-                    }
-                }
-            }
-        }
-
-        try {
-            this.myRdf = tempProzess.readMetadataAsTemplateFile();
-        } catch (Exception e) {
-            Helper.setFehlerMeldung("Fehler beim Einlesen der Template-Metadaten ", e);
-        }
-
-        /* falls ein erstes Kind vorhanden ist, sind die Collectionen dafür */
-        try {
-            DocStruct colStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
-            removeCollections(colStruct);
-            colStruct = colStruct.getAllChildren().get(0);
-            removeCollections(colStruct);
-        } catch (PreferencesException e) {
-            String message = "Fehler beim Anlegen des Vorgangs";
-            Helper.setFehlerMeldung(message, e);
-            log.error(message, e);
-        } catch (RuntimeException e) {
-            /*
-             * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
-             */
-        }
-
-        return "";
     }
 
     /**
@@ -947,34 +879,6 @@ public class CopyProcess {
     }
 
     private void EigenschaftenHinzufuegen(ImportObject io) {
-        /*
-         * -------------------------------- Vorlageneigenschaften initialisieren --------------------------------
-         */
-
-        Template vor;
-        if (this.prozessKopie.getVorlagenSize() > 0) {
-            vor = this.prozessKopie.getVorlagenList().get(0);
-        } else {
-            vor = new Template();
-            vor.setProzess(this.prozessKopie);
-            List<Template> vorlagen = new ArrayList<>();
-            vorlagen.add(vor);
-            this.prozessKopie.setVorlagen(vorlagen);
-        }
-
-        /*
-         * -------------------------------- Werkstückeigenschaften initialisieren --------------------------------
-         */
-        Masterpiece werk;
-        if (this.prozessKopie.getWerkstueckeSize() > 0) {
-            werk = this.prozessKopie.getWerkstueckeList().get(0);
-        } else {
-            werk = new Masterpiece();
-            werk.setProzess(this.prozessKopie);
-            List<Masterpiece> werkstuecke = new ArrayList<>();
-            werkstuecke.add(werk);
-            this.prozessKopie.setWerkstuecke(werkstuecke);
-        }
 
         /*
          * -------------------------------- jetzt alle zusätzlichen Felder durchlaufen und die Werte hinzufügen --------------------------------
@@ -984,38 +888,27 @@ public class CopyProcess {
 
             for (AdditionalField field : this.additionalFields) {
                 if (field.getShowDependingOnDoctype(getDocType())) {
-                    if ("werk".equals(field.getFrom())) {
-                        bh.EigenschaftHinzufuegen(werk, field.getTitel(), field.getWert());
-                    }
-                    if ("vorlage".equals(field.getFrom())) {
-                        bh.EigenschaftHinzufuegen(vor, field.getTitel(), field.getWert());
-                    }
-                    if ("prozess".equals(field.getFrom())) {
+
+                    if (field.isProperty()) {
                         bh.EigenschaftHinzufuegen(this.prozessKopie, field.getTitel(), field.getWert());
                     }
                 }
             }
             /* Doctype */
-            bh.EigenschaftHinzufuegen(werk, "DocType", this.docType);
+            bh.EigenschaftHinzufuegen(prozessKopie, "DocType", this.docType);
             /* Tiffheader */
-            bh.EigenschaftHinzufuegen(werk, "TifHeaderImagedescription", this.tifHeader_imagedescription);
-            bh.EigenschaftHinzufuegen(werk, "TifHeaderDocumentname", this.tifHeader_documentname);
+            bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderImagedescription", this.tifHeader_imagedescription);
+            bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderDocumentname", this.tifHeader_documentname);
         } else {
-            bh.EigenschaftHinzufuegen(werk, "DocType", this.docType);
+            bh.EigenschaftHinzufuegen(prozessKopie, "DocType", this.docType);
             /* Tiffheader */
-            bh.EigenschaftHinzufuegen(werk, "TifHeaderImagedescription", this.tifHeader_imagedescription);
-            bh.EigenschaftHinzufuegen(werk, "TifHeaderDocumentname", this.tifHeader_documentname);
+            bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderImagedescription", this.tifHeader_imagedescription);
+            bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderDocumentname", this.tifHeader_documentname);
 
             for (Processproperty pe : io.getProcessProperties()) {
                 addProperty(this.prozessKopie, pe);
             }
-            for (Masterpieceproperty we : io.getWorkProperties()) {
-                addProperty(werk, we);
-            }
 
-            for (Templateproperty ve : io.getTemplateProperties()) {
-                addProperty(vor, ve);
-            }
             bh.EigenschaftHinzufuegen(prozessKopie, "Template", prozessVorlage.getTitel());
             bh.EigenschaftHinzufuegen(prozessKopie, "TemplateID", String.valueOf(prozessVorlage.getId()));
         }
@@ -1028,7 +921,7 @@ public class CopyProcess {
      */
 
     public boolean isSingleChoiceCollection() {
-        return (getPossibleDigitalCollections() != null && getPossibleDigitalCollections().size() == 1);
+        return (getPossibleDigitalCollections() != null && getPossibleDigitalCollections().size() > 0);
 
     }
 
@@ -1040,7 +933,7 @@ public class CopyProcess {
 
     public String getDigitalCollectionIfSingleChoice() {
         List<String> pdc = getPossibleDigitalCollections();
-        if (pdc.size() == 1) {
+        if (pdc.size() > 0) {
             return pdc.get(0);
         } else {
             return null;
@@ -1289,72 +1182,25 @@ public class CopyProcess {
         this.tifHeader_imagedescription = imageDescriptionBuilder.toString();
     }
 
-    private void addProperty(Template inVorlage, Templateproperty property) {
-        if ("0".equals(property.getContainer())) {
-            for (Templateproperty ve : inVorlage.getEigenschaftenList()) {
-                if (ve.getTitel().equals(property.getTitel()) && !"0".equals(ve.getContainer())) {
-                    ve.setWert(property.getWert());
-                    return;
-                }
-            }
-        }
-        Templateproperty eig = new Templateproperty();
-        eig.setTitel(property.getTitel());
-        eig.setWert(property.getWert());
-        eig.setAuswahl(property.getAuswahl());
-        eig.setContainer(property.getContainer());
-        eig.setType(property.getType());
-        eig.setVorlage(inVorlage);
-        List<Templateproperty> eigenschaften = inVorlage.getEigenschaften();
-        if (eigenschaften == null) {
-            eigenschaften = new ArrayList<>();
-        }
-        eigenschaften.add(eig);
-    }
-
     private void addProperty(Process inProcess, Processproperty property) {
         if ("0".equals(property.getContainer())) {
-            for (Processproperty pe : inProcess.getEigenschaftenList()) {
-                if (pe.getTitel().equals(property.getTitel()) && !"0".equals(property.getContainer())) {
-                    pe.setWert(property.getWert());
+            for (GoobiProperty pe : inProcess.getEigenschaftenList()) {
+                if (pe.getPropertyName().equals(property.getPropertyName()) && !"0".equals(property.getContainer())) {
+                    pe.setPropertyValue(property.getPropertyValue());
                     return;
                 }
             }
         }
         Processproperty eig = new Processproperty();
-        eig.setTitel(property.getTitel());
-        eig.setWert(property.getWert());
-        eig.setAuswahl(property.getAuswahl());
+        eig.setPropertyName(property.getPropertyName());
+        eig.setPropertyValue(property.getPropertyValue());
         eig.setContainer(property.getContainer());
-        eig.setType(property.getType());
         eig.setProzess(inProcess);
-        List<Processproperty> eigenschaften = inProcess.getEigenschaften();
+        List<GoobiProperty> eigenschaften = inProcess.getEigenschaften();
         if (eigenschaften == null) {
             eigenschaften = new ArrayList<>();
         }
         eigenschaften.add(eig);
     }
 
-    private void addProperty(Masterpiece inWerk, Masterpieceproperty property) {
-        if ("0".equals(property.getContainer())) {
-            for (Masterpieceproperty we : inWerk.getEigenschaftenList()) {
-                if (we.getTitel().equals(property.getTitel()) && !"0".equals(we.getContainer())) {
-                    we.setWert(property.getWert());
-                    return;
-                }
-            }
-        }
-        Masterpieceproperty eig = new Masterpieceproperty();
-        eig.setTitel(property.getTitel());
-        eig.setWert(property.getWert());
-        eig.setAuswahl(property.getAuswahl());
-        eig.setContainer(property.getContainer());
-        eig.setType(property.getType());
-        eig.setWerkstueck(inWerk);
-        List<Masterpieceproperty> eigenschaften = inWerk.getEigenschaften();
-        if (eigenschaften == null) {
-            eigenschaften = new ArrayList<>();
-        }
-        eigenschaften.add(eig);
-    }
 }

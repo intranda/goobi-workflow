@@ -34,14 +34,12 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Batch;
+import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
-import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
-import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
-import org.goobi.beans.Template;
 import org.joda.time.LocalDate;
 
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -121,18 +119,9 @@ class ProcessMysqlHelper implements Serializable {
                     StepMysqlHelper.saveStep(s);
                 }
             }
-            List<Processproperty> properties = o.getEigenschaften();
-            for (Processproperty pe : properties) {
-                PropertyManager.saveProcessProperty(pe);
-            }
-
-            for (Masterpiece object : o.getWerkstuecke()) {
-                MasterpieceManager.saveMasterpiece(object);
-            }
-
-            List<Template> templates = o.getVorlagen();
-            for (Template template : templates) {
-                TemplateManager.saveTemplate(template);
+            List<GoobiProperty> properties = o.getEigenschaften();
+            for (GoobiProperty pe : properties) {
+                PropertyManager.saveProperty(pe);
             }
 
             for (JournalEntry logEntry : o.getJournal()) {
@@ -218,18 +207,8 @@ class ProcessMysqlHelper implements Serializable {
             MetadataManager.deleteMetadata(o.getId());
 
             // delete properties
-            for (Processproperty object : o.getEigenschaften()) {
-                PropertyManager.deleteProcessProperty(object);
-            }
-
-            // delete templates
-            for (Template object : o.getVorlagen()) {
-                TemplateManager.deleteTemplate(object);
-            }
-
-            // delete masterpieces
-            for (Masterpiece object : o.getWerkstuecke()) {
-                MasterpieceManager.deleteMasterpiece(object);
+            for (GoobiProperty object : o.getEigenschaften()) {
+                PropertyManager.deleteProperty(object);
             }
 
             StepManager.deleteAllSteps(o.getSchritte());

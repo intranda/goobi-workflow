@@ -24,18 +24,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.VocabularyRecordAPI;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedFieldInstance;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import org.easymock.EasyMock;
-import org.goobi.beans.*;
 import org.goobi.beans.Process;
-import org.goobi.production.properties.ProcessProperty;
+import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
 import org.junit.Before;
@@ -48,6 +42,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.VocabularyRecordAPI;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedFieldInstance;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import ugh.dl.DigitalDocument;
 import ugh.dl.Prefs;
 
@@ -162,40 +160,6 @@ public class VariableReplacerTest extends AbstractTest {
     public void testReplaceProperties() {
         VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
 
-        Templateproperty tp = new Templateproperty();
-        tp.setTitel("templateProperty");
-        tp.setWert("template value");
-        List<Templateproperty> tpl = new ArrayList<>();
-        tpl.add(tp);
-
-        List<Template> tl = new ArrayList<>();
-        Template t = new Template();
-        t.setId(1);
-        t.setProcessId(1);
-        t.setProzess(process);
-        tl.add(t);
-        t.setEigenschaften(tpl);
-
-        process.setVorlagen(tl);
-
-        assertEquals("template value", replacer.replace("{template.templateProperty}"));
-
-        Masterpiece m = new Masterpiece();
-        m.setId(1);
-        m.setProcessId(1);
-        m.setProzess(process);
-        List<Masterpiece> ml = new ArrayList<>();
-        ml.add(m);
-        process.setWerkstuecke(ml);
-
-        Masterpieceproperty mp = new Masterpieceproperty();
-        mp.setTitel("masterpieceProperty");
-        mp.setWert("value");
-        List<Masterpieceproperty> mpl = new ArrayList<>();
-        mpl.add(mp);
-        m.setEigenschaften(mpl);
-        assertEquals("value", replacer.replace("{product.masterpieceProperty}"));
-
         assertEquals("", replacer.replace("{folder.notExisting}"));
         assertTrue(replacer.replace("{folder.master}").contains("testprocess_master"));
     }
@@ -204,17 +168,17 @@ public class VariableReplacerTest extends AbstractTest {
     public void testVocabularyProcessProperties() {
         VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
 
-        ProcessProperty appleProperty = new ProcessProperty();
+        DisplayProperty appleProperty = new DisplayProperty();
         appleProperty.setName("AppleProperty");
         appleProperty.setType(Type.VOCABULARYREFERENCE);
         appleProperty.setValue("13");
 
-        ProcessProperty bananaProperty = new ProcessProperty();
+        DisplayProperty bananaProperty = new DisplayProperty();
         bananaProperty.setName("BananaProperty");
         bananaProperty.setType(Type.VOCABULARYREFERENCE);
         bananaProperty.setValue("14");
 
-        ProcessProperty fruitsProperty = new ProcessProperty();
+        DisplayProperty fruitsProperty = new DisplayProperty();
         fruitsProperty.setName("FruitsProperty");
         fruitsProperty.setType(Type.VOCABULARYMULTIREFERENCE);
         fruitsProperty.setValue("13; 14");
@@ -271,30 +235,31 @@ public class VariableReplacerTest extends AbstractTest {
     public void testProcessProperties() {
         VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
 
-        ProcessProperty uniqueSingleProperty = new ProcessProperty();
+        DisplayProperty uniqueSingleProperty = new DisplayProperty();
         uniqueSingleProperty.setName("Unique Single");
         uniqueSingleProperty.setType(Type.TEXT);
         uniqueSingleProperty.setValue("One");
 
-        ProcessProperty uniqueMultiProperty = new ProcessProperty();
+        DisplayProperty uniqueMultiProperty = new DisplayProperty();
         uniqueMultiProperty.setName("Unique Multi");
         uniqueMultiProperty.setType(Type.TEXT);
         uniqueMultiProperty.setValue("One; Two");
 
-        ProcessProperty commonPropertyOne = new ProcessProperty();
+        DisplayProperty commonPropertyOne = new DisplayProperty();
         commonPropertyOne.setName("Common");
         commonPropertyOne.setType(Type.TEXT);
         commonPropertyOne.setValue("One");
 
-        ProcessProperty commonPropertyTwo = new ProcessProperty();
+        DisplayProperty commonPropertyTwo = new DisplayProperty();
         commonPropertyTwo.setName("Common");
         commonPropertyTwo.setType(Type.TEXT);
         commonPropertyTwo.setValue("Two");
 
         PropertyParser parser = EasyMock.createMock(PropertyParser.class);
-        EasyMock.expect(parser.getPropertiesForProcess(process)).andReturn(
-                List.of(uniqueSingleProperty, uniqueMultiProperty, commonPropertyOne, commonPropertyTwo)
-        ).anyTimes();
+        EasyMock.expect(parser.getPropertiesForProcess(process))
+                .andReturn(
+                        List.of(uniqueSingleProperty, uniqueMultiProperty, commonPropertyOne, commonPropertyTwo))
+                .anyTimes();
         EasyMock.replay(parser);
 
         PowerMock.mockStatic(PropertyParser.class);

@@ -7244,6 +7244,13 @@
         <MainNameXPath>./mods:namePart</MainNameXPath>
         <SubNameXPath>./mods:namePart</SubNameXPath>
         <PartNameXPath>./mods:namePart</PartNameXPath>
+      </Metadata>      
+      <Metadata>
+        <InternalName>CorporateAuthor</InternalName>
+        <WriteXPath>./mods:mods/#mods:name[@type='corporate'][mods:role/mods:roleTerm="aut"[@authority='marcrelator'][@type='code']]</WriteXPath>
+        <MainNameXPath>./mods:namePart</MainNameXPath>
+        <SubNameXPath>./mods:namePart</SubNameXPath>
+        <PartNameXPath>./mods:namePart</PartNameXPath>
       </Metadata>
       <Metadata>
         <InternalName>CorporateCompiler</InternalName>

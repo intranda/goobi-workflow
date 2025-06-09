@@ -54,7 +54,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 57;
+    public static final int EXPECTED_VERSION = 58;
     private static final Gson GSON = new Gson();
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -399,12 +399,16 @@ public class DatabaseVersion {
                     updateToVersion55();
                     tempVersion++;
                 case 55: //NOSONAR, no break on purpose to run through all cases
-                    log.trace("Update database to version 55.");
+                    log.trace("Update database to version 56.");
                     updateToVersion56();
                     tempVersion++;
                 case 56: //NOSONAR, no break on purpose to run through all cases
-                    log.trace("Update database to version 56.");
+                    log.trace("Update database to version 57.");
                     updateToVersion57();
+                    tempVersion++;
+                case 57: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 58.");
+                    updateToVersion58();
                     tempVersion++;
                 default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
@@ -418,6 +422,85 @@ public class DatabaseVersion {
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
         }
+    }
+
+    private static void updateToVersion58() throws Exception {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+
+            // create new table
+            StringBuilder sb = new StringBuilder();
+            sb.append("CREATE TABLE properties ( ");
+            sb.append("id int(11) NOT NULL AUTO_INCREMENT, ");
+            sb.append("property_name varchar(190) DEFAULT NULL, ");
+            sb.append("property_value text DEFAULT NULL, ");
+            sb.append("required tinyint(1) DEFAULT 0, ");
+            sb.append("datatype int(11) DEFAULT NULL, ");
+            sb.append("object_id int(11) DEFAULT NULL, ");
+            sb.append("object_type varchar(190) DEFAULT NULL, ");
+            sb.append("creation_date datetime DEFAULT NULL, ");
+            sb.append("container text DEFAULT NULL, ");
+            sb.append("PRIMARY KEY (id), ");
+            sb.append("KEY object_id (object_id) ");
+            sb.append(") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci; ");
+            DatabaseVersion.runSql(sb.toString());
+
+            // move all properties into new table
+            sb = new StringBuilder();
+            sb.append(
+                    "INSERT INTO properties (property_name, property_value, required, datatype, object_id, object_type, creation_date, container) ");
+            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, ProzesseID, 'process', creationDate,  container FROM  ( ");
+            sb.append("SELECT * from prozesseeigenschaften) x; ");
+            DatabaseVersion.runSql(sb.toString());
+
+            sb = new StringBuilder();
+            sb.append(
+                    "INSERT INTO properties (property_name, property_value, required, datatype, object_id, object_type, creation_date, container) ");
+            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, BenutzerID, 'user', creationDate,  0 FROM  (");
+            sb.append("SELECT * from benutzereigenschaften) x;");
+            DatabaseVersion.runSql(sb.toString());
+
+            sb = new StringBuilder();
+            sb.append(
+                    "INSERT INTO properties (property_name, property_value, required, datatype, object_id, object_type, creation_date, container) ");
+            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, schritteID, 'error', creationDate,  container FROM  ( ");
+            sb.append("SELECT * from schritteeigenschaften) x;");
+            DatabaseVersion.runSql(sb.toString());
+
+            sb = new StringBuilder();
+            sb.append(
+                    "INSERT INTO properties (property_name, property_value, required, datatype, object_id, object_type, creation_date, container) ");
+            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, vorlagenID, 'process', creationDate,  container FROM  ( ");
+            sb.append("SELECT * from vorlageneigenschaften) x;");
+            DatabaseVersion.runSql(sb.toString());
+
+            sb = new StringBuilder();
+            sb.append(
+                    "INSERT INTO properties (property_name, property_value, required, datatype, object_id, object_type, creation_date, container) ");
+            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, werkstueckeID, 'process', creationDate,  container FROM  (");
+            sb.append("SELECT * from werkstueckeeigenschaften) x;");
+            DatabaseVersion.runSql(sb.toString());
+
+            // delete old property tables
+            DatabaseVersion.runSql("drop table prozesseeigenschaften;");
+            DatabaseVersion.runSql("drop table benutzereigenschaften;");
+            DatabaseVersion.runSql("drop table schritteeigenschaften;");
+            DatabaseVersion.runSql("drop table vorlageneigenschaften;");
+            DatabaseVersion.runSql("drop table werkstueckeeigenschaften;");
+            DatabaseVersion.runSql("drop table werkstuecke;");
+            DatabaseVersion.runSql("drop table vorlagen;");
+
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException exception) {
+                    log.warn(exception);
+                }
+            }
+        }
+
     }
 
     private static void updateToVersion57() throws Exception {
@@ -445,7 +528,7 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Processproperty> properties = new QueryRunner().query(connection, sql, PropertyMysqlHelper.resultSetToPropertyListHandler);
+            List<Processproperty> properties = new QueryRunner().query(connection, sql, PropertyMysqlHelper.resultSetToProcessPropertyListHandler);
             performNewImageCommentsPropertySQLInsertStatements(properties);
             removeLegacyImageComments();
         } finally {
@@ -466,12 +549,12 @@ public class DatabaseVersion {
     }
 
     private static void createNewImageCommentsProperty(Processproperty p) throws SQLException {
-        if (!p.getTitel().startsWith("image comments ")) {
+        if (!p.getPropertyName().startsWith("image comments ")) {
             throw new SQLException("Unable to parse legacy image comments folder name");
         }
-        String imageFolder = p.getTitel().substring(15);
+        String imageFolder = p.getPropertyName().substring(15);
         ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(p.getProzess());
-        Map<String, String> legacyComments = GSON.fromJson(p.getWert(), Map.class);
+        Map<String, String> legacyComments = GSON.fromJson(p.getPropertyValue(), Map.class);
         legacyComments.entrySet()
                 .stream()
                 .forEach(lc -> helper.setComment(new ImageComment(imageFolder, lc.getKey(), lc.getValue())));

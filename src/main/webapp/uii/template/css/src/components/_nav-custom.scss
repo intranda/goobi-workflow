@@ -31,32 +31,38 @@
 
   // Nav items
   .nav-item {
+    --bs-navbar-active-color: var(--text-nav, var(--text-400));
+    --highlight-color: var(--clr-primary-400);
+    border-top: 0.5em solid transparent;
     color: var(--text-nav, var(--clr-white));
-    &.active,
     &:hover {
-      background-color: var(--bg-body, var(--clr-white));
-      color: var(--text-white);
+      --highlight-color: var(--clr-primary-600);
+      background-color: var(--highlight-color);
+      color: var(--clr-white);
     }
-    &:not(.active) {
-      .dropdown-toggle.show {
-        --bs-navbar-active-color: var(--text-400);
-      }
+    &.active {
+      --text-nav: var(--clr-text-400);
+      background: white;
+      border-top-color: var(--highlight-color);
       &:hover {
-        background-color: var(--clr-primary-600);
-        color: var(--clr-white);
+        background-color: var(--bg-body, var(--clr-white));
+        color: var(--text-white);
       }
     }
   }
 
   .nav-link {
     color: currentColor;
-    height: 2.9375rem;
+    height: 2.5625rem;
     display: flex;
     align-items: center;
-    padding: 0.625rem 0.9375rem !important; // BS override
+    padding: 0 0.9375rem 0.25rem !important; // BS override
 
     // align border of .dropdown-menu with active (white) nav-link togglers
-    border-left: 2px solid var(--clr-primary-400);
+    &.dropdown-toggle {
+      border-radius: 0;
+      padding-right: 1.5rem; // space for caret
+    }
   }
 
   // carret in nav-items which are dropdowns
@@ -74,15 +80,19 @@
     }
   }
 
+  .active > .dropdown-menu:not(.dropdown-menu-end) {
+    transform:translateX(-2px);
+  }
+
   // Menu item dropdown styles
   .dropdown-menu {
     margin-top: 0;
-    border-top: 0;
     border-radius: 0;
     border-bottom-left-radius: var(--border-radius);
     border-bottom-right-radius: var(--border-radius);
     border-color: var(--clr-primary-400);
     border-width: 2px;
+    transform: translateX(0);
 
     li {
       font-size: 0.75rem;
@@ -142,8 +152,9 @@
     align-items: center;
 
     .nav-link.btn-link {
-      margin-inline-end: 0;
       color: #fff;
+      height: 100%;
+      margin-inline-end: 0;
       text-decoration: none;
     }
   }
