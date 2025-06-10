@@ -214,4 +214,10 @@ public class GoobiProperty implements IGoobiProperty, Serializable {
         return getPropertyValue();
     }
 
+    public Integer getObjectId() {
+        if (objectId == null && ownerObject != null) {
+            objectId = ownerObject.getId();
+        }
+        return objectId;
+    }
 }
