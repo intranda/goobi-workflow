@@ -59,7 +59,12 @@
             </div>
             <!-- INPUT -->
             <div class="form-input">
-                <div class="d-flex w-100 my-auto">
+                <div class="d-flex w-100 my-auto #{cc.attrs.metadata.outputType == 'dante'
+                        or cc.attrs.metadata.outputType == 'kulturnav'
+                        or cc.attrs.metadata.outputType == 'viaf'
+                        or cc.attrs.metadata.outputType == 'easydb'
+                        or cc.attrs.metadata.outputType == 'vocabularySearch'
+                        or cc.attrs.metadata.normdata ? 'metadata-input' : ''}">
                     <!-- TEXT INPUT -->
                     <h:inputText
                         id="inputText"
@@ -185,21 +190,21 @@
                         and cc.attrs.metadata.outputType != 'viaf'
                         and cc.attrs.metadata.outputType != 'easydb'
                         and cc.attrs.metadata.outputType != 'vocabularySearch'}">
+                        <h:inputText
+                            id="inputText1"
+                            pt:aria-label="#{cc.attrs.metadata.md.type.name}"
+                            styleClass="form-control"
+                            value="#{cc.attrs.metadata.value}"
+                            disabled="#{cc.attrs.metadata.disableMetadataField}"
+                            readonly="#{Metadaten.nurLesenModus}">
+                            <f:ajax
+                                execute="@form"
+                                event="valueChange" />
+                        </h:inputText>
                         <div class="input-group">
-                            <h:inputText
-                                id="inputText1"
-                                pt:aria-label="#{cc.attrs.metadata.md.type.name}"
-                                styleClass="form-control w-25"
-                                value="#{cc.attrs.metadata.value}"
-                                disabled="#{cc.attrs.metadata.disableMetadataField}"
-                                readonly="#{Metadaten.nurLesenModus}">
-                                <f:ajax
-                                    execute="@form"
-                                    event="valueChange" />
-                            </h:inputText>
                             <h:selectOneMenu
                                 id="selectNoDante"
-                                styleClass="form-select w-25"
+                                styleClass="form-select normdata-select"
                                 pt:aria-label="#{msgs.mets_authority_database}"
                                 disabled="#{cc.attrs.metadata.disableIdentifierField or (cc.attrs.metadata.outputType == 'readonly')}"
                                 value="#{cc.attrs.metadata.normDatabase}"
@@ -216,7 +221,7 @@
                             <h:inputText
                                 id="inputTextNoDante"
                                 pt:aria-label="#{msgs.mets_authority_database}"
-                                styleClass="form-control w-50"
+                                styleClass="form-control"
                                 disabled="#{cc.attrs.metadata.disableIdentifierField or (cc.attrs.metadata.outputType == 'readonly')}"
                                 value="#{cc.attrs.metadata.normdataValue}"
                                 readonly="#{Metadaten.nurLesenModus}">
