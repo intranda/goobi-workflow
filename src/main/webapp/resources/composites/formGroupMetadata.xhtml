@@ -233,6 +233,18 @@
                         or cc.attrs.metadata.outputType == 'easydb'
                         or cc.attrs.metadata.outputType == 'vocabularySearch'}">
                         <h:inputText
+                            id="inputTextDante"
+                            pt:aria-label="#{cc.attrs.metadata.md.type.name}"
+                            styleClass="form-control"
+                            value="#{cc.attrs.metadata.value}"
+                            disabled="#{cc.attrs.metadata.disableMetadataField}"
+                            readonly="#{Metadaten.nurLesenModus}"
+                            >
+                            <f:ajax
+                                execute="@this"
+                                event="valueChange" />
+                        </h:inputText>
+                        <h:inputText
                             id="danteValue"
                             pt:aria-label="#{msgs.mets_authority_data}"
                             styleClass="form-control"
