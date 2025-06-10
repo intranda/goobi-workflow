@@ -60,13 +60,12 @@
                                             class="fa fa-search"
                                             aria-hidden="true"></i>
                                         #{msgs.search}
-                                        <span
-                                            class="btn-ajax-loader"
-                                            aria-hidden="true">
-                                            <img
-                                                src="template/img/goobi/ajaxloader2.gif"
-                                                alt="Ajax Button Loader" />
-                                        </span>
+                                        <img
+                                            src="template/img/goobi/ajaxloader2.gif"
+                                            aria-hidden="true"
+                                            class="ajax-loader"
+                                            alt="Ajax Button Loader"
+                                            style="display: none;" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -112,11 +111,9 @@
                                                     <h:outputText value="#{msgs.NORM_dantePreferredValue}" />
                                                 </div>
                                                 <div class="col-8">
-                                                    <div class="form-control form-control--select">
-                                                        <h:selectOneMenu value="#{normdataRecord.preferredValue}">
-                                                            <f:selectItems value="#{normdataRecord.valueList}" />
-                                                        </h:selectOneMenu>
-                                                    </div>
+                                                    <h:selectOneMenu styleClass="form-select" value="#{normdataRecord.preferredValue}">
+                                                        <f:selectItems value="#{normdataRecord.valueList}" />
+                                                    </h:selectOneMenu>
                                                 </div>
                                             </div>
                                             <ui:repeat

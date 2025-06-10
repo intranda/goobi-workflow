@@ -80,15 +80,12 @@
                                 <span>
                                     #{msgs.search}
                                 </span>
-                                <span
-                                    class="btn-ajax-loader"
+                                <img
+                                    src="template/img/goobi/ajaxloader2.gif"
                                     aria-hidden="true"
-                                    id="ajaxLoader"
-                                    style="display: none;">
-                                    <img
-                                        src="template/img/goobi/ajaxloader2.gif"
-                                        alt="Ajax Button Loader" />
-                                </span>
+                                    class="ajax-loader"
+                                    alt="Ajax Button Loader"
+                                    style="display: none;" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:ajax
                                 execute="@form"
