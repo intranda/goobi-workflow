@@ -19,17 +19,18 @@ const handleLoader = function handleAjaxLoader(data, selector) {
     try {
         faces.ajax.addOnEvent(function (data) {
             const ajaxstatus = data.status; // Can be "begin", "complete" and "success"
-            const ajaxloader = document.querySelector(selector);
+            const ajaxloaders =  document.querySelectorAll('.ajax-loader');
+
             const source = data.source;
             const noLoaderGif = source.type == "hidden" && source.id.indexOf("header") == 0;
 
             switch (ajaxstatus) {
                 case "begin": // This is called right before ajax request is been sent.
-                    if(ajaxloader && !noLoaderGif) ajaxloader.style.display = 'block';
+                    toggleLoaders(ajaxloaders, true);
                     break;
 
                 case "complete": // This is called right after ajax response is received.
-                    if(ajaxloader) ajaxloader.style.display = 'none';
+                    toggleLoaders(ajaxloaders, false);
                     break;
 
                 case "success": // This is called when ajax response is successfully processed.
@@ -41,4 +42,16 @@ const handleLoader = function handleAjaxLoader(data, selector) {
     catch (error) {
         if (_debug) console.log(error)
     }
+}
+
+const toggleLoaders = function toggleLoaders(loaders, show) {
+    loaders.forEach(loader => {
+        if (loader) {
+            if (show) {
+                loader.style.display = 'block';
+            } else {
+                loader.style.display = 'none';
+            }
+        }
+    });
 }
