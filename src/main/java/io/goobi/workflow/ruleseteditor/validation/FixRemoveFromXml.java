@@ -13,8 +13,7 @@ public class FixRemoveFromXml {
 	 * @param error
 	 */
 	public void fix(Element root, RulesetValidationError error, boolean deleteParent) {
-		System.out.println(error);
-	    Element toRemove = findElementByLineNumber(root, error.getLine());
+	    Element toRemove = findElementByLineNumber(root, error);
 	    
 	    if (toRemove != null) {
 	        if (deleteParent) {
@@ -22,13 +21,13 @@ public class FixRemoveFromXml {
 	            if (parent != null) {
 	                Element grandParent = parent.getParentElement();
 	                if (grandParent != null) {
-	                    removeElementWithWhitespace(grandParent, parent);
+	                	grandParent.removeContent(parent);
 	                }
 	            }
 	        } else {
 	            Element parent = toRemove.getParentElement();
 	            if (parent != null) {
-	                removeElementWithWhitespace(parent, toRemove);
+	            	parent.removeContent(toRemove);
 	            }
 	        }
 	    }
@@ -41,14 +40,21 @@ public class FixRemoveFromXml {
 	 * @param targetLine
 	 * @return
 	 */
-	private Element findElementByLineNumber(Element current, int targetLine) {
+	private Element findElementByLineNumber(Element current, RulesetValidationError error) {
 		String lineAttr = current.getAttributeValue("goobi_lineNumber");
-		if (lineAttr != null && Integer.parseInt(lineAttr) == targetLine) {
+		if (lineAttr != null && Integer.parseInt(lineAttr) == error.getLine()) {
+
+			if ((("Name".equals(current.getName()) || "InternalName".equals(current.getName())) == false) && error.getErrorType() == RulesetValidationError.ErrorType.VALIDATE_FORMATS ) {
+				Element nameChild = findFirstNameChild(current);
+				if (nameChild != null) {
+					return nameChild;
+				}
+			}
 			return current;
 		}
 
 		for (Element child : current.getChildren()) {
-			Element result = findElementByLineNumber(child, targetLine);
+			Element result = findElementByLineNumber(child, error);
 			if (result != null) {
 				return result;
 			}
@@ -56,20 +62,25 @@ public class FixRemoveFromXml {
 
 		return null;
 	}
-	
-	private void removeElementWithWhitespace(Element parent, Element toRemove) {
-	    int index = parent.indexOf(toRemove);
 
-	    if (index > 0) {
-	        org.jdom2.Content previous = parent.getContent(index - 1);
-	        if (previous instanceof org.jdom2.Text) {
-	            org.jdom2.Text text = (org.jdom2.Text) previous;
-	            if (text.getTextTrim().isEmpty()) {
-	                parent.removeContent(previous);
-	            }
-	        }
-	    }
+	/**
+	 * Recursively searches the child Elements for "name" or "InternalName" value
+	 * 
+	 * @param element
+	 * @return
+	 */
+	private Element findFirstNameChild(Element element) {
+		if ("Name".equals(element.getName()) || "InternalName".equals(element.getName())) {
+			return element;
+		}
 
-	    parent.removeContent(toRemove);
+		for (Element child : element.getChildren()) {
+			Element result = findFirstNameChild(child);
+			if (result != null) {
+				return result;
+			}
+		}
+
+		return null;
 	}
 }

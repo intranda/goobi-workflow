@@ -56,6 +56,7 @@ public class FixAddMetadataTypeTest {
         // Mock RulesetValidationError
         RulesetValidationError mockError = EasyMock.createMock(RulesetValidationError.class);
         EasyMock.expect(mockError.getMessage()).andReturn("NewType - missing metadata").anyTimes();
+        EasyMock.expect(mockError.getErrorType()).andReturn(RulesetValidationError.ErrorType.MISSING_NAME).anyTimes();
         EasyMock.replay(mockError);
 
         // Call method

@@ -63,6 +63,9 @@ public class ValidateTopstructs {
 		for (Element element : root.getChildren()) {
 			List<Element> allowedChildTypeList = element.getChildren("allowedchildtype");
 			if ("DocStrctType".equals(element.getName())) {
+				if (element.getAttribute("anchor") != null && "true".equals(element.getAttributeValue("anchor"))){
+					continue;
+				}
 				for (Element allowedChildType : allowedChildTypeList) {
 					String allowedChildTypeText = allowedChildType.getText();
 					// if an allowedchildtype's name equals one name of the all Topstrcs map it is

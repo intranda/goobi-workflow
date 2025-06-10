@@ -88,26 +88,25 @@
 										<!-- Edit-Ruleset-Button -->
 										<h:panelGroup
 											rendered="#{rulesetEditorBean.currentRuleset == null}">
-											<button jsf:id="edit"
+											<button
+												jsf:id="edit"
 												class="btn #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
 												title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}"
 												jsf:rel="tooltip"
 												jsf:action="#{rulesetEditorBean.editRuleset(item)}">
-												<i
-													class="fa #{rulesetEditorBean.isRulesetWritable(item) ? 'fa-pencil' : 'fa-eye'}"
-													style="width: 15px;"></i>
+												<span
+													class="fa #{rulesetEditorBean.isRulesetWritable(item) ? 'fa-pencil' : 'fa-eye'}" />
 											</button>
 										</h:panelGroup>
 										<h:panelGroup
 											rendered="#{rulesetEditorBean.currentRuleset != null}">
-											<button jsf:id="edit2"
+											<button
+												jsf:id="edit2"
 												class="btn #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
-												type="button"
 												jsf:action="#{rulesetEditorBean.editRuleset(item)}"
 												title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}">
-												<i
-													class="fa #{rulesetEditorBean.isRulesetWritable(item) ? 'fa-pencil' : 'fa-eye'}"
-													style="width: 15px;"></i>
+												<span
+													class="fa #{rulesetEditorBean.isRulesetWritable(item) ? 'fa-pencil' : 'fa-eye'}" />
 											</button>
 										</h:panelGroup>
 									</h:column>
