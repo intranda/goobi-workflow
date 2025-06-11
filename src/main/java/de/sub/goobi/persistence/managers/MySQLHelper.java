@@ -561,7 +561,7 @@ public class MySQLHelper implements Serializable {
             sql.append("' GROUP BY processid) AS field ON field.processid = prozesse.prozesseID ");
         } else if (order.startsWith("{process.")) {
             sql.append(
-                    "LEFT JOIN (SELECT prozesseID, MAX(WERT) AS value FROM properties WHERE properties.object_type='process' AND properties.property_name = '");
+                    "LEFT JOIN (SELECT prozesseID, MAX(property_value) AS value FROM properties WHERE properties.object_type='process' AND properties.property_name = '");
             sql.append(fieldname);
             sql.append("' GROUP BY prozesseID) AS field ON field.prozesseID = prozesse.prozesseID ");
         }

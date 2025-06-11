@@ -590,7 +590,7 @@ class UserMysqlHelper implements Serializable {
             List<String> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
-                    String filter = rs.getString("Wert");
+                    String filter = rs.getString("property_value");
                     answer.add(filter);
                 }
             } finally {
