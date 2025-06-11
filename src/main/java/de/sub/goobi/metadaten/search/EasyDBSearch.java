@@ -220,6 +220,8 @@ public class EasyDBSearch {
      */
 
     private void authenticate(WebTarget easydbRoot) {
+        token = easydbRoot.path(sessionTokenPath).request(MediaType.APPLICATION_JSON_TYPE).get(EasydbToken.class);
+
         token = easydbRoot.path(sessionAuthenticationPath)
                 .queryParam("token", token.getToken())
                 .queryParam("login", login)
