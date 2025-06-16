@@ -11,7 +11,8 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:ds="http://deltaspike.apache.org/jsf"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:layout="http://goobi.io/layout">
+	xmlns:layout="http://goobi.io/layout"
+	xmlns:util="http://goobi.io/util">
 	<c:set var="accessibilityMode"
 		value="#{
 			LoginForm.myBenutzer == null ?
@@ -93,8 +94,8 @@
 										<ul class="stats">
 
 										<!-- AJAX LOADER -->
-										<li id="ajaxloader" class="ajax-loader" style="display: none;">
-											<img src="template/img/goobi/ajaxloader2.gif" />
+										<li id="ajaxloader">
+											<util:ajax-loader />
 										</li>
 										<!-- // AJAX LOADER -->
 
