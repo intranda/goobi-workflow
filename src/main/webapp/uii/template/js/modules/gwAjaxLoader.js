@@ -21,9 +21,6 @@ const handleLoader = function handleAjaxLoader(data, selector) {
             const ajaxstatus = data.status; // Can be "begin", "complete" and "success"
             const ajaxloaders =  document.querySelectorAll('.ajax-loader');
 
-            const source = data.source;
-            const noLoaderGif = source.type == "hidden" && source.id.indexOf("header") == 0;
-
             switch (ajaxstatus) {
                 case "begin": // This is called right before ajax request is been sent.
                     toggleLoaders(ajaxloaders, true);
