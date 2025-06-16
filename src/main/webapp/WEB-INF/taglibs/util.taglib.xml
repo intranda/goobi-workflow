@@ -61,4 +61,8 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+    <tag>
+        <tag-name>ajax-loader</tag-name>
+        <source>util/ajax-loader.xhtml</source>
+    </tag>
 </facelet-taglib>
