@@ -1,12 +1,13 @@
 <ui:composition
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-        xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-        xmlns:h="http://xmlns.jcp.org/jsf/html"
-        xmlns:f="http://xmlns.jcp.org/jsf/core"
-        xmlns:x="http://myfaces.apache.org/tomahawk"
-        xmlns:jsf="http://xmlns.jcp.org/jsf"
-        xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface/>
 
@@ -46,8 +47,8 @@
                                     value="#{msgs.NORM_helpVocabularySearch}"
                                     escape="false"/>
                         </p>
-                        <div class="row form-group">
-                            <div class="col-3">
+                        <div class="metadata-search-row">
+                            <div class="form-group">
                                 <intranda:formInputDropDownWithEmptyValue
                                         classLeft="invisible"
                                         name="searchField"
@@ -55,29 +56,22 @@
                                         fieldStyle="form-control form-control--select"
                                         selectItems="#{Metadaten.currentMetadataToPerformSearch.vocabularySearchFields}"
                                 />
-                            </div>
-                            <div class="col-9">
                                 <h:inputText
                                         id="vocabularySearchInput"
                                         styleClass="form-control"
                                         value="#{Metadaten.currentMetadataToPerformSearch.vocabularySearchQuery}"/>
                             </div>
-                        </div>
-                        <div class="d-flex justify-content-end">
+                            <util:ajax-loader />
                             <button
-                                    jsf:id="vocabularySearchAction"
-                                    class="btn btn-primary"
-                                    jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchVocabulary}">
+                                jsf:id="vocabularySearchAction"
+                                class="btn btn-primary"
+                                jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchVocabulary}">
                                 <span
                                         class="fa fa-search"
                                         aria-hidden="true"/>
-                                #{msgs.search}
-                                    <img
-                                        src="template/img/goobi/ajaxloader2.gif"
-                                        aria-hidden="true"
-                                        class="ajax-loader"
-                                        alt="Ajax Button Loader"
-                                        style="display: none;" />
+                                <span>
+                                    #{msgs.search}
+                                </span>
                                 <f:passThroughAttribute
                                         name="data-toggle"
                                         value="tooltip"/>
