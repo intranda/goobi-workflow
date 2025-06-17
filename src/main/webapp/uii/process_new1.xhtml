@@ -655,10 +655,8 @@
                                         mask="true"
                                         pattern="#{intern.pattern}" />
                                 </ui:fragment>
-
                                 <ui:fragment
                                     rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and !intern.multiselect}">
-
                                     <intranda:formInputDropDown
                                         id="select"
                                         label="#{HelperForm.getTranslation ('import_', intern.titel)}"
@@ -667,8 +665,8 @@
                                         name="id"
                                         selectItems="#{intern.selectList}"
                                         displayAsRequired="#{intern.required}"
-                                        required="false" />
-
+                                        required="false"
+                                        placeholder="false" />
                                 </ui:fragment>
                                 <ui:fragment
                                     rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and intern.multiselect}">
