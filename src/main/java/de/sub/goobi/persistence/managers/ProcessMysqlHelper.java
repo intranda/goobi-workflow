@@ -368,11 +368,13 @@ class ProcessMysqlHelper implements Serializable {
         if (!includeProcessId) {
             return "(Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
                     + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists, pauseAutomaticExecution, exportValidator)" + " VALUES ";
+                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists, pauseAutomaticExecution, sorthelper_last_close_date, exportValidator)"
+                    + " VALUES ";
         } else {
             return "(ProzesseID, Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
                     + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists, pauseAutomaticExecution, exportValidator)" + " VALUES ";
+                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists, pauseAutomaticExecution, sorthelper_last_close_date, exportValidator)"
+                    + " VALUES ";
         }
     }
 
@@ -401,6 +403,7 @@ class ProcessMysqlHelper implements Serializable {
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
                     o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                    o.getSortHelperLastStepCloseDate() == null ? null : new Timestamp(o.getSortHelperLastStepCloseDate().getTime()),
                     o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
 
         } else {
@@ -409,6 +412,8 @@ class ProcessMysqlHelper implements Serializable {
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
                     o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                    o.getSortHelperLastStepCloseDate() == null ? null : new Timestamp(o.getSortHelperLastStepCloseDate().getTime()),
+
                     o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
         }
     }
@@ -433,6 +438,7 @@ class ProcessMysqlHelper implements Serializable {
         sql.append(" docketID = ?,");
         sql.append(" mediaFolderExists = ?,");
         sql.append(" pauseAutomaticExecution = ?,");
+        sql.append(" sorthelper_last_close_date = ?,");
         sql.append(" exportValidator = ?");
         sql.append(" WHERE ProzesseID = " + o.getId());
 
@@ -613,6 +619,25 @@ class ProcessMysqlHelper implements Serializable {
                 log.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             run.update(connection, sql.toString(), param);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void updateLastChangeDate(Date changeDate, int processId) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            StringBuilder sql = new StringBuilder();
+            sql.append("UPDATE prozesse SET sortHelperLastStepCloseDate = ? WHERE ProzesseID = ?");
+            Timestamp time = null;
+            if (changeDate != null) {
+                time = new Timestamp(changeDate.getTime());
+            }
+            run.update(connection, sql.toString(), time, processId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

@@ -309,7 +309,14 @@ public class ProcessManager implements IManager, Serializable {
         } catch (SQLException e) {
             log.error("Cannot not update status for process with id " + processId, e);
         }
+    }
 
+    public static void updateLastChangeDate(Date changeDate, int processId) {
+        try {
+            ProcessMysqlHelper.updateLastChangeDate(changeDate, processId);
+        } catch (SQLException e) {
+            log.error("Cannot not update status for process with id " + processId, e);
+        }
     }
 
     public static void updateProcessStatus(String value, int processId) {
@@ -445,6 +452,11 @@ public class ProcessManager implements IManager, Serializable {
         p.setMediaFolderExists(rs.getBoolean("mediaFolderExists"));
 
         p.setPauseAutomaticExecution(rs.getBoolean("pauseAutomaticExecution"));
+
+        time = rs.getTimestamp("sorthelper_last_close_date");
+        if (time != null) {
+            p.setSortHelperLastStepCloseDate(new Date(time.getTime()));
+        }
 
         return p;
     }
