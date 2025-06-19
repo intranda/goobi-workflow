@@ -435,6 +435,10 @@ public class DatabaseVersion {
                 connection = MySQLHelper.getInstance().getConnection();
                 String sql = "Alter table prozesse add column sorthelper_last_close_date datetime DEFAULT NULL";
                 DatabaseVersion.runSql(sql);
+                StringBuilder sb = new StringBuilder();
+                sb.append("update prozesse set sorthelper_last_close_date =  ");
+                sb.append("(select max(BearbeitungsEnde) from schritte where Bearbeitungsstatus=3 and schritte.prozesseid = prozesse.prozesseid)");
+                DatabaseVersion.runSql(sb.toString());
             }
         } finally {
             if (connection != null) {
