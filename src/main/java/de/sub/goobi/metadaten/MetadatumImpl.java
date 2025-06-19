@@ -636,7 +636,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 urlBuilder.append("&cache=0");
                 urlBuilder.append("&type=person,place,concept,groupconcept,corporate");
                 urlBuilder.append("&query=");
-                urlBuilder.append(getSearchValue());
+                urlBuilder.append(getSearchValue().replace(" ", "_"));
                 normdataList = DanteImport.importNormDataList(urlBuilder.toString(), getLabelList());
                 showNotHits = normdataList.isEmpty();
                 break;
