@@ -26,29 +26,29 @@ import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 public class ValidateNames {
-	public List<RulesetValidationError> validate(org.jdom2.Element root) {
-		List<RulesetValidationError> errors = new ArrayList<>();
-		for (Element element : root.getChildren()) {
-			// Check every element for the <name> element (the Formats are in an own class)
-			if (!"Formats".equals(element.getName())) {
-				Element nameElement = element.getChild("Name");
-				if (nameElement == null) {
-	                String fallbackLineNumber = element.getAttributeValue("goobi_lineNumber");
-	                String fallbackLineInfo = (fallbackLineNumber != null) ? fallbackLineNumber : "0";
+    public List<RulesetValidationError> validate(org.jdom2.Element root) {
+        List<RulesetValidationError> errors = new ArrayList<>();
+        for (Element element : root.getChildren()) {
+            // Check every element for the <name> element (the Formats are in an own class)
+            if (!"Formats".equals(element.getName())) {
+                Element nameElement = element.getChild("Name");
+                if (nameElement == null) {
+                    String fallbackLineNumber = element.getAttributeValue("goobi_lineNumber");
+                    String fallbackLineInfo = (fallbackLineNumber != null) ? fallbackLineNumber : "0";
 
-					errors.add(new RulesetValidationError("ERROR",
-							Helper.getTranslation("ruleset_validation_missing_name", element.getName()), fallbackLineInfo, 7,element));
-					continue;
-				}
-				if (nameElement.getTextTrim().isEmpty()) {
-					String lineNumber = nameElement.getAttributeValue("goobi_lineNumber");
-					String lineInfo = (lineNumber != null) ? lineNumber : "0";
-					errors.add(new RulesetValidationError("ERROR",
-							Helper.getTranslation("ruleset_validation_empty_name", element.getName()), lineInfo, 8,element));
-				}
-			}
-		}
+                    errors.add(new RulesetValidationError("ERROR",
+                            Helper.getTranslation("ruleset_validation_missing_name", element.getName()), fallbackLineInfo, 7, element));
+                    continue;
+                }
+                if (nameElement.getTextTrim().isEmpty()) {
+                    String lineNumber = nameElement.getAttributeValue("goobi_lineNumber");
+                    String lineInfo = (lineNumber != null) ? lineNumber : "0";
+                    errors.add(new RulesetValidationError("ERROR",
+                            Helper.getTranslation("ruleset_validation_empty_name", element.getName()), lineInfo, 8, element));
+                }
+            }
+        }
 
-		return errors;
-	}
+        return errors;
+    }
 }

@@ -18,7 +18,12 @@
 
 package io.goobi.workflow.ruleseteditor;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -38,20 +43,19 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import javax.xml.xpath.XPathExpressionException;
 
-import com.google.common.base.Stopwatch;
-import jakarta.annotation.PostConstruct;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Ruleset;
 import org.jdom2.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import com.google.common.base.Stopwatch;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -71,6 +75,7 @@ import io.goobi.workflow.ruleseteditor.validation.ValidateTopstructs;
 import io.goobi.workflow.ruleseteditor.validation.ValidateTranslations;
 import io.goobi.workflow.ruleseteditor.validation.ValidateUnusedButDefinedData;
 import io.goobi.workflow.ruleseteditor.validation.ValidateUsedButUndefinedData;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
