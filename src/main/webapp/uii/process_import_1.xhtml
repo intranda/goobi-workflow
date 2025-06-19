@@ -473,9 +473,11 @@
                                 type="submit"
                                 jsf:rendered="#{!MassImportForm.hasNextPage}"
                                 jsf:action="#{MassImportForm.convertData}"
-                                onclick="goobiWorkflowJS.progress.displayProgressBar()">
+                                jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()">
                                 <span class="fa fa-save" />
                                 <span>#{msgs.speichern}</span>
+                                <f:ajax
+                                    render="@form menu:globalMessages" />
                             </button>
 
                             <!-- next page -->
