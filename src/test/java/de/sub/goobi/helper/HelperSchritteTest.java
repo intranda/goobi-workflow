@@ -154,6 +154,7 @@ public class HelperSchritteTest extends AbstractTest {
         EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
         ProcessManager.updateImages(EasyMock.anyInt(), EasyMock.anyInt());
         ProcessManager.updateProcessStatus(EasyMock.anyString(), EasyMock.anyInt());
+        ProcessManager.updateLastChangeDate(EasyMock.anyObject(), EasyMock.anyInt());
         ProcessManager.saveProcessInformation(EasyMock.anyObject());
         EasyMock.expectLastCall();
         PowerMock.replayAll();
