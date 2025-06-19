@@ -682,6 +682,11 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
         if (isDisplayBatchColumn()) {
             taskList.add(new SelectItem("prioritaet desc, prozesse.batchID", Helper.getTranslation("batch")));
         }
+
+        if (isDisplayLastEditionDate()) {
+            taskList.add(new SelectItem("prioritaet desc, sorthelper_last_close_date", Helper.getTranslation("lastStatusUpdate")));
+        }
+
         return taskList;
     }
 
@@ -703,6 +708,9 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
 
         if (isDisplayInstitutionColumn()) {
             taskList.add(new SelectItem("institution.shortName", Helper.getTranslation("institution")));
+        }
+        if (isDisplayLastEditionDate()) {
+            taskList.add(new SelectItem("sorthelper_last_close_date", Helper.getTranslation("lastStatusUpdate")));
         }
 
         return taskList;

@@ -172,6 +172,16 @@
 														ajaxRender="processAllBox:myform"
                                                         sortField="prioritaet desc, sortHelperImages" />
 
+                                                    <intranda:columnheader
+                                                        rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lastStatusUpdate']}"
+                                                        id="last-change-date"
+                                                        value="#{msgs.lastStatusUpdate}"
+                                                        addClass="header__col-m"
+                                                        name="sorthelper_last_close_date"
+                                                        sortField="prioritaet desc, sorthelper_last_close_date"
+                                                        form="#{AktuelleSchritteForm}"
+                                                        ajaxRender="processAllBox:myform" />     
+
 													<!-- Priority -->
 				                                    <intranda:columnheader id="sortStepPriority" name="priority"
                                                         form="#{AktuelleSchritteForm}"
@@ -413,7 +423,12 @@
 														<h:outputText value="#{item.prozess.sortHelperImages}" />
 													</td>
 													<!-- // NUMBER OF IMAGES -->
-
+                                                    <td
+                                                    
+                                                        data-label="#{msgs.lastStatusUpdate}"
+                                                        jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lastStatusUpdate']}">
+                                                        <h:outputText value="#{item.prozess.displayLastStepCloseDate}" />
+                                                    </td>
 
 													<!-- STATUS -->
                                                     <td>

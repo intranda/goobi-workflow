@@ -248,6 +248,9 @@ public class HelperSchritte {
                 ProcessManager.updateImages(numberOfFiles, processId);
             }
 
+            process.setSortHelperLastStepCloseDate(currentStep.getBearbeitungsende());
+            ProcessManager.updateLastChangeDate(currentStep.getBearbeitungsende(), processId);
+
         } catch (Exception e) {
             log.error("An exception occurred while closing a step for process with ID " + process.getId(), e);
         }

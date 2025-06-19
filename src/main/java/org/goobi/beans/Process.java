@@ -162,6 +162,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     private Integer sortHelperDocstructs;
     @Getter
     @Setter
+    private Date sortHelperLastStepCloseDate;
+    @Getter
+    @Setter
     private Ruleset regelsatz;
     @Getter
     @Setter
@@ -1903,6 +1906,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             }
         }
         return date == null ? "" : Helper.getDateAsFormattedString(date);
+    }
+
+    public String getDisplayLastStepCloseDate() {
+        return sortHelperLastStepCloseDate == null ? "" : Helper.getDateAsFormattedString(sortHelperLastStepCloseDate);
     }
 
     /**
