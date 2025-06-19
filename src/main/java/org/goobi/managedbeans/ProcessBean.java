@@ -191,8 +191,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     private static final String PAGE_PROCESS_ALL = "process_all";
     private static final String PAGE_PROCESS_EDIT = "process_edit";
     private static final String PAGE_PROCESS_EDIT_STEP = "process_edit_step";
-    private static final String PAGE_PROCESS_EDIT_TEMPLATE = "process_edit_template";
-    private static final String PAGE_PROCESS_EDIT_WORKPIECE = "process_edit_workpiece";
+
     private static final String PAGE_TASK_EDIT_SIMULATOR = "/uii/task_edit_simulator";
 
     private static final String DB_EXPORT_FILE_SUFFIX = "_db_export.xml";
@@ -340,7 +339,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.anzeigeAnpassen = new HashMap<>();
 
         anzeigeAnpassen.put("numberOfImages", false);
-
         sortField = "prozesse.titel";
         /*
          * Vorgangsdatum generell anzeigen?
@@ -365,10 +363,9 @@ public class ProcessBean extends BasicBean implements Serializable {
             anzeigeAnpassen.put("institution", user.isDisplayInstitutionColumn());
 
             boolean showEditionData = ConfigurationHelper.getInstance().isProcesslistShowEditionData();
-            anzeigeAnpassen.put("editionDate", showEditionData && user.isDisplayLastEditionDate());
             anzeigeAnpassen.put("editionUser", showEditionData && user.isDisplayLastEditionUser());
             anzeigeAnpassen.put("editionTask", showEditionData && user.isDisplayLastEditionTask());
-
+            anzeigeAnpassen.put("lastStatusUpdate", user.isDisplayLastEditionDate());
             String defaultProcessListSortField = user.getProcessListDefaultSortField();
             if (StringUtils.isNotBlank(defaultProcessListSortField)) {
                 sortField = defaultProcessListSortField + user.getProcessListDefaultSortOrder();

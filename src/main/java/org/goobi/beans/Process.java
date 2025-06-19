@@ -1908,6 +1908,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         return date == null ? "" : Helper.getDateAsFormattedString(date);
     }
 
+    public String getDisplayLastStepCloseDate() {
+        return sortHelperLastStepCloseDate == null ? "" : Helper.getDateAsFormattedString(sortHelperLastStepCloseDate);
+    }
+
     /**
      * Get the user name of the last finished step
      */
