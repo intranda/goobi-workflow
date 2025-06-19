@@ -632,7 +632,7 @@ class ProcessMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE prozesse SET sortHelperLastStepCloseDate = ? WHERE ProzesseID = ?");
+            sql.append("UPDATE prozesse SET sorthelper_last_close_date = ? WHERE ProzesseID = ?");
             Timestamp time = null;
             if (changeDate != null) {
                 time = new Timestamp(changeDate.getTime());
