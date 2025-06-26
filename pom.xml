@@ -8,6 +8,7 @@
     <relativePath/>
   </parent>
   <artifactId>workflow-core</artifactId>
+  <version>theming</version>
   <packaging>war</packaging>
   <repositories>
     <repository>

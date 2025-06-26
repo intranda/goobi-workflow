@@ -22,12 +22,32 @@
 	<h:head>
 		<!-- METADATA -->
 		<ui:include src="/WEB-INF/includes/template/inc_metadata.xhtml" />
-		<!-- CSS -->
-		<ui:include src="/WEB-INF/includes/template/inc_CSS.xhtml" />
+		<!-- THEMES -->
+		<c:forEach
+				items="#{ThemeBean.themePlugins}"
+				var="plugin"
+		>
+			<c:forEach
+					items="#{plugin.getCssPaths()}"
+					var="cssPath"
+			>
+				<link
+						type="text/css"
+						rel="stylesheet"
+						href="#{HelperForm.applicationWebsiteUrl}dist/#{plugin.id}/css/#{cssPath}"/>
+			</c:forEach>
+			<c:forEach
+					items="#{plugin.getJsPaths()}"
+					var="jsPath"
+			>
+				<script
+						src="#{HelperForm.applicationWebsiteUrl}dist/#{plugin.id}/js/#{jsPath}"
+						type="text/javascript"
+				></script>
+			</c:forEach>
+		</c:forEach>
 		<!-- Additional CSS for specific views -->
 		<ui:insert name="css" />
-		<!-- Javascript -->
-		<ui:include src="/WEB-INF/includes/template/inc_JS.xhtml" />
 
 	</h:head>
 
