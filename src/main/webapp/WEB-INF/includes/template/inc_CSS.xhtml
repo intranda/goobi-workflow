@@ -3,7 +3,6 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:c="http://java.sun.com/jstl/core">
     <!-- Main styles (BS + custom styles) -->
-    <link rel="stylesheet" href="template/css/dist/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
     <c:forEach
         items="#{ThemeBean.themePlugins}"
         var="plugin"
@@ -12,10 +11,8 @@
             items="#{plugin.getCssPaths()}"
             var="cssPath"
         >
-            <link
-                type="text/css"
-                rel="stylesheet"
-                href="#{HelperForm.applicationWebsiteUrl}dist/#{plugin.id}/css/#{cssPath}"/>
+            <h:outputStylesheet
+                name="dist/#{plugin.id}/css/#{cssPath}"/>
         </c:forEach>
     </c:forEach>
     <!-- CUSTOM CSS (user specific)-->
