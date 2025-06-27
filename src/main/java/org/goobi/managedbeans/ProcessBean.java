@@ -2232,10 +2232,12 @@ public class ProcessBean extends BasicBean implements Serializable {
         for (GoobiProperty pe : props) {
             if (pe.getPropertyName() == null) {
                 this.myProzess.getEigenschaften().remove(pe);
+            } else {
+                PropertyManager.saveProperty(pe);
+
             }
         }
-
-        PropertyManager.saveProperty(processProperty.getProzesseigenschaft());
+        loadProcessProperties();
         Helper.setMeldung("Properties saved");
     }
 
