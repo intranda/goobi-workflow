@@ -26,6 +26,11 @@ public class ThemeBean implements Serializable {
         themePlugins = PluginLoader.getPluginList(PluginType.Theme).stream()
                 .filter(IThemePlugin.class::isInstance)
                 .map(p -> (IThemePlugin) p)
+                .sorted((p1, p2) -> {
+                    if ("IntrandaThemeCore".equals(p1.getId())) return -1;
+                    if ("IntrandaThemeCore".equals(p2.getId())) return 1;
+                    return 0;
+                })
                 .toList();
 //        themePlugins.forEach(p -> {
 //            try {
