@@ -16,6 +16,7 @@
 		<composite:attribute name="forceId" default="true" />
 		<composite:attribute name="classLeft" default="col-12 col-md-3" />
         <composite:attribute name="classRight" default="col-12 col-md-9" />
+		<composite:attribute name="rowClass" default="row" />
         <composite:attribute name="onfocus" default="" />
         <composite:attribute name="tabindex" default="0" />
         <composite:attribute name="execute" default="" />
@@ -28,7 +29,7 @@
 	<composite:implementation>
 
 		<!-- ROW -->
-        <div class="row" style="#{cc.attrs.style}">
+        <div class="#{cc.attrs.rowClass}" style="#{cc.attrs.style}">
 
             <!-- LABEL -->
             <div class="#{cc.attrs.classLeft}">
