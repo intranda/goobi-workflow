@@ -1,7 +1,0 @@
-.thumbnails {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat( auto-fit, minmax(var(--thumb-size), 1fr) );
-    justify-content: center;
-    justify-items: center;
-}
