@@ -8,9 +8,6 @@
   >
 
     <ui:param name="myPageTitle" value="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" />
-    <ui:define name="css">
-      <link rel="stylesheet" href="template/css/lib/swagger-ui.css?v=#{HelperForm.buildVersion}"/>
-    </ui:define>
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" noSeparator="#{true}" />
     </ui:define>
