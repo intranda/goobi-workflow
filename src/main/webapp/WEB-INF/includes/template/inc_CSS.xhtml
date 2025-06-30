@@ -12,7 +12,8 @@
             var="cssPath"
         >
             <h:outputStylesheet
-                name="dist/#{plugin.id}/css/#{cssPath}"/>
+                library="#{plugin.id}"
+                name="css/#{cssPath}"/>
         </c:forEach>
     </c:forEach>
     <!-- CUSTOM CSS (user specific)-->
