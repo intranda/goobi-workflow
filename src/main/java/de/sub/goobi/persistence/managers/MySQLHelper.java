@@ -553,11 +553,10 @@ public class MySQLHelper implements Serializable {
             reverse = true;
             order = order.replace(" desc", "");
         }
-
-        String fieldname = order.replace("{", "").replace("}", "").substring(order.indexOf("."));
-        if (fieldname.contains(" ")) {
-            fieldname = fieldname.substring(0, fieldname.indexOf(" "));
+        if (order.endsWith(" asc")) {
+            order = order.replace(" asc", "");
         }
+        String fieldname = order.replace("{", "").replace("}", "").substring(order.indexOf("."));
         if (order.startsWith("{db_meta")) {
             sql.append("LEFT JOIN (SELECT processid, MAX(value) AS value FROM metadata WHERE metadata.name = '");
             sql.append(fieldname);
