@@ -189,7 +189,7 @@
                                                         <h:selectManyListbox
                                                             id="selectPages"
                                                             pt:aria-label="#{msgs.alleSeiten}"
-                                                            styleClass="form-control"
+                                                            styleClass="form-control select-max-height"
                                                             value="#{Metadaten.alleSeitenAuswahl}">
                                                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                             <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
@@ -221,7 +221,7 @@
                                                     </div>
                                                     <div class="col-5">
                                                         <h:outputText styleClass="form-group__label" value="#{msgs.zugehoerigeSeiten}"/>
-                                                        <h:selectManyListbox id="selectPages2" pt:aria-label="#{msgs.zugehoerigeSeiten}" styleClass="form-control" value="#{Metadaten.structSeitenAuswahl}">
+                                                        <h:selectManyListbox id="selectPages2" pt:aria-label="#{msgs.zugehoerigeSeiten}" styleClass="form-control select-max-height" value="#{Metadaten.structSeitenAuswahl}">
                                                             <f:selectItems value="#{Metadaten.structSeiten}"/>
                                                     </h:selectManyListbox>
                                                     </div>

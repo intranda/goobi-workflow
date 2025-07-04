@@ -508,3 +508,7 @@ fieldSet:disabled .badge > a {
 .section-header-actions .form-control-compact {
   width: var(--form-control-compact-width, 5rem);
 }
+
+.select-max-height {
+  max-height: var(--select-max-height, 30lh);
+}
