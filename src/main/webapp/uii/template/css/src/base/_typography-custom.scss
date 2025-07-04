@@ -114,6 +114,6 @@ a {
   font-weight: 700;
 }
 
-.fa + span {
+.fa + span:not(.filler) {
   margin-inline-start: 0.25rem;
 }
