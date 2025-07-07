@@ -136,13 +136,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         const contentLeft = document.querySelector('#pageContentLeft');
         const contentCenter = document.querySelector('#pageContentCenter');
         const contentRight = document.querySelector('#pageContentRight #thumbnails');
-
-        [contentLeft, contentCenter, contentRight].forEach((el) => {
-          if (!el) return;
-          el.addEventListener('scroll', function() {
-            goobiWorkflowJS.meScrollPos.storeScrollPos();
-          });
-        });
+        const activeThumbnail = document.querySelector('.thumbnails__thumb.active');
 
         // Get scroll position from session storage
         const view = goobiWorkflowConfig.currentView;
@@ -157,9 +151,16 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         // Set new scroll positions
         contentLeft.scrollTop = restoredScrollPosAll.meLeft;
         contentCenter.scrollTop = oldPos + this.getErrorMsgHeight();
-        if (contentRight) {
+        if (contentRight && !activeThumbnail) {
           contentRight.scrollTop = restoredScrollPosAll.mePagination;
         }
+
+        [contentLeft, contentCenter, contentRight].forEach((el) => {
+          if (!el) return;
+          el.addEventListener('scroll', function() {
+            goobiWorkflowJS.meScrollPos.storeScrollPos();
+          });
+        });
 
         // Debugging
         if (_debug) {
