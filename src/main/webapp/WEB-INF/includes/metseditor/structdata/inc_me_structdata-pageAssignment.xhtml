@@ -205,7 +205,10 @@
                                                             data-bs-toggle="tooltip"
                                                             data-bs-placement="top">
                                                             <span class="fa fa-chevron-right" aria-hidden="true"/>
-                                                            <f:ajax execute="@form" render="assignments :treeform"/>
+                                                            <f:ajax
+                                                                execute="@form"
+                                                                render="assignments :treeform"
+                                                                onevent="(data) => { goobiWorkflowJS.meScrollPos.init(data, {view: 'Strukturdaten'})}" />
                                                         </button>
                                                         <button
                                                             jsf:id="s2"
@@ -216,7 +219,10 @@
                                                             data-bs-toggle="tooltip"
                                                             data-bs-placement="bottom">
                                                             <span class="fa fa-chevron-left" aria-hidden="true"/>
-                                                            <f:ajax execute="@form" render="assignments :treeform"/>
+                                                            <f:ajax
+                                                                execute="@form"
+                                                                render="assignments :treeform"
+                                                                onevent="(data) => { goobiWorkflowJS.meScrollPos.init(data, {view: 'Strukturdaten'})}" />
                                                         </button>
                                                     </div>
                                                     <div class="col-5">
