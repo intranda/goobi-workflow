@@ -16,7 +16,7 @@
     <c:set
         var="title"
         value="#{container.matches('^0$') ? msgs.eigenschaften
-            : container.matches('^\\d+$')
+            : container.matches('^\\d+( - \\d+)?$')
                 ? msgs.eigenschaften.concat(': ').concat(msgs.group).concat(' ').concat(msgs[container])
                 : msgs[container]}" />
 
