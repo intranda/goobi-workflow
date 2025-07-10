@@ -342,6 +342,7 @@ public class Helper implements Serializable, ServletContextListener {
         if (context != null) {
             msg = msg.replace("\n", "<br />");
             context.addMessage(control, new FacesMessage(nurInfo ? FacesMessage.SEVERITY_INFO : FacesMessage.SEVERITY_ERROR, msg, beschr));
+            FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add("menu:notifications");
         } else // wenn kein Kontext da ist, dann die Meldungen in Log
         if (nurInfo) {
             log.info(compoundMessage);
