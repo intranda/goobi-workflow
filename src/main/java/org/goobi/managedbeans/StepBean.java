@@ -635,7 +635,7 @@ public class StepBean extends BasicBean implements Serializable {
             if (ben != null) {
                 suffix = " (" + ben.getNachVorname() + ")";
             }
-            se.setPropertyName(messageText + suffix);
+            se.setPropertyValue(messageText + suffix);
             se.setType(PropertyType.MESSAGE_ERROR);
             se.setCreationDate(myDate);
             se.setSchritt(temp);
