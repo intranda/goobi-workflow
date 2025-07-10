@@ -1,5 +1,11 @@
 FROM maven:3-eclipse-temurin-21 AS build
 
+## tmp try
+RUN mkdir -p /home/ubuntu
+RUN chown -R 1000:1000 /home/ubuntu
+
+
+
 # you can use --build-arg build=false to skip workflow-core.war compilation, a workflow-core.war file needs to be available in target/workflow-core.war then
 ARG build=true
 
