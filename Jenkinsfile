@@ -18,7 +18,7 @@ pipeline {
       agent {
         docker {
           image 'maven:3-eclipse-temurin-21'
-          args '-v $HOME/.m2:/var/maven/.m2:z -v $HOME/.npm:/var/maven/.npm -v $HOME/.config:/var/maven/.config -v $HOME/.sonar:/var/maven/.sonar -u 1000 -ti -e _JAVA_OPTIONS=-Duser.home=/var/maven -e HOME=/var/maven -e MAVEN_CONFIG=/var/maven/.m2'
+          args '-v $HOME/.m2:/var/maven/.m2:z -v $HOME/.config:/var/maven/.config -v $HOME/.sonar:/var/maven/.sonar -u 1000 -ti -e _JAVA_OPTIONS=-Duser.home=/var/maven -e MAVEN_CONFIG=/var/maven/.m2'
         }
       }
       when {
