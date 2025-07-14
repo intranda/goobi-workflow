@@ -928,4 +928,17 @@ public class ProcessTest extends AbstractTest {
         }
     }
 
+    @Test
+    public void testSortHelperLastStepCloseDate() {
+        Process process = new Process();
+        assertNull(process.getSortHelperLastStepCloseDate());
+        process.setSortHelperLastStepCloseDate(new Date());
+        assertNotNull(process.getSortHelperLastStepCloseDate());
+    }
+
+    @Test
+    public void testDisplayLastStepCloseDate() {
+        Process process = new Process();
+        assertEquals("", process.getDisplayLastStepCloseDate());
+    }
 }

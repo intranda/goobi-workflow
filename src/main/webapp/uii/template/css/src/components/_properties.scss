@@ -1,17 +1,23 @@
-.properties-form {
-    container: properties-form / inline-size;
-}
+// .properties-form {
+//     container: properties-form / inline-size;
+// }
 
 .properties-wrapper {
     display: grid;
     gap: var(--flow-space, 1rem);
 }
 
-@container properties-form (min-width: 1000px) {
-    .properties-wrapper {
+@media (min-width: 1000px) {
+    .properties-wrapper-large {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+// @container properties-form (min-width: 1000px) {
+//     .properties-wrapper {
+//         grid-template-columns: 1fr 1fr;
+//     }
+// }
 
 #propertyEditModal {
     .row {

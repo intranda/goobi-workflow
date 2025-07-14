@@ -142,19 +142,19 @@
                                         <f:ajax execute="@this" render=":meSetPaginationBox"/>
                                     </h:selectOneMenu>
                                     <!-- PAGINATION INPUT FIELDS -->
-                                    <div id="paginationInputFields" class="#{Metadaten.paginierungArt eq '3' ? 'hidden' : ''}">
-                                        <div class="form-group form-group--flex">
+                                    <div id="paginationInputFields" class="#{Metadaten.paginierungArt eq '3' ? 'd-none' : ''}">
+                                        <div class="form-group form-group--flex #{Metadaten.paginierungArt eq '6' ? 'px-0' : ''}">
                                             <div class="row justify-content-between">
-                                                <div class="col ps-1">
+                                                <div class="#{Metadaten.paginierungArt eq '6' ? 'd-none' : 'col ps-1'}">
                                                     <label for="paginationPrefix" class="visually-hidden">#{msgs.Prefix}</label>
                                                     <h:inputText id="paginationPrefix" styleClass="form-control" value="#{Metadaten.paginationPrefix}">
                                                         <f:passThroughAttribute name="placeholder" value="#{msgs.Prefix}"/>
                                                     </h:inputText>
                                                 </div>
-                                                <div class="col-4">
+                                                <div class="#{Metadaten.paginierungArt eq '6' ? 'col' : 'col-4 ps-1'}">
                                                     <h:inputText id="paginierungWert" pt:aria-label="#{msgs.wert}" styleClass="form-control" forceId="true" value="#{Metadaten.paginierungWert}"/>
                                                 </div>
-                                                <div class="col pe-1">
+                                                <div class="#{Metadaten.paginierungArt eq '6' ? 'd-none' : 'col pe-1'}">
                                                     <label for="paginationSuffix" class="visually-hidden">#{msgs.Suffix}</label>
                                                     <h:inputText id="paginationSuffix" styleClass="form-control" value="#{Metadaten.paginationSuffix}">
                                                         <f:passThroughAttribute name="placeholder" value="#{msgs.Suffix}"/>
@@ -171,7 +171,7 @@
                                             #{msgs.paginationFictitious}
                                         </label>
                                     </div>
-                                    <div>
+                                    <div class="#{Metadaten.paginierungArt eq '3' ? 'pt-2' : ''}">
                                         <label for="checkboxDoublePage">
                                             <h:selectBooleanCheckbox styleClass="form-check-input" id="checkboxDoublePage" value="#{Metadaten.doublePage}"/>
                                             #{msgs.paginationDoublePage}

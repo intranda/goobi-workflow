@@ -38,7 +38,7 @@ import de.sub.goobi.helper.StorageProvider;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class DmsImportThread extends Thread {
+public class DmsImportTask implements Runnable {
     private Path fileError;
     private Path fileXml;
     private Path fileSuccess;
@@ -50,8 +50,7 @@ public class DmsImportThread extends Thread {
 
     public boolean cancel = false;
 
-    public DmsImportThread(Process inProzess, String inAts) {
-        setDaemon(true);
+    public DmsImportTask(Process inProzess, String inAts) {
         /* aus Kompatibilitätsgründen auch noch die Fehlermeldungen an alter Stelle, ansonsten lieber in neuem FehlerOrdner */
         if (inProzess.getProjekt().getDmsImportErrorPath() == null || inProzess.getProjekt().getDmsImportErrorPath().length() == 0) {
             this.fileError = Paths.get(inProzess.getProjekt().getDmsImportRootPath(), inAts + ".log");
@@ -87,7 +86,7 @@ public class DmsImportThread extends Thread {
     public void run() {
         while (!this.cancel) {
             try {
-                Thread.sleep(550); //NOSONAR We will work on the migration to virtual threads in March 2025
+                Thread.sleep(550);
                 if (!StorageProvider.getInstance().isFileExists(this.fileXml) && (StorageProvider.getInstance().isFileExists(this.fileError)
                         || StorageProvider.getInstance().isFileExists(this.fileSuccess))) {
                     if (StorageProvider.getInstance().isFileExists(this.fileError)
@@ -124,7 +123,7 @@ public class DmsImportThread extends Thread {
         }
     }
 
-    public void stopThread() {
+    public void stopTask() {
         this.rueckgabe = "Import wurde wegen Zeitüberschreitung abgebrochen";
         this.cancel = true;
     }

@@ -54,7 +54,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 58;
+    public static final int EXPECTED_VERSION = 59;
     private static final Gson GSON = new Gson();
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -410,6 +410,10 @@ public class DatabaseVersion {
                     log.trace("Update database to version 58.");
                     updateToVersion58();
                     tempVersion++;
+                case 58: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 59.");
+                    updateToVersion59();
+                    tempVersion++;
                 default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -422,6 +426,30 @@ public class DatabaseVersion {
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
         }
+    }
+
+    private static void updateToVersion59() throws SQLException {
+        Connection connection = null;
+        try {
+            if (!DatabaseVersion.checkIfColumnExists("prozesse", "sorthelper_last_close_date")) {
+                connection = MySQLHelper.getInstance().getConnection();
+                String sql = "Alter table prozesse add column sorthelper_last_close_date datetime DEFAULT NULL";
+                DatabaseVersion.runSql(sql);
+                StringBuilder sb = new StringBuilder();
+                sb.append("update prozesse set sorthelper_last_close_date =  ");
+                sb.append("(select max(BearbeitungsEnde) from schritte where Bearbeitungsstatus=3 and schritte.prozesseid = prozesse.prozesseid)");
+                DatabaseVersion.runSql(sb.toString());
+            }
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException exception) {
+                    log.warn(exception);
+                }
+            }
+        }
+
     }
 
     private static void updateToVersion58() throws Exception {
@@ -528,6 +556,7 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
+            @SuppressWarnings("deprecation")
             List<Processproperty> properties = new QueryRunner().query(connection, sql, PropertyMysqlHelper.resultSetToProcessPropertyListHandler);
             performNewImageCommentsPropertySQLInsertStatements(properties);
             removeLegacyImageComments();
@@ -542,12 +571,14 @@ public class DatabaseVersion {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static void performNewImageCommentsPropertySQLInsertStatements(List<Processproperty> properties) throws SQLException {
         for (Processproperty p : properties) {
             createNewImageCommentsProperty(p);
         }
     }
 
+    @SuppressWarnings({ "deprecation", "unchecked", "removal" })
     private static void createNewImageCommentsProperty(Processproperty p) throws SQLException {
         if (!p.getPropertyName().startsWith("image comments ")) {
             throw new SQLException("Unable to parse legacy image comments folder name");
@@ -973,7 +1004,6 @@ public class DatabaseVersion {
 
     }
 
-    @SuppressWarnings("deprecation")
     private static void updateToVersion39() throws SQLException {
         if (!DatabaseVersion.checkIfTableExists("vocabulary_structure")) {
             StringBuilder sql = new StringBuilder();
@@ -1291,7 +1321,6 @@ public class DatabaseVersion {
                         "CREATE TABLE IF NOT EXISTS mq_results ( ticket_id varchar(255), time datetime, status varchar(25), message text, original_message text ) ENGINE=INNODB DEFAULT CHARSET=UTF8mb4;");
             }
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             log.error(e);
         }
     }
@@ -1303,7 +1332,6 @@ public class DatabaseVersion {
                 runner.update(connection, "alter table benutzer add column ssoId varchar(255);");
             }
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             log.error(e);
         }
     }

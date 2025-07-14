@@ -34,11 +34,12 @@
       --border-radius: 12px;
       border-radius: var(--border-radius);
     }
-    #ajaxloader {
-      width: 5.6rem;
-      height: 3.5rem;
-      padding: 0;
+    .ajax-loader-wrapper {
+      margin-block: auto;
       margin-right: 0.5rem;
+    }
+    .ajax-loader {
+      height: 3.5rem;
     }
     button,
     &__date {

@@ -256,7 +256,7 @@
                                 varStatus="row">
                                 <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
 
-                                    <li class="feed-item">
+                                    <li class="feed-item feed-colored feed-color-#{entry.type.title}">
                                         <span class="feed-item-icon fs-600">
                                             <ui:fragment rendered="#{entry.type.title == 'important'}">
                                                 <span class="fa fa-exclamation-circle" />
@@ -281,8 +281,7 @@
                                                     <span class="fa fa-file-o" />
                                                 </ui:fragment>
                                             </ui:fragment>
-                                            <span class="
-                                                filler filler-vertical
+                                            <span class="filler filler-vertical
                                                 #{entry.type.title == 'warn' ? 'filler-yellow' : ''}
                                                 #{entry.type.title == 'error' ? 'filler-red' : ''}" />
                                         </span>

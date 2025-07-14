@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface />
 
@@ -44,50 +45,44 @@
                                 value="#{msgs.NORM_helpGndSearch}"
                                 escape="false" />
                         </p>
+                        <div class="metadata-search-row">
+                            <div class="input-group">
+                                <h:selectOneMenu
+                                    styleClass="form-select w-25"
+                                    value="#{Metadaten.searchOption}"
+                                    pt:aria-label="#{msgs.filter}">
+                                    <f:selectItem
+                                        itemLabel="#{msgs.NORM_identifier}"
+                                        itemValue="" />
+                                    <f:selectItem
+                                        itemLabel="#{msgs.NORM_person}"
+                                        itemValue="Tp*" />
+                                    <f:selectItem
+                                        itemLabel="#{msgs.NORM_organisation}"
+                                        itemValue="Tb*" />
+                                    <f:selectItem
+                                        itemLabel="#{msgs.NORM_keyword}"
+                                        itemValue="Ts*" />
+                                    <f:selectItem
+                                        itemLabel="#{msgs.NORM_geografika}"
+                                        itemValue="Tg*" />
+                                </h:selectOneMenu>
+                                <h:inputText
+                                    id="gndSearchInput"
+                                    pt:aria-label="#{msgs.suchbegriff}"
+                                    styleClass="form-control w-75"
+                                    onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'gndSearchAction')"
+                                    value="#{Metadaten.gndSearchValue}" />
+                            </div>
+                            <util:ajax-loader />
 
-                        <div class="input-group">
-                            <h:selectOneMenu
-                                styleClass="form-select"
-                                value="#{Metadaten.searchOption}"
-                                pt:aria-label="#{msgs.filter}">
-                                <f:selectItem
-                                    itemLabel="#{msgs.NORM_identifier}"
-                                    itemValue="" />
-                                <f:selectItem
-                                    itemLabel="#{msgs.NORM_person}"
-                                    itemValue="Tp*" />
-                                <f:selectItem
-                                    itemLabel="#{msgs.NORM_organisation}"
-                                    itemValue="Tb*" />
-                                <f:selectItem
-                                    itemLabel="#{msgs.NORM_keyword}"
-                                    itemValue="Ts*" />
-                                <f:selectItem
-                                    itemLabel="#{msgs.NORM_geografika}"
-                                    itemValue="Tg*" />
-                            </h:selectOneMenu>
-                            <h:inputText
-                                id="gndSearchInput"
-                                pt:aria-label="#{msgs.suchbegriff}"
-                                styleClass="form-control"
-                                onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'gndSearchAction')"
-                                value="#{Metadaten.gndSearchValue}" />
                             <button
                                 jsf:id="gndSearchAction"
-                                class="btn btn-blank"
+                                class="btn btn-primary"
                                 jsf:action="#{Metadaten.search}">
-                                <i class="fa fa-search" aria-hidden="true"></i>
+                                <span class="fa fa-search" aria-hidden="true" />
                                 <span>
                                     #{msgs.search}
-                                </span>
-                                <span
-                                    class="btn-ajax-loader"
-                                    aria-hidden="true"
-                                    id="ajaxLoader"
-                                    style="display: none;">
-                                    <img
-                                        src="template/img/goobi/ajaxloader2.gif"
-                                        alt="Ajax Button Loader" />
                                 </span>
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:ajax

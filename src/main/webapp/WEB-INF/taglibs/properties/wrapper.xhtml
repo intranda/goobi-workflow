@@ -7,11 +7,17 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 >
     <c:set var="evenContainers" value="#{bean.containerList.size() % 2 == 0}" />
+    <c:set var="scope" value="#{
+        fn:contains(bean, 'StepBean') ? 'step'
+        : fn:contains(bean, 'BatchProcessHelper')? 'batch'
+        : 'process'
+    }" />
+    <c:set var="layout" value="#{scope == 'process' ? ' properties-wrapper-large' : ''}" />
     <div class="properties-form">
         <h:panelGroup
             layout="block"
             id="propertyWrapper"
-            class="properties-wrapper#{evenContainers ? ' group-count-even' : ' group-count-uneven'}">
+            class="properties-wrapper#{layout}#{evenContainers ? ' group-count-even' : ' group-count-uneven'}">
             <c:forEach var="container" items="#{bean.containerList}" varStatus="iteration">
                 <c:set var="fullWidth" value="#{(bean.containerList.size() % 2) != 0 and iteration.index == 0}" />
                 <c:if test="#{container == '0'}">
@@ -23,11 +29,6 @@
             </c:forEach>
         </h:panelGroup>
     </div>
-    <c:set var="scope" value="#{
-        fn:contains(bean, 'StepBean') ? 'step'
-        : fn:contains(bean, 'BatchProcessHelper')? 'batch'
-        : 'process'
-    }" />
     <h:panelGroup id="vocabularyRecordDetails" layout="block">
         <dialog:modal id="vocabularyRecordDetailsModal">
             <dialog:header icon="info" title="#{msgs.vocabulary_entry_details_title}"></dialog:header>

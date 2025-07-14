@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface />
 
@@ -43,40 +44,29 @@
                                 escape="false" />
                         </p>
 
-                        <div id="dante_search_area" class="row">
-                            <div class="col-10">
-                                <h:inputText
-                                    id="danteInput"
-                                    styleClass="form-control"
-                                    value="#{Metadaten.danteSearchValue}" />
-                            </div>
-                            <div class="col-2 text-right">
-                                <div class="d-flex justify-content-end">
-                                    <button
-                                    	jsf:id="danteSearch"
-                                        class="btn btn-primary"
-                                        jsf:action="#{Metadaten.search}">
-                                        <i
-                                            class="fa fa-search"
-                                            aria-hidden="true"></i>
-                                        #{msgs.search}
-                                        <span
-                                            class="btn-ajax-loader"
-                                            aria-hidden="true">
-                                            <img
-                                                src="template/img/goobi/ajaxloader2.gif"
-                                                alt="Ajax Button Loader" />
-                                        </span>
-                                        <f:passThroughAttribute
-                                            name="data-toggle"
-                                            value="tooltip" />
-                                        <f:ajax
-                                            execute="@form"
-                                            render="resultList" />
-                                    </button>
-
-                                </div>
-                            </div>
+                        <div id="dante_search_area" class="metadata-search-row">
+                            <h:inputText
+                                id="danteInput"
+                                styleClass="form-control"
+                                value="#{Metadaten.danteSearchValue}" />
+                            <util:ajax-loader />
+                            <button
+                                jsf:id="danteSearch"
+                                class="btn btn-primary"
+                                jsf:action="#{Metadaten.search}">
+                                <span
+                                    class="fa fa-search"
+                                    aria-hidden="true" />
+                                <span>
+                                    #{msgs.search}
+                                </span>
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:ajax
+                                    execute="@form"
+                                    render="resultList" />
+                            </button>
                             <script>
                                 $( 'input[id*="danteInput"]' ).on( 'focus', function() {
                                     $( this ).off('keyup').on( 'keyup', function( event ) {
@@ -112,11 +102,9 @@
                                                     <h:outputText value="#{msgs.NORM_dantePreferredValue}" />
                                                 </div>
                                                 <div class="col-8">
-                                                    <div class="form-control form-control--select">
-                                                        <h:selectOneMenu value="#{normdataRecord.preferredValue}">
-                                                            <f:selectItems value="#{normdataRecord.valueList}" />
-                                                        </h:selectOneMenu>
-                                                    </div>
+                                                    <h:selectOneMenu styleClass="form-select" value="#{normdataRecord.preferredValue}">
+                                                        <f:selectItems value="#{normdataRecord.valueList}" />
+                                                    </h:selectOneMenu>
                                                 </div>
                                             </div>
                                             <ui:repeat

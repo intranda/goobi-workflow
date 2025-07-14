@@ -37,6 +37,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
@@ -845,24 +846,6 @@ public class CopyProcess {
         }
     }
 
-    /**
-     * alle Kollektionen eines übergebenen DocStructs entfernen ================================================================
-     */
-    private void removeCollections(DocStruct colStruct) {
-        try {
-            MetadataType mdt = this.ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), FIELD_SINGLE_DIG_COLLECTION);
-            ArrayList<Metadata> myCollections = new ArrayList<>(colStruct.getAllMetadataByType(mdt)); // implies that myCollections != null
-            if (!myCollections.isEmpty()) {
-                for (Metadata md : myCollections) {
-                    colStruct.removeMetadata(md, true);
-                }
-            }
-        } catch (UghHelperException | DocStructHasNoTypeException e) {
-            Helper.setFehlerMeldung(e.getMessage(), "");
-            log.error(e);
-        }
-    }
-
     /* =============================================================== */
 
     private void createNewFileformat() {
@@ -1191,16 +1174,13 @@ public class CopyProcess {
                 }
             }
         }
-        Processproperty eig = new Processproperty();
+        GoobiProperty eig = new GoobiProperty(PropertyOwnerType.PROCESS);
         eig.setPropertyName(property.getPropertyName());
         eig.setPropertyValue(property.getPropertyValue());
         eig.setContainer(property.getContainer());
-        eig.setProzess(inProcess);
-        List<GoobiProperty> eigenschaften = inProcess.getEigenschaften();
-        if (eigenschaften == null) {
-            eigenschaften = new ArrayList<>();
-        }
-        eigenschaften.add(eig);
+        eig.setOwner(inProcess);
+
+        inProcess.getProperties().add(eig);
     }
 
 }

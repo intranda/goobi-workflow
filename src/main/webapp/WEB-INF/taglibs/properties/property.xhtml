@@ -142,8 +142,6 @@
                             value="eigenschaft" />
                     </c:if>
                 </button>
-                <f:ajax
-                    render="propertyForm#{groupId}">
                     <button
                         type="button"
                         jsf:action="#{bean.duplicateProperty}"
@@ -161,8 +159,9 @@
                         <f:setPropertyActionListener
                             target="#{bean.container}"
                             value="0" />
+                        <f:ajax
+                            render="@form" />
                     </button>
-                </f:ajax>
             </button:row>
         </c:if>
     </dd>

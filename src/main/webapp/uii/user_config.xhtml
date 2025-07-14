@@ -414,13 +414,14 @@
                                     help="#{msgs.helpDisplayNumberOfImagesColumn}"
                                     name="displayNumberOfImagesColumnName" />
 
+                                <intranda:formInputCheckBox
+                                    id="displayLastEditionDate"
+                                    label="#{msgs.displayLastEditionDate}"
+                                    field="#{LoginForm.myBenutzer.displayLastEditionDate}"
+                                    help="#{msgs.helpDisplayLastEditionDate}"
+                                    name="displayLastEditionDate" />
+                                    
                                 <h:panelGroup rendered="#{HelperForm.showEditionDataEnabled}">
-                                    <intranda:formInputCheckBox
-                                        id="displayLastEditionDate"
-                                        label="#{msgs.displayLastEditionDate}"
-                                        field="#{LoginForm.myBenutzer.displayLastEditionDate}"
-                                        help="#{msgs.helpDisplayLastEditionDate}"
-                                        name="displayLastEditionDate" />
                                     <intranda:formInputCheckBox
                                         id="displayLastEditionUser"
                                         label="#{msgs.displayLastEditionUser}"
@@ -433,7 +434,6 @@
                                         field="#{LoginForm.myBenutzer.displayLastEditionTask}"
                                         help="#{msgs.helpDisplayLastEditionTask}"
                                         name="displayLastEditionTask" />
-
                                 </h:panelGroup>
 
                                 <intranda:formInputDropDown

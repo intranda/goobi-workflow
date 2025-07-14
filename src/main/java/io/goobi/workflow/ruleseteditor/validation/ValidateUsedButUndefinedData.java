@@ -44,7 +44,7 @@ public class ValidateUsedButUndefinedData {
      */
     public List<RulesetValidationError> validate(org.jdom2.Element root) {
         List<RulesetValidationError> errors = new ArrayList<>();
-        Map<String, List<List<Object>>> allUsedValues = new HashMap<>(); 
+        Map<String, List<List<Object>>> allUsedValues = new HashMap<>();
         Set<String> allDefinedValues = new HashSet<>();
         List<String> allUndefinedValues = new ArrayList<>();
 
@@ -58,7 +58,7 @@ public class ValidateUsedButUndefinedData {
             }
         }
         for (String value : allUndefinedValues) {
-            List<List<Object>> dataList = allUsedValues.get(value); 
+            List<List<Object>> dataList = allUsedValues.get(value);
             for (List<Object> data : dataList) {
                 String lineNumber = (String) data.get(0);
                 Element element = (Element) data.get(1);
@@ -91,7 +91,7 @@ public class ValidateUsedButUndefinedData {
                         List<Object> data = new ArrayList<>();
                         data.add(lineInfo);
                         data.add(childElement);
-                        allUsedValues.computeIfAbsent(value, k -> new ArrayList<>()).add(data);  
+                        allUsedValues.computeIfAbsent(value, k -> new ArrayList<>()).add(data);
 
                     } else if ("metadata".equals(childElement.getName().trim())) {
                         String value = "MetadataType:" + childElement.getText().trim();
@@ -100,7 +100,7 @@ public class ValidateUsedButUndefinedData {
                         List<Object> data = new ArrayList<>();
                         data.add(lineInfo);
                         data.add(childElement);
-                        allUsedValues.computeIfAbsent(value, k -> new ArrayList<>()).add(data);  
+                        allUsedValues.computeIfAbsent(value, k -> new ArrayList<>()).add(data);
 
                     } else if ("allowedchildtype".equals(childElement.getName())) {
                         String value = "DocStrctType:" + childElement.getText().trim();
@@ -109,7 +109,7 @@ public class ValidateUsedButUndefinedData {
                         List<Object> data = new ArrayList<>();
                         data.add(lineInfo);
                         data.add(childElement);
-                        allUsedValues.computeIfAbsent(value, k -> new ArrayList<>()).add(data);  
+                        allUsedValues.computeIfAbsent(value, k -> new ArrayList<>()).add(data);
                     }
                 }
             }
@@ -146,16 +146,14 @@ public class ValidateUsedButUndefinedData {
 
         if ("MetadataType".equals(key)) {
             errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_metadata", val),
-                    lineNumber,12, element));
+                    lineNumber, 12, element));
         } else if ("Group".equals(key)) {
             errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_group", val),
-                    lineNumber,12, element));
+                    lineNumber, 12, element));
         } else if ("DocStrctType".equals(key)) {
             errors.add(new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_usedButUndefined_docstruct", val),
-                    lineNumber,12, element));
+                    lineNumber, 12, element));
         }
     }
-    
-    
 
 }

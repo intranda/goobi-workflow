@@ -68,7 +68,7 @@ public class ValidateCardinality {
                 errors.add(new RulesetValidationError("ERROR",
                         Helper.getTranslation("ruleset_validation_wrong_cardinality", childElement.getText(), nameElement.getText(),
                                 attributeValue),
-                        childElement.getAttributeValue("goobi_lineNumber"),1, childElement));
+                        childElement.getAttributeValue("goobi_lineNumber"), 1, childElement));
             }
         }
     }

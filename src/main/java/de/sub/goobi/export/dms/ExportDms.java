@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
@@ -327,13 +328,13 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             }
 
             if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {
-                DmsImportThread agoraThread = new DmsImportThread(myProzess, atsPpnBand);
-                agoraThread.start();
+                DmsImportTask agoraTask = new DmsImportTask(myProzess, atsPpnBand);
+                Thread agoraThread = Thread.ofVirtual().start(agoraTask);
                 try {
                     /* xx Sekunden auf den Thread warten, evtl. killen */
                     agoraThread.join(myProzess.getProjekt().getDmsImportTimeOut().longValue());
                     if (agoraThread.isAlive()) {
-                        agoraThread.stopThread();
+                        agoraTask.stopTask();
                     }
                 } catch (InterruptedException e) {
                     Helper.setFehlerMeldung(myProzess.getTitel() + ": error on export - ", e.getMessage());
@@ -341,8 +342,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     log.error(myProzess.getTitel() + ": error on export", e);
                     agoraThread.interrupt();
                 }
-                if (agoraThread.rueckgabe.length() > 0) {
-                    Helper.setFehlerMeldung(myProzess.getTitel() + ": ", agoraThread.rueckgabe);
+                if (StringUtils.isNotBlank(agoraTask.rueckgabe)) {
+                    Helper.setFehlerMeldung(myProzess.getTitel() + ": ", agoraTask.rueckgabe);
                 } else {
                     Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
                     /* Success-Ordner wieder löschen */

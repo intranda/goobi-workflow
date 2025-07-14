@@ -651,62 +651,64 @@
 						<intranda:formHelp content="#{msgs.helpHttpStep}" msgFor="chkhttp" />
 
 						<ui:fragment rendered="#{ProzessverwaltungForm.mySchritt.httpStep}">
-							<div class="col-sm-12 mt-3 ms-5">
-								<div class="checkbox">
-									<label>
-									<h:selectBooleanCheckbox
-											styleClass="form-check-input"
-											id="chkhttpclosestep"
-											value="#{ProzessverwaltungForm.mySchritt.httpCloseStep}" />
-										#{msgs.httpCloseStep}
-									</label>
+							<div class="d-flex flex-column gap-2 mt-3 ms-5 w-100">
+								<div>
+									<div class="checkbox">
+										<label>
+										<h:selectBooleanCheckbox
+												styleClass="form-check-input"
+												id="chkhttpclosestep"
+												value="#{ProzessverwaltungForm.mySchritt.httpCloseStep}" />
+											#{msgs.httpCloseStep}
+										</label>
+									</div>
+									<h:message
+										for="chkhttpclosestep"
+										showDetail="true"
+										styleClass="help-inline font-danger" />
+									<intranda:formHelp content="#{msgs.helpHttpCloseStep}" />
 								</div>
-								<h:message
-									for="chkhttpclosestep"
-									showDetail="true"
-									styleClass="help-inline font-danger" />
-								<intranda:formHelp content="#{msgs.helpHttpCloseStep}" />
-							</div>
 
-							<div
-								class="col-sm-12 mt-3 ms-5">
-								<label>#{msgs.httpMethod}</label>
-								<h:selectOneMenu
-									id="httpMethod"
-									forceId="true"
-									styleClass="form-control"
-									value="#{ProzessverwaltungForm.mySchritt.httpMethod}">
-									<f:selectItems
-										value="#{ProzessverwaltungForm.mySchritt.possibleHttpMethods}" />
-								</h:selectOneMenu>
-							</div>
-							<div class="col-sm-12 mt-3 ms-5">
-								<label>#{msgs.httpUrl}</label>
-								<h:inputText
-									id="httpUrl"
-									forceId="true"
-									styleClass="form-control"
-									value="#{ProzessverwaltungForm.mySchritt.httpUrl}" />
-							</div>
-							<div
-								class="col-sm-12 mt-3 ms-5">
-								<label>#{msgs.httpBody}</label>
-								<div class="checkbox">
-									<label> <h:selectBooleanCheckbox
-											id="chkhttpescapejson"
-											value="#{ProzessverwaltungForm.mySchritt.httpEscapeBodyJson}" />
-										#{msgs.httpEscapeBodyJson}
-									</label>
+								<div class="d-flex flex-column gap-1">
+									<label>#{msgs.httpMethod}</label>
+									<h:selectOneMenu
+										id="httpMethod"
+										forceId="true"
+										styleClass="form-select"
+										value="#{ProzessverwaltungForm.mySchritt.httpMethod}">
+										<f:selectItems
+											value="#{ProzessverwaltungForm.mySchritt.possibleHttpMethods}" />
+									</h:selectOneMenu>
 								</div>
-								<h:inputTextarea
-									styleClass="form-control"
-									value="#{ProzessverwaltungForm.mySchritt.httpJsonBody}"
-									onkeyup="checkJSON(event)"></h:inputTextarea>
-								<h:outputText
-									id="jsonError"
-									style="display:none"
-									styleClass="help-inline font-danger"
-									value="#{msgs.stepInvalidJsonError}" />
+								<div class="d-flex flex-column gap-1">
+									<label>#{msgs.httpUrl}</label>
+									<h:inputText
+										id="httpUrl"
+										forceId="true"
+										styleClass="form-control"
+										value="#{ProzessverwaltungForm.mySchritt.httpUrl}" />
+								</div>
+								<div class="d-flex flex-column gap-1">
+									<label>#{msgs.httpBody}</label>
+									<div class="checkbox">
+										<label> <h:selectBooleanCheckbox
+												id="chkhttpescapejson"
+												value="#{ProzessverwaltungForm.mySchritt.httpEscapeBodyJson}" />
+											#{msgs.httpEscapeBodyJson}
+										</label>
+									</div>
+									<div class="grow-wrap">
+										<h:inputTextarea
+											styleClass="form-control"
+											value="#{ProzessverwaltungForm.mySchritt.httpJsonBody}"
+											onkeyup="checkJSON(event)"></h:inputTextarea>
+									</div>
+									<h:outputText
+										id="jsonError"
+										style="display:none"
+										styleClass="help-inline font-danger"
+										value="#{msgs.stepInvalidJsonError}" />
+								</div>
 							</div>
 						</ui:fragment>
 						<h:message

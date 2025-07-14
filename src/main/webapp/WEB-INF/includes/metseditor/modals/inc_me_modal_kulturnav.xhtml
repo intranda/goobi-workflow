@@ -1,11 +1,12 @@
 <ui:composition
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-        xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-        xmlns:h="http://xmlns.jcp.org/jsf/html"
-        xmlns:f="http://xmlns.jcp.org/jsf/core"
-        xmlns:x="http://myfaces.apache.org/tomahawk"
-        xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface/>
     <composite:implementation>
@@ -39,35 +40,27 @@
                                     escape="false"/>
                         </p><br/>
 
-                        <div class="row">
-                            <div class="col-10">
-                                <h:inputText
-                                        id="kulturnavInput"
-                                        styleClass="form-control"
-                                        onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'kulturnavSearchAction')"
-                                        value="#{Metadaten.kulturnavSearchValue}"/>
-                            </div>
-                            <div class="col-2 text-right">
-                                <div class="d-flex justify-content-end">
-                                    <button jsf:id="kulturnavSearchAction"
-                                            class="btn btn-primary"
-                                            jsf:action="#{Metadaten.search}">
-                                        <i class="fa fa-search" aria-hidden="true"/>
-                                        #{msgs.search}
-                                        <span class="btn-ajax-loader" aria-hidden="true">
-                                            <img src="template/img/goobi/ajaxloader2.gif"
-                                                 alt="Ajax Button Loader"/>
-                                        </span>
-                                        <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip"/>
-                                        <f:ajax
-                                                execute="@form"
-                                                render="kulturnavResultList"/>
-                                    </button>
-
-                                </div>
-                            </div>
+                        <div class="metadata-search-row">
+                            <h:inputText
+                                    id="kulturnavInput"
+                                    styleClass="form-control"
+                                    onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'kulturnavSearchAction')"
+                                    value="#{Metadaten.kulturnavSearchValue}"/>
+                            <util:ajax-loader />
+                            <button jsf:id="kulturnavSearchAction"
+                                    class="btn btn-primary"
+                                    jsf:action="#{Metadaten.search}">
+                                <span class="fa fa-search" aria-hidden="true" />
+                                <span>
+                                    #{msgs.search}
+                                </span>
+                                <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip"/>
+                                <f:ajax
+                                        execute="@form"
+                                        render="kulturnavResultList"/>
+                            </button>
                         </div>
 
 

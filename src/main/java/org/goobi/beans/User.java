@@ -398,7 +398,7 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     }
 
     public boolean istPasswortKorrekt(String inPasswort) {
-        if (inPasswort == null || inPasswort.length() == 0) {
+        if (StringUtils.isBlank(inPasswort)) {
             return false;
         } else /* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
         if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
@@ -489,7 +489,7 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     }
 
     public String getCss() {
-        if (this.css == null || this.css.length() == 0) {
+        if (StringUtils.isBlank(css)) {
             this.css = "/css/default.css";
         }
         return this.css;
@@ -682,6 +682,11 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
         if (isDisplayBatchColumn()) {
             taskList.add(new SelectItem("prioritaet desc, prozesse.batchID", Helper.getTranslation("batch")));
         }
+
+        if (isDisplayLastEditionDate()) {
+            taskList.add(new SelectItem("prioritaet desc, sorthelper_last_close_date", Helper.getTranslation("lastStatusUpdate")));
+        }
+
         return taskList;
     }
 
@@ -703,6 +708,9 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
 
         if (isDisplayInstitutionColumn()) {
             taskList.add(new SelectItem("institution.shortName", Helper.getTranslation("institution")));
+        }
+        if (isDisplayLastEditionDate()) {
+            taskList.add(new SelectItem("sorthelper_last_close_date", Helper.getTranslation("lastStatusUpdate")));
         }
 
         return taskList;

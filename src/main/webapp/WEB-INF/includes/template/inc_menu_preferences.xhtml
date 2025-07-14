@@ -18,13 +18,7 @@
 
         <div class="user">
             <div class="nav icon-nav">
-                <ui:fragment rendered="#{HelperForm.getFacesMessageList(null).size() > 0}">
-                  <notification:area>
-                    <notification:toggle />
-                    <notification:messages>
-                    </notification:messages>
-                  </notification:area>
-                </ui:fragment>
+                <notification:area />
                 <ui:repeat
                     value="#{GenericPluginBean.genericPlugins}"
                     var="plugin"

@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface>
     </composite:interface>
@@ -52,12 +53,12 @@
                                         var="group"
                                         varStatus="globStatus">
 
-                                        <div class="searchgroup__container">
+                                        <div class="searchgroup__container d-flex flex-column gap-2 mb-3 pb-3 border-bottom">
                                             <button
                                             	jsf:id="close"
-                                                class="btn btn-blank"
+                                                class="btn align-self-start"
                                                 jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.deleteSearchGroup(globStatus.index)}">
-                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                                <span class="fa fa-times" aria-hidden="true" />
                                                 <f:ajax
                                                     execute=":normdataForm:processes_search"
                                                     render=":normdataForm:processes_search" />
@@ -66,47 +67,34 @@
                                                 var="filter"
                                                 value="#{group.filters}"
                                                 varStatus="status">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <div class="form-control form-control--select">
-                                                            <h:selectOneMenu value="#{filter.field}">
-                                                                <f:selectItems
-                                                                    value="#{Metadaten.currentMetadataToPerformSearch.possibleFields}"
-                                                                    var="field"
-                                                                    itemValue="#{field}"
-                                                                    itemLabel="#{msgs[field]}" />
-                                                            </h:selectOneMenu>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="form-control form-control--select">
-                                                            <h:selectOneMenu value="#{filter.relation}">
-                                                                <f:selectItems value="#{filter.operators}" />
-                                                            </h:selectOneMenu>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <!--                                                                    search button? -->
-                                                        <h:inputText
-                                                            value="#{filter.value}"
-                                                            styleClass="form-control input"
-                                                            id="input_processes" />
-                                                    </div>
-                                                    <div class="col text-right" style="flex-grow: 0;">
-                                                        <button
-                                                        	jsf:id="delete"
-                                                            jsf:action="#{group.deleteFilter(status.index)}"
-                                                            class="btn btn-blank">
-                                                            <span class="fa fa-trash" />
-                                                            <f:ajax
-                                                                execute=":normdataForm:processes_search"
-                                                                render=":normdataForm:processes_search" />
-                                                        </button>
-                                                    </div>
+                                                <div class="input-group flex-nowrap">
+                                                    <h:selectOneMenu value="#{filter.field}" styleClass="form-select w-25">
+                                                        <f:selectItems
+                                                            value="#{Metadaten.currentMetadataToPerformSearch.possibleFields}"
+                                                            var="field"
+                                                            itemValue="#{field}"
+                                                            itemLabel="#{msgs[field]}" />
+                                                    </h:selectOneMenu>
+                                                    <h:selectOneMenu value="#{filter.relation}" styleClass="form-select">
+                                                        <f:selectItems value="#{filter.operators}" />
+                                                    </h:selectOneMenu>
+                                                    <h:inputText
+                                                        value="#{filter.value}"
+                                                        styleClass="form-control input w-50"
+                                                        id="input_processes" />
+                                                    <button
+                                                        jsf:id="delete"
+                                                        jsf:action="#{group.deleteFilter(status.index)}"
+                                                        class="btn btn-blank">
+                                                        <span class="fa fa-trash" />
+                                                        <f:ajax
+                                                            execute=":normdataForm:processes_search"
+                                                            render=":normdataForm:processes_search" />
+                                                    </button>
 
                                                 </div>
                                             </ui:repeat>
-                                            <div class="row">
+                                            <div class="d-flex flex-column gap-2">
                                                 <ui:fragment rendered="#{group.numFilters gt 1}">
                                                     <div class="col-8 group-conjunction">
                                                         <strong>
@@ -140,7 +128,7 @@
                                         </div>
                                     </ui:repeat>
                                     <div class="modal__viaf-conjunction">
-                                        <div class="row">
+                                        <div class="d-flex flex-column gap-2">
                                             <h:panelGroup rendered="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1}">
                                                 <div
                                                     class="col-sm-8 group-conjunction"
@@ -177,14 +165,14 @@
                                 </c:if>
                             </div>
                             <div class="d-flex justify-content-end">
+                                <util:ajax-loader />
                                 <button
                             			jsf:id="processSearch"
                                         class="btn btn-primary"
                                         jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}">
-                                        <i class="fa fa-search" aria-hidden="true"></i>
-                                        #{msgs.search}
-                                        <span class="btn-ajax-loader" aria-hidden="true">
-                                            <img src="template/img/goobi/ajaxloader2.gif" alt="Ajax Button Loader" />
+                                        <span class="fa fa-search" aria-hidden="true" />
+                                        <span>
+                                            #{msgs.search}
                                         </span>
                                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                        <f:ajax

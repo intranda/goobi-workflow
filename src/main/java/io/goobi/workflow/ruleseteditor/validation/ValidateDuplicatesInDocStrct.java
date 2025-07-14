@@ -92,7 +92,7 @@ public class ValidateDuplicatesInDocStrct {
                 else if ("allowedchildtype".equals(childName)) {
                     errors.add(new RulesetValidationError("ERROR",
                             Helper.getTranslation("ruleset_validation_duplicates_group_allowedchildtype", childText, nameText),
-                            valueMap.get(childSignature),4, childElement));
+                            valueMap.get(childSignature), 4, childElement));
                 }
             } else {
                 // Add the signature to the Map
@@ -110,7 +110,8 @@ public class ValidateDuplicatesInDocStrct {
      * @param childElementText
      * @param nameElementText
      */
-    private void findMetadataType(List<RulesetValidationError> errors, Element root, String childElementText, String nameElementText, String lineInfo) {
+    private void findMetadataType(List<RulesetValidationError> errors, Element root, String childElementText, String nameElementText,
+            String lineInfo) {
         for (Element element : root.getChildren()) {
             if (!"MetadataType".equals(element.getName()) && !"group".equals(element.getName()) && !"metadata".equals(element.getName())) {
                 continue;
@@ -122,19 +123,22 @@ public class ValidateDuplicatesInDocStrct {
 
                 if ("person".equals(typeValue)) {
                     errors.add(
-                            new RulesetValidationError("ERROR", Helper.getTranslation("ruleset_validation_duplicates_person", childElementText, nameElementText),
-                                    lineInfo,4, element));
+                            new RulesetValidationError("ERROR",
+                                    Helper.getTranslation("ruleset_validation_duplicates_person", childElementText, nameElementText),
+                                    lineInfo, 4, element));
                     return;
                 }
                 if ("corporate".equals(typeValue)) {
                     errors.add(
                             new RulesetValidationError("ERROR",
-                                    Helper.getTranslation("ruleset_validation_duplicates_corporate", childElementText, nameElementText), lineInfo,4, element));
+                                    Helper.getTranslation("ruleset_validation_duplicates_corporate", childElementText, nameElementText), lineInfo, 4,
+                                    element));
                     return;
 
                 } else {
                     errors.add(new RulesetValidationError("ERROR",
-                            Helper.getTranslation("ruleset_validation_duplicates_metadata", childElementText, nameElementText), lineInfo,4,  element));
+                            Helper.getTranslation("ruleset_validation_duplicates_metadata", childElementText, nameElementText), lineInfo, 4,
+                            element));
                     return;
                 }
             }

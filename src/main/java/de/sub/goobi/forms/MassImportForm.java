@@ -1,20 +1,20 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -38,6 +38,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.apache.jena.base.Sys;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
@@ -92,7 +93,7 @@ import ugh.dl.Prefs;
 @Log4j2
 public class MassImportForm implements Serializable {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 4780655212251185461L;
 
@@ -523,6 +524,7 @@ public class MassImportForm implements Serializable {
             }
 
             this.importFile = Paths.get(filename);
+            Helper.setMeldung("uploadSuccessful");
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             Helper.setFehlerMeldung("uploadFailed");
@@ -554,7 +556,7 @@ public class MassImportForm implements Serializable {
 
     /**
      * tests input fields for correct data
-     * 
+     *
      * @return true if data is valid or false otherwise
      */
 
@@ -564,7 +566,7 @@ public class MassImportForm implements Serializable {
     }
 
     /**
-     * 
+     *
      * @return list with all import formats
      */
     public List<String> getFormats() {

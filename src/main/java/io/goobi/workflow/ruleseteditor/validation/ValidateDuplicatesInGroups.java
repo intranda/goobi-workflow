@@ -100,7 +100,8 @@ public class ValidateDuplicatesInGroups {
      * @param childElementText
      * @param nameElementText
      */
-    private void findMetadataType(List<RulesetValidationError> errors, Element root, String childElementText, String nameElementText, String lineInfo) {
+    private void findMetadataType(List<RulesetValidationError> errors, Element root, String childElementText, String nameElementText,
+            String lineInfo) {
         for (Element element : root.getChildren()) {
 
             if (!"MetadataType".equals(element.getName()) || element.getChild("Name") == null) {
@@ -112,18 +113,21 @@ public class ValidateDuplicatesInGroups {
             // Check if the element is a person with the same name
             if ("person".equals(element.getAttributeValue("type")) && childElementText.equals(nameChild.getText().trim())) {
                 errors.add(new RulesetValidationError("ERROR",
-                        Helper.getTranslation("ruleset_validation_duplicates_group_person", childElementText, nameElementText), lineInfo,5, element));
+                        Helper.getTranslation("ruleset_validation_duplicates_group_person", childElementText, nameElementText), lineInfo, 5,
+                        element));
                 return;
             }
 
             if ("corporate".equals(element.getAttributeValue("type")) && childElementText.equals(nameChild.getText().trim())) {
                 errors.add(new RulesetValidationError("ERROR",
-                        Helper.getTranslation("ruleset_validation_duplicates_group_corporate", childElementText, nameElementText), lineInfo,5, element));
+                        Helper.getTranslation("ruleset_validation_duplicates_group_corporate", childElementText, nameElementText), lineInfo, 5,
+                        element));
                 return;
 
             } else if (childElementText.equals(nameChild.getText().trim())) {
                 errors.add(new RulesetValidationError("ERROR",
-                        Helper.getTranslation("ruleset_validation_duplicates_group_metadata", childElementText, nameElementText), lineInfo,5, element));
+                        Helper.getTranslation("ruleset_validation_duplicates_group_metadata", childElementText, nameElementText), lineInfo, 5,
+                        element));
                 return;
             }
 

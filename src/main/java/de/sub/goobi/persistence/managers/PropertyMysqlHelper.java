@@ -41,7 +41,7 @@ class PropertyMysqlHelper implements Serializable {
     private static final long serialVersionUID = 5175567943231852013L;
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) throws SQLException {
-        String sql = "SELECT * FROM properties WHERE object_id = ? and object_type = 'process' ORDER BY container, property_name, creation_date desc";
+        String sql = "SELECT * FROM properties WHERE object_id = ? and object_type = 'process' ORDER BY container, property_name, id desc";
         Connection connection = null;
         Object[] param = { processId };
         try {
@@ -288,7 +288,7 @@ class PropertyMysqlHelper implements Serializable {
     }
 
     public static List<GoobiProperty> getPropertiesForObject(int objectId, PropertyOwnerType propertyType) throws SQLException {
-        String sql = "SELECT * FROM properties WHERE object_id = ? and object_type = ? ORDER BY container, property_name, creation_date desc";
+        String sql = "SELECT * FROM properties WHERE object_id = ? and object_type = ? ORDER BY container, property_name, id desc";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

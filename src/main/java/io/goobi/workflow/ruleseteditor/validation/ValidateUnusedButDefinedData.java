@@ -54,20 +54,20 @@ public class ValidateUnusedButDefinedData {
         }
         for (String unusedValue : allAllowedchildtypeValues) {
             for (Element element : root.getChildren()) {
-            	if(element.getChild("Name") == null) {
-            		continue;
-            	}
+                if (element.getChild("Name") == null) {
+                    continue;
+                }
                 String lineNumber = element.getChild("Name").getAttributeValue("goobi_lineNumber");
                 String lineInfo = (lineNumber != null) ? lineNumber.trim() : "0";
                 // Check if the element is a DocStrctType and if the Name value is inside the allAllowedchildtypeValues.
                 // If so it will be added to allUnusedAllowedchildtypeValues and a message will be displayed
                 if ("DocStrctType".equals(element.getName())
-                    && unusedValue.equals("DocStrctType:" + element.getChildText("Name").trim())
-                    && !allUnusedAllowedchildtypeValues.contains(unusedValue)) {
+                        && ("DocStrctType:" + element.getChildText("Name").trim()).equals(unusedValue)
+                        && !allUnusedAllowedchildtypeValues.contains(unusedValue)) {
                     allUnusedAllowedchildtypeValues.add(unusedValue.trim());
                     errors.add(new RulesetValidationError("WARNING", Helper.getTranslation("ruleset_validation_unused_values_allowedchildtype",
-                            unusedValue.substring(unusedValue.lastIndexOf(":") + 1)), lineInfo,11, element.getChild("Name")));
-                   
+                            unusedValue.substring(unusedValue.lastIndexOf(":") + 1)), lineInfo, 11, element.getChild("Name")));
+
                 }
             }
         }
@@ -86,7 +86,7 @@ public class ValidateUnusedButDefinedData {
             List<String> allAllowedchildtypeValues) {
         if ("MetadataType".equals(element.getName()) || "Group".equals(element.getName())) {
             // Add the Name text to the list
-        	Element nameElement = element.getChild("Name");
+            Element nameElement = element.getChild("Name");
             if (nameElement != null && nameElement.getText() != null && !nameElement.getText().trim().isEmpty()) {
                 allMetadataTypeNameValues.add(element.getName() + ":" + nameElement.getText().trim());
             }
@@ -179,26 +179,26 @@ public class ValidateUnusedButDefinedData {
                     if ("person".equals(type) && ("MetadataType:" + nameText).equals(text)) {
                         errors.add(new RulesetValidationError("WARNING",
                                 Helper.getTranslation("ruleset_validation_unused_values_person", text.substring(text.lastIndexOf(":") + 1)),
-                                element.getChild("Name").getAttributeValue("goobi_lineNumber"),11, nameChild));
+                                element.getChild("Name").getAttributeValue("goobi_lineNumber"), 11, nameChild));
                         continue;
                     }
 
                     if ("corporate".equals(type) && ("MetadataType:" + nameText).equals(text)) {
                         errors.add(new RulesetValidationError("WARNING",
                                 Helper.getTranslation("ruleset_validation_unused_values_corporate", text.substring(text.lastIndexOf(":") + 1)),
-                                element.getChild("Name").getAttributeValue("goobi_lineNumber"),11, nameChild));
+                                element.getChild("Name").getAttributeValue("goobi_lineNumber"), 11, nameChild));
                         continue;
                     }
 
                     if ("Group".equals("Group:" + nameText)) {
                         errors.add(new RulesetValidationError("WARNING",
                                 Helper.getTranslation("ruleset_validation_unused_values_groups", text.substring(text.lastIndexOf(":") + 1)),
-                                element.getChild("Name").getAttributeValue("goobi_lineNumber"),11, nameChild));
+                                element.getChild("Name").getAttributeValue("goobi_lineNumber"), 11, nameChild));
                         continue;
                     } else if (("MetadataType:" + nameText).equals(text)) {
                         errors.add(new RulesetValidationError("WARNING",
                                 Helper.getTranslation("ruleset_validation_unused_values_metadata", text.substring(text.lastIndexOf(":") + 1)),
-                                element.getChild("Name").getAttributeValue("goobi_lineNumber"),11, nameChild));
+                                element.getChild("Name").getAttributeValue("goobi_lineNumber"), 11, nameChild));
                         continue;
                     }
                 }

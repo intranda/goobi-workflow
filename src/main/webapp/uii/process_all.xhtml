@@ -272,12 +272,15 @@
                                                         sortable="false" />
 
                                                     <!-- LAST STATUS UPDATE DATE COLUMN HEADER -->
-													<intranda:columnheader
-														id="update-date"
-														addClass="header__update-date header__col-l"
-														value="#{msgs.lastStatusUpdate}"
-														rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionDate']}"
-														sortable="false" />
+							                        <intranda:columnheader
+                                                        id="last-change-date"
+                                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lastStatusUpdate']}"
+                                                        value="#{msgs.lastStatusUpdate}"
+                                                        addClass="header__number-of-imgs header__col-m"
+                                                        name="sorthelper_last_close_date"
+                                                        sortField="sorthelper_last_close_date"
+                                                        form="#{ProzessverwaltungForm}"
+                                                        ajaxRender="processAllProcessesBox:myform" />    
 
 													<!-- LAST STATUS UPDATE USER COLUMN HEADER -->
 													<intranda:columnheader
@@ -313,6 +316,10 @@
                                                         sortField="sortHelperImages"
 														form="#{ProzessverwaltungForm}"
 														ajaxRender="processAllProcessesBox:myform" />
+                                                        
+                                                        
+                                                        
+                                                                         
 
                                                     <!-- BUTTONS COLUMN HEADER -->
 													<intranda:columnheader
@@ -783,11 +790,11 @@
 													</td>
 
 													<!-- LAST CHANGE DATE -->
-													<td
-														data-label="#{msgs.lastStatusUpdate}"
-														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionDate']}">
-														<h:outputText value="#{item.lastStatusChangeDate}" />
-													</td>
+										            <td
+                                                        data-label="#{msgs.lastStatusUpdate}"
+                                                        jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lastStatusUpdate']}">
+                                                        <h:outputText value="#{item.displayLastStepCloseDate}" />
+                                                    </td>
 
 													<!-- LAST CHANGE USER -->
 													<td
@@ -817,6 +824,8 @@
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}">
 														<h:outputText value="#{item.sortHelperImages}" />
 													</td>
+                                                    
+                                           
 
 													<!-- BUTTONS -->
 													<td

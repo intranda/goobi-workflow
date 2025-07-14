@@ -3,7 +3,29 @@
     margin: 0;
     --feed-spacing-v: 0.25em;
     --feed-spacing-h: 0.5em;
+    --feed-color: var(--clr-neutral-400);
 }
+
+.feed-color-error {
+    --feed-color: #ff0000;
+}
+
+.feed-color-warn {
+    --feed-color: #ff6600;
+}
+
+.feed-color-info {
+    --feed-color: #0033cc;
+}
+
+.feed-color-debug {
+    --feed-color: #8e8d8e;
+}
+
+.feed-color-user,
+.feed-color-important {
+    --feed-color: #006600;
+  }
 
 .feed-item {
     display: flex;

@@ -161,6 +161,7 @@ public class MassImportFormTest extends AbstractTest {
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
+        Helper.setMeldung(EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString());
 
         EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();

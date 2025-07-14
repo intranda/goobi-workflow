@@ -227,6 +227,8 @@ public class StepBean extends BasicBean implements Serializable {
             hideStepsFromOtherUsers = !login.getMyBenutzer().isDisplayOtherTasks();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
 
+            anzeigeAnpassen.put("lastStatusUpdate", login.getMyBenutzer().isDisplayLastEditionDate());
+
             if (StringUtils.isNotBlank(login.getMyBenutzer().getTaskListDefaultSortingField())) {
                 sortField = login.getMyBenutzer().getTaskListDefaultSortingField() + login.getMyBenutzer().getTaskListDefaultSortOrder();
             }
@@ -633,7 +635,7 @@ public class StepBean extends BasicBean implements Serializable {
             if (ben != null) {
                 suffix = " (" + ben.getNachVorname() + ")";
             }
-            se.setPropertyName(messageText + suffix);
+            se.setPropertyValue(messageText + suffix);
             se.setType(PropertyType.MESSAGE_ERROR);
             se.setCreationDate(myDate);
             se.setSchritt(temp);

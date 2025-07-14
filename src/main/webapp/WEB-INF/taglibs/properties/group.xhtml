@@ -13,14 +13,19 @@
         : fn:contains(bean, 'BatchProcessHelper')? 'batch'
         : 'process'
     }" />
-    <!-- <c:set var="id" value="#{fn:replace(container.matches('^\\d+$') ? 'prop'.concat(container) : container, ' ' , '_')}" /> -->
+    <c:set
+        var="title"
+        value="#{container.matches('^0$') ? msgs.eigenschaften
+            : container.matches('^\\d+( - \\d+)?$')
+                ? msgs.eigenschaften.concat(': ').concat(msgs.group).concat(' ').concat(msgs[container])
+                : msgs[container]}" />
 
     <div class="properties-group">
         <h:form id="propertyForm#{groupId}">
             <section:section
                 type="outline">
                 <section:header
-                    title="#{container.matches('^\\d+$') ? msgs.eigenschaften.concat(': ').concat(msgs.group).concat(' ').concat(msgs[container]) : msgs[container]}"
+                    title="#{title}"
                     icon="list">
                     <div class="actions d-flex">
                         <button
@@ -92,7 +97,7 @@
                         <c:if test="#{scope == 'process' and !add}">
                             <f:ajax
                                 execute="@this"
-                                render="propertyEditArea propertyForm#{groupId}">
+                                render="propertyWrapper propertyForm#{groupId}">
                                 <button
                                     class="btn d-flex align-items-center btn--title-action"
                                     data-bs-toggle="tooltip"

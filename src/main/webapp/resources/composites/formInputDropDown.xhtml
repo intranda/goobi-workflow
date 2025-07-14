@@ -27,6 +27,8 @@
 			method-signature="java.lang.Object action(jakarta.faces.context.FacesContext, jakarta.faces.component.UIComponent, java.lang.Object)" />
 		<composite:attribute name="idForValidator" default="" />
 		<!-- "idForValidator" can be requested by the validator with uiComponent.getAttributes().get("idForValidator"); -->
+        <composite:attribute name="placeholder" default="true" />
+        <composite:attribute name="placeholderDisabled" default="false" />
 	</composite:interface>
 
 	<composite:implementation>
@@ -54,9 +56,13 @@
                     disabled="#{cc.attrs.readonly}"
                     validator="#{cc.attrs.validationMethod}"
                     idForValidator="#{cc.attrs.idForValidator}">
-                    <f:selectItem
-                        itemValue="null"
-                        itemLabel="#{msgs.bitteAuswaehlen}" />
+                    <ui:fragment rendered="#{cc.attrs.required}">
+                        <f:selectItem
+                            itemValue="null"
+                            itemLabel="#{msgs.bitteAuswaehlen}"
+                            itemDisabled="#{cc.attrs.placeholderDisabled}"
+                            rendered="#{cc.attrs.placeholder}" />
+                    </ui:fragment>
                     <f:selectItems value="#{cc.attrs.selectItems}" />
                 </h:selectOneMenu>
                 <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline text-danger" />

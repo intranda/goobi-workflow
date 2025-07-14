@@ -71,7 +71,7 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 
             // Handle ViewExpiredExceptions here ... or even others :)
             if (!t.getClass().equals(ViewExpiredException.class)) {
-                log.error("CLASS: " + t.getClass().getName());
+                log.error("CLASS: " + t.getClass().getName(), t);
             }
             FacesContext fc = FacesContextHelper.getCurrentFacesContext();
             Map<String, Object> requestMap = fc.getExternalContext().getRequestMap();

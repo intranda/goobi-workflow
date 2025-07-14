@@ -62,7 +62,20 @@
                     </button>
                 </li>
                 <li id="autocomplete" class="dataTables__paginator__page-count">
-                    <p:autoComplete id="txtMoveTo2" inputStyleClass="form-control" scrollHeight="300" forceId="false" value="#{Metadaten.bildNummerGeheZuCompleteString}" completeMethod="#{Metadaten.autocomplete}" inputStyle="display:none;width:110px" onblur="                         document.querySelector('[id$=txtMoveTo2_input]').style.display='none';                         document.querySelector('[id$=txtMoveTo2_input]').value='';                         document.querySelector('[id$=txtMoveTo1]').style.display='inline';                         document.querySelector('[id$=txtMoveTo2_panel]')?.close();" onkeyup="return submitEnter(document.querySelector('[id$=goButton]').id,event)"/>
+                    <p:autoComplete
+                        id="txtMoveTo2"
+                        inputStyleClass="form-control"
+                        scrollHeight="300"
+                        forceId="false"
+                        value="#{Metadaten.bildNummerGeheZuCompleteString}"
+                        completeMethod="#{Metadaten.autocomplete}"
+                        inputStyle="display:none;width:110px"
+                        onblur="
+                            document.querySelector('[id$=txtMoveTo2_input]').style.display='none';
+                            document.querySelector('[id$=txtMoveTo2_input]').value='';
+                            document.querySelector('[id$=txtMoveTo1]').style.display='inline';"
+                        onchange="return document.querySelector('[id$=goButton]')?.click()"
+                        onkeyup="return submitEnter(document.querySelector('[id$=goButton]').id,event)"/>
                     <h:commandButton id="goButton" value="go" action="#{Metadaten.BildGeheZu}" styleClass="notFocusable visually-hidden">
                         <f:ajax
                             execute="@form :pageareas"

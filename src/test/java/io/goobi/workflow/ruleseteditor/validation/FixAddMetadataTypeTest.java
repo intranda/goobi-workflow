@@ -19,60 +19,81 @@
 package io.goobi.workflow.ruleseteditor.validation;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.jdom2.Element;
-import org.junit.Before;
 import org.junit.Test;
 
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
+import io.goobi.workflow.ruleseteditor.RulesetValidationError.ErrorType;
 
 public class FixAddMetadataTypeTest {
 
-    private FixAddMetadataType fixer;
-
-    @Before
-    public void setUp() {
-        fixer = new FixAddMetadataType();
-    }
-
     @Test
-    public void testFix_addsNewMetadataType_afterLastExisting() {
-        // Setup XML structure
+    public void testFixAddsNewMetadataType() {
+        // Arrange
         Element root = new Element("Root");
 
+        // Existing MetadataType
         Element metadata1 = new Element("MetadataType");
-        metadata1.addContent(new Element("Name").setText("Author"));
-
-        Element metadata2 = new Element("MetadataType");
-        metadata2.addContent(new Element("Name").setText("Title"));
-
+        metadata1.addContent(new Element("Name").setText("existing"));
         root.addContent(metadata1);
-        root.addContent(metadata2);
 
-        // Mock RulesetValidationError
-        RulesetValidationError mockError = EasyMock.createMock(RulesetValidationError.class);
-        EasyMock.expect(mockError.getMessage()).andReturn("NewType - missing metadata").anyTimes();
-        EasyMock.expect(mockError.getErrorType()).andReturn(RulesetValidationError.ErrorType.MISSING_NAME).anyTimes();
-        EasyMock.replay(mockError);
+        // Simulate error: message = "Biografisches - fehlt", refers to <Person> in <PicaPlus>
+        Element person = new Element("Person");
+        Element picaPlus = new Element("PicaPlus");
+        picaPlus.addContent(person); // <PicaPlus><Person/></PicaPlus>
 
-        // Call method
-        fixer.fix(root, mockError);
+        RulesetValidationError error = new RulesetValidationError(
+                1, 1, "WARNING", "Biografisches - fehlt", person, ErrorType.VALIDATE_FORMATS);
+
+        FixAddMetadataType fixer = new FixAddMetadataType();
+
+        // Act
+        fixer.fix(root, error);
 
         // Assert
         List<Element> children = root.getChildren();
-        assertEquals(3, children.size());
+        assertEquals(2, children.size());
 
-        Element inserted = children.get(2); // Should be right after metadata2
-        assertEquals("MetadataType", inserted.getName());
+        Element newMetadata = children.get(1);
+        assertEquals("MetadataType", newMetadata.getName());
 
-        Element nameChild = inserted.getChild("Name");
-        assertNotNull(nameChild);
-        assertEquals("NewType", nameChild.getText());
+        assertEquals("person", newMetadata.getAttributeValue("type"));
 
-        EasyMock.verify(mockError);
+        List<Element> contents = newMetadata.getChildren();
+        assertEquals(3, contents.size());
+
+        assertEquals("Name", contents.get(0).getName());
+        assertEquals("Biografisches", contents.get(0).getText());
+
+        assertEquals("language", contents.get(1).getName());
+        assertEquals("de", contents.get(1).getAttributeValue("name"));
+        assertEquals("Biografisches", contents.get(1).getText());
+
+        assertEquals("language", contents.get(2).getName());
+        assertEquals("en", contents.get(2).getAttributeValue("name"));
+        assertEquals("Biografisches", contents.get(2).getText());
+    }
+
+    @Test
+    public void testFixDoesNothingIfNoMetadataTypeExists() {
+        Element root = new Element("Root");
+
+        // No MetadataType child
+
+        Element element = new Element("Corporate");
+        Element marc = new Element("Marc");
+        marc.addContent(element);
+
+        RulesetValidationError error = new RulesetValidationError(
+                1, 1, "WARNING", "XYZ - Fehler", element, ErrorType.VALIDATE_FORMATS);
+
+        FixAddMetadataType fixer = new FixAddMetadataType();
+        fixer.fix(root, error);
+
+        assertTrue(root.getChildren().isEmpty());
     }
 }

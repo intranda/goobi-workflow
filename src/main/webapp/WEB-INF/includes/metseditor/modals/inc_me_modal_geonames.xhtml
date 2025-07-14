@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface />
 
@@ -44,18 +45,15 @@
                                 escape="false" />
                         </p>
 
-                        <div class="input-group">
+                        <div class="metadata-search-row">
                         <!-- GEONAMES SEARCH INPUT -->
                             <h:inputText
                                 id="geonamesSearch"
                                 styleClass="form-control"
                                 onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'geonamesSearchAction')"
                                 value="#{Metadaten.geonamesSearchValue}" />
+                            <util:ajax-loader />
 
-                            <h:message
-                                for="geonamesSearch"
-                                showDetail="true"
-                                styleClass="help-inline font-danger" />
 
                         <!-- GEONAMES SEARCH ACTION -->
                             <button
@@ -68,15 +66,6 @@
                                 <span>
                                     #{msgs.search}
                                 </span>
-                                <span
-                                    class="btn-ajax-loader"
-                                    aria-hidden="true"
-                                    id="ajaxLoader"
-                                    style="display: none;">
-                                    <img
-                                        src="template/img/goobi/ajaxloader2.gif"
-                                        alt="Ajax Button Loader" />
-                                </span>
                                 <f:passThroughAttribute
                                     name="data-toggle"
                                     value="tooltip" />
@@ -85,6 +74,11 @@
                                     render="geonamesList" />
                             </button>
                         </div>
+
+                        <h:message
+                            for="geonamesSearch"
+                            showDetail="true"
+                            styleClass="help-inline font-danger d-block w-100" />
 
                         <!-- GEONAMES LIST -->
                         <h:panelGroup id="geonamesList">

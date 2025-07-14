@@ -487,3 +487,28 @@ fieldSet:disabled .badge > a {
     flex: 1 1 auto;
   }
 }
+
+.metadata-input {
+  flex-wrap: wrap;
+  gap: calc(var(--flow-space, 1em) / 4);
+  > *:nth-child(1) {
+    flex: 1 0 auto;
+  }
+  > *:nth-child(2) {
+    flex: 1 1 0;
+  }
+  .normdata-select {
+    flex: 0 1 25%;
+  }
+}
+
+// for form inputs with a limited width
+// pass the desired width as a CSS variable, e.g. 5ch
+.form-control-compact,
+.section-header-actions .form-control-compact {
+  width: var(--form-control-compact-width, 5rem);
+}
+
+.select-max-height {
+  max-height: var(--select-max-height, 30lh);
+}
