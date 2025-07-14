@@ -398,7 +398,7 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     }
 
     public boolean istPasswortKorrekt(String inPasswort) {
-        if (inPasswort == null || inPasswort.length() == 0) {
+        if (StringUtils.isBlank(inPasswort)) {
             return false;
         } else /* Verbindung zum LDAP-Server aufnehmen und Login prüfen, wenn LDAP genutzt wird */
         if (ldapGruppe.getAuthenticationTypeEnum() == AuthenticationType.LDAP) {
@@ -489,7 +489,7 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     }
 
     public String getCss() {
-        if (this.css == null || this.css.length() == 0) {
+        if (StringUtils.isBlank(css)) {
             this.css = "/css/default.css";
         }
         return this.css;

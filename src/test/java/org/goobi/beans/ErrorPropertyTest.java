@@ -100,4 +100,16 @@ public class ErrorPropertyTest extends AbstractTest {
         property.setPropertyName("\tMy Value\t");
         assertEquals("My_Value", property.getNormalizedTitle());
     }
+
+    @Test
+    public void testStep() {
+        ErrorProperty property = new ErrorProperty();
+        Step step = new Step();
+        step.setId(1);
+        step.setTitel("title");
+        property.setSchritt(step);
+        assertEquals(1, property.getSchritt().getId().intValue());
+
+    }
+
 }
