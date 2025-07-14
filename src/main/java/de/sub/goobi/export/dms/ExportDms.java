@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
@@ -341,7 +342,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     log.error(myProzess.getTitel() + ": error on export", e);
                     agoraThread.interrupt();
                 }
-                if (agoraTask.rueckgabe.length() > 0) {
+                if (StringUtils.isNotBlank(agoraTask.rueckgabe)) {
                     Helper.setFehlerMeldung(myProzess.getTitel() + ": ", agoraTask.rueckgabe);
                 } else {
                     Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");

@@ -60,7 +60,7 @@ public class FixRemoveFromXml {
         String lineAttr = current.getAttributeValue("goobi_lineNumber");
         if (lineAttr != null && Integer.parseInt(lineAttr) == error.getLine()) {
 
-            if ((("Name".equals(current.getName()) || "InternalName".equals(current.getName())) == false)
+            if (((!"Name".equals(current.getName()) && !"InternalName".equals(current.getName())))
                     && error.getErrorType() == RulesetValidationError.ErrorType.VALIDATE_FORMATS) {
                 Element nameChild = findFirstNameChild(current);
                 if (nameChild != null) {

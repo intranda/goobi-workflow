@@ -307,7 +307,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             ProcessMysqlHelper.updateImages(numberOfFiles, processId);
         } catch (SQLException e) {
-            log.error("Cannot not update status for process with id " + processId, e);
+            log.error("Cannot not update number of images for process with id " + processId, e);
         }
     }
 
@@ -315,7 +315,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             ProcessMysqlHelper.updateLastChangeDate(changeDate, processId);
         } catch (SQLException e) {
-            log.error("Cannot not update status for process with id " + processId, e);
+            log.error("Cannot not update change date for process with id " + processId, e);
         }
     }
 
