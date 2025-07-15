@@ -34,6 +34,40 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.15.0</version>
+        <executions>
+          <execution>
+            <id>Install node and npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>npm run build</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run build</arguments>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <nodeVersion>v21.2.0</nodeVersion>
+          <npmVersion>10.2.3</npmVersion>
+          <workingDirectory>src/main/webapp/</workingDirectory>
+          <installDirectory>target</installDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>com.coderplus.maven.plugins</groupId>
         <artifactId>copy-rename-maven-plugin</artifactId>
         <version>1.0</version>
