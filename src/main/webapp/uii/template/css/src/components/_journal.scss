@@ -1,0 +1,61 @@
+// Find markup in journal.xhtml
+.processLog {
+  .box__title {
+    padding-right: 0.625rem;
+  }
+
+  .gw-table-fixed {
+    overflow: auto;
+    width: auto;
+    height: 243px;
+
+    &.journal-big {
+      height: auto;
+    }
+  }
+
+  th:last-child,
+  td:last-child {
+    border-right: 0px;
+    border-left: 0;
+  }
+
+  .first-row td:first-child {
+    width: 240px;
+  }
+
+  .log_color_error {
+    color: #ff0000;
+  }
+
+  .log_color_warn {
+    color: #ff6600;
+  }
+
+  .log_color_info {
+    color: #0033cc;
+  }
+
+  .log_color_debug {
+    color: #8e8d8e;
+  }
+
+  .log_color_user,
+  .log_color_important {
+    color: #006600;
+  }
+
+  .log_table_column_date {
+    min-width: 140px;
+  }
+
+  .log_file {
+    background: #368ee0;
+    border: none;
+    color: white;
+    margin-left: 10px;
+  }
+  .log_file_delete {
+    border: none;
+  }
+}

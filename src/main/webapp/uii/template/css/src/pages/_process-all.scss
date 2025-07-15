@@ -1,0 +1,104 @@
+#processAll {
+  // Custom column widths
+  th {
+    --width-table-col: 300px;
+  }
+
+  .processTable {
+    canvas {
+      max-width: 150px;
+      width: 100%;
+    }
+    .prozessVerwaltung {
+      word-break: break-all;
+      // this is a workaround to force a table layout that fits the container
+      table {
+        table-layout: fixed;
+        width: 100%;
+        word-break: normal;
+        th {
+          width: 40%;
+        }
+        th:nth-child(2) {
+          width: 100%;
+        }
+      }
+    }
+    [data-label = "origpath"] {
+      word-break: break-all;
+    }
+  }
+
+  .metadata-nested-table {
+    tr {
+      display: flex;
+      .data-key {
+        white-space: nowrap;
+        min-width: 70px;
+        font-weight: 700;
+        margin-inline-end: 2px;
+      }
+    }
+  }
+  // Small nested box with details on processes
+  .boxTitleDetails {
+    th:first-child,
+    th:last-child {
+      --width-table-col: 60px;
+    }
+  }
+  .list-of-goobi-scripts .badge {
+    cursor: pointer;
+    border: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .processTable {
+    .progress__container {
+      max-width: 240px;
+    }
+    thead {
+      display: block;
+      height: 0;
+      visibility: hidden;
+      width: 0;
+    }
+    > tbody {
+      > * + * {
+        margin: 0.9375rem 0 0;
+      }
+      > [role="row"] {
+        display: flex;
+        flex-direction: column;
+        &:nth-child(even) {
+          background: #eee;
+        }
+        > td {
+          border: 0;
+          border-bottom: 1px solid var(--clr-neutral-300);
+          column-gap: 0.625rem;
+          display: flex;
+          justify-content: space-between;
+          min-height: 0.625rem;
+          width: 100%;
+          &:before {
+            content: attr(data-label);
+            font-weight: 700;
+            margin: auto 0;
+          }
+          &:last-of-type {
+            border: 0;
+          }
+          &.prozessVerwaltung {
+            display: flex;
+            flex-direction: column;
+          }
+        }
+      }
+    }
+    .progress__container {
+      flex-grow: 2;
+    }
+  }
+}

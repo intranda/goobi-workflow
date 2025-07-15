@@ -1,0 +1,132 @@
+.progress__container {
+  display: flex;
+  height: 15px;
+  justify-content: center;
+  margin-top: 0.4375rem;
+  --color-progress-success: #5cb85c;
+  --color-progress-warning: #f0ad4e;
+  --color-progress-danger: #d9534f;
+}
+
+.progress {
+  --bs-progress-bar-bg: var(--clr-primary);
+}
+
+.progress-bar {
+  width: var(--progress);
+}
+
+/* These styles are taken from intranda.css
+ */
+
+.progress-bar-success {
+  background-color: var(--color-progress-success, #5cb85c);
+}
+
+.progress-bar-warning {
+  background-color: var(--color-progress-warning, #f0ad4e);
+}
+
+.progress-bar-danger {
+  background-color: var(--color-progress-danger, #d9534f);
+}
+
+.progress-bar-error {
+    background-color: var(--color-progress-danger);
+    background-image: repeating-linear-gradient(
+      45deg,
+      white,
+      white 5px,
+      transparent 5px,
+      transparent 10px
+    );
+  }
+
+/* ------------- progress, color rectangles, buttons in list --------------- */
+.colors.small13 {
+  padding: 0;
+  margin: 0;
+}
+.colors.small13 > li {
+  height: 13px;
+  width: 13px;
+  list-style: none;
+}
+
+.statusRectangle{
+  height: 16px;
+  width: 16px;
+  --color-status-done: #339933;
+  --color-status-open: #e8860c;
+  --color-status-inwork: #ffbf21;
+  --color-status-locked: #e51400;
+  --color-status-error: #e51400;
+  --color-status-deactivated: #ccc;
+}
+
+
+.btn.btn-very-small {
+  padding: 0 7px;
+}
+
+/* farben:
+
+grün: #339933
+gelb: #ffbf21
+orange: #e8860c
+rot: #e51400
+blau: #368ee0
+grau: #dddddd
+
+*/
+
+.status-done {
+  background: var(--color-status-done, #339933) none repeat scroll 0 0;
+}
+
+.status-open {
+  background: var(--color-status-open, #e8860c) none repeat scroll 0 0;
+}
+
+.status-inwork,
+.status-inflight {
+  background: var(--color-status-inwork, #ffbf21) none repeat scroll 0 0;
+}
+
+.status-locked {
+  background: var(--color-status-locked, #e51400) none repeat scroll 0 0;
+}
+
+.status-error {
+  background: var(--color-status-error, #eee) none repeat scroll 0 0;
+  background-image: linear-gradient(
+    45deg,
+    var(--color-status-error, #e51400) 25%,
+    white 25%,
+    white 50%,
+    var(--color-status-error, #e51400) 50%,
+    var(--color-status-error, #e51400) 75%,
+    white 75%,
+    white
+  );
+  background-size: 7px 7px;
+  /*     border: 0.5px solid #e51400; */
+}
+
+.status-deactivated {
+  background: #ccc none repeat scroll 0 0;
+}
+
+.progressbar-status-error {
+  background-image: linear-gradient(
+    45deg,
+    #eee 25%,
+    transparent 25%,
+    transparent 50%,
+    #eee 50%,
+    #eee 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 10px 10px;
+}

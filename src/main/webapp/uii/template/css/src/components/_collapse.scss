@@ -1,0 +1,29 @@
+[data-bs-toggle="collapse"] {
+    .collapse-caret {
+        display: none;
+        transition: all var(--transition-length, 0.1) ease-in-out;
+    }
+    .extend-caret {
+        display: initial;
+        transition: all var(--transition-length, 0.1) ease-in-out;
+    }
+    &[aria-expanded="true"] {
+        .collapse-caret {
+            display: initial;
+        }
+        .extend-caret {
+            display: none;
+        }
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    [data-bs-toggle="collapse"] {
+        .collapse-caret {
+            transition: all var(--transition-length, 0.6s) ease-in-out;
+        }
+        .extend-caret {
+            transition: all var(--transition-length, 0.6s) ease-in-out;
+        }
+    }
+}

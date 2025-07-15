@@ -1,0 +1,26 @@
+#usergroupAll {
+  // Override default table column widths
+  th {
+    --width-table-col: 310px;
+  }
+
+  .gw-table-fixed__actions {
+    --width-table-col: 72px;
+  }
+}
+
+#usergroupAll {
+  .table .row {
+    width: 100%;
+  }
+
+  .table .row [class^="col-"] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .table .row .box {
+    flex: 1;
+    margin-bottom: 8px;
+  }
+}

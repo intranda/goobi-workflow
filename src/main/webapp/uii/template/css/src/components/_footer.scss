@@ -1,0 +1,39 @@
+.footer {
+    --footer-text: var(--clr-white);
+    --footer-bg: var(--clr-neutral-600);
+    background: var(--footer-bg);
+    display: none;
+    color: var(--footer-text);
+    gap: 1rem;
+    justify-content: flex-start;
+    height: 3rem;
+    padding-block: 0.5rem;
+    padding-inline: 1.5rem;
+    width: 100%;
+}
+
+@media screen and (min-width: 500px) {
+    .footer {
+        display: flex;
+    }
+}
+
+.footer-text {
+    align-items: center;
+    color: var(--footer-text);
+    display: flex;
+    height: 2.9375rem;
+    padding: 1em;
+}
+
+a.footer-text {
+    &:active {
+        background-color: var(--footer-bg);
+        color: var(--footer-text);
+    }
+    &:hover,
+    &:focus {
+        background-color: var(--clr-neutral-400);
+        color: var(--clr-text-400);
+    }
+}

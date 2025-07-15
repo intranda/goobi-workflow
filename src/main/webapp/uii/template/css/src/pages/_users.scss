@@ -1,0 +1,76 @@
+/* ========================================
+ * Styles for
+ *
+ * user_all.xhtml
+ * user_config.xhtml
+ * user_edit.xhtml
+ * user_password.xhtml
+ * ====================================== */
+
+/* ========================================
+ * user_all.xhtml
+ * ===================================== */
+
+/*
+.view-users {
+  &__box--usergroup-1,
+  &__box--usergroup-2,
+  &__box--project-1,
+  &__box--project-2 {
+    .table__actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    td {
+      vertical-align: middle;
+    }
+
+    tr td:first-child.table__actions {
+      justify-content: flex-start;
+      gap: var(--gap, 8px);
+    }
+  }
+
+  &__box--project-2,
+  &__box--usergroup-1,
+  &__box--usergroup-2 {
+    td:last-child {
+      border-left: 0;
+    }
+  }
+
+  &__box--project-1  {
+    .table__actions {
+      border-right-width: 1px;
+    }
+  }
+}
+
+.view-users__box--usergroup-1,
+.view-users__box--project-1 {
+  table {
+    table-layout: fixed;
+
+    tr,
+    td {
+      display: flex;
+      align-items: center;
+      min-height: 2.5rem;
+    }
+    td {
+      flex: 0 0 50%;
+    }
+  }
+  .table__actions {
+    border-right-width: 1px;
+  }
+}
+
+.view-users {
+  .edit-user .form__label {
+    align-items: flex-start;
+  }
+}
+*/

@@ -1,0 +1,38 @@
+.grow-wrap {
+    display: grid;
+    width: 100%;
+}
+
+.grow-wrap::after,
+.grow-wrap > textarea {
+    grid-area: 1 / 1;
+    max-height: calc(10lh + .375rem + .375rem);
+}
+
+// replicate textarea as closely as possible with the hidden after element
+.grow-wrap::after {
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    content: attr(data-content) "\n";
+    padding: .375rem .75rem;
+    visibility: hidden;
+    white-space: pre-wrap;
+}
+
+.grow-wrap > textarea {
+    resize: none;
+}
+
+// fixes for coordination with BS classes
+.input-group > .grow-wrap {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+    word-break: break-word;
+}
+
+.input-group > .grow-wrap:has(+ .form-control) > textarea,
+.input-group > .grow-wrap:has(+ .input-group-text) > textarea {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}

@@ -1,0 +1,105 @@
+#styleGuide {
+  --flow-space: 2.8125rem;
+  counter-reset: heading;
+
+  section {
+    --flow-space: 1rem;
+    --grid-size: 25rem, 1fr;
+    --gap: 1.25rem;
+    border: 2px solid var(--clr-neutral-200);
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--grid-size)));
+    gap: var(--gap);
+  }
+
+  section > h2 {
+    grid-column: 1 / -1;
+
+    &::before {
+      counter-increment: heading;
+      content: counter(heading);
+      margin-right: 0.75rem;
+      color: var(--clr-primary-400);
+    }
+  }
+
+  .description {
+    font-size: 1.25rem;
+    color: var(--clr-neutral-400);
+  }
+  section.colors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--grid-size)));
+  }
+
+  // Boxes
+  section.boxes {
+    article {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .box {
+        flex: 1;
+      }
+      .box__content {
+        min-height: 16rem;
+      }
+    }
+    .switch {
+      --flow-space: 1rem;
+      display: flex;
+      gap: 8px;
+    }
+  }
+
+  .accordion-button {
+    background: transparent;
+    color: var(--bs-body-color);
+    border-width: 2px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+      border-radius 0.15s ease;
+  }
+
+  .accordion-button:not(.collapsed) {
+    color: #0c63e4;
+    background-color: #e7f1ff;
+    box-shadow: inset 0 -1px 0 rgb(0 0 0 / 13%);
+  }
+
+  .accordion-button::after {
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-left: 8px;
+    content: "";
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-size: 1.25rem;
+    transition: transform 0.2s ease-in-out;
+    color: currentColor;
+  }
+
+  .accordion-button:not(.collapsed)::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230c63e4'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    transform: rotate(-180deg);
+  }
+}
+
+// Tables
+.dataTables__paginator {
+  gap: 8px;
+}
+
+// hightlight parts of code snippets
+.highlight {
+  background-color: yellow;
+  color: darkred;
+  border-radius: 2px;
+  padding: 1px;
+}

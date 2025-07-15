@@ -1,0 +1,227 @@
+@use "sass:color"; // Built-In Module to work with + manipulate colors
+@use "sass:map";
+
+// Find BS color overrides in _overrides.scss
+
+$colors: (
+  primary-400: #368ee0,
+  primary-600: #1c68b0,
+  neutral-100: #f8f8f8,
+  neutral-200: #eee,
+  neutral-210: #dddddd,
+  neutral-300: #ccc,
+  neutral-400: #aaaaaa,
+  neutral-500: #999999,
+  neutral-600: #666666,
+  "white": #ffffff,
+  "black": #2a2a2a,
+  action: #e8860c,
+  hot: #e51400,
+  danger: #e51400,
+  // #e51400,
+  primary: #368ee0,
+  success: #109a5a,
+  info: #666666,
+  blank: transparent,
+  text-400: #2a2a2a,
+);
+
+$colors-text: (
+  400: #2a2a2a,
+);
+
+$colors-boxes: (
+  primary: var(--clr-primary-400),
+  action: var(--clr-action),
+  neutral: #666666,
+  hot: #e51400,
+  success: #109a5a,
+  dev: #f0f,
+);
+
+$colors-badges: (
+  light-red: #e51400,
+  light-blue: #368ee0,
+  light-green: #109a5a,
+  light-orange: #f8a31f,
+  light-purple: #8947cc,
+  light-lila: #500899,
+  light-greengrey: #617f7d,
+  light-grey: #666,
+  light-green2: #3b7f7b,
+  light-brown1: #3e2115,
+  light-brown2: #74422b,
+);
+
+$colors-intranda-badges: (
+  intranda-ultralight: #bbbbbb,
+  intranda-light: #777777,
+  intranda-red: #e51400,
+  intranda-orange: #f8a31f,
+  intranda-blue: #368ee0,
+  intranda-green: #109a5a,
+);
+
+$colors-status: (
+  intranda-done: #339933,
+  intranda-open: #e8860c,
+  intranda-inwork: #ffbf21,
+  intranda-inflight: #ffbf21,
+  intranda-locked: #e51400,
+  intranda-error: #e51400,
+  intranda-deactivated: #ccc,
+);
+
+:root {
+  // generate a custom property for every entry in the above maps; e.g:
+  // `--clr-primary-400: #368ee0;`
+
+  // general colors
+  @each $name, $color in $colors {
+    --clr-#{$name}: #{$color};
+  }
+
+  // text
+  @each $name, $color in $colors-text {
+    --clr-text-#{$name}: #{$color};
+  }
+
+  // boxes
+  @each $name, $color in $colors-boxes {
+    --clr-box-#{$name}: #{$color};
+  }
+
+  // badges
+  @each $name, $color in $colors-badges {
+    --clr-badge-#{$name}: #{$color};
+  }
+
+  // pillshaped badges
+  @each $name, $color in $colors-intranda-badges {
+    --clr-badge-#{$name}: #{$color};
+  }
+}
+
+// BADGES
+// outline badges
+@each $name, $color in $colors-badges {
+  .badge.badge-#{$name} {
+    color: var(--clr-badge-#{$name});
+  }
+}
+
+// inverse badges
+@each $name, $color in $colors-badges {
+  .badge.badge-inverse-#{$name} {
+    background-color: var(--clr-badge-#{$name});
+  }
+}
+
+// pillshaped badges
+@each $name, $color in $colors-intranda-badges {
+  .badge.badge-#{$name} {
+    background-color: var(--clr-badge-#{$name});
+    border: 0;
+  }
+}
+
+// Background utilities; e.g:
+// `.bg-action`
+
+@each $name, $color in $colors {
+  .bg-#{$name} {
+    background-color: var(--clr-#{$name}) !important;
+  }
+  .text-#{$name} {
+    color: var(--text-#{$name});
+  }
+}
+
+// Generate text utilities; e.g:
+// `.text-neutral-200`
+
+@each $name, $color in $colors {
+  .text-#{$name} {
+    color: var(--clr-#{$name});
+  }
+}
+
+@each $name, $color in $colors-text {
+  .text-#{$name} {
+    color: var(--clr-text-#{$name});
+  }
+}
+
+// Generate button utilities; e.g:
+// `.btn-action`
+
+@each $name, $color in $colors {
+  .btn-#{$name} {
+    @if $name == blank {
+      --bs-btn-color: #000; // bg is transparent
+      --bs-btn-bg: var(--clr-neutral-400);
+      --bs-btn-active-bg: var(--clr-neutral-200);
+      --bs-btn-active-border-color: var(--clr-neutral-200);
+      --bs-btn-active-color: #000;
+      --bs-btn-border-color: var(--clr-neutral-400);
+      --bs-btn-hover-bg: var(--clr-neutral-200);
+    } @else {
+      --bs-btn-color: #fff; // bg is a color
+      --bs-btn-bg: var(--clr-#{$name});
+      --bs-btn-active-bg: var(--clr-#{$name});
+      --bs-btn-active-border-color: var(--clr-#{$name});
+      --bs-btn-active-color: #fff;
+      --bs-btn-border-color: var(--clr-#{$name});
+      --bs-btn-hover-bg: var(--clr-#{$name});
+
+    }
+  }
+  .btn-#{$name}:hover {
+    background-color: darken($color, 5%);
+    border-color: darken($color, 5%);
+    @if $name == blank {
+      color: var(--clr-white);
+      background-color: darken(map.get($colors, "neutral-400"), 2%);
+      border-color: darken(map.get($colors, "neutral-400"), 2%);
+    } @else {
+      color: #fff;
+    }
+  }
+}
+
+// Box utilities
+
+/* A base box can be colored using these utility classes
+ * Essentially the box header and the box border will change colors
+ * The class list should look like so: class="box box--action"
+ * $legacy-box-colors contains legacy classes, ignore them when building new boxes
+ */
+
+@each $name, $color in $colors-boxes {
+  @if $name == blank {
+    .box.box--#{$name} {
+      border-color: var(--clr-neutral-210);
+      & .box__title {
+        background-color: var(--clr-neutral-210);
+        border-color: var(--clr-neutral-210);
+        color: var(--clr-text-400);
+      }
+    }
+  } @else {
+    .box.box--#{$name} {
+      border-color: var(--clr-box-#{$name});
+      & .box__title {
+        background-color: var(--clr-box-#{$name});
+        border-color: var(--clr-box-#{$name});
+      }
+    }
+    // bump up specificity for nested boxes
+    .box .box.box--#{$name} {
+      border-color: var(--clr-box-#{$name});
+      & .box__title {
+        background-color: var(--clr-box-#{$name});
+        border-color: var(--clr-box-#{$name});
+      }
+    }
+  }
+}

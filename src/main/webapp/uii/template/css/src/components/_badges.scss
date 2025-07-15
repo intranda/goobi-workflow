@@ -1,0 +1,60 @@
+/* ========================================
+ * Badges
+/* ======================================== */
+
+// default color (applied if no other color is defined)
+.badge {
+    color: var(--clr-neutral-400);
+    font-size: var(--fs-400, 0.75rem);
+    .fa {
+      margin-inline-end: 0.5em;
+    }
+  }
+
+
+  button.badge,
+  span.badge {
+    display: inline-block;
+    background-color: transparent;
+    border: 1px solid currentColor;
+    padding: 4px 8px;
+    font-weight: 400;
+    margin: 2px 2px;
+
+    i ~ span,
+    span ~ i,
+    .fa ~ span,
+    span ~ .fa {
+      margin-inline-start: 4px;
+    }
+
+    &:not(:last-child) {
+      margin-inline-end: 2px;
+    }
+  }
+
+[class*="badge-inverse"] {
+  color: var(--clr-white);
+}
+
+  // pillshaped badges
+  [class^="badge badge-intranda-"] {
+    color: var(--clr-white);
+    border-radius: 12px;
+  }
+
+.badge-list {
+    display: flex;
+    list-style: none;
+    padding-left: 0;
+    width: 100%;
+    li {
+        display: inline-block;
+        &:not(:last-child) {
+            margin-right: 0.3125rem;
+        }
+        .badge:hover {
+            color: var(--clr-white);
+        }
+    }
+}

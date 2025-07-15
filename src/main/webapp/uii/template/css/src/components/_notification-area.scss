@@ -1,0 +1,72 @@
+.notification-area {
+    --toggle-color: var(--clr-primary);
+    height: 100%;
+    > .btn {
+        border: 0;
+        border-radius: 0;
+        font-size: var(--fs-600);
+        height: 100%;
+        position: relative;
+        width: 3em;
+        &[aria-expanded="true"] {
+            background: var(--clr-primary-600);
+        }
+    }
+}
+
+.notification-count {
+    --count-size: 2em;
+    background: var(--clr-hot);
+    border-radius: 100%;
+    color: var(--clr-white);
+    font-size: var(--fs-200);
+    font-weight: 700;
+    margin: 0.25em;
+    padding: 0.25em;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    width: var(--count-size);
+}
+
+.notification-wrapper {
+    background: hsla(208.94, 73.28%, 100%, 1);
+    border: 2px solid var(--clr-primary);
+    border-block-start: 0;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    box-shadow: 2px 2px 4px -2px black;
+    margin-inline: 1em;
+    max-width: 95vw;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    width: 60rem;
+    z-index: 1;
+    .messages {
+        margin-block: 0;
+        margin-inline-start: 0.5em;
+        max-height: 50vh;
+        overflow-y: auto;
+        padding-inline-end: 0.5em;
+    }
+}
+
+.messages {
+    .alert {
+        margin-block: 0.5rem;
+    }
+}
+
+.notification-header {
+    align-items: center;
+    background: var(--clr-primary);
+    color: var(--clr-white);
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--fs-400);
+    padding: 0.5em 1em;
+    > .btn {
+        border: 0.0625rem solid #fff;
+    }
+}

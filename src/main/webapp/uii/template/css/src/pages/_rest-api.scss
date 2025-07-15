@@ -1,0 +1,17 @@
+.swagger-ui {
+  .scheme-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .info {
+    margin-top: 2rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  .servers-title,
+  .servers {
+    display: none;
+  }
+}

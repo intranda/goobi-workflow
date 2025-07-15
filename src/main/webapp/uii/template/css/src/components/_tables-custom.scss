@@ -1,0 +1,447 @@
+// Set table column width
+.gw-table-fixed,
+.table-fixed {
+  --width-table-col: 200px;
+}
+
+.gw-col-check {
+  --width-table-col: 100px;
+}
+
+.gw-table-wrapper:has(.gw-table__search) {
+  padding: var(--box-padding);
+  padding-block-start: 0;
+  .table {
+    border-inline: 1px solid var(--clr-neutral-300);
+  }
+}
+
+// workaround for overflowing tables that can't use fixed width
+.table-width {
+  hyphens: auto;
+  overflow-wrap: break-word;
+  width: 100%;
+  & td {
+    overflow-x: auto;
+  }
+  & th {
+    max-width: var(--width-table-col);
+  }
+}
+
+/* ========================================
+ * BS OVERRIDES
+ * ====================================== */
+
+// remove margin and make table end at bottom of the box
+.table {
+  margin-bottom: 0;
+  border-color: var(--clr-neutral-300);
+  max-width: 100%;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.375rem;
+}
+
+/* ========================================
+ * Goobi tables
+ * ====================================== */
+
+.table .row {
+  width: 100%;
+}
+
+// Border color: all borders, one color
+.gw-table {
+  td,
+  tfoot,
+  th,
+  thead,
+  tr,
+  .table,
+  .box__content--padded tr {
+    border-color: var(--clr-neutral-300);
+  }
+  td {
+    &[title] {
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: normal;
+    }
+  }
+
+  thead {
+    th {
+      background-color: var(--clr-neutral-200);
+    }
+    button {
+      background-color: transparent;
+      border: 0;
+    }
+  }
+  &__vscroll {
+    max-height: 225px;
+    overflow-y: scroll;
+  }
+
+  .table-bordered-custom {
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--clr-neutral-300);
+  }
+
+  .table-bordered-custom td:not(:last-child) {
+    border-right-width: 1px;
+    border-color: inherit;
+    border-style: inherit;
+  }
+
+  .table-bordered-custom.-no-bb tr:last-child td {
+    border-bottom-width: 0;
+  }
+
+  .table > :not(:first-child) {
+    border-top: unset;
+  }
+
+  th span {
+    font-weight: bold;
+    padding: 0 0 0 0.3125rem;
+  }
+
+  td {
+    .btn-group .btn:not(:first-of-type) {
+      margin-right: 0.0rem;
+    }
+    .btn {
+      // Display a margin when buttons are stacked
+      margin-top: 1px;
+
+      & ~ .btn {
+        margin-inline-start: 0;
+        margin-inline-end: 0;
+      }
+    }
+  }
+}
+
+// Remove borders left + right if the table is in a box
+.box th:first-child,
+.box td:first-child {
+  border-left: 0px;
+}
+.box th:last-child,
+.box td:last-child {
+  border-right: 0px;
+}
+
+.table-hover > tbody > tr:hover > * {
+  --bs-table-hover-bg: #f8f8f8;
+}
+
+// Some tables come with a search bar:
+// both classes are used for the same purpose
+// => .dataTables__search__container is a legacy version
+.gw-table__search,
+.dataTables__search,
+.dataTables__search__container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+  gap: var(--gap, 8px);
+
+  // Contains search form + `show active users btn`
+  form,
+  .search-form {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  input {
+    background-color: #f6f6f6;
+  }
+}
+
+.gw-table__filters {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--gap, 8px);
+  flex: 1 1 auto;
+
+  &__option {
+    background-color: var(--clr-neutral-200);
+
+    &:hover {
+      background-color: var(--clr-neutral-300);
+    }
+  }
+
+  .dropdown-item {
+    white-space: normal;
+    max-width: 31.25rem;
+    min-width: 22.5rem;
+    min-height: 1.75rem;
+  }
+
+  &__search-bar {
+    flex: 0 1 590px;
+
+    // BS override
+    .searchfield {
+    }
+    .searchfield ~ button {
+      border-left-width: 0px;
+      margin-left: 0px !important;
+    }
+
+    .input-group {
+      flex-wrap: nowrap;
+    }
+
+    button {
+      border: 1px solid var(--clr-neutral-300);
+    }
+  }
+}
+
+.gw-table__filters__search-bar .input-group-text:has(.fa-search) {
+  display: none;
+}
+
+@media screen and (min-width: 660px) {
+  .gw-table__filters__search-bar .input-group-text:has(.fa-search) {
+    display: block;
+    padding: 0.375rem 0.75rem;
+    width: auto;
+  }
+}
+
+/* ========================================
+ * Fixed sized Goobi tables
+ * ====================================== */
+
+.gw-table-fixed__sizeXXXXS{
+  --width-table-col: 20px;
+}
+
+.gw-table-fixed__sizeXXXXS{
+  --width-table-col: 30px;
+}
+
+.gw-table-fixed__sizeXXXS{
+  --width-table-col: 45px;
+}
+
+.gw-table-fixed__sizeXXS{
+  --width-table-col: 60px;
+}
+
+.gw-table-fixed__sizeXS{
+  --width-table-col: 75px;
+}
+
+.gw-table-fixed__sizeS{
+  --width-table-col: 100px;
+}
+
+.gw-table-fixed__sizeM{
+  --width-table-col: 150px;
+}
+
+.gw-table-fixed__sizeL{
+  --width-table-col: 200px;
+}
+
+.gw-table-fixed__sizeXL{
+  --width-table-col: 250px;
+}
+
+.gw-table-fixed__sizeXXL{
+  --width-table-col: 300px;
+}
+
+.table-fixed__actions,
+.gw-table-fixed__actions,
+.dataTables__actions {
+  --width-table-col: 110px;
+}
+
+.gw-table__actions__container,
+.gw-table-fixed__actions__btns,
+.table-fixed__actions__btns {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.dataTables__paginator {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.gw-table-fixed table,
+.table-fixed {
+  table-layout: fixed;
+  width: 100%;
+
+  hyphens: auto;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.table-fixed th,
+.gw-table-fixed th,
+.gw-table-fixed-no-th td {
+  width: var(--width-table-col);
+}
+
+.gw-table-fixed th button,
+.table-fixed th button,
+.table-resizable th button,
+.gw-table th .column-header-sort,
+.table-fixed th .column-header-sort,
+.table-resizable th .column-header-sort {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gw-table-fixed td,
+.table-fixed td {
+  overflow-x: auto;
+}
+
+.gw-table-fixed__actions,
+.table-fixed .table-fixed__actions {
+  --width-table-col: 120px;
+  min-width: var(--width-table-col);
+  max-width: var(--width-table-col);
+}
+
+.gw-table__wrapper,
+.dataTables__table-wrapper,
+.table-fixed__table-wrapper,
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* ========================================
+ * Tables with auto layout
+ * ====================================== */
+
+.gw-table-auto table {
+  table-layout: auto;
+}
+
+/* ========================================
+ * Sorting column header
+ * ====================================== */
+.column-header-sort{
+	width: 100%;
+}
+
+th {
+  vertical-align: middle;
+  --col-s: 50px;
+  --col-m: 80px;
+  --col-l: 110px;
+  --col-xl: 150px;
+  --col-xxl: 220px;
+  --col-xxxl: 300px;
+  &.header {
+    &__col-s {
+      width: var(--col-s);
+    }
+    &__col-m {
+      width: var(--col-m);
+    }
+    &__col-l {
+      width: var(--col-l);
+      padding: 0 10px;
+    }
+    &__col-xl {
+      width: var(--col-xl);
+    }
+    &__col-xxl {
+      width: var(--col-xxl);
+    }
+    &__col-xxxl {
+      width: var(--col-xxxl);
+    }
+    &__col-min-s {
+      min-width: var(--col-s);
+    }
+    &__col-min-m {
+      min-width: var(--col-m);
+    }
+    &__col-min-l {
+      min-width: var(--col-l);
+    }
+    &__col-min-xl {
+      min-width: var(--col-xl);
+    }
+    &__col-min-xxl {
+      min-width: var(--col-xxl);
+    }
+    &__col-min-xxxl {
+      min-width: var(--col-xxxl);
+    }
+    &__col-max-s {
+      max-width: var(--col-s);
+    }
+    &__col-max-m {
+      max-width: var(--col-m);
+    }
+    &__col-max-l {
+      max-width: var(--col-l);
+    }
+    &__col-max-xl {
+      max-width: var(--col-xl);
+    }
+    &__col-max-xxl {
+      max-width: var(--col-xxl);
+    }
+    &__col-max-xxxl {
+      max-width: var(--col-xxxl);
+    }
+  }
+}
+
+
+/* ========================================
+ * Resizable tables
+ * ====================================== */
+
+.table-resizable {
+  table-layout: auto;
+  margin-bottom: 1px;
+  width: 100%;
+  .resize-col {
+      position: relative;
+    }
+  .resize-handle {
+    cursor: ew-resize;
+    height: var(--handle-height);
+    position: absolute;
+    right: 0;
+    top: 0;
+    user-select: none;
+    width: 4px;
+    &.active,
+    &:hover {
+      border: 2px solid var(--clr-primary-400);
+    }
+  }
+}
+
+// body style to display cursor as resize regardless of position
+.table-resizing {
+  cursor: ew-resize;
+}

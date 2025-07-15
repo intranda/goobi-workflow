@@ -1,0 +1,9 @@
+.dropdown-menu {
+    --bs-dropdown-item-border-radius: 0;
+    --bs-dropdown-font-size: var(--fs-400);
+}
+
+// this rule improves visual alignment of the dropdown arrow next to tabler icons
+.dropdown-toggle::after {
+    vertical-align: 25%;
+}

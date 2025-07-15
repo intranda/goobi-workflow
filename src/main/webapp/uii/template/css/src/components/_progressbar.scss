@@ -1,0 +1,18 @@
+#primefacesprogressbar.ui-progressbar {
+	border: 1px solid #368ee0 !important;
+	height: 1.125rem !important;
+	background: white !important;
+	border-radius: 0 !important;
+}
+
+#primefacesprogressbar >div.ui-progressbar-value {
+	border: 0 none !important;
+	margin: 0 !important;
+	background: #368ee0 !important;
+	border-radius: 0 !important;
+}
+
+#primefacesprogressbar >div.ui-progressbar-label {
+	margin-top: 3px !important;
+	color: #368ee0 !important;
+}
