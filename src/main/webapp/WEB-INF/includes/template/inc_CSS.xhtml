@@ -15,9 +15,9 @@
             items="#{plugin.getCssPaths()}"
             var="cssPath"
         >
-            <h:outputStylesheet
-                library="#{plugin.id}"
-                name="css/#{cssPath}"/>
+            <link
+                rel="stylesheet"
+                href="#{resource[plugin.id.concat(':css/').concat(cssPath)]}"/>
         </c:forEach>
     </c:forEach>
     <!-- CUSTOM CSS (user specific)-->
