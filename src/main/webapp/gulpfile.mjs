@@ -29,6 +29,10 @@ let customLocation = '';
 // source directories, files, globs
 const sources = {
     bsCss: 'uii/template/css/src/bootstrap.scss',
+    bsJS: [
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js.map',
+    ],
     css: 'uii/template/css/src/',
     cssAccessibility: 'uii/template/css/src/accessibility.scss',
     cssGlob: [
@@ -38,6 +42,7 @@ const sources = {
     cssDeps: [
         'node_modules/bootstrap/scss/',
     ],
+    staticJS: 'src/js/static/**/*',
     legacyJS: './uii/template/js/legacy/',
     js: [
         './uii/template/js/**/*.js',
@@ -103,6 +108,11 @@ function BSCss() {
         .pipe(rename((path) => {
             basename: path.basename += '.min'
         }))
+};
+
+function BsJs() {
+    return src(sources.bsJS)
+        .pipe(dest(`${customLocation}${targetFolder.js}`));
 };
 
 function prodBSCss() {
@@ -220,6 +230,7 @@ function icons() {
 function dev() {
     loadConfig();
     icons();
+    BsJs();
     watch(sources.legacyJS, { ignoreInitial: false }, jsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
@@ -229,6 +240,6 @@ function dev() {
     watch(sources.taglibs, { ignoreInitial: false }, taglibs);
     watch(sources.includes, { ignoreInitial: false }, includes);
 };
-const prod = parallel(jsLegacy, prodJsRollup, prodBSCss, prodCss, icons,);
+const prod = parallel(BsJs,jsLegacy, prodJsRollup, prodBSCss, prodCss, icons,);
 
 export { dev, prod };
