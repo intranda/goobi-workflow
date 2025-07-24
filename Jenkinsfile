@@ -210,36 +210,56 @@ pipeline {
       }
     }
     stage('build and publish production image to GitHub container registry') {
-      agent any
+      agent {
+        docker {
+          image 'docker:24.0-cli'
+          args '--user root --privileged -v /var/run/docker.sock:/var/run/docker.sock'
+        }
+      }
+      environment {
+        IMAGE_NAME = "ghcr.io/intranda/goobi-workflow"
+      }
       when {
         anyOf {
           branch 'master'
           branch 'hotfix_release_*'
           branch 'develop'
-          expression {
-            return env.BRANCH_NAME =~ /_docker$/
-          }
+          expression { return env.BRANCH_NAME =~ /_docker$/ }
         }
       }
       steps {
         unstash 'target'
-        script {
-          docker.withRegistry('https://ghcr.io','jenkins-github-container-registry') {
-            dockerimage_public = docker.build("intranda/goobi-workflow:${env.BUILD_ID}_${env.GIT_COMMIT}", "--build-arg build=false .")
-            //TODO: Activate this once we want the latest build to point to the latest release
-            //if (env.GIT_BRANCH == 'origin/master' || env.GIT_BRANCH == 'master') {
-            //  dockerimage_public.push("latest")
-            //}
-            if (env.GIT_BRANCH == 'origin/develop' || env.GIT_BRANCH == 'develop') {
-              dockerimage_public.push("develop")
-            } else if (env.GIT_BRANCH.endsWith('_docker')) {
-              image_tag = env.GIT_BRANCH.substring(0, env.GIT_BRANCH.size()-7).replaceAll("/","_")
-              dockerimage_public.push(image_tag)
-            }
-            if (latestTag != '') {
-              dockerimage_public.push(latestTag)
-            }
-          }
+        withCredentials([usernamePassword(
+          credentialsId: 'jenkins-github-container-registry',
+          usernameVariable: 'DOCKER_USER',
+          passwordVariable: 'DOCKER_PASS'
+        )]) {
+          sh '''
+            echo "$DOCKER_PASS" | docker login ghcr.io -u "$DOCKER_USER" --password-stdin
+
+            # Setup QEMU and Buildx
+            docker run --privileged --rm tonistiigi/binfmt --install all || true
+            docker buildx create --name multiarch-builder --use || docker buildx use multiarch-builder
+            docker buildx inspect --bootstrap
+
+            TAGS=""
+
+            if [ ! -z "$latestTag" ]; then
+              TAGS="$TAGS -t $IMAGE_NAME:$latestTag"
+            elif [ "$GIT_BRANCH" = "origin/develop" ] || [ "$GIT_BRANCH" = "develop" ]; then
+              TAGS="$TAGS -t $IMAGE_NAME:develop"
+            elif echo "$GIT_BRANCH" | grep -q "_docker$"; then
+              BASE_TAG=$(echo "$GIT_BRANCH" | sed 's/_docker$//' | sed 's|/|_|g')
+              TAGS="$TAGS -t $IMAGE_NAME:$BASE_TAG"
+            fi
+
+            if [ -z "$TAGS" ]; then
+              echo "No tag matched. Skipping build."
+              exit 0
+            fi
+
+            docker buildx build --build-arg build=false --platform linux/amd64,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x $TAGS --push .
+          '''
         }
       }
     }
