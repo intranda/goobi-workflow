@@ -1,6 +1,6 @@
 <ui:composition
     xmlns:ui="http://java.sun.com/jsf/facelets">
-    <dl class="definition-list">
+    <dl class="definition-list#{bordered == false ? '' : ' definition-list-bordered'}">
         <ui:insert />
     </dl>
 </ui:composition>
