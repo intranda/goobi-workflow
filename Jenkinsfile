@@ -267,7 +267,9 @@ pipeline {
             elif echo "$GIT_BRANCH" | grep -q "_docker$"; then
               TAG_SUFFIX=$(echo "$GIT_BRANCH" | sed 's/_docker$//' | sed 's|/|_|g')
               TAGS="$TAGS -t $GHCR_IMAGE_BASE:$TAG_SUFFIX -t $DOCKERHUB_IMAGE_BASE:$TAG_SUFFIX -t $NEXUS_IMAGE_BASE:$TAG_SUFFIX"
-            else
+            fi
+
+            if [ -z "$TAGS" ]; then
               echo "No matching tag, skipping build."
               exit 0
             fi
