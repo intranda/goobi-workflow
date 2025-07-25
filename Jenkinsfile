@@ -7,6 +7,12 @@ pipeline {
     disableConcurrentBuilds()
   }
 
+  environment {
+    GHCR_IMAGE_BASE = 'ghcr.io/intranda/goobi-workflow'
+    DOCKERHUB_IMAGE_BASE = 'intranda/goobi-workflow'
+    NEXUS_IMAGE_BASE = 'nexus.intranda.com:4443/goobi-workflow'
+  }
+
   stages {
     stage('prepare') {
       agent any
@@ -191,7 +197,7 @@ pipeline {
               git tag -a "v${projectversion}" -m "releasing v${projectversion}" && git push origin v"${projectversion}"
           '''
           script {
-            latestTag = sh(returnStdout: true, script:'git describe --tags --abbrev=0').trim()
+            env.latestTag = sh(returnStdout: true, script:'git describe --tags --abbrev=0').trim()
           }
         }
       }
@@ -209,16 +215,8 @@ pipeline {
         build wait: false, job: 'goobi-workflow/goobi-docker/master', parameters: [[$class: 'StringParameterValue', name: 'UPSTREAM_BRANCH', value: String.valueOf(BRANCH_NAME)]]
       }
     }
-    stage('build and publish production image to GitHub container registry') {
-      agent {
-        docker {
-          image 'docker:24.0-cli'
-          args '--user root --privileged -v /var/run/docker.sock:/var/run/docker.sock'
-        }
-      }
-      environment {
-        IMAGE_NAME = "ghcr.io/intranda/goobi-workflow"
-      }
+    stage('build and publish image to Docker registries') {
+      agent any
       when {
         anyOf {
           branch 'master'
@@ -229,36 +227,56 @@ pipeline {
       }
       steps {
         unstash 'target'
-        withCredentials([usernamePassword(
-          credentialsId: 'jenkins-github-container-registry',
-          usernameVariable: 'DOCKER_USER',
-          passwordVariable: 'DOCKER_PASS'
-        )]) {
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'jenkins-github-container-registry',
+            usernameVariable: 'GHCR_USER',
+            passwordVariable: 'GHCR_PASS'
+          ),
+          usernamePassword(
+            credentialsId: '0b13af35-a2fb-41f7-8ec7-01eaddcbe99d',
+            usernameVariable: 'DOCKERHUB_USER',
+            passwordVariable: 'DOCKERHUB_PASS'
+          ),
+          usernamePassword(
+            credentialsId: 'jenkins-docker',
+            usernameVariable: 'NEXUS_USER',
+            passwordVariable: 'NEXUS_PASS'
+          )
+        ]) {
           sh '''
-            echo "$DOCKER_PASS" | docker login ghcr.io -u "$DOCKER_USER" --password-stdin
-
+            # Login to registries
+            echo "$GHCR_PASS" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            echo "$DOCKERHUB_PASS" | docker login docker.io -u "$DOCKERHUB_USER" --password-stdin
+            echo "$NEXUS_PASS" | docker login nexus.intranda.com:4443 -u "$NEXUS_USER" --password-stdin
+            
             # Setup QEMU and Buildx
-            docker run --privileged --rm tonistiigi/binfmt --install all || true
             docker buildx create --name multiarch-builder --use || docker buildx use multiarch-builder
             docker buildx inspect --bootstrap
 
+            # Tag logic
             TAGS=""
-
+            echo "latestTag: $latestTag"
             if [ ! -z "$latestTag" ]; then
-              TAGS="$TAGS -t $IMAGE_NAME:$latestTag"
-            elif [ "$GIT_BRANCH" = "origin/develop" ] || [ "$GIT_BRANCH" = "develop" ]; then
-              TAGS="$TAGS -t $IMAGE_NAME:develop"
-            elif echo "$GIT_BRANCH" | grep -q "_docker$"; then
-              BASE_TAG=$(echo "$GIT_BRANCH" | sed 's/_docker$//' | sed 's|/|_|g')
-              TAGS="$TAGS -t $IMAGE_NAME:$BASE_TAG"
+              TAGS="$TAGS -t $GHCR_IMAGE_BASE:$latestTag -t $DOCKERHUB_IMAGE_BASE:$latestTag -t $NEXUS_IMAGE_BASE:$latestTag"
             fi
-
-            if [ -z "$TAGS" ]; then
-              echo "No tag matched. Skipping build."
+            if [ "$GIT_BRANCH" = "origin/master" ] || [ "$GIT_BRANCH" = "master" ]; then
+              TAGS="$TAGS -t $GHCR_IMAGE_BASE:latest -t $DOCKERHUB_IMAGE_BASE:latest -t $NEXUS_IMAGE_BASE:latest"
+            elif [ "$GIT_BRANCH" = "origin/develop" ] || [ "$GIT_BRANCH" = "develop" ]; then
+              TAGS="$TAGS -t $GHCR_IMAGE_BASE:develop -t $DOCKERHUB_IMAGE_BASE:develop -t $NEXUS_IMAGE_BASE:develop"
+            elif echo "$GIT_BRANCH" | grep -q "_docker$"; then
+              TAG_SUFFIX=$(echo "$GIT_BRANCH" | sed 's/_docker$//' | sed 's|/|_|g')
+              TAGS="$TAGS -t $GHCR_IMAGE_BASE:$TAG_SUFFIX -t $DOCKERHUB_IMAGE_BASE:$TAG_SUFFIX -t $NEXUS_IMAGE_BASE:$TAG_SUFFIX"
+            else
+              echo "No matching tag, skipping build."
               exit 0
             fi
 
-            docker buildx build --build-arg build=false --platform linux/amd64,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x $TAGS --push .
+            # Build and push to all registries
+            docker buildx build --build-arg build=false \
+              --platform linux/amd64,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x \
+              $TAGS \
+              --push .
           '''
         }
       }
