@@ -24,6 +24,9 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -274,13 +277,23 @@ public class SearchResultHelper {
         return wb;
     }
 
+    private static final Pattern PROPERTY_ORDER_PATTERN = Pattern.compile("\\{process\\.(.*)\\}.*");
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private List search(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT distinct prozesse.ProzesseID, ");
 
+        Optional<String> propertyOrder = Optional.empty();
+
         if (StringUtils.isNotBlank(order)) {
-            sb.append(order.replace(" desc", "").replace(" asc", "") + ", ");
+            Matcher m = PROPERTY_ORDER_PATTERN.matcher(order);
+            if (m.find()) {
+                propertyOrder = Optional.of(m.group(1));
+                sb.append("property.property_value as `" + propertyOrder.get() + "`, ");
+            } else {
+                sb.append(order.replace(" desc", "").replace(" asc", "") + ", ");
+            }
         }
 
         boolean includeLog = false;
@@ -306,6 +319,10 @@ public class SearchResultHelper {
         if (includeLog) {
             sb.append(" left join journal log on log.objectID = prozesse.ProzesseID and log.entrytype = 'process' and log.id = ");
             sb.append("(select max(id) from journal where objectID = prozesse.ProzesseID and log.entrytype = 'process' and type  = 'error') ");
+        }
+
+        if (propertyOrder.isPresent()) {
+            sb.append( " left join properties property on property.property_name = '" + propertyOrder.get() + "' and property.object_id = prozesse.ProzesseID");
         }
 
         boolean leftJoin = false;
@@ -348,7 +365,11 @@ public class SearchResultHelper {
         sb.append(sql);
 
         if (order != null && !order.isEmpty()) {
-            sb.append(" ORDER BY " + order);
+            if (propertyOrder.isPresent()) {
+                sb.append(" ORDER BY `" + propertyOrder.get() + "` " + (order.endsWith("asc")?"asc":"desc"));
+            } else {
+                sb.append(" ORDER BY " + order);
+            }
         }
         List list = ProcessManager.runSQL(sb.toString());
 
