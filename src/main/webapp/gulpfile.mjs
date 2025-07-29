@@ -47,7 +47,12 @@ const sources = {
     js: [
         './uii/template/js/**/*.js',
         '!./uii/template/js/legacy/**/*',
+        '!./uii/template/js/editor/**/*.js',
     ],
+    editors: [
+        'uii/template/js/editor/**/*.js',
+    ],
+    prosemirror: 'uii/template/js/editor/prosemirror.js',
     icons: ['node_modules/@tabler/icons/icons/**/*.svg'],
     staticAssets: [
         'uii/**/*.xhtml',
@@ -195,6 +200,30 @@ function prodJsRollup() {
         });
 };
 
+function editors() {
+    return rollup
+        .rollup({
+            input: sources.prosemirror,
+            plugins: [
+                cleanup(),
+                nodeResolve(),
+            ],
+        }).then(bundle => {
+            return bundle.write({
+                file: `${customLocation}${targetFolder.js}prosemirror.js`,
+                format: 'iife',
+                sourcemap: true,
+                plugins: [
+                    terser({
+                        mangle: true
+                    }),
+                ]
+            });
+        });
+    // return src(sources.editors)
+    //     .pipe(dest(`${customLocation}${targetFolder.js}`));
+}
+
 /*
  * preprocess svgs as needed
  */
@@ -231,6 +260,7 @@ function dev() {
     loadConfig();
     icons();
     BsJs();
+    watch(sources.editors, { ignoreInitial: false }, editors);
     watch(sources.legacyJS, { ignoreInitial: false }, jsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
@@ -240,6 +270,6 @@ function dev() {
     watch(sources.taglibs, { ignoreInitial: false }, taglibs);
     watch(sources.includes, { ignoreInitial: false }, includes);
 };
-const prod = parallel(BsJs,jsLegacy, prodJsRollup, prodBSCss, prodCss, icons,);
+const prod = parallel(BsJs,jsLegacy, prodJsRollup, prodBSCss, prodCss, icons, editors,);
 
 export { dev, prod };

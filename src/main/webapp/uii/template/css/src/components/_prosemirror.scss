@@ -1,0 +1,42 @@
+
+.editor {
+    border: 1px solid var(--bs-border-color);
+
+    .editor-menubar {
+        background-color: var(--bs-light);
+        border-bottom: 1px solid var(--bs-border-color);
+        padding-block: 0.125rem;
+    }
+
+    .editor-menu-group {
+        border-inline-end: 1px solid var(--bs-border-color);
+        display: inline-block;
+        padding-inline: 0.5rem;
+        vertical-align: middle;
+        &:last-of-type {
+            border-inline-end: none;
+        }
+    }
+
+    .editor-menuicon {
+        &.active {
+            border: 1px solid black;
+        }
+        &.inactive {
+            opacity: 0.5;
+        }
+    }
+
+    .ProseMirror {
+        padding: 0.5rem;
+    }
+
+    // styles for HTML elements in the editor
+    strong {
+        font-weight: bold;
+    }
+    a {
+        color: var(--clr-primary-600);
+        text-decoration: underline;
+    }
+}
