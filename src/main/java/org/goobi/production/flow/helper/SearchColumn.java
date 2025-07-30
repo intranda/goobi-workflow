@@ -24,11 +24,11 @@ public class SearchColumn implements Serializable {
 
     private static final long serialVersionUID = -3474943392910282588L;
 
-    private static final String TABLE_PROJECTS = "projekte.";
-    private static final String TABLE_PROCESSES = "prozesse.";
-    private static final String TABLE_PROCESS_PROPERTIES = "prozesseeigenschaften.";
-    private static final String TABLE_METADATA = "metadata.";
-    private static final String TABLE_LOG = "log.";
+    public static final String TABLE_PROJECTS = "projekte.";
+    public static final String TABLE_PROCESSES = "prozesse.";
+    public static final String TABLE_PROCESS_PROPERTIES = "property.";
+    public static final String TABLE_METADATA = "metadata.";
+    public static final String TABLE_LOG = "log.";
 
     @Getter
     @Setter
@@ -82,6 +82,8 @@ public class SearchColumn implements Serializable {
             return "print";
         } else if (value.startsWith(TABLE_LOG)) {
             return "content";
+        } else if (value.startsWith(TABLE_PROCESS_PROPERTIES)) {
+            return "property_value";
         } else {
             return "Wert";
         }
@@ -93,8 +95,8 @@ public class SearchColumn implements Serializable {
             return "";
         }
         if (value.startsWith(TABLE_PROCESS_PROPERTIES)) {
-            return " prozesseeigenschaften " + getTableName() + " ON prozesse.ProzesseID = " + getTableName() + ".object_id AND "
-                    + getTableName() + "object_type = 'process' AND " + getTableName() + ".Titel = \"" + value.substring(value.indexOf(".") + 1)
+            return " properties " + getTableName() + " ON prozesse.ProzesseID = " + getTableName() + ".object_id AND "
+                    + getTableName() + ".object_type = 'process' AND " + getTableName() + ".property_name = \"" + value.substring(value.indexOf(".") + 1)
                     + "\"";
 
         } else if (value.startsWith(TABLE_METADATA)) {

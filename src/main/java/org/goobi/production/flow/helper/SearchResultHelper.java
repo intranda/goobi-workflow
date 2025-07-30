@@ -59,6 +59,8 @@ import jakarta.faces.model.SelectItem;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
+import static org.goobi.production.flow.helper.SearchColumn.*;
+
 @Log4j2
 public class SearchResultHelper {
 
@@ -74,28 +76,28 @@ public class SearchResultHelper {
         String processData = "processData";
         possibleColumns.add(new SelectItem(processData, Helper.getTranslation(processData), Helper.getTranslation(processData), true));
 
-        String processTitle = "prozesse.Titel";
+        String processTitle = TABLE_PROCESSES + "Titel";
         possibleColumns.add(new SelectItem(processTitle, Helper.getTranslation(processTitle)));
 
-        String processId = "prozesse.ProzesseID";
+        String processId = TABLE_PROCESSES + "ProzesseID";
         possibleColumns.add(new SelectItem(processId, Helper.getTranslation(processId)));
 
-        String processCreationDate = "prozesse.erstellungsdatum";
+        String processCreationDate = TABLE_PROCESSES + "erstellungsdatum";
         possibleColumns.add(new SelectItem(processCreationDate, Helper.getTranslation(processCreationDate)));
 
-        String processSortHelperImages = "prozesse.sortHelperImages";
+        String processSortHelperImages = TABLE_PROCESSES + "sortHelperImages";
         possibleColumns.add(new SelectItem(processSortHelperImages, Helper.getTranslation(processSortHelperImages)));
 
-        String processSortHelperMetadata = "prozesse.sortHelperMetadata";
+        String processSortHelperMetadata = TABLE_PROCESSES + "sortHelperMetadata";
         possibleColumns.add(new SelectItem(processSortHelperMetadata, Helper.getTranslation(processSortHelperMetadata)));
 
-        String processSortHelperDocstructs = "prozesse.sortHelperDocstructs";
+        String processSortHelperDocstructs = TABLE_PROCESSES + "sortHelperDocstructs";
         possibleColumns.add(new SelectItem(processSortHelperDocstructs, Helper.getTranslation(processSortHelperDocstructs)));
 
-        String projectTitle = "projekte.Titel";
+        String projectTitle = TABLE_PROJECTS + "Titel";
         possibleColumns.add(new SelectItem(projectTitle, Helper.getTranslation(projectTitle)));
 
-        possibleColumns.add(new SelectItem("log.lastError", Helper.getTranslation("SearchResultField_lastError")));
+        possibleColumns.add(new SelectItem(TABLE_LOG + "lastError", Helper.getTranslation("SearchResultField_lastError")));
 
         List<String> columnWhiteList = ConfigurationHelper.getInstance().getDownloadColumnWhitelist();
         if (columnWhiteList == null || columnWhiteList.isEmpty()) {
@@ -108,7 +110,7 @@ public class SearchResultHelper {
         if (!processTitles.isEmpty()) {
 
             for (String title : processTitles) {
-                String key = "prozesseeigenschaften." + title;
+                String key = TABLE_PROCESS_PROPERTIES + title;
                 if (columnWhiteList.contains(title)) {
                     possibleColumns.add(new SelectItem(key, Helper.getTranslation(key)));
                 }
@@ -121,7 +123,7 @@ public class SearchResultHelper {
 
             for (String title : metadataTitles) {
                 if (columnWhiteList.contains(title)) {
-                    String key = "metadata." + title;
+                    String key = TABLE_METADATA + title;
                     subList.add(new SelectItem(key, Helper.getTranslation(key)));
                 }
             }
