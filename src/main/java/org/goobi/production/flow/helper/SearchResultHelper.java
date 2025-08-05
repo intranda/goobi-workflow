@@ -1,5 +1,11 @@
 package org.goobi.production.flow.helper;
 
+import static org.goobi.production.flow.helper.SearchColumn.TABLE_LOG;
+import static org.goobi.production.flow.helper.SearchColumn.TABLE_METADATA;
+import static org.goobi.production.flow.helper.SearchColumn.TABLE_PROCESSES;
+import static org.goobi.production.flow.helper.SearchColumn.TABLE_PROCESS_PROPERTIES;
+import static org.goobi.production.flow.helper.SearchColumn.TABLE_PROJECTS;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -59,8 +65,6 @@ import jakarta.faces.model.SelectItem;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
-import static org.goobi.production.flow.helper.SearchColumn.*;
-
 @Log4j2
 public class SearchResultHelper {
 
@@ -68,6 +72,11 @@ public class SearchResultHelper {
 
     @Getter
     private List<SelectItem> possibleColumns = new ArrayList<>();
+
+    // new constructor for junit tests
+    SearchResultHelper(List<SelectItem> possibleColumns) {
+        this.possibleColumns = possibleColumns;
+    }
 
     public SearchResultHelper() {
 
@@ -324,7 +333,8 @@ public class SearchResultHelper {
         }
 
         if (propertyOrder.isPresent()) {
-            sb.append( " left join properties property on property.property_name = '" + propertyOrder.get() + "' and property.object_id = prozesse.ProzesseID");
+            sb.append(" left join properties property on property.property_name = '" + propertyOrder.get()
+                    + "' and property.object_id = prozesse.ProzesseID");
         }
 
         boolean leftJoin = false;
@@ -368,7 +378,7 @@ public class SearchResultHelper {
 
         if (order != null && !order.isEmpty()) {
             if (propertyOrder.isPresent()) {
-                sb.append(" ORDER BY `" + propertyOrder.get() + "` " + (order.endsWith("asc")?"asc":"desc"));
+                sb.append(" ORDER BY `" + propertyOrder.get() + "` " + (order.endsWith("asc") ? "asc" : "desc"));
             } else {
                 sb.append(" ORDER BY " + order);
             }
