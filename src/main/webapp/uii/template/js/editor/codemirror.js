@@ -26,6 +26,9 @@ import { properties } from './codemirror/properties.js';
 // Global view reference for line highlighting and scrolling
 let view;
 
+// Track existing CodeMirror instances to prevent duplicates
+const editorInstances = new Map();
+
 // Language mapping configuration
 const LANGUAGE_MAP = {
     javascript: javascript(),
@@ -137,8 +140,9 @@ const createEditorFromTextArea = (textArea, language = 'xml') => {
     textArea.parentNode.insertBefore(editorView.dom, textArea);
     textArea.style.display = 'none';
 
-    // Store reference for global functions
+    // Store reference for global functions and track the instance
     view = editorView;
+    editorInstances.set(textArea.id, editorView);
 
     return editorView;
 };
@@ -147,15 +151,47 @@ const createEditorFromTextArea = (textArea, language = 'xml') => {
  * Initialize all CodeMirror instances on the page
  */
 export const initCodemirror = () => {
+    // Clean up instances for textareas that no longer exist in the DOM
+    cleanupDestroyedInstances();
+
     const editorTargets = document.querySelectorAll('[data-codemirror-target]');
 
     editorTargets.forEach(target => {
+        // Check if this textarea already has a CodeMirror instance
+        if (editorInstances.has(target.id)) {
+            // Instance already exists, skip creation
+            return;
+        }
+
+        // Check if the textarea is still visible (not already replaced)
+        if (target.style.display === 'none') {
+            // Textarea is hidden, likely already has an editor, skip
+            return;
+        }
+
         const targetLanguage = target.getAttribute('data-codemirror-language');
         const language = normalizeLanguage(targetLanguage);
 
         createEditorFromTextArea(target, language);
         updateReferenceInput(target.id, target.value);
     });
+
+    // Set up content setters after initializing editors (only once)
+    setupContentSetters();
+};
+
+/**
+ * Cleans up CodeMirror instances for textareas that no longer exist in the DOM
+ */
+const cleanupDestroyedInstances = () => {
+    for (const [textareaId, editorView] of editorInstances.entries()) {
+        const textarea = document.getElementById(textareaId);
+        if (!textarea) {
+            // Textarea no longer exists, destroy the editor and remove from tracking
+            editorView.destroy();
+            editorInstances.delete(textareaId);
+        }
+    }
 };
 
 /**
@@ -198,6 +234,80 @@ export const scrollToLine = (lineNumber) => {
         top: view.lineBlockAt(line).top - editorOffsetTop,
         left: 0,
         behavior: 'smooth',
+    });
+};
+
+/**
+ * Sets the content of the CodeMirror editor
+ * @param {string} content - The content to set in the editor
+ */
+export const setContent = (content) => {
+    if (!view) {
+        console.warn('CodeMirror view not initialized');
+        return;
+    }
+
+    // Convert escaped newlines to actual line breaks
+    const processedContent = content.replace(/\\n/g, '\n');
+
+    view.dispatch({
+        changes: {
+            from: 0,
+            to: view.state.doc.length,
+            insert: processedContent
+        }
+    });
+};
+
+/**
+ * Sets up event listeners for elements with data-set-codemirror attribute
+ * These elements will set the CodeMirror content to their attribute value when activated
+ */
+const setupContentSetters = () => {
+    const contentSetters = document.querySelectorAll('[data-codemirror-set]:not([data-codemirror-initialized])');
+
+    contentSetters.forEach(element => {
+        const content = element.getAttribute('data-codemirror-set');
+
+        // Handle click events
+        const handleActivation = (event) => {
+            event.preventDefault();
+            setContent(content);
+
+            // Announce to screen readers
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.className = 'visually-hidden';
+            announcement.textContent = 'Editor content has been updated';
+            document.body.appendChild(announcement);
+
+            // Remove announcement after it's been read
+            setTimeout(() => {
+                if (announcement.parentNode) {
+                    announcement.parentNode.removeChild(announcement);
+                }
+            }, 1000);
+
+            // Focus the editor for immediate editing
+            if (view) {
+                view.focus();
+            }
+        };
+
+        // Add click listener
+        element.addEventListener('click', handleActivation);
+
+        // Add keyboard support for accessibility
+        element.addEventListener('keydown', (event) => {
+            // Activate on Enter or Space
+            if (event.key === 'Enter' || event.key === ' ') {
+                handleActivation(event);
+            }
+        });
+
+        // Mark as initialized to prevent duplicate event listeners
+        element.setAttribute('data-codemirror-initialized', 'true');
     });
 };
 
