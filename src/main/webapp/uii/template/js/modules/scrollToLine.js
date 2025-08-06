@@ -1,7 +1,7 @@
 import {
 	highlightLine,
 	scrollToLine,
-} from "./codemirror";
+} from "../editor/codemirror";
 
 
 export const init = () => {
