@@ -5,9 +5,12 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     template="/uii/template/template.html"
-
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:editor="http://goobi.io/editor"
+    xmlns:form="http://goobi.io/form"
+    >
 
     <ui:param
         name="myPageTitle"
@@ -53,30 +56,41 @@
                         boxPadding="false"
                         title="#{myPageTitle}"
                         icon="fa-clone">
-
-                        <intranda:formInputText
-                            id="title"
-                            name="title"
+                        <form:field
                             label="#{msgs.name}"
-                            focusOnLoad="true"
-                            field="#{goobiScriptTemplateBean.template.title}"
-                            help="#{msgs.helptemplateTitle}" />
-
-                        <intranda:formInputText
-                            id="description"
-                            name="description"
+                            help="#{msgs.helptemplateTitle}"
+                            required="true">
+                            <h:inputText
+                                id="title"
+                                value="#{goobiScriptTemplateBean.template.title}"
+                                styleClass="form-control"
+                                required="true" />
+                            <form:message target="title" />
+                        </form:field>
+                        <form:field
                             label="#{msgs.description}"
-                            field="#{goobiScriptTemplateBean.template.description}"
-                            help="#{msgs.helptemplateFile}"
-                            required="false" />
+                            help="#{msgs.helptemplateFile}">
+                            <h:inputText
+                                id="description"
+                                value="#{goobiScriptTemplateBean.template.description}"
+                                styleClass="form-control" />
+                            <form:message target="description" />
+                        </form:field>
 
-                        <intranda:formInputTextArea
-                            id="gs"
-                            name="GoobiScripts"
+                        <form:field
                             label="#{msgs.goobiScript}"
-                            field="#{goobiScriptTemplateBean.template.goobiScripts}"
-                            help="#{msgs.helptemplateFile}"
-                            rows="30" />
+                            help="#{msgs.helptemplateFile}">
+                            <editor:code>
+                                <span class="w-100 border">
+                                    <h:inputTextarea
+                                        id="GoobiScripts"
+                                        value="#{goobiScriptTemplateBean.template.goobiScripts}"
+                                        pt:data-codemirror-target="true"
+                                        pt:data-codemirror-language="yaml"
+                                        pt:data-codemirror-update-self="true" />
+                                </span>
+                            </editor:code>
+                        </form:field>
 
 
                         <div class="row pt-1">
@@ -87,9 +101,12 @@
                                 <ui:repeat
                                     var="gs"
                                     value="#{ProzessverwaltungForm.allGoobiScripts}">
-                                    <span
+                                    <button
                                         class="badge badge-intranda-light"
-                                        onclick="goobiScriptCodeMirror.doc.setValue(goobiScriptCodeMirror.doc.getValue() + '\n#{gs.two}')"> #{gs.one} </span>
+                                        type="button"
+                                        data-codemirror-set="#{gs.two}">
+                                        #{gs.one}
+                                    </button>
                                 </ui:repeat>
                         </div>
                         </div>
@@ -105,56 +122,6 @@
             </div>
             <!-- /row -->
         </h:form>
-        <script
-            type="text/javascript"
-            src="template/js/static/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
-        <script src="template/js/static/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}" />
-        <style>
-.CodeMirror {
-    border: 1px solid #ddd;
-    height: 500px;
-    width: 100%;
-}
-
-.badge {
-    border: 0;
-    cursor: pointer;
-}
-</style>
-        <script>
-var goobiScriptCodeMirror;
-function handleGoobiScriptCodeEditor() {
-    removeGoobiScriptCodeMirror();
-    initGoobiScriptCodeMirror();
-}
-
-function removeGoobiScriptCodeMirror() {
-    var codeEditors = document.querySelectorAll('.CodeMirror');
-    codeEditors.forEach(function(editor) { editor.remove() })
-}
-
-function initGoobiScriptCodeMirror() {
-	var goobiScriptTextArea = document.getElementById("boxid:gs:GoobiScripts");
-	console.log(goobiScriptTextArea);
-	if(goobiScriptTextArea) {
-    	goobiScriptCodeMirror = CodeMirror.fromTextArea(goobiScriptTextArea, {
-			lineNumbers: true,
-			mode: 'yaml'
-		});
-    	goobiScriptCodeMirror.on('change', editor => {
-			document.getElementById("boxid:gs:GoobiScripts").innerHTML = editor.getValue();
-	    });
-	}
-}
-
-window.onload = function() {
-	// load codemirror for some syntax highlighting
-	initGoobiScriptCodeMirror();
-}
-
-
-</script>
-
 
     </ui:define>
 

@@ -10,7 +10,8 @@
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	>
 
 	<ui:param
 		name="myPageTitle"
@@ -37,17 +38,6 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<script
-			type="text/javascript"
-			src="template/js/static/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
-		<script
-			src="template/js/static/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}" />
-
-		<style>
-.CodeMirror {
-	border: 1px solid #ddd;
-}
-</style>
 
 
 		<main id="processAll">
@@ -280,7 +270,7 @@
                                                         name="sorthelper_last_close_date"
                                                         sortField="sorthelper_last_close_date"
                                                         form="#{ProzessverwaltungForm}"
-                                                        ajaxRender="processAllProcessesBox:myform" />    
+                                                        ajaxRender="processAllProcessesBox:myform" />
 
 													<!-- LAST STATUS UPDATE USER COLUMN HEADER -->
 													<intranda:columnheader
@@ -316,10 +306,10 @@
                                                         sortField="sortHelperImages"
 														form="#{ProzessverwaltungForm}"
 														ajaxRender="processAllProcessesBox:myform" />
-                                                        
-                                                        
-                                                        
-                                                                         
+
+
+
+
 
                                                     <!-- BUTTONS COLUMN HEADER -->
 													<intranda:columnheader
@@ -824,8 +814,8 @@
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}">
 														<h:outputText value="#{item.sortHelperImages}" />
 													</td>
-                                                    
-                                           
+
+
 
 													<!-- BUTTONS -->
 													<td
@@ -1371,41 +1361,12 @@
 
 				window.onload = function() {
 					loadImages();
-					// load codemirror for some syntax highlighting
-					// initGoobiScriptCodeMirror();
 				}
-
-	        	var goobiScriptCodeMirror;
-			    function handleGoobiScriptCodeEditor() {
-			        removeGoobiScriptCodeMirror();
-			        initGoobiScriptCodeMirror();
-			    }
-
-	            function removeGoobiScriptCodeMirror() {
-	                var codeEditors = document.querySelectorAll('.CodeMirror');
-	                codeEditors.forEach(function(editor) { editor.remove() })
-	            }
-
-	            function initGoobiScriptCodeMirror() {
-	            	var goobiScriptTextArea = document.getElementById("boxProcessesAllActions:goobiScriptfield");
-	            	if(goobiScriptTextArea) {
-	                	goobiScriptCodeMirror = CodeMirror.fromTextArea(goobiScriptTextArea, {
-							lineNumbers: true,
-							mode: 'yaml'
-						});
-	                	goobiScriptCodeMirror.on('change', editor => {
-							document.getElementById("boxProcessesAllActions:goobiScriptfield").innerHTML = editor.getValue();
-					    });
-	            	}
-	            }
 
 	            faces.ajax.addOnEvent( function( data ) {
 	                var ajaxstatus = data.status;
 	                switch ( ajaxstatus ) {
 	                    case "success":
-	                    	if(data.source.id == "boxProcessesAllActions:expandbutton5") {
-	                    		initGoobiScriptCodeMirror();
-	                    	}
 	                    	loadImages();
 	                        break;
 	                }
