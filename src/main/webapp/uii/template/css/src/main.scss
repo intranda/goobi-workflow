@@ -5,8 +5,9 @@
 @use "base/utilities-custom";
 
 // LIBS
-@use "lib/font-awesome.css";
-@use "lib/codemirror.css";
+@use "lib/font-awesome";
+@use "lib/codemirror";
+@use "lib/swagger-ui";
 
 // COMPOSITION
 @use "composition/content-flow";
@@ -32,6 +33,7 @@
 @use "components/forms-custom";
 @use "components/metadata-search-row";
 @use "components/notification-area";
+@use "components/prosemirror";
 @use "components/progressbar";
 @use "components/progress-custom";
 @use "components/switcher";

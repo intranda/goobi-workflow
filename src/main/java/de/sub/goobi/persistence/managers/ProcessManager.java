@@ -268,7 +268,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             return ProcessMysqlHelper.runSQL(sql);
         } catch (SQLException e) {
-            log.error(e);
+            log.error("Error executing SQL query: {}", e.getMessage(), e);
         }
         return new ArrayList();
     }

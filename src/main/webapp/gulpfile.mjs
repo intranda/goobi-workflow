@@ -29,6 +29,10 @@ let customLocation = '';
 // source directories, files, globs
 const sources = {
     bsCss: 'uii/template/css/src/bootstrap.scss',
+    bsJS: [
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js.map',
+    ],
     css: 'uii/template/css/src/',
     cssAccessibility: 'uii/template/css/src/accessibility.scss',
     cssGlob: [
@@ -38,11 +42,17 @@ const sources = {
     cssDeps: [
         'node_modules/bootstrap/scss/',
     ],
+    staticJS: 'src/js/static/**/*',
     legacyJS: './uii/template/js/legacy/',
     js: [
         './uii/template/js/**/*.js',
         '!./uii/template/js/legacy/**/*',
+        '!./uii/template/js/editor/**/*.js',
     ],
+    editors: [
+        'uii/template/js/editor/**/*.js',
+    ],
+    prosemirror: 'uii/template/js/editor/prosemirror.js',
     icons: ['node_modules/@tabler/icons/icons/**/*.svg'],
     staticAssets: [
         'uii/**/*.xhtml',
@@ -103,6 +113,11 @@ function BSCss() {
         .pipe(rename((path) => {
             basename: path.basename += '.min'
         }))
+};
+
+function BsJs() {
+    return src(sources.bsJS)
+        .pipe(dest(`${customLocation}${targetFolder.js}`));
 };
 
 function prodBSCss() {
@@ -185,6 +200,30 @@ function prodJsRollup() {
         });
 };
 
+function editors() {
+    return rollup
+        .rollup({
+            input: sources.prosemirror,
+            plugins: [
+                cleanup(),
+                nodeResolve(),
+            ],
+        }).then(bundle => {
+            return bundle.write({
+                file: `${customLocation}${targetFolder.js}prosemirror.js`,
+                format: 'iife',
+                sourcemap: true,
+                plugins: [
+                    terser({
+                        mangle: true
+                    }),
+                ]
+            });
+        });
+    // return src(sources.editors)
+    //     .pipe(dest(`${customLocation}${targetFolder.js}`));
+}
+
 /*
  * preprocess svgs as needed
  */
@@ -220,6 +259,8 @@ function icons() {
 function dev() {
     loadConfig();
     icons();
+    BsJs();
+    watch(sources.editors, { ignoreInitial: false }, editors);
     watch(sources.legacyJS, { ignoreInitial: false }, jsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
@@ -229,6 +270,6 @@ function dev() {
     watch(sources.taglibs, { ignoreInitial: false }, taglibs);
     watch(sources.includes, { ignoreInitial: false }, includes);
 };
-const prod = parallel(jsLegacy, prodJsRollup, prodBSCss, prodCss, icons,);
+const prod = parallel(BsJs,jsLegacy, prodJsRollup, prodBSCss, prodCss, icons, editors,);
 
 export { dev, prod };

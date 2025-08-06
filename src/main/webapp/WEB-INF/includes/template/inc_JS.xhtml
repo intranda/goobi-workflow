@@ -1,13 +1,11 @@
 <ui:composition
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <!-- Bootstrap -->
-
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jstl/core">
     <!-- Bootstrap 5 -->
     <script src="template/js/bootstrap.bundle.min.js?v=#{HelperForm.buildVersion}"></script>
-
     <!-- HC-Sticky -->
-    <script src="template/js/hc-sticky.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/static/hc-sticky.js?v=#{HelperForm.buildVersion}"></script>
 
     <!-- INTRANDA JS -->
     <script src="template/js/static/intranda.js?v=1.2"></script>
@@ -31,6 +29,20 @@
     </script>
     <h:outputScript name="js/dist/legacy.min.js?v=#{HelperForm.buildVersion}" />
     <h:outputScript name="js/dist/main.min.js?v=#{HelperForm.buildVersion}" />
+    <c:forEach
+        items="#{ThemeBean.themePlugins}"
+        var="plugin"
+		>
+        <c:forEach
+                items="#{plugin.getJsPaths()}"
+                var="jsPath"
+        >
+            <script
+                    src="#{HelperForm.applicationWebsiteUrl}#{plugin.id}/js/#{jsPath}"
+                    type="text/javascript"
+            ></script>
+        </c:forEach>
+    </c:forEach>
     <script>
         // wrapping these initializations in an event listener is a workaround as we can't defer inline JS
         window.addEventListener('DOMContentLoaded', () => {

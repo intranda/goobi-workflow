@@ -55,7 +55,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         container: {
             id: "mainImage"
         },
-        resourcesPath: "template/js/",
+        resourcesPath: "template/js/static/",
     };
 
     goobiWorkflow.object = {

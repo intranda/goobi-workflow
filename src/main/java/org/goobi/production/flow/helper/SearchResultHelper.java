@@ -1,5 +1,11 @@
 package org.goobi.production.flow.helper;
 
+import static org.goobi.production.flow.helper.SearchColumn.TABLE_LOG;
+import static org.goobi.production.flow.helper.SearchColumn.TABLE_METADATA;
+import static org.goobi.production.flow.helper.SearchColumn.TABLE_PROCESSES;
+import static org.goobi.production.flow.helper.SearchColumn.TABLE_PROCESS_PROPERTIES;
+import static org.goobi.production.flow.helper.SearchColumn.TABLE_PROJECTS;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -24,6 +30,9 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -64,6 +73,11 @@ public class SearchResultHelper {
     @Getter
     private List<SelectItem> possibleColumns = new ArrayList<>();
 
+    // new constructor for junit tests
+    SearchResultHelper(List<SelectItem> possibleColumns) {
+        this.possibleColumns = possibleColumns;
+    }
+
     public SearchResultHelper() {
 
         possibleColumns.add(new SelectItem("all", Helper.getTranslation("selectAllFields")));
@@ -71,28 +85,28 @@ public class SearchResultHelper {
         String processData = "processData";
         possibleColumns.add(new SelectItem(processData, Helper.getTranslation(processData), Helper.getTranslation(processData), true));
 
-        String processTitle = "prozesse.Titel";
+        String processTitle = TABLE_PROCESSES + "Titel";
         possibleColumns.add(new SelectItem(processTitle, Helper.getTranslation(processTitle)));
 
-        String processId = "prozesse.ProzesseID";
+        String processId = TABLE_PROCESSES + "ProzesseID";
         possibleColumns.add(new SelectItem(processId, Helper.getTranslation(processId)));
 
-        String processCreationDate = "prozesse.erstellungsdatum";
+        String processCreationDate = TABLE_PROCESSES + "erstellungsdatum";
         possibleColumns.add(new SelectItem(processCreationDate, Helper.getTranslation(processCreationDate)));
 
-        String processSortHelperImages = "prozesse.sortHelperImages";
+        String processSortHelperImages = TABLE_PROCESSES + "sortHelperImages";
         possibleColumns.add(new SelectItem(processSortHelperImages, Helper.getTranslation(processSortHelperImages)));
 
-        String processSortHelperMetadata = "prozesse.sortHelperMetadata";
+        String processSortHelperMetadata = TABLE_PROCESSES + "sortHelperMetadata";
         possibleColumns.add(new SelectItem(processSortHelperMetadata, Helper.getTranslation(processSortHelperMetadata)));
 
-        String processSortHelperDocstructs = "prozesse.sortHelperDocstructs";
+        String processSortHelperDocstructs = TABLE_PROCESSES + "sortHelperDocstructs";
         possibleColumns.add(new SelectItem(processSortHelperDocstructs, Helper.getTranslation(processSortHelperDocstructs)));
 
-        String projectTitle = "projekte.Titel";
+        String projectTitle = TABLE_PROJECTS + "Titel";
         possibleColumns.add(new SelectItem(projectTitle, Helper.getTranslation(projectTitle)));
 
-        possibleColumns.add(new SelectItem("log.lastError", Helper.getTranslation("SearchResultField_lastError")));
+        possibleColumns.add(new SelectItem(TABLE_LOG + "lastError", Helper.getTranslation("SearchResultField_lastError")));
 
         List<String> columnWhiteList = ConfigurationHelper.getInstance().getDownloadColumnWhitelist();
         if (columnWhiteList == null || columnWhiteList.isEmpty()) {
@@ -105,7 +119,7 @@ public class SearchResultHelper {
         if (!processTitles.isEmpty()) {
 
             for (String title : processTitles) {
-                String key = "prozesseeigenschaften." + title;
+                String key = TABLE_PROCESS_PROPERTIES + title;
                 if (columnWhiteList.contains(title)) {
                     possibleColumns.add(new SelectItem(key, Helper.getTranslation(key)));
                 }
@@ -118,7 +132,7 @@ public class SearchResultHelper {
 
             for (String title : metadataTitles) {
                 if (columnWhiteList.contains(title)) {
-                    String key = "metadata." + title;
+                    String key = TABLE_METADATA + title;
                     subList.add(new SelectItem(key, Helper.getTranslation(key)));
                 }
             }
@@ -274,13 +288,23 @@ public class SearchResultHelper {
         return wb;
     }
 
+    private static final Pattern PROPERTY_ORDER_PATTERN = Pattern.compile("\\{process\\.(.*)\\}.*");
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private List search(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses, boolean showArchivedProjects) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT distinct prozesse.ProzesseID, ");
 
+        Optional<String> propertyOrder = Optional.empty();
+
         if (StringUtils.isNotBlank(order)) {
-            sb.append(order.replace(" desc", "").replace(" asc", "") + ", ");
+            Matcher m = PROPERTY_ORDER_PATTERN.matcher(order);
+            if (m.find()) {
+                propertyOrder = Optional.of(m.group(1));
+                sb.append("property.property_value as `" + propertyOrder.get() + "`, ");
+            } else {
+                sb.append(order.replace(" desc", "").replace(" asc", "") + ", ");
+            }
         }
 
         boolean includeLog = false;
@@ -306,6 +330,11 @@ public class SearchResultHelper {
         if (includeLog) {
             sb.append(" left join journal log on log.objectID = prozesse.ProzesseID and log.entrytype = 'process' and log.id = ");
             sb.append("(select max(id) from journal where objectID = prozesse.ProzesseID and log.entrytype = 'process' and type  = 'error') ");
+        }
+
+        if (propertyOrder.isPresent()) {
+            sb.append(" left join properties property on property.property_name = '" + propertyOrder.get()
+                    + "' and property.object_id = prozesse.ProzesseID");
         }
 
         boolean leftJoin = false;
@@ -348,7 +377,11 @@ public class SearchResultHelper {
         sb.append(sql);
 
         if (order != null && !order.isEmpty()) {
-            sb.append(" ORDER BY " + order);
+            if (propertyOrder.isPresent()) {
+                sb.append(" ORDER BY `" + propertyOrder.get() + "` " + (order.endsWith("asc") ? "asc" : "desc"));
+            } else {
+                sb.append(" ORDER BY " + order);
+            }
         }
         List list = ProcessManager.runSQL(sb.toString());
 

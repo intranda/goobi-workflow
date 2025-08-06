@@ -44,7 +44,8 @@ public enum PluginType {
     Administration(11, "administration", IAdministrationPlugin.class),
     Workflow(13, "workflow", IWorkflowPlugin.class),
     MetadataEditor(14, "metadata", IMetadataEditorExtension.class),
-    Generic(15, "generic", IGenericPlugin.class);
+    Generic(15, "generic", IGenericPlugin.class),
+    Theme(16, "theme", IThemePlugin.class);
 
     @Getter
     private int id;

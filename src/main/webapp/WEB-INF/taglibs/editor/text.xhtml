@@ -1,0 +1,20 @@
+<ui:composition
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	>
+	<f:subview>
+		<h:panelGroup id="editorSource" style="display: none;" layout="block">
+			<h:outputText value="#{content}" escape="false"/>
+		</h:panelGroup>
+		<h:inputTextarea
+			style="display: none;"
+			id="textareaHtml"
+			value="#{content}" />
+		<ui:insert />
+		<h:panelGroup id="editor" layout="block" pt:data-editor="prosemirror" styleClass="editor">
+		</h:panelGroup>
+	</f:subview>
+	<h:outputScript target="head" name="js/dist/prosemirror.js?v=#{HelperForm.buildVersion}" />
+</ui:composition>

@@ -8,6 +8,12 @@
     <tag>
         <tag-name>list</tag-name>
         <source>description-list/list.xhtml</source>
+        <attribute>
+            <description>Whether the list elements should be separated by borders</description>
+            <name>bordered</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>term</tag-name>
