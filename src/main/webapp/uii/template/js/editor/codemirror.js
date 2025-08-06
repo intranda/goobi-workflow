@@ -118,6 +118,8 @@ const normalizeLanguage = (targetLanguage) => {
  * @returns {EditorView} The created CodeMirror editor view
  */
 const createEditorFromTextArea = (textArea, language = 'xml') => {
+    const shouldUpdateSelf = textArea.getAttribute('data-codemirror-update-self') === 'true';
+
     const editorView = new EditorView({
         state: EditorState.create({
             doc: textArea.value,
@@ -131,6 +133,19 @@ const createEditorFromTextArea = (textArea, language = 'xml') => {
                 }),
                 indentUnit.of('    '), // Set indentation to 4 spaces
                 highlightStateField,
+                // Add blur event listener if update-self is enabled
+                ...(shouldUpdateSelf ? [EditorView.domEventHandlers({
+                    blur: (event, view) => {
+                        // Update the original textarea with current editor content
+                        textArea.value = view.state.doc.toString();
+
+                        // Trigger change event on textarea for any listeners
+                        const changeEvent = new Event('change', { bubbles: true });
+                        textArea.dispatchEvent(changeEvent);
+
+                        return false; // Allow default blur behavior
+                    }
+                })] : []),
             ],
         }),
         parent: textArea.parentNode
