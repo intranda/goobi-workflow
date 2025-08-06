@@ -81,14 +81,12 @@
                             label="#{msgs.goobiScript}"
                             help="#{msgs.helptemplateFile}">
                             <editor:code>
-                                <span class="w-100 border">
-                                    <h:inputTextarea
-                                        id="GoobiScripts"
-                                        value="#{goobiScriptTemplateBean.template.goobiScripts}"
-                                        pt:data-codemirror-target="true"
-                                        pt:data-codemirror-language="yaml"
-                                        pt:data-codemirror-update-self="true" />
-                                </span>
+                                <h:inputTextarea
+                                    id="GoobiScripts"
+                                    value="#{goobiScriptTemplateBean.template.goobiScripts}"
+                                    pt:data-codemirror-target="true"
+                                    pt:data-codemirror-language="yaml"
+                                    pt:data-codemirror-update-self="true" />
                             </editor:code>
                         </form:field>
 

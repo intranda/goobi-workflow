@@ -16,6 +16,7 @@
 @use "components/bookmarks";
 @use "components/collapse";
 @use "components/date-picker";
+@use "components/editor";
 @use "components/header-search";
 @use "components/nav-custom";
 @use "components/header";
@@ -33,7 +34,6 @@
 @use "components/forms-custom";
 @use "components/metadata-search-row";
 @use "components/notification-area";
-@use "components/prosemirror";
 @use "components/progressbar";
 @use "components/progress-custom";
 @use "components/switcher";

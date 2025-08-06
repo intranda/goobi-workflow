@@ -279,28 +279,24 @@
                                     </button>
                                 </div>
                                 <!-- Text editor -->
-                                <div
-                                    id="configFileEditorBorder"
-                                    class="border">
-                                    <editor:code>
-                                        <h:inputTextarea
-                                            id="configFileEditor"
-                                            style="resize: none;"
-                                            pt:aria-label="configFileEditor"
-                                            forceId="true"
-                                            styleClass="form-control"
-                                            value="#{configFileEditorBean.currentConfigFileFileContent}"
-                                            pt:data-codemirror-target="true"
-                                            pt:data-codemirror-language="#{configFileEditorBean.currentConfigFileType}" />
-                                        <h:inputText
-                                            id="configFileEditorBase64"
-                                            pt:aria-label="configFileEditorBase64"
-                                            forceId="true"
-                                            styleClass="visually-hidden"
-                                            pt:data-codemirror-reference="#{cc.clientId}:configFileEditor"
-                                            value="#{configFileEditorBean.currentConfigFileFileContentBase64}" />
-                                    </editor:code>
-                                </div>
+                                <editor:code>
+                                    <h:inputTextarea
+                                        id="configFileEditor"
+                                        style="resize: none;"
+                                        pt:aria-label="configFileEditor"
+                                        forceId="true"
+                                        styleClass="form-control"
+                                        value="#{configFileEditorBean.currentConfigFileFileContent}"
+                                        pt:data-codemirror-target="true"
+                                        pt:data-codemirror-language="#{configFileEditorBean.currentConfigFileType}" />
+                                    <h:inputText
+                                        id="configFileEditorBase64"
+                                        pt:aria-label="configFileEditorBase64"
+                                        forceId="true"
+                                        styleClass="visually-hidden"
+                                        pt:data-codemirror-reference="#{cc.clientId}:configFileEditor"
+                                        value="#{configFileEditorBean.currentConfigFileFileContentBase64}" />
+                                </editor:code>
                             </div>
                         </intranda:box>
 
