@@ -10,7 +10,6 @@ import { initFocusOnClick } from './focusOnClick';
 import { initSubmitOnEnter } from './submitOnEnter';
 import { initMirrorValueTo } from './mirrorValueTo';
 import { initAccessibilityModeButton } from './accessibilityMode';
-import { initCodemirror } from './codemirror';
 import { initShowDevelopertools } from './showDeveloperTools';
 
 export const initFunctions = function initFunctions() {
@@ -24,7 +23,6 @@ export const initFunctions = function initFunctions() {
     initSubmitOnEnter();
     initMirrorValueTo();
     initAccessibilityModeButton();
-    initCodemirror();
     initShowDevelopertools();
 
     focusOnLoad();

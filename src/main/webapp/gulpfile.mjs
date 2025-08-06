@@ -53,6 +53,7 @@ const sources = {
         'uii/template/js/editor/**/*.js',
     ],
     prosemirror: 'uii/template/js/editor/prosemirror.js',
+    codemirror: 'uii/template/js/editor/codemirror.js',
     icons: ['node_modules/@tabler/icons/icons/**/*.svg'],
     staticAssets: [
         'uii/**/*.xhtml',
@@ -201,28 +202,33 @@ function prodJsRollup() {
 };
 
 function editors() {
-    return rollup
-        .rollup({
-            input: sources.prosemirror,
-            plugins: [
-                cleanup(),
-                nodeResolve(),
-            ],
-        }).then(bundle => {
-            return bundle.write({
-                file: `${customLocation}${targetFolder.js}prosemirror.js`,
-                format: 'iife',
-                sourcemap: true,
+    const buildEditor = (inputFile, outputName) => {
+        return rollup
+            .rollup({
+                input: inputFile,
                 plugins: [
-                    terser({
-                        mangle: true
-                    }),
-                ]
+                    cleanup(),
+                    nodeResolve(),
+                ],
+            }).then(bundle => {
+                return bundle.write({
+                    file: `${customLocation}${targetFolder.js}${outputName}.js`,
+                    format: 'iife',
+                    sourcemap: true,
+                    plugins: [
+                        terser({
+                            mangle: true,
+                        }),
+                    ]
+                });
             });
-        });
-    // return src(sources.editors)
-    //     .pipe(dest(`${customLocation}${targetFolder.js}`));
-}
+    };
+
+    return Promise.all([
+        buildEditor(sources.prosemirror, 'prosemirror'),
+        buildEditor(sources.codemirror, 'codemirror')
+    ]);
+};
 
 /*
  * preprocess svgs as needed
