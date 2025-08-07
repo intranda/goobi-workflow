@@ -1,10 +1,10 @@
 import {
 	highlightLine,
 	scrollToLine,
-} from "../editor/codemirror";
+} from "../codemirror";
 
 
-export const init = () => {
+export const initScrollToLine = () => {
 	const elements = document.querySelectorAll('[data-scroll-to-line]');
 	if (elements.length === 0) {
 		return;

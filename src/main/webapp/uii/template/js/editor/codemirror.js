@@ -22,6 +22,7 @@ import { json } from "@codemirror/lang-json";
 import { markdown } from "@codemirror/lang-markdown";
 import { yaml } from "@codemirror/lang-yaml";
 import { properties } from './codemirror/properties.js';
+import { initScrollToLine } from "./codemirror/scrollToLine.js";
 
 // Global view reference for line highlighting and scrolling
 let view;
@@ -193,6 +194,7 @@ export const initCodemirror = () => {
 
     // Set up content setters after initializing editors (only once)
     setupContentSetters();
+    initScrollToLine();
 };
 
 /**
