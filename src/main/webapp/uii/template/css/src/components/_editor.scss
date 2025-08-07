@@ -1,8 +1,17 @@
 
 .editor {
     border: 1px solid var(--bs-border-color);
+    display: flex;
+    justify-content: stretch;
+    min-height: 8lh;
     width: 100%;
 
+    // CodeMirror specific styles
+    & .cm-editor {
+        width: 100%;
+    }
+
+    // ProseMirror specific styles
     .editor-menubar {
         background-color: var(--bs-light);
         border-bottom: 1px solid var(--bs-border-color);
