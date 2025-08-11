@@ -428,6 +428,23 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         ruleset.setText(process.getRegelsatz().getDatei());
         elements.add(ruleset);
 
+        Element data = new Element("data", xmlns);
+        // prozesse.sortHelperStatus
+        data.setAttribute(ATTRIBUTE_STATUS, process.getSortHelperStatus());
+
+        // prozesse.sortHelperImages
+        data.setAttribute(ATTRIBUTE_IMAGES, String.valueOf(process.getSortHelperImages()));
+
+        // prozesse.sortHelperArticles
+        data.setAttribute(ATTRIBUTE_ARTICLES, String.valueOf(process.getSortHelperArticles()));
+
+        // prozesse.sortHelperDocstructs
+        data.setAttribute(ATTRIBUTE_DOCSTRUCTS, String.valueOf(process.getSortHelperDocstructs()));
+
+        // prozesse.sortHelperMetadata
+        data.setAttribute(ATTRIBUTE_METADATA, String.valueOf(process.getSortHelperMetadata()));
+        elements.add(data);
+
         // add user comments from the process log
         Element comment = new Element(ELEMENT_COMMENTS, namespace);
         List<JournalEntry> logEntry = process.getJournal();
