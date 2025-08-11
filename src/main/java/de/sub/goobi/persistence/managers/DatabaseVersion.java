@@ -499,15 +499,17 @@ public class DatabaseVersion {
             sb = new StringBuilder();
             sb.append(
                     "INSERT INTO properties (property_name, property_value, required, datatype, object_id, object_type, creation_date, container) ");
-            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, vorlagenID, 'process', creationDate,  container FROM  ( ");
-            sb.append("SELECT * from vorlageneigenschaften) x;");
+            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, prozesseid, 'process', creationDate,  container FROM  ( ");
+            sb.append("SELECT vorlageneigenschaften.*, vorlagen.prozesseid from vorlageneigenschaften ");
+            sb.append("join vorlagen on vorlageneigenschaften.vorlagenid = vorlagen.vorlagenid) x;");
             DatabaseVersion.runSql(sb.toString());
 
             sb = new StringBuilder();
             sb.append(
                     "INSERT INTO properties (property_name, property_value, required, datatype, object_id, object_type, creation_date, container) ");
-            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, werkstueckeID, 'process', creationDate,  container FROM  (");
-            sb.append("SELECT * from werkstueckeeigenschaften) x;");
+            sb.append("SELECT titel, WERT, IstObligatorisch ,DatentypenID, prozesseid, 'process', creationDate,  container FROM  (");
+            sb.append("SELECT werkstueckeeigenschaften.*, werkstuecke.prozesseid from werkstueckeeigenschaften join ");
+            sb.append("werkstuecke on werkstueckeeigenschaften.werkstueckeID=werkstuecke.werkstueckeID) x;");
             DatabaseVersion.runSql(sb.toString());
 
             // delete old property tables
