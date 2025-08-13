@@ -8,9 +8,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
-import org.h2.store.fs.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,8 +64,8 @@ public class ObjectResourceTest {
     }
 
     @After
-    public void after() {
-        FileUtils.deleteRecursive(tempProcessPath.toString(), false);
+    public void after() throws IOException {
+        FileUtils.forceDelete(tempProcessPath.toFile());
     }
 
     @Test
