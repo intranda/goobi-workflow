@@ -558,12 +558,12 @@ public class MySQLHelper implements Serializable {
         }
         String fieldname = order.replace("{", "").replace("}", "").substring(order.indexOf("."));
         if (order.startsWith("{db_meta")) {
-            sql.append("LEFT JOIN (SELECT processid, MAX(value) AS value FROM metadata WHERE metadata.name = '");
+            sql.append(" LEFT JOIN (SELECT processid, MAX(value) AS value FROM metadata WHERE metadata.name = '");
             sql.append(fieldname);
             sql.append("' GROUP BY processid) AS field ON field.processid = prozesse.prozesseID ");
         } else if (order.startsWith("{process.")) {
             sql.append(
-                    "LEFT JOIN (SELECT object_id, MAX(property_value) AS value FROM properties WHERE properties.object_type='process' AND properties.property_name = '");
+                    " LEFT JOIN (SELECT object_id, MAX(property_value) AS value FROM properties WHERE properties.object_type='process' AND properties.property_name = '");
             sql.append(fieldname);
             sql.append("' GROUP BY object_id) AS field ON field.object_id = prozesse.prozesseID ");
         }
