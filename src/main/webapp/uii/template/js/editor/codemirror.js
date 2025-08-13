@@ -212,49 +212,6 @@ const cleanupDestroyedInstances = () => {
 };
 
 /**
- * Highlights a specific line in the editor
- * @param {number} lineNumber - The line number to highlight (1-based)
- */
-export const highlightLine = (lineNumber) => {
-    if (!view) {
-        console.warn('CodeMirror view not initialized');
-        return;
-    }
-
-    const line = view.state.doc.line(lineNumber).from;
-    view.dispatch({
-        effects: addLineHighlight.of(line)
-    });
-    console.log(view.lineBlockAt(line));
-};
-
-/**
- * Scrolls to a specific line in the editor
- * @param {number} lineNumber - The line number to scroll to (1-based)
- */
-export const scrollToLine = (lineNumber) => {
-    if (!view) {
-        console.warn('CodeMirror view not initialized');
-        return;
-    }
-
-    const line = view.state.doc.line(lineNumber).from;
-    const editorElement = document.querySelector('.cm-editor');
-
-    if (!editorElement) {
-        console.warn('CodeMirror editor element not found');
-        return;
-    }
-
-    const editorOffsetTop = editorElement.offsetTop;
-    window.scrollTo({
-        top: view.lineBlockAt(line).top - editorOffsetTop,
-        left: 0,
-        behavior: 'smooth',
-    });
-};
-
-/**
  * Sets the content of the CodeMirror editor
  * @param {string} content - The content to set in the editor
  */
