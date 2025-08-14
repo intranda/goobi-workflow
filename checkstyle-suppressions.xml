@@ -4,6 +4,10 @@
         "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
 
 <suppressions>
-    <suppress checks="LineLength" files="FilterHelper.java"/>
-    <suppress checks="LineLength" files="H2Production.java"/>
+    <suppress
+        files="EDTFValidator.java"
+        checks=".*" />
+    <suppress
+        files="ExtendedDateTimeFormat.*.java"
+        checks=".*" />
 </suppressions>
