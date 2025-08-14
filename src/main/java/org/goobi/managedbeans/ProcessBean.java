@@ -1841,7 +1841,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public void downloadTiffHeader() throws IOException {
         TiffHeader tiff = new TiffHeader(this.myProzess);
-        tiff.ExportStart();
+        tiff.exportStart();
     }
 
     @Getter

@@ -35,6 +35,8 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -46,9 +48,12 @@ public class DmsImportTask implements Runnable {
     private long timeFileSuccess;
     private long timeFileError;
 
-    public String rueckgabe = "";
+    @Getter
+    private String rueckgabe = "";
 
-    public boolean cancel = false;
+    @Getter
+    @Setter
+    private boolean cancel = false;
 
     public DmsImportTask(Process inProzess, String inAts) {
         /* aus Kompatibilitätsgründen auch noch die Fehlermeldungen an alter Stelle, ansonsten lieber in neuem FehlerOrdner */
@@ -113,7 +118,7 @@ public class DmsImportTask implements Runnable {
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 log.error("Error in import thread", e);
             }
         }

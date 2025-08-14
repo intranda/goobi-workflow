@@ -1098,7 +1098,7 @@ public class StepBean extends BasicBean implements Serializable {
 
     public void downloadTiffHeader() throws IOException {
         TiffHeader tiff = new TiffHeader(this.mySchritt.getProzess());
-        tiff.ExportStart();
+        tiff.exportStart();
     }
 
     public void exportDMS() {

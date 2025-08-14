@@ -69,6 +69,7 @@ import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 @Log4j2
@@ -95,10 +96,10 @@ public class ExportDms extends ExportMets implements IExportPlugin {
     }
 
     /**
-     * DMS-Export an eine gewünschte Stelle
+     * DMS-Export an eine gewünschte Stelle.
      * 
      * @param myProzess
-     * @param zielVerzeichnis
+     * @param inZielVerzeichnis
      * @throws InterruptedException
      * @throws IOException
      * @throws WriteException
@@ -167,7 +168,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             // throw away validation file and re-read the original data
             gdzfile = myProzess.readMetadataFile();
 
-        } catch (Exception exception) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+        } catch (IOException | UGHException exception) { //NOSONAR InterruptedException must not be re-thrown as it is not running in separate thread
             Helper.setFehlerMeldung(Helper.getTranslation("exportError") + myProzess.getTitel(), exception);
             log.error("Export abgebrochen, xml-LeseFehler", exception);
             problems.add(EXPORT_ERROR_PREFIX + exception.getMessage());
@@ -301,7 +302,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             Helper.setFehlerMeldung(errorMessageTitle, errorDetails);
             problems.add(EXPORT_ERROR_PREFIX + errorDetails);
             return false;
-        } catch (Exception exception) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+        } catch (IOException exception) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             Helper.setFehlerMeldung(errorMessageTitle, exception);
             Helper.addMessageToProcessJournal(myProzess.getId(), LogType.ERROR, errorMessageTitle + "\n" + exception.getMessage());
             problems.add(EXPORT_ERROR_PREFIX + exception.getMessage());
@@ -342,8 +343,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     log.error(myProzess.getTitel() + ": error on export", e);
                     agoraThread.interrupt();
                 }
-                if (StringUtils.isNotBlank(agoraTask.rueckgabe)) {
-                    Helper.setFehlerMeldung(myProzess.getTitel() + ": ", agoraTask.rueckgabe);
+                if (StringUtils.isNotBlank(agoraTask.getRueckgabe())) {
+                    Helper.setFehlerMeldung(myProzess.getTitel() + ": ", agoraTask.getRueckgabe());
                 } else {
                     Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
                     /* Success-Ordner wieder löschen */
@@ -516,7 +517,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     } else {
                         FilesystemHelper.createDirectoryForUser(zielTif.toString(), myBenutzer.getLogin());
                     }
-                } catch (Exception exception) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+                } catch (IOException exception) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                     String errorDetails = "Could not create destination directory.";
                     Helper.setFehlerMeldung(EXPORT_ERROR_PREFIX + "Error", errorDetails);
                     log.error(errorDetails, exception);

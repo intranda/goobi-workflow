@@ -40,7 +40,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Die Klasse TiffHeader dient zur Generierung einer Tiffheaderdatei *.conf
+ * Die Klasse TiffHeader dient zur Generierung einer Tiffheaderdatei *.conf.
  * 
  * @author Steffen Hankiewicz
  * @version 1.00 - 12.04.2005
@@ -53,6 +53,8 @@ public class TiffHeader {
 
     /**
      * Erzeugen des Tiff-Headers anhand des übergebenen Prozesses Einlesen der Eigenschaften des Werkstücks bzw. der Scanvorlage
+     *
+     * @param inProzess process
      */
     public TiffHeader(Process inProzess) {
         for (GoobiProperty eig : inProzess.getEigenschaftenList()) {
@@ -72,7 +74,9 @@ public class TiffHeader {
     }
 
     /**
-     * Rückgabe des kompletten Tiff-Headers
+     * Rückgabe des kompletten Tiff-Headers.
+     *
+     * @return description
      */
     public String getImageDescription() {
         return this.tifHeaderImagedescription;
@@ -86,12 +90,13 @@ public class TiffHeader {
     }
 
     /**
-     * Tiff-Header-Daten als ein grosser String
+     * Tiff-Header-Daten als ein grosser String.
      * 
      * @throws NamingException
      * @throws SQLException
      * @throws NamingException
      * @throws SQLException
+     * @return file content
      */
     public String getTiffAlles() {
         String lineBreak = "\r\n";
@@ -108,7 +113,7 @@ public class TiffHeader {
         return buffer.toString();
     }
 
-    public void ExportStart() throws IOException {
+    public void exportStart() throws IOException {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();

@@ -144,7 +144,7 @@ public class ExportMets {
     @Getter
     protected List<String> problems = new ArrayList<>();
 
-    private static final Pattern descriptionPattern = Pattern.compile("\\D");
+    private static final Pattern DESCRIPTION_PATTERN = Pattern.compile("\\D");
 
     private static final String METS_NAMESPACE = "http://www.loc.gov/METS/";
     private static final String PREMIS_NAMESPACE = "http://www.loc.gov/standards/premis/";
@@ -162,7 +162,7 @@ public class ExportMets {
     private static final String SHA_256 = "SHA-256";
 
     /**
-     * DMS-Export in das Benutzer-Homeverzeichnis
+     * DMS-Export in das Benutzer-Homeverzeichnis.
      * 
      * @param myProzess
      * @throws InterruptedException
@@ -177,6 +177,7 @@ public class ExportMets {
      * @throws PreferencesException
      * @throws DocStructHasNoTypeException
      * @throws TypeNotAllowedForParentException
+     * @return success
      */
     public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
             WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
@@ -225,16 +226,16 @@ public class ExportMets {
 
             //delete file from directory
             StorageProvider.getInstance().deleteDir(targetDir);
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error(e);
         }
     }
 
     /**
-     * DMS-Export an eine gewünschte Stelle
+     * DMS-Export an eine gewünschte Stelle.
      * 
      * @param myProzess
-     * @param zielVerzeichnis
+     * @param inZielVerzeichnis
      * @throws IOException
      * @throws InterruptedException
      * @throws PreferencesException
@@ -247,6 +248,7 @@ public class ExportMets {
      * @throws SwapException
      * @throws DAOException
      * @throws TypeNotAllowedForParentException
+     * @return success
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
             WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
@@ -279,7 +281,8 @@ public class ExportMets {
                 if (!success) {
                     throw new IOException("Creation not successful!");
                 }
-            } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+            } catch (IOException | InterruptedException e) { //NOSONAR
+                // InterruptedException must not be re-thrown as it is not running in a separate thread
                 Helper.setFehlerMeldung("Export canceled, could not create destination directory: " + inTargetFolder, e);
             }
         }
@@ -543,7 +546,7 @@ public class ExportMets {
                 String base2 = FilenameUtils.getBaseName(name2);
                 String extension1 = FilenameUtils.getExtension(name1);
                 String extension2 = FilenameUtils.getExtension(name2);
-                if (StringUtils.equalsIgnoreCase(base1, base2)) {
+                if (base1.equalsIgnoreCase(base2)) {
                     if (StringUtils.isBlank(extension1)) {
                         return 1;
                     } else if (StringUtils.isBlank(extension2)) {
@@ -928,9 +931,7 @@ public class ExportMets {
             if (imageSize.getHeight() * imageSize.getHeight() > 0) {
                 return Optional.of(imageSize);
             }
-        } catch (ImageProcessingException |
-
-                IOException e) {
+        } catch (ImageProcessingException | IOException e) {
             try {
                 imageSize = getSizeForJp2(imageFile.toPath());
                 return Optional.ofNullable(imageSize);
@@ -960,7 +961,7 @@ public class ExportMets {
         if (directory != null) {
             String description = directory.getDescription(tagType);
             if (description != null) {
-                return Integer.parseInt(descriptionPattern.matcher(description).replaceAll(""));
+                return Integer.parseInt(DESCRIPTION_PATTERN.matcher(description).replaceAll(""));
             } else {
                 return 0;
             }

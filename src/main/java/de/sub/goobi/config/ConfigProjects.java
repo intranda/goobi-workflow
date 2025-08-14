@@ -114,7 +114,7 @@ public class ConfigProjects {
         // if not, try to load 'default' project
         if (projectNameInFile == null) {
             for (String name : projectNames) {
-                if (name.equalsIgnoreCase("default")) {
+                if ("default".equalsIgnoreCase(name)) {
                     projectNameInFile = name;
                     break;
                 }
@@ -149,7 +149,7 @@ public class ConfigProjects {
             this.config.setListDelimiter('&');
             String rueckgabe = this.config.getString(inParameter);
             return cleanXmlFormatedString(rueckgabe);
-        } catch (RuntimeException e) {
+        } catch (NoSuchElementException e) {
             log.error(e);
             return null;
         }
@@ -178,6 +178,7 @@ public class ConfigProjects {
      * default value from the second parameter is returned.
      *
      * @param inParameter The name of the parameter that should be searched
+     * @param inDefaultIfNull default value to use
      * @return The value that is configured for the parameter or the default value in case of no fitting parameter
      */
     public String getParamString(String inParameter, String inDefaultIfNull) {
@@ -186,7 +187,7 @@ public class ConfigProjects {
             String myParam = inParameter;
             String rueckgabe = this.config.getString(myParam, inDefaultIfNull);
             return cleanXmlFormatedString(rueckgabe);
-        } catch (RuntimeException e) {
+        } catch (NoSuchElementException e) {
             return inDefaultIfNull;
         }
     }
@@ -201,7 +202,7 @@ public class ConfigProjects {
     public boolean getParamBoolean(String inParameter) {
         try {
             return this.config.getBoolean(inParameter);
-        } catch (RuntimeException e) {
+        } catch (NoSuchElementException e) {
             return false;
         }
     }
@@ -215,7 +216,7 @@ public class ConfigProjects {
     public long getParamLong(String inParameter) {
         try {
             return this.config.getLong(inParameter);
-        } catch (RuntimeException e) {
+        } catch (NoSuchElementException e) {
             log.error(e);
             return 0;
         }
@@ -231,7 +232,7 @@ public class ConfigProjects {
     public List<String> getParamList(String inParameter) {
         try {
             return Arrays.asList(this.config.getStringArray(inParameter));
-        } catch (RuntimeException e) {
+        } catch (NoSuchElementException e) {
             log.error(e);
             return new ArrayList<>();
         }
@@ -247,7 +248,7 @@ public class ConfigProjects {
     public List<HierarchicalConfiguration> getList(String inParameter) {
         try {
             return config.configurationsAt(inParameter);
-        } catch (RuntimeException e) {
+        } catch (NoSuchElementException e) {
             log.error(e);
             return new ArrayList<>();
         }

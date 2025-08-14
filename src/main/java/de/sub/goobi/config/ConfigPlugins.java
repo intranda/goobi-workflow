@@ -47,6 +47,8 @@ public final class ConfigPlugins {
      * pass back the right configuration file by giving the plugin class.
      *
      * @deprecated use getPluginConfig(String pluginname) for this instead
+     * @param inPlugin plugin object
+     * @return XMLConfiguration
      */
     @Deprecated(since = "3.0", forRemoval = false)
     public static XMLConfiguration getPluginConfig(IPlugin inPlugin) {
@@ -57,6 +59,8 @@ public final class ConfigPlugins {
      * pass back the right configuration by giving the internal plugin name.
      * 
      * @param pluginname Name of the plugin to use for finding the right configuration file in the config folder
+     * 
+     * @return XMLConfiguration
      */
     public static XMLConfiguration getPluginConfig(String pluginname) {
         String file = "plugin_" + pluginname + ".xml";
@@ -80,6 +84,8 @@ public final class ConfigPlugins {
      * 
      * @param pluginname Name of the plugin to use for finding the right configuration file in the config folder
      * @param step Step to be used to detect the right sub-configuration
+     * 
+     * @return SubnodeConfiguration
      */
     public static SubnodeConfiguration getProjectAndStepConfig(String pluginname, Step step) {
 

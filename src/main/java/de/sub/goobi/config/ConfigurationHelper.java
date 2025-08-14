@@ -39,6 +39,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -61,7 +62,9 @@ public final class ConfigurationHelper implements Serializable {
     private static final long serialVersionUID = -8139954646653507720L;
     private static String imagesPath = null;
     private static ConfigurationHelper instance;
+    //CHECKSTYLE:OFF
     public static String configFileName = "goobi_config.properties";
+    //CHECKSTYLE:ON
     private transient PropertiesConfiguration config;
     private transient PropertiesConfiguration configLocal;
 
@@ -140,7 +143,7 @@ public final class ConfigurationHelper implements Serializable {
             } else {
                 return local;
             }
-        } catch (Exception e) {
+        } catch (ConversionException e) {
             log.error(e.getMessage(), e);
             return inDefault;
         }
@@ -153,7 +156,7 @@ public final class ConfigurationHelper implements Serializable {
     private String getLocalString(String inPath, String inDefault) {
         try {
             return configLocal.getString(inPath, config.getString(inPath, inDefault));
-        } catch (Exception e) {
+        } catch (ConversionException e) {
             log.error(e.getMessage(), e);
             return inDefault;
         }
@@ -162,7 +165,7 @@ public final class ConfigurationHelper implements Serializable {
     private int getLocalInt(String inPath) {
         try {
             return configLocal.getInt(inPath, config.getInt(inPath));
-        } catch (Exception e) {
+        } catch (ConversionException e) {
             log.error(e.getMessage(), e);
             return 0;
         }
@@ -171,7 +174,7 @@ public final class ConfigurationHelper implements Serializable {
     private int getLocalInt(String inPath, int inDefault) {
         try {
             return configLocal.getInt(inPath, config.getInt(inPath, inDefault));
-        } catch (Exception e) {
+        } catch (ConversionException e) {
             log.error(e.getMessage(), e);
             return inDefault;
         }
@@ -180,7 +183,7 @@ public final class ConfigurationHelper implements Serializable {
     private long getLocalLong(String inPath, int inDefault) {
         try {
             return configLocal.getLong(inPath, config.getLong(inPath, inDefault));
-        } catch (Exception e) {
+        } catch (ConversionException e) {
             log.error(e.getMessage(), e);
             return inDefault;
         }
@@ -189,7 +192,7 @@ public final class ConfigurationHelper implements Serializable {
     private boolean getLocalBoolean(String inPath, boolean inDefault) {
         try {
             return configLocal.getBoolean(inPath, config.getBoolean(inPath, inDefault));
-        } catch (Exception e) {
+        } catch (ConversionException e) {
             log.error(e.getMessage(), e);
             return inDefault;
         }
@@ -232,7 +235,9 @@ public final class ConfigurationHelper implements Serializable {
      */
 
     /**
-     * den absoluten Pfad für die temporären Images zurückgeben
+     * den absoluten Pfad für die temporären Images zurückgeben.
+     * 
+     * @return image tmp path
      */
     public static String getTempImagesPathAsCompleteDirectory() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
@@ -246,7 +251,8 @@ public final class ConfigurationHelper implements Serializable {
             /* den Ordner neu anlegen, wenn er nicht existiert */
             try {
                 FilesystemHelper.createDirectory(filename);
-            } catch (Exception ioe) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+            } catch (IOException | InterruptedException ioe) { //NOSONAR InterruptedException must not be re-thrown
+                // as it is not running in a separate thread
                 log.error("IO error: " + ioe);
                 Helper.setFehlerMeldung(Helper.getTranslation("couldNotCreateImageFolder"), ioe.getMessage());
             }
@@ -260,7 +266,9 @@ public final class ConfigurationHelper implements Serializable {
     }
 
     /**
-     * den Pfad für die temporären Images zur Darstellung zurückgeben
+     * den Pfad für die temporären Images zur Darstellung zurückgeben.
+     *
+     * @return image tmp path
      */
     public static String getTempImagesPath() {
         return "/imagesTemp/";
@@ -329,7 +337,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method will be removed since this configuration is not read from goobi_config.properties anymore
      *
-     * @return
+     * @return useSwapping
      */
     @Deprecated(since = "23.05", forRemoval = true)
     public boolean isUseSwapping() {
@@ -358,6 +366,9 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * This method is used to get information about custom processes. The process name is part of the configuration key.
+     *
+     * @param foldername name to check
+     * @return folder name configuration
      */
     public String getAdditionalProcessFolderName(String foldername) {
         return getAdditionalProcessFolderName("images", foldername);
@@ -490,7 +501,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return ldap url
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapUrl() {
@@ -500,7 +511,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return ldap admin login
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapAdminLogin() {
@@ -510,7 +521,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return ldap admin pw
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapAdminPassword() {
@@ -520,7 +531,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return attribute name
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapAttribute() {
@@ -530,7 +541,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return attribute value
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapAttributeValue() {
@@ -540,7 +551,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return nextFreeUnixId
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapNextId() {
@@ -550,7 +561,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return cert
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapRootCert() {
@@ -560,7 +571,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return cert pw
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapPdcCert() {
@@ -570,7 +581,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return encryption type
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapEncryption() {
@@ -580,7 +591,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return ssl connection
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public boolean isUseLdapSSLConnection() {
@@ -590,7 +601,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return ldap_readonly
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public boolean isLdapReadOnly() {
@@ -600,7 +611,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return ldap_readDirectoryAnonymous
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public boolean isLdapReadDirectoryAnonymous() {
@@ -610,7 +621,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return useLocalDirectory
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public boolean isLdapUseLocalDirectory() {
@@ -620,7 +631,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return ldap_homeDirectory
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapHomeDirectory() {
@@ -630,7 +641,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return ldap_useTLS
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public boolean isLdapUseTLS() {
@@ -1015,7 +1026,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
-     * @return
+     * @return goobiModuleServerPort
      */
     @Deprecated(since = "23.05", forRemoval = true)
     public int getGoobiModuleServerPort() {
