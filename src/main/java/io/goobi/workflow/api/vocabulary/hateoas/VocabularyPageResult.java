@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VocabularyPageResult extends BasePageResult<ExtendedVocabulary> {
     @Data
-    private class EmbeddedWrapper {
+    private final class EmbeddedWrapper {
         private List<Vocabulary> vocabularyList;
     }
 

@@ -22,7 +22,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class VocabularyAPIManager {
+public final class VocabularyAPIManager {
     private static final String MIN_REQUIRED_VERSION = "1.1.9";
     private static final String MONITORING_ENDPOINT = "/api/v1/monitoring";
     private static VocabularyAPIManager instance;

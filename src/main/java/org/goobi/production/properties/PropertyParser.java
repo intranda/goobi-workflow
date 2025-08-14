@@ -50,7 +50,7 @@ import jakarta.faces.model.SelectItem;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class PropertyParser {
+public final class PropertyParser {
 
     private static XMLConfiguration config = null;
 

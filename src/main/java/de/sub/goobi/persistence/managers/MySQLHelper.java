@@ -55,7 +55,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class MySQLHelper implements Serializable {
+public final class MySQLHelper implements Serializable {
 
     private static final long serialVersionUID = -1396485589047649760L;
     private static final int TIME_FOR_CONNECTION_VALID_CHECK = 5;

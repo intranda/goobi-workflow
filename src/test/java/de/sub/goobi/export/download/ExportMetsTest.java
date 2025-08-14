@@ -64,7 +64,7 @@ public class ExportMetsTest extends AbstractTest {
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
+        ConfigurationHelper.configFileName = goobiFolder.toString();
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
         testProcess = MockProcess.createProcess();

@@ -11,7 +11,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FieldTypePageResult extends BasePageResult<FieldType> {
     @Data
-    private class EmbeddedWrapper {
+    private final class EmbeddedWrapper {
         private List<FieldType> fieldTypeList;
     }
 

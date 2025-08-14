@@ -57,7 +57,7 @@ public abstract class AbstractTest {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         String goobiMainFolder = goobiFolder.getParent().getParent().toString();
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
+        ConfigurationHelper.configFileName = goobiFolder.toString();
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiMainFolder + "/");
     }

@@ -34,7 +34,7 @@ public class VocabularyRecordAPI {
     private final CachedLookup<Long, ExtendedVocabularyRecord> singleLookupCache;
     private final CachedLookup<RecordListRequest, VocabularyRecordPageResult> listLookupCache;
 
-    public class VocabularyRecordQueryBuilder {
+    public final class VocabularyRecordQueryBuilder {
         private final long vocabularyId;
         private Optional<Integer> page = Optional.empty();
         private Optional<Integer> pageSize = Optional.empty();

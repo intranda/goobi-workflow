@@ -43,7 +43,7 @@ import de.intranda.digiverso.normdataimporter.model.NormDataValue;
  *         <p>
  *         2021-03-12
  */
-public class NormDataUtils {
+public final class NormDataUtils {
 
     // Prevent this class from being instantiated
     private NormDataUtils() {

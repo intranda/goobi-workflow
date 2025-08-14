@@ -34,7 +34,7 @@ import jakarta.faces.convert.ConverterException;
 import jakarta.faces.convert.FacesConverter;
 
 /**
- * TimeUnitConverter for statistics TimeUnits as select-items in jsf-guis
+ * TimeUnitConverter for statistics TimeUnits as select-items in jsf-guis.
  * 
  * @author Steffen Hankiewicz
  * @version 21.05.2009
@@ -43,7 +43,7 @@ import jakarta.faces.convert.FacesConverter;
 public class StatisticsTimeUnitConverter implements Converter<TimeUnit> {
 
     /**
-     * convert String to TimeUnit
+     * convert String to TimeUnit.
      **************************************************************************************/
     @Override
     public TimeUnit getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
@@ -55,7 +55,7 @@ public class StatisticsTimeUnitConverter implements Converter<TimeUnit> {
     }
 
     /**
-     * convert TimeUnit to String
+     * convert TimeUnit to String.
      **************************************************************************************/
     @Override
     public String getAsString(FacesContext context, UIComponent component, TimeUnit value) throws ConverterException {

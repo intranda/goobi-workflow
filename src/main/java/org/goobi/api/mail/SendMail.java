@@ -75,7 +75,7 @@ import lombok.extern.log4j.Log4j2;
  */
 
 @Log4j2
-public class SendMail {
+public final class SendMail {
 
     private static SendMail instance = null;
 
@@ -94,7 +94,7 @@ public class SendMail {
     /**
      * Get the singleton instance of this class
      * 
-     * @return
+     * @return current instance
      */
 
     public static synchronized SendMail getInstance() {

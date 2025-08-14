@@ -26,7 +26,7 @@ import org.goobi.beans.User;
  * exception statement from your version.
  */
 
-public class CloseStepHelper {
+public final class CloseStepHelper {
 
     /**
      * This class is added to replace {@link HelperSchritte} class. The main goal is to use a singleton and/or static methods to close tasks

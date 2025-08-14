@@ -90,7 +90,7 @@ public class MessagesWs {
         locale2BundleMap.put(locale, ResourceBundle.getBundle("messages", locale));
     }
 
-    private class MessageRequest {
+    private final class MessageRequest {
         String lang;
         String key;
     }

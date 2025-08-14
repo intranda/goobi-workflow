@@ -11,7 +11,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VocabularySchemaPageResult extends BasePageResult<VocabularySchema> {
     @Data
-    private class EmbeddedWrapper {
+    private final class EmbeddedWrapper {
         private List<VocabularySchema> vocabularySchemaList;
     }
 

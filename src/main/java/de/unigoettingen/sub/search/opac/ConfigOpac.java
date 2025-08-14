@@ -46,7 +46,7 @@ import de.sub.goobi.helper.StorageProvider;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class ConfigOpac {
+public final class ConfigOpac {
 
     private XMLConfiguration config;
     private static String configPfad;

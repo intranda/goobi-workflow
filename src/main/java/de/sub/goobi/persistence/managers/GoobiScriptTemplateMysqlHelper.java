@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.goobi.goobiScript.GoobiScriptTemplate;
 
-public class GoobiScriptTemplateMysqlHelper {
+public final class GoobiScriptTemplateMysqlHelper {
 
     private GoobiScriptTemplateMysqlHelper() {
         // do nothing

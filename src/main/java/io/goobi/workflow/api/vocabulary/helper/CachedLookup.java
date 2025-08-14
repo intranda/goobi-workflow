@@ -12,7 +12,7 @@ public class CachedLookup<K, T> {
 
     @Data
     @AllArgsConstructor
-    private class AgingData {
+    private final class AgingData {
         private final long timestamp;
         private final T data;
 

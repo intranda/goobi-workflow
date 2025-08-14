@@ -11,7 +11,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LanguagePageResult extends BasePageResult<Language> {
     @Data
-    private class EmbeddedWrapper {
+    private final class EmbeddedWrapper {
         private List<Language> languageList;
     }
 

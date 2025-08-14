@@ -136,7 +136,7 @@ public class ImageCommentPropertyHelper {
         }
     }
 
-    private class ImageComments {
+    private final class ImageComments {
         private List<ImageComment> comments = new LinkedList<>();
     }
 

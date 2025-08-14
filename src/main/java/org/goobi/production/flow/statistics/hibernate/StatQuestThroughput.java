@@ -195,7 +195,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
         return allTables;
     }
 
-    private static class DataTableComparator implements Comparator<DataRow> {
+    private static final class DataTableComparator implements Comparator<DataRow> {
         @Override
         public int compare(DataRow o1, DataRow o2) {
             return o1.getName().compareTo(o2.getName());

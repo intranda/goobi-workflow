@@ -33,7 +33,7 @@ import java.util.TimerTask;
 import lombok.Getter;
 import lombok.Setter;
 
-public class LongRunningTaskManager {
+public final class LongRunningTaskManager {
     static LinkedList<LongRunningTask> tasks = new LinkedList<>();
     private static LongRunningTaskManager lrtm;
     @Getter

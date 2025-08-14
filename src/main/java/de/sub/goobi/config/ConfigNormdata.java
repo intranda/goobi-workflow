@@ -30,7 +30,7 @@ import org.goobi.api.display.helper.NormDatabase;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class ConfigNormdata {
+public final class ConfigNormdata {
 
     private ConfigNormdata() {
     }

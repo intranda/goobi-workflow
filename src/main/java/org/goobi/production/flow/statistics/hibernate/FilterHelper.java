@@ -43,10 +43,10 @@ import de.sub.goobi.persistence.managers.MySQLHelper;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * class provides methods used by implementations of IEvaluableFilter
+ * class provides methods used by implementations of IEvaluableFilter.
  */
 @Log4j2
-public class FilterHelper {
+public final class FilterHelper {
 
     private static String leftTruncationCharacter = "%";
     private static String rightTruncationCharacter = "%";

@@ -37,14 +37,14 @@ import de.sub.goobi.helper.Helper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class ConfigPlugins {
+public final class ConfigPlugins {
 
     private ConfigPlugins() {
 
     }
 
     /**
-     * pass back the right configuration file by giving the plugin class
+     * pass back the right configuration file by giving the plugin class.
      *
      * @deprecated use getPluginConfig(String pluginname) for this instead
      */
@@ -54,7 +54,7 @@ public class ConfigPlugins {
     }
 
     /**
-     * pass back the right configuration by giving the internal plugin name
+     * pass back the right configuration by giving the internal plugin name.
      * 
      * @param pluginname Name of the plugin to use for finding the right configuration file in the config folder
      */

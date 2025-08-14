@@ -31,9 +31,9 @@ import de.sub.goobi.helper.enums.PropertyType;
 
 public interface IGoobiProperty {
 
-    public Integer getId();
+    Integer getId();
 
-    public void setId(Integer id);
+    void setId(Integer id);
 
     public String getTitel();
 

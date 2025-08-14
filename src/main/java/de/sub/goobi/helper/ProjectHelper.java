@@ -108,7 +108,7 @@ public class ProjectHelper {
         return workFlow;
     }
 
-    private static class CompareWorkflowSteps implements Comparator<StepInformation>, Serializable {
+    private static final class CompareWorkflowSteps implements Comparator<StepInformation>, Serializable {
         private static final long serialVersionUID = 1L;
 
         /**
@@ -122,12 +122,7 @@ public class ProjectHelper {
         }
     }
 
-    public static List<StepInformation> getWorkFlow(Project inProj, Boolean notOnlyCommonFlow) {
-
-        // false as default
-        if (notOnlyCommonFlow == null) {
-            notOnlyCommonFlow = false;
-        }
+    public static List<StepInformation> getWorkFlow(Project inProj, boolean notOnlyCommonFlow) {
 
         String projectFilter = FilterHelper.criteriaBuilder("\"project:" + MySQLHelper.escapeSql(inProj.getTitel()) + "\"", false, null, null,
                 null, true, false) + " AND prozesse.istTemplate = false ";

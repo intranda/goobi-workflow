@@ -56,22 +56,22 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class ConfigurationHelper implements Serializable {
+public final class ConfigurationHelper implements Serializable {
 
     private static final long serialVersionUID = -8139954646653507720L;
     private static String imagesPath = null;
     private static ConfigurationHelper instance;
-    public static String CONFIG_FILE_NAME = "goobi_config.properties";
+    public static String configFileName = "goobi_config.properties";
     private transient PropertiesConfiguration config;
     private transient PropertiesConfiguration configLocal;
 
     private ConfigurationHelper() {
         try {
-            config = new PropertiesConfiguration(CONFIG_FILE_NAME);
+            config = new PropertiesConfiguration(configFileName);
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
             // Load local config file
             log.info("Default configuration file loaded: " + config.getFile().getAbsolutePath());
-            Path fileLocal = Paths.get(getConfigLocalPath(), CONFIG_FILE_NAME);
+            Path fileLocal = Paths.get(getConfigLocalPath(), configFileName);
             if (Files.exists(fileLocal)) {
                 configLocal = new PropertiesConfiguration(fileLocal.toFile());
                 configLocal.setReloadingStrategy(new FileChangedReloadingStrategy());
@@ -1297,7 +1297,7 @@ public class ConfigurationHelper implements Serializable {
     /**
      * This field is written into the mets:agent on export. Leave it blank, if this is not wanted
      * 
-     * @return
+     * @return instance name
      */
     public String getGoobiInstanceName() {
         return getLocalString("ExportGoobiInstanceName", "");
@@ -1384,7 +1384,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     private void saveLocalConfig() {
-        Path fileLocal = Paths.get(getConfigLocalPath(), CONFIG_FILE_NAME);
+        Path fileLocal = Paths.get(getConfigLocalPath(), configFileName);
         if (Files.exists(fileLocal)) {
             try (OutputStream out = Files.newOutputStream(fileLocal)) {
                 configLocal.save(out);

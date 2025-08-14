@@ -42,7 +42,7 @@ import org.jdom2.output.XMLOutputter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class XmlTools {
+public final class XmlTools {
 
     private XmlTools() {
         // private constructor to overwrite implicit one
