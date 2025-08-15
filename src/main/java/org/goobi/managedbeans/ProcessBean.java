@@ -553,7 +553,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         WebDav myDav = new WebDav();
         for (User b : assignedUsers) {
             try {
-                myDav.UploadFromHome(b, this.mySchritt.getProzess());
+                myDav.uploadFromHome(b, this.mySchritt.getProzess());
             } catch (RuntimeException exception) {
                 // ignore this
             }
@@ -846,7 +846,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         /* alle Benutzer */
         for (User b : this.mySchritt.getBenutzerList()) {
             try {
-                myDav.UploadFromHome(b, this.mySchritt.getProzess());
+                myDav.uploadFromHome(b, this.mySchritt.getProzess());
             } catch (RuntimeException exception) {
                 // ignore this
             }
@@ -855,7 +855,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         for (Usergroup bg : this.mySchritt.getBenutzergruppenList()) {
             for (User b : bg.getBenutzer()) {
                 try {
-                    myDav.UploadFromHome(b, this.mySchritt.getProzess());
+                    myDav.uploadFromHome(b, this.mySchritt.getProzess());
                 } catch (RuntimeException exception) {
                     // ignore this
                 }
@@ -1076,7 +1076,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String uploadFromHomeAlle() {
         WebDav myDav = new WebDav();
-        List<String> folder = myDav.UploadFromHomeAlle(doneDirectoryName);
+        List<String> folder = myDav.uploadFromHomeAll(doneDirectoryName);
         myDav.removeFromHomeAlle(folder, doneDirectoryName);
         Helper.setMeldung(null, "directoryRemovedAll", doneDirectoryName);
         return "";
@@ -1084,7 +1084,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String uploadFromHome() {
         WebDav myDav = new WebDav();
-        myDav.UploadFromHome(this.myProzess);
+        myDav.uploadFromHome(this.myProzess);
         Helper.setMeldung(null, "directoryRemoved", this.myProzess.getTitel());
         Helper.addMessageToProcessJournal(this.myProzess.getId(), LogType.DEBUG, "Process uploaded from home directory via process list.");
         return "";
@@ -1102,14 +1102,14 @@ public class ProcessBean extends BasicBean implements Serializable {
         String message = "Process downloaded into home directory from process list. Available access rights: ";
         if (!process.isImageFolderInUse()) {
             WebDav myDav = new WebDav();
-            myDav.DownloadToHome(process, 0, false);
+            myDav.downloadToHome(process, 0, false);
             Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, message + "write");
         } else {
             String information = Helper.getTranslation("directory ") + " " + process.getTitel() + " " + Helper.getTranslation("isInUse");
             String userName = process.getImageFolderInUseUser().getNachVorname();
             Helper.setMeldung(null, information, userName);
             WebDav myDav = new WebDav();
-            myDav.DownloadToHome(process, 0, true);
+            myDav.downloadToHome(process, 0, true);
             Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, message + "read");
         }
     }

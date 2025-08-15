@@ -109,14 +109,14 @@ import ugh.exceptions.WriteException;
 @Log4j2
 public class HelperSchritte {
     public static final String DIRECTORY_PREFIX = "orig_";
-    private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
-    private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
-    private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
+    private static final Namespace GOOBI_NAMESPACE = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
+    private static final Namespace METS = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
+    private static final Namespace MODS = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
 
     private static final String HTTP_STEP = "http step";
 
     /**
-     * Schritt abschliessen und dabei parallele Schritte berücksichtigen ================================================================
+     * Schritt abschliessen und dabei parallele Schritte berücksichtigen. ================================================================
      */
 
     public void CloseStepObjectAutomatic(Step step) {
@@ -126,12 +126,7 @@ public class HelperSchritte {
 
     public void closeStepAndFollowingSteps(Step step, User user) {
 
-        try {
-            saveStepStatus(step, user);
-        } catch (Exception exception) {
-            log.warn(exception);
-        }
-
+        saveStepStatus(step, user);
         List<Step> stepsToFinish = closeStepObject(step, step.getProcessId());
 
         for (Step stepToFinish : stepsToFinish) {
@@ -251,7 +246,7 @@ public class HelperSchritte {
             process.setSortHelperLastStepCloseDate(currentStep.getBearbeitungsende());
             ProcessManager.updateLastChangeDate(currentStep.getBearbeitungsende(), processId);
 
-        } catch (Exception e) {
+        } catch (IOException | SwapException | DAOException e) {
             log.error("An exception occurred while closing a step for process with ID " + process.getId(), e);
         }
 
@@ -414,7 +409,7 @@ public class HelperSchritte {
             } else {
                 dd = ff.getDigitalDocument();
             }
-        } catch (Exception e2) {
+        } catch (UGHException | IOException | SwapException e2) {
             log.info("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
             JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR, "error reading metadata file",
                     EntryType.PROCESS);
@@ -473,12 +468,7 @@ public class HelperSchritte {
                     StringWriter writer = new StringWriter();
                     Charset encoding = StandardCharsets.UTF_8;
                     if (resp.getEntity().getContentEncoding() != null) {
-                        try {
-                            encoding = Charset.forName(resp.getEntity().getContentEncoding().getValue());
-                        } catch (Exception e) {
-                            //we can do nothing here
-                            log.error(e);
-                        }
+                        encoding = Charset.forName(resp.getEntity().getContentEncoding().getValue());
                     }
                     IOUtils.copy(resp.getEntity().getContent(), writer, encoding);
                     respStr = writer.toString();
@@ -566,7 +556,8 @@ public class HelperSchritte {
         List<String> parameterList = new ArrayList<>();
         try {
             parameterList = createShellParamsForBashScript(step, script);
-        } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+        } catch (IOException | UGHException | SwapException | DAOException e) { //NOSONAR InterruptedException must not be re-thrown
+            // as it is not running in a separate thread
             String message = "Error while reading metadata for step " + step.getTitel();
             log.error(message, e);
             JournalEntry errorEntry = new JournalEntry(step.getProzess().getId(), new Date(), "automatic", LogType.ERROR, message, EntryType.PROCESS);
@@ -616,7 +607,8 @@ public class HelperSchritte {
                     log.error(scriptDidNotFinish + " for process with ID " + step.getProcessId() + returned);
                 }
             }
-        } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+        } catch (DAOException | IOException | InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown
+            // as it is not running in a separate thread
             Helper.setFehlerMeldung("An exception occured while running a script", e.getMessage());
             Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
                     "Exception while executing a script for '" + step.getTitel() + "': " + e.getMessage());
@@ -650,10 +642,9 @@ public class HelperSchritte {
 
         IExportPlugin dms = null;
         if (StringUtils.isNotBlank(step.getStepPlugin())) {
-            try {
-                dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
-            } catch (Exception e) {
-                log.error("Can't load export plugin, use default export for process with ID " + step.getProcessId(), e);
+            dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
+            if (dms == null) {
+                log.error("Can't load export plugin, use default export for process with ID " + step.getProcessId());
                 dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
             }
         }
@@ -718,7 +709,7 @@ public class HelperSchritte {
         XPathFactory xFactory = XPathFactory.instance();
         XPathExpression<Element> authorityMetaXpath =
                 xFactory.compile("//mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[goobi:authorityValue]", Filters.element(), null,
-                        mods, mets, goobiNamespace);
+                        MODS, METS, GOOBI_NAMESPACE);
         SAXBuilder builder = XmlTools.getSAXBuilder();
         Document doc;
         try {
@@ -735,7 +726,7 @@ public class HelperSchritte {
                     values = new ArrayList<>();
                     metadataPairs.put(key, values);
                 }
-                values.add(meta.getChildText("authorityValue", goobiNamespace));
+                values.add(meta.getChildText("authorityValue", GOOBI_NAMESPACE));
             }
         }
     }
@@ -749,40 +740,40 @@ public class HelperSchritte {
             return;
         }
 
-        final String TAG_DMD_SEC = "dmdSec";
-        final String TAG_MD_WRAP = "mdWrap";
-        final String TAG_XML_DATA = "xmlData";
-        final String TAG_MODS = "mods";
-        final String TAG_EXTENSION = "extension";
-        final String TAG_GOOBI = "goobi";
+        final String tagDmdSec = "dmdSec";
+        final String tagMdWrap = "mdWrap";
+        final String tagXmlData = "xmlData";
+        final String tagMods = "mods";
+        final String tagExt = "extension";
+        final String tagGoobi = "goobi";
 
         Element root = doc.getRootElement();
         try {
-            Element goobi = root.getChildren(TAG_DMD_SEC, mets)
+            Element goobi = root.getChildren(tagDmdSec, METS)
                     .get(0)
-                    .getChild(TAG_MD_WRAP, mets)
-                    .getChild(TAG_XML_DATA, mets)
-                    .getChild(TAG_MODS, mods)
-                    .getChild(TAG_EXTENSION, mods)
-                    .getChild(TAG_GOOBI, goobiNamespace);
+                    .getChild(tagMdWrap, METS)
+                    .getChild(tagXmlData, METS)
+                    .getChild(tagMods, MODS)
+                    .getChild(tagExt, MODS)
+                    .getChild(tagGoobi, GOOBI_NAMESPACE);
             List<Element> metadataList = goobi.getChildren();
             addMetadata(metadataList, metadataPairs);
-            for (Element el : root.getChildren(TAG_DMD_SEC, mets)) {
+            for (Element el : root.getChildren(tagDmdSec, METS)) {
                 if ("DMDPHYS_0000".equals(el.getAttributeValue("ID"))) {
-                    Element phys = el.getChild(TAG_MD_WRAP, mets)
-                            .getChild(TAG_XML_DATA, mets)
-                            .getChild(TAG_MODS, mods)
-                            .getChild(TAG_EXTENSION, mods)
-                            .getChild(TAG_GOOBI, goobiNamespace);
+                    Element phys = el.getChild(tagMdWrap, METS)
+                            .getChild(tagXmlData, METS)
+                            .getChild(tagMods, MODS)
+                            .getChild(tagExt, MODS)
+                            .getChild(tagGoobi, GOOBI_NAMESPACE);
                     List<Element> physList = phys.getChildren();
                     addMetadata(physList, metadataPairs);
                 }
             }
             // create field for "DocStruct"
-            String docType = root.getChildren("structMap", mets).get(0).getChild("div", mets).getAttributeValue("TYPE");
+            String docType = root.getChildren("structMap", METS).get(0).getChild("div", METS).getAttributeValue("TYPE");
             metadataPairs.put("DocStruct", Collections.singletonList(docType));
 
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             log.error(e);
             log.error("Cannot extract metadata from " + metadataFile.toString());
         }
@@ -794,7 +785,7 @@ public class HelperSchritte {
             String metadataType = goobimetadata.getAttributeValue("type");
             String metadataValue = "";
             if (metadataType != null && "person".equals(metadataType)) {
-                Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
+                Element displayName = goobimetadata.getChild("displayName", GOOBI_NAMESPACE);
                 if (displayName != null && !",".equals(displayName.getValue())) {
                     metadataValue = displayName.getValue();
                 }

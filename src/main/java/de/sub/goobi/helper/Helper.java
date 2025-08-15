@@ -115,16 +115,18 @@ public class Helper implements Serializable, ServletContextListener {
     private String myConfigVerzeichnis;
     private static Map<Locale, ResourceBundle> commonMessages = null;
     private static Map<Locale, ResourceBundle> localMessages = null;
-    private static final Map<String, Boolean> reloadNeededMap = new ConcurrentHashMap<>();
-    private static final Map<Path, Thread> watcherMap = new ConcurrentHashMap<>();
+    private static final Map<String, Boolean> RELOAD_NEEDED_MAP = new ConcurrentHashMap<>();
+    private static final Map<Path, Thread> WATCHER_MAP = new ConcurrentHashMap<>();
     private static final String MESSAGES = "messages";
     private static final String AUTOMATIC = "- automatic -";
 
-    private static final DateTimeFormatter formatterDEDateTime = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-    private static final DateTimeFormatter formatterENDateTime = DateTimeFormatter.ofPattern("MM/dd/yyyy h:mm:ss a").withLocale(Locale.ENGLISH);
+    private static final DateTimeFormatter FORMATTER_DE_DATETIME = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER_EN_DATETIME = DateTimeFormatter.ofPattern("MM/dd/yyyy h:mm:ss a").withLocale(Locale.ENGLISH);
 
     /**
-     * Ermitteln eines bestimmten Paramters des Requests
+     * Ermitteln eines bestimmten Paramters des Requests.
+     *
+     * @param parameter
      *
      * @return Paramter als String
      */
@@ -287,8 +289,10 @@ public class Helper implements Serializable, ServletContextListener {
 
     /**
      *
-     *
      * @deprecated use addMessageToProcessJournal instead
+     * @param processId
+     * @param type
+     * @param message
      */
 
     @Deprecated(since = "23.05", forRemoval = true)
@@ -300,6 +304,10 @@ public class Helper implements Serializable, ServletContextListener {
      *
      *
      * @deprecated use addMessageToProcessJournal instead
+     * @param processId
+     * @param type
+     * @param message
+     * @param username
      */
     @Deprecated(since = "23.05", forRemoval = true)
     public static void addMessageToProcessLog(Integer processId, LogType type, String message, String username) {
@@ -332,7 +340,7 @@ public class Helper implements Serializable, ServletContextListener {
             try {
                 msg = getString(language, meldung);
                 beschr = getString(language, beschreibung);
-            } catch (RuntimeException e) {
+            } catch (NullPointerException e) {
                 log.error(e);
             }
         }
@@ -355,9 +363,9 @@ public class Helper implements Serializable, ServletContextListener {
         if (commonMessages == null || commonMessages.size() <= 1) {
             loadMsgs(false);
         }
-        if ((reloadNeededMap.containsKey(language.getLanguage()) && reloadNeededMap.get(language.getLanguage()))) {
+        if ((RELOAD_NEEDED_MAP.containsKey(language.getLanguage()) && RELOAD_NEEDED_MAP.get(language.getLanguage()))) {
             loadMsgs(true);
-            reloadNeededMap.put(language.getLanguage(), false);
+            RELOAD_NEEDED_MAP.put(language.getLanguage(), false);
         }
 
         if (localMessages.containsKey(language)) {
@@ -373,7 +381,7 @@ public class Helper implements Serializable, ServletContextListener {
         try {
 
             return commonMessages.get(language).getString(key);
-        } catch (RuntimeException irrelevant) {
+        } catch (NullPointerException irrelevant) {
             return "";
         }
     }
@@ -382,9 +390,9 @@ public class Helper implements Serializable, ServletContextListener {
         if (commonMessages == null || commonMessages.size() <= 1) {
             loadMsgs(false);
         }
-        if ((reloadNeededMap.containsKey(language.getLanguage()) && reloadNeededMap.get(language.getLanguage()))) {
+        if ((RELOAD_NEEDED_MAP.containsKey(language.getLanguage()) && RELOAD_NEEDED_MAP.get(language.getLanguage()))) {
             loadMsgs(true);
-            reloadNeededMap.put(language.getLanguage(), false);
+            RELOAD_NEEDED_MAP.put(language.getLanguage(), false);
         }
         String value = getMessage(language, key);
         if (value.endsWith("zzz")) {
@@ -426,9 +434,9 @@ public class Helper implements Serializable, ServletContextListener {
             return "-";
         }
         if (Locale.GERMAN.equals(Helper.getSessionLocale())) {
-            return formatterDEDateTime.format(inDate);
+            return FORMATTER_DE_DATETIME.format(inDate);
         }
-        return formatterENDateTime.format(inDate);
+        return FORMATTER_EN_DATETIME.format(inDate);
     }
 
     /**
@@ -439,12 +447,12 @@ public class Helper implements Serializable, ServletContextListener {
      * @throws InterruptedException
      */
     private static void registerFileChangedService(Path path) {
-        if (watcherMap.containsKey(path)) {
+        if (WATCHER_MAP.containsKey(path)) {
             return;
         }
 
         Thread watcherThread = new Thread(() -> {
-            try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
+            try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
                 path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
                 while (true) {
                     final WatchKey wk = watchService.take();
@@ -453,7 +461,7 @@ public class Helper implements Serializable, ServletContextListener {
                         final String fileName = changed.getFileName().toString();
                         if (fileName.startsWith("messages_")) {
                             final String language = fileName.substring(9, 11);
-                            reloadNeededMap.put(language, true);
+                            RELOAD_NEEDED_MAP.put(language, true);
                             log.debug(String.format("File '%s' (language: %s) has been modified, triggering bundle reload...",
                                     changed.getFileName().toString(), language));
                         }
@@ -469,7 +477,7 @@ public class Helper implements Serializable, ServletContextListener {
                 Thread.currentThread().interrupt();
             }
         });
-        watcherMap.put(path, watcherThread);
+        WATCHER_MAP.put(path, watcherThread);
         watcherThread.start();
     }
 
@@ -531,7 +539,7 @@ public class Helper implements Serializable, ServletContextListener {
                 if (!localOnly) {
                     try {
                         commonMessages.put(language, ResourceBundle.getBundle(MESSAGES, language));
-                    } catch (Exception e) {
+                    } catch (NullPointerException e) {
                         log.warn("Cannot load messages for language " + language.getLanguage());
                     }
                 }
@@ -553,7 +561,7 @@ public class Helper implements Serializable, ServletContextListener {
                             localMessages.put(language, localBundle);
                         }
 
-                    } catch (Exception e) {
+                    } catch (IOException | NullPointerException e) {
                         log.error(e);
                     }
                 }
@@ -580,7 +588,7 @@ public class Helper implements Serializable, ServletContextListener {
     }
 
     /**
-     * get locale of current user session
+     * get locale of current user session.
      *
      * @return locale of current user session
      */
@@ -616,7 +624,7 @@ public class Helper implements Serializable, ServletContextListener {
      *
      * @param dbTitel
      * @param parameterList
-     * @return
+     * @return translation
      */
     @Deprecated(since = "23.05", forRemoval = true)
     public static String getTranslation(String dbTitel, List<String> parameterList) {
@@ -711,6 +719,11 @@ public class Helper implements Serializable, ServletContextListener {
 
     /**
      * Copies all files under srcDir to dstDir. If dstDir does not exist, it will be created.
+     *
+     * @param srcDir
+     * @param dstDir
+     * @param goobipathlength
+     * @param inRoot
      */
 
     public static void copyDirectoryWithCrc32Check(Path srcDir, Path dstDir, int goobipathlength, Element inRoot) throws IOException {
@@ -750,7 +763,7 @@ public class Helper implements Serializable, ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         // stop all watcherThreads when server shuts down
-        for (Thread t : watcherMap.values()) {
+        for (Thread t : WATCHER_MAP.values()) {
             try {
                 t.interrupt();
                 t.join(1000);

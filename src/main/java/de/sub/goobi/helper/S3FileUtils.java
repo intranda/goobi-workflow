@@ -100,7 +100,7 @@ public class S3FileUtils implements StorageProviderInterface {
     private NIOFileUtils nio;
     private static Pattern processDirPattern;
 
-    private static final long MB = 1024l * 1024l;
+    private static final long MB = 1024L * 1024L;
 
     static {
         String metadataFolder = ConfigurationHelper.getInstance().getMetadataFolder();
@@ -123,6 +123,7 @@ public class S3FileUtils implements StorageProviderInterface {
 
     }
 
+    @SuppressWarnings("deprecation")
     public static S3AsyncClient createS3Client() throws URISyntaxException {
         S3AsyncClient mys3;
         ConfigurationHelper conf = ConfigurationHelper.getInstance();
@@ -355,7 +356,8 @@ public class S3FileUtils implements StorageProviderInterface {
     }
 
     @Override
-    public List<Path> listFiles(String folder) {
+    public List<Path> listFiles(String inFolder) {
+        String folder = inFolder;
         if (!folder.contains(".") && !folder.endsWith("/")) {
             folder = folder + "/";
         }

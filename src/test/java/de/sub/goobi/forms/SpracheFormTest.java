@@ -128,7 +128,7 @@ public class SpracheFormTest extends AbstractTest {
         ConfigurationHelper.getInstance().setParameter("language.force-default", "de");
         SpracheForm form = new SpracheForm();
         assertNotNull(form);
-        String fixture = form.SpracheUmschalten();
+        String fixture = form.changeLanguage();
         assertEquals("test", fixture);
     }
 

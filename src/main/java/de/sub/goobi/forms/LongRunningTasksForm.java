@@ -58,7 +58,7 @@ public class LongRunningTasksForm {
     }
 
     /**
-     * Thread entweder starten oder restarten ================================================================
+     * Thread entweder starten oder restarten. ================================================================
      */
     public void executeTask() {
         if (this.task.getStatusProgress() == 0) {

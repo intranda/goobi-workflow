@@ -53,7 +53,11 @@ import lombok.extern.log4j.Log4j2;
  * Helper class for file system operations.
  */
 @Log4j2
-public class FilesystemHelper {
+public final class FilesystemHelper {
+
+    private FilesystemHelper() {
+        // hide implicit public constructor
+    }
 
     private static final String ALTO = ".alto";
     private static final String TXT = ".txt";
@@ -91,9 +95,11 @@ public class FilesystemHelper {
      * permissions accordingly. This cannot be done from within java code before version 1.7.
      * 
      * @param dirName Name of directory to create
+     * @param userName
      * @throws InterruptedException If the thread running the script is interrupted by another thread while it is waiting, then the wait is ended and
      *             an InterruptedException is thrown.
      * @throws IOException If an I/O error occurs.
+     * @return success
      */
 
     public static boolean createDirectoryForUser(String dirName, String userName) throws IOException, InterruptedException {
@@ -129,7 +135,7 @@ public class FilesystemHelper {
     }
 
     /**
-     * generate nice looking file sizes for files sizes given in bytes
+     * generate nice looking file sizes for files sizes given in bytes.
      * 
      * @param size size of a file as long
      * @return String with nice looking file size

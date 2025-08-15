@@ -543,7 +543,7 @@
 							<button
 								jsf:id="cancelBatch"
                                 jsf:rendered="#{isBatchStep}"
-								jsf:action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerZurueckgeben}"
+								jsf:action="#{AktuelleSchritteForm.batchHelper.abortBatchEdition}"
 								class="btn btn-link "
 								title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
 								onclick="preventDoubleSubmit(this);">
@@ -575,7 +575,7 @@
 							<button
 								jsf:rendered="#{AktuelleSchritteForm.enableFinalizeButton and isBatchStep}"
 								jsf:id="finishBatch"
-								jsf:action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerAbschliessen}"
+								jsf:action="#{AktuelleSchritteForm.batchHelper.finishBatchEdition}"
 								class="btn btn-link "
 								title="#{msgs.diesenSchrittAbschliessen}"
 								onclick="preventDoubleSubmit(this);">
@@ -706,7 +706,7 @@
                                 id="submiterrorBatch1"
                                 rendered="#{isBatchStep}"
                                 type="submit"
-                                action="#{AktuelleSchritteForm.batchHelper.ReportProblemForAll}"
+                                action="#{AktuelleSchritteForm.batchHelper.reportProblemForAll}"
                                 value="#{msgs.korrekturmeldungSendenForAll}"
                                 title="#{msgs.korrekturmeldungSendenForAll}"
                                 styleClass="btn btn-primary">
@@ -717,7 +717,7 @@
 								id="submiterrorBatch2"
                                 rendered="#{isBatchStep}"
 								type="submit"
-								action="#{AktuelleSchritteForm.batchHelper.ReportProblemForSingle}"
+								action="#{AktuelleSchritteForm.batchHelper.reportProblemForSingle}"
 								value="#{msgs.korrekturmeldungSendenSingle}"
 								title="#{msgs.korrekturmeldungSendenSingle}"
 								styleClass="btn btn-primary">
@@ -840,7 +840,7 @@
                                 id="solveProblemBatch1"
                                 rendered="#{isBatchStep}"
                                 type="submit"
-                                action="#{AktuelleSchritteForm.batchHelper.SolveProblemForAll}"
+                                action="#{AktuelleSchritteForm.batchHelper.solveProblemForAll}"
                                 value="#{msgs.meldungUeberProblemloesungSendenForAll}"
                                 title="#{msgs.meldungUeberProblemloesungSendenForAll}"
                                 styleClass="btn btn-primary">
@@ -851,7 +851,7 @@
 								id="solveProblemBatch2"
                                 rendered="#{isBatchStep}"
 								type="submit"
-								action="#{AktuelleSchritteForm.batchHelper.SolveProblemForSingle}"
+								action="#{AktuelleSchritteForm.batchHelper.solveProblemForSingle}"
 								value="#{msgs.meldungUeberProblemloesungSendenSingle}"
 								title="#{msgs.meldungUeberProblemloesungSendenSingle}"
 								styleClass="btn btn-primary">

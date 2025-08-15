@@ -29,7 +29,11 @@ import de.sub.goobi.config.ConfigurationHelper;
 import jakarta.inject.Singleton;
 
 @Singleton
-public class StorageProvider {
+public final class StorageProvider {
+
+    private StorageProvider() {
+        // hide implicit public constructor
+    }
 
     private static final String REGEX_AVI = "\\.[aA][vV][iI]";
     private static final String REGEX_DOCX = "\\.[dD][oO][cC][xX]?";

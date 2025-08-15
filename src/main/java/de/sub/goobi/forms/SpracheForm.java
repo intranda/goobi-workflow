@@ -44,7 +44,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 
 /**
- * The SpracheForm class serves to switch the displayed language for the current user in the running application
+ * The SpracheForm class serves to switch the displayed language for the current user in the running application.
  */
 @Named("SpracheForm")
 @WindowScoped
@@ -60,7 +60,7 @@ public class SpracheForm implements Serializable {
     private static final String DISPLAY_LANGUAGE_TRANSLATED = "displayLanguageTranslated";
 
     /**
-     * The constructor of this class loads the required MessageBundle
+     * The constructor of this class loads the required MessageBundle.
      */
     public SpracheForm() {
         String p = ConfigurationHelper.getInstance().getDefaultLanguage();
@@ -141,7 +141,7 @@ public class SpracheForm implements Serializable {
      * 
      * @return the empty String to point to the JSF framework to remain on the current page
      */
-    public String SpracheUmschalten() {
+    public String changeLanguage() {
         String languageCodeCombined = Helper.getRequestParameter("locale");
         switchLanguage(languageCodeCombined);
         return Helper.getRequestParameter("ziel");

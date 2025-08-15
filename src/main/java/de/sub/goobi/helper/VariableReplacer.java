@@ -181,7 +181,7 @@ public class VariableReplacer {
      * First the input string gets tokenized, either on double quotation or on white space. Afterwards each parameter gets replaced
      * 
      * @param inString
-     * @return
+     * @return tokenized script
      */
 
     public List<String> replaceBashScript(String inString) {
@@ -198,31 +198,35 @@ public class VariableReplacer {
     }
 
     /**
-     * This method can be used to replace simple variables,like process title or id
+     * This method can be used to replace simple variables,like process title or id.
      * 
      * Access to ruleset, metadata, properties is not possible
      * 
      * @param inString
+     * @param process
      * @return replaced string
      */
 
     public static String simpleReplace(String inString, Process process) {
+        String string = inString;
+        string = pProcessTitle.matcher(inString).replaceAll(process.getTitel());
+        string = pProcessId.matcher(inString).replaceAll(String.valueOf(process.getId().intValue()));
 
-        inString = pProcessTitle.matcher(inString).replaceAll(process.getTitel());
-        inString = pProcessId.matcher(inString).replaceAll(String.valueOf(process.getId().intValue()));
+        string = pProjectId.matcher(inString).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
+        string = pProjectName.matcher(inString).replaceAll(process.getProjekt().getTitel());
+        string = pProjectIdentifier.matcher(inString).replaceAll(process.getProjekt().getProjectIdentifier());
 
-        inString = pProjectId.matcher(inString).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
-        inString = pProjectName.matcher(inString).replaceAll(process.getProjekt().getTitel());
-        inString = pProjectIdentifier.matcher(inString).replaceAll(process.getProjekt().getProjectIdentifier());
-
-        return inString;
+        return string;
     }
 
     /**
-     * Variablen innerhalb eines Strings ersetzen. Dabei vergleichbar zu Ant die Variablen durchlaufen und aus dem Digital Document holen
-     * ================================================================
+     * Variablen innerhalb eines Strings ersetzen. Dabei vergleichbar zu Ant die Variablen durchlaufen und aus dem Digital Document holen.
+     *
+     * @param inString
+     * @return replaced string
      */
-    public String replace(String inString) {
+    public String replace(String stringToReplace) {
+        String inString = stringToReplace;
         if (inString == null) {
             return "";
         }
@@ -787,6 +791,9 @@ public class VariableReplacer {
                         log.warn("Can not replace variable for METS: " + metadata);
                     }
                     break;
+                default:
+                    // do nothing
+                    break;
 
             }
             return result;
@@ -852,8 +859,11 @@ public class VariableReplacer {
     }
 
     /**
-     * Suche nach regulären Ausdrücken in einem String, liefert alle gefundenen Treffer als Liste zurück
-     * ================================================================
+     * Suche nach regulären Ausdrücken in einem String, liefert alle gefundenen Treffer als Liste zurück.
+     * 
+     * @param s
+     * @param pattern
+     * @return result ================================================================
      */
     public static Iterable<MatchResult> findRegexMatches(String pattern, CharSequence s) {
         List<MatchResult> results = new ArrayList<>();

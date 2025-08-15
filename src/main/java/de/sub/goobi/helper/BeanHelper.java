@@ -176,7 +176,7 @@ public class BeanHelper implements Serializable {
      * 
      * @param processToChange process to change
      * @param template new process template
-     * @return
+     * @return boolean
      */
 
     public boolean changeProcessTemplate(Process processToChange, Process template) {

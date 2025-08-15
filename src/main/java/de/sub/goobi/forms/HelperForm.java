@@ -76,11 +76,11 @@ public class HelperForm implements Serializable {
     @Setter
     private boolean showError = false;
 
-    // TODO re-added temporary for compiling issues
     public static final String MAIN_JSF_PATH = "/newpages";
 
     /**
      * @Deprecated Use {@link HelperForm#getVersion()} instead.
+     * @return version
      */
     @Deprecated(forRemoval = false)
     public String getBuildVersion() {
@@ -95,7 +95,6 @@ public class HelperForm implements Serializable {
         return GoobiVersion.getRevision();
     }
 
-    // TODO: Change the defaults
     public String getApplicationHeaderTitle() {
 
         return ConfigurationHelper.getInstance().getApplicationHeaderTitle();
@@ -335,6 +334,9 @@ public class HelperForm implements Serializable {
 
     /**
      * Receive a specific translation for a key including a prefix. And if it is missing respond the original key back again
+     * 
+     * @param prefix
+     * @param key
      * 
      * @return translated value
      */

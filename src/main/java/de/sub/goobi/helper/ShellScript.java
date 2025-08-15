@@ -107,7 +107,8 @@ public class ShellScript {
 
     /**
      * The function run() will execute the system command. This is a shorthand to run the script without arguments.
-     * 
+     *
+     * @return result
      * @throws IOException If an I/O error occurs.
      * @throws InterruptedException If the current thread is interrupted by another thread while it is waiting, then the wait is ended and an
      *             InterruptedException is thrown.
@@ -130,6 +131,7 @@ public class ShellScript {
      * </pre>
      * 
      * @param args A list of arguments passed to the script. May be null.
+     * @return result
      * @throws IOException If an I/O error occurs.
      * @throws InterruptedException If the current thread is interrupted by another thread while it is waiting, then the wait is ended and an
      *             InterruptedException is thrown.
@@ -219,11 +221,11 @@ public class ShellScript {
     }
 
     /**
-     * Call a shell script/program and write the output of that call as message into the user interface if the output is not empty
+     * Call a shell script/program and write the output of that call as message into the user interface if the output is not empty.
      * 
      * @param parameter List of parameters to call the shell command
      * @param processID ID of the process to allow writing of messages into the process log in case of errors
-     * @return
+     * @return result
      * @throws IOException
      * @throws InterruptedException
      */
@@ -285,6 +287,7 @@ public class ShellScript {
      * compatibility only. Please don’t use.
      * 
      * @param nonSpacesafeScriptingCommand A single line command which mustn’t contain parameters containing white spaces.
+     * @param processID
      * @return error level on success, 1 if an error occurs
      * @throws InterruptedException In case the script was interrupted due to concurrency
      * @throws IOException If an I/O error happens

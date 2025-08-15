@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -38,7 +39,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
-import org.apache.jena.base.Sys;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
@@ -97,7 +97,7 @@ public class MassImportForm implements Serializable {
      */
     private static final long serialVersionUID = 4780655212251185461L;
 
-    private static final String docStructsGetter = "getCurrentDocStructs";
+    private static final String DOCSTRUCTS_GETTER = "getCurrentDocStructs";
 
     @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private GoobiScriptManager goobiScriptManager;
@@ -656,14 +656,14 @@ public class MassImportForm implements Serializable {
     public boolean getHasNextPage() {
         java.lang.reflect.Method method;
         try {
-            method = this.plugin.getClass().getMethod(docStructsGetter);
+            method = this.plugin.getClass().getMethod(DOCSTRUCTS_GETTER);
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
             if (list != null) {
                 return true;
             }
-        } catch (Exception e) {
+        } catch (NullPointerException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             // the case this.plugin == null will end up here
             // no need to do anything
         }
@@ -675,7 +675,7 @@ public class MassImportForm implements Serializable {
             if (!list.isEmpty()) {
                 return true;
             }
-        } catch (Exception e) {
+        } catch (NullPointerException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             // the case this.plugin == null will end up here
             // no need to do anything
         }
@@ -689,14 +689,14 @@ public class MassImportForm implements Serializable {
         }
         java.lang.reflect.Method method;
         try {
-            method = this.plugin.getClass().getMethod(docStructsGetter);
+            method = this.plugin.getClass().getMethod(DOCSTRUCTS_GETTER);
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
             if (list != null) {
                 return "process_import_2_mass";
             }
-        } catch (Exception e) {
+        } catch (NullPointerException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             // the case this.plugin == null will end up here
             // no need to do anything
         }
@@ -744,14 +744,14 @@ public class MassImportForm implements Serializable {
     public List<? extends DocstructElement> getDocstructs() {
         java.lang.reflect.Method method;
         try {
-            method = this.plugin.getClass().getMethod(docStructsGetter);
+            method = this.plugin.getClass().getMethod(DOCSTRUCTS_GETTER);
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
             if (list != null) {
                 return list;
             }
-        } catch (Exception e) {
+        } catch (NullPointerException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             // the case this.plugin == null will end up here
             // no need to do anything
         }
@@ -767,7 +767,7 @@ public class MassImportForm implements Serializable {
                 return (String) o; // path
             }
 
-        } catch (Exception e) {
+        } catch (NullPointerException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             log.error(e);
         }
         return null;

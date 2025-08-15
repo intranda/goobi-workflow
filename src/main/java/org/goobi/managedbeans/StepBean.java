@@ -397,7 +397,7 @@ public class StepBean extends BasicBean implements Serializable {
                         log.warn("Cannot find imagesOrigDirectory for process '" + s.getProzess().getTitel() + "': ", e1);
                     }
 
-                    this.myDav.DownloadToHome(s.getProzess(), s.getId().intValue(), !s.isTypImagesSchreiben());
+                    this.myDav.downloadToHome(s.getProzess(), s.getId().intValue(), !s.isTypImagesSchreiben());
 
                 }
             }
@@ -467,7 +467,7 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     public String SchrittDurchBenutzerZurueckgeben() {
-        this.myDav.UploadFromHome(this.mySchritt.getProzess());
+        this.myDav.uploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setBearbeitungsstatusEnum(StepStatus.OPEN);
         // if we have a correction-step here then never remove startdate
         if (Boolean.TRUE.equals(this.mySchritt.isCorrectionStep())) {
@@ -547,7 +547,7 @@ public class StepBean extends BasicBean implements Serializable {
         /*
          * wenn das Ergebnis der Verifizierung ok ist, dann weiter, ansonsten schon vorher draussen
          */
-        this.myDav.UploadFromHome(this.mySchritt.getProzess());
+        this.myDav.uploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
         new HelperSchritte().CloseStepObjectAutomatic(mySchritt);
         return FilterAlleStart();
@@ -605,7 +605,7 @@ public class StepBean extends BasicBean implements Serializable {
             log.debug("mySchritt.ID: " + this.mySchritt.getId().intValue());
             log.debug("Korrekturschritt.ID: " + this.myProblemID.intValue());
         }
-        this.myDav.UploadFromHome(this.mySchritt.getProzess());
+        this.myDav.uploadFromHome(this.mySchritt.getProzess());
         Date myDate = new Date();
         this.mySchritt.setBearbeitungsstatusEnum(StepStatus.LOCKED);
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
@@ -717,7 +717,7 @@ public class StepBean extends BasicBean implements Serializable {
         }
 
         Date now = new Date();
-        this.myDav.UploadFromHome(this.mySchritt.getProzess());
+        this.myDav.uploadFromHome(this.mySchritt.getProzess());
         SendMail.getInstance().sendMailToAssignedUser(mySchritt, StepStatus.DONE);
         this.mySchritt.setBearbeitungsstatusEnum(StepStatus.DONE);
         this.mySchritt.setBearbeitungsende(now);
@@ -811,7 +811,7 @@ public class StepBean extends BasicBean implements Serializable {
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
-        this.myDav.UploadFromHome(this.mySchritt.getProzess());
+        this.myDav.uploadFromHome(this.mySchritt.getProzess());
         Helper.setMeldung(null, "Removed directory from user home", this.mySchritt.getProzess().getTitel());
         return "";
     }
@@ -827,14 +827,14 @@ public class StepBean extends BasicBean implements Serializable {
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
-        this.myDav.DownloadToHome(this.mySchritt.getProzess(), this.mySchritt.getId().intValue(), !this.mySchritt.isTypImagesSchreiben());
+        this.myDav.downloadToHome(this.mySchritt.getProzess(), this.mySchritt.getId().intValue(), !this.mySchritt.isTypImagesSchreiben());
 
         return "";
     }
 
     public String uploadFromHomeAlle() throws NumberFormatException {
 
-        List<String> fertigListe = this.myDav.UploadFromHomeAlle(this.doneDirectoryName);
+        List<String> fertigListe = this.myDav.uploadFromHomeAll(this.doneDirectoryName);
         List<String> geprueft = new ArrayList<>();
         /*
          * -------------------------------- die hochgeladenen Prozess-IDs durchlaufen und auf abgeschlossen setzen --------------------------------
@@ -888,7 +888,7 @@ public class StepBean extends BasicBean implements Serializable {
                 } catch (DAOException e) {
                     Helper.setMeldung("fehlerNichtSpeicherbar" + proz.getTitel());
                 }
-                this.myDav.DownloadToHome(proz, step.getId().intValue(), false);
+                this.myDav.downloadToHome(proz, step.getId().intValue(), false);
             }
         }
         Helper.setMeldung(null, "Created directies in user home", "");
@@ -918,7 +918,7 @@ public class StepBean extends BasicBean implements Serializable {
                 } catch (DAOException e) {
                     Helper.setMeldung("fehlerNichtSpeicherbar" + proz.getTitel());
                 }
-                this.myDav.DownloadToHome(proz, step.getId().intValue(), false);
+                this.myDav.downloadToHome(proz, step.getId().intValue(), false);
             }
         }
         Helper.setMeldung(null, "Created directories in user home", "");

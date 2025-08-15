@@ -1,5 +1,6 @@
 package de.sub.goobi.helper;
 
+import java.io.IOException;
 import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -63,6 +64,9 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.ExportFileException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import de.sub.goobi.persistence.managers.HistoryManager;
@@ -75,6 +79,8 @@ import jakarta.faces.model.SelectItem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class BatchStepHelper implements Serializable {
@@ -464,9 +470,9 @@ public class BatchStepHelper implements Serializable {
      * Error management
      */
 
-    public String ReportProblemForSingle() {
+    public String reportProblemForSingle() {
 
-        this.myDav.UploadFromHome(this.currentStep.getProzess());
+        this.myDav.uploadFromHome(this.currentStep.getProzess());
         reportProblem();
         saveStep();
         this.problemMessage = "";
@@ -474,10 +480,10 @@ public class BatchStepHelper implements Serializable {
         return sb.FilterAlleStart();
     }
 
-    public String ReportProblemForAll() {
+    public String reportProblemForAll() {
         for (Step s : this.steps) {
             this.currentStep = s;
-            this.myDav.UploadFromHome(this.currentStep.getProzess());
+            this.myDav.uploadFromHome(this.currentStep.getProzess());
             reportProblem();
             saveStep();
         }
@@ -608,7 +614,7 @@ public class BatchStepHelper implements Serializable {
         return getNextStepsForProblemSolution().size();
     }
 
-    public String SolveProblemForSingle() {
+    public String solveProblemForSingle() {
         solveProblem();
         saveStep();
         this.solutionMessage = "";
@@ -616,7 +622,7 @@ public class BatchStepHelper implements Serializable {
         return sb.FilterAlleStart();
     }
 
-    public String SolveProblemForAll() {
+    public String solveProblemForAll() {
         for (Step s : this.steps) {
             this.currentStep = s;
             solveProblem();
@@ -630,7 +636,7 @@ public class BatchStepHelper implements Serializable {
 
     private void solveProblem() {
         Date now = new Date();
-        this.myDav.UploadFromHome(this.currentStep.getProzess());
+        this.myDav.uploadFromHome(this.currentStep.getProzess());
         SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
         this.currentStep.setBearbeitungsstatusEnum(StepStatus.DONE);
         this.currentStep.setBearbeitungsende(now);
@@ -707,12 +713,6 @@ public class BatchStepHelper implements Serializable {
         }
     }
 
-    /**
-     * sets new value for wiki field
-     * 
-     * @param inString
-     */
-
     public void addLogEntry() {
         if (StringUtils.isNotBlank(content)) {
             User user = Helper.getCurrentUser();
@@ -758,10 +758,9 @@ public class BatchStepHelper implements Serializable {
         for (Step step : this.steps) {
             IExportPlugin dms = null;
             if (StringUtils.isNotBlank(step.getStepPlugin())) {
-                try {
-                    dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
-                } catch (Exception e) {
-                    log.error("Can't load export plugin, use default export", e);
+                dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
+                if (dms == null) {
+                    log.error("Can't load export plugin, use default export");
                     Helper.setFehlerMeldung("Can't load export plugin, use default export");
                     dms = new ExportDms();
                 }
@@ -771,18 +770,20 @@ public class BatchStepHelper implements Serializable {
             }
             try {
                 dms.startExport(step.getProzess());
-            } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+            } catch (UGHException | IOException | DocStructHasNoTypeException | InterruptedException | ExportFileException | UghHelperException
+                    | SwapException | DAOException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                 Helper.setFehlerMeldung("Error on export", e.getMessage());
                 log.error(e);
             }
         }
+
     }
 
-    public String BatchDurchBenutzerZurueckgeben() {
+    public String abortBatchEdition() {
 
         for (Step s : this.steps) {
 
-            this.myDav.UploadFromHome(s.getProzess());
+            this.myDav.uploadFromHome(s.getProzess());
             s.setBearbeitungsstatusEnum(StepStatus.OPEN);
             if (Boolean.TRUE.equals(s.isCorrectionStep())) {
                 s.setBearbeitungsbeginn(null);
@@ -804,7 +805,7 @@ public class BatchStepHelper implements Serializable {
         return sb.FilterAlleStart();
     }
 
-    public String BatchDurchBenutzerAbschliessen() {
+    public String finishBatchEdition() {
         HelperSchritte helper = new HelperSchritte();
         for (Step s : this.steps) {
             boolean error = false;
@@ -823,7 +824,7 @@ public class BatchStepHelper implements Serializable {
             if (s.isTypImagesSchreiben()) {
                 try {
                     HistoryAnalyserJob.updateHistory(s.getProzess());
-                } catch (Exception e) {
+                } catch (IOException | SwapException | DAOException e) {
                     Helper.setFehlerMeldung("Error while calculation of storage and images", e);
                 }
             }
@@ -842,7 +843,7 @@ public class BatchStepHelper implements Serializable {
                         if (!mih.checkIfImagesValid(s.getProzess().getTitel(), s.getProzess().getImagesOrigDirectory(false))) {
                             error = true;
                         }
-                    } catch (Exception e) {
+                    } catch (IOException | SwapException | DAOException e) {
                         Helper.setFehlerMeldung("Error on image validation: ", e);
                     }
                 }
@@ -864,7 +865,7 @@ public class BatchStepHelper implements Serializable {
                 }
             }
             if (!error) {
-                this.myDav.UploadFromHome(s.getProzess());
+                this.myDav.uploadFromHome(s.getProzess());
                 Step so = StepManager.getStepById(s.getId());
                 so.setEditTypeEnum(StepEditType.MANUAL_MULTI);
                 helper.CloseStepObjectAutomatic(so);

@@ -20,7 +20,12 @@ package de.sub.goobi.helper;
  */
 import jakarta.faces.context.FacesContext;
 
-public class FacesContextHelper {
+public final class FacesContextHelper {
+
+    private FacesContextHelper() {
+        // hide implicit public constructor
+    }
+
     private static FacesContext context;
 
     public static FacesContext getCurrentFacesContext() {

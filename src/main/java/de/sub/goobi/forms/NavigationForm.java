@@ -109,7 +109,7 @@ public class NavigationForm implements Serializable {
 
         private String id;
 
-        private Theme(String id) {
+        private Theme(final String id) {
             this.id = id;
         }
 
@@ -127,14 +127,6 @@ public class NavigationForm implements Serializable {
 
     public String Reload() {
         return "";
-    }
-
-    public String JeniaPopupCloseAction() {
-        return "jeniaClosePopupFrameWithAction";
-    }
-
-    public String BenutzerBearbeiten() {
-        return "BenutzerBearbeiten";
     }
 
     public Map<String, String> getUiStatus() {

@@ -68,12 +68,12 @@ public class SessionForm implements Serializable {
     private static final long serialVersionUID = 8457947420232054227L;
 
     /**
-     * The constant string to indicate that a user is logged out
+     * The constant string to indicate that a user is logged out.
      */
     public static final String LOGGED_OUT = " - ausgeloggt - ";
 
     /**
-     * The constant string to indicate that a user is not logged in until now
+     * The constant string to indicate that a user is not logged in until now.
      */
     public static final String NOT_LOGGED_IN = " - ";
 
@@ -117,7 +117,7 @@ public class SessionForm implements Serializable {
     private GoobiScriptManager gsm;
 
     /**
-     * Returns a list of all currently existing sessions, represented by a list of SessionInfo objects
+     * Returns a list of all currently existing sessions, represented by a list of SessionInfo objects.
      *
      * @return The list of SessionInfo objects
      */
@@ -146,7 +146,7 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Returns the SessionInfo object with the specified id
+     * Returns the SessionInfo object with the specified id.
      *
      * @param id The id of the requested SessionInfo object
      * @return The SessionInfo object with that id
@@ -237,7 +237,7 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Updates the time information about a session
+     * Updates the time information about a session.
      *
      * @param updatedSession The concerning session to update
      */
@@ -262,7 +262,7 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Updates the user information about a session in dependence of a certain user
+     * Updates the user information about a session in dependence of a certain user.
      *
      * @param updatedSession The session to update
      * @param updatedUser The concerning user
@@ -354,7 +354,7 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Returns the current time, formatted as HH:MM:SS
+     * Returns the current time, formatted as HH:MM:SS.
      *
      * @return The current time as string representation
      */
@@ -363,7 +363,7 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Returns the current date and time in dependence of the current locale settings
+     * Returns the current date and time in dependence of the current locale settings.
      *
      * @return The formatted date string
      */
@@ -380,7 +380,7 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Sets the logout message
+     * Sets the logout message.
      *
      * @param message The new logout message
      */
