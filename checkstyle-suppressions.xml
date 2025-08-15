@@ -4,10 +4,14 @@
         "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
 
 <suppressions>
+    <!-- disable check for automatically generated code -->
     <suppress
         files="EDTFValidator.java"
         checks=".*" />
     <suppress
         files="ExtendedDateTimeFormat.*.java"
         checks=".*" />
+    <suppress
+        files="MD4.java"
+        checks=".*" />        
 </suppressions>

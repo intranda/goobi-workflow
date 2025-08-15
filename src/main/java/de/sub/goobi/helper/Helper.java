@@ -340,7 +340,7 @@ public class Helper implements Serializable, ServletContextListener {
             try {
                 msg = getString(language, meldung);
                 beschr = getString(language, beschreibung);
-            } catch (NullPointerException e) {
+            } catch (RuntimeException e) {
                 log.error(e);
             }
         }
@@ -381,7 +381,7 @@ public class Helper implements Serializable, ServletContextListener {
         try {
 
             return commonMessages.get(language).getString(key);
-        } catch (NullPointerException irrelevant) {
+        } catch (RuntimeException irrelevant) {
             return "";
         }
     }
@@ -539,7 +539,7 @@ public class Helper implements Serializable, ServletContextListener {
                 if (!localOnly) {
                     try {
                         commonMessages.put(language, ResourceBundle.getBundle(MESSAGES, language));
-                    } catch (NullPointerException e) {
+                    } catch (Exception e) {
                         log.warn("Cannot load messages for language " + language.getLanguage());
                     }
                 }
@@ -561,7 +561,7 @@ public class Helper implements Serializable, ServletContextListener {
                             localMessages.put(language, localBundle);
                         }
 
-                    } catch (IOException | NullPointerException e) {
+                    } catch (Exception e) {
                         log.error(e);
                     }
                 }

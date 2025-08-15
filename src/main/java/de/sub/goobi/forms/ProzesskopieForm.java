@@ -1059,7 +1059,9 @@ public class ProzesskopieForm implements Serializable {
 
             addCollections(colStruct);
             /* falls ein erstes Kind vorhanden ist, sind die Collectionen dafür */
-            colStruct = colStruct.getAllChildren().get(0);
+            if (colStruct.getAllChildren() != null) {
+                colStruct = colStruct.getAllChildren().get(0);
+            }
             addCollections(colStruct);
 
             /*

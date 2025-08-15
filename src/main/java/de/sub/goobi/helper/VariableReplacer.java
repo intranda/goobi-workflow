@@ -208,15 +208,15 @@ public class VariableReplacer {
      */
 
     public static String simpleReplace(String inString, Process process) {
-        String string = inString;
-        string = pProcessTitle.matcher(inString).replaceAll(process.getTitel());
-        string = pProcessId.matcher(inString).replaceAll(String.valueOf(process.getId().intValue()));
 
-        string = pProjectId.matcher(inString).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
-        string = pProjectName.matcher(inString).replaceAll(process.getProjekt().getTitel());
-        string = pProjectIdentifier.matcher(inString).replaceAll(process.getProjekt().getProjectIdentifier());
+        inString = pProcessTitle.matcher(inString).replaceAll(process.getTitel());
+        inString = pProcessId.matcher(inString).replaceAll(String.valueOf(process.getId().intValue()));
 
-        return string;
+        inString = pProjectId.matcher(inString).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
+        inString = pProjectName.matcher(inString).replaceAll(process.getProjekt().getTitel());
+        inString = pProjectIdentifier.matcher(inString).replaceAll(process.getProjekt().getProjectIdentifier());
+
+        return inString;
     }
 
     /**
@@ -225,8 +225,7 @@ public class VariableReplacer {
      * @param inString
      * @return replaced string
      */
-    public String replace(String stringToReplace) {
-        String inString = stringToReplace;
+    public String replace(String inString) {
         if (inString == null) {
             return "";
         }
