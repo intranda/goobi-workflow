@@ -27,7 +27,7 @@ import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 public class ValidateDataDefinedMultipleTimes {
     /**
-     * Validate the XML structure starting from the root element to find duplicate elements in xml
+     * Validate the XML structure starting from the root element to find duplicate elements in xml.
      * 
      * @param root The root XML element to be validated.
      * @return errors A list of XMLError objects containing details about duplicate elements

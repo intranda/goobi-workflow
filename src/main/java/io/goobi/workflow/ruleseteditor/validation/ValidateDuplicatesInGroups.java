@@ -29,7 +29,7 @@ import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 /**
- * Find duplicate metadata and group values in <Groups> and return those into the error list
+ * Find duplicate metadata and group values in <Groups> and return those into the error list.
  * 
  * @author Paul Hankiewicz Lopez
  * @version 04.02.2025
@@ -37,7 +37,7 @@ import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 public class ValidateDuplicatesInGroups {
 
     /**
-     * Validate the XML structure starting from the root element for duplicate metadata and group values in Groups
+     * Validate the XML structure starting from the root element for duplicate metadata and group values in Groups.
      *
      * @param root The root XML element to be validated.
      * @return A list of XMLError objects containing details about any duplicate entries found during validation.

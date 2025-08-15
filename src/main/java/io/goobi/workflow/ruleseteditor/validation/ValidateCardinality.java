@@ -27,7 +27,7 @@ import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 /**
- * Find Cardinality values in the <DocStrctType> elements which are not equal to "1o", "*", "1m" or "+" and return those into the errors list
+ * Find Cardinality values in the <DocStrctType> elements which are not equal to "1o", "*", "1m" or "+" and return those into the errors list.
  * 
  * @author Paul Hankiewicz Lopez
  * @version 04.02.2025
@@ -35,7 +35,7 @@ import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 public class ValidateCardinality {
 
     /**
-     * Validate the XML structure starting from the root element for not allowed values in the "num" field
+     * Validate the XML structure starting from the root element for not allowed values in the "num" field.
      *
      * @param root The root XML element to be validated.
      * @return A list of XMLError objects containing details about any duplicate entries found during validation.

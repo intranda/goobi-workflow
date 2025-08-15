@@ -28,7 +28,7 @@ import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 public class ValidateUnusedButDefinedData {
 
     /**
-     * Validate the XML structure starting from the root element to find unused values
+     * Validate the XML structure starting from the root element to find unused values.
      *
      * @param root The root XML element to be validated.
      * @return A list of XMLError objects containing details about any duplicate entries found during validation.

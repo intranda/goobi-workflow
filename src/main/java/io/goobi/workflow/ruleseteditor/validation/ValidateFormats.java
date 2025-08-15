@@ -32,11 +32,11 @@ import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 public class ValidateFormats {
 
     /**
-     * Validates the structure of an XML document by checking the export formats
+     * Validates the structure of an XML document by checking the export formats.
      *
      * @param root The root element of the XML document to validate.
      * @param format The format of the export part which will be checked
-     * @param name This value is either "name" or "InternalName" depends on the format
+     * @param nameValue This value is either "name" or "InternalName" depends on the format
      * @return A list of {@link RulesetValidationError} objects containing validation errors, if any.
      */
     public List<RulesetValidationError> validate(Element root, String format, String nameValue) {

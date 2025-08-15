@@ -28,14 +28,14 @@ import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 /**
- * Find unallowed values in values in the "allowedchildtype" elements
+ * Find unallowed values in values in the "allowedchildtype" elements.
  * 
  * @author Paul Hankiewicz Lopez
  * @version 25.04.2025
  */
 public class ValidateTopstructs {
     /**
-     * Validate the XML structure starting from the root element to find unallowed values in the "allowedchildtype" elements
+     * Validate the XML structure starting from the root element to find unallowed values in the "allowedchildtype" elements.
      *
      * @param root The root XML element to be validated.
      * @return A list of XMLError objects containing details about any duplicate entries found during validation.
