@@ -1,10 +1,5 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
-import de.sub.goobi.helper.Helper;
-import io.goobi.vocabulary.exception.VocabularyException;
-import io.goobi.workflow.api.vocabulary.APIException;
-import lombok.extern.log4j.Log4j2;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -13,9 +8,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import de.sub.goobi.helper.Helper;
+import io.goobi.vocabulary.exception.VocabularyException;
+import io.goobi.workflow.api.vocabulary.APIException;
+import lombok.extern.log4j.Log4j2;
+
 @Log4j2
 public class APIExceptionExtractor {
-    private final static String MESSAGE_PREFIX = "vocabularyManager_exception_";
+    private static final String MESSAGE_PREFIX = "vocabularyManager_exception_";
     private final APIException exception;
 
     public APIExceptionExtractor(APIException exception) {
@@ -24,7 +24,8 @@ public class APIExceptionExtractor {
 
     public String getLocalizedMessage(Locale locale) {
         return Optional.ofNullable(exception.getVocabularyCause())
-                .map(ex -> extractLocalizedVocabularyMessage(ex, locale)).orElse(exception.getMessage());
+                .map(ex -> extractLocalizedVocabularyMessage(ex, locale))
+                .orElse(exception.getMessage());
     }
 
     private String extractLocalizedVocabularyMessage(VocabularyException ex, Locale locale) {

@@ -1,8 +1,8 @@
 package io.goobi.workflow.api.vocabulary;
 
-import io.goobi.vocabulary.exchange.Identifiable;
-
 import java.util.Optional;
+
+import io.goobi.vocabulary.exchange.Identifiable;
 
 public abstract class CRUDAPI<InstanceType extends Identifiable, PageResultType> {
     protected final RESTAPI restApi;
@@ -11,7 +11,8 @@ public abstract class CRUDAPI<InstanceType extends Identifiable, PageResultType>
     private final String commonEndpoint;
     private final String instanceEndpoint;
 
-    protected CRUDAPI(String address, Class<InstanceType> instanceTypeClass, Class<PageResultType> pageResultTypeClass, String commonEndpoint, String instanceEndpoint) {
+    protected CRUDAPI(String address, Class<InstanceType> instanceTypeClass, Class<PageResultType> pageResultTypeClass,
+            String commonEndpoint, String instanceEndpoint) {
         this.restApi = new RESTAPI(address);
         this.instanceTypeClass = instanceTypeClass;
         this.pageResultTypeClass = pageResultTypeClass;
