@@ -41,18 +41,22 @@ import io.goobi.workflow.harvester.beans.Record;
 import io.goobi.workflow.harvester.export.ExportHistoryEntry;
 import io.goobi.workflow.harvester.repository.Repository;
 
-public class HarvesterRepositoryMysqlHelper implements Serializable {
+public final class HarvesterRepositoryMysqlHelper implements Serializable {
+
+    private HarvesterRepositoryMysqlHelper() {
+        // hide implicit public constructor
+    }
 
     private static final long serialVersionUID = -8160933323894230856L;
 
-    private static final DateTimeFormatter formatterISO8601DateTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter ISO8601_DATETIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     public static Repository getRepository(Integer repositoryId) throws SQLException {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             String sql = "SELECT * FROM repository WHERE id=?";
-            List<Repository> retList = new QueryRunner().query(connection, sql, resultSetToRepositoriesList, repositoryId);
+            List<Repository> retList = new QueryRunner().query(connection, sql, RESULTSET_TO_REPOSITORY_HANDLER, repositoryId);
             if (!retList.isEmpty()) {
                 return retList.get(0);
             } else {
@@ -66,9 +70,9 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
     }
 
     /**
-     * Converts {@link ResultSet} to {@link ArrayList} of {@link OAIDublinCoreRepository}
+     * Converts {@link ResultSet} to {@link ArrayList} of {@link OAIDublinCoreRepository}.
      */
-    public static final ResultSetHandler<List<Repository>> resultSetToRepositoriesList = new ResultSetHandler<List<Repository>>() {
+    public static final ResultSetHandler<List<Repository>> RESULTSET_TO_REPOSITORY_HANDLER = new ResultSetHandler<>() {
         @Override
         public List<Repository> handle(ResultSet rs) throws SQLException {
             List<Repository> retList = new ArrayList<>(rs.getFetchSize());
@@ -126,7 +130,7 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            return new QueryRunner().query(connection, sql.toString(), resultSetToRepositoriesList);
+            return new QueryRunner().query(connection, sql.toString(), RESULTSET_TO_REPOSITORY_HANDLER);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -201,7 +205,7 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
         }
     }
 
-    private static ResultSetHandler<Map<String, String>> resultSetToMapHandler = new ResultSetHandler<Map<String, String>>() {
+    private static ResultSetHandler<Map<String, String>> resultSetToMapHandler = new ResultSetHandler<>() {
         @Override
         public Map<String, String> handle(ResultSet rs) throws SQLException {
             Map<String, String> map = new HashMap<>();
@@ -317,13 +321,13 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
             if (rows != 0) {
                 Object[] selectParam = { j.getTimestamp().toString(), j.getRepositoryId() };
                 sql = "SELECT * FROM job WHERE timestamp=? AND repository_id=?";
-                List<Job> retList = run.query(connection, sql, resultSetToJobList, selectParam);
+                List<Job> retList = run.query(connection, sql, RESULTSET_TO_JOB_LIST_HANDLER, selectParam);
                 if (!retList.isEmpty()) {
                     j.setId(retList.get(0).getId());
                 } else {
                     sql = "SELECT * FROM job WHERE repository_id=? ORDER BY timestamp DESC LIMIT 1";
                     Object[] altSelectParam = { j.getRepositoryId() };
-                    retList = run.query(connection, sql, resultSetToJobList, altSelectParam);
+                    retList = run.query(connection, sql, RESULTSET_TO_JOB_LIST_HANDLER, altSelectParam);
                 }
             } else {
                 throw new SQLException("Job could not be added");
@@ -337,7 +341,7 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
         return j;
     }
 
-    public static final ResultSetHandler<List<Job>> resultSetToJobList = new ResultSetHandler<List<Job>>() {
+    public static final ResultSetHandler<List<Job>> RESULTSET_TO_JOB_LIST_HANDLER = new ResultSetHandler<>() {
         @Override
         public List<Job> handle(ResultSet rs) throws SQLException {
             List<Job> retList = new ArrayList<>(rs.getFetchSize());
@@ -350,7 +354,7 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
         }
     };
 
-    public static final ResultSetHandler<List<Record>> resultSetToRecordList = new ResultSetHandler<List<Record>>() {
+    public static final ResultSetHandler<List<Record>> RESULTSET_TO_RECORD_HANDLER = new ResultSetHandler<>() {
         @Override
         public List<Record> handle(ResultSet rs) throws SQLException {
             List<Record> retList = new ArrayList<>(rs.getFetchSize());
@@ -394,7 +398,7 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             List<Record> retList = new ArrayList<>();
             String sql = generateGetRecordsQuery(first, pageSize, sortField, sortOrder, filters, exported);
-            retList = new QueryRunner().query(connection, sql, resultSetToRecordList);
+            retList = new QueryRunner().query(connection, sql, RESULTSET_TO_RECORD_HANDLER);
             return retList;
         } finally {
             if (connection != null) {
@@ -403,8 +407,9 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
         }
     }
 
-    private static String generateGetRecordsQuery(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters,
+    private static String generateGetRecordsQuery(int first, int pageSize, String inSortField, boolean sortOrder, Map<String, String> filters,
             boolean exported) {
+        String sortField = inSortField;
         String notNull = "";
         if (exported) {
             notNull = "NOT ";
@@ -414,7 +419,8 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
         if (filters != null && filters.size() > 0) {
             List<String> sortedKeys = new ArrayList<>(filters.keySet());
             Collections.sort(sortedKeys);
-            for (String key : sortedKeys) {
+            for (String k : sortedKeys) {
+                String key = k;
                 String value = filters.get(key);
                 if (StringUtils.isNotBlank(value)) {
                     sql.append(" AND ");
@@ -494,7 +500,7 @@ public class HarvesterRepositoryMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             String sql = "UPDATE record SET exported='" + rec.getExported() + "', exported_datestamp='"
-                    + formatterISO8601DateTime.print(rec.getExportedDatestamp().getTime()) + "' WHERE id='" + rec.getId() + "'";
+                    + ISO8601_DATETIME_FORMATTER.print(rec.getExportedDatestamp().getTime()) + "' WHERE id='" + rec.getId() + "'";
             new QueryRunner().update(connection, sql);
         } finally {
             if (connection != null) {

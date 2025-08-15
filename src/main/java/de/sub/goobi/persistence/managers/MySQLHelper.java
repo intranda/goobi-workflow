@@ -63,7 +63,7 @@ public final class MySQLHelper implements Serializable {
     private static MySQLHelper helper = new MySQLHelper();
     private ConnectionManager cm = null;
 
-    protected static final DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    protected static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     private MySQLHelper() {
         this.cm = new ConnectionManager();
@@ -100,7 +100,7 @@ public final class MySQLHelper implements Serializable {
     /**
      * Check if current database connection is based on H2. Otherwise it is Mysql or Mariadb
      * 
-     * @return
+     * @return true if h2 is used
      */
     public static boolean isUsingH2() {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
@@ -114,7 +114,7 @@ public final class MySQLHelper implements Serializable {
     }
 
     /**
-     * Checks connected database for MariaDB version >=10.2.3 (from which on mariadb is json capable)
+     * Checks connected database for MariaDB version >=10.2.3 (from which on mariadb is json capable).
      * 
      * @return true if MariaDB >= 10.2.3, else false
      */
@@ -130,10 +130,10 @@ public final class MySQLHelper implements Serializable {
     }
 
     /**
-     * checks if dbVersion is a valid mariadb version string for mariadb >= 10.2.3
+     * checks if dbVersion is a valid mariadb version string for mariadb >= 10.2.3.
      * 
      * @param dbVersion
-     * @return
+     * @return true if mariadb version is new enough
      */
     public static boolean checkMariadbVersion(String dbVersion) {
         // example version string: "5.5.5-10.2.13-MariaDB-10.2.13+maria~stretch"
@@ -227,7 +227,7 @@ public final class MySQLHelper implements Serializable {
         return helper;
     }
 
-    public static ResultSetHandler<List<Integer>> resultSetToIntegerListHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<List<Integer>> resultSetToIntegerListHandler = new ResultSetHandler<>() {
         @Override
         public List<Integer> handle(ResultSet rs) throws SQLException {
             List<Integer> answer = new ArrayList<>();
@@ -254,7 +254,7 @@ public final class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<List<String>> resultSetToStringListHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<List<String>> resultSetToStringListHandler = new ResultSetHandler<>() {
         @Override
         public List<String> handle(ResultSet rs) throws SQLException {
             List<String> answer = new ArrayList<>();
@@ -269,7 +269,7 @@ public final class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<String> resultSetToStringHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<String> resultSetToStringHandler = new ResultSetHandler<>() {
         @Override
         public String handle(ResultSet rs) throws SQLException {
             String answer = "";
@@ -284,7 +284,7 @@ public final class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Integer> resultSetToIntegerHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<Integer> resultSetToIntegerHandler = new ResultSetHandler<>() {
         @Override
         public Integer handle(ResultSet rs) throws SQLException {
             Integer answer = null;
@@ -303,7 +303,7 @@ public final class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Boolean> resultSetToBooleanHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<Boolean> resultSetToBooleanHandler = new ResultSetHandler<>() {
         @Override
         public Boolean handle(ResultSet rs) throws SQLException {
             Boolean answer = null;
@@ -322,7 +322,7 @@ public final class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Long> resultSetToLongHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<Long> resultSetToLongHandler = new ResultSetHandler<>() {
         @Override
         public Long handle(ResultSet rs) throws SQLException {
             Long answer = null;
@@ -340,7 +340,7 @@ public final class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Double> resultSetToDoubleHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<Double> resultSetToDoubleHandler = new ResultSetHandler<>() {
         @Override
         public Double handle(ResultSet rs) throws SQLException {
             Double answer = null;
@@ -359,17 +359,18 @@ public final class MySQLHelper implements Serializable {
     };
 
     public static String escapeString(String inputString) {
-        if (inputString != null) {
-            inputString = inputString.replace("\\", "\\\\");
-            inputString = inputString.replace("%", "\\%");
-            inputString = inputString.replace("_", "\\_");
-            inputString = inputString.replace("?", "_");
-            inputString = inputString.replace("*", "%");
+        String result = inputString;
+        if (result != null) {
+            result = result.replace("\\", "\\\\");
+            result = result.replace("%", "\\%");
+            result = result.replace("_", "\\_");
+            result = result.replace("?", "_");
+            result = result.replace("*", "%");
         }
-        return inputString;
+        return result;
     }
 
-    public static ResultSetHandler<List<Map<String, String>>> resultSetToMapListHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<List<Map<String, String>>> resultSetToMapListHandler = new ResultSetHandler<>() {
 
         @Override
         public List<Map<String, String>> handle(ResultSet rs) throws SQLException {
@@ -385,7 +386,7 @@ public final class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<Map<String, String>> resultSetToMapHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<Map<String, String>> resultSetToMapHandler = new ResultSetHandler<>() {
         @Override
         public Map<String, String> handle(ResultSet rs) throws SQLException {
             try {
@@ -399,7 +400,7 @@ public final class MySQLHelper implements Serializable {
         }
     };
 
-    public final static ResultSetHandler<Map<String, Integer>> resultSetToIntMapHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<Map<String, Integer>> resultSetToIntMapHandler = new ResultSetHandler<>() {
         @Override
         public Map<String, Integer> handle(ResultSet rs) throws SQLException {
             Map<String, Integer> result = new HashMap<>();
@@ -415,7 +416,7 @@ public final class MySQLHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<List<Object[]>> resultSetToObjectListHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<List<Object[]>> resultSetToObjectListHandler = new ResultSetHandler<>() {
 
         @Override
         public List<Object[]> handle(ResultSet rs) throws SQLException {
@@ -452,7 +453,7 @@ public final class MySQLHelper implements Serializable {
             } else if (columnType.startsWith("DATETIME") || columnType.startsWith("TIMESTAMP")) {
                 Timestamp date = rs.getTimestamp(columnName);
                 if (date != null) {
-                    answer.put(columnName, formatter.print(date.getTime()));
+                    answer.put(columnName, FORMATTER.print(date.getTime()));
                 }
             } else if (columnType.startsWith("TINYINT")) {
                 answer.put(columnName, rs.getString(columnName));
@@ -537,12 +538,13 @@ public final class MySQLHelper implements Serializable {
      * If a regular column is used, nothing gets changed. But if a custom column is used, the query gets extended to include the data into the result
      * list, so ordering by this data is possible.
      * 
-     * @param order column name to order
+     * @param inOrder column name to order
      * @param sql prepared sql statement, gets extended if needed
      * @return order statement
      */
 
-    public static String prepareSortField(String order, StringBuilder sql) {
+    public static String prepareSortField(String inOrder, StringBuilder sql) {
+        String order = inOrder;
         if (StringUtils.isBlank(order) || !order.startsWith("{")) {
             return order;
         }
@@ -562,8 +564,8 @@ public final class MySQLHelper implements Serializable {
             sql.append(fieldname);
             sql.append("' GROUP BY processid) AS field ON field.processid = prozesse.prozesseID ");
         } else if (order.startsWith("{process.")) {
-            sql.append(
-                    " LEFT JOIN (SELECT object_id, MAX(property_value) AS value FROM properties WHERE properties.object_type='process' AND properties.property_name = '");
+            sql.append(" LEFT JOIN (SELECT object_id, MAX(property_value) AS value FROM properties ");
+            sql.append("WHERE properties.object_type='process' AND properties.property_name = '");
             sql.append(fieldname);
             sql.append("' GROUP BY object_id) AS field ON field.object_id = prozesse.prozesseID ");
         }

@@ -32,7 +32,11 @@ import org.goobi.beans.Ldap;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class LdapMysqlHelper implements Serializable {
+final class LdapMysqlHelper implements Serializable {
+
+    private LdapMysqlHelper() {
+        // hide implicit public constructor
+    }
 
     private static final long serialVersionUID = 6697737226604394665L;
 

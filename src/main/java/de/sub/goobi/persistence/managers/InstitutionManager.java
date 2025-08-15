@@ -211,7 +211,7 @@ public class InstitutionManager implements IManager, Serializable {
         return answer;
     }
 
-    public static final ResultSetHandler<Institution> resultSetToInstitutionHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<Institution> RESULTSET_TO_INSTITUTION_HANDLER = new ResultSetHandler<>() {
         @Override
         public Institution handle(ResultSet rs) throws SQLException {
             try {
@@ -225,7 +225,7 @@ public class InstitutionManager implements IManager, Serializable {
         }
     };
 
-    public static final ResultSetHandler<List<Institution>> resultSetToInstitutionListHandler = new ResultSetHandler<>() {
+    public static final ResultSetHandler<List<Institution>> RESULTSET_TO_INSTITUTION_LIST_HANDLER = new ResultSetHandler<>() {
         @Override
         public List<Institution> handle(ResultSet rs) throws SQLException {
             List<Institution> answer = new ArrayList<>();

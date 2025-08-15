@@ -35,7 +35,11 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class HistoryMysqlHelper {
+public final class HistoryMysqlHelper {
+    private HistoryMysqlHelper() {
+        // hide implicit public constructor
+    }
+
     public static List<HistoryEvent> getHistoryEvents(int processId) throws SQLException {
         String sql = "SELECT * FROM history WHERE processID = " + processId;
         Connection connection = null;
@@ -147,7 +151,7 @@ public class HistoryMysqlHelper {
         return value;
     }
 
-    public static ResultSetHandler<List<HistoryEvent>> resultSetToHistoryListHandler = new ResultSetHandler<List<HistoryEvent>>() {
+    public static ResultSetHandler<List<HistoryEvent>> resultSetToHistoryListHandler = new ResultSetHandler<>() {
 
         @Override
         public List<HistoryEvent> handle(ResultSet rs) throws SQLException {

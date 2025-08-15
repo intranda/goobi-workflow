@@ -33,7 +33,11 @@ import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class MetadataManager implements Serializable {
+public final class MetadataManager implements Serializable {
+    private MetadataManager() {
+        // hide implicit public constructor
+    }
+
     private static final long serialVersionUID = -1352908576515114528L;
 
     public static void deleteMetadata(int processId) {

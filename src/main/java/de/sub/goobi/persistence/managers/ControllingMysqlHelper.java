@@ -33,7 +33,11 @@ import java.util.Map;
 
 import org.apache.commons.dbutils.QueryRunner;
 
-class ControllingMysqlHelper implements Serializable {
+final class ControllingMysqlHelper implements Serializable {
+
+    private ControllingMysqlHelper() {
+        // hide implicit public constructor
+    }
 
     private static final long serialVersionUID = 6792892688043858306L;
 

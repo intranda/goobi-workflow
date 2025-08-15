@@ -34,7 +34,12 @@ import org.goobi.production.flow.jobs.BackgroundJobProperty;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class BackgroundJobsMysqlHelper implements Serializable {
+final class BackgroundJobsMysqlHelper implements Serializable {
+
+    private BackgroundJobsMysqlHelper() {
+        // hide implicit public constructor
+    }
+
     private static final long serialVersionUID = 8227638850137164176L;
 
     public static BackgroundJob getBackgroundJobById(int id) throws SQLException {
@@ -47,7 +52,7 @@ class BackgroundJobsMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            return new QueryRunner().query(connection, sql.toString(), BackgroundJobManager.resultSetToJobHandler);
+            return new QueryRunner().query(connection, sql.toString(), BackgroundJobManager.RESULT_SET_TO_JOB_HANDLER);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -208,7 +213,7 @@ class BackgroundJobsMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            return run.query(connection, sb.toString(), BackgroundJobManager.resultSetToJoListbHandler);
+            return run.query(connection, sb.toString(), BackgroundJobManager.RESULT_SET_TO_JOB_LIST_HANDLER);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

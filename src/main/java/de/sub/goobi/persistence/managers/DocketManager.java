@@ -104,7 +104,7 @@ public class DocketManager implements IManager, Serializable {
         return r;
     }
 
-    public static ResultSetHandler<Docket> resultSetToDocketHandler = new ResultSetHandler<Docket>() {
+    public static final ResultSetHandler<Docket> RESULTSET_TO_DOCKET_HANDLER = new ResultSetHandler<>() {
         @Override
         public Docket handle(ResultSet rs) throws SQLException {
             try {
@@ -118,7 +118,7 @@ public class DocketManager implements IManager, Serializable {
         }
     };
 
-    public static ResultSetHandler<List<Docket>> resultSetToDocketListHandler = new ResultSetHandler<List<Docket>>() {
+    public static final ResultSetHandler<List<Docket>> RESULTSET_TO_DOCKET_LIST_HANDLER = new ResultSetHandler<>() {
         @Override
         public List<Docket> handle(ResultSet rs) throws SQLException {
             List<Docket> answer = new ArrayList<>();
