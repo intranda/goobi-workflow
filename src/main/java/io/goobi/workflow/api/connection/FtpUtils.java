@@ -39,8 +39,12 @@ public class FtpUtils implements ConnectionProvider {
     private FTPClient ftpClient;
 
     /**
-     * Authentication with username and password
-     * 
+     * Authentication with username and password.
+     *
+     * @param username login
+     * @param password password
+     * @param hostname host
+     * @param port port
      * @throws IOException
      * @throws SocketException
      * 
@@ -52,7 +56,7 @@ public class FtpUtils implements ConnectionProvider {
     }
 
     /**
-     * Change remote folder
+     * Change remote folder.
      * 
      * @param folder
      * @throws IOException
@@ -77,7 +81,7 @@ public class FtpUtils implements ConnectionProvider {
     }
 
     /**
-     * Download a remote file into a given folder
+     * Download a remote file into a given folder.
      * 
      * @param filename
      * @param downloadFolder
@@ -93,7 +97,7 @@ public class FtpUtils implements ConnectionProvider {
     }
 
     /**
-     * Upload a file into the current remote folder
+     * Upload a file into the current remote folder.
      * 
      * @param file
      * @throws SftpException
@@ -117,7 +121,6 @@ public class FtpUtils implements ConnectionProvider {
     public String getRemoteFolder() throws IOException {
         return null;
     }
-
 
     @Override
     public void createSubFolder(String foldername) throws IOException {

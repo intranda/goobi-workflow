@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
@@ -47,11 +49,15 @@ import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class HttpUtils {
+public final class HttpUtils {
+
+    private HttpUtils() {
+        // hide implicit public constructor
+    }
 
     private static final String WRONG_STATUS_CODE_PREFIX = "Wrong status code: ";
 
-    public static ResponseHandler<byte[]> byteArrayResponseHandler = new ResponseHandler<byte[]>() {
+    public static final ResponseHandler<byte[]> byteArrayResponseHandler = new ResponseHandler<>() {
         @Override
         public byte[] handleResponse(HttpResponse response) throws IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
@@ -67,7 +73,7 @@ public class HttpUtils {
         }
     };
 
-    public static ResponseHandler<String> stringResponseHandler = new ResponseHandler<String>() {
+    public static final ResponseHandler<String> stringResponseHandler = new ResponseHandler<>() {
         @Override
         public String handleResponse(HttpResponse response) throws IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
@@ -83,7 +89,7 @@ public class HttpUtils {
         }
     };
 
-    public static ResponseHandler<InputStream> streamResponseHandler = new ResponseHandler<InputStream>() {
+    public static final ResponseHandler<InputStream> streamResponseHandler = new ResponseHandler<>() {
         @Override
         public InputStream handleResponse(HttpResponse response) throws IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
@@ -102,7 +108,7 @@ public class HttpUtils {
     private static void setupProxy(String url, HttpGet method) {
         if (ConfigurationHelper.getInstance().isUseProxy()) {
             try {
-                URL ipAsURL = new URL(url);
+                URL ipAsURL = new URI(url).toURL();
                 if (!ConfigurationHelper.getInstance().isProxyWhitelisted(ipAsURL)) {
                     HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
                     log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
@@ -116,7 +122,7 @@ public class HttpUtils {
                 } else {
                     log.debug("url was on proxy whitelist, no proxy used: " + url);
                 }
-            } catch (MalformedURLException e) {
+            } catch (MalformedURLException | URISyntaxException e) {
                 log.debug("could not convert into URL: ", url);
             }
 
@@ -177,6 +183,7 @@ public class HttpUtils {
      *
      * @param url
      * @param parameter
+     * @return response as string
      */
     @Deprecated(since = "23.05", forRemoval = true)
     public static String getStringFromUrl(String url, String[] parameter) {
@@ -273,7 +280,7 @@ public class HttpUtils {
             while ((len = istr.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error("Unable to connect to url " + url, e);
 
         } finally {

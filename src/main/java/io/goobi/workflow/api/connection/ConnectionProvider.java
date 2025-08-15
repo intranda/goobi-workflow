@@ -27,60 +27,61 @@ import com.jcraft.jsch.SftpException;
 public interface ConnectionProvider extends AutoCloseable {
 
     /**
-     * Change remote folder
+     * Change remote folder.
      * 
      * @param folder
      * @throws SftpException
      */
 
-    public void changeRemoteFolder(String folder) throws IOException;
+    void changeRemoteFolder(String folder) throws IOException;
 
     /**
-     * get remote folder name
+     * get remote folder name.
      * 
-     * @return
+     * @return remote folder name
      * @throws SftpException
      */
 
-    public String getRemoteFolder() throws IOException;
+    String getRemoteFolder() throws IOException;
 
     /**
-     * get content of remote folder
+     * get content of remote folder.
      * 
-     * @return
+     * @return content list
      * @throws SftpException
      */
 
-    public List<String> listContent() throws IOException;
+    List<String> listContent() throws IOException;
 
     /**
-     * Create a remote sub folder within the current directory
+     * Create a remote sub folder within the current directory.
+     *
      * @param foldername
      * @throws IOException
      */
-    public void createSubFolder(String foldername) throws IOException;
+    void createSubFolder(String foldername) throws IOException;
 
     /**
-     * Delete a remote file
-     * @param foldername
+     * Delete a remote file.
+     *
+     * @param filename
      * @throws IOException
      */
-    public void deleteFile(String filename) throws IOException;
+    void deleteFile(String filename) throws IOException;
 
     /**
-     * Download a remote file into a given folder
+     * Download a remote file into a given folder.
      * 
      * @param filename
      * @param downloadFolder
-     * @return
+     * @return path to file
      * @throws SftpException
      */
 
-
-    public Path downloadFile(String filename, Path downloadFolder) throws IOException;
+    Path downloadFile(String filename, Path downloadFolder) throws IOException;
 
     /**
-     * Upload a file into the current remote folder
+     * Upload a file into the current remote folder.
      * 
      * @param file
      * @throws SftpException
@@ -89,10 +90,10 @@ public interface ConnectionProvider extends AutoCloseable {
     void uploadFile(Path file) throws IOException;
 
     /**
-     * Close connection
+     * Close connection.
      */
 
     @Override
-    public void close();
+    void close();
 
 }

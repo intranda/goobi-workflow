@@ -39,8 +39,13 @@ public class SftpUtils implements ConnectionProvider {
     private Session jschSession;
 
     /**
-     * Authentication with username and password
-     * 
+     * Authentication with username and password.
+     *
+     * @param username login
+     * @param password password
+     * @param hostname host
+     * @param port port
+     * @param knownHostsFile path to known_hosts file
      */
 
     public SftpUtils(String username, String password, String hostname, int port, String knownHostsFile) throws IOException {
@@ -60,8 +65,14 @@ public class SftpUtils implements ConnectionProvider {
 
     /**
      * 
-     * Authentication with key
+     * Authentication with key.
      * 
+     * @param username login
+     * @param key ssh key
+     * @param password password for key
+     * @param hostname host
+     * @param port port
+     * @param knownHostsFile path to known_hosts file
      */
 
     public SftpUtils(String username, String key, String password, String hostname, int port, String knownHostsFile) throws IOException {
@@ -80,7 +91,7 @@ public class SftpUtils implements ConnectionProvider {
     }
 
     /**
-     * Change remote folder
+     * Change remote folder.
      * 
      * @param folder
      * @throws SftpException
@@ -96,7 +107,7 @@ public class SftpUtils implements ConnectionProvider {
     }
 
     /**
-     * get remote folder name
+     * get remote folder name.
      * 
      * @return
      * @throws SftpException
@@ -112,7 +123,7 @@ public class SftpUtils implements ConnectionProvider {
     }
 
     /**
-     * get content of remote folder
+     * get content of remote folder.
      * 
      * @return
      * @throws SftpException
@@ -138,7 +149,7 @@ public class SftpUtils implements ConnectionProvider {
     }
 
     /**
-     * Download a remote file into a given folder
+     * Download a remote file into a given folder.
      * 
      * @param filename
      * @param downloadFolder
@@ -158,7 +169,7 @@ public class SftpUtils implements ConnectionProvider {
     }
 
     /**
-     * Upload a file into the current remote folder
+     * Upload a file into the current remote folder.
      * 
      * @param file
      * @throws SftpException
