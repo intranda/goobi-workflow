@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Mark methods with this annotation if they can be used to create processes with the harvester output
+ * Mark methods with this annotation if they can be used to create processes with the harvester output.
  * 
  */
 
@@ -32,6 +32,6 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface HarvesterGoobiImport {
 
-    public String description() default "";
+    String description() default "";
 
 }

@@ -90,16 +90,15 @@ public class Record implements Serializable, DatabaseObject {
     /**
      * Exports this record to the given destination.
      * 
-     * @param mode Export destination.
      * @param hist The ExportHistoryEntry object that protocols this export.
-     * @return
+     * @return result
      * @throws DBException
      */
     public ExportOutcome export(ExportHistoryEntry hist) throws HarvestException {
         Repository repository = HarvesterRepositoryManager.getRepository(getRepositoryId());
         ExportOutcome outcome = repository.exportRecord(this);
-        hist.setStatus(outcome.status.toString());
-        switch (outcome.status) {
+        hist.setStatus(outcome.getStatus().toString());
+        switch (outcome.getStatus()) {
             case OK:
                 setExportedDatestamp(new Date());
                 HarvesterRepositoryManager.setRecordExported(this);
@@ -119,7 +118,7 @@ public class Record implements Serializable, DatabaseObject {
                 HarvesterRepositoryManager.setRecordExported(this);
                 break;
             default:
-                log.error("Unknown export outcome: {}", outcome.status.toString());
+                log.error("Unknown export outcome: {}", outcome.getStatus().toString());
                 hist.setMessage("Unknown export outcome");
         }
 

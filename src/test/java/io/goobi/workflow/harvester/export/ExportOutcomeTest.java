@@ -34,32 +34,32 @@ public class ExportOutcomeTest {
     @Test
     public void testConstructor() {
         ExportOutcome fixture = new ExportOutcome();
-        assertEquals(ExportOutcomeStatus.OK, fixture.status);
+        assertEquals(ExportOutcomeStatus.OK, fixture.getStatus());
 
     }
 
     @Test
     public void testExportOutcomeStatus() {
         ExportOutcome fixture = new ExportOutcome();
-        assertEquals(ExportOutcomeStatus.OK, fixture.status);
+        assertEquals(ExportOutcomeStatus.OK, fixture.getStatus());
 
-        fixture.status = ExportOutcomeStatus.NOT_FOUND;
-        assertEquals(ExportOutcomeStatus.NOT_FOUND, fixture.status);
+        fixture.setStatus(ExportOutcomeStatus.NOT_FOUND);
 
-        fixture.status = ExportOutcomeStatus.ERROR;
-        assertEquals(ExportOutcomeStatus.ERROR, fixture.status);
+        assertEquals(ExportOutcomeStatus.NOT_FOUND, fixture.getStatus());
+        fixture.setStatus(ExportOutcomeStatus.ERROR);
+        assertEquals(ExportOutcomeStatus.ERROR, fixture.getStatus());
 
-        fixture.status = ExportOutcomeStatus.SKIP;
-        assertEquals(ExportOutcomeStatus.SKIP, fixture.status);
+        fixture.setStatus(ExportOutcomeStatus.SKIP);
+        assertEquals(ExportOutcomeStatus.SKIP, fixture.getStatus());
     }
 
     @Test
     public void testMessage() {
         ExportOutcome fixture = new ExportOutcome();
-        assertNull(fixture.message);
+        assertNull(fixture.getMessage());
 
-        fixture.message = "fixture";
-        assertEquals("fixture", fixture.message);
+        fixture.setMessage("fixture");
+        assertEquals("fixture", fixture.getMessage());
 
     }
 }

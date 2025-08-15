@@ -28,31 +28,33 @@ public interface MetadataParser {
 
     /**
      * 
-     * Create a new process, get metadata from the input stream
+     * Create a new process, get metadata from the input stream.
      * 
      * @param projectName
      * @param templateName
      * @param processTitle
      * @param inputStream
-     * @return
+     * @return response
      */
 
-    public Response createNewProcess(String projectName, String templateName,
+    Response createNewProcess(String projectName, String templateName,
             String processTitle, InputStream inputStream);
 
     /**
-     * Replace existing metadata of a process with the content of the input stream
+     * Replace existing metadata of a process with the content of the input stream.
      *
      * @param processid
      * @param inputStream
-     * @return
+     * @return response
      */
 
-    public Response replaceMetadata(Integer processid, InputStream inputStream);
+    Response replaceMetadata(Integer processid, InputStream inputStream);
 
     /**
-     * Use this method to enhance metadata, e.g. add additional metadata or check for the document type and add an anchor record
-     * 
+     * Use this method to enhance metadata, e.g. add additional metadata or check for the document type and add an anchor record.
+     *
+     * @param repository
+     * @param file
      */
-    public void extendMetadata(Repository repository, Path file);
+    void extendMetadata(Repository repository, Path file);
 }

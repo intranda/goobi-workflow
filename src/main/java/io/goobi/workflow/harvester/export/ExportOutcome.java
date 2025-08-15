@@ -17,6 +17,9 @@
  */
 package io.goobi.workflow.harvester.export;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class ExportOutcome {
 
     public enum ExportOutcomeStatus {
@@ -26,6 +29,10 @@ public class ExportOutcome {
         SKIP;
     }
 
-    public ExportOutcomeStatus status = ExportOutcomeStatus.OK;
-    public String message;
+    @Getter
+    @Setter
+    private ExportOutcomeStatus status = ExportOutcomeStatus.OK;
+    @Getter
+    @Setter
+    private String message;
 }
