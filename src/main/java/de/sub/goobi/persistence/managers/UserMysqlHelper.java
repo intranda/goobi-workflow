@@ -45,7 +45,12 @@ import org.goobi.beans.Usergroup;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class UserMysqlHelper implements Serializable {
+final class UserMysqlHelper implements Serializable {
+
+    private UserMysqlHelper() {
+        // hide implicit public constructor
+    }
+
     private static final long serialVersionUID = 6133952688951728602L;
 
     public static List<User> getUsers(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
@@ -167,21 +172,18 @@ class UserMysqlHelper implements Serializable {
 
     public static User saveUser(User ro) throws SQLException {
         Connection connection = null;
-
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
-
             String additionalData = MySQLHelper.convertDataToString(ro.getAdditionalData());
             if (ro.getId() == null) {
-
                 String propNames = "Vorname, Nachname, login, Standort, metadatensprache, "
                         + "css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, "
                         + "ldaplogin, displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, "
                         + "displayIdColumn, displayLocksColumn, displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, "
-                        + "displayProcessDateColumn, displayRulesetColumn, displaySelectBoxes, displaySwappingColumn, displayNumberOfImagesColumn, hideCorrectionTasks, "
-                        + "email, shortcut, metseditortime, metsDisplayHierarchy, metsDisplayPageAssignments, "
+                        + "displayProcessDateColumn, displayRulesetColumn, displaySelectBoxes, displaySwappingColumn, displayNumberOfImagesColumn, "
+                        + "hideCorrectionTasks, email, shortcut, metseditortime, metsDisplayHierarchy, metsDisplayPageAssignments, "
                         + "metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, "
                         + "metsDisplayProcessID, displayGridView, displayMetadataColumn, displayThumbColumn, customColumns, "
                         + "customCss, mailNotificationLanguage, institution_id, superadmin, displayInstitutionColumn, "
@@ -189,14 +191,13 @@ class UserMysqlHelper implements Serializable {
                         + "tasks_sort_order, displayLastEditionDate, displayLastEditionUser, displayLastEditionTask, dashboard_configuration, "
                         + "ui_mode, userstatus, additional_data, additional_search_fields ";
                 String prop =
-                        "?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,   ?,?,?,?";
-
+                        "?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,?,"
+                                + " ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,   ?,?,?,?";
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames);
                 sql.append(") VALUES (");
                 sql.append(prop);
                 sql.append(")");
-
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getVorname(), ro.getNachname(),
                         ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(), ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(),
                         ro.getSessiontimeout(), ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), ro.getLdaplogin(),
@@ -217,17 +218,9 @@ class UserMysqlHelper implements Serializable {
                 if (id != null) {
                     ro.setId(id);
                 }
-
             } else {
-                sql.append("UPDATE benutzer SET ");
-                sql.append("Vorname = ?, ");
-                sql.append("Nachname = ?, ");
-                sql.append("login = ?, ");
-                sql.append("Standort =  ?, ");
-                sql.append("metadatensprache =  ?, ");
-                sql.append("css =  ?, ");
-                sql.append("mitMassendownload =  ?, ");
-                sql.append("Tabellengroesse =  ?, ");
+                sql.append("UPDATE benutzer SET Vorname = ?, Nachname = ?, login = ?, Standort =  ?, ");
+                sql.append("metadatensprache =  ?, css =  ?, mitMassendownload =  ?, Tabellengroesse =  ?, ");
                 sql.append("sessiontimeout =  ?, ");
                 sql.append("ldapgruppenID =  ?, ");
                 sql.append("ldaplogin =  ?, ");
@@ -274,7 +267,6 @@ class UserMysqlHelper implements Serializable {
                 sql.append("tasks_sort_order =  ?, ");
                 sql.append("displayLastEditionDate  =  ?, displayLastEditionUser  =  ?, displayLastEditionTask = ?, dashboard_configuration = ?, ");
                 sql.append("ui_mode = ?, userstatus = ?, additional_data = ?, additional_search_fields = ? WHERE BenutzerID = " + ro.getId() + ";");
-
                 run.update(connection, sql.toString(), ro.getVorname(), ro.getNachname(), ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(),
                         ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(), ro.getSessiontimeout(),
                         ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), ro.getLdaplogin(), ro.isDisplayAutomaticTasks(),
@@ -291,9 +283,7 @@ class UserMysqlHelper implements Serializable {
                         ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
                         ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
                         ro.getStatus().getName(), additionalData, ro.getAdditionalSearchFields());
-
             }
-
             if (SendMail.getInstance().getConfig().isEnableStatusChangeMail()) {
                 String insert =
                         "INSERT INTO user_email_configuration (userid, projectid, stepname, open, inWork, done, error) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -320,9 +310,7 @@ class UserMysqlHelper implements Serializable {
                     saveAuthenticationToken(token);
                 }
             }
-        } finally
-
-        {
+        } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
@@ -449,7 +437,8 @@ class UserMysqlHelper implements Serializable {
 
     public static List<User> getUserForStep(int stepId) throws SQLException {
         String sql =
-                "select * from benutzer where BenutzerID in (select BenutzerID from schritteberechtigtebenutzer where  schritteberechtigtebenutzer.schritteID = ? )";
+                "select * from benutzer where BenutzerID in "
+                        + "(select BenutzerID from schritteberechtigtebenutzer where  schritteberechtigtebenutzer.schritteID = ? )";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

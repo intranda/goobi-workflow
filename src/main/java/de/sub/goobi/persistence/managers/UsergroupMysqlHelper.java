@@ -32,7 +32,12 @@ import org.goobi.beans.Usergroup;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class UsergroupMysqlHelper implements Serializable {
+final class UsergroupMysqlHelper implements Serializable {
+
+    private UsergroupMysqlHelper() {
+        // hide implicit public constructor
+    }
+
     private static final long serialVersionUID = -6209215029673643876L;
 
     public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count, Institution institution)
@@ -202,7 +207,8 @@ class UsergroupMysqlHelper implements Serializable {
 
     public static List<Usergroup> getUserGroupsForStep(Integer stepId) throws SQLException {
         String sql =
-                "select * from benutzergruppen where BenutzergruppenID in (select BenutzergruppenID from schritteberechtigtegruppen where  schritteberechtigtegruppen.schritteID = ? )";
+                "select * from benutzergruppen where BenutzergruppenID in "
+                        + "(select BenutzergruppenID from schritteberechtigtegruppen where  schritteberechtigtegruppen.schritteID = ? )";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

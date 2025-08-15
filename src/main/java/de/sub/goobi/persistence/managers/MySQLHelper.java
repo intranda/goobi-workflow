@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -582,7 +583,7 @@ public final class MySQLHelper implements Serializable {
             return null;
         }
 
-        return StringUtils.replace(value, "'", "''");
+        return Strings.CS.replace(value, "'", "''");
 
     }
 }

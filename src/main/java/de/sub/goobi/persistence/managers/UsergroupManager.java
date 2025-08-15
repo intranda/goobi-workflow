@@ -127,7 +127,7 @@ public class UsergroupManager implements IManager, Serializable {
         return r;
     }
 
-    public static ResultSetHandler<Usergroup> resultSetToUsergroupHandler = new ResultSetHandler<Usergroup>() {
+    public static final ResultSetHandler<Usergroup> resultSetToUsergroupHandler = new ResultSetHandler<>() {
         @Override
         public Usergroup handle(ResultSet rs) throws SQLException {
             try {
@@ -141,7 +141,7 @@ public class UsergroupManager implements IManager, Serializable {
         }
     };
 
-    public static ResultSetHandler<List<Usergroup>> resultSetToUsergroupListHandler = new ResultSetHandler<List<Usergroup>>() {
+    public static final ResultSetHandler<List<Usergroup>> resultSetToUsergroupListHandler = new ResultSetHandler<>() {
         @Override
         public List<Usergroup> handle(ResultSet rs) throws SQLException {
             List<Usergroup> answer = new ArrayList<>();
@@ -173,7 +173,7 @@ public class UsergroupManager implements IManager, Serializable {
     }
 
     /**
-     * return the list of all usergroup names ordered alphabetically
+     * return the list of all usergroup names ordered alphabetically.
      * 
      * @return the list of all usergroups
      */

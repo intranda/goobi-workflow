@@ -37,7 +37,13 @@ import de.sub.goobi.helper.enums.PropertyType;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class PropertyMysqlHelper implements Serializable {
+@SuppressWarnings("deprecation")
+final class PropertyMysqlHelper implements Serializable {
+
+    private PropertyMysqlHelper() {
+        // hide implicit public constructor
+    }
+
     private static final long serialVersionUID = 5175567943231852013L;
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) throws SQLException {

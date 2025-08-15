@@ -47,7 +47,12 @@ import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class ProcessMysqlHelper implements Serializable {
+final class ProcessMysqlHelper implements Serializable {
+
+    private ProcessMysqlHelper() {
+        // hide implicit public constructor
+    }
+
     private static final long serialVersionUID = 5087816359001071079L;
 
     public static Process getProcessById(int id) throws SQLException {
@@ -365,17 +370,22 @@ class ProcessMysqlHelper implements Serializable {
     }
 
     private static String generateInsertQuery(boolean includeProcessId) {
+        StringBuilder sb = new StringBuilder();
+
         if (!includeProcessId) {
-            return "(Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
-                    + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists, pauseAutomaticExecution, sorthelper_last_close_date, exportValidator)"
-                    + " VALUES ";
+            sb.append("(Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus, ");
+            sb.append("sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, ");
+            sb.append("sortHelperDocstructs, sortHelperMetadata, batchID, docketID, mediaFolderExists, ");
+            sb.append("pauseAutomaticExecution, sorthelper_last_close_date, exportValidator) VALUES");
         } else {
-            return "(ProzesseID, Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
-                    + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists, pauseAutomaticExecution, sorthelper_last_close_date, exportValidator)"
-                    + " VALUES ";
+            sb.append("(ProzesseID, Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen,  ");
+            sb.append("sortHelperStatus, sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, ");
+            sb.append("MetadatenKonfigurationID, sortHelperDocstructs, sortHelperMetadata, batchID, ");
+            sb.append("docketID, mediaFolderExists, pauseAutomaticExecution,  ");
+            sb.append("sorthelper_last_close_date, exportValidator) VALUES");
+            sb.append(" ");
         }
+        return sb.toString();
     }
 
     private static String generateValueQuery(boolean includeProcessId) {

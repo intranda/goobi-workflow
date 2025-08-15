@@ -230,7 +230,7 @@ public class ProjectManager implements IManager, Serializable {
         return r;
     }
 
-    public static final ResultSetHandler<Project> resultSetToProjectHandler = new ResultSetHandler<Project>() {
+    public static final ResultSetHandler<Project> resultSetToProjectHandler = new ResultSetHandler<>() {
         @Override
         public Project handle(ResultSet rs) throws SQLException {
             try {
@@ -244,7 +244,7 @@ public class ProjectManager implements IManager, Serializable {
         }
     };
 
-    public static final ResultSetHandler<List<Project>> resultSetToProjectListHandler = new ResultSetHandler<List<Project>>() {
+    public static final ResultSetHandler<List<Project>> resultSetToProjectListHandler = new ResultSetHandler<>() {
         @Override
         public List<Project> handle(ResultSet rs) throws SQLException {
             List<Project> answer = new ArrayList<>();
@@ -275,7 +275,7 @@ public class ProjectManager implements IManager, Serializable {
     }
 
     /**
-     * return the list of all project names ordered alphabetically
+     * return the list of all project names ordered alphabetically.
      * 
      * @param limitToActiveProjects if true, return only active projects
      * @return the list of all (active) projects

@@ -41,7 +41,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class StepManager implements IManager, Serializable {
 
-    private static final Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
     private static final long serialVersionUID = -8285339735960375871L;
 
     @Override
@@ -245,7 +245,7 @@ public class StepManager implements IManager, Serializable {
         } catch (SQLException e) {
             log.error(e);
         }
-        return 0l;
+        return 0L;
     }
 
     public static long getSumOfFieldValue(String columnname, String filter, String order, String group) {
@@ -254,7 +254,7 @@ public class StepManager implements IManager, Serializable {
         } catch (SQLException e) {
             log.error(e);
         }
-        return 0l;
+        return 0L;
     }
 
     public static double getAverageOfFieldValue(String columnname, String filter, String order, String group) {
@@ -267,7 +267,7 @@ public class StepManager implements IManager, Serializable {
     }
 
     public static void saveExternalQueueJobTypes(List<JobType> jobTypes) throws DAOException {
-        String jobTypesJson = gson.toJson(jobTypes);
+        String jobTypesJson = GSON.toJson(jobTypes);
         try {
             StepMysqlHelper.saveJobTypes(jobTypesJson);
         } catch (SQLException e) {
@@ -278,7 +278,7 @@ public class StepManager implements IManager, Serializable {
     public static List<JobType> getExternalQueueJobTypes() throws DAOException {
         try {
             String jobTypesJson = StepMysqlHelper.getJobTypes();
-            return gson.fromJson(jobTypesJson, TypeToken.getParameterized(List.class, JobType.class).getType());
+            return GSON.fromJson(jobTypesJson, TypeToken.getParameterized(List.class, JobType.class).getType());
         } catch (SQLException e) {
             throw new DAOException(e);
         }
