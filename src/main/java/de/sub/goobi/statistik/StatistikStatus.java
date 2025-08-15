@@ -32,7 +32,11 @@ import org.goobi.beans.Step;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-public class StatistikStatus {
+public final class StatistikStatus {
+
+    private StatistikStatus() {
+        // hide implicit public constructor
+    }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Dataset getDiagramm(List inProzesse) {

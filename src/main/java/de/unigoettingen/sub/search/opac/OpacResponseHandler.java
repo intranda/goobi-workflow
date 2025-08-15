@@ -37,21 +37,21 @@ import lombok.Getter;
 
 public class OpacResponseHandler extends DefaultHandler {
 
-    boolean readTitle = false;
-    boolean readSessionVar = false;
-    String sessionVar = "";
-    String title = "";
-    String sessionId = "";
-    String cookie = "";
+    private boolean readTitle = false;
+    private boolean readSessionVar = false;
+    private String sessionVar = "";
+    private String title = "";
+    private String sessionId = "";
+    private String cookie = "";
     @Getter
-    String set = "";
+    private String set = "";
     @Getter
-    int numberOfHits = 0;
+    private int numberOfHits = 0;
 
     @Getter
-    ArrayList<String> opacResponseItemPpns = new ArrayList<>();
+    private ArrayList<String> opacResponseItemPpns = new ArrayList<>();
     @Getter
-    ArrayList<String> opacResponseItemTitles = new ArrayList<>();
+    private ArrayList<String> opacResponseItemTitles = new ArrayList<>();
 
     public OpacResponseHandler() {
         super();
@@ -65,20 +65,20 @@ public class OpacResponseHandler extends DefaultHandler {
     @Override
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
         //Eingefügt cm 8.5.2007
-        if (localName.equals("RESULT") && atts.getValue("error") != null && atts.getValue("error").equalsIgnoreCase("ILLEGAL")) {
+        if ("RESULT".equals(localName) && atts.getValue("error") != null && "ILLEGAL".equalsIgnoreCase(atts.getValue("error"))) {
             throw new SAXException(new IllegalQueryException());
         }
 
-        if (localName.equals("SESSIONVAR")) {
+        if ("SESSIONVAR".equals(localName)) {
             this.sessionVar = atts.getValue("name");
             this.readSessionVar = true;
         }
 
-        if (localName.equals("SET")) {
-            this.numberOfHits = Integer.valueOf(atts.getValue("hits")).intValue();
+        if ("SET".equals(localName)) {
+            this.numberOfHits = Integer.parseInt(atts.getValue("hits"));
         }
 
-        if (localName.equals("SHORTTITLE")) {
+        if ("SHORTTITLE".equals(localName)) {
             this.readTitle = true;
             this.title = "";
             this.opacResponseItemPpns.add(atts.getValue("PPN"));
@@ -95,13 +95,13 @@ public class OpacResponseHandler extends DefaultHandler {
         }
 
         if (this.readSessionVar) {
-            if (this.sessionVar.equals("SID")) {
+            if ("SID".equals(this.sessionVar)) {
                 this.sessionId = new String(ch, start, length);
             }
-            if (this.sessionVar.equals("SET")) {
+            if ("SET".equals(this.sessionVar)) {
                 this.set = new String(ch, start, length);
             }
-            if (this.sessionVar.equals("COOKIE")) {
+            if ("COOKIE".equals(this.sessionVar)) {
                 this.cookie = new String(ch, start, length);
             }
         }
@@ -112,18 +112,18 @@ public class OpacResponseHandler extends DefaultHandler {
      */
     @Override
     public void endElement(String namespaceURI, String localName, String qName) {
-        if (localName.equals("SHORTTITLE")) {
+        if ("SHORTTITLE".equals(localName)) {
             this.readTitle = false;
             this.opacResponseItemTitles.add(this.title);
         }
 
-        if (localName.equals("SESSIONVAR")) {
+        if ("SESSIONVAR".equals(localName)) {
             this.readSessionVar = false;
         }
     }
 
     public String getSessionId(String encoding) throws UnsupportedEncodingException {
-        if (!this.cookie.equals("")) {
+        if (!"".equals(this.cookie)) {
             return URLEncoder.encode(this.sessionId, encoding) + "/COOKIE=" + URLEncoder.encode(this.cookie, encoding);
         }
         return this.sessionId;

@@ -94,7 +94,10 @@ public final class ConfigOpac {
     }
 
     /**
-     * find Catalogue in Opac-Configurationlist ================================================================
+     * find Catalogue in Opac-Configurationlist.
+     *
+     * @param workflowName selected workflow
+     * @return opac list
      */
 
     public List<ConfigOpacCatalogue> getAllCatalogues(String workflowName) {
@@ -121,7 +124,7 @@ public final class ConfigOpac {
                 String database = this.config.getString("catalogue(" + index + ").config[@database]");
                 String iktlist = this.config.getString("catalogue(" + index + ").config[@iktlist]");
                 String cbs = this.config.getString("catalogue(" + index + ").config[@ucnf]", "");
-                if (!cbs.equals("")) {
+                if (!"".equals(cbs)) {
                     cbs = "&" + cbs;
                 }
 
@@ -176,7 +179,9 @@ public final class ConfigOpac {
     }
 
     /**
-     * return all configured Doctype-Titles from Configfile ================================================================
+     * return all configured Doctype-Titles from Configfile .
+     *
+     * @return list of all doctypes
      */
     public List<String> getAllDoctypeTitles() {
         List<String> myList = new ArrayList<>();
@@ -189,7 +194,9 @@ public final class ConfigOpac {
     }
 
     /**
-     * return all configured Doctype-Titles from Configfile ================================================================
+     * return all configured Doctype-Titles from Configfile.
+     *
+     * @return list of all doctypes
      */
     public List<ConfigOpacDoctype> getAllDoctypes() {
         List<ConfigOpacDoctype> myList = new ArrayList<>();
@@ -200,8 +207,11 @@ public final class ConfigOpac {
     }
 
     /**
-     * get doctype from mapping of opac response first check if there is a special mapping for this
-     * ================================================================
+     * get doctype from mapping of opac response first check if there is a special mapping for this.
+     *
+     * @param inMapping
+     * @param inCatalogue
+     * @return selected type
      */
     public ConfigOpacDoctype getDoctypeByMapping(String inMapping, String inCatalogue) {
         int countCatalogues = this.config.getMaxIndex("catalogue");
@@ -237,7 +247,10 @@ public final class ConfigOpac {
     }
 
     /**
-     * get doctype from title ================================================================
+     * get doctype from title .
+     *
+     * @param inTitle
+     * @return doctype
      */
     public ConfigOpacDoctype getDoctypeByName(String inTitle) {
         int countCatalogues = this.config.getMaxIndex("doctypes.type");

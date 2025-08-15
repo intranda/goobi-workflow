@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +78,7 @@ import lombok.extern.log4j.Log4j2;
  ******************************************************************************/
 
 /**************************************************************************
- * CHANGELOG: 19.07.2005 Ludwig: first Version
+ * CHANGELOG: 19.07.2005 Ludwig: first Version.
  *************************************************************************/
 
 @Log4j2
@@ -155,8 +157,7 @@ public class GetOpac {
      * 
      * Note that up to now the search item list is always retrieved and parsed. TODO check for local availability.
      * 
-     * @param serverAddress the serveraddress of the opac
-     * @param port the port of the opac
+     * @param opac opac configuration
      * @throws IOException If connection to catalogue system failed
      * @since 0.1
      *********************************************************************/
@@ -189,8 +190,9 @@ public class GetOpac {
      * 
      * @param picaRecord
      * @param field
+     * @param occurence
      * @param subfield
-     * @return
+     * @return data as string
      ***********************************************************************/
     public static String getDataFromPica(Element picaRecord, String field, String occurence, String subfield) {
         return getDataFromPica(picaRecord.getElementsByTagName(PICA_FIELD), field, occurence, subfield);
@@ -201,8 +203,9 @@ public class GetOpac {
      * 
      * @param picaFields
      * @param field
+     * @param occurence
      * @param subfield
-     * @return
+     * @return data as string
      ***********************************************************************/
     public static String getDataFromPica(NodeList picaFields, String field, String occurence, String subfield) {
         String result = null;
@@ -226,7 +229,6 @@ public class GetOpac {
      * Gets the formated picaplus data of the specified hits for the query in the specified field from the OPAC.
      * 
      * @param query The query string you are looking for.
-     * @param fieldKey The pica mnemonic key (PPN, THM, etc.) for the pica field where the query should be found.
      * @param numberOfHits the number of hits to return. Set to 0 to return all hits.
      * @return returns the root node of the retrieved and formated xml.
      * @throws IOException If connection to catalogue system failed
@@ -256,7 +258,6 @@ public class GetOpac {
      * Gets the formated picaplus data of the specified hits for the query in the specified field from the OPAC.
      * 
      * @param query The query string you are looking for.
-     * @param fieldKey The pica mnemonic key (PPN, THM, etc.) for the pica field where the query should be found.
      * @param numberOfHits the number of hits to return. Set to 0 to return all hits.
      * @return returns the root node of the retrieved and formated xml.
      * @throws IOException If connection to catalogue system failed
@@ -486,34 +487,32 @@ public class GetOpac {
 
     private String xmlFormatPica(String picaXmlRecord) {
         StringBuilder result = new StringBuilder("  <" + PICA_RECORD + ">\n");
-        try {
-            int startField = picaXmlRecord.indexOf("LONGTITLE");
-            int nextField = 0;
-            int endField = picaXmlRecord.indexOf("</LONGTITLE>");
-            String field = picaXmlRecord.substring(startField, endField);
 
-            // for some unknown reason the line break/record separator is
-            // sometimes different
-            String recordSeperator = "<br />";
-            if (picaXmlRecord.indexOf(recordSeperator) != -1) {
-                while (nextField != endField) {
-                    startField = picaXmlRecord.indexOf(recordSeperator, startField) + 6;
-                    nextField = picaXmlRecord.indexOf(recordSeperator, startField);
-                    if (nextField == -1) {
-                        nextField = endField;
-                    }
-                    field = picaXmlRecord.substring(startField, nextField).trim();
-                    result.append(parseRecordField(field));
+        int startField = picaXmlRecord.indexOf("LONGTITLE");
+        int nextField = 0;
+        int endField = picaXmlRecord.indexOf("</LONGTITLE>");
+        String field = picaXmlRecord.substring(startField, endField);
+
+        // for some unknown reason the line break/record separator is
+        // sometimes different
+        String recordSeperator = "<br />";
+        if (picaXmlRecord.indexOf(recordSeperator) != -1) {
+            while (nextField != endField) {
+                startField = picaXmlRecord.indexOf(recordSeperator, startField) + 6;
+                nextField = picaXmlRecord.indexOf(recordSeperator, startField);
+                if (nextField == -1) {
+                    nextField = endField;
                 }
-            } else {
-                String[] lines = field.split("\n");
-                for (int i = 1; i < lines.length; i++) {
-                    result.append(parseRecordField(lines[i]));
-                }
+                field = picaXmlRecord.substring(startField, nextField).trim();
+                result.append(parseRecordField(field));
             }
-        } catch (Exception e) {
-            log.error(e);
+        } else {
+            String[] lines = field.split("\n");
+            for (int i = 1; i < lines.length; i++) {
+                result.append(parseRecordField(lines[i]));
+            }
         }
+
         result.append("  </" + PICA_RECORD + ">\n");
         return result.toString();
     }
@@ -623,7 +622,7 @@ public class GetOpac {
 
             if (ConfigurationHelper.getInstance().isUseProxy()) {
                 try {
-                    URL ipAsURL = new URL(url);
+                    URL ipAsURL = new URI(url).toURL();
                     if (!ConfigurationHelper.getInstance().isProxyWhitelisted(ipAsURL)) {
                         HttpHost proxy =
                                 new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
@@ -636,7 +635,7 @@ public class GetOpac {
                     } else {
                         log.debug("url was on proxy whitelist, no proxy used: " + url);
                     }
-                } catch (MalformedURLException e) {
+                } catch (MalformedURLException | URISyntaxException e) {
                     log.debug("could not convert into URL: ", url);
                 }
             }
@@ -650,8 +649,8 @@ public class GetOpac {
 
     }
 
-    public OpacResponseHandler parseOpacResponse(String opacResponse) throws IOException, SAXException, ParserConfigurationException {
-        opacResponse = opacResponse.replace("&amp;amp;", "&amp;")
+    public OpacResponseHandler parseOpacResponse(String inOpacResponse) throws IOException, SAXException, ParserConfigurationException {
+        String opacResponse = inOpacResponse.replace("&amp;amp;", "&amp;")
                 .replace("&amp;quot;", "&quot;")
                 .replace("&amp;lt;", "&lt;")
                 .replace("&amp;gt;", "&gt;")
@@ -672,7 +671,7 @@ public class GetOpac {
     /***********************************************************************
      * Set requested character encoding for the response of the catalogue system. For goettingen iso-8859-1 and utf-8 work, the default is iso-8859-1.
      * 
-     * @param data_character_encoding The character encoding to set.
+     * @param dataCharacterEncoding The character encoding to set.
      **********************************************************************/
 
     // TODO: rename this Method to camelCase convention
