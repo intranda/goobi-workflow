@@ -121,7 +121,7 @@ public abstract class ConfigFileUtils {
      * paths that contain "../" (parent directory) may not direct to directories outside of that directory.
      *
      * @param directory
-     * @return
+     * @return true if folder is a sub folder of the goobi folder
      */
     public static boolean isDirectoryAllowed(String directory) {
         String goobiDirectoryName = ConfigurationHelper.getInstance().getGoobiFolder();
@@ -137,12 +137,8 @@ public abstract class ConfigFileUtils {
         String element = "configFileDirectories.directory(" + index + ")";
 
         // Get the directory name where the configuration files are (or null)
-        String directory = null;
-        try {
-            directory = xml.getString(element);
-        } catch (Exception exception) {
-            log.error(exception);
-        }
+        String directory = xml.getString(element, "");
+
         // No directory with this index found, loop breaks to look for further directories
         if (directory == null || directory.length() == 0) {
             return null;
@@ -153,39 +149,23 @@ public abstract class ConfigFileUtils {
 
         // Get the backup directory if it is defined in the parameter. If it is not defined, set it to "backup/"
         String backupDirectory = null;
-        try {
-            backupDirectory = xml.getString(element + "[@backupFolder]");
-        } catch (Exception exception) {
-            // No value is set, standard value should be used.
-        }
-        // The default backup directory is the subdirectory "backup/" in the directory where the configuration files are.
-        // If the backupDirectory is an empty string (""), the configuration directory is used for the backups.
-        if (backupDirectory == null) {
-            backupDirectory = "backup/";
-        }
+
+        backupDirectory = xml.getString(element + "[@backupFolder]", "backup/");
+
         if (backupDirectory.length() > 0 && !backupDirectory.endsWith("/")) {
             backupDirectory += "/";
         }
         backupDirectory = directory + backupDirectory;
 
         // Get the number of backup files that should be rotated before old files are deleted. The default value is 8.
-        int numberOfBackups = 8;
-        try {
-            numberOfBackups = xml.getInt(element + "[@backupFiles]");
-        } catch (Exception exception) {
-            // No value is set, standard value should be used.
-        }
+        int numberOfBackups = xml.getInt(element + "[@backupFiles]", 8);
+
         if (numberOfBackups < 0) {
             numberOfBackups = 0;
         }
 
         // Get the file regex parameter. If the regex is not used, it is set to null and not used in the file selection algorithm.
-        String fileRegex = null;
-        try {
-            fileRegex = xml.getString(element + "[@fileRegex]");
-        } catch (Exception exception) {
-            // No value is set, standard value should be used.
-        }
+        String fileRegex = xml.getString(element + "[@fileRegex]");
 
         return new ConfigDirectory(directory, backupDirectory, numberOfBackups, fileRegex);
     }
