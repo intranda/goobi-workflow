@@ -34,15 +34,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 public final class LongRunningTaskManager {
-    static LinkedList<LongRunningTask> tasks = new LinkedList<>();
+    private static LinkedList<LongRunningTask> tasks = new LinkedList<>();
     private static LongRunningTaskManager lrtm;
     @Getter
     @Setter
-    static boolean running = false;
-    Timer autoRunTimer;
+    private static boolean running = false;
+    private Timer autoRunTimer;
 
     /**
-     * Singleton-Zugriff ================================================================
+     * Singleton-Zugriff. ================================================================
+     *
+     * @return instance
      */
     public static LongRunningTaskManager getInstance() {
         if (lrtm == null) {
@@ -64,7 +66,7 @@ public final class LongRunningTaskManager {
         this.autoRunTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                LongRunningTaskManager.check_autoRunningTasks();
+                LongRunningTaskManager.checkAutoRunningTasks();
             }
         }, delay, period);
     }
@@ -72,7 +74,7 @@ public final class LongRunningTaskManager {
     /**
      * Diese Methode überprüft, ob wir was neues in unserem Container haben. ================================================================
      */
-    private static void check_autoRunningTasks() {
+    private static void checkAutoRunningTasks() {
         if (!running) {
             return;
         }
@@ -92,14 +94,18 @@ public final class LongRunningTaskManager {
     }
 
     /**
-     * alle Tasks der Warteschlange zurückgeben ================================================================
+     * alle Tasks der Warteschlange zurückgeben. ================================================================
+     *
+     * @return task list
      */
     public List<LongRunningTask> getTasks() {
         return tasks;
     }
 
     /**
-     * Reihenfolge eines Tasks nach oben ================================================================
+     * Reihenfolge eines Tasks nach oben. ================================================================
+     *
+     * @param inTask
      */
     public void moveTaskUp(LongRunningTask inTask) {
         if (tasks.getFirst() == inTask) {
@@ -111,7 +117,10 @@ public final class LongRunningTaskManager {
     }
 
     /**
-     * Reihenfolge eines Tasks nach unten ================================================================
+     * Reihenfolge eines Tasks nach unten. ================================================================
+     *
+     * @param inTask
+     * 
      */
     public void moveTaskDown(LongRunningTask inTask) {
         if (tasks.getLast() == inTask) {
@@ -123,21 +132,29 @@ public final class LongRunningTaskManager {
     }
 
     /**
-     * LongRunningTask in Warteschlange einreihen ================================================================
+     * LongRunningTask in Warteschlange einreihen. ================================================================
+     *
+     * @param inTask
+     * 
      */
     public void addTask(LongRunningTask inTask) {
         tasks.add(inTask);
     }
 
     /**
-     * LongRunningTask aus der Warteschlange entfernen ================================================================
+     * LongRunningTask aus der Warteschlange entfernen. ================================================================
+     *
+     * @param inTask
      */
     public void removeTask(LongRunningTask inTask) {
         tasks.remove(inTask);
     }
 
     /**
-     * LongRunningTask aus der Warteschlange entfernen ================================================================
+     * LongRunningTask aus der Warteschlange entfernen. ================================================================
+     *
+     * @param oldTask
+     * @param newTask
      */
     public void replaceTask(LongRunningTask oldTask, LongRunningTask newTask) {
         int id = tasks.indexOf(oldTask);
@@ -145,21 +162,25 @@ public final class LongRunningTaskManager {
     }
 
     /**
-     * LongRunningTask als Thread ausführen ================================================================
+     * LongRunningTask als Thread ausführen. ================================================================
+     *
+     * @param inTask
      */
     public void executeTask(LongRunningTask inTask) {
         inTask.start();
     }
 
     /**
-     * LongRunningTask abbrechen ================================================================
+     * LongRunningTask abbrechen. ================================================================
+     *
+     * @param inTask
      */
     public void cancelTask(LongRunningTask inTask) {
         inTask.cancel();
     }
 
     /**
-     * abgeschlossene Tasks aus der Liste entfernen ================================================================
+     * abgeschlossene Tasks aus der Liste entfernen. ================================================================
      */
     public void clearFinishedTasks() {
         for (LongRunningTask lrt : new LinkedList<>(tasks)) {
@@ -170,7 +191,7 @@ public final class LongRunningTaskManager {
     }
 
     /**
-     * alle Tasks aus der Liste entfernen ================================================================
+     * alle Tasks aus der Liste entfernen. ================================================================
      */
     public void clearAllTasks() {
         for (LongRunningTask lrt : new LinkedList<>(tasks)) {

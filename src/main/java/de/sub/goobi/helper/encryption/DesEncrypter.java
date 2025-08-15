@@ -23,26 +23,26 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class DesEncrypter {
-    Cipher ecipher;
-    Cipher dcipher;
-    String pass = "rusDML_Passphrase_for_secure_encryption_2005";
+    private Cipher ecipher;
+    private Cipher dcipher;
+    private String pass = "rusDML_Passphrase_for_secure_encryption_2005";
     // 8-byte Salt
-    byte[] salt = { (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32, (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03 };
+    private byte[] salt = { (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32, (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03 };
     // Iteration count
-    int iterationCount = 19;
+    private int iterationCount = 19;
 
     /* =============================================================== */
     public DesEncrypter() {
-        Initialise(this.pass);
+        initialise(this.pass);
     }
 
     /* =============================================================== */
     public DesEncrypter(String passPhrase) {
-        Initialise(passPhrase);
+        initialise(passPhrase);
     }
 
     /* =============================================================== */
-    private void Initialise(String passPhrase) {
+    private void initialise(String passPhrase) {
         try {
             // Create the key
             KeySpec keySpec = new PBEKeySpec(passPhrase.toCharArray(), this.salt, this.iterationCount);
@@ -61,7 +61,8 @@ public class DesEncrypter {
     }
 
     /* =============================================================== */
-    public String encrypt(String str) {
+    public String encrypt(String instr) {
+        String str = instr;
         if (str == null) {
             str = "";
         }
@@ -69,7 +70,7 @@ public class DesEncrypter {
             // Encode the string into bytes using utf-8
             byte[] utf8 = str.getBytes(StandardCharsets.UTF_8);
             if (this.ecipher == null) {
-                Initialise(this.pass);
+                initialise(this.pass);
             }
             // Encrypt
             byte[] enc = this.ecipher.doFinal(utf8);

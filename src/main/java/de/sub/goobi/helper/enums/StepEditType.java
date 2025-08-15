@@ -28,44 +28,44 @@ package de.sub.goobi.helper.enums;
 import de.sub.goobi.helper.Helper;
 
 /**
- * Enum for edit type of task steps each one has an integer value, and a title
+ * Enum for edit type of task steps each one has an integer value, and a title.
  * 
  * @author Steffen Hankiewicz
  * @version 17.05.2009
  */
 public enum StepEditType {
     /**
-     * default type is unknown for all steps, which still dont have a specific type
+     * default type is unknown for all steps, which still dont have a specific type.
      */
     UNNOWKN(0, "unbekannt"),
 
-    /** manual single workflow for regular workflow handling */
+    /** manual single workflow for regular workflow handling. */
     MANUAL_SINGLE(1, "manuellSingleWorkflow"),
 
     /**
-     * manual multi workflow for lots of data like image processing with pages of steps
+     * manual multi workflow for lots of data like image processing with pages of steps.
      */
     MANUAL_MULTI(2, "manuellMultiWorkflow"),
 
-    /** administrativ = all kinds of steps changed through administrative gui */
+    /** administrativ = all kinds of steps changed through administrative gui. */
     ADMIN(3, "administrativ"),
 
-    /** automatic = all kinds of automatic steps */
+    /** automatic = all kinds of automatic steps. */
     AUTOMATIC(4, "automatic");
 
     private int value;
     private String title;
 
     /**
-     * private constructor, initializes integer value and title
+     * private constructor, initializes integer value and title.
      */
-    private StepEditType(int inValue, String inTitle) {
+    StepEditType(int inValue, String inTitle) {
         this.value = inValue;
         this.title = inTitle;
     }
 
     /**
-     * return integer value for database savings
+     * return integer value for database savings.
      * 
      * @return value as integer
      */
@@ -74,7 +74,7 @@ public enum StepEditType {
     }
 
     /**
-     * get title from editType
+     * get title from editType.
      * 
      * @return title as translated string for current locale
      */
@@ -83,7 +83,7 @@ public enum StepEditType {
     }
 
     /**
-     * retrieve editType by integer value, neccessary for database handlings, where only integer is saved but not type safe
+     * retrieve editType by integer value, neccessary for database handlings, where only integer is saved but not type safe.
      * 
      * @param editType as integer value
      * @return {@link StepEditType} for given integer

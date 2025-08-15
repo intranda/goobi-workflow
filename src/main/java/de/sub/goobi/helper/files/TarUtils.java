@@ -40,10 +40,14 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class TarUtils {
+public final class TarUtils {
+
+    private TarUtils() {
+        // hide implicit public constructor
+    }
 
     /**
-     * Creates a tar file for the content of a given folder
+     * Creates a tar file for the content of a given folder.
      * 
      * @param sourceDir folder to compress
      * @param tarFile tar file to create
@@ -59,7 +63,7 @@ public class TarUtils {
     }
 
     /**
-     * Creates a tar.gz file for the content of a given folder
+     * Creates a tar.gz file for the content of a given folder.
      * 
      * @param sourceDir folder to compress
      * @param tarFile tar.gz file to create

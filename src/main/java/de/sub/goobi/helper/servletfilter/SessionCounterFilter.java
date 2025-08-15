@@ -34,42 +34,33 @@ import jakarta.inject.Inject;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 public class SessionCounterFilter implements Filter {
-    ServletContext servletContext;
 
     @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private SessionForm sf;
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        servletContext = filterConfig.getServletContext();
-    }
-
-    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpReq = (HttpServletRequest) request;
-        try {
-            sf.updateSessionLastAccess(httpReq.getSession());
-        } catch (Exception exception) {
-            log.warn(exception);
-        }
+
+        sf.updateSessionLastAccess(httpReq.getSession());
+
         chain.doFilter(request, response);
     }
 
-    /**
-     */
     @Override
     public void destroy() {
         // Nothing necessary
     }
 
+    @Override
+    public void init(FilterConfig arg0) throws ServletException {
+        // Nothing necessary
+    }
 }

@@ -31,10 +31,14 @@ import java.util.zip.ZipOutputStream;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class ZipUtils {
+public final class ZipUtils {
+
+    private ZipUtils() {
+        // hide implicit public constructor
+    }
 
     /**
-     * Create a zip file for the content of a given folder
+     * Create a zip file for the content of a given folder.
      * 
      * @param sourceDir folder to compress
      * @param zipFile zip file to create
@@ -65,7 +69,7 @@ public class ZipUtils {
     }
 
     /**
-     * Extract a zip file into a folder
+     * Extract a zip file into a folder.
      * 
      * @param destinationDir destination folder for the extracted files
      * @param zipFile zip file to extract

@@ -16,7 +16,7 @@
 package de.sub.goobi.helper.enums;
 
 /**
- * Enum of token types expected by de.sub.goobi.helper.ProcessTitleGenerator
+ * Enum of token types expected by de.sub.goobi.helper.ProcessTitleGenerator.
  * 
  * @author Zehong Hu
  * @version 25.05.2023

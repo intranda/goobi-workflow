@@ -30,7 +30,7 @@ import lombok.Getter;
 
 /**
  * This enum contains property types, which can be used for display and validation purpose Validation can be done by engaging validation classes,
- * which could be returned by the validation type Enum, contained in here
+ * which could be returned by the validation type Enum, contained in here.
  * 
  * 
  * @author Wulf
@@ -40,16 +40,16 @@ public enum PropertyType {
 
     UNKNOWN(0, "unknown", false),
 
-    /** general type */
+    /** general type. */
     GENERAL(1, "general", false),
 
-    /** normal message */
+    /** normal message. */
     MESSAGE_NORMAL(2, "messageNormal", false),
 
-    /** important message */
+    /** important message. */
     MESSAGE_IMPORTANT(3, "messageImportant", false),
 
-    /** error message */
+    /** error message. */
     MESSAGE_ERROR(4, "messageError", false),
     STRING(5, "String", true),
     BOOLEAN(6, "Boolean", true),
@@ -80,7 +80,7 @@ public enum PropertyType {
     @Getter
     private Boolean showInDisplay;
 
-    private PropertyType(int id, String inName, Boolean showInDisplay) {
+    PropertyType(int id, String inName, Boolean showInDisplay) {
         this.id = id;
         this.name = inName;
 

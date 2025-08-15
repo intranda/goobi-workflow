@@ -30,11 +30,11 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.goobi.beans.Process;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -55,9 +55,9 @@ public class ProcessSwapInTask extends LongRunningTask {
     }
 
     /**
-     * Aufruf als Thread ================================================================
+     * Aufruf als Thread. ================================================================
      */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     @Override
     public void run() {
         setStatusProgress(5);
@@ -84,8 +84,8 @@ public class ProcessSwapInTask extends LongRunningTask {
         }
         try {
             processDirectory = getProzess().getProcessDataDirectoryIgnoreSwapping();
-            // TODO: Don't catch Exception (the super class)
-        } catch (Exception e) {
+
+        } catch (IOException e) {
             log.warn("Exception:", e);
             setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - " + e.getMessage());
             setStatusProgress(-1);
@@ -111,8 +111,7 @@ public class ProcessSwapInTask extends LongRunningTask {
         try {
             Path swapLogFile = Paths.get(processDirectory, "swapped.xml");
             docOld = builder.build(swapLogFile.toFile());
-            // TODO: Don't catch Exception (the super class)
-        } catch (Exception e) {
+        } catch (IOException | JDOMException e) {
             log.warn("Exception:", e);
             setStatusMessage("Error while reading swapped.xml in process data folder: " + e.getClass().getName() + " - " + e.getMessage());
             setStatusProgress(-1);
@@ -128,8 +127,7 @@ public class ProcessSwapInTask extends LongRunningTask {
         HashMap<String, String> crcMap = new HashMap<>();
 
         // TODO: Don't use Iterators
-        for (Iterator<Element> it = rootOld.getChildren("file").iterator(); it.hasNext();) {
-            Element el = it.next();
+        for (Element el : rootOld.getChildren("file")) {
             crcMap.put(el.getAttribute("path").getValue(), el.getAttribute("crc32").getValue());
         }
         StorageProvider.getInstance().deleteDataInDir(fileIn);
@@ -161,8 +159,7 @@ public class ProcessSwapInTask extends LongRunningTask {
          */
         setStatusMessage("checking checksums");
         // TODO: Don't use Iterators
-        for (Iterator<Element> it = root.getChildren("file").iterator(); it.hasNext();) {
-            Element el = it.next();
+        for (Element el : root.getChildren("file")) {
             String newPath = el.getAttribute("path").getValue();
             String newCrc = el.getAttribute("crc32").getValue();
             if (crcMap.containsKey(newPath)) {
