@@ -97,7 +97,7 @@ import ugh.fileformats.mets.ModsHelper;
  */
 
 /**
- * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
+ * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails.
  *
  * @author Steffen Hankiewicz
  * @version 1.00 - 10.01.2005
@@ -185,7 +185,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private List<MetadataGeneration> generationRules = new ArrayList<>();
 
     /**
-     * Allgemeiner Konstruktor ()
+     * Allgemeiner Konstruktor.
+     *
+     * @param m metadata
+     * @param inID unique id
+     * @param inPrefs prefs
+     * @param inProcess process
+     * @param bean managed bean
      */
     public MetadatumImpl(Metadata m, int inID, Prefs inPrefs, Process inProcess, Metadaten bean) {
         this.md = m;
@@ -434,11 +440,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
      * ##################################################### ####################################################
      */
 
-    /******************************************************
+    /*
      *
      * new functions for use of display configuration within xml files
      *
-     *****************************************************/
+    */
 
     @Override
     public String getOutputType() {
@@ -666,7 +672,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         ToponymSearchResult searchResult = WebService.search(searchCriteria);
                         resultList = searchResult.getToponyms();
                         totalResults = searchResult.getTotalResultsCount();
+                        //CHECKSTYLE:OFF
+                        // generic exception is thrown in search method
                     } catch (Exception e) {
+                        //CHECKSTYLE:ON
                         log.error(e);
                     }
 
@@ -875,7 +884,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     /**
-     * This method is used to disable the edition of the identifier field, the default value is false, so it can be edited
+     * This method is used to disable the edition of the identifier field, the default value is false, so it can be edited.
+     *
+     * @return true for dante, easydb and kulturnav
      */
 
     public boolean isDisableIdentifierField() {
@@ -883,7 +894,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     /**
-     * this method is used to disable the edition of the metadata value field, the default value is false
+     * this method is used to disable the edition of the metadata value field, the default value is false.
+     *
+     * @return true for dante, easydb
+     * 
      */
 
     public boolean isDisableMetadataField() {

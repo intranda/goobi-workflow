@@ -29,9 +29,9 @@ import lombok.Data;
 
 @Data
 public class PageAreaRectangle {
-    String id;
-    int x;
-    int y;
-    int w;
-    int h;
+    private String id;
+    private int x;
+    private int y;
+    private int w;
+    private int h;
 }

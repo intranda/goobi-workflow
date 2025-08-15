@@ -57,7 +57,7 @@ import ugh.dl.Person;
 import ugh.dl.Prefs;
 
 /**
- * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
+ * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails.
  * 
  * @author Steffen Hankiewicz
  * @version 1.00 - 10.01.2005
@@ -102,7 +102,14 @@ public class MetaPerson implements SearchableMetadata {
     private String vocabularySearchQuery;
 
     /**
-     * Allgemeiner Konstruktor ()
+     * Allgemeiner Konstruktor ().
+     *
+     * @param p metadata
+     * @param inID unique id
+     * @param inPrefs prefs
+     * @param inStruct
+     * @param inProcess process
+     * @param bean managed bean
      */
     public MetaPerson(Person p, int inID, Prefs inPrefs, HoldingElement inStruct, Process inProcess, Metadaten bean) {
         this.myPrefs = inPrefs;
@@ -160,10 +167,8 @@ public class MetaPerson implements SearchableMetadata {
     }
 
     public void setVorname(String inVorname) {
-        if (inVorname == null) {
-            inVorname = "";
-        }
-        this.p.setFirstname(inVorname);
+
+        this.p.setFirstname(inVorname == null ? "" : inVorname);
         this.p.setDisplayname(getNachname() + ", " + getVorname());
     }
 
@@ -175,10 +180,7 @@ public class MetaPerson implements SearchableMetadata {
     }
 
     public void setNachname(String inNachname) {
-        if (inNachname == null) {
-            inNachname = "";
-        }
-        this.p.setLastname(inNachname);
+        this.p.setLastname(inNachname == null ? "" : inNachname);
         this.p.setDisplayname(getNachname() + ", " + getVorname());
     }
 
@@ -354,9 +356,7 @@ public class MetaPerson implements SearchableMetadata {
                 String[] nameParts = mainValue.split(" ");
                 String first = "";
                 String last = "";
-                if (nameParts.length == 0) {
-                    // do nothing
-                } else if (nameParts.length == 1) {
+                if (nameParts.length == 1) {
                     last = nameParts[0];
                 } else if (nameParts.length == 2) {
                     first = nameParts[0];

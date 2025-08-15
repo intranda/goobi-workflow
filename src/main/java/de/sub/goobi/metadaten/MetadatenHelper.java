@@ -72,6 +72,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class MetadatenHelper {
@@ -116,7 +117,7 @@ public class MetadatenHelper {
                         } else {
                             try {
                                 newDocstruct.addMetadata(old);
-                            } catch (Exception e) {
+                            } catch (UGHException e) {
                                 Helper.setFehlerMeldung(error);
                                 return inOldDocstruct;
                             }
@@ -263,7 +264,11 @@ public class MetadatenHelper {
     /* =============================================================== */
 
     /**
-     * die MetadatenTypen zurückgeben
+     * die MetadatenTypen zurückgeben.
+     *
+     * @param inStruct
+     * @param checkTypesFromParent
+     * @return metadata list
      */
     public SelectItem[] getAddableDocStructTypen(DocStruct inStruct, boolean checkTypesFromParent) {
         /*
@@ -278,7 +283,7 @@ public class MetadatenHelper {
             } else {
                 types = inStruct.getParent().getType().getAllAllowedDocStructTypes();
             }
-        } catch (RuntimeException e) {
+        } catch (NullPointerException e) {
             return myTypes;
         }
 
@@ -327,8 +332,9 @@ public class MetadatenHelper {
     }
 
     /**
-     * alle unbenutzen Metadaten des Docstruct löschen, Unterelemente rekursiv aufrufen
-     * ================================================================
+     * alle unbenutzen Metadaten des Docstruct löschen, Unterelemente rekursiv aufrufen.
+     * 
+     * @param inStruct ================================================================
      */
     public void deleteAllUnusedElements(DocStruct inStruct) {
         inStruct.deleteUnusedPersonsAndMetadata();
@@ -340,7 +346,11 @@ public class MetadatenHelper {
     }
 
     /**
-     * die erste Imagenummer zurückgeben ================================================================
+     * die erste Imagenummer zurückgeben.
+     * 
+     * @param inStrukturelement
+     * @param inPageNumber
+     * 
      */
     // TODO: alphanumerisch
 
@@ -403,7 +413,7 @@ public class MetadatenHelper {
     }
 
     /**
-     * vom übergebenen DocStruct alle Metadaten ermitteln und um die fehlenden DefaultDisplay-Metadaten ergänzen
+     * vom übergebenen DocStruct alle Metadaten ermitteln und um die fehlenden DefaultDisplay-Metadaten ergänzen.
      * ================================================================
      */
     public List<? extends Metadata> getMetadataInclDefaultDisplay(DocStruct inStruct, String inLanguage, Metadaten.MetadataTypes metadataType,
@@ -494,7 +504,7 @@ public class MetadatenHelper {
     }
 
     /**
-     * vom übergebenen DocStruct alle Metadaten ermitteln und um die fehlenden DefaultDisplay-Metadaten ergänzen
+     * vom übergebenen DocStruct alle Metadaten ermitteln und um die fehlenden DefaultDisplay-Metadaten ergänzen.
      * ================================================================
      */
     public List<MetadataGroup> getMetadataGroupsInclDefaultDisplay(DocStruct inStruct, String inLanguage, Process inProzess) {
@@ -561,7 +571,7 @@ public class MetadatenHelper {
     }
 
     /**
-     * prüfen, ob es sich hier um eine rdf- oder um eine mets-Datei handelt ================================================================
+     * prüfen, ob es sich hier um eine rdf- oder um eine mets-Datei handelt.
      */
     public static String getMetaFileType(String file) throws IOException {
         /*
@@ -612,7 +622,7 @@ public class MetadatenHelper {
     }
 
     /**
-     * Comparator für die Metadaten ================================================================
+     * Comparator für die Metadaten.
      */
     // TODO: Uses generics, if possible
     public static class MetadataComparator implements Comparator<Object> {
@@ -667,11 +677,11 @@ public class MetadatenHelper {
     }
 
     /**
-     * Alle Rollen ermitteln, die für das übergebene Strukturelement erlaubt sind
+     * Alle Rollen ermitteln, die für das übergebene Strukturelement erlaubt sind.
      * 
-     * @param Strukturtyp
-     * @param Rollenname der aktuellen Person, damit diese ggf. in die Liste mit übernommen wird ================================================
-     *            ================
+     * @param myDocStruct Strukturtyp
+     * @param inRoleName Rollenname der aktuellen Person, damit diese ggf. in die Liste mit übernommen wird
+     * @return role list ================================================ ================
      */
     public List<SelectItem> getAddablePersonRoles(HoldingElement myDocStruct, String inRoleName) {
         ArrayList<SelectItem> myList = new ArrayList<>();
@@ -881,10 +891,8 @@ public class MetadatenHelper {
                         }
                         for (NamePart namePart : c.getSubNames()) {
                             if (StringUtils.isNotBlank(namePart.getValue())) {
-
                                 corporate.append(namePart.getValue());
                                 corporate.append(" ");
-
                             }
                         }
                         if (StringUtils.isNotBlank(c.getPartName())) {
@@ -892,7 +900,6 @@ public class MetadatenHelper {
                         }
                         String val = corporate.toString().trim();
                         if (StringUtils.isNotBlank(val)) {
-
                             if (metadataList.containsKey(c.getType().getName())) {
                                 List<String> oldValue = metadataList.get(c.getType().getName());
                                 oldValue.add(val);

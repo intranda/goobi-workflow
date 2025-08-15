@@ -27,12 +27,11 @@ package de.sub.goobi.metadaten;
  */
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import de.sub.goobi.config.ConfigurationHelper;
 
 /**
- * Bean für die Sperrung der Metadaten
+ * Bean für die Sperrung der Metadaten.
  */
 public class MetadatenSperrung implements Serializable {
     private static final long serialVersionUID = -8248209179063050307L;
@@ -66,7 +65,7 @@ public class MetadatenSperrung implements Serializable {
      * @param processId = The process ID to unlock the resource for
      */
     public void setFree(int processId) {
-        MetadatenSperrung.UnlockProcess(processId);
+        MetadatenSperrung.unlockProcess(processId);
     }
 
     /**
@@ -75,7 +74,7 @@ public class MetadatenSperrung implements Serializable {
      *
      * @param processId = The process ID to unlock the resource for
      */
-    public static void UnlockProcess(int processId) {
+    public static void unlockProcess(int processId) {
         if (sperrungen.containsKey(processId)) {
             sperrungen.remove(processId);
         }
@@ -84,7 +83,10 @@ public class MetadatenSperrung implements Serializable {
     /* =============================================================== */
 
     /**
-     * Metadaten eines bestimmten Prozesses für einen Benutzer sperren
+     * Metadaten eines bestimmten Prozesses für einen Benutzer sperren.
+     * 
+     * @param processId
+     * @param userId
      */
     public void setLocked(int processId, String userId) {
         HashMap<String, String> map = new HashMap<>();
@@ -96,7 +98,11 @@ public class MetadatenSperrung implements Serializable {
     /* =============================================================== */
 
     /**
-     * prüfen, ob bestimmte Metadaten noch durch anderen Benutzer gesperrt sind
+     * prüfen, ob bestimmte Metadaten noch durch anderen Benutzer gesperrt sind.
+     *
+     * @param processId id to check
+     * @return result
+     * 
      */
     public static boolean isLocked(int processId) {
         HashMap<String, String> temp = sperrungen.get(Integer.valueOf(processId));
@@ -119,8 +125,7 @@ public class MetadatenSperrung implements Serializable {
     public void alleBenutzerSperrungenAufheben(Integer userId) {
         String inBenutzerString = String.valueOf(userId.intValue());
         HashMap<Integer, HashMap<String, String>> temp = new HashMap<>(sperrungen);
-        for (Iterator<Integer> iterator = temp.keySet().iterator(); iterator.hasNext();) {
-            Integer myKey = iterator.next();
+        for (Integer myKey : temp.keySet()) {
             HashMap<String, String> intern = sperrungen.get(myKey);
             if (intern.get(USER_ID).equals(inBenutzerString)) {
                 sperrungen.remove(myKey);
@@ -131,7 +136,11 @@ public class MetadatenSperrung implements Serializable {
     /* =============================================================== */
 
     /**
-     * Benutzer zurückgeben, der Metadaten gesperrt hat
+     * Benutzer zurückgeben, der Metadaten gesperrt hat.
+     *
+     * @param processId
+     * @return lock user
+     * 
      */
     public String getLockBenutzer(int processId) {
         String rueckgabe = "-1";
@@ -146,7 +155,10 @@ public class MetadatenSperrung implements Serializable {
     /* =============================================================== */
 
     /**
-     * Sekunden zurückgeben, seit der letzten Bearbeitung der Metadaten
+     * Sekunden zurückgeben, seit der letzten Bearbeitung der Metadaten.
+     *
+     * @param processId
+     * @return duration
      */
     public long getLockSekunden(int processId) {
         HashMap<String, String> temp = sperrungen.get(processId);

@@ -37,7 +37,8 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EasydbToken {
-
+    //CHECKSTYLE:OFF
+    // spelling is needed for automatic json conversion
     private LocalDateTime creationDate = LocalDateTime.now();
 
     private String access_token;
@@ -46,6 +47,7 @@ public class EasydbToken {
 
     private String scope;
     private String token_type;
+    //CHECKSTYLE:ON
 
     public String getToken() {
         return access_token;

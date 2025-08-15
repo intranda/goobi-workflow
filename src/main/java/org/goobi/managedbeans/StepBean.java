@@ -554,7 +554,7 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     public String SperrungAufheben() {
-        MetadatenSperrung.UnlockProcess(this.mySchritt.getProzess().getId());
+        MetadatenSperrung.unlockProcess(this.mySchritt.getProzess().getId());
         return "";
     }
 

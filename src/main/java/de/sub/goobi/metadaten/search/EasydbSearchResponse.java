@@ -56,7 +56,9 @@ public class EasydbSearchResponse {
     private List<EasydbResponseObject> convertedObjects = new ArrayList<>();
 
     private List<Map<String, Object>> objects;
-
+    //CHECKSTYLE:OFF
+    // spelling is needed for automatic json conversion
     private Map<String, Integer> request_time;
+    //CHECKSTYLE:ON
 
 }

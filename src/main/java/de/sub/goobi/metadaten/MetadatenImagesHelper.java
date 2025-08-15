@@ -75,6 +75,7 @@ import ugh.exceptions.ContentFileNotLinkedException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class MetadatenImagesHelper {
@@ -218,11 +219,12 @@ public class MetadatenImagesHelper {
     }
 
     /**
-     * Markus baut eine Seitenstruktur aus den vorhandenen Images ---------------- Steps - ---------------- Validation of images compare existing
+     * Markus baut eine Seitenstruktur aus den vorhandenen Images. ---------------- Steps - ---------------- Validation of images compare existing
      * number images with existing number of page DocStructs if it is the same don't do anything if DocStructs are less add new pages to
      * physicalDocStruct if images are less delete pages from the end of pyhsicalDocStruct --------------------------------
-     * 
-     * @return null
+     *
+     * @param inProzess
+     * @param directory
      * @throws TypeNotAllowedForParentException
      * @throws IOException
      * @throws DAOException
@@ -263,7 +265,7 @@ public class MetadatenImagesHelper {
                 }
                 physicaldocstruct.addMetadata(mdForPath);
             }
-        } catch (Exception e) {
+        } catch (UGHException e) {
             log.error(e);
         }
 
@@ -531,8 +533,12 @@ public class MetadatenImagesHelper {
     }
 
     /**
-     * scale given image file to png using internal embedded content server
-     * 
+     * scale given image file to png using internal embedded content server.
+     *
+     * @param inFileName
+     * @param outFileName
+     * @param inSize
+     * @param intRotation
      * @throws ContentLibException
      * @throws IOException
      * @throws ImageManipulatorException
@@ -596,10 +602,11 @@ public class MetadatenImagesHelper {
     // Add a method to validate the image files
 
     /**
-     * die Images eines Prozesses auf Vollständigkeit prüfen ================================================================
-     * 
-     * @throws DAOException
-     * @throws SwapException
+     * die Images eines Prozesses auf Vollständigkeit prüfen. ================================================================
+     *
+     * @param title
+     * @param folder
+     * @return result
      */
     public boolean checkIfImagesValid(String title, String folder) {
         boolean isValid = true;
@@ -669,7 +676,7 @@ public class MetadatenImagesHelper {
         Path dir;
         try {
             dir = Paths.get(myProzess.getImagesTifDirectory(true));
-        } catch (Exception e) {
+        } catch (IOException | SwapException e) {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
@@ -692,7 +699,7 @@ public class MetadatenImagesHelper {
                     dir = Paths.get(myProzess.getImagesDirectory() + directory);
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException | SwapException e) {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
@@ -707,6 +714,7 @@ public class MetadatenImagesHelper {
      * 
      * @param myProzess current process
      * @param directory current folder
+     * @param useThumsbDir
      * @return sorted list with strings representing images of proces
      * @throws InvalidImagesException
      */
@@ -715,7 +723,7 @@ public class MetadatenImagesHelper {
         Path dir;
         try {
             dir = Paths.get(myProzess.getImagesDirectory() + directory);
-        } catch (Exception e) {
+        } catch (IOException | SwapException e) {
             throw new InvalidImagesException(e);
         }
 

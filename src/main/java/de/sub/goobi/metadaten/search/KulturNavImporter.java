@@ -25,6 +25,7 @@
  */
 package de.sub.goobi.metadaten.search;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class KulturNavImporter extends JsonDataLoader {
     public static final String SUMMARY_URL = BASE_URL + "api/summary/";
 
     /**
-     * Extracts UUID from KulturNav Url, which is in the form: BASE_URL + "uuid"
+     * Extracts UUID from KulturNav Url, which is in the form: BASE_URL + "uuid".
      *
      * @param url an Url to extract from
      * @return UUID or the same input url if extraction failed
@@ -68,7 +69,7 @@ public class KulturNavImporter extends JsonDataLoader {
     }
 
     /**
-     * Creates a Norm data records based on the structure of the jsonMap
+     * Creates a Norm data records based on the structure of the jsonMap.
      *
      * @param jsonMap a JSON map
      * @return a record of type NormDataRecord
@@ -108,7 +109,7 @@ public class KulturNavImporter extends JsonDataLoader {
                         .trim()
                         .replaceAll("\\s+", "%20");
             }
-        } catch (Exception e) {
+        } catch (UnsupportedEncodingException e) {
             log.error("Unable to parse search string {}, {}", searchString, e.toString());
         }
         return searchString;
@@ -116,7 +117,7 @@ public class KulturNavImporter extends JsonDataLoader {
 
     /**
      * Source is a fragment which restricts the search to a specific category, for example, an entity class or a dataset, e.g
-     * <code>entityType:Person,entity.dataset:508197af-6e36-4e4f-927c-79f8f63654b2</code> See more: http://kulturnav.org/info/api
+     * <code>entityType:Person,entity.dataset:508197af-6e36-4e4f-927c-79f8f63654b2</code> . See more: http://kulturnav.org/info/api
      *
      * @param source a source to parse
      * @return a source which is ready to be appended to KulturNav API endpoint
@@ -148,11 +149,11 @@ public class KulturNavImporter extends JsonDataLoader {
     }
 
     /**
-     * Constructs summary Url to send it to KulturNav
+     * Constructs summary Url to send it to KulturNav.
      *
      * @param searchString a search string
      * @param source a source @see {{@link #parseSource(String)}}
-     * @return
+     * @return url
      */
     public static String constructSearchUrl(String searchString, String source) {
         StringBuilder knUrl = new StringBuilder();
@@ -164,7 +165,9 @@ public class KulturNavImporter extends JsonDataLoader {
     }
 
     /**
-     * Gets source for metadata name "person" from config file
+     * Gets source for metadata name "person" from config file.
+     *
+     * @return source
      */
     public static String getSourceForPerson() {
         String sourceForPerson = readSourceFromDisplayRulesConfig("person");
@@ -176,12 +179,12 @@ public class KulturNavImporter extends JsonDataLoader {
 
     /**
      * Reads source from config file <code>goobi_metadataDisplayRules.xml</code> where the display type is {@link DisplayType#kulturnav} for a given
-     * metadata ref (element name)
+     * metadata ref (element name).
      * <p>
      * The structure could look like this: <code>
-     * <kulturnav ref="person">
-     * <source>entityType:Person, entity.dataset:d519f76b-5ce5-4876-906e-7d31a76eb609</source>
-     * </kulturnav>
+     * &lt;kulturnav ref="person"&gt;
+     * &lt;source>entityType:Person, entity.dataset:d519f76b-5ce5-4876-906e-7d31a76eb609&lt;/source&gt;
+     * &lt;/kulturnav&gt;
      * </code>
      *
      * @param metadataRef a metadata name

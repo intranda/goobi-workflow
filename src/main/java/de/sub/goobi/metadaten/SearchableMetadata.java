@@ -26,7 +26,10 @@
 
 package de.sub.goobi.metadaten;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 
@@ -35,67 +38,68 @@ import org.goobi.api.display.enums.DisplayType;
 public interface SearchableMetadata {
 
     /**
-     * defines the type of the current metadata field
+     * defines the type of the current metadata field.
      * 
      * @return {@link DisplayType}
      */
-    public DisplayType getMetadataDisplaytype();
+    DisplayType getMetadataDisplaytype();
 
     /**
-     * set the default search value, some implementations like viaf use own fields
+     * set the default search value, some implementations like viaf use own fields.
      * 
      * @param value
      */
 
-    public void setSearchValue(String value);
+    void setSearchValue(String value);
 
     /**
-     * set the default field to perform the search in. Some implementations like geonames don't need this
+     * set the default field to perform the search in. Some implementations like geonames don't need this.
      * 
      * @param value
      */
 
-    public void setSearchOption(String value);
+    void setSearchOption(String value);
 
     /**
-     * performs the search
+     * performs the search.
      * 
-     * @return
+     * @return search result
      */
 
-    public String search();
+    String search();
 
     /**
-     * clear results of older search requests
+     * clear results of older search requests.
      */
 
-    public void clearResults();
+    void clearResults();
 
     /**
-     * defines if the search should be performed in gnd or viaf
+     * defines if the search should be performed in gnd or viaf.
+     *
+     * @param serachInViaf
      */
-    public void setSearchInViaf(boolean serachInViaf);
+    void setSearchInViaf(boolean serachInViaf);
 
     /**
-     * Create a new URL, escape problematic characters
+     * Create a new URL, escape problematic characters.
      * 
      * @param string
-     * @return
+     * @return url
      */
 
     default URL convertToURLEscapingIllegalCharacters(String string) {
         try {
             String decodedURL = URLDecoder.decode(string, "UTF-8");
-            URL url = new URL(decodedURL);
-            URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+            URI uri = new URI(decodedURL);
             return uri.toURL();
-        } catch (Exception ex) {
+        } catch (UnsupportedEncodingException | URISyntaxException | MalformedURLException ex) {
             return null;
         }
     }
 
     /**
-     * Remove problematic tilde characters from response string // fix for gnd non sort name parts
+     * Remove problematic tilde characters from response string // fix for gnd non sort name parts.
      * 
      * @param str input string
      * @return string without 0x98 and 0x9C
@@ -111,11 +115,11 @@ public interface SearchableMetadata {
         return filtered.toString();
     }
 
-    public long getCurrentVocabularySearchField();
+    long getCurrentVocabularySearchField();
 
-    public void setCurrentVocabularySearchField(long field);
+    void setCurrentVocabularySearchField(long field);
 
-    public String getVocabularySearchQuery();
+    String getVocabularySearchQuery();
 
-    public void setVocabularySearchQuery(String query);
+    void setVocabularySearchQuery(String query);
 }

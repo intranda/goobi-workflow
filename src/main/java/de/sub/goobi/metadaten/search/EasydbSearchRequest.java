@@ -44,6 +44,8 @@ import lombok.NoArgsConstructor;
 public class EasydbSearchRequest {
     private int offset = 0;
     private int limit = 10;
+    //CHECKSTYLE:OFF
+    // spelling is needed for automatic json conversion
     private boolean generate_rights = false;
 
     private List<EasydbSearchField> search = new ArrayList<>();
@@ -57,5 +59,6 @@ public class EasydbSearchRequest {
     private String path;
 
     private List<String> include_fields;
+    //CHECKSTYLE:ON
 
 }

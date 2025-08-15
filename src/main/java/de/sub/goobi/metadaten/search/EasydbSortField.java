@@ -32,6 +32,9 @@ import lombok.Data;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 
 public class EasydbSortField {
+    //CHECKSTYLE:OFF
+    // spelling is needed for automatic json conversion
     String field = "_system_object_id";
     String order = "DESC";
+    //CHECKSTYLE:ON
 }

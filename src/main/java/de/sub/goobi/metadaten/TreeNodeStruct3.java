@@ -66,7 +66,7 @@ public class TreeNodeStruct3 extends TreeNode {
     private String validationMessage;
 
     /**
-     * Konstruktoren
+     * Konstruktoren.
      */
     public TreeNodeStruct3() {
     }

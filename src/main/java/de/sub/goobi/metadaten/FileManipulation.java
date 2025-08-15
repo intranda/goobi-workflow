@@ -293,7 +293,7 @@ public class FileManipulation {
     }
 
     /**
-     * download file
+     * download file.
      */
 
     public void downloadFile() {
@@ -368,7 +368,7 @@ public class FileManipulation {
     }
 
     /**
-     * move files on server folder
+     * move files on server folder.
      */
 
     public void exportFiles() {
@@ -450,7 +450,9 @@ public class FileManipulation {
     }
 
     /**
-     * import files from folder
+     * import files from folder.
+     * 
+     * @return folder list
      * 
      */
 
