@@ -35,7 +35,12 @@ import org.joda.time.DateTime;
 
 import lombok.Getter;
 
-public class GoobiVersion {
+public final class GoobiVersion {
+
+    private GoobiVersion() {
+        // hide implicit public constructor
+    }
+
     private static DateTime now = DateTime.now();
 
     @Getter

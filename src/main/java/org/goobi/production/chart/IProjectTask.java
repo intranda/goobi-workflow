@@ -26,34 +26,34 @@ public interface IProjectTask {
 
     /**
      * 
-     * @return task title
+     * @return task title.
      */
-    public abstract String getTitle();
+    String getTitle();
 
     /**
      * 
-     * @return number of completed steps
+     * @return number of completed steps.
      */
-    public abstract Integer getStepsCompleted();
+    Integer getStepsCompleted();
 
     /**
      * 
-     * @return
+     * @return max step order.
      */
-    public abstract Integer getStepsMax();
+    Integer getStepsMax();
 
     /**
      * 
      * @param stepsCompleted sets number of completed steps
      */
 
-    public abstract void setStepsCompleted(Integer stepsCompleted);
+    void setStepsCompleted(Integer stepsCompleted);
 
     /**
      * 
      * @param stepsMax
      */
-    public abstract void setStepsMax(Integer stepsMax);
+    void setStepsMax(Integer stepsMax);
 
-    public abstract Integer getConfiguredMax();
+    Integer getConfiguredMax();
 }
