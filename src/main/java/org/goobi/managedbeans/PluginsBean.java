@@ -68,7 +68,7 @@ import net.xeoh.plugins.base.impl.PluginManagerFactory;
 import net.xeoh.plugins.base.util.PluginManagerUtil;
 
 /**
- * This is the backing bean for the plugins-view that shows all plugins in the file system and their git revisions
+ * This is the backing bean for the plugins-view that shows all plugins in the file system and their git revisions.
  * 
  * @author Oliver Paetzel
  *

@@ -39,17 +39,16 @@ import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
 
 @Named
 @WindowScoped
-@Log4j2
+
 public class VocabularyEditBean implements Serializable {
     private static final long serialVersionUID = 5672948572345L;
 
     private static final String RETURN_PAGE_EDIT = "vocabulary_edit";
 
-    private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
+    private static final VocabularyAPIManager API = VocabularyAPIManager.getInstance();
 
     @Getter
     private Vocabulary vocabulary;
@@ -80,16 +79,16 @@ public class VocabularyEditBean implements Serializable {
             return;
         }
 
-        this.metadataSchema = api.vocabularySchemas().get(vocabulary.getMetadataSchemaId());
-        this.metadataRecord = api.vocabularyRecords().getMetadata(vocabulary.getId());
+        this.metadataSchema = API.vocabularySchemas().get(vocabulary.getMetadataSchemaId());
+        this.metadataRecord = API.vocabularyRecords().getMetadata(vocabulary.getId());
     }
 
     public String saveVocabulary() {
-        api.vocabularies().change(vocabulary);
+        API.vocabularies().change(vocabulary);
         if (metadataRecord != null) {
             Long recordId = metadataRecord.getId();
             try {
-                api.vocabularyRecords().save(metadataRecord);
+                API.vocabularyRecords().save(metadataRecord);
             } catch (APIException e) {
                 APIExceptionExtractor extractor = new APIExceptionExtractor(e);
                 Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
@@ -105,7 +104,7 @@ public class VocabularyEditBean implements Serializable {
 
     public String deleteVocabulary() {
         try {
-            api.vocabularies().delete(vocabulary);
+            API.vocabularies().delete(vocabulary);
         } catch (APIException e) {
             APIExceptionExtractor extractor = new APIExceptionExtractor(e);
             Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));

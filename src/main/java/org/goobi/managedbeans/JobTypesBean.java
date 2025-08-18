@@ -114,11 +114,7 @@ public class JobTypesBean implements Serializable {
         if (indexes.length == 0) {
             this.jobTypes.add(this.currentJobType);
         } else {
-            JobType oldJobType = this.jobTypes.get(indexes[0]);
-            if (oldJobType.isPaused() && !this.currentJobType.isPaused()) {
-                //job was paused, but now isn't anymore => restart work
-                //TODO re-run paused jobs for this jobType
-            }
+
             this.jobTypes.set(indexes[0], this.currentJobType);
         }
         this.apply();

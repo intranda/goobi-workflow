@@ -210,7 +210,9 @@ public class MessageQueueBean extends BasicBean implements Serializable {
      */
 
     /**
-     * Get a list of all active messages in the goobi_slow queue
+     * Get a list of all active messages in the goobi_slow queue.
+     * 
+     * @return mq tasks
      */
 
     public List<TaskTicket> getActiveSlowQueryMesssages() {
@@ -242,7 +244,7 @@ public class MessageQueueBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Remove all active messages of a given type from the queue
+     * Remove all active messages of a given type from the queue.
      * 
      */
     public void clearQueue() {
@@ -269,7 +271,9 @@ public class MessageQueueBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Get a list of all active messages in the goobi_fast queue
+     * Get a list of all active messages in the goobi_fast queue.
+     *
+     * @return mq tasks
      */
 
     public List<TaskTicket> getActiveFastQueryMesssages() {
@@ -303,7 +307,7 @@ public class MessageQueueBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Delete a single message from the queue
+     * Delete a single message from the queue.
      * 
      * @param ticket
      */

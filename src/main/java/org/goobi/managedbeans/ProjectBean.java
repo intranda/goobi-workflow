@@ -163,9 +163,9 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * this needs to be executed in order to rollback adding of filegroups
+     * this needs to be executed in order to rollback adding of filegroups,
      * 
-     * @return
+     * @return return to overview
      */
     public String Cancel() {
         // flushing new fileGroups
@@ -334,7 +334,7 @@ public class ProjectBean extends BasicBean implements Serializable {
 
     /**
      * The need to commit deleted fileGroups only after the save action requires a filter, so that those filegroups marked for delete are not shown
-     * anymore
+     * anymore.
      * 
      * @return modified ArrayList
      */
@@ -407,7 +407,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * generates values for count of volumes and images for statistics
+     * generates values for count of volumes and images for statistics.
      */
 
     public void GenerateValuesForStatistics() {
@@ -430,7 +430,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * calculate pages per volume depending on given values, requested multiple times via ajax
+     * calculate pages per volume depending on given values, requested multiple times via ajax.
      * 
      * @return Integer of calculation
      */
@@ -444,7 +444,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * get calculated duration from start and end date
+     * get calculated duration from start and end date.
      * 
      * @return String of duration
      */
@@ -455,7 +455,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * calculate throughput of volumes per year
+     * calculate throughput of volumes per year.
      * 
      * @return calculation
      */
@@ -471,7 +471,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * calculate throughput of pages per year
+     * calculate throughput of pages per year.
      * 
      * @return calculation
      */
@@ -486,7 +486,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * calculate throughput of volumes per quarter
+     * calculate throughput of volumes per quarter.
      * 
      * @return calculation
      */
@@ -500,7 +500,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * calculate throughput of pages per quarter
+     * calculate throughput of pages per quarter.
      * 
      * @return calculation
      */
@@ -513,7 +513,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * calculate throughput of volumes per month
+     * calculate throughput of volumes per month.
      * 
      * @return calculation
      */
@@ -526,7 +526,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * calculate throughput of pages per month
+     * calculate throughput of pages per month.
      * 
      * @return calculation
      */
@@ -552,7 +552,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * calculate throughput of volumes per day
+     * calculate throughput of volumes per day.
      * 
      * @return calculation
      */
@@ -580,7 +580,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * calculate throughput of pages per day
+     * calculate throughput of pages per day.
      * 
      * @return calculation
      */
@@ -589,7 +589,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     /**
-     * @returns a StatQuestThroughputCommonFlow for the generation of projekt progress data
+     * @return a StatQuestThroughputCommonFlow for the generation of projekt progress data
      */
     public StatQuestProjectProgressData getProjectProgressInterface() {
 
@@ -597,22 +597,19 @@ public class ProjectBean extends BasicBean implements Serializable {
             this.projectProgressData = new StatQuestProjectProgressData();
         }
         synchronized (this.projectProgressData) {
-            try {
 
-                this.projectProgressData.setCommonWorkflow(this.myProjekt.getWorkFlow());
-                this.projectProgressData.setCalculationUnit(CalculationUnit.volumes);
-                this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
-                this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
-                String sql = this.createProjectSQLString();
-                sql = FilterHelper.criteriaBuilder(sql, false, null, null, null, true, false);
-                this.projectProgressData.setDataSource(sql + " AND prozesse.istTemplate = false ");
+            this.projectProgressData.setCommonWorkflow(this.myProjekt.getWorkFlow());
+            this.projectProgressData.setCalculationUnit(CalculationUnit.volumes);
+            this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
+            this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
+            String sql = this.createProjectSQLString();
+            sql = FilterHelper.criteriaBuilder(sql, false, null, null, null, true, false);
+            this.projectProgressData.setDataSource(sql + " AND prozesse.istTemplate = false ");
 
-                if (this.projectProgressImage == null) {
-                    this.projectProgressImage = "";
-                }
-            } catch (Exception e) {
-                log.error(e);
+            if (this.projectProgressImage == null) {
+                this.projectProgressImage = "";
             }
+
         }
         return this.projectProgressData;
     }
@@ -636,11 +633,9 @@ public class ProjectBean extends BasicBean implements Serializable {
     public String getProjectProgressImage() {
 
         if (this.projectProgressImage == null || this.projectProgressData == null || this.projectProgressData.hasChanged()) {
-            try {
-                calcProgressCharts();
-            } catch (Exception e) {
-                Helper.setFehlerMeldung("noImageRendered");
-            }
+
+            calcProgressCharts();
+
         }
         return this.projectProgressImage;
     }
@@ -665,9 +660,9 @@ public class ProjectBean extends BasicBean implements Serializable {
         }
     }
 
-    /*********************************************************
+    /*
      * Static Statistics
-     *********************************************************/
+     */
 
     public String getProjectStatImages() throws IOException {
         if (this.projectStatImages == null) {
@@ -791,7 +786,7 @@ public class ProjectBean extends BasicBean implements Serializable {
                     }
                 }
                 facesContext.responseComplete();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 log.error(e);
             }
         }

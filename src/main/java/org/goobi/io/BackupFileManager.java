@@ -96,7 +96,7 @@ public abstract class BackupFileManager {
                 backupFileOrDirectoryName = BackupFileManager.createBackup(path, backupPath, name);
                 log.trace("The backup file {} was created successfully.", backupPath + backupFileOrDirectoryName);
             }
-        } catch (Exception exception) {
+        } catch (IOException exception) {
             if (createFrontendMessage) {
                 String messageFail = Helper.getTranslation("noBackupCreated");
                 Helper.setFehlerMeldung(messageFail);
@@ -106,7 +106,7 @@ public abstract class BackupFileManager {
 
         try {
             BackupFileManager.removeTooOldBackupFiles(backupPath, name, limit);
-        } catch (Exception exception) {
+        } catch (IOException exception) {
             log.warn("Old backup files could not be deleted. Please make sure that the required access rights are set.");
             if (createFrontendMessage) {
                 String messageFail = Helper.getTranslation("noOldBackupsDeleted");
@@ -134,7 +134,8 @@ public abstract class BackupFileManager {
         String backupName = generateBackupName(fileName);
         Path backupFileOrDirectory = Paths.get(backupPath, backupName);
 
-        if (!StorageProvider.getInstance().isFileExists(existingFileOrDirectory) && !StorageProvider.getInstance().isDirectory(existingFileOrDirectory)) {
+        if (!StorageProvider.getInstance().isFileExists(existingFileOrDirectory)
+                && !StorageProvider.getInstance().isDirectory(existingFileOrDirectory)) {
             return null;
         }
 

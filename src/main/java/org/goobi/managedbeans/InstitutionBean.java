@@ -54,9 +54,9 @@ public class InstitutionBean extends BasicBean implements Serializable {
     private Institution institution;
 
     /**
-     * Create a new institution instance
+     * Create a new institution instance.
      * 
-     * @return
+     * @return edit
      */
     public String createNewInstitution() {
         institution = new Institution();
@@ -64,9 +64,9 @@ public class InstitutionBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Save the institution in the database, return to institution overview
+     * Save the institution in the database, return to institution overview.
      * 
-     * @return
+     * @return filter
      */
     public String saveInstitution() {
         InstitutionManager.saveInstitution(institution);
@@ -76,9 +76,9 @@ public class InstitutionBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Delete the current institution, return to institution overview
+     * Delete the current institution, return to institution overview.
      * 
-     * @return
+     * @return filter
      */
     public String deleteInstitution() {
         // TODO check if a project is assigned to the institution. If this is the case, stay on this page
@@ -106,11 +106,11 @@ public class InstitutionBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Needed from the UI, don't use it in java code, use saveInstitution instead
+     * Needed from the UI, don't use it in java code, use saveInstitution instead.
      * 
      * @deprecated This method is replaced by saveInstitution()
      * 
-     * @return
+     * @return success
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String Speichern() {
@@ -118,11 +118,11 @@ public class InstitutionBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Needed from the UI, don't use it in java code, use deleteInstitution instead
+     * Needed from the UI, don't use it in java code, use deleteInstitution instead.
      * 
      * @deprecated This method is replaced by deleteInstitution()
      * 
-     * @return
+     * @return success
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String Loeschen() {

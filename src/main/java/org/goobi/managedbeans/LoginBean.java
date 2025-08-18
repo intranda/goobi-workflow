@@ -469,7 +469,7 @@ public class LoginBean implements Serializable {
         /* Pages-Verzeichnis mit den temporären Images ermitteln */
         String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
 
-        List<String> dateien = StorageProvider.getInstance().list(myPfad, pngfilter);
+        List<String> dateien = StorageProvider.getInstance().list(myPfad, PNG_FILTER);
 
         /* alle Dateien durchlaufen und die alten löschen */
         if (!dateien.isEmpty()) {
@@ -486,7 +486,7 @@ public class LoginBean implements Serializable {
         }
     }
 
-    private static final DirectoryStream.Filter<Path> pngfilter = path -> {
+    private static final DirectoryStream.Filter<Path> PNG_FILTER = path -> {
         return (path.toString().endsWith(".png"));
     };
 
@@ -507,9 +507,9 @@ public class LoginBean implements Serializable {
     }
 
     /**
-     * check if any of the assigned roles is related to GoobiScript
+     * check if any of the assigned roles is related to GoobiScript.
      *
-     * @return
+     * @return true if gs is allowed
      */
     public boolean isHasAnyGoobiScriptRole() {
         if (roles.contains("Workflow_Processes_Allow_GoobiScript")) {

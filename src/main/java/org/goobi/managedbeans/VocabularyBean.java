@@ -39,41 +39,37 @@ import io.goobi.workflow.api.vocabulary.helper.APIExceptionExtractor;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import jakarta.inject.Named;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
 
 @Named
 @WindowScoped
-@Log4j2
+
 public class VocabularyBean implements Serializable {
     private static final long serialVersionUID = 5672948572345L;
 
     private static final String RETURN_PAGE_OVERVIEW = "vocabulary_all";
 
-    private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
+    private static final VocabularyAPIManager API = VocabularyAPIManager.getInstance();
 
     @Getter
     private transient Paginator<ExtendedVocabulary> paginator;
 
     public String load() {
         try {
-            api.versionCheck();
+            API.versionCheck();
             paginator = new HATEOASPaginator<>(
                     VocabularyPageResult.class,
-                    api.vocabularies()
+                    API.vocabularies()
                             .list(
                                     Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
                                     Optional.empty(),
                                     Optional.of("name,ASC")),
                     null,
                     null,
-                    api.vocabularies()::get);
+                    API.vocabularies()::get);
             return RETURN_PAGE_OVERVIEW;
         } catch (APIException e) {
             APIExceptionExtractor extractor = new APIExceptionExtractor(e);
             Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
-            return "index";
-        } catch (Exception e) {
-            Helper.setFehlerMeldung(e.getMessage());
             return "index";
         }
     }

@@ -180,8 +180,8 @@ public class PluginInstallBean implements Serializable {
     /**
      * Parses a tar-packaged plugin and returns a PluginInstaller instance. The InputStream is not closed by this method
      * 
-     * @param input InputStream pointing to tar-packaged Goobi workflow plugin
-     * @return
+     * @param inputPath InputStream pointing to tar-packaged Goobi workflow plugin
+     * @return plugin installer
      * @throws IOException
      * @throws JDOMException
      */
