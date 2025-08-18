@@ -52,7 +52,7 @@ public class ObjectInfo {
     }
 
     /**
-     * @param objectURI
+     * @param uriString
      * @throws URISyntaxException
      */
     public ObjectInfo(String uriString) throws URISyntaxException {

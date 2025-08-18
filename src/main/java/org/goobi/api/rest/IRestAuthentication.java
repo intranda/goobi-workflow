@@ -24,10 +24,10 @@ public interface IRestAuthentication {
 
     /**
      * 
-     * Get a list of implemented rest api endpoints, their path, http type and a description
+     * Get a list of implemented rest api endpoints, their path, http type and a description.
      *
      * @return List of all implemented endpoints
      */
 
-    public List<AuthenticationMethodDescription> getAuthenticationMethods();
+    List<AuthenticationMethodDescription> getAuthenticationMethods();
 }

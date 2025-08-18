@@ -52,7 +52,7 @@ import lombok.extern.log4j.Log4j2;
 @jakarta.ws.rs.Path("/view/media")
 public class MediaResource {
 
-    private static final Path metadataFolderPath = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
+    private static final Path METADATA_FOLDER = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
 
     @GET
     @jakarta.ws.rs.Path("{process}/{folder}/{filename}")
@@ -65,7 +65,7 @@ public class MediaResource {
     public Response serveMediaContent(@PathParam("process") String processIdString, @PathParam("folder") String folder,
             @PathParam("filename") String filename) {
 
-        Path processFolder = metadataFolderPath.resolve(processIdString);
+        Path processFolder = METADATA_FOLDER.resolve(processIdString);
 
         Path mediaFolder = getImagesFolder(processFolder, folder);
         Path mediaResource = mediaFolder.resolve(filename);

@@ -28,7 +28,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 
 @XmlRootElement
-public @Data class ErrorResponse {
+@Data
+public class ErrorResponse {
 
     private String result; // error
 
