@@ -246,7 +246,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     protected static final String ATTRIBUTE_METADATA = "metadata";
     protected static final String ATTRIBUTE_MIMETYPE = "mimetype";
     protected static final String ATTRIBUTE_NAME = "name";
-    protected static final String ATTRIBUTE_NUMERIC_VALUE = "numeric_value";// Attention: under_score instead of camelCase
+    protected static final String ATTRIBUTE_NUMERIC_VALUE = "numeric_value";
     protected static final String ATTRIBUTE_ORIGINAL_ID = "originalID";
     protected static final String ATTRIBUTE_PATH = "path";
     protected static final String ATTRIBUTE_PROCESS_ID = "processID";
@@ -310,7 +310,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     private SimpleDateFormat dateConverterDay = new SimpleDateFormat("dd");
 
     /**
-     * This method exports the production metadata as xml to a given directory
+     * This method exports the production metadata as xml to a given directory.
      * 
      * @param p the process to export
      * @param destination the destination to write the file
@@ -349,7 +349,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             outp.output(doc, os);
             os.close();
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IOException(e);
         }
     }
@@ -365,15 +365,17 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             outp.output(doc, os);
             os.close();
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IOException(e);
         }
     }
 
     /**
-     * This method creates a new xml document with process metadata
+     * This method creates a new xml document with process metadata.
      * 
      * @param process the process to export
+     * @param addNamespace
+     * @param includeImages
      * @return a new xml document
      * @throws ConfigurationException
      */
@@ -744,7 +746,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     }
 
     /**
-     * This method transforms the xml log using a xslt file and opens a new window with the output file
+     * This method transforms the xml log using a xslt file and opens a new window with the output file.
      * 
      * @param out ServletOutputStream
      * @param doc the xml document to transform
@@ -752,7 +754,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @throws XSLTransformException
      * @throws IOException
      */
-    public void XmlTransformation(OutputStream out, Document doc, String filename) throws XSLTransformException, IOException {
+    public void xmlTransformation(OutputStream out, Document doc, String filename) throws XSLTransformException, IOException {
         Document docTrans;
         if (filename != null && "".equals(filename)) {
             XSLTransformer transformer;
@@ -775,25 +777,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
     public void startTransformation(Process p, OutputStream out, String filename) throws ConfigurationException, XSLTransformException, IOException {
         Document doc = createDocument(p, true, true);
-        XmlTransformation(out, doc, filename);
-    }
-
-    /**
-     * Replaces characters which are invalid for barcodes with '?'
-     * 
-     * @param in
-     * @return
-     * @deprecated This also breaks normal metadata including these characters. Replace characters in xslt instead.
-     */
-    @Deprecated(since = "23.05", forRemoval = true)
-    @SuppressWarnings("unused")
-    private String replacer(String in) {
-        in = in.replace("°", "?");
-        in = in.replace("^", "?");
-        in = in.replace("|", "?");
-        in = in.replace(">", "?");
-        in = in.replace("<", "?");
-        return in;
+        xmlTransformation(out, doc, filename);
     }
 
     /**
@@ -834,7 +818,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 try {
                     outputStream.close();
                 } catch (IOException e) {
-                    outputStream = null;
+                    log.error(e);
                 }
             }
         }
@@ -871,7 +855,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 try {
                     outputStream.close();
                 } catch (IOException e) {
-                    outputStream = null;
+                    log.error(e);
                 }
             }
         }
@@ -906,7 +890,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     fields.put(name, value);
                 }
             }
-        } catch (Exception e) {
+        } catch (ConfigurationException e) {
             fields = new HashMap<>();
         }
         return fields;
@@ -936,7 +920,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     nss.add(ns);
                 }
             }
-        } catch (Exception exception) {
+        } catch (ConfigurationException exception) {
             log.error(exception);
         }
         return nss;
@@ -999,72 +983,46 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      */
     private Element getTaskData(Step step) {
         Element task = new Element(ELEMENT_TASK, xmlns);
-        // SchritteID
-        task.setAttribute(ATTRIBUTE_ID, String.valueOf(step.getId()));
-
-        // Titel
-        Element stepName = new Element(ELEMENT_NAME, xmlns);
+        task.setAttribute(ATTRIBUTE_ID, String.valueOf(step.getId())); // SchritteID
+        Element stepName = new Element(ELEMENT_NAME, xmlns); // Titel
         stepName.setText(step.getTitel());
         task.addContent(stepName);
-
-        // Prioritaet
-        Element priority = new Element(ELEMENT_PRIORITY, xmlns);
+        Element priority = new Element(ELEMENT_PRIORITY, xmlns); // Prioritaet
         priority.setText(String.valueOf(step.getPrioritaet()));
         task.addContent(priority);
-
-        // Reihenfolge
-        Element order = new Element(ELEMENT_ORDER, xmlns);
+        Element order = new Element(ELEMENT_ORDER, xmlns); // Reihenfolge
         order.setText(String.valueOf(step.getReihenfolge()));
         task.addContent(order);
-
-        // Bearbeitungsstatus
-        Element status = new Element(ELEMENT_STATUS, xmlns);
+        Element status = new Element(ELEMENT_STATUS, xmlns); // Bearbeitungsstatus
         status.setText(step.getBearbeitungsstatusAsString());
         task.addContent(status);
-
-        // BearbeitungsZeitpunkt
-        Element processingTime = new Element(ELEMENT_PROCESSING_TIME, xmlns);
+        Element processingTime = new Element(ELEMENT_PROCESSING_TIME, xmlns); // BearbeitungsZeitpunkt
         processingTime.setText(step.getBearbeitungszeitpunkt() == null ? "" : dateConverter.format(step.getBearbeitungszeitpunkt()));
         task.addContent(processingTime);
-
-        // BearbeitungsBeginn
-        Element processingStartTime = new Element(ELEMENT_PROCESSING_START_TIME, xmlns);
+        Element processingStartTime = new Element(ELEMENT_PROCESSING_START_TIME, xmlns); // BearbeitungsBeginn
         processingStartTime.setText(step.getBearbeitungsbeginn() == null ? "" : dateConverter.format(step.getBearbeitungsbeginn()));
         task.addContent(processingStartTime);
-
-        // BearbeitungsEnde
-        Element processingEndTime = new Element(ELEMENT_PROCESSING_END_TIME, xmlns);
+        Element processingEndTime = new Element(ELEMENT_PROCESSING_END_TIME, xmlns); // BearbeitungsEnde
         processingEndTime.setText(step.getBearbeitungsende() == null ? "" : dateConverter.format(step.getBearbeitungsende()));
         task.addContent(processingEndTime);
-
-        // BearbeitungsBenutzerID
-        if (step.getBearbeitungsbenutzer() != null) {
+        if (step.getBearbeitungsbenutzer() != null) { // BearbeitungsBenutzerID
             Element user = new Element(ELEMENT_USER, xmlns);
             user.setAttribute(ATTRIBUTE_ID, String.valueOf(step.getBearbeitungsbenutzer().getId()));
             user.setText(step.getBearbeitungsbenutzer().getNachVorname());
             user.setAttribute(ATTRIBUTE_LOGIN, step.getBearbeitungsbenutzer().getLogin());
             task.addContent(user);
         }
-
-        // edittype
-        Element editionType = new Element(ELEMENT_EDITION_TYPE, xmlns);
+        Element editionType = new Element(ELEMENT_EDITION_TYPE, xmlns); // edittype
         editionType.setText(String.valueOf(step.getEditTypeEnum().getValue()));
         task.addContent(editionType);
-
         Element configuration = new Element(ELEMENT_CONFIGURATION, xmlns);
         task.addContent(configuration);
-        // homeverzeichnisNutzen
-        configuration.setAttribute(ATTRIBUTE_USE_HOME_DIRECTORY, String.valueOf(step.getHomeverzeichnisNutzen()));
-        // typMetadaten
-        configuration.setAttribute(ATTRIBUTE_USE_METS_EDITOR, String.valueOf(step.isTypMetadaten()));
-        // typAutomatisch
-        configuration.setAttribute(ATTRIBUTE_IS_AUTOMATIC, String.valueOf(step.isTypAutomatisch()));
-        // typImagesLesen
-        configuration.setAttribute(ATTRIBUTE_READ_IMAGES, String.valueOf(step.isTypImagesLesen()));
-        // typImagesSchreiben
-        configuration.setAttribute(ATTRIBUTE_WRITE_IMAGES, String.valueOf(step.isTypImagesSchreiben()));
-        // typExportDMS
-        configuration.setAttribute(ATTRIBUTE_EXPORT, String.valueOf(step.isTypExportDMS()));
+        configuration.setAttribute(ATTRIBUTE_USE_HOME_DIRECTORY, String.valueOf(step.getHomeverzeichnisNutzen())); // homeverzeichnisNutzen
+        configuration.setAttribute(ATTRIBUTE_USE_METS_EDITOR, String.valueOf(step.isTypMetadaten())); // typMetadaten
+        configuration.setAttribute(ATTRIBUTE_IS_AUTOMATIC, String.valueOf(step.isTypAutomatisch())); // typAutomatisch
+        configuration.setAttribute(ATTRIBUTE_READ_IMAGES, String.valueOf(step.isTypImagesLesen())); // typImagesLesen
+        configuration.setAttribute(ATTRIBUTE_WRITE_IMAGES, String.valueOf(step.isTypImagesSchreiben())); // typImagesSchreiben
+        configuration.setAttribute(ATTRIBUTE_EXPORT, String.valueOf(step.isTypExportDMS())); // typExportDMS
         // typBeimAnnehmenAbschliessen
         configuration.setAttribute(ATTRIBUTE_FINALIZE_ON_ACCEPT, String.valueOf(step.isTypBeimAnnehmenAbschliessen()));
         // typBeimAbschliessenVerifizieren
@@ -1305,6 +1263,104 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // projekte.projectIsArchived
         project.setAttribute(ATTRIBUTE_ARCHIVED, String.valueOf(process.getProjekt().getProjectIsArchived()));
 
+        getProjectExportConfiguration(process, project);
+
+        getMetsConfiguration(process, project);
+
+        //   filegroups
+
+        if (!process.getProjekt().getFilegroups().isEmpty()) {
+            Element fileGroups = new Element(ELEMENT_FILE_GROUPS, xmlns);
+            project.addContent(fileGroups);
+            for (ProjectFileGroup filegroup : process.getProjekt().getFilegroups()) {
+                Element projectFileGroup = new Element(ELEMENT_PROJECT_FILE_GROUP, xmlns);
+                // projectfilegroups.ProjectFileGroupID
+                projectFileGroup.setAttribute(ATTRIBUTE_ID, String.valueOf(filegroup.getId()));
+                // projectfilegroups.folder
+                projectFileGroup.setAttribute(ATTRIBUTE_FOLDER, StringUtils.isBlank(filegroup.getFolder()) ? "" : filegroup.getFolder());
+                // projectfilegroups.mimetype
+                projectFileGroup.setAttribute(ATTRIBUTE_MIMETYPE, StringUtils.isBlank(filegroup.getMimetype()) ? "" : filegroup.getMimetype());
+                // projectfilegroups.name
+                projectFileGroup.setAttribute(ATTRIBUTE_NAME, StringUtils.isBlank(filegroup.getName()) ? "" : filegroup.getName());
+                // projectfilegroups.path
+                projectFileGroup.setAttribute(ATTRIBUTE_PATH, StringUtils.isBlank(filegroup.getPath()) ? "" : filegroup.getPath());
+                // projectfilegroups.suffix
+                projectFileGroup.setAttribute(ATTRIBUTE_SUFFIX, StringUtils.isBlank(filegroup.getSuffix()) ? "" : filegroup.getSuffix());
+
+                fileGroups.addContent(projectFileGroup);
+            }
+        }
+
+        Element institutionElement = new Element(ELEMENT_INSTITUTION, xmlns);
+        Institution inst = process.getProjekt().getInstitution();
+        institutionElement.setAttribute(ATTRIBUTE_ID, String.valueOf(inst.getId()));
+        institutionElement.setAttribute(ATTRIBUTE_SHORT_NAME, inst.getShortName());
+        institutionElement.setAttribute(ATTRIBUTE_LONG_NAME, inst.getLongName());
+        if (inst.isAllowAllAuthentications()) {
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, CONSTANT_TRUE);
+        } else {
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, CONSTANT_FALSE);
+            for (InstitutionConfigurationObject ico : inst.getAllowedAuthentications()) {
+                Element type = new Element(ELEMENT_AUTHENTICATION, xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+        }
+
+        if (inst.isAllowAllDockets()) {
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, CONSTANT_TRUE);
+        } else {
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, CONSTANT_FALSE);
+            for (InstitutionConfigurationObject ico : inst.getAllowedDockets()) {
+                Element type = new Element(ELEMENT_DOCKET, xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+        }
+        //inst.isAllowAllPlugins()
+        if (inst.isAllowAllPlugins()) {
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, CONSTANT_TRUE);
+        } else {
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, CONSTANT_FALSE);
+            for (InstitutionConfigurationObject ico : inst.getAllowedAdministrationPlugins()) {
+                Element type = new Element(ELEMENT_ADMINISTRATION_PLUGIN, xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+            for (InstitutionConfigurationObject ico : inst.getAllowedWorkflowPlugins()) {
+                Element type = new Element(ELEMENT_WORKFLOW_PLUGIN, xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+            for (InstitutionConfigurationObject ico : inst.getAllowedDashboardPlugins()) {
+                Element type = new Element(ELEMENT_DASHBOARD_PLUGIN, xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+            for (InstitutionConfigurationObject ico : inst.getAllowedStatisticsPlugins()) {
+                Element type = new Element(ELEMENT_STATISTICS_PLUGIN, xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+
+        }
+        if (inst.isAllowAllRulesets()) {
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, CONSTANT_TRUE);
+        } else {
+            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, CONSTANT_FALSE);
+            for (InstitutionConfigurationObject ico : inst.getAllowedRulesets()) {
+                Element type = new Element(ELEMENT_RULESET, xmlns);
+                type.setText(ico.getObject_name());
+                institutionElement.addContent(type);
+            }
+        }
+
+        project.addContent(institutionElement);
+
+        return project;
+    }
+
+    public void getProjectExportConfiguration(Process process, Element project) {
         // export configuration
         Element exportConfiguration = new Element(ELEMENT_EXPORT_CONFIGURATION, xmlns);
 
@@ -1345,7 +1401,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 String.valueOf(process.getProjekt().isDmsImportCreateProcessFolder()));
 
         project.addContent(exportConfiguration);
+    }
 
+    public void getMetsConfiguration(Process process, Element project) {
         // mets configuration
         Element metsConfiguration = new Element(ELEMENT_METS_CONFIGURATION, xmlns);
 
@@ -1441,98 +1499,6 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt().getMetsRightsLicense());
         metsConfiguration.addContent(metsRightsLicense);
         project.addContent(metsConfiguration);
-
-        //   filegroups
-
-        if (!process.getProjekt().getFilegroups().isEmpty()) {
-            Element fileGroups = new Element(ELEMENT_FILE_GROUPS, xmlns);
-            project.addContent(fileGroups);
-            for (ProjectFileGroup filegroup : process.getProjekt().getFilegroups()) {
-                Element projectFileGroup = new Element(ELEMENT_PROJECT_FILE_GROUP, xmlns);
-                // projectfilegroups.ProjectFileGroupID
-                projectFileGroup.setAttribute(ATTRIBUTE_ID, String.valueOf(filegroup.getId()));
-                // projectfilegroups.folder
-                projectFileGroup.setAttribute(ATTRIBUTE_FOLDER, StringUtils.isBlank(filegroup.getFolder()) ? "" : filegroup.getFolder());
-                // projectfilegroups.mimetype
-                projectFileGroup.setAttribute(ATTRIBUTE_MIMETYPE, StringUtils.isBlank(filegroup.getMimetype()) ? "" : filegroup.getMimetype());
-                // projectfilegroups.name
-                projectFileGroup.setAttribute(ATTRIBUTE_NAME, StringUtils.isBlank(filegroup.getName()) ? "" : filegroup.getName());
-                // projectfilegroups.path
-                projectFileGroup.setAttribute(ATTRIBUTE_PATH, StringUtils.isBlank(filegroup.getPath()) ? "" : filegroup.getPath());
-                // projectfilegroups.suffix
-                projectFileGroup.setAttribute(ATTRIBUTE_SUFFIX, StringUtils.isBlank(filegroup.getSuffix()) ? "" : filegroup.getSuffix());
-
-                fileGroups.addContent(projectFileGroup);
-            }
-        }
-
-        Element institutionElement = new Element(ELEMENT_INSTITUTION, xmlns);
-        Institution inst = process.getProjekt().getInstitution();
-        institutionElement.setAttribute(ATTRIBUTE_ID, String.valueOf(inst.getId()));
-        institutionElement.setAttribute(ATTRIBUTE_SHORT_NAME, inst.getShortName());
-        institutionElement.setAttribute(ATTRIBUTE_LONG_NAME, inst.getLongName());
-        if (inst.isAllowAllAuthentications()) {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, CONSTANT_TRUE);
-        } else {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_AUTHENTICATIONS, CONSTANT_FALSE);
-            for (InstitutionConfigurationObject ico : inst.getAllowedAuthentications()) {
-                Element type = new Element(ELEMENT_AUTHENTICATION, xmlns);
-                type.setText(ico.getObject_name());
-                institutionElement.addContent(type);
-            }
-        }
-
-        if (inst.isAllowAllDockets()) {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, CONSTANT_TRUE);
-        } else {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_DOCKETS, CONSTANT_FALSE);
-            for (InstitutionConfigurationObject ico : inst.getAllowedDockets()) {
-                Element type = new Element(ELEMENT_DOCKET, xmlns);
-                type.setText(ico.getObject_name());
-                institutionElement.addContent(type);
-            }
-        }
-        //inst.isAllowAllPlugins()
-        if (inst.isAllowAllPlugins()) {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, CONSTANT_TRUE);
-        } else {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_PLUGINS, CONSTANT_FALSE);
-            for (InstitutionConfigurationObject ico : inst.getAllowedAdministrationPlugins()) {
-                Element type = new Element(ELEMENT_ADMINISTRATION_PLUGIN, xmlns);
-                type.setText(ico.getObject_name());
-                institutionElement.addContent(type);
-            }
-            for (InstitutionConfigurationObject ico : inst.getAllowedWorkflowPlugins()) {
-                Element type = new Element(ELEMENT_WORKFLOW_PLUGIN, xmlns);
-                type.setText(ico.getObject_name());
-                institutionElement.addContent(type);
-            }
-            for (InstitutionConfigurationObject ico : inst.getAllowedDashboardPlugins()) {
-                Element type = new Element(ELEMENT_DASHBOARD_PLUGIN, xmlns);
-                type.setText(ico.getObject_name());
-                institutionElement.addContent(type);
-            }
-            for (InstitutionConfigurationObject ico : inst.getAllowedStatisticsPlugins()) {
-                Element type = new Element(ELEMENT_STATISTICS_PLUGIN, xmlns);
-                type.setText(ico.getObject_name());
-                institutionElement.addContent(type);
-            }
-
-        }
-        if (inst.isAllowAllRulesets()) {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, CONSTANT_TRUE);
-        } else {
-            institutionElement.setAttribute(ATTRIBUTE_ALLOW_ALL_RULESETS, CONSTANT_FALSE);
-            for (InstitutionConfigurationObject ico : inst.getAllowedRulesets()) {
-                Element type = new Element(ELEMENT_RULESET, xmlns);
-                type.setText(ico.getObject_name());
-                institutionElement.addContent(type);
-            }
-        }
-
-        project.addContent(institutionElement);
-
-        return project;
     }
 
     /**

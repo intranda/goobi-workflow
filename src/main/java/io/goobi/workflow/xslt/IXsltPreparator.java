@@ -32,8 +32,8 @@ import org.goobi.beans.Process;
 
 public interface IXsltPreparator {
 
-    abstract void startExport(Process process, OutputStream os, String xsltfile) throws IOException;
+    void startExport(Process process, OutputStream os, String xsltfile) throws IOException;
 
-    abstract void startExport(Process process, OutputStream os, String xsltfile, boolean includeImages) throws IOException;
+    void startExport(Process process, OutputStream os, String xsltfile, boolean includeImages) throws IOException;
 
 }

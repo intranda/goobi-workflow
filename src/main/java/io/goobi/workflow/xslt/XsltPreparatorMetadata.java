@@ -57,9 +57,10 @@ import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
+import ugh.exceptions.UGHException;
 
 /**
- * This class provides a simplified export of all metadata into a xml file
+ * This class provides a simplified export of all metadata into a xml file.
  * 
  * @author Steffen Hankiewicz
  */
@@ -70,7 +71,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
     private MetadatenHelper metahelper;
 
     /**
-     * This method exports the METS metadata as xml to a given directory
+     * This method exports the METS metadata as xml to a given directory.
      * 
      * @param p the process to export
      * @param destination the destination to write the file
@@ -110,15 +111,16 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
             outp.output(doc, os);
             os.close();
 
-        } catch (Exception e) {
+        } catch (IOException | UGHException | SwapException e) {
             throw new IOException(e);
         }
     }
 
     /**
-     * This method creates a new xml document with process metadata
+     * This method creates a new xml document with process metadata.
      * 
      * @param process the process to export
+     * @param addNamespace
      * @return a new xml document
      * @throws ConfigurationException
      */
@@ -165,7 +167,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
             Element representative = new Element(XsltPreparatorDocket.ELEMENT_REPRESENTATIVE, namespace);
             Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
             String folderName;
-            if (process.getImagesTifDirectory(true).equals(repImagePath.getParent().toString() + "/")) {
+            if ((repImagePath.getParent().toString() + "/").equals(process.getImagesTifDirectory(true))) {
                 folderName = XsltPreparatorDocket.FOLDER_MEDIA;
             } else {
                 folderName = XsltPreparatorDocket.FOLDER_MASTER;
@@ -187,7 +189,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
 
                 addMetadataAndChildElements(logicalTopstruct, mainElement);
             }
-        } catch (Exception e) {
+        } catch (UGHException | IOException | SwapException e) {
             log.error("Error while creating a pdf file", e);
         }
         return doc;
@@ -305,7 +307,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
                 try {
                     outputStream.close();
                 } catch (IOException e) {
-                    outputStream = null;
+                    log.error(e);
                 }
             }
         }
