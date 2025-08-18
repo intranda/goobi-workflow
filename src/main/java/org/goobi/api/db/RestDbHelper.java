@@ -35,7 +35,11 @@ import org.goobi.api.rest.request.SearchRequest;
 
 import de.sub.goobi.persistence.managers.MySQLHelper;
 
-public class RestDbHelper {
+public final class RestDbHelper {
+
+    private RestDbHelper() {
+        // hide implicit public constructor
+    }
 
     public static List<RestProcess> searchProcesses(SearchRequest req) throws SQLException {
         List<RestProcess> results = null;
