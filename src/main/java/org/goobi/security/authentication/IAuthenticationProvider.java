@@ -32,7 +32,7 @@ public interface IAuthenticationProvider {
      *
      */
 
-    public enum AuthenticationType {
+    enum AuthenticationType {
         DATABASE("database"),
         LDAP("ldap"),
         OPENID("openid");
@@ -40,7 +40,7 @@ public interface IAuthenticationProvider {
         @Getter
         private String title;
 
-        private AuthenticationType(String title) {
+        AuthenticationType(String title) {
             this.title = title;
         }
 
@@ -56,37 +56,41 @@ public interface IAuthenticationProvider {
     }
 
     /**
-     * get the authentication type of the current provider as enumeration
+     * @return the authentication type of the current provider as enumeration.
      */
-    public AuthenticationType getAuthenticationTypeEnum();
+    AuthenticationType getAuthenticationTypeEnum();
 
     /**
-     * get the authentication type of the current provider as string
+     * @return the authentication type of the current provider as string.
      */
-    public String getAuthenticationType();
+    String getAuthenticationType();
 
     /**
      * Return the title of the implementation. This field is used to identify the authentication provider in the UI
      * 
-     * @return
+     * @return the title of the implementation
      */
-    public String getTitle();
+    String getTitle();
 
     /**
-     * Set the title of the authentication provider.
+     * Set the title of the authentication provider..
      * 
      * @param title
      */
-    public void setTitle(String title);
+    void setTitle(String title);
 
     /**
-     * internal identifier
+     * internal identifier.
+     *
+     * @return internal id
      */
-    public Integer getId();
+    Integer getId();
 
     /**
-     * internal identifier
+     * internal identifier.
+     *
+     * @param id
      */
-    public void setId(Integer id);
+    void setId(Integer id);
 
 }

@@ -32,54 +32,54 @@ import jakarta.faces.model.SelectItem;
 
 public interface IProperty {
 
-    public abstract String getName();
+    String getName();
 
-    public abstract void setName(String name);
+    void setName(String name);
 
-    public abstract String getContainer();
+    String getContainer();
 
-    public abstract void setContainer(String container);
+    void setContainer(String container);
 
-    public abstract String getValidation();
+    String getValidation();
 
-    public abstract void setValidation(String validation);
+    void setValidation(String validation);
 
-    public abstract Type getType();
+    Type getType();
 
-    public abstract void setType(Type type);
+    void setType(Type type);
 
-    public abstract String getValue();
+    String getValue();
 
-    public abstract void setValue(String value);
+    void setValue(String value);
 
-    public abstract List<SelectItem> getPossibleValues();
+    List<SelectItem> getPossibleValues();
 
-    public abstract void setPossibleValues(List<SelectItem> possibleValues);
+    void setPossibleValues(List<SelectItem> possibleValues);
 
-    public abstract List<String> getProjects();
+    List<String> getProjects();
 
-    public abstract void setProjects(List<String> projects);
+    void setProjects(List<String> projects);
 
-    public abstract List<ShowStepCondition> getShowStepConditions();
+    List<ShowStepCondition> getShowStepConditions();
 
-    public abstract void setShowStepConditions(List<ShowStepCondition> showStepConditions);
+    void setShowStepConditions(List<ShowStepCondition> showStepConditions);
 
-    public abstract AccessCondition getShowProcessGroupAccessCondition();
+    AccessCondition getShowProcessGroupAccessCondition();
 
-    public abstract void setShowProcessGroupAccessCondition(AccessCondition showProcessGroupAccessCondition);
+    void setShowProcessGroupAccessCondition(AccessCondition showProcessGroupAccessCondition);
 
-    public abstract boolean isValid();
+    boolean isValid();
 
-    public void setDateValue(Date inDate);
+    void setDateValue(Date inDate);
 
-    public Date getDateValue();
+    Date getDateValue();
 
-    public abstract String getPattern();
+    String getPattern();
 
-    public abstract void setPattern(String pattern);
+    void setPattern(String pattern);
 
-    public abstract IProperty getClone(String containerName);
+    IProperty getClone(String containerName);
 
-    public abstract void transfer();
+    void transfer();
 
 }

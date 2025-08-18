@@ -74,11 +74,11 @@ public final class PropertyParser {
     }
 
     /**
-     * get instance of the PropertyParser
+     * get instance of the PropertyParser.
      * 
      * instance gets initialized, when getInstance() was called the first time
      * 
-     * @return
+     * @return current instance
      */
 
     public static synchronized PropertyParser getInstance() {
@@ -89,7 +89,7 @@ public final class PropertyParser {
     }
 
     /**
-     * return the list of metadata names to display in a step
+     * return the list of metadata names to display in a step.
      * 
      * @param step current step
      * @return names of metadata fields
@@ -100,7 +100,7 @@ public final class PropertyParser {
     }
 
     /**
-     * return the list of metadata names to display in process details
+     * return the list of metadata names to display in process details.
      * 
      * @param process current process
      * @return names of metadata fields
@@ -118,7 +118,9 @@ public final class PropertyParser {
      * @param step A current step of a process
      * @return The list of information strings
      */
-    private static List<String> buildStringList(Process process, Step step) {
+    private static List<String> buildStringList(Process inProcess, Step step) {
+        Process process = inProcess;
+
         if (process == null) {
             process = step.getProzess();
         }
@@ -338,14 +340,12 @@ public final class PropertyParser {
             }
             return properties;
         }
-
         String workflowTitle = "";
         for (GoobiProperty p : process.getEigenschaften()) {
             if ("Template".equals(p.getPropertyName())) {
                 workflowTitle = p.getPropertyValue();
             }
         }
-
         // run though all properties
         int countProperties = config.getMaxIndex("/property");
         for (int i = 0; i <= countProperties; i++) {
@@ -355,17 +355,13 @@ public final class PropertyParser {
             DisplayProperty pp = new DisplayProperty();
             pp.setName(config.getString(property + "/@name"));
             pp.setContainer(config.getString(property + "/@container"));
-
             // workflows
-
             // project and workflows are configured correct?
-
             // projects
             int count = config.getMaxIndex(property + "/project");
             for (int j = 0; j <= count; j++) {
                 pp.getProjects().add(config.getString(property + "/project[" + (j + 1) + "]"));
             }
-
             boolean templateMatches = false;
             String groupAccess = "write";
             if (StringUtils.isBlank(workflowTitle)) {
@@ -388,7 +384,6 @@ public final class PropertyParser {
                     }
                 }
             }
-
             // project is configured
             if (templateMatches && (pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle))) {
                 if (groupAccess != null) {
@@ -412,7 +407,6 @@ public final class PropertyParser {
                     pp.setValue(defaultValue);
                     pp.setReadValue("");
                 }
-
                 if (Type.VOCABULARYREFERENCE.equals(pp.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {
                     populatePossibleValuesWithVocabulary(property, pp);
                 } else {
@@ -426,10 +420,8 @@ public final class PropertyParser {
                         pp.getPossibleValues().add(new SelectItem(value, value));
                     }
                 }
-
                 log.trace("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                 properties.add(pp);
-
             }
         } // add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
           // 'eigenschaften'
@@ -437,9 +429,7 @@ public final class PropertyParser {
         process.setEigenschaften(null);
         List<GoobiProperty> plist = new ArrayList<>(process.getEigenschaftenList());
         for (GoobiProperty pe : plist) {
-
             if (pe.getPropertyName() != null) {
-
                 for (DisplayProperty pp : listClone) {
                     if (pe.getPropertyName().equals(pp.getName())) {
                         // pp has no pe assigned
@@ -460,7 +450,6 @@ public final class PropertyParser {
                 }
             }
         }
-
         // add 'eigenschaft' to all ProcessProperties
         for (DisplayProperty pp : properties) {
             if (pp.getProzesseigenschaft() != null) {
@@ -478,11 +467,9 @@ public final class PropertyParser {
                 pp.setType(Type.TEXT);
                 log.trace("add property C " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                 properties.add(pp);
-
             }
         }
         log.trace("all properties are " + properties.size());
-
         return properties;
     }
 
@@ -509,11 +496,11 @@ public final class PropertyParser {
             try {
                 //  check if <showProcessCreation access="write" template="xxx" /> exists
                 templateDefinition = prop.configurationAt("/showProcessCreation[@template='" + templateName + "']");
-            } catch (Exception e) {
+            } catch (NullPointerException | IllegalArgumentException e) {
                 // no specific configuration for this template, check if <showProcessCreation access="write" template="*" /> exists
                 try {
                     templateDefinition = prop.configurationAt("/showProcessCreation[@template='*']");
-                } catch (Exception e1) {
+                } catch (NullPointerException | IllegalArgumentException e1) {
                     // no generic configuration for all templates
                     templateDefinition = null;
                 }

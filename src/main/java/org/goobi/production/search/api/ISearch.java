@@ -39,17 +39,17 @@ public interface ISearch {
 
     /**
      * 
-     * @param qery the search query
+     * @param query the search query
      * @return an ArrayList with identifier for the resulting objects
      */
 
-    public ArrayList<Integer> getSearchResults(String query);
+    ArrayList<Integer> getSearchResults(String query);
 
     /**
      * 
      * @param query the search query
      * @return count of the resulting objects
      */
-    public int getSearchCount(String query);
+    int getSearchCount(String query);
 
 }

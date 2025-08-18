@@ -26,19 +26,19 @@ import org.apache.commons.lang3.StringUtils;
 public interface MultiSelectProperty<T> {
 
     /**
-     * Contains a list of all possible values
+     * @return a list of all possible values.
      */
-    public List<T> getSelectValues();
+    List<T> getSelectValues();
 
     /**
-     * A list with the string representation of the selected values
+     * A list with the string representation of the selected values.
      * 
-     * @return
+     * @return selected values
      */
-    public List<String> getAllSelectedValues();
+    List<String> getAllSelectedValues();
 
     /**
-     * Remove a selected value from the selection list
+     * Remove a selected value from the selection list.
      *
      * @param value
      */
@@ -49,9 +49,9 @@ public interface MultiSelectProperty<T> {
 
     /**
      * 
-     * Get a list with selectaeble values. It is a sublist of all elements, reduced by the already selected values
+     * Get a list with selectaeble values. It is a sublist of all elements, reduced by the already selected values.
      * 
-     * @return
+     * @return possible values
      */
     default List<T> getPossibleValues() {
         List<T> answer = new ArrayList<>();
@@ -64,9 +64,9 @@ public interface MultiSelectProperty<T> {
     }
 
     /**
-     * Get current value, always empty
+     * Get current value, always empty.
      *
-     * @return
+     * @return empty string
      */
     default String getCurrentValue() {
         return "";

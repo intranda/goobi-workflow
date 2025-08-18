@@ -59,11 +59,11 @@ public final class ModsHelper {
     }
 
     /**
-     * Converts a a {@link DocStruct} to a mods {@link org.jdom2.Document} using the ugh xml creation methods
+     * Converts a a {@link DocStruct} to a mods {@link org.jdom2.Document} using the ugh xml creation methods.
      * 
      * @param ds
      * @param prefs
-     * @return
+     * @return jdom document
      */
 
     public static org.jdom2.Document generateModsSection(DocStruct ds, Prefs prefs) {

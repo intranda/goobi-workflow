@@ -14,4 +14,9 @@
     <suppress
         files="MD4.java"
         checks=".*" />        
+    
+    <!-- disable check for junit tests -->    
+    <suppress
+        files=".*Test.java"
+        checks=".*" />        
 </suppressions>
