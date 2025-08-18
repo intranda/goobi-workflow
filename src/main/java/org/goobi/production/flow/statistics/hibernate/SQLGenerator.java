@@ -36,7 +36,7 @@ import jakarta.enterprise.inject.Default;
 /**
  * 
  * This is the superclass for SQL generation and it provides some common data collection in the constructor and abstract methods which needs to be
- * implemented in the sub classes (
+ * implemented in the sub classes. (
  * 
  * 
  * @author Wulf Riebensahm
@@ -46,13 +46,13 @@ import jakarta.enterprise.inject.Default;
 @Default
 public abstract class SQLGenerator implements IGenerator {
 
-    String mySql = null;
-    Date myTimeFrom = null;
-    Date myTimeTo = null;
-    TimeUnit myTimeUnit = null;
-    String myIdsCondition = null;
-    String myIdFieldName = "prozesse.prozesseid";
-    List<Integer> ids;
+    protected String mySql = null;
+    protected Date myTimeFrom = null;
+    protected Date myTimeTo = null;
+    protected TimeUnit myTimeUnit = null;
+    protected String myIdsCondition = null;
+    protected String myIdFieldName = "prozesse.prozesseid";
+    protected List<Integer> ids;
 
     private SQLGenerator() {
         super();

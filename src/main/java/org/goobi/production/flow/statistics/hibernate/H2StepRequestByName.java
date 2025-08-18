@@ -61,7 +61,7 @@ public class H2StepRequestByName extends H2Generator implements IStepRequestByNa
      * @param typeSelection - operates as additional filter
      * @param stepName - operates as additional filter
      * @param stepOrderGrouping - 'stepName' fields in select and in group by clause
-     * @param includeCorrections - adding additional stepOpen from Correction and other loops
+     * @param includeLoops - adding additional stepOpen from Correction and other loops
      * 
      * @return SQLExpression for MySQL DBMS - default fields stepCount and intervall
      */
@@ -167,22 +167,22 @@ public class H2StepRequestByName extends H2Generator implements IStepRequestByNa
     }
 
     /**
-     * Returns the SQL String to get the highest numeric value (stepOrder) for the event defined in eventSelection
+     * Returns the SQL String to get the highest numeric value (stepOrder) for the event defined in eventSelection.
      *
      * @param eventSelection The event selection object
      * @return The SQL String to get the highest numeric value (stepOrder) for the event defined in eventSelection
      */
-    public String SQLMaxStepOrder(HistoryEventType eventSelection) {
+    public String sQLMaxStepOrder(HistoryEventType eventSelection) {
         return this.createMinOrMaxStepOrder(eventSelection, true);
     }
 
     /**
-     * Returns the SQL String to get the lowest numeric value (stepOrder) for the event defined in eventSelection
+     * Returns the SQL String to get the lowest numeric value (stepOrder) for the event defined in eventSelection.
      *
      * @param eventSelection The event selection object
      * @return The SQL String to get the lowest numeric value (stepOrder) for the event defined in eventSelection
      */
-    public String SQLMinStepOrder(HistoryEventType eventSelection) {
+    public String sQLMinStepOrder(HistoryEventType eventSelection) {
         return this.createMinOrMaxStepOrder(eventSelection, false);
     }
 

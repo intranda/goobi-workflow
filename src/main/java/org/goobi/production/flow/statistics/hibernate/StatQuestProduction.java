@@ -58,15 +58,15 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
 
     private static final long serialVersionUID = 6092367530887950685L;
     // default value time filter is open
-    Date timeFilterFrom;
-    Date timeFilterTo;
+    private Date timeFilterFrom;
+    private Date timeFilterTo;
 
     // default values set to days and volumesAndPages
-    TimeUnit timeGrouping = TimeUnit.days;
+    private TimeUnit timeGrouping = TimeUnit.days;
     private CalculationUnit cu = CalculationUnit.volumesAndPages;
 
     /**
-     * IDataSource needs here to be an implementation of hibernate.IEvaluableFilter, which is a hibernate based extension of IDataSource
+     * IDataSource needs here to be an implementation of hibernate.IEvaluableFilter, which is a hibernate based extension of IDataSource.
      * 
      * (non-Javadoc)
      * 
@@ -86,12 +86,12 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
 
         try {
             exactStepDone = FilterHelper.getStepDone(originalFilter);
-        } catch (Exception exception) {
+        } catch (NullPointerException exception) {
             log.error(exception);
         }
         try {
             stepname = FilterHelper.getStepDoneName(originalFilter);
-        } catch (Exception exception) {
+        } catch (NullPointerException exception) {
             log.error(exception);
         }
 
@@ -151,35 +151,34 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
                 // building up row depending on requested output having different fields
                 switch (this.cu) {
 
-                    case volumesAndPages: {
+                    case volumesAndPages:
                         dataRowChart.addValue(CalculationUnit.volumes.getTitle(), (new Converter(objArr[0]).getDouble()));
                         dataRowChart.addValue(CalculationUnit.pages.getTitle() + " (*100)", (new Converter(objArr[1]).getDouble()) / 100);
 
                         dataRow.addValue(CalculationUnit.volumes.getTitle(), (new Converter(objArr[0]).getDouble()));
                         dataRow.addValue(CalculationUnit.pages.getTitle(), (new Converter(objArr[1]).getDouble()));
 
-                    }
-                    break;
+                        break;
 
-                    case volumes: {
+                    case volumes:
                         dataRowChart.addValue(CalculationUnit.volumes.getTitle(), (new Converter(objArr[0]).getDouble()));
                         dataRow.addValue(CalculationUnit.volumes.getTitle(), (new Converter(objArr[0]).getDouble()));
 
-                    }
-                    break;
+                        break;
 
-                    case pages: {
+                    case pages:
 
                         dataRowChart.addValue(CalculationUnit.pages.getTitle(), (new Converter(objArr[1]).getDouble()));
                         dataRow.addValue(CalculationUnit.pages.getTitle(), (new Converter(objArr[1]).getDouble()));
 
-                    }
-                    break;
+                        break;
+                    default:
+                        // do nothing
 
                 }
 
                 // fall back, if conversion triggers an exception
-            } catch (Exception e) {
+            } catch (NullPointerException e) {
                 dataRowChart.addValue(e.getMessage(), Double.valueOf(0));
                 dataRow.addValue(e.getMessage(), Double.valueOf(0));
             }

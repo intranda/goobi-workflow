@@ -27,9 +27,9 @@ package org.goobi.production.flow.statistics.hibernate;
 
 public interface IProduction {
 
-    public String getSQL();
+    String getSQL();
 
-    public String getSQL(Integer stepDone);
+    String getSQL(Integer stepDone);
 
-    public String getSQL(String stepname);
+    String getSQL(String stepname);
 }

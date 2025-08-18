@@ -22,7 +22,11 @@ package org.goobi.production.flow.statistics.hibernate;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-public class FilterString {
+public final class FilterString {
+
+    private FilterString() {
+        // hide implicit public constructor
+    }
 
     // english
     public static final String PROCESSPROPERTY = "processproperty:";
