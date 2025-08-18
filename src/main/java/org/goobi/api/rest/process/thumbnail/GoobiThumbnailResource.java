@@ -49,7 +49,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiThumbnailResource extends AbstractImageResource {
 
-    private static final Path metadataFolderPath = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
+    private static final Path METADATA_PATH = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
 
     public GoobiThumbnailResource(@Context ContainerRequestContext context, @Context HttpServletRequest request,
             @Context HttpServletResponse response, @PathParam("processId") String processId, @PathParam("foldername") String foldername,
@@ -60,7 +60,7 @@ public class GoobiThumbnailResource extends AbstractImageResource {
     }
 
     public void createImageURI(String processId, String foldername, String filename) {
-        Path imagePath = metadataFolderPath.resolve(processId).resolve("thumbs").resolve(foldername).resolve(filename);
+        Path imagePath = METADATA_PATH.resolve(processId).resolve("thumbs").resolve(foldername).resolve(filename);
         this.imageURI = Image.toURI(imagePath);
 
     }

@@ -55,7 +55,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 
 /**
- * A resource listing all IIIF image urls of the images in the given folder
+ * A resource listing all IIIF image urls of the images in the given folder.
  * 
  * @author Florian Alpers
  *

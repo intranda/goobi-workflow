@@ -88,7 +88,7 @@ import jakarta.ws.rs.core.StreamingOutput;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * A IIIF image resource for goobi image urls
+ * A IIIF image resource for goobi image urls.
  * 
  * @author Florian Alpers
  *
@@ -116,7 +116,7 @@ public class GoobiImageResource {
     private static Map<String, List<String>> availableThumbnailFolders = new ConcurrentHashMap<>();
     private static final Map<String, Long[]> FILE_LAST_EDITED_TIMES = new ConcurrentHashMap<>();
 
-    private static final Path metadataFolderPath = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
+    private static final Path METADATA_FOLDER = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
 
     private Path imageFolder = null;
     private Path thumbnailFolder = null;
@@ -136,10 +136,10 @@ public class GoobiImageResource {
     @Produces({ ContentServerResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
     @ContentServerImageInfoBinding
     public ImageInformation getInfoAsJson(@PathParam("process") String processIdString, @PathParam("folder") String folder,
-            @PathParam("filename") String filename) throws ContentLibException {
-
+            @PathParam("filename") String inFileName) throws ContentLibException {
+        String filename = "";
         try {
-            filename = URLDecoder.decode(filename, UTF_8);
+            filename = URLDecoder.decode(inFileName, UTF_8);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
@@ -192,12 +192,14 @@ public class GoobiImageResource {
     @jakarta.ws.rs.Path("/{process}/{folder}/{filename}/{region}/{size}/{rotation}/{quality}.{format}/{cacheCommand}")
     @Produces({ MediaType.TEXT_PLAIN })
     @ContentServerImageInfoBinding
-    public Boolean isInCache(@PathParam("process") String processIdString, @PathParam("folder") String folder, @PathParam("filename") String filename,
+    public Boolean isInCache(@PathParam("process") String processIdString, @PathParam("folder") String folder,
+            @PathParam("filename") String inFileName,
             @PathParam("region") String region, @PathParam("size") String size, @PathParam("rotation") String rotation,
             @PathParam("quality") String quality, @PathParam("format") String format, @PathParam("cacheCommand") String command)
             throws ContentLibException {
+        String filename = "";
         try {
-            filename = URLDecoder.decode(filename, UTF_8);
+            filename = URLDecoder.decode(inFileName, UTF_8);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
@@ -219,10 +221,11 @@ public class GoobiImageResource {
     @Produces("application/pdf")
     @ContentServerPdfBinding
     public StreamingOutput getPdf(@PathParam("process") String processIdString, @PathParam("folder") String folder,
-            @PathParam("filename") String filename, @PathParam("region") String region, @PathParam("size") String size,
+            @PathParam("filename") String inFileName, @PathParam("region") String region, @PathParam("size") String size,
             @PathParam("rotation") String rotation, @PathParam("pdfName") String pdfName) throws ContentLibException {
+        String filename = "";
         try {
-            filename = URLDecoder.decode(filename, UTF_8);
+            filename = URLDecoder.decode(inFileName, UTF_8);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
@@ -234,11 +237,13 @@ public class GoobiImageResource {
     @jakarta.ws.rs.Path("/{process}/{folder}/{filename}/{region}/{size}/{rotation}/{quality}.{format}")
     @Produces({ "image/jpg", "image/png", "image/tif" })
     @ContentServerImageBinding
-    public Response getImage(@PathParam("process") String processIdString, @PathParam("folder") String folder, @PathParam("filename") String filename,
+    public Response getImage(@PathParam("process") String processIdString, @PathParam("folder") String folder,
+            @PathParam("filename") String inFileName,
             @PathParam("region") String region, @PathParam("size") String size, @PathParam("rotation") String rotation,
             @PathParam("quality") String quality, @PathParam("format") String format) throws ContentLibException {
+        String filename = "";
         try {
-            filename = URLDecoder.decode(filename, UTF_8);
+            filename = URLDecoder.decode(inFileName, UTF_8);
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
@@ -250,7 +255,7 @@ public class GoobiImageResource {
             throws IllegalRequestException, ContentLibException {
         ImageResource imageResource = new ImageResource(context, request, response, getFilename(folder), getFilename(filename),
                 ContentServerCacheManager.getInstance());
-        Path processFolder = metadataFolderPath.resolve(getFilename(processIdString));
+        Path processFolder = METADATA_FOLDER.resolve(getFilename(processIdString));
         imageResource.setResourceURI(createGoobiResourceURI(request, getFilename(processIdString), getFilename(folder), getFilename(filename)));
         imageResource.setImageURI(createGoobiImageURI(request, processFolder, getFilename(folder), getFilename(filename)));
         return imageResource;
@@ -313,15 +318,15 @@ public class GoobiImageResource {
                                     requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
                         } else if (imageTooLarge) {
                             //image too large for display and no thumbnails available
-                            throw new ContentLibException(
-                                    "Image size is larger than the allowed maximal size. Please consider using a compressed derivate or generating thumbnails for these images.");
+                            throw new ContentLibException("""
+                                    Image size is larger than the allowed maximal size.
+                                    Please consider using a compressed derivate or generating thumbnails for these images.
+                                    """);
                         } else {
                             // ignore thumbnail folder for this request
                             this.thumbnailFolder = null;
                         }
                     }
-                } else {
-                    //info request
                 }
             }
 
@@ -532,8 +537,8 @@ public class GoobiImageResource {
                     throw new IOException("No file time available");
                 }
             } catch (IOException e) {
-                FILE_LAST_EDITED_TIMES.put(path.toString(), new Long[] { 0l, System.currentTimeMillis() });
-                return 0l;
+                FILE_LAST_EDITED_TIMES.put(path.toString(), new Long[] { 0L, System.currentTimeMillis() });
+                return 0L;
             }
         } else {
             return times[0];
