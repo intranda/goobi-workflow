@@ -68,7 +68,7 @@ public class WebInterface extends HttpServlet {
                 Map<String, String[]> map = req.getParameterMap();
                 String[] pwMap = map.get("token");
                 password = pwMap[0];
-            } catch (Exception e) {
+            } catch (NullPointerException e) {
                 resp.setContentType("");
                 generateAnswer(resp, 401, "Internal error", "Missing credentials");
                 return;
@@ -184,7 +184,8 @@ public class WebInterface extends HttpServlet {
         }
         if (forCommand == null) {
             allHelpBuilder.append(
-                    "<h4>You are searching for a description of one command only?</h4>Use the parameter 'for' to get the help only for one specific command.<br/><br/>Sample: 'for=AddToProcessLog'<br/><br/>");
+                    "<h4>You are searching for a description of one command only?</h4>Use the parameter 'for' to get the help only for"
+                            + " one specific command.<br/><br/>Sample: 'for=AddToProcessLog'<br/><br/>");
         }
         generateAnswer(resp, 200, "Goobi Web API Help", allHelpBuilder.toString());
     }
@@ -207,8 +208,8 @@ public class WebInterface extends HttpServlet {
         answer.append("h4{border-bottom: solid #448BC8 1px;margin-bottom: 10px; padding-bottom: 10px;}");
         answer.append(".img1{position:fixed;left:15px;top:15px;}");
         answer.append(".img2{position:fixed;right:15px;bottom:15px;}");
-        answer.append(
-                ".content{background: #f9f9f9; border:solid #ddd 1px; padding: 20px; color:#999;font-size:14x;margin:0px auto;text-align:center;width:60%;}");
+        answer.append(".content{background: #f9f9f9; border:solid #ddd 1px; padding: 20px; color:#999;font-size:14x;");
+        answer.append("margin:0px auto;text-align:center;width:60%;}");
         answer.append("</style>");
         answer.append("</head>");
         answer.append("<body>");
