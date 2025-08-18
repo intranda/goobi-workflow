@@ -188,7 +188,7 @@ public final class FilesystemHelper {
                 StorageProviderInterface sp = StorageProvider.getInstance();
                 return sp.isFileExists(xml) || sp.isFileExists(txt) || sp.isFileExists(alto);
             }
-        } catch (SwapException | IOException e) {
+        } catch (SwapException | IOException | NullPointerException e) {
             return false;
         }
     }

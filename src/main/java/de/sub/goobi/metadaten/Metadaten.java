@@ -3605,6 +3605,9 @@ public class Metadaten implements Serializable {
      */
 
     public boolean isImageHasOcr() {
+        if (image == null || StringUtils.isBlank(image.getTooltip())) {
+            return false;
+        }
         return FilesystemHelper.isOcrFileExists(myProzess, image.getTooltip().substring(0, image.getTooltip().lastIndexOf(".")));
     }
 
