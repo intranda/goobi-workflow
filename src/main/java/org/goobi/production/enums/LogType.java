@@ -33,7 +33,7 @@ public enum LogType {
     @Getter
     private String title;
 
-    private LogType(String title) {
+    LogType(String title) {
         this.title = title;
     }
 
