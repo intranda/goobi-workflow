@@ -24,6 +24,7 @@
  */
 package org.goobi.goobiScript;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.VariableReplacer;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
@@ -44,6 +46,7 @@ import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.Prefs;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements IGoobiScript {
@@ -70,13 +73,16 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to delete an existing metadata from the METS file.");
         addParameterToSampleCall(sb, FIELD, "Classification",
-                "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`) here.");
+                "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated"
+                        + " display name (e.g. `Main title`) here.");
         addParameterToSampleCall(sb, VALUE, "Animals",
                 "Define the value that the metadata shall have. Only if the value is the same the metadata will be deleted.");
         addParameterToSampleCall(sb, POSITION, "work",
-                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
+                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top`"
+                        + " `child` `any` `physical`");
         addParameterToSampleCall(sb, IGNORE_VALUE, "false",
-                "Set this parameter to `true` if the deletion of the metadata shall take place independent of the current metadata value. In this case all metadata that match the defined `field` will be deleted.");
+                "Set this parameter to `true` if the deletion of the metadata shall take place independent of the current metadata "
+                        + "value. In this case all metadata that match the defined `field` will be deleted.");
         addParameterToSampleCall(sb, TYPE, "metadata",
                 "Define what type of metadata you would like to change. Possible values are `metadata` and `group`. Default is metadata.");
         addParameterToSampleCall(sb, GROUP, "", "Internal name of the group. Use it when the metadata to change is located within a group.");
@@ -195,7 +201,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (Exception e1) {
+        } catch (UGHException | IOException | SwapException e1) {
             log.error("Problem while deleting the metadata using GoobiScript for process with id: " + p.getId(), e1);
             gsr.setResultMessage("Error while deleting metadata: " + e1.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);

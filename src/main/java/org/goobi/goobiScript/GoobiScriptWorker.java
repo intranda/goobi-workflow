@@ -26,13 +26,10 @@ package org.goobi.goobiScript;
 
 import java.util.Optional;
 
-import de.sub.goobi.helper.Helper;
-import lombok.extern.log4j.Log4j2;
 import org.goobi.production.enums.GoobiScriptResultType;
 
 import lombok.Setter;
 
-@Log4j2
 public class GoobiScriptWorker implements Runnable {
     private GoobiScriptManager gsm;
     @Setter
@@ -48,25 +45,19 @@ public class GoobiScriptWorker implements Runnable {
         while (!shouldStop && !Thread.interrupted()) {
             Optional<GoobiScriptResult> next = gsm.getNextScript();
             next.ifPresent(gsr -> {
-                try {
-                    if (gsr.getCustomGoobiScriptImpl() != null) {
-                        gsr.getCustomGoobiScriptImpl().execute(gsr);
+                if (gsr.getCustomGoobiScriptImpl() != null) {
+                    gsr.getCustomGoobiScriptImpl().execute(gsr);
+                } else {
+                    Optional<IGoobiScript> goobiScript = gsm.getGoobiScriptForAction(gsr.getParameters().get("action"));
+                    if (goobiScript.isPresent()) {
+                        IGoobiScript gs = goobiScript.get();
+                        gs.execute(gsr);
                     } else {
-                        Optional<IGoobiScript> goobiScript = gsm.getGoobiScriptForAction(gsr.getParameters().get("action"));
-                        if (goobiScript.isPresent()) {
-                            IGoobiScript gs = goobiScript.get();
-                            gs.execute(gsr);
-                        } else {
-                            gsr.setResultMessage(String.format("Can't find GoobiScript for action %s", gsr.getParameters().get("action")));
-                            gsr.setResultType(GoobiScriptResultType.ERROR);
-                        }
+                        gsr.setResultMessage(String.format("Can't find GoobiScript for action %s", gsr.getParameters().get("action")));
+                        gsr.setResultType(GoobiScriptResultType.ERROR);
                     }
-                    gsm.pushUpdateToUsers(false);
-                } catch (Exception e) {
-                    log.error("Exception during GoobiScript execution", e);
-                    gsr.setResultMessage(String.format("Exception occurred during GoobiScript execution: %s", e.getMessage()));
-                    gsr.setResultType(GoobiScriptResultType.ERROR);
                 }
+                gsm.pushUpdateToUsers(false);
             });
             if (!next.isPresent()) {
                 //we stop this thread - the GoobiScriptManager will start a new one.

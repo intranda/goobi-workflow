@@ -24,6 +24,7 @@
  */
 package org.goobi.goobiScript;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -37,9 +38,12 @@ import org.goobi.production.enums.LogType;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.VariableReplacer;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Fileformat;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGoobiScript {
@@ -63,7 +67,8 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
         addParameterToSampleCall(sb, TITLE, "\"{processtitle}_copy\"",
                 "Title for the new process that is created. Please notice that typically no special characters and no blanks are allowed.");
         addParameterToSampleCall(sb, CONTENT, CONTENT_ALL,
-                "You can define here now much of the content shall be cloned. Possible values are `all` (all data, the database entry and the METS file), `empty` (no data, just the database entry and the corresponding METS file)");
+                "You can define here now much of the content shall be cloned. Possible values are `all` (all data,"
+                        + " the database entry and the METS file), `empty` (no data, just the database entry and the corresponding METS file)");
         return sb.toString();
     }
 
@@ -144,7 +149,7 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
                     "Process '" + process.getTitel() + "' successfully cloned under the new name '" + title + "' with id: " + newProcess.getId());
             gsr.setResultType(GoobiScriptResultType.OK);
 
-        } catch (Exception e) {
+        } catch (UGHException | DAOException | IOException | SwapException e) {
             String message = "Error while cloning the process '" + process.getTitel() + "' under the new name '" + title + "'.";
             Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, message, username);
             log.error(message, e);

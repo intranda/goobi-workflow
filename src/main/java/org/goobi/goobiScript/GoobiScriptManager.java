@@ -110,7 +110,7 @@ public class GoobiScriptManager {
     }
 
     /**
-     * enqueues new Scripts to the list of GoobiScripts
+     * enqueues new Scripts to the list of GoobiScripts.
      * 
      * @param newScripts
      */
@@ -124,7 +124,7 @@ public class GoobiScriptManager {
     }
 
     /**
-     * starts (or if already started continues) working on GoobiScripts
+     * starts (or if already started continues) working on GoobiScripts.
      */
     public void startWork() {
         if (workerThread == null || !workerThread.isAlive()) {
@@ -151,14 +151,14 @@ public class GoobiScriptManager {
     }
 
     /**
-     * this pushes an update command to the user interface of all users
+     * this pushes an update command to the user interface of all users.
      * 
      * @param force forces an update, otherwise an update is sent at most every three seconds
      */
     public void pushUpdateToUsers(boolean force) {
         //check if the last update was longer than three seconds ago. Some GoobiScripts are really fast,
         //so we could end up sending updates every 2ms or so, which would put high load on the server (which we don't want)
-        if (force || lastPush == null || LocalDateTime.now().minus(3l, ChronoUnit.SECONDS).isAfter(lastPush)) {
+        if (force || lastPush == null || LocalDateTime.now().minus(3L, ChronoUnit.SECONDS).isAfter(lastPush)) {
             this.hasErrors = this.goobiScriptHasResults("ERROR");
             goobiscriptUpdateChannel.send("update");
             lastPush = LocalDateTime.now();
@@ -166,7 +166,7 @@ public class GoobiScriptManager {
     }
 
     /**
-     * Determines whether a worker thread is not null and alive
+     * Determines whether a worker thread is not null and alive.
      * 
      * @return if GoobiScript is running
      */
@@ -179,7 +179,7 @@ public class GoobiScriptManager {
      * implementations.
      * 
      * @param action
-     * @return
+     * @return goobiscript
      */
     public Optional<IGoobiScript> getGoobiScriptForAction(String action) {
         IGoobiScript gs = this.actionToScriptImplMap.get(action);
@@ -191,7 +191,7 @@ public class GoobiScriptManager {
     }
 
     /**
-     * Gets all available GoobiScripts
+     * Gets all available GoobiScripts.
      * 
      * @return Collection of all available GoobiScripts
      */
@@ -200,7 +200,7 @@ public class GoobiScriptManager {
     }
 
     /**
-     * reset the list of all GoobiScriptResults
+     * reset the list of all GoobiScriptResults.
      */
     public void goobiScriptResultsReset() {
         goobiScriptWorker.setShouldStop(true);
@@ -212,7 +212,9 @@ public class GoobiScriptManager {
     }
 
     /**
-     * get just a limited number of results
+     * get just a limited number of results.
+     *
+     * @return goobiscript results
      */
     public List<GoobiScriptResult> getShortGoobiScriptResults() {
         synchronized (goobiScriptResults) {
@@ -225,10 +227,9 @@ public class GoobiScriptManager {
     }
 
     /**
-     * Check if there are currently GoobiScripts in the list with a specific status
+     * Check if there are currently GoobiScripts in the list with a specific status.
      * 
-     * @param status one of the {@link GoobiScriptResultType} values
-     * @return boolean if elements with this status exist
+     * @return number of finished scripts
      */
     public int getNumberOfFinishedScripts() {
         int count = 0;
@@ -243,7 +244,7 @@ public class GoobiScriptManager {
     }
 
     /**
-     * Check if there are currently GoobiScripts in the list with a specific status
+     * Check if there are currently GoobiScripts in the list with a specific status.
      * 
      * @param status one of the {@link GoobiScriptResultType} values
      * @return boolean if elements with this status exist
@@ -260,7 +261,7 @@ public class GoobiScriptManager {
     }
 
     /**
-     * Download current list of all results as Excel file
+     * Download current list of all results as Excel file.
      */
     public void goobiScriptResultsExcel() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
@@ -320,7 +321,7 @@ public class GoobiScriptManager {
     }
 
     /**
-     * sort the list by specific value
+     * sort the list by specific value.
      */
     public void goobiScriptSort() {
         synchronized (goobiScriptResults) {
@@ -375,7 +376,7 @@ public class GoobiScriptManager {
 
         private boolean reverse = false;
 
-        public SortByStatus(boolean reverse) {
+        SortByStatus(boolean reverse) {
             this.reverse = reverse;
         }
 
@@ -392,7 +393,7 @@ public class GoobiScriptManager {
     private class SortByTitle implements Comparator<GoobiScriptResult> {
         private boolean reverse = false;
 
-        public SortByTitle(boolean reverse) {
+        SortByTitle(boolean reverse) {
             this.reverse = reverse;
         }
 
@@ -409,7 +410,7 @@ public class GoobiScriptManager {
     private class SortByID implements Comparator<GoobiScriptResult> {
         private boolean reverse = false;
 
-        public SortByID(boolean reverse) {
+        SortByID(boolean reverse) {
             this.reverse = reverse;
         }
 
@@ -426,7 +427,7 @@ public class GoobiScriptManager {
     private class SortByCommand implements Comparator<GoobiScriptResult> {
         private boolean reverse = false;
 
-        public SortByCommand(boolean reverse) {
+        SortByCommand(boolean reverse) {
             this.reverse = reverse;
         }
 
@@ -443,7 +444,7 @@ public class GoobiScriptManager {
     private class SortByUser implements Comparator<GoobiScriptResult> {
         private boolean reverse = false;
 
-        public SortByUser(boolean reverse) {
+        SortByUser(boolean reverse) {
             this.reverse = reverse;
         }
 
@@ -460,7 +461,7 @@ public class GoobiScriptManager {
     private class SortByTimestamp implements Comparator<GoobiScriptResult> {
         private boolean reverse = false;
 
-        public SortByTimestamp(boolean reverse) {
+        SortByTimestamp(boolean reverse) {
             this.reverse = reverse;
         }
 
@@ -477,7 +478,7 @@ public class GoobiScriptManager {
     private class SortByDescription implements Comparator<GoobiScriptResult> {
         private boolean reverse = false;
 
-        public SortByDescription(boolean reverse) {
+        SortByDescription(boolean reverse) {
             this.reverse = reverse;
         }
 

@@ -55,7 +55,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
     private static final String PROJECT_ID = "projectId";
 
     @Setter
-    public List<DisplayProperty> additionalProperties;
+    private List<DisplayProperty> additionalProperties;
 
     @Setter
     private MassImportForm mi;
@@ -174,6 +174,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
                 // add configured properties to all processes
                 if (additionalProperties != null) {
                     for (DisplayProperty prop : additionalProperties) {
+                        @SuppressWarnings("deprecation")
                         Processproperty pe = new Processproperty();
                         pe.setPropertyValue(prop.getValue());
                         pe.setPropertyName(prop.getName());

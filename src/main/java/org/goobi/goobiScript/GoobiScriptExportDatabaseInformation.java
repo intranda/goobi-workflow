@@ -55,7 +55,8 @@ public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript i
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb,
-                "This GoobiScript exports all database contents of the selected Goobi process to an internal XML file that is stored in the process folder.");
+                "This GoobiScript exports all database contents of the selected Goobi process to an internal XML"
+                        + " file that is stored in the process folder.");
         return sb.toString();
     }
 
@@ -116,7 +117,7 @@ public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript i
                 gsr.setResultType(GoobiScriptResultType.OK);
             }
 
-        } catch (NoSuchMethodError | Exception e) {
+        } catch (NoSuchMethodError | IOException e) {
             gsr.setResultMessage(e.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(e.getMessage());

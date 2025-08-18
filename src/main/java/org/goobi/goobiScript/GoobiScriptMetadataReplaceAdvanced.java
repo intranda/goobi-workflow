@@ -24,6 +24,7 @@
  */
 package org.goobi.goobiScript;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +40,7 @@ import org.goobi.production.enums.LogType;
 import de.sub.goobi.config.ConfigNormdata;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.VariableReplacer;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
@@ -46,6 +48,7 @@ import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.Prefs;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class GoobiScriptMetadataReplaceAdvanced extends AbstractIGoobiScript implements IGoobiScript {
@@ -74,13 +77,16 @@ public class GoobiScriptMetadataReplaceAdvanced extends AbstractIGoobiScript imp
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to replace an existing metadata within the METS file.");
         addParameterToSampleCall(sb, FIELD, "Description",
-                "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
+                "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the "
+                        + "translated display name (e.g. `Main title`).");
         addParameterToSampleCall(sb, VALUE, "s/old value/new value/g", "Regular expression to replace old term with the new term");
         addParameterToSampleCall(sb, "authorityName", "", "Name of the authority file, e.g. viaf or gnd.");
         addParameterToSampleCall(sb, NORMDATA_VALUE, "",
-                "Regular expression to replace old authority data value with new authority data value. e.g. `s/http:(.+)/https:$1/g` to replace http with https in all uris");
+                "Regular expression to replace old authority data value with new authority data value. e.g. `s/http:(.+)/https:$1/g` "
+                        + "to replace http with https in all uris");
         addParameterToSampleCall(sb, POSITION, "work",
-                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
+                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top`"
+                        + " `child` `any` `physical`");
         addParameterToSampleCall(sb, GROUP, "", "If the metadata to change is in a group, set the internal name of the metadata group name here.");
 
         return sb.toString();
@@ -102,13 +108,14 @@ public class GoobiScriptMetadataReplaceAdvanced extends AbstractIGoobiScript imp
         }
         String searchValue = parameters.get(VALUE);
         if (!searchValue.startsWith("s/") || !searchValue.endsWith("/g")) {
-            Helper.setFehlerMeldungUntranslated(                    "Invalid parameter, this is not a regular expression, use 's/old value/new value/g' ", VALUE);
+            Helper.setFehlerMeldungUntranslated("Invalid parameter, this is not a regular expression, use 's/old value/new value/g' ", VALUE);
             return Collections.emptyList();
         }
 
         String normdataValue = parameters.get(NORMDATA_VALUE);
         if (StringUtils.isNotBlank(normdataValue) && (!normdataValue.startsWith("s/") || !normdataValue.endsWith("/g"))) {
-            Helper.setFehlerMeldungUntranslated("Invalid parameter, this is not a regular expression, use 's/old value/new value/g' ", NORMDATA_VALUE);
+            Helper.setFehlerMeldungUntranslated("Invalid parameter, this is not a regular expression, use 's/old value/new value/g' ",
+                    NORMDATA_VALUE);
             return Collections.emptyList();
         }
 
@@ -229,7 +236,7 @@ public class GoobiScriptMetadataReplaceAdvanced extends AbstractIGoobiScript imp
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (Exception e1) {
+        } catch (UGHException | IOException | SwapException e1) {
             log.error("Problem while changing the metadata using GoobiScript for process with id: " + p.getId(), e1);
             gsr.setResultMessage("Error while changing metadata: " + e1.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
@@ -276,7 +283,7 @@ public class GoobiScriptMetadataReplaceAdvanced extends AbstractIGoobiScript imp
                 for (Metadata md : mdlist) {
                     md.setValue(md.getValue().replaceAll(search, replace));
                     if (StringUtils.isNotBlank(md.getAuthorityValue()) && StringUtils.isNotBlank(oldAuthorityValue)) {
-                        md.setAutorityFile(authorityName, authorityUri, md.getAuthorityValue().replaceAll(oldAuthorityValue, newAuthorityValue));
+                        md.setAuthorityFile(authorityName, authorityUri, md.getAuthorityValue().replaceAll(oldAuthorityValue, newAuthorityValue));
                     }
                 }
             }

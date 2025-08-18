@@ -24,6 +24,7 @@
  */
 package org.goobi.goobiScript;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Corporate;
@@ -45,6 +47,7 @@ import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implements IGoobiScript {
@@ -72,12 +75,16 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to change the type of an existing metadata.");
         addParameterToSampleCall(sb, OLD_TYPE, "old",
-                "Define the current type that shall be changed. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
+                "Define the current type that shall be changed. Use the internal name here (e.g. `TitleDocMain`), "
+                        + "not the translated display name (e.g. `Main title`).");
         addParameterToSampleCall(sb, NEW_TYPE, "new", "Define the type that shall be used as new type. Use the internal name here as well.");
         addParameterToSampleCall(sb, POSITION, "work",
-                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
+                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top`"
+                        + " `child` `any` `physical`");
         addParameterToSampleCall(sb, IGNORE_ERRORS, "true",
-                "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
+                "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the "
+                        + "processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` "
+                        + "was selected for the position.");
         addParameterToSampleCall(sb, TYPE, "metadata",
                 "Define what type of metadata you would like to change. Possible values are `metadata` and `group`. Default is metadata.");
         addParameterToSampleCall(sb, GROUP, "", "Internal name of the group. Use it when the metadata to change is located within a group.");
@@ -199,7 +206,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (Exception e1) {
+        } catch (UGHException | IOException | SwapException e1) {
             log.error("Problem while changing the metadata using GoobiScript for process with id: " + p.getId(), e1);
             gsr.setResultMessage("Error while changing metadata: " + e1.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
@@ -237,7 +244,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                             try {
                                 Metadata newMd = new Metadata(md.getType());
                                 newMd.setValue(md.getValue());
-                                newMd.setAutorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
+                                newMd.setAuthorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
                                 newGroup.addMetadata(newMd);
                             } catch (MetadataTypeNotAllowedException e) {
                                 if (!ignoreErrors) {
@@ -251,7 +258,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                                 Person newPerson = new Person(p.getType());
                                 newPerson.setLastname(p.getLastname());
                                 newPerson.setFirstname(p.getFirstname());
-                                newPerson.setAutorityFile(p.getAuthorityID(), p.getAuthorityURI(), p.getAuthorityValue());
+                                newPerson.setAuthorityFile(p.getAuthorityID(), p.getAuthorityURI(), p.getAuthorityValue());
                                 newGroup.addPerson(newPerson);
                             } catch (MetadataTypeNotAllowedException e) {
                                 if (!ignoreErrors) {
@@ -266,7 +273,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                                 newCorp.setMainName(c.getMainName());
                                 newCorp.setSubNames(c.getSubNames());
                                 newCorp.setPartName(c.getPartName());
-                                newCorp.setAutorityFile(c.getAuthorityID(), c.getAuthorityURI(), c.getAuthorityValue());
+                                newCorp.setAuthorityFile(c.getAuthorityID(), c.getAuthorityURI(), c.getAuthorityValue());
                                 newGroup.addCorporate(c);
                             } catch (MetadataTypeNotAllowedException e) {
                                 if (!ignoreErrors) {
@@ -306,7 +313,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                         Metadata newMd = new Metadata(newType);
                         // copy value from existing metadata
                         newMd.setValue(oldMd.getValue());
-                        newMd.setAutorityFile(oldMd.getAuthorityID(), oldMd.getAuthorityURI(), oldMd.getAuthorityValue());
+                        newMd.setAuthorityFile(oldMd.getAuthorityID(), oldMd.getAuthorityURI(), oldMd.getAuthorityValue());
                         // add all new metadata
                         oldMd.getParent().addMetadata(newMd);
                         // delete oldMetadata from ds

@@ -125,6 +125,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
 
         long timeToLiveSeconds = 3600;
 
+        @SuppressWarnings("rawtypes")
         CacheManagerBuilder builder = CacheManagerBuilder.newCacheManagerBuilder();
 
         CacheManager manager = builder.build();
