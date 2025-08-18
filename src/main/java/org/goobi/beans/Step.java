@@ -50,6 +50,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import jakarta.jms.JMSException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -174,7 +175,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>, IPr
 
     @Getter
     @Setter
-    transient boolean batchSize;
+    private transient boolean batchSize;
 
     @Getter
     @Setter
@@ -311,13 +312,13 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>, IPr
             } else {
                 TicketGenerator.submitInternalTicket(ticket, QueueType.SLOW_QUEUE, this.titel, this.getProcessId());
             }
-        } catch (Exception e) {
+        } catch (JMSException e) {
             log.error(e);
         }
     }
 
     /**
-     * set editType to specific value from {@link StepEditType}
+     * set editType to specific value from {@link StepEditType}.
      * 
      * @param inType as {@link StepEditType}
      */
@@ -326,7 +327,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>, IPr
     }
 
     /**
-     * get editType as {@link StepEditType}
+     * get editType as {@link StepEditType}.
      * 
      * @return current bearbeitungsstatus
      */
@@ -335,7 +336,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>, IPr
     }
 
     /**
-     * set bearbeitungsstatus to specific value from {@link StepStatus}
+     * set bearbeitungsstatus to specific value from {@link StepStatus}.
      * 
      * @param inStatus as {@link StepStatus}
      */
@@ -344,7 +345,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>, IPr
     }
 
     /**
-     * get bearbeitungsstatus as {@link StepStatus}
+     * get bearbeitungsstatus as {@link StepStatus}.
      * 
      * @return current bearbeitungsstatus
      */
@@ -650,9 +651,10 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step>, IPr
 
     public void setBatchStep(Boolean batchStep) {
         if (batchStep == null) {
-            batchStep = Boolean.valueOf(false);
+            this.batchStep = false;
+        } else {
+            this.batchStep = batchStep;
         }
-        this.batchStep = batchStep;
     }
 
     @Override

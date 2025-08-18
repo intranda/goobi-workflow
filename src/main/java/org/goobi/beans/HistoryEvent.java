@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * HistoryItem for any kind of history event of a {@link Prozess}
+ * HistoryItem for any kind of history event of a {@link Prozess}.
  * 
  * @author Steffen Hankiewicz
  * @version 24.05.2009
@@ -85,7 +85,7 @@ public class HistoryEvent implements Serializable {
     }
 
     /**
-     * Getter for type
+     * Getter for type.
      * 
      * @return type as HistoryEventType
      */
@@ -94,7 +94,7 @@ public class HistoryEvent implements Serializable {
     }
 
     /**
-     * Setter for type
+     * Setter for type.
      * 
      * @param type as HistoryEventType
      */

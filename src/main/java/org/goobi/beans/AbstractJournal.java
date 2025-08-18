@@ -94,7 +94,7 @@ public abstract class AbstractJournal implements IJournal {
     }
 
     /**
-     * Download a selected file
+     * Download a selected file.
      * 
      * @param entry
      */
@@ -127,7 +127,7 @@ public abstract class AbstractJournal implements IJournal {
     }
 
     /**
-     * Delete a LogEntry and the file belonging to it
+     * Delete a LogEntry and the file belonging to it.
      * 
      * @param entry
      */
@@ -228,7 +228,7 @@ public abstract class AbstractJournal implements IJournal {
     }
 
     /**
-     * Upload a file and save it as a temporary file
+     * Upload a file and save it as a temporary file.
      * 
      */
     @Override
@@ -269,7 +269,7 @@ public abstract class AbstractJournal implements IJournal {
     }
 
     /**
-     * extract the filename for the uploaded file
+     * extract the filename for the uploaded file.
      * 
      * @param part
      * @return

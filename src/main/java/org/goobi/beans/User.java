@@ -440,7 +440,7 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     }
 
     /**
-     * BenutzerHome ermitteln und zurückgeben (entweder aus dem LDAP oder direkt aus der Konfiguration)
+     * BenutzerHome ermitteln und zurückgeben (entweder aus dem LDAP oder direkt aus der Konfiguration).
      * 
      * @return Path as String
      * @throws InterruptedException
@@ -514,7 +514,7 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     }
 
     /**
-     * adds a new filter to list
+     * adds a new filter to list.
      * 
      * @param inFilter the filter to add
      */
@@ -524,7 +524,7 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
     }
 
     /**
-     * removes filter from list
+     * removes filter from list.
      * 
      * @param inFilter the filter to remove
      */
@@ -539,6 +539,8 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
      * To allow recreation of an account with the same login the login is cleaned - otherwise it would be blocked eternally by the login existence
      * test performed in the BenutzerverwaltungForm.Speichern() function. In addition, all personally identifiable information is removed from the
      * database as well.
+     * 
+     * @return replaced user object
      */
 
     public User selfDestruct() {
@@ -738,7 +740,7 @@ public class User extends AbstractJournal implements DatabaseObject, Serializabl
         @Getter
         private String name;
 
-        private UserStatus(String name) {
+        UserStatus(String name) {
             this.name = name;
         }
 

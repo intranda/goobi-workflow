@@ -23,11 +23,11 @@ import java.util.List;
 
 public interface IPropertyHolder {
 
-    public Integer getId();
+    Integer getId();
 
-    public void setId(Integer id);
+    void setId(Integer id);
 
-    public List<GoobiProperty> getProperties();
+    List<GoobiProperty> getProperties();
 
-    public void setProperties(List<GoobiProperty> properties);
+    void setProperties(List<GoobiProperty> properties);
 }

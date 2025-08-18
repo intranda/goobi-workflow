@@ -24,10 +24,14 @@
  */
 package org.goobi.beans;
 
-import de.sub.goobi.helper.StorageProvider;
-import de.sub.goobi.helper.XmlTools;
-import lombok.Data;
-import lombok.extern.log4j.Log4j2;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -36,15 +40,12 @@ import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
-import software.amazon.awssdk.utils.StringUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.XmlTools;
+import lombok.Data;
+import lombok.extern.log4j.Log4j2;
+import software.amazon.awssdk.utils.StringUtils;
 
 @Data
 @Log4j2
@@ -67,7 +68,7 @@ public class SimpleAlto {
     }
 
     /**
-     * This constructor should only be used to display error messages, it creates a single line with a single word which holds the error message
+     * This constructor should only be used to display error messages, it creates a single line with a single word which holds the error message.
      * 
      * @param errorMessage
      */
