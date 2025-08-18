@@ -76,7 +76,10 @@ public class StartQueueBrokerListener implements ServletContextListener {
             startRmiServer();
             startBroker(config);
             registerListeners(config);
+            //CHECKSTYLE:OFF
+            // generic exception is thrown by the BrokerService api
         } catch (Exception e) {
+            //CHECKSTYLE:ON
             log.error("Failed to initialize message broker", e);
         }
     }
@@ -159,7 +162,10 @@ public class StartQueueBrokerListener implements ServletContextListener {
             if (broker != null) {
                 broker.stop();
             }
+            //CHECKSTYLE:OFF
+            // generic exception is thrown by the BrokerService api
         } catch (Exception e) {
+            //CHECKSTYLE:ON
             log.error(e);
         }
     }

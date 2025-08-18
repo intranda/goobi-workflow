@@ -96,7 +96,7 @@ public class GoobiCommandListener {
                     handleCommandTicket(t, message.getJMSMessageID(), strMessage);
                     message.acknowledge();
 
-                } catch (Exception e) {
+                } catch (JMSException e) {
                     log.error(e);
                 }
             }

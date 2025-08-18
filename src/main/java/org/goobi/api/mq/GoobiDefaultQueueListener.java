@@ -130,7 +130,7 @@ public class GoobiDefaultQueueListener {
                         //error or wait => put back to queue and retry by redeliveryPolicy
                         sess.recover();
                     }
-                } catch (Throwable t) {
+                } catch (JMSException t) {
                     log.error("Error handling ticket " + message.getJMSMessageID() + ": ", t);
                     sess.recover();
                     storeResult(origMessage, message, optTicket, MessageStatus.ERROR);
@@ -158,7 +158,7 @@ public class GoobiDefaultQueueListener {
                         origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getTaskType(), optTicket.get().getProcessId(),
                         optTicket.get().getStepId(), optTicket.get().getStepName());
                 MQResultManager.insertResult(statusMessage);
-            } catch (Exception e) {
+            } catch (JMSException e) {
                 // error when result is saved
             }
         }
