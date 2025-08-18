@@ -92,7 +92,7 @@ public final class SendMail {
     }
 
     /**
-     * Get the singleton instance of this class
+     * Get the singleton instance of this class.
      * 
      * @return current instance
      */
@@ -225,34 +225,34 @@ public final class SendMail {
             return;
         }
 
-        final String FIELD_PURPOSE = "purpose";
-        final String FIELD_TYPE = "type";
-        final String FIELD_USER = "user";
-        final String FIELD_STEP = "step";
-        final String FIELD_PROJECT = "project";
-        final String FIELD_ALL = "all";
-        final String DISABLE_MAILS = "disablemails";
+        final String purposeField = "purpose";
+        final String typeField = "type";
+        final String userField = "user";
+        final String stepField = "step";
+        final String projectField = "project";
+        final String allField = "all";
+        final String disableMails = "disablemails";
 
         // create a mail for each user
         for (User user : recipients) {
 
             // create list of urls to deactivate mail notifications
             Map<String, String> deactivateAllMap = new HashMap<>();
-            deactivateAllMap.put(FIELD_PURPOSE, DISABLE_MAILS);
-            deactivateAllMap.put(FIELD_TYPE, FIELD_ALL);
-            deactivateAllMap.put(FIELD_USER, user.getLogin());
+            deactivateAllMap.put(purposeField, disableMails);
+            deactivateAllMap.put(typeField, allField);
+            deactivateAllMap.put(userField, user.getLogin());
 
             Map<String, String> deactivateStepMap = new HashMap<>();
-            deactivateStepMap.put(FIELD_PURPOSE, DISABLE_MAILS);
-            deactivateStepMap.put(FIELD_TYPE, FIELD_STEP);
-            deactivateStepMap.put(FIELD_USER, user.getLogin());
-            deactivateStepMap.put(FIELD_STEP, step.getTitel());
+            deactivateStepMap.put(purposeField, disableMails);
+            deactivateStepMap.put(typeField, stepField);
+            deactivateStepMap.put(userField, user.getLogin());
+            deactivateStepMap.put(stepField, step.getTitel());
 
             Map<String, String> deactivateProjectMap = new HashMap<>();
-            deactivateProjectMap.put(FIELD_PURPOSE, DISABLE_MAILS);
-            deactivateProjectMap.put(FIELD_TYPE, FIELD_PROJECT);
-            deactivateProjectMap.put(FIELD_USER, user.getLogin());
-            deactivateProjectMap.put(FIELD_PROJECT, step.getProzess().getProjekt().getTitel());
+            deactivateProjectMap.put(purposeField, disableMails);
+            deactivateProjectMap.put(typeField, projectField);
+            deactivateProjectMap.put(userField, user.getLogin());
+            deactivateProjectMap.put(projectField, step.getProzess().getProjekt().getTitel());
 
             String messageSubject = "";
             String messageBody = "";
@@ -435,7 +435,7 @@ public final class SendMail {
      * 
      * @param messageSubject the subject of the message
      * @param messageBody the message body
-     * @param recipient destination email address
+     * @param recipients destination email addresses
      * @param blindCopy defines, if the mail is send as TO or as BCC
      * @param attachment Path to the attached file
      */

@@ -33,7 +33,7 @@ import java.util.List;
 import lombok.Data;
 
 /**
- * This class contains the configured email notification of a project
+ * This class contains the configured email notification of a project.
  * 
  *
  */
