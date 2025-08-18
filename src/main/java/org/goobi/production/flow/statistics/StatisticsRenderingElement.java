@@ -132,7 +132,7 @@ public class StatisticsRenderingElement implements Serializable {
     }
 
     /*************************************************************************************
-     * Getter for title
+     * Getter for title.
      * 
      * @return the title
      *************************************************************************************/

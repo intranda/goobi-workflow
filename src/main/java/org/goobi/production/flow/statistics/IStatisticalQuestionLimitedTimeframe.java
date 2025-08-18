@@ -40,6 +40,6 @@ public interface IStatisticalQuestionLimitedTimeframe extends IStatisticalQuesti
      * @param timeFrom Date - from
      * @param timeTo Date - to
      ***********************************************************************/
-    public void setTimeFrame(Date timeFrom, Date timeTo);
+    void setTimeFrame(Date timeFrom, Date timeTo);
 
 }

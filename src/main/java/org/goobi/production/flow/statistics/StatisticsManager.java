@@ -59,7 +59,7 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * The Class StatisticsManager organizes all statistical questions by choosing the right implementation depening on {@link StatisticsMode}
+ * The Class StatisticsManager organizes all statistical questions by choosing the right implementation depening on {@link StatisticsMode}.
  * 
  * for old statistical question there will be generated jfreechart-datasets
  * 
@@ -114,14 +114,19 @@ public class StatisticsManager implements Serializable {
     }
 
     /**
-     * public constructor
+     * public constructor.
      * 
      * @param inMode as {@link StatisticsMode}
-     * @param inDataSource as {@link IDataSource}
+     * @param locale
+     * @param inFilter
+     * @param showClosedProcesses
+     * @param showArchivedProjects
+     * 
      ****************************************************************************/
-    public StatisticsManager(StatisticsMode inMode, Locale locale, String filter, boolean showClosedProcesses, boolean showArchivedProjects) {
+    public StatisticsManager(StatisticsMode inMode, Locale locale, String inFilter, boolean showClosedProcesses, boolean showArchivedProjects) {
         this();
         statisticMode = inMode;
+        String filter = inFilter;
         this.filter = filter;
         targetResultOutput = ResultOutput.chartAndTable;
         targetTimeUnit = TimeUnit.months;
@@ -160,12 +165,12 @@ public class StatisticsManager implements Serializable {
             }
         }
         if (myLocale == null) {
-            myLocale = new Locale("de");
+            myLocale = Locale.of("de");
         }
     }
 
     /**
-     * retrieve the jfreechart Dataset for old statistical questions
+     * retrieve the jfreechart Dataset for old statistical questions.
      * 
      * @return {@link Dataset} for charting
      ****************************************************************************/
@@ -178,18 +183,18 @@ public class StatisticsManager implements Serializable {
     }
 
     /**
-     * calculate statistics and retrieve List off {@link DataRow} from {@link StatisticsMode} for presention and rendering
+     * calculate statistics and retrieve List off {@link DataRow} from {@link StatisticsMode} for presention and rendering.
      * 
      ****************************************************************************/
 
     public void calculate() {
-        String filterString = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
+        StringBuilder filterString = new StringBuilder().append(FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false));
 
         if (!showClosedProcesses) {
-            filterString = filterString + " AND  prozesse.sortHelperStatus <> '100000000' ";
+            filterString.append(" AND  prozesse.sortHelperStatus <> '100000000' ");
         }
         if (!showArchivedProjects) {
-            filterString = filterString + " AND projekte.projectIsArchived = false ";
+            filterString.append(" AND projekte.projectIsArchived = false ");
         }
 
         /*
@@ -221,13 +226,7 @@ public class StatisticsManager implements Serializable {
 
             // picking up users input regarding loop Options
             if (isRenderLoopOption()) {
-                try {
-                    ((StatQuestThroughput) question).setIncludeLoops(includeLoops);
-                } catch (Exception e) { // just in case -> shouldn't happen
-                    if (log.isDebugEnabled()) {
-                        log.debug("unexpected Exception, wrong class loaded", e);
-                    }
-                }
+                ((StatQuestThroughput) question).setIncludeLoops(includeLoops);
             }
             if (targetTimeUnit != null) {
                 question.setTimeUnit(targetTimeUnit);
@@ -236,7 +235,7 @@ public class StatisticsManager implements Serializable {
                 question.setCalculationUnit(targetCalculationUnit);
             }
             renderingElements = new ArrayList<>();
-            List<DataTable> myDataTables = question.getDataTables(filterString, filter, showClosedProcesses, showArchivedProjects);
+            List<DataTable> myDataTables = question.getDataTables(filterString.toString(), filter, showClosedProcesses, showArchivedProjects);
 
             /*
              * -------------------------------- if DataTables exist analyze them
@@ -282,7 +281,6 @@ public class StatisticsManager implements Serializable {
      * @param question the {@link IStatisticalQuestion} where the dates should be set, if it is an implementation of
      *            {@link IStatisticalQuestionLimitedTimeframe}
      *************************************************************************************/
-    @SuppressWarnings("incomplete-switch")
     private void setTimeFrameToStatisticalQuestion(IStatisticalQuestion question) {
         /* only add a date, if correct interface is implemented here */
         if (question instanceof IStatisticalQuestionLimitedTimeframe) {
@@ -368,7 +366,7 @@ public class StatisticsManager implements Serializable {
     }
 
     /**
-     * Get all {@link TimeUnit} from enum
+     * Get all {@link TimeUnit} from enum.
      * 
      * @return all timeUnits
      *************************************************************************************/
@@ -377,7 +375,7 @@ public class StatisticsManager implements Serializable {
     }
 
     /**
-     * Get all {@link CalculationUnit} from enum
+     * Get all {@link CalculationUnit} from enum.
      * 
      * @return all calculationUnit
      *************************************************************************************/
@@ -386,7 +384,7 @@ public class StatisticsManager implements Serializable {
     }
 
     /**
-     * Get all {@link ResultOutput} from enum
+     * Get all {@link ResultOutput} from enum.
      * 
      * @return all resultOutput
      *************************************************************************************/
@@ -430,9 +428,6 @@ public class StatisticsManager implements Serializable {
         return statisticMode.isRenderIncludeLoops();
     }
 
-    /**
-     * @return includeLoops flag
-     */
     public void setIncludeLoops(boolean includeLoops) {
         this.includeLoops = includeLoops;
     }
@@ -441,7 +436,7 @@ public class StatisticsManager implements Serializable {
         if (myLocale != null) {
             return myLocale;
         } else {
-            return new Locale("de");
+            return Locale.of("de");
         }
     }
 }

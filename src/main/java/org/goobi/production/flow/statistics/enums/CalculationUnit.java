@@ -30,7 +30,7 @@ import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 
 /**
- * Enum of all calculation units for the statistics
+ * Enum of all calculation units for the statistics.
  * 
  * @author Steffen Hankiewicz
  * @version 21.05.2009
@@ -46,18 +46,18 @@ public enum CalculationUnit {
     private String title;
 
     /**
-     * private constructor for setting id and title
+     * private constructor for setting id and title.
      * 
      * @param inTitle title as String
      * @param inId id as string
      ****************************************************************************/
-    private CalculationUnit(String inId, String inTitle) {
+    CalculationUnit(String inId, String inTitle) {
         id = inId;
         title = inTitle;
     }
 
     /**
-     * return localized title for CalculationUnit
+     * return localized title for CalculationUnit.
      * 
      * @return localized title
      ****************************************************************************/
@@ -66,7 +66,7 @@ public enum CalculationUnit {
     }
 
     /**
-     * get CalculationUnit by unique ID
+     * get CalculationUnit by unique ID.
      * 
      * @param inId the unique ID
      * @return {@link CalculationUnit} with given ID
