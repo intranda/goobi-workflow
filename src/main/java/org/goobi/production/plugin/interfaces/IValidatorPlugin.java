@@ -30,32 +30,32 @@ import org.goobi.beans.Step;
 
 public interface IValidatorPlugin extends IPlugin {
 
-    public void initialize(Process inProcess);
+    void initialize(Process inProcess);
 
-    public boolean validate();
+    boolean validate();
 
-    public Step getStep();
+    Step getStep();
 
-    public void setStep(Step step);
+    void setStep(Step step);
 
     /**
-     * This method is not used anymore
+     * This method is not used anymore.
      *
      * @deprecated The step object is not used anymore.
      *
-     * @return
+     * @return step
      */
     @Deprecated(since = "23.05", forRemoval = true)
-    public Step getStepObject();
+    Step getStepObject();
 
     /**
-     * This method is not used anymore
+     * This method is not used anymore.
      *
      * @deprecated The step object is not used anymore.
      *
-     * @return
+     * @param so
      */
     @Deprecated(since = "23.05", forRemoval = true)
-    public void setStepObject(Step so);
+    void setStepObject(Step so);
 
 }

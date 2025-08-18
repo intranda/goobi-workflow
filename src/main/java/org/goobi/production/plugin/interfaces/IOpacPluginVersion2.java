@@ -32,19 +32,19 @@ import java.util.Map;
 public interface IOpacPluginVersion2 extends IOpacPlugin {
 
     /**
-     * get the original records from the last request Key is used to set the record name/identifier, value contains the record data
+     * get the original records from the last request Key is used to set the record name/identifier, value contains the record data.
      * 
-     * @return
+     * @return data
      */
 
-    public Map<String, String> getRawDataAsString();
+    Map<String, String> getRawDataAsString();
 
     /**
-     * get the records as a files
+     * get the records as a files.
      * 
-     * @return
+     * @return file
      */
 
-    public List<Path> getRecordPathList();
+    List<Path> getRecordPathList();
 
 }

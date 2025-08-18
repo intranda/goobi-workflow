@@ -50,6 +50,7 @@ public class ImportObject {
     private String errorMessage = "";
 
     // additional information
+    @SuppressWarnings("deprecation")
     private List<Processproperty> processProperties = new ArrayList<>();
 
 }

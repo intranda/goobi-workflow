@@ -28,14 +28,14 @@ import de.sub.goobi.forms.MassImportForm;
 public interface IImportPluginVersion3 extends IImportPluginVersion2 {
 
     /**
-     * This method is used to set the workflow name in the plugin
+     * This method is used to set the workflow name in the plugin.
      * 
      * @param workflowName
      */
-    public void setWorkflowName(String workflowName);
+    void setWorkflowName(String workflowName);
 
     /**
-     * Override setForm method, it cannot be used in GoobiScript because no active scope is set
+     * Override setForm method, it cannot be used in GoobiScript because no active scope is set.
      */
 
     @Override

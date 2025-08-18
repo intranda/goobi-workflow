@@ -29,7 +29,7 @@ package org.goobi.production.plugin.interfaces;
 import org.goobi.production.enums.PluginReturnValue;
 
 /**
- * This interface extends the {@link IStepPlugin}
+ * This interface extends the {@link IStepPlugin}.
  * 
  * @author Robert
  *
@@ -38,7 +38,7 @@ import org.goobi.production.enums.PluginReturnValue;
 public interface IStepPluginVersion2 extends IStepPlugin {
 
     /**
-     * This method is be used instead of the execute() method of {@link IStepPlugin}. It allows different return values
+     * This method is be used instead of the execute() method of {@link IStepPlugin}. It allows different return values.
      * 
      * @return {@link PluginReturnValue} the return value of the execution.
      *         <ul>
@@ -49,13 +49,13 @@ public interface IStepPluginVersion2 extends IStepPlugin {
      * 
      */
 
-    public PluginReturnValue run();
+    PluginReturnValue run();
 
     /**
      * The version of the current interface implementation. Currently '2' is expected.
      * 
      * @return the interface version
      */
-    public int getInterfaceVersion();
+    int getInterfaceVersion();
 
 }

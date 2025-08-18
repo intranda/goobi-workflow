@@ -74,8 +74,8 @@ public class PluginInstaller implements Serializable {
     private static final long serialVersionUID = -5968198401348089489L;
 
     private static final String LINEBREAK = System.getProperty("line.separator");
-    public static final Set<String> endingWhitelist = Sets.newHashSet(".js", ".css", ".jar");
-    public static final Set<String> pathBlacklist = Sets.newHashSet("pom.xml");
+    public static final Set<String> ENDING_WHITE_LIST = Sets.newHashSet(".js", ".css", ".jar");
+    public static final Set<String> PATH_BLACK_LIST = Sets.newHashSet("pom.xml");
     private static Namespace pomNs = Namespace.getNamespace("pom", "http://maven.apache.org/POM/4.0.0");
     private static XPathFactory xFactory = XPathFactory.instance();
     private static XPathExpression<Element> pluginNameXpath = xFactory.compile("//pom:properties/pom:jar.name", Filters.element(), null, pomNs);
@@ -102,7 +102,7 @@ public class PluginInstaller implements Serializable {
                     .forEach(path -> {
 
                         Path relativePath = this.extractedArchivePath.relativize(path);
-                        if (pathBlacklist.contains(relativePath.toString())) {
+                        if (PATH_BLACK_LIST.contains(relativePath.toString())) {
                             return;
                         }
 
@@ -119,7 +119,7 @@ public class PluginInstaller implements Serializable {
                         }
 
                         String fileContent;
-                        if (conflict.getConflictsMode().equals(PluginInstallConflict.EDIT_EXISTING_FILE)) {
+                        if (PluginInstallConflict.EDIT_EXISTING_FILE.equals(conflict.getConflictsMode())) {
                             fileContent = conflict.getEditedExistingVersion();
                         } else {
                             fileContent = conflict.getEditedUploadedVersion();
@@ -146,7 +146,7 @@ public class PluginInstaller implements Serializable {
             if (!Files.exists(installedPluginsDirectory)) {
                 Files.createDirectory(installedPluginsDirectory);
             }
-        } catch (Exception exception) {
+        } catch (IOException exception) {
             log.error(exception);
             return;
         }
@@ -164,7 +164,7 @@ public class PluginInstaller implements Serializable {
      * @param goobiDirectory The goobi root directory
      * @param pluginInfo The plugin information object
      * @param check The check object containing file differences and more information
-     * @param archiveFileName The name of the uploaded archive because an old one must be loaded to
+     * @param archiveFile The name of the uploaded archive because an old one must be loaded to
      */
     public PluginInstaller(Path extractedArchivePath, Path goobiDirectory, PluginInstallInfo pluginInfo, PluginPreInstallCheck check,
             Path archiveFile) {
@@ -233,8 +233,8 @@ public class PluginInstaller implements Serializable {
                     .forEach(p -> {
                         String fileEnding = getFileEnding(p);
                         Path relativePath = extractedPluginPath.relativize(p);
-                        if (endingWhitelist.contains(fileEnding)
-                                || pathBlacklist.contains(relativePath.toString())) {
+                        if (ENDING_WHITE_LIST.contains(fileEnding)
+                                || PATH_BLACK_LIST.contains(relativePath.toString())) {
                             return;
                         }
                         Path installPath = goobiDirectory.resolve(relativePath);
@@ -274,7 +274,7 @@ public class PluginInstaller implements Serializable {
         try (TarArchiveInputStream tarInputStream = new TarArchiveInputStream(Files.newInputStream(archivePath))) {
             TarArchiveEntry tarEntry;
             do {
-                tarEntry = (TarArchiveEntry) (tarInputStream.getNextEntry());
+                tarEntry = (tarInputStream.getNextEntry());
                 if (tarEntry != null && !tarEntry.isDirectory() && tarEntry.getName().endsWith(fileName)) {
                     content = IOUtils.toString(tarInputStream, StandardCharsets.UTF_8.name());
                     break;
@@ -316,9 +316,9 @@ public class PluginInstaller implements Serializable {
     private void findDifferencesInAllFiles() {
         Object[] objects = this.check.getConflicts().values().toArray();
 
-        for (int file = 0; file < objects.length; file++) {
+        for (Object object : objects) {
             // Get the conflict of the concerning file
-            PluginInstallConflict conflict = (PluginInstallConflict) (objects[file]);
+            PluginInstallConflict conflict = (PluginInstallConflict) (object);
 
             PluginInstaller.findDifferencesInFile(conflict, PluginInstallConflict.SHOW_OLD_AND_NEW_FILE);
             PluginInstaller.findDifferencesInFile(conflict, PluginInstallConflict.SHOW_DEFAULT_AND_CUSTOM_FILE);
@@ -341,9 +341,9 @@ public class PluginInstaller implements Serializable {
         // Get the code lines from both files
         String[] existingLines = new String[0];
         String[] uploadedLines = conflict.getUploadedVersion().split(LINEBREAK);
-        if (diffMode.equals(PluginInstallConflict.SHOW_OLD_AND_NEW_FILE)) {
+        if (PluginInstallConflict.SHOW_OLD_AND_NEW_FILE.equals(diffMode)) {
             existingLines = conflict.getArchivedVersion().split(LINEBREAK);
-        } else if (diffMode.equals(PluginInstallConflict.SHOW_DEFAULT_AND_CUSTOM_FILE)) {
+        } else if (PluginInstallConflict.SHOW_DEFAULT_AND_CUSTOM_FILE.equals(diffMode)) {
             existingLines = conflict.getExistingVersion().split(LINEBREAK);
         }
 
@@ -468,11 +468,11 @@ public class PluginInstaller implements Serializable {
             uploadedLineIndex++;
         }
 
-        if (diffMode.equals(PluginInstallConflict.SHOW_OLD_AND_NEW_FILE)) {
+        if (PluginInstallConflict.SHOW_OLD_AND_NEW_FILE.equals(diffMode)) {
             conflict.setSpanTagsOldNew(fileContent);
             conflict.setLineTypesOldNew(lineTypes);
             conflict.setLineNumbersOldNew(lineNumbers);
-        } else if (diffMode.equals(PluginInstallConflict.SHOW_DEFAULT_AND_CUSTOM_FILE)) {
+        } else if (PluginInstallConflict.SHOW_DEFAULT_AND_CUSTOM_FILE.equals(diffMode)) {
             conflict.setSpanTagsOldOld(fileContent);
             conflict.setLineTypesOldOld(lineTypes);
             conflict.setLineNumbersOldOld(lineNumbers);
@@ -492,10 +492,10 @@ public class PluginInstaller implements Serializable {
         StringsComparator comparator = new StringsComparator(left, right);
         comparator.getScript().visit(visitor);
         List<SpanTag> lineContent = new ArrayList<>();
-        if (mode.equals(FileCommandVisitor.MODE_INSERTION)) {
+        if (FileCommandVisitor.MODE_INSERTION.equals(mode)) {
             lineContent.addAll(visitor.getInsertionSpanTags());
             lineContent.add(new SpanTag(visitor.getCurrentInsertionText(), visitor.getCurrentInsertionMode()));
-        } else if (mode.equals(FileCommandVisitor.MODE_DELETION) || mode.equals(FileCommandVisitor.MODE_KEEP)) {
+        } else if (FileCommandVisitor.MODE_DELETION.equals(mode) || FileCommandVisitor.MODE_KEEP.equals(mode)) {
             // This is possible because in case of "keep" the text is stored in deletion-text and insertion-text
             lineContent.addAll(visitor.getDeltionSpanTags());
             lineContent.add(new SpanTag(visitor.getCurrentDeletionText(), visitor.getCurrentDeletionMode()));

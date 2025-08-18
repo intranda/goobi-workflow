@@ -59,7 +59,7 @@ public class MessagesWs {
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
         MessageRequest mr = gson.fromJson(message, MessageRequest.class);
-        Locale locale = new Locale(mr.lang);
+        Locale locale = Locale.of(mr.lang);
         if (!locale2BundleMap.containsKey(locale)) {
             loadMessages(locale);
         }
@@ -91,7 +91,7 @@ public class MessagesWs {
     }
 
     private final class MessageRequest {
-        String lang;
-        String key;
+        private String lang;
+        private String key;
     }
 }

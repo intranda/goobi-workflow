@@ -25,6 +25,6 @@ package org.goobi.production.plugin.interfaces;
 
 public interface IImportPluginVersion2 extends IImportPlugin {
 
-    public boolean isRunnableAsGoobiScript();
+    boolean isRunnableAsGoobiScript();
 
 }

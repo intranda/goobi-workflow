@@ -30,17 +30,17 @@ import java.util.Date;
 
 public interface IStatisticPlugin extends IPlugin, Serializable {
 
-    public String getData();
+    String getData();
 
-    public String getGui();
+    String getGui();
 
-    public void setFilter(String filter);
+    void setFilter(String filter);
 
-    public void calculate();
+    void calculate();
 
-    public void setStartDate(Date date);
+    void setStartDate(Date date);
 
-    public void setEndDate(Date date);
+    void setEndDate(Date date);
 
-    public boolean getPermissions();
+    boolean getPermissions();
 }

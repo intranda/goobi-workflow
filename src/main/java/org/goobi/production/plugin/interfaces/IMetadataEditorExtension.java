@@ -25,20 +25,20 @@ import de.sub.goobi.metadaten.Metadaten;
 public interface IMetadataEditorExtension extends IPlugin {
 
     /**
-     * Defines the relative URL to the xhtml modal of the plugin
+     * Defines the relative URL to the xhtml modal of the plugin.
      * 
      * @return path to the xhtml page
      */
 
-    public String getPagePath();
+    String getPagePath();
 
     /**
-     * returns the id of the modal to open
+     * returns the id of the modal to open.
      * 
      * @return id
      */
 
-    public String getModalId();
+    String getModalId();
 
     @Override
     default PluginType getType() {
@@ -46,11 +46,11 @@ public interface IMetadataEditorExtension extends IPlugin {
     }
 
     /**
-     * Initialize the extension
+     * Initialize the extension.
      * 
      * @param bean
      */
 
-    public void initializePlugin(Metadaten bean);
+    void initializePlugin(Metadaten bean);
 
 }
