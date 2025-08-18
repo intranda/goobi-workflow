@@ -48,7 +48,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * HistoryJob proofs History of {@link Prozess} and creates missing {@link HistoryEvent}s
+ * HistoryJob proofs History of {@link Prozess} and creates missing {@link HistoryEvent}s.
  * 
  * @author Steffen Hankiewicz
  * @author Igor Toker
@@ -85,7 +85,8 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      * - count imagesMaster difference <br>
      * - count metadata difference <br>
      * - count docstruct difference <br>
-     * 
+     * .
+     *
      * @param inProcess the {@link Prozess} to use
      * 
      * @return true, if any history event is updated, so the process has to to saved to database
@@ -140,34 +141,31 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
     }
 
     /**
-     * update history for each {@link Step} of given {@link Prozess}
+     * update history for each {@link Step} of given {@link Prozess}.
      * 
      * @param inProcess given {@link Prozess}
      * @return true, if changes are made and have to be saved to database
+     * 
+     * 
+     *         These are the patterns, which must be set, if a pattern differs from these something is wrong, timestamp pattern overrules status, in
+     *         that case status gets changed to match one of these pattern
+     * 
+     *         <pre>
+     *         status |  begin    in work    work done
+     *         -------+-------------------------------
+     *           0    |  null     null       null
+     *           1    |  null     null       null
+     *           2    |  set      set        null
+     *           3    |  set      set        set
+     *         </pre>
      */
+
     private static boolean updateHistoryForSteps(Process inProcess) {
         boolean isDirty = false;
-
         List<HistoryEvent> eventList = new ArrayList<>();
         HistoryEvent he = null;
-        /**
-         * These are the patterns, which must be set, if a pattern differs from these something is wrong, timestamp pattern overrules status, in that
-         * case status gets changed to match one of these pattern
-         * 
-         * <pre>
-         *         status |  begin    in work    work done
-         *         -------+-------------------------------
-         *           0    |  null     null       null
-         *           1    |  null     null       null
-         *           2    |  set      set        null
-         *           3    |  set      set        set
-         * </pre>
-         */
-
         for (Step step : inProcess.getSchritteList()) {
-
             switch (step.getBearbeitungsstatusEnum()) {
-
                 case DONE:
                     // fix missing start date
                     if (step.getBearbeitungsbeginn() == null) {
@@ -178,7 +176,6 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                             step.setBearbeitungsbeginn(step.getBearbeitungszeitpunkt());
                         }
                     }
-
                     // fix missing editing date
                     if (step.getBearbeitungszeitpunkt() == null) {
                         isDirty = true;
@@ -188,34 +185,27 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                             step.setBearbeitungszeitpunkt(step.getBearbeitungsende());
                         }
                     }
-
                     // fix missing end date
                     if (step.getBearbeitungsende() == null) {
                         isDirty = true;
                         step.setBearbeitungsende(step.getBearbeitungszeitpunkt());
                     }
-
                     // attempts to add a history event,
                     // exists method returns null if event already exists
                     he = addHistoryEvent(step.getBearbeitungsende(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepDone, inProcess);
-
                     if (he != null) {
                         eventList.add(he);
                         isDirty = true;
                     }
-
                     // for each step done we need to create a step open event on
                     // that step based on the latest timestamp for the previous step
                     he = addHistoryEvent(getTimestampFromPreviousStep(inProcess, step), step.getReihenfolge(), step.getTitel(),
                             HistoryEventType.stepOpen, inProcess);
-
                     if (he != null) {
                         eventList.add(he);
                         isDirty = true;
                     }
-
                     break;
-
                 case INWORK:
                 case INFLIGHT:
                     // fix missing start date
@@ -411,28 +401,23 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
     }
 
     /**
-     * updateHistoryForAllProcesses
+     * updateHistoryForAllProcesses.
      */
     public void updateHistoryForAllProcesses() {
         log.info("start history updating for all processes");
-        try {
-            List<Integer> processIds = ProcessManager.getIdsForFilter(null);
-            for (Integer id : processIds) {
-                Process proc = ProcessManager.getProcessById(id);
-                log.debug("updating history entries for " + proc.getTitel());
-                try {
-                    if (!proc.isSwappedOutGui() && (updateHistory(proc) || updateHistoryForSteps(proc))) {
-                        ProcessManager.saveProcess(proc);
-                        log.debug("history updated for process " + proc.getId());
-                    }
-                } catch (Exception e) {
-                    Helper.setFehlerMeldung("An error occured while scheduled storage calculation", e);
-                    log.error("ServletException occured while scheduled storage calculation", e);
+        List<Integer> processIds = ProcessManager.getIdsForFilter(null);
+        for (Integer id : processIds) {
+            Process proc = ProcessManager.getProcessById(id);
+            log.debug("updating history entries for " + proc.getTitel());
+            try {
+                if (!proc.isSwappedOutGui() && (updateHistory(proc) || updateHistoryForSteps(proc))) {
+                    ProcessManager.saveProcess(proc);
+                    log.debug("history updated for process " + proc.getId());
                 }
+            } catch (IOException | SwapException | DAOException e) {
+                Helper.setFehlerMeldung("An error occured while scheduled storage calculation", e);
+                log.error("ServletException occured while scheduled storage calculation", e);
             }
-        } catch (Exception e) {
-            Helper.setFehlerMeldung("Another Exception occured while scheduled storage calculation", e);
-            log.error("Another Exception occured while scheduled storage calculation", e);
         }
         log.info("end history updating for all processes");
     }
@@ -510,7 +495,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
         try {
             updateHistory(inProc);
             updateHistoryForSteps(inProc);
-        } catch (Exception ex) {
+        } catch (IOException | SwapException | DAOException ex) {
             log.warn("Updating history failed.", ex);
             updated = false;
         }
