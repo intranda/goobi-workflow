@@ -116,8 +116,8 @@ public class SearchRequest {
     }
 
     private void createFrom(StringBuilder b) {
-        b.append(
-                "FROM metadata_json LEFT JOIN prozesse ON metadata_json.processid = prozesse.ProzesseID LEFT JOIN metadatenkonfigurationen on metadatenkonfigurationen.MetadatenKonfigurationID=prozesse.MetadatenKonfigurationID ");
+        b.append("FROM metadata_json LEFT JOIN prozesse ON metadata_json.processid = prozesse.ProzesseID LEFT JOIN");
+        b.append(" metadatenkonfigurationen on metadatenkonfigurationen.MetadatenKonfigurationID=prozesse.MetadatenKonfigurationID ");
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
             b.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
         }
@@ -150,7 +150,8 @@ public class SearchRequest {
         }
     }
 
-    private boolean addFilters(StringBuilder b, boolean firstWhere) {
+    private boolean addFilters(StringBuilder b, boolean inFirstWhere) {
+        boolean firstWhere = inFirstWhere;
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
             firstWhere = false;
             b.append("projekte.Titel IN (");
@@ -269,8 +270,8 @@ public class SearchRequest {
     }
 
     private void createLegacyFrom(StringBuilder b) {
-        b.append(
-                "FROM metadata LEFT JOIN prozesse ON metadata.processid = prozesse.ProzesseID LEFT JOIN metadatenkonfigurationen on metadatenkonfigurationen.MetadatenKonfigurationID=prozesse.MetadatenKonfigurationID ");
+        b.append("FROM metadata LEFT JOIN prozesse ON metadata.processid = prozesse.ProzesseID LEFT JOIN ");
+        b.append("metadatenkonfigurationen on metadatenkonfigurationen.MetadatenKonfigurationID=prozesse.MetadatenKonfigurationID ");
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
             b.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
         }

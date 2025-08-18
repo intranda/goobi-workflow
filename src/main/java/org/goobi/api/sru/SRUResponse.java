@@ -54,7 +54,7 @@ public class SRUResponse {
     private int totalRecords = 0;
     private int recordsReturned = 0;
 
-    XPathFactory xpfac = XPathFactory.instance();
+    private XPathFactory xpfac = XPathFactory.instance();
 
     /** Results **/
     private List<Element> resultsList;

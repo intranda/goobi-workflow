@@ -50,16 +50,20 @@ import de.sub.goobi.helper.XmlTools;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class MetadataUtils {
-    private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
-    private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
-    private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
-    private static final XPathFactory xFactory = XPathFactory.instance();
-    private static final XPathExpression<Element> authorityMetaXpath =
-            xFactory.compile("/mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata",
-                    Filters.element(), null, mods, mets, goobiNamespace);
-    private static final XPathExpression<Element> metadataTypeXpath = xFactory.compile("//MetadataType", Filters.element());
-    private static final SAXBuilder builder = XmlTools.getSAXBuilder();
+public final class MetadataUtils {
+    private MetadataUtils() {
+        // hide implicit public constructor
+    }
+
+    private static final Namespace GOOBI_NS = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
+    private static final Namespace METS_NS = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
+    private static final Namespace MODS_NS = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
+    private static final XPathFactory XFACTORY = XPathFactory.instance();
+    private static final XPathExpression<Element> AUTHORITY_DATA_XPATH =
+            XFACTORY.compile("/mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata",
+                    Filters.element(), null, MODS_NS, METS_NS, GOOBI_NS);
+    private static final XPathExpression<Element> METADATDA_TYPE_XPATH = XFACTORY.compile("//MetadataType", Filters.element());
+    private static final SAXBuilder BUILDER = XmlTools.getSAXBuilder();
 
     public static void addMetadataToRestProcesses(List<RestProcess> processes, SearchRequest req) {
         String metadataFolder = ConfigurationHelper.getInstance().getMetadataFolder();
@@ -79,12 +83,12 @@ public class MetadataUtils {
         Path rulesetPath = Paths.get(ConfigurationHelper.getInstance().getRulesetFolder(), ruleset);
         Document doc;
         try (InputStream in = Files.newInputStream(rulesetPath)) {
-            doc = builder.build(in);
+            doc = BUILDER.build(in);
         } catch (JDOMException | IOException e) {
             log.error(e);
             return null;
         }
-        for (Element el : metadataTypeXpath.evaluate(doc)) {
+        for (Element el : METADATDA_TYPE_XPATH.evaluate(doc)) {
             String name = el.getChildText("Name");
             Map<String, String> languages = new HashMap<>();
             for (Element langEl : el.getChildren("language")) {
@@ -111,13 +115,13 @@ public class MetadataUtils {
         }
         Document doc;
         try (InputStream in = Files.newInputStream(metsPath)) {
-            doc = builder.build(in);
+            doc = BUILDER.build(in);
         } catch (JDOMException | IOException e) {
             log.error(e);
             return;
         }
 
-        for (Element el : authorityMetaXpath.evaluate(doc)) {
+        for (Element el : AUTHORITY_DATA_XPATH.evaluate(doc)) {
             RestMetadata meta = new RestMetadata();
             String name = el.getAttributeValue("name");
 
@@ -126,13 +130,13 @@ public class MetadataUtils {
             }
             String type = el.getAttributeValue("type");
             if ("person".equals(type)) {
-                meta.setValue(el.getChildText("displayName", goobiNamespace));
+                meta.setValue(el.getChildText("displayName", GOOBI_NS));
             } else {
                 meta.setValue(el.getText());
             }
-            meta.setAuthorityID(el.getChildText("authorityID", goobiNamespace));
-            meta.setAuthorityURI(el.getChildText("authorityURI", goobiNamespace));
-            meta.setAuthorityValue(el.getChildText("authorityValue", goobiNamespace));
+            meta.setAuthorityID(el.getChildText("authorityID", GOOBI_NS));
+            meta.setAuthorityURI(el.getChildText("authorityURI", GOOBI_NS));
+            meta.setAuthorityValue(el.getChildText("authorityValue", GOOBI_NS));
             meta.setLabels(labelMap.get(name));
             p.addMetadata(name, meta);
         }
