@@ -58,7 +58,7 @@ public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGo
         addParameterToSampleCall(sb, TYPE, "info",
                 "Define the type for the message here. Possible values are: `error` `warn` `info` `debug` and `user`");
         addParameterToSampleCall(sb, MESSAGE, "\"This is my message\"",
-                "This parameter allows to define the message itself that shall be added to the process log."
+                "This parameter allows to define the message itself that shall be added to the process log. "
                         + "To write special characters like # put it into quotes.");
         return sb.toString();
     }
