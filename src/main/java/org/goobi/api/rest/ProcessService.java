@@ -548,7 +548,7 @@ public class ProcessService implements IRestAuthentication {
             // save metadata file
             process.writeMetadataFile(fileformat);
 
-        } catch (IOException | SwapException | UGHException e) {
+        } catch (IOException | SwapException | UGHException | NullPointerException e) {
             Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Cannot read or save metadata.");
         }
 
