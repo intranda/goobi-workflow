@@ -190,6 +190,8 @@
 
                         <ui:fragment rendered="#{Metadaten.image.type == 'image' or Metadaten.image.type == 'pdf'}">
                             <!-- MAIN IMAGE CONTAINER -->
+                            <div>IMAGE_VIEW 11</div>
+                            <div><a href="#{Metadaten.image.url}">#{Metadaten.image.url}</a></div>
                             <div
                                 id="mainImage"
                                 class="image__main-image above-overlay border"
@@ -202,6 +204,31 @@
                                     <img src="template/img/goobi/ajaxloader2.gif" />
                                 </div>
                             </div>
+                            
+                            <script>
+                            
+                            $(document).ready(() => {
+                            	console.log("loading image with url #{Metadaten.image.url}");
+	                            window.image = new ImageView.Image({
+	                        		element: "#mainImage",
+	                        		fittingMode: "toWidth",
+	                        		margins: {bottom:0},
+	                        		sequence: {
+	                        			columns: 1,
+	                        			columnOffset: 0,
+	                        			rowMargin: 0
+	                        		}
+	                        	});
+	                           	window.zoom = new ImageView.Controls.Zoom(window.image);
+	                           	window.rotation = new ImageView.Controls.Rotation(window.image);
+	                           	window.sequence = new ImageView.Sequence(window.image, window.zoom);
+	                            window.image.load("#{Metadaten.image.url}")
+	                            .then( e => {
+	                           		console.log("loaded image ", e, image);
+	                            });
+                            });
+                            </script>
+                            
                         </ui:fragment>
                     </div>
                     <!-- IMAGE CONTROLS -->
