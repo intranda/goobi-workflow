@@ -191,11 +191,9 @@
                         <ui:fragment rendered="#{Metadaten.image.type == 'image' or Metadaten.image.type == 'pdf'}">
                             <!-- MAIN IMAGE CONTAINER -->
                             <div>IMAGE_VIEW 11</div>
-                            <div><a href="#{Metadaten.image.url}">#{Metadaten.image.url}</a></div>
                             <div
                                 id="mainImage"
-                                class="image__main-image above-overlay border"
-                                style="z-index: -1">
+                                class="image__main-image above-overlay border">
                                 <!-- AJAX LOADER -->
                                 <div
                                     id="ajaxloader"
