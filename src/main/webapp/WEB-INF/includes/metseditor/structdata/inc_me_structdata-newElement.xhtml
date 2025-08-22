@@ -9,8 +9,7 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:section="http://goobi.io/section"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:form="http://goobi.io/form">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
     <composite:interface />
 
@@ -229,67 +228,7 @@
                                 styleClass="form-row structdata__page-area"
                                 layout="block"
                                 rendered="#{Metadaten.enablePageArea}">
-                                <ui:fragment rendered="#{Metadaten.image.type=='video'}">
-                                    <form:fieldset label="#{msgs.mets_videoSection}">
-                                        <form:field
-                                            label="#{msgs.beginn}"
-                                            group="true"
-                                            help="">
-                                            <h:inputText
-                                                id="videoSectionBeginn"
-                                                pt:aria-label="#{msgs.beginn}"
-                                                styleClass="form-control"
-                                                value="#{Metadaten.videoSectionBegin}"
-                                                pt:type="time"
-                                                pt:step="1" />
-                                            <button
-                                                jsf:id="takeCurrentTimestamp1"
-                                                aria-label="#{msgs.mets_currentTimestamp}"
-                                                class="btn font-light"
-                                                jsf:action="#{Metadaten.CurrentEndpage}"
-                                                title="#{msgs.mets_currentTimestamp}"
-                                                type="button"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="bottom"
-                                                jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                                <span
-                                                    class="fa fa-clock-o"
-                                                    aria-hidden="true" />
-                                                <f:ajax render="videoSectionBeginn" />
-                                            </button>
-                                        </form:field>
-                                        <form:field
-                                            label="#{msgs.end}"
-                                            group="true"
-                                            help="">
-                                            <h:inputText
-                                                id="videoSectionEnd"
-                                                pt:aria-label="#{msgs.end}"
-                                                styleClass="form-control"
-                                                value="#{Metadaten.videoSectionEnd}"
-                                                pt:type="time"
-                                                pt:step="1" />
-                                            <button
-                                                jsf:id="takeCurrentTimestamp2"
-                                                aria-label="#{msgs.mets_currentTimestamp}"
-                                                class="btn font-light"
-                                                jsf:action="#{Metadaten.CurrentEndpage}"
-                                                title="#{msgs.mets_currentTimestamp}"
-                                                type="button"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="bottom"
-                                                jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                                <span
-                                                    class="fa fa-clock-o"
-                                                    aria-hidden="true" />
-                                                <f:ajax render="videoSectionEnd" />
-                                            </button>
-                                        </form:field>
-                                    </form:fieldset>
-
-
-
-                                </ui:fragment>
+                                <ui:fragment rendered="#{Metadaten.image.type=='video'}">video</ui:fragment>
                                 <ui:fragment rendered="#{Metadaten.image.type=='image'}">
                                     <div class="form-label">
                                         <label for="pageArea">#{msgs.pageArea}:</label>
