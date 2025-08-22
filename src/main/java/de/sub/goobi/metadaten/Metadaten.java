@@ -503,6 +503,14 @@ public class Metadaten implements Serializable {
 
     @Getter
     @Setter
+    private String videoSectionBegin;
+
+    @Getter
+    @Setter
+    private String videoSectionEnd;
+
+    @Getter
+    @Setter
     private IMetadataEditorExtension extension;
 
     public enum MetadataTypes {
@@ -2397,6 +2405,9 @@ public class Metadaten implements Serializable {
                 this.myDocStruct = temp;
             }
         }
+
+        // if video section was selected, create it
+        // TODO
 
         //if page area was set, assign to docStruct
         if (this.pageAreaManager.hasNewPageArea()) {
