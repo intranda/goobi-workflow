@@ -490,6 +490,8 @@ public class Metadaten implements Serializable {
 
     private transient PageAreaManager pageAreaManager;
 
+    private transient VideoSectionManager videoSectionManager;
+
     private transient ImageCommentPropertyHelper commentPropertyHelper;
 
     //this is set whenever setImage() is called.
@@ -1668,6 +1670,7 @@ public class Metadaten implements Serializable {
 
         //initialize page area editor
         this.pageAreaManager = new PageAreaManager(this.myPrefs, this.document);
+        videoSectionManager = new VideoSectionManager(myPrefs, document);
 
         checkImageNames();
         retrieveAllImages();
@@ -2407,7 +2410,17 @@ public class Metadaten implements Serializable {
         }
 
         // if video section was selected, create it
-        // TODO
+        if (StringUtils.isNotBlank(videoSectionBegin)) {
+            try {
+                DocStruct section = videoSectionManager.createVideoSection(ds, videoSectionBegin, videoSectionEnd);
+                videoSectionManager.assignToPhysicalDocStruct(section, getCurrentPage());
+                videoSectionManager.assignToLogicalDocStruct(section, ds);
+                retrieveAllImages();
+            } catch (TypeNotAllowedForParentException | MetadataTypeNotAllowedException | TypeNotAllowedAsChildException e) {
+                log.error(e);
+            }
+
+        }
 
         //if page area was set, assign to docStruct
         if (this.pageAreaManager.hasNewPageArea()) {
@@ -2601,8 +2614,16 @@ public class Metadaten implements Serializable {
                 pageMap.put(lastPhysPageNo, pi);
             } else {
                 // add placeholder for areas
-                pi = this.pageAreaManager.createPhysicalObject(pageStruct);
-                pageMap.put(pi.getPhysicalPageNo(), pi);
+                // TODO video/page
+                PhysicalObject parentObject = pageMap.get(lastPhysPageNo);
+                if ("page".equals(parentObject.getDocStruct().getType().getName())) {
+                    pi = this.pageAreaManager.createPhysicalObject(pageStruct);
+                    pageMap.put(pi.getPhysicalPageNo(), pi);
+                } else {
+                    pi = videoSectionManager.createPhysicalObject(pageStruct);
+                    pageMap.put(pi.getPhysicalPageNo(), pi);
+                }
+
             }
             pi.setType(pageStruct.getDocstructType());
             pi.setImagename(pageStruct.getImageName());
