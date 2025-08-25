@@ -36,7 +36,7 @@ services:
         target: /docker-entrypoint-initdb.d/goobi_blank.sql
       - type: volume
         source: goobi_dbdata
-        target: /var/lib/mysqldata
+        target: /var/lib/mysql/data
 
 
 volumes:
