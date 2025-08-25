@@ -1808,7 +1808,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                     }
                 }
             }
-        } catch (IOException | SwapException e) {
+        } catch (IOException | SwapException |NullPointerException e) {
             log.trace("could not rename folder", e);
         }
 
