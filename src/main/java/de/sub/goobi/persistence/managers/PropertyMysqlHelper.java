@@ -265,7 +265,7 @@ final class PropertyMysqlHelper implements Serializable {
     }
 
     public static List<String> getPropertyTitles(PropertyOwnerType propertyType) throws SQLException {
-        String sql = "select distinct property_name from properties where object_type = ? order by property_name";
+        String sql = "select distinct property_name from properties where object_type = ? and property_name is not null order by property_name";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

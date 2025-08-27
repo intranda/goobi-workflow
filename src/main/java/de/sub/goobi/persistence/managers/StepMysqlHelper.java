@@ -51,7 +51,7 @@ import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-final class StepMysqlHelper implements Serializable {
+public final class StepMysqlHelper implements Serializable {
 
     private StepMysqlHelper() {
         // hide implicit public constructor
@@ -1273,7 +1273,7 @@ final class StepMysqlHelper implements Serializable {
     }
 
     /**
-     * Delete a list of steps in a single statement
+     * Delete a list of steps in a single statement.
      * 
      * @param steps
      * @throws SQLException
