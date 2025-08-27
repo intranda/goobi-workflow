@@ -20,6 +20,7 @@ package de.sub.goobi.metadaten;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,6 +114,31 @@ public class VideoSectionManager {
     public void assignToPhysicalDocStruct(DocStruct pageArea, DocStruct page) {
         try {
             page.addChild(pageArea);
+            // order children by BEGIN time
+            Collections.sort(page.getAllChildren(), new Comparator<DocStruct>() {
+
+                @Override
+                public int compare(DocStruct page1, DocStruct page2) {
+
+                    String beginTimestamp1 = "";
+                    String beginTimestamp2 = "";
+                    for (Metadata md : page1.getAllMetadata()) {
+                        if ("_BEGIN".equals(md.getType().getName())) {
+                            beginTimestamp1 = md.getValue();
+                            break;
+                        }
+                    }
+                    for (Metadata md : page2.getAllMetadata()) {
+                        if ("_BEGIN".equals(md.getType().getName())) {
+                            beginTimestamp2 = md.getValue();
+                            break;
+                        }
+                    }
+
+                    return beginTimestamp1.compareTo(beginTimestamp2);
+                }
+            });
+
         } catch (TypeNotAllowedAsChildException e) {
             log.error("Could not add area to page ", e);
         }
