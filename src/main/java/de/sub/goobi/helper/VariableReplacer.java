@@ -207,16 +207,16 @@ public class VariableReplacer {
      * @return replaced string
      */
 
-    public static String simpleReplace(String inString, Process process) {
+    public static String simpleReplace(final String inString, Process process) {
+        String value = inString;
+        value = pProcessTitle.matcher(value).replaceAll(process.getTitel());
+        value = pProcessId.matcher(value).replaceAll(String.valueOf(process.getId().intValue()));
 
-        inString = pProcessTitle.matcher(inString).replaceAll(process.getTitel());
-        inString = pProcessId.matcher(inString).replaceAll(String.valueOf(process.getId().intValue()));
+        value = pProjectId.matcher(value).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
+        value = pProjectName.matcher(value).replaceAll(process.getProjekt().getTitel());
+        value = pProjectIdentifier.matcher(value).replaceAll(process.getProjekt().getProjectIdentifier());
 
-        inString = pProjectId.matcher(inString).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
-        inString = pProjectName.matcher(inString).replaceAll(process.getProjekt().getTitel());
-        inString = pProjectIdentifier.matcher(inString).replaceAll(process.getProjekt().getProjectIdentifier());
-
-        return inString;
+        return value;
     }
 
     /**
@@ -225,34 +225,35 @@ public class VariableReplacer {
      * @param inString
      * @return replaced string
      */
-    public String replace(String inString) {
-        if (inString == null) {
+    public String replace(final String inString) {
+        String val = inString;
+        if (val == null) {
             return "";
         }
         /*
          * replace metadata, usage: $(meta.firstchild.METADATANAME)
          */
-        for (MatchResult r : findRegexMatches(REGEX_META, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_META, val)) {
             if (r.group(1).toLowerCase().startsWith("firstchild.")) {
-                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), false));
+                val = val.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), false));
             } else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
-                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.TOPSTRUCT, r.group(1).substring(10), false));
+                val = val.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.TOPSTRUCT, r.group(1).substring(10), false));
             } else {
-                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.ALL, r.group(1), false));
+                val = val.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.ALL, r.group(1), false));
             }
         }
 
-        for (MatchResult r : findRegexMatches(REGEX_METAS, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_METAS, val)) {
             if (r.group(1).toLowerCase().startsWith("firstchild.")) {
-                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), true));
+                val = val.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.FIRSTCHILD, r.group(1).substring(11), true));
             } else if (r.group(1).toLowerCase().startsWith("topstruct.")) {
-                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.TOPSTRUCT, r.group(1).substring(10), true));
+                val = val.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.TOPSTRUCT, r.group(1).substring(10), true));
             } else {
-                inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.ALL, r.group(1), true));
+                val = val.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.ALL, r.group(1), true));
             }
         }
         // replace paths and files
-        inString = simpleReplace(inString, process);
+        val = simpleReplace(val, process);
         try {
             String metaFile = process.getMetadataFilePath().replace("\\", "/");
 
@@ -266,177 +267,177 @@ public class VariableReplacer {
             String ocrPlaintextPath = null;
             String defaultFileProtocol = "file://";
             String windowsFileProtocol = "file:/";
-            Matcher matcher = pTifUrl.matcher(inString);
+            Matcher matcher = pTifUrl.matcher(val);
             if (matcher.find()) {
                 if (tifpath == null) {
                     tifpath = getTifPath();
                 }
                 if (SystemUtils.IS_OS_WINDOWS) {
-                    inString = matcher.replaceAll(windowsFileProtocol + tifpath);
+                    val = matcher.replaceAll(windowsFileProtocol + tifpath);
                 } else {
-                    inString = matcher.replaceAll(defaultFileProtocol + tifpath);
+                    val = matcher.replaceAll(defaultFileProtocol + tifpath);
                 }
             }
-            matcher = pOrigurl.matcher(inString);
+            matcher = pOrigurl.matcher(val);
             if (matcher.find()) {
                 if (origpath == null) {
                     origpath = getMasterPath();
                 }
                 if (SystemUtils.IS_OS_WINDOWS) {
-                    inString = matcher.replaceAll(windowsFileProtocol + origpath);
+                    val = matcher.replaceAll(windowsFileProtocol + origpath);
                 } else {
-                    inString = matcher.replaceAll(defaultFileProtocol + origpath);
+                    val = matcher.replaceAll(defaultFileProtocol + origpath);
                 }
             }
 
-            matcher = pImageUrl.matcher(inString);
+            matcher = pImageUrl.matcher(val);
             if (matcher.find()) {
                 if (imagepath == null) {
                     imagepath = getImagePath();
                 }
                 if (SystemUtils.IS_OS_WINDOWS) {
-                    inString = matcher.replaceAll(windowsFileProtocol + imagepath);
+                    val = matcher.replaceAll(windowsFileProtocol + imagepath);
                 } else {
-                    inString = matcher.replaceAll(defaultFileProtocol + imagepath);
+                    val = matcher.replaceAll(defaultFileProtocol + imagepath);
                 }
             }
 
-            matcher = pS3TifPath.matcher(inString);
+            matcher = pS3TifPath.matcher(val);
             if (matcher.find()) {
                 if (tifpath == null) {
                     tifpath = getTifPath();
                 }
-                inString = matcher.replaceAll(S3FileUtils.string2Prefix(tifpath));
+                val = matcher.replaceAll(S3FileUtils.string2Prefix(tifpath));
             }
 
-            matcher = pS3OrigPath.matcher(inString);
+            matcher = pS3OrigPath.matcher(val);
             if (matcher.find()) {
                 if (origpath == null) {
                     origpath = getMasterPath();
                 }
-                inString = matcher.replaceAll(S3FileUtils.string2Prefix(origpath));
+                val = matcher.replaceAll(S3FileUtils.string2Prefix(origpath));
             }
 
-            matcher = pS3ImagePath.matcher(inString);
+            matcher = pS3ImagePath.matcher(val);
             if (matcher.find()) {
                 if (imagepath == null) {
                     imagepath = getImagePath();
                 }
-                inString = matcher.replaceAll(S3FileUtils.string2Prefix(imagepath));
+                val = matcher.replaceAll(S3FileUtils.string2Prefix(imagepath));
             }
 
-            matcher = pS3Processpath.matcher(inString);
+            matcher = pS3Processpath.matcher(val);
             if (matcher.find()) {
                 if (processpath == null) {
                     processpath = getProcessPath();
                 }
-                inString = matcher.replaceAll(S3FileUtils.string2Prefix(processpath));
+                val = matcher.replaceAll(S3FileUtils.string2Prefix(processpath));
             }
 
-            matcher = pS3ImportPath.matcher(inString);
+            matcher = pS3ImportPath.matcher(val);
             if (matcher.find()) {
                 if (importPath == null) {
                     importPath = getImportPath();
                 }
-                inString = matcher.replaceAll(S3FileUtils.string2Prefix(importPath));
+                val = matcher.replaceAll(S3FileUtils.string2Prefix(importPath));
             }
 
-            matcher = pS3SourcePath.matcher(inString);
+            matcher = pS3SourcePath.matcher(val);
             if (matcher.find()) {
                 if (sourcePath == null) {
                     sourcePath = getSourcePath();
                 }
-                inString = matcher.replaceAll(S3FileUtils.string2Prefix(sourcePath));
+                val = matcher.replaceAll(S3FileUtils.string2Prefix(sourcePath));
             }
 
-            matcher = pS3OcrBasisPath.matcher(inString);
+            matcher = pS3OcrBasisPath.matcher(val);
             if (matcher.find()) {
                 if (ocrBasisPath == null) {
                     ocrBasisPath = getOcrBasePath();
                 }
-                inString = matcher.replaceAll(S3FileUtils.string2Prefix(ocrBasisPath));
+                val = matcher.replaceAll(S3FileUtils.string2Prefix(ocrBasisPath));
             }
 
-            matcher = pS3OcrPlainTextPath.matcher(inString);
+            matcher = pS3OcrPlainTextPath.matcher(val);
             if (matcher.find()) {
                 if (ocrPlaintextPath == null) {
                     ocrPlaintextPath = getOcrPlainTextPath();
                 }
-                inString = matcher.replaceAll(S3FileUtils.string2Prefix(ocrPlaintextPath));
+                val = matcher.replaceAll(S3FileUtils.string2Prefix(ocrPlaintextPath));
             }
-            inString = pMetaFile.matcher(inString).replaceAll(metaFile);
+            val = pMetaFile.matcher(val).replaceAll(metaFile);
 
-            matcher = pTifPath.matcher(inString);
+            matcher = pTifPath.matcher(val);
             if (matcher.find()) {
                 if (tifpath == null) {
                     tifpath = getTifPath();
                 }
-                inString = matcher.replaceAll(tifpath);
+                val = matcher.replaceAll(tifpath);
             }
 
-            matcher = pOrigPath.matcher(inString);
+            matcher = pOrigPath.matcher(val);
             if (matcher.find()) {
                 if (origpath == null) {
                     origpath = getMasterPath();
                 }
-                inString = matcher.replaceAll(origpath);
+                val = matcher.replaceAll(origpath);
             }
 
-            matcher = pImagePath.matcher(inString);
+            matcher = pImagePath.matcher(val);
             if (matcher.find()) {
                 if (imagepath == null) {
                     imagepath = getImagePath();
                 }
-                inString = matcher.replaceAll(imagepath);
+                val = matcher.replaceAll(imagepath);
             }
 
-            matcher = pProcessPath.matcher(inString);
+            matcher = pProcessPath.matcher(val);
             if (matcher.find()) {
                 if (processpath == null) {
                     processpath = getProcessPath();
                 }
-                inString = matcher.replaceAll(processpath);
+                val = matcher.replaceAll(processpath);
             }
 
-            matcher = pImportPath.matcher(inString);
+            matcher = pImportPath.matcher(val);
             if (matcher.find()) {
                 if (importPath == null) {
                     importPath = getImportPath();
                 }
-                inString = matcher.replaceAll(importPath);
+                val = matcher.replaceAll(importPath);
             }
 
-            matcher = pSourcePath.matcher(inString);
+            matcher = pSourcePath.matcher(val);
             if (matcher.find()) {
                 if (sourcePath == null) {
                     sourcePath = getSourcePath();
                 }
-                inString = matcher.replaceAll(sourcePath);
+                val = matcher.replaceAll(sourcePath);
             }
 
-            matcher = pOcrBasisPath.matcher(inString);
+            matcher = pOcrBasisPath.matcher(val);
             if (matcher.find()) {
                 if (ocrBasisPath == null) {
                     ocrBasisPath = getOcrBasePath();
                 }
-                inString = matcher.replaceAll(ocrBasisPath);
+                val = matcher.replaceAll(ocrBasisPath);
             }
 
-            matcher = pOcrPlaintextPath.matcher(inString);
+            matcher = pOcrPlaintextPath.matcher(val);
             if (matcher.find()) {
                 if (ocrPlaintextPath == null) {
                     ocrPlaintextPath = getOcrPlainTextPath();
                 }
-                inString = matcher.replaceAll(ocrPlaintextPath);
+                val = matcher.replaceAll(ocrPlaintextPath);
             }
 
-            matcher = piiifMediaFolder.matcher(inString);
+            matcher = piiifMediaFolder.matcher(val);
             if (matcher.find()) {
-                inString = matcher.replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "media")));
+                val = matcher.replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "media")));
             }
-            matcher = piiifMasterFolder.matcher(inString);
+            matcher = piiifMasterFolder.matcher(val);
             if (matcher.find()) {
-                inString = matcher.replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "master")));
+                val = matcher.replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "master")));
             }
 
         } catch (IOException | SwapException | DAOException e) {
@@ -444,22 +445,22 @@ public class VariableReplacer {
         }
         String myprefs = ConfigurationHelper.getInstance().getRulesetFolder() + this.process.getRegelsatz().getDatei();
 
-        inString = pGoobiFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(ConfigurationHelper.getInstance().getGoobiFolder()));
-        inString = pScriptsFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(ConfigurationHelper.getInstance().getScriptsFolder()));
-        inString = pPrefs.matcher(inString).replaceAll(Matcher.quoteReplacement(myprefs));
+        val = pGoobiFolder.matcher(val).replaceAll(Matcher.quoteReplacement(ConfigurationHelper.getInstance().getGoobiFolder()));
+        val = pScriptsFolder.matcher(val).replaceAll(Matcher.quoteReplacement(ConfigurationHelper.getInstance().getScriptsFolder()));
+        val = pPrefs.matcher(val).replaceAll(Matcher.quoteReplacement(myprefs));
 
         if (this.step != null) {
             String stepId = String.valueOf(this.step.getId());
             String stepname = this.step.getTitel();
 
-            inString = pStepId.matcher(inString).replaceAll(stepId);
-            inString = pStepName.matcher(inString).replaceAll(stepname);
+            val = pStepId.matcher(val).replaceAll(stepId);
+            val = pStepName.matcher(val).replaceAll(stepname);
 
-            Matcher tokenMatcher = pChangeStepToken.matcher(inString);
+            Matcher tokenMatcher = pChangeStepToken.matcher(val);
             if (tokenMatcher.find()) {
                 try {
                     String token = JwtHelper.createChangeStepToken(step);
-                    inString = tokenMatcher.replaceAll(token);
+                    val = tokenMatcher.replaceAll(token);
                 } catch (ConfigurationException e) {
                     log.error(e);
                 }
@@ -467,11 +468,11 @@ public class VariableReplacer {
         }
 
         // replace project properties, usage: (project.PROPERTYTITLE)
-        for (MatchResult r : findRegexMatches(REGEX_PROJECT_PROPERTY, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_PROJECT_PROPERTY, val)) {
             String propertyTitle = r.group(1);
             for (GoobiProperty property : this.process.getProjekt().getProperties()) {
                 if (property.getPropertyName().equalsIgnoreCase(propertyTitle)) {
-                    inString = inString.replace(r.group(), property.getPropertyValue());
+                    val = val.replace(r.group(), property.getPropertyValue());
                     break;
                 }
             }
@@ -479,11 +480,11 @@ public class VariableReplacer {
 
         // replace WerkstueckEigenschaft, usage: (product.PROPERTYTITLE)
 
-        for (MatchResult r : findRegexMatches(REGEX_PRODUCT, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_PRODUCT, val)) {
             String propertyTitle = r.group(1);
             for (GoobiProperty we : process.getEigenschaftenList()) {
                 if (we.getPropertyName().equalsIgnoreCase(propertyTitle)) {
-                    inString = inString.replace(r.group(), we.getPropertyValue());
+                    val = val.replace(r.group(), we.getPropertyValue());
                     break;
                 }
             }
@@ -491,17 +492,17 @@ public class VariableReplacer {
 
         // replace Vorlageeigenschaft, usage: (template.PROPERTYTITLE)
 
-        for (MatchResult r : findRegexMatches(REGEX_TEMPLATE, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_TEMPLATE, val)) {
             String propertyTitle = r.group(1);
             for (GoobiProperty ve : process.getEigenschaftenList()) {
                 if (ve.getPropertyName().equalsIgnoreCase(propertyTitle)) {
-                    inString = inString.replace(r.group(), ve.getPropertyValue());
+                    val = val.replace(r.group(), ve.getPropertyValue());
                     break;
                 }
             }
         }
         // replace Prozesseigenschaft, usage: (process.PROPERTYTITLE)
-        for (MatchResult r : findRegexMatches(REGEX_PROCESS, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_PROCESS, val)) {
             String propertyTitle = r.group(1);
             List<DisplayProperty> processProperties;
             Optional<String> propertyFieldName = Optional.empty();
@@ -555,13 +556,13 @@ public class VariableReplacer {
             }
 
             if (!newValues.isEmpty()) {
-                inString = inString.replace(r.group(), newValues.getFirst());
+                val = val.replace(r.group(), newValues.getFirst());
             } else {
-                inString = inString.replace(r.group(), "");
+                val = val.replace(r.group(), "");
             }
         }
 
-        for (MatchResult r : findRegexMatches(REGEX_PROCESSES, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_PROCESSES, val)) {
             String propertyTitle = r.group(1);
             List<DisplayProperty> processProperties;
             Optional<String> propertyFieldName = Optional.empty();
@@ -615,46 +616,46 @@ public class VariableReplacer {
             }
 
             if (!newValues.isEmpty()) {
-                inString = inString.replace(r.group(), String.join(separator, newValues));
+                val = val.replace(r.group(), String.join(separator, newValues));
             } else {
-                inString = inString.replace(r.group(), "");
+                val = val.replace(r.group(), "");
             }
         }
 
-        for (MatchResult r : findRegexMatches(REGEX_DB_META, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_DB_META, val)) {
             String metadataName = r.group(1);
             String value = MetadataManager.getAllValuesForMetadata(process.getId(), metadataName);
             if (value == null) {
                 value = "";
             }
-            inString = inString.replace(r.group(), value);
+            val = val.replace(r.group(), value);
         }
 
-        for (MatchResult r : findRegexMatches(REGEX_FOLDER, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_FOLDER, val)) {
             String folderName = r.group(1);
             try {
                 String value = process.getConfiguredImageFolder(folderName);
                 if (value == null) {
                     value = "";
                 }
-                inString = inString.replace(r.group(), value);
+                val = val.replace(r.group(), value);
             } catch (IllegalArgumentException | IOException | SwapException | DAOException e) {
                 log.error(e);
             }
         }
 
-        for (MatchResult r : findRegexMatches(REGEX_DATETIME, inString)) {
+        for (MatchResult r : findRegexMatches(REGEX_DATETIME, val)) {
             try {
                 LocalDateTime now = DateTimeHelper.localDateTimeNow();
                 String pattern = r.group(1);
                 DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
-                inString = inString.replace(r.group(), now.format(format));
+                val = val.replace(r.group(), now.format(format));
             } catch (IllegalArgumentException e) {
                 log.error(e);
             }
         }
 
-        return inString;
+        return val;
     }
 
     private String getProcessPath() throws IOException, SwapException {
