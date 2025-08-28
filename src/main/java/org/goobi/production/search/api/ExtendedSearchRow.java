@@ -172,6 +172,7 @@ public class ExtendedSearchRow implements Serializable {
             value.append(fieldValue);
             value.append("\"");
         }
+        value.append(" ");
         return value.toString();
     }
 
