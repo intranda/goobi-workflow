@@ -89,9 +89,10 @@ public class LongRunningTask extends Thread {
             }
             /* lang dauernde Schleife zur Simulierung einer langen Aufgabe */
             try {
-                Thread.sleep(60000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 log.error(e);
+                Thread.currentThread().interrupt();
             }
 
             setStatusProgress(i);

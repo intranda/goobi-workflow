@@ -770,8 +770,11 @@ public class BatchStepHelper implements Serializable {
             }
             try {
                 dms.startExport(step.getProzess());
-            } catch (UGHException | IOException | DocStructHasNoTypeException | InterruptedException | ExportFileException | UghHelperException
-                    | SwapException | DAOException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+            } catch (InterruptedException e) {
+                log.error(e);
+                Thread.currentThread().interrupt();
+            } catch (UGHException | IOException | DocStructHasNoTypeException | ExportFileException | UghHelperException
+                    | SwapException | DAOException e) {
                 Helper.setFehlerMeldung("Error on export", e.getMessage());
                 log.error(e);
             }
