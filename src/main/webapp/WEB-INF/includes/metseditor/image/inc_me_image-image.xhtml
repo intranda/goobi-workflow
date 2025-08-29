@@ -191,8 +191,8 @@
                         <ui:fragment rendered="#{Metadaten.image.type == 'image' or Metadaten.image.type == 'pdf'}">
                             <!-- MAIN IMAGE CONTAINER -->
                             <div
-                                id="mainImage" style="height:1200px;"
-                                class="image__main-image above-overlay border">
+                                id="mainImage" style="width:100%; height:80vh;"
+                                class="image__main-image above-overlay border"> 
                                 <!-- AJAX LOADER -->
                                 <div
                                     id="ajaxloader"
@@ -200,38 +200,8 @@
                                     style="display: none;">
                                     <img src="template/img/goobi/ajaxloader2.gif" />
                                 </div>
-                            </div>
-                            
-                            <script>
-                            
-	                            const imageView = {};
-	                            $(document).ready(() => {
-	                                imageView.image = new ImageView.Image({
-	                            		element: "#mainImage",
-	                            		fittingMode: "fixed",
-	                            		margins: {bottom:0},
-	                            		sequence: {
-	                            			columns: 1,
-	                            			columnOffset: 0,
-	                            			rowMargin: 0
-	                            		}
-	                            	});
-	                                imageView.zoom = new ImageView.Controls.Zoom(imageView.image);
-	                                imageView.zoom.setInput("#zoomSliderLabel input")
-	                               	imageView.rotation = new ImageView.Controls.Rotation(imageView.image);
-	                                imageView.draw =  new ImageView.AreaSelect(imageView.image, {drawStyle: {className:"overlay", borderColor: "green", borderWidth: 2}});
-	                                imageView.image.load("#{Metadaten.image.url}")
-	                                .then( e => {
-	                               		console.log("loaded image ", imageView);
-	                                })
-	                                .catch(e => {
-	                                	console.error("Failed to load image", e);
-	                                	imageView.image.element.innerHTML = e;
-	                                })
-	                            });
-                            
-                            </script>
-                            
+                            </div> 
+                             
                         </ui:fragment>
                     </div>
                     <!-- IMAGE CONTROLS -->
