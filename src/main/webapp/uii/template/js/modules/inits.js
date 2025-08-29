@@ -10,6 +10,8 @@ import { initSubmitOnEnter } from './submitOnEnter';
 import { initMirrorValueTo } from './mirrorValueTo';
 import { initAccessibilityModeButton } from './accessibilityMode';
 import { initShowDevelopertools } from './showDeveloperTools';
+import { loadImage } from './loadImage';
+import { initImageAreaSelection } from './selectImageAreas.js';
 
 export const initFunctions = function initFunctions() {
     initializeAjaxLoader();
@@ -25,4 +27,7 @@ export const initFunctions = function initFunctions() {
 
     focusOnLoad();
     toggleHelp();
+
+    const zoomableImage = loadImage();
+    initImageAreaSelection(zoomableImage);
 };

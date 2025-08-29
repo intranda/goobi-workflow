@@ -173,6 +173,7 @@ function devJsRollup() {
             ],
         })
         .then(bundle => {
+        	console.log("Write", bundle, " to ", `${customLocation}${targetFolder.js}main.min.js`);
             return bundle.write({
                 file: `${customLocation}${targetFolder.js}main.min.js`,
                 format: 'iife',
