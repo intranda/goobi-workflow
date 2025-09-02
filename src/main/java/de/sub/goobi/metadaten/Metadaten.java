@@ -5316,4 +5316,56 @@ public class Metadaten implements Serializable {
 
         return new Gson().toJson(authorityList);
     }
+
+    /**
+     * get chapter information as WebVTT format to display in video.
+     *
+     * @return chapter data
+     */
+
+    public String getChapterInformationAsVTT() {
+        //        // no file selected or no video file
+        //        if (image == null || image.getType() != Type.video) {
+        //            return "";
+        //        }
+        //
+        //        StringBuilder vtt = new StringBuilder();
+        //        // get physical docstruct for video file
+        //
+        //        // get total duration
+        //
+        //        // find top logical docstruct for physical
+        //
+        //        // find page areas
+        //
+        //        // for each:
+        //
+        //        // start, optional end (if end is empty, use start -1ms of next or file duration
+        //
+        //        // get deepest logical, get title data
+        //
+        //        vtt.append("\n");
+        //        vtt.append("WEBVTT - Eine Veranstaltung");
+        //        vtt.append("\n");
+        //        vtt.append("1");
+        //        vtt.append("00:00:00.000 --> 00:0:10.000");
+        //        vtt.append("Thema 1");
+        //        vtt.append("\n");
+        //
+        //        vtt.append("2");
+        //        vtt.append("00:00:10.001 --> 00:00:20.000");
+        //        vtt.append("Thema 2");
+        //        vtt.append("\n");
+        //        vtt.append("3");
+        //        vtt.append("00:00:20.001 --> 00:00:30.527");
+        //        vtt.append("Thema 3");
+        //        vtt.append("\n");
+        //        return vtt.toString();
+
+        StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
+        sb.append("/api/view/video/vtt");
+
+        return sb.toString();
+
+    }
 }
