@@ -666,7 +666,7 @@
                                         selectItems="#{intern.selectList}"
                                         displayAsRequired="#{intern.required}"
                                         required="false"
-                                        placeholder="false" />
+                                        placeholder="true" />
                                 </ui:fragment>
                                 <ui:fragment
                                     rendered="#{((NavigationForm.uiStatus.new_process_box1 != NULL and NavigationForm.uiStatus.new_process_box1 ne 'part' and intern.selectList.size() lt 2) or (intern.selectList.size() gt 1)) and intern.selectList!=null and intern.multiselect}">
