@@ -33,7 +33,11 @@ public class VocabularyRecordAPI {
     private final CachedLookup<Long, ExtendedVocabularyRecord> singleLookupCache;
     private final CachedLookup<RecordListRequest, VocabularyRecordPageResult> listLookupCache;
 
-    public final class VocabularyRecordQueryBuilder {
+    //CHECKSTYLE:OFF
+    // class cannot be final, otherwise mocking doesnt work
+    public class VocabularyRecordQueryBuilder {
+        //CHECKSTYLE:ON
+
         private final long vocabularyId;
         private Optional<Integer> page = Optional.empty();
         private Optional<Integer> pageSize = Optional.empty();
