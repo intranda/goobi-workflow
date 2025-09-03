@@ -4,17 +4,16 @@
   <parent>
     <groupId>io.goobi.workflow</groupId>
     <artifactId>workflow-base</artifactId>
-    <version>25.08-SNAPSHOT</version>
+    <version>25.08</version>
     <relativePath/>
   </parent>
   <artifactId>workflow-core</artifactId>
   <packaging>war</packaging>
   <properties>
-        <!-- Checkstyle -->
-        <checkstyle.max.violations>1800</checkstyle.max.violations>
-        <skipCheckstyle>false</skipCheckstyle>  
+    <!-- Checkstyle -->
+    <checkstyle.max.violations>1800</checkstyle.max.violations>
+    <skipCheckstyle>false</skipCheckstyle>
   </properties>
-  
   <repositories>
     <repository>
       <id>intranda-public</id>
@@ -30,7 +29,7 @@
         <configuration>
           <attachClasses>true</attachClasses>
         </configuration>
-      </plugin>      
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -45,35 +44,34 @@
           <dependency>
             <groupId>io.goobi.workflow</groupId>
             <artifactId>workflow-maven-config</artifactId>
-            <version>25.08-SNAPSHOT</version>
+            <version>25.08</version>
           </dependency>
         </dependencies>
         <!-- TODO: Check where and how to execute checkstyle -->
         <configuration>
           <configLocation>checkstyle.xml</configLocation>
-          <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>          
+          <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
         </configuration>
         <executions>
           <execution>
             <id>checkstyle-check</id>
             <phase>verify</phase>
             <configuration>
-               <skip>${skipCheckstyle}</skip>
-               <failOnViolation>true</failOnViolation>
-               <failsOnError>false</failsOnError>
-               <logViolationsToConsole>true</logViolationsToConsole>
-               <maxAllowedViolations>${checkstyle.max.violations}</maxAllowedViolations>
-               <violationSeverity>warning</violationSeverity>
-               <configLocation>checkstyle.xml</configLocation>
-               <inputEncoding>UTF-8</inputEncoding>
+              <skip>${skipCheckstyle}</skip>
+              <failOnViolation>true</failOnViolation>
+              <failsOnError>false</failsOnError>
+              <logViolationsToConsole>true</logViolationsToConsole>
+              <maxAllowedViolations>${checkstyle.max.violations}</maxAllowedViolations>
+              <violationSeverity>warning</violationSeverity>
+              <configLocation>checkstyle.xml</configLocation>
+              <inputEncoding>UTF-8</inputEncoding>
             </configuration>
             <goals>
               <goal>check</goal>
             </goals>
           </execution>
         </executions>
-      </plugin>      
-      
+      </plugin>
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
