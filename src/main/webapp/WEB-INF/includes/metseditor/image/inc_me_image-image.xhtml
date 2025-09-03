@@ -12,6 +12,102 @@
     <composite:interface />
 
     <composite:implementation>
+    
+    <style>
+    
+/* START Videos with Chapters */
+figure.video_chapters { 
+    font-size: 0; 
+    position: relative; 
+    background: #000; 
+    margin: 0; 
+}
+figure.video_chapters video { 
+    width: 75%;
+    height: auto;
+    display: inline-block; 
+}
+figure.video_chapters figcaption { 
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: #222;
+    width: 25%;
+    font-size: 1rem;
+    color: #999;
+    height: 100%;
+    overflow-y: scroll;
+    -moz-scrollbars-vertical: ;
+}
+figure.video_chapters figcaption ol { 
+    position: relative;
+    list-style-type: none;
+    margin: 0; 
+    padding: 0; 
+}
+figure.video_chapters figcaption ol li a { 
+    display: block; 
+    padding: .7rem 1rem; 
+    border-bottom: 1px dashed #000; 
+    transition: .3s;
+    font-family: 'Merriweather', serif;
+}
+figure.video_chapters figcaption ol li.watched a {
+    background: hsla(45,80%,50%,.3);
+}
+figure.video_chapters figcaption ol li a.current { 
+    background: hsl(45,80%,50%); 
+    color: #000;  
+}
+figure.video_chapters figcaption ol li a:not(.current):hover, 
+figure.video_chapters figcaption ol li a:not(.current):focus { 
+    background: hsl(45,80%,30%); 
+    color: #000; 
+    cursor: pointer;
+}
+
+
+figure.video_chapters figcaption ol li a small {
+    clear: both;
+    display: block;
+    font-size: .75em;
+    font-family: 'Source Sans Pro', Helvetica, sans-serif;
+} 
+figure.video_chapters figcaption ol li a small::before {
+    content:'';
+    clear: both;
+    display: block;
+}
+figure.video_chapters figcaption::-webkit-scrollbar {
+    width: 13px;
+    height: 100%;
+}
+figure.video_chapters figcaption::-webkit-scrollbar-track {
+    background-color: #000; 
+}
+figure.video_chapters figcaption::-webkit-scrollbar-thumb:vertical {
+    background: hsl(45,80%,20%);
+    width: 13px;
+    height: 20px;
+}
+
+@media screen and (max-width: 500px) {
+    figure.video_chapters video, 
+    figure.video_chapters figcaption { 
+        display: block; 
+        width: 100%;
+    }
+    figure.video_chapters video { 
+        border-bottom: 10px solid #111;
+    }
+    figure.video_chapters figcaption { 
+    position: static; 
+    height: 200px;
+    }
+}
+    </style>
+    
+    
         <h:form
             prependId="false"
             id="openseadragonform">
@@ -108,24 +204,46 @@
                         </ui:fragment>
 
                         <ui:fragment rendered="#{Metadaten.image.type == 'video'}">
-                            <video
-                                class="videoplayer"
-                                id="videoplayer"
-                                controls="controls"
-                                preload="none"
-                                src="#{Metadaten.image.objectUrl}">
-                            </video>
-                        </ui:fragment>
-						<ui:fragment rendered="#{Metadaten.image.type == 'object2vr'}">
 
-							<script
-								src="http://localhost:8080/goobi/resources/javascript/libs/object2vr_player.js">
+                            <div class="wrapper">
+                                <div class="center">
+                                    <figure
+                                        class="video_chapters"
+                                        id="video-track-container">
+                                        <video
+                                            width="640"
+                                            height="480"
+                                            class="videoplayer"
+                                            id="videoplayer"
+                                            controls=""
+                                            preload="metadata"
+                                            src="#{Metadaten.image.objectUrl}">
+                                            <!-- TODO: <track kind="chapters" src="path/to/*.vtt" /> -->
+
+                                            <track
+                                                default=""
+                                                kind="chapters"
+                                                src="#{Metadaten.chapterInformationAsVTT}"
+                                                onload="displayChapters(this)" />
+                                        </video>
+
+                                        <figcaption>
+                                            <ol class="chapters"></ol>
+                                        </figcaption>
+                                    </figure>
+                                </div>
+                            </div>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{Metadaten.image.type == 'object2vr'}">
+
+                            <script src="http://localhost:8080/goobi/resources/javascript/libs/object2vr_player.js">
 							</script>
 
-							<div id="containerVR" style="width: 659px; height: 740px;">
-							</div>
+                            <div
+                                id="containerVR"
+                                style="width: 659px; height: 740px;"></div>
 
-							<script type="text/javascript">
+                            <script type="text/javascript">
                                 // create the object player with the container
                                 setTimeout( () => {
                                     console.log("start loading object2vr");
@@ -135,9 +253,9 @@
                                 }, 200);
                             </script>
 
-						</ui:fragment>
+                        </ui:fragment>
 
-						<ui:fragment rendered="#{Metadaten.image.type == 'unknown'}">
+                        <ui:fragment rendered="#{Metadaten.image.type == 'unknown'}">
                             <p class="unknown_file_download">
                                 <h:outputText value="#{msgs.mets_downloadFile}" />
                                 <a
