@@ -160,7 +160,7 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
                     }
                 } else {
                     // When there are multiple steps with same name -> error
-                    order = ERROR_MULTIPLE_STEPS;// Multiple steps found
+                    order = ERROR_MULTIPLE_STEPS; // Multiple steps found
                     break;
                 }
             }

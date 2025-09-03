@@ -75,7 +75,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 
     /**
      * loops included means that all step open all stepdone are considered loops not included means that only min(date) or max(date) - depending on
-     * option in
+     * option in.
      * 
      * @see historyEventType
      * 
@@ -87,7 +87,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 
     /**
      * 
-     * @returns true if all Data for the generation is set
+     * @return true if all Data for the generation is set
      */
 
     public Boolean isDataComplete() {
@@ -141,7 +141,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     }
 
     /**
-     * Set status of loops included
+     * Set status of loops included.
      * 
      * @param includeLoops
      */
@@ -208,7 +208,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 
     /**
      * 
-     * @returns if reference curve is used of average production
+     * @return if reference curve is used of average production
      */
     public Boolean getReferenceCurve() {
         return this.flagReferenceCurve;
@@ -224,20 +224,19 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 
     public DataRow getDataRow(String stepName) {
         boolean flagNoContent = true;
-        for (int i = 0; i < getDataTable().getDataRows().size(); i++) {
+        for (DataRow dr : getDataTable().getDataRows()) {
             flagNoContent = false;
-            DataRow dr = getDataTable().getDataRows().get(i);
             if (dr.getName().equals(stepName)) {
                 return dr;
             }
         }
         // TODO: Retrieve from Messages
-        String message = "couldn't retrieve requested DataRow by name '" + stepName + "'";
+        StringBuilder message = new StringBuilder("couldn't retrieve requested DataRow by name '").append(stepName).append("'");
         if (flagNoContent) {
-            message = message + " - empty DataTable";
+            message.append(" - empty DataTable");
         }
 
-        log.error(message);
+        log.error(message.toString());
         return null;
 
     }
@@ -404,7 +403,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
                     Double count = new Converter(objArr[0]).getDouble();
                     dataRow.addValue(stepName, count); // NOSONAR, its not nullable here
 
-                } catch (Exception e) {
+                } catch (NullPointerException e) {
                     dataRow.addValue(e.getMessage(), Double.valueOf(0)); // NOSONAR, its not nullable here
                 }
             }
@@ -439,7 +438,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     }
 
     /**
-     * sets the terminating Step for this view
+     * sets the terminating Step for this view.
      * 
      * @param terminatingStep
      */
@@ -450,7 +449,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 
     /**
      * 
-     * @returns List of Steps that are selectable for this View
+     * @return List of Steps that are selectable for this View
      */
 
     public List<String> getSelectableSteps() {
@@ -500,7 +499,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
 
     /**
      * 
-     * @returns DataTable generated from the selected step names and the selected reference curve
+     * @return DataTable generated from the selected step names and the selected reference curve
      */
     public DataTable getSelectedTable() {
         getDataTable();

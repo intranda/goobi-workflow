@@ -32,9 +32,12 @@ import lombok.Data;
 public class InstitutionConfigurationObject implements Serializable {
     private static final long serialVersionUID = 7757549140685678598L;
     private Integer id;
+    //CHECKSTYLE:OFF
+    // spelling is needed for automatic json conversion
     private Integer institution_id;
     private Integer object_id;
     private String object_type;
     private String object_name;
+    //CHECKSTYLE:ON
     private boolean selected;
 }

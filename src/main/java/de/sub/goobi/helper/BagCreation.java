@@ -75,7 +75,7 @@ public class BagCreation {
      * Create a sub folder for the payload. All files of the intellectual entity are stored here
      *
      * @param folderName optional sub folder name below the data folder, can be empty
-     * @param objectFolderName: name of the object folder, i.e. 'objects' or 'representations'
+     * @param objectFolderName name of the object folder, i.e. 'objects' or 'representations'
      * 
      */
 
@@ -127,7 +127,7 @@ public class BagCreation {
     }
 
     /**
-     * Remove all created files and folder
+     * Remove all created files and folder.
      */
 
     public void cleanUp() {

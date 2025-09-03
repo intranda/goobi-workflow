@@ -32,25 +32,27 @@ import org.quartz.JobExecutionException;
 public interface IGoobiJob extends Job {
 
     /**
-     * execute this {@link Job} for all database and metadata content don't overwrite this method
+     * execute this {@link Job} for all database and metadata content don't overwrite this method.
      * 
      * @throws JobExecutionException
      */
     @Override
-    public abstract void execute(JobExecutionContext context) throws JobExecutionException;
+    void execute(JobExecutionContext context) throws JobExecutionException;
 
-    public abstract void setRunning(boolean inisRunning);
+    void setRunning(boolean inisRunning);
 
-    public abstract boolean isRunning();
-
-    /**
-     * getter for JobName
-     */
-    public abstract String getJobName();
+    boolean isRunning();
 
     /**
-     * override this method to let the job be called automatically
+     * getter for JobName.
+     *
+     * @return job name
      */
-    public abstract void execute();
+    String getJobName();
+
+    /**
+     * override this method to let the job be called automatically.
+     */
+    void execute();
 
 }

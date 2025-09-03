@@ -54,7 +54,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class ProjectStatusDraw {
-    private static final long MILLICSECS_PER_DAY = 1000l * 60l * 60l * 24l;
+    private static final long MILLICSECS_PER_DAY = 1000L * 60 * 60 * 24;
     private static final int BORDERTOP = 50;
     private static final int BORDERLEFT = 50;
     private static final int BORDERRIGHT = 50;
@@ -94,7 +94,7 @@ public class ProjectStatusDraw {
     }
 
     /************************************************************************************
-     * Paint the chart
+     * Paint the chart.
      ************************************************************************************/
     public void paint() {
         int w; // This is used to determine the width of strings in pixels.
@@ -253,10 +253,10 @@ public class ProjectStatusDraw {
     }
 
     /************************************************************************************
-     * Get size of Image for rendering
+     * Get size of Image for rendering.
      * 
-     * @param pData Proj the color index (0=green, 1=yellow, 2=red)
-     * @return the color as {@link Color}
+     * @param count
+     * @return size
      ************************************************************************************/
     public static int getImageHeight(int count) {
         return BORDERTOP + count * BARSPACING;

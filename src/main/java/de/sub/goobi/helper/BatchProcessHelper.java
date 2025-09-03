@@ -356,7 +356,7 @@ public class BatchProcessHelper implements Serializable {
     }
 
     /**
-     * store the current state of the batch in the database
+     * store the current state of the batch in the database.
      */
 
     public void saveBatchDetails() {

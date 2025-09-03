@@ -70,20 +70,6 @@ public class NavigationFormTest extends AbstractTest {
     }
 
     @Test
-    public void testJeniaPopupCloseAction() {
-        NavigationForm form = new NavigationForm();
-        assertNotNull(form);
-        assertEquals("jeniaClosePopupFrameWithAction", form.JeniaPopupCloseAction());
-    }
-
-    @Test
-    public void testBenutzerBearbeiten() {
-        NavigationForm form = new NavigationForm();
-        assertNotNull(form);
-        assertEquals("BenutzerBearbeiten", form.BenutzerBearbeiten());
-    }
-
-    @Test
     public void testIsShowHelp() {
         NavigationForm form = new NavigationForm();
         assertNotNull(form);

@@ -52,7 +52,7 @@ public class JournalManager implements IManager, Serializable {
     }
 
     /**
-     * Delete a single entry from journal
+     * Delete a single entry from journal.
      * 
      * @param entry to delete
      */
@@ -123,7 +123,7 @@ public class JournalManager implements IManager, Serializable {
         return null;
     }
 
-    public static final ResultSetHandler<List<JournalEntry>> resultSetToLogEntryListHandler = new ResultSetHandler<List<JournalEntry>>() {
+    public static final ResultSetHandler<List<JournalEntry>> resultSetToLogEntryListHandler = new ResultSetHandler<>() {
         @Override
         public List<JournalEntry> handle(ResultSet rs) throws SQLException {
             List<JournalEntry> answer = new ArrayList<>();

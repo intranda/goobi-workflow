@@ -9,7 +9,9 @@
 
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:editor="http://goobi.io/editor"
+    >
 
     <ui:param
         name="myPageTitle"
@@ -34,20 +36,6 @@
     </ui:define>
 
     <ui:define name="content">
-        <script
-            type="text/javascript"
-            src="template/js/static/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
-        <script
-            type="text/javascript"
-            src="template/js/static/codemirror/mode/properties/properties.js?v=#{HelperForm.buildVersion}" />
-        <script
-            type="text/javascript"
-            src="template/js/static/codemirror/mode/xml/xml.js?v=#{HelperForm.buildVersion}" />
-        <style>
-.CodeMirror {
-    height: auto;
-}
-</style>
         <!-- The area for messages that came from the backend -->
         <h:messages
             for="configFileEditor"
@@ -291,9 +279,7 @@
                                     </button>
                                 </div>
                                 <!-- Text editor -->
-                                <div
-                                    id="configFileEditorBorder"
-                                    class="border">
+                                <editor:code>
                                     <h:inputTextarea
                                         id="configFileEditor"
                                         style="resize: none;"
@@ -310,7 +296,7 @@
                                         styleClass="visually-hidden"
                                         pt:data-codemirror-reference="#{cc.clientId}:configFileEditor"
                                         value="#{configFileEditorBean.currentConfigFileFileContentBase64}" />
-                                </div>
+                                </editor:code>
                             </div>
                         </intranda:box>
 

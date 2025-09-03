@@ -53,7 +53,7 @@ public class RulesetValidationError {
         }
     }
 
-    public static enum ErrorType {
+    public enum ErrorType {
         UNKNOWN(0),
         INVALID_CARDINALITY(1),
         DATA_DEFINED_MULTIPLE_TIMES(2),

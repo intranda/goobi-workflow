@@ -38,6 +38,9 @@ public class ProductionData {
      * 
      * @author Robert Sehr
      */
+
+    //CHECKSTYLE:OFF
+    // spelling is needed by an import plugin for automatic xml conversion
     private Integer WERKNR;
     private String WERKATS;
     private Integer NAMEWV;
@@ -102,4 +105,6 @@ public class ProductionData {
     private Date NachscannRueckgabeWann;
     private String NachscannRueckgabeDurch;
     private Integer NachscannScanner;
+
+    //CHECKSTYLE:ON
 }

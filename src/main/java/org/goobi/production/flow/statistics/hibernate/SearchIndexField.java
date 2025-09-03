@@ -31,7 +31,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @AllArgsConstructor
-public @Data class SearchIndexField {
+@Data
+public class SearchIndexField {
 
     private String indexName;
 

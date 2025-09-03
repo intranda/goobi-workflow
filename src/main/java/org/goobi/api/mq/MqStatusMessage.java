@@ -47,7 +47,7 @@ public class MqStatusMessage implements DatabaseObject {
         @Getter
         private String name;
 
-        private MessageStatus(String name) {
+        MessageStatus(String name) {
             this.name = name;
         }
 

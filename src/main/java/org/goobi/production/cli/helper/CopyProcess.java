@@ -36,6 +36,7 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
@@ -82,6 +83,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 @Log4j2
@@ -94,7 +96,7 @@ public class CopyProcess {
 
     public static final String DIRECTORY_SUFFIX = "_tif";
 
-    UghHelper ughHelp = new UghHelper();
+    private UghHelper ughHelp = new UghHelper();
     private BeanHelper bhelp = new BeanHelper();
     private Fileformat myRdf;
     @Getter
@@ -131,10 +133,10 @@ public class CopyProcess {
     private List<String> digitalCollections;
     @Getter
     @Setter
-    private String tifHeader_imagedescription = "";
+    private String tifHeaderImagedescription = "";
     @Getter
     @Setter
-    private String tifHeader_documentname = "";
+    private String tifHeaderDocumentname = "";
 
     private String naviFirstPage;
     @Getter
@@ -311,7 +313,7 @@ public class CopyProcess {
 
             fillFieldsFromConfig();
 
-        } catch (Exception e) {
+        } catch (UGHException | IOException e) {
             Helper.setFehlerMeldung("Fehler beim Einlesen des Opac-Ergebnisses ", e);
             log.error(e);
         }
@@ -319,7 +321,7 @@ public class CopyProcess {
     }
 
     /**
-     * OpacAnfrage
+     * OpacAnfrage.
      */
 
     public String opacAuswerten() {
@@ -337,7 +339,7 @@ public class CopyProcess {
 
             fillFieldsFromConfig();
 
-        } catch (Exception e) {
+        } catch (UGHException | IOException e) {
             Helper.setFehlerMeldung("Fehler beim Einlesen des Opac-Ergebnisses ", e);
             log.error(e);
         }
@@ -363,7 +365,7 @@ public class CopyProcess {
                     if (FIELD_FIRSTCHILD.equals(field.getDocstruct())) {
                         try {
                             myTempStruct = myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
-                        } catch (RuntimeException exception) {
+                        } catch (NullPointerException exception) {
                             // do nothing
                         }
                     }
@@ -428,8 +430,8 @@ public class CopyProcess {
         this.standardFields.put("doctype", true);
         this.standardFields.put("regelsatz", true);
         this.additionalFields = new ArrayList<>();
-        this.tifHeader_documentname = "";
-        this.tifHeader_imagedescription = "";
+        this.tifHeaderDocumentname = "";
+        this.tifHeaderImagedescription = "";
     }
 
     /**
@@ -544,7 +546,7 @@ public class CopyProcess {
     }
 
     /**
-     * Anlegen des Prozesses und Speichern der Metadaten ================================================================
+     * Anlegen des Prozesses und Speichern der Metadaten.
      * 
      * @throws DAOException
      * @throws SwapException
@@ -556,7 +558,7 @@ public class CopyProcess {
 
         this.prozessKopie.setId(null);
 
-        EigenschaftenHinzufuegen(null);
+        addProperty(null);
 
         for (Step step : this.prozessKopie.getSchritteList()) {
             /*
@@ -615,7 +617,7 @@ public class CopyProcess {
                         if (FIELD_FIRSTCHILD.equals(field.getDocstruct())) {
                             try {
                                 myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
-                            } catch (RuntimeException e) {
+                            } catch (NullPointerException e) {
                                 /*
                                  * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
                                  */
@@ -627,7 +629,7 @@ public class CopyProcess {
                         if (!FIELD_FIRSTCHILD.equals(field.getDocstruct()) && field.getDocstruct().contains(FIELD_FIRSTCHILD)) {
                             try {
                                 myTempChild = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
-                            } catch (RuntimeException exception) {
+                            } catch (NullPointerException exception) {
                                 log.error(exception);
                             }
                         }
@@ -678,7 +680,7 @@ public class CopyProcess {
                      */
                     colStruct = colStruct.getAllChildren().get(0);
                     addCollections(colStruct);
-                } catch (RuntimeException e) {
+                } catch (NullPointerException e) {
                     /*
                      * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
                      */
@@ -759,7 +761,7 @@ public class CopyProcess {
             throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
 
         this.prozessKopie.setId(null);
-        EigenschaftenHinzufuegen(io);
+        addProperty(io);
 
         for (Step step : this.prozessKopie.getSchritteList()) {
             /*
@@ -861,7 +863,7 @@ public class CopyProcess {
 
     }
 
-    private void EigenschaftenHinzufuegen(ImportObject io) {
+    private void addProperty(ImportObject io) {
 
         /*
          * -------------------------------- jetzt alle zusätzlichen Felder durchlaufen und die Werte hinzufügen --------------------------------
@@ -880,15 +882,16 @@ public class CopyProcess {
             /* Doctype */
             bh.EigenschaftHinzufuegen(prozessKopie, "DocType", this.docType);
             /* Tiffheader */
-            bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderImagedescription", this.tifHeader_imagedescription);
-            bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderDocumentname", this.tifHeader_documentname);
+            bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderImagedescription", this.tifHeaderImagedescription);
+            bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderDocumentname", this.tifHeaderDocumentname);
         } else {
             bh.EigenschaftHinzufuegen(prozessKopie, "DocType", this.docType);
             /* Tiffheader */
-            bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderImagedescription", this.tifHeader_imagedescription);
-            bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderDocumentname", this.tifHeader_documentname);
+            bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderImagedescription", this.tifHeaderImagedescription);
+            bh.EigenschaftHinzufuegen(prozessKopie, "TifHeaderDocumentname", this.tifHeaderDocumentname);
 
-            for (Processproperty pe : io.getProcessProperties()) {
+            for (@SuppressWarnings("deprecation")
+            Processproperty pe : io.getProcessProperties()) {
                 addProperty(this.prozessKopie, pe);
             }
 
@@ -997,7 +1000,7 @@ public class CopyProcess {
      */
 
     /**
-     * Prozesstitel und andere Details generieren ================================================================
+     * Prozesstitel und andere Details generieren.
      */
 
     public void calculateProcessTitle() {
@@ -1025,8 +1028,8 @@ public class CopyProcess {
                 isnotdoctype = "";
             }
 
-            boolean containsDoctype = StringUtils.containsIgnoreCase(isdoctype, this.docType);
-            boolean containsNotDoctype = StringUtils.containsIgnoreCase(isnotdoctype, this.docType);
+            boolean containsDoctype = Strings.CI.contains(isdoctype, this.docType);
+            boolean containsNotDoctype = Strings.CI.contains(isnotdoctype, this.docType);
 
             /* wenn nix angegeben wurde, dann anzeigen */
             boolean useTitle = "".equals(isdoctype) && "".equals(isnotdoctype);
@@ -1069,7 +1072,7 @@ public class CopyProcess {
 
                     /* den Inhalt zum Titel hinzufügen */
                     if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                        newTitleBuilder.append(CalcProzesstitelCheck(myField.getTitel(), myField.getWert()));
+                        newTitleBuilder.append(calcProzesstitelCheck(myField.getTitel(), myField.getWert()));
                     }
                 }
             }
@@ -1084,7 +1087,7 @@ public class CopyProcess {
 
     /* =============================================================== */
 
-    private String CalcProzesstitelCheck(String inFeldName, String inFeldWert) {
+    private String calcProzesstitelCheck(String inFeldName, String inFeldWert) {
         String rueckgabe = inFeldWert;
 
         /*
@@ -1127,7 +1130,7 @@ public class CopyProcess {
         /*
          * -------------------------------- Documentname ist im allgemeinen = Prozesstitel --------------------------------
          */
-        this.tifHeader_documentname = this.prozessKopie.getTitel();
+        this.tifHeaderDocumentname = this.prozessKopie.getTitel();
         StringBuilder imageDescriptionBuilder = new StringBuilder(); // will be used to build this.tifHeader_imagedescription
         /*
          * -------------------------------- Imagedescription --------------------------------
@@ -1157,14 +1160,15 @@ public class CopyProcess {
 
                     /* den Inhalt zum Titel hinzufügen */
                     if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                        imageDescriptionBuilder.append(CalcProzesstitelCheck(myField.getTitel(), myField.getWert()));
+                        imageDescriptionBuilder.append(calcProzesstitelCheck(myField.getTitel(), myField.getWert()));
                     }
                 }
             }
         }
-        this.tifHeader_imagedescription = imageDescriptionBuilder.toString();
+        this.tifHeaderImagedescription = imageDescriptionBuilder.toString();
     }
 
+    @SuppressWarnings("deprecation")
     private void addProperty(Process inProcess, Processproperty property) {
         if ("0".equals(property.getContainer())) {
             for (GoobiProperty pe : inProcess.getEigenschaftenList()) {

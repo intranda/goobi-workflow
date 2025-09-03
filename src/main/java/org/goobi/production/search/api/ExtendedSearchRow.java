@@ -66,60 +66,114 @@ public class ExtendedSearchRow implements Serializable {
     private String institutionName;
 
     public String createSearchString() {
-        String value = "";
-        if (fieldName.equals("PROCESSTITLE") && !fieldValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + this.fieldValue + "\" ";
-        } else if (fieldName.equals("PROCESSID") && !fieldValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + FilterString.ID + this.fieldValue + "\" ";
-        }
+        StringBuilder value = new StringBuilder();
 
-        else if (fieldName.equals("BATCH") && !fieldValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + FilterString.BATCH + this.fieldValue + "\" ";
-        }
-
-        else if (fieldName.equals("PROJECT") && !this.projectName.equals(Helper.getTranslation("notSelected"))) {
-            value = "\"" + this.fieldOperand + FilterString.PROJECT + this.projectName + "\" ";
-
-        } else if (fieldName.equals("METADATA") && !this.metadataName.equals(Helper.getTranslation("notSelected")) && !metadataValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + FilterString.METADATA + metadataName + ":" + metadataValue + "\" ";
-
-        }
-
-        else if (fieldName.equals("PROCESSPROPERTY") && !processPropertyName.equals(Helper.getTranslation("notSelected"))
+        if ("PROCESSTITLE".equals(fieldName) && !fieldValue.isEmpty()) {
+            value.append("\"");
+            if (StringUtils.isNotBlank(fieldOperand)) {
+                value.append(fieldOperand);
+            }
+            value.append(fieldValue);
+            value.append("\"");
+        } else if ("PROCESSID".equals(fieldName) && !fieldValue.isEmpty()) {
+            value.append("\"");
+            if (StringUtils.isNotBlank(fieldOperand)) {
+                value.append(fieldOperand);
+            }
+            value.append(FilterString.ID);
+            value.append(fieldValue);
+            value.append("\"");
+        } else if ("BATCH".equals(fieldName) && !fieldValue.isEmpty()) {
+            value.append("\"");
+            if (StringUtils.isNotBlank(fieldOperand)) {
+                value.append(fieldOperand);
+            }
+            value.append(FilterString.BATCH);
+            value.append(fieldValue);
+            value.append("\"");
+        } else if ("PROJECT".equals(fieldName) && !this.projectName.equals(Helper.getTranslation("notSelected"))) {
+            value.append("\"");
+            if (StringUtils.isNotBlank(fieldOperand)) {
+                value.append(fieldOperand);
+            }
+            value.append(FilterString.PROJECT);
+            value.append(projectName);
+            value.append("\"");
+        } else if ("METADATA".equals(fieldName) && !this.metadataName.equals(Helper.getTranslation("notSelected")) && !metadataValue.isEmpty()) {
+            value.append("\"");
+            if (StringUtils.isNotBlank(fieldOperand)) {
+                value.append(fieldOperand);
+            }
+            value.append(FilterString.METADATA);
+            value.append(metadataName);
+            value.append(":");
+            value.append(metadataValue);
+            value.append("\"");
+        } else if ("PROCESSPROPERTY".equals(fieldName) && !processPropertyName.equals(Helper.getTranslation("notSelected"))
                 && !processPropertyValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + FilterString.PROCESSPROPERTY + this.processPropertyName + ":" + processPropertyValue + "\" ";
-        }
-
-        else if (fieldName.equals("WORKPIECE") && !masterpiecePropertyName.equals(Helper.getTranslation("notSelected"))
-                && !masterpiecePropertyValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + FilterString.WORKPIECE + this.masterpiecePropertyName + ":" + masterpiecePropertyValue + "\" ";
-        }
-
-        else if (fieldName.equals("TEMPLATE") && !templatePropertyName.equals(Helper.getTranslation("notSelected"))
-                && !templatePropertyValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + FilterString.TEMPLATE + this.templatePropertyName + ":" + templatePropertyValue + "\" ";
-        }
-
-        else if (fieldName.equals("STEP") && !stepStatus.equals(Helper.getTranslation("notSelected")) && !stepName.isEmpty()
+            value.append("\"");
+            if (StringUtils.isNotBlank(fieldOperand)) {
+                value.append(fieldOperand);
+            }
+            value.append(FilterString.PROCESSPROPERTY);
+            value.append(processPropertyName);
+            value.append(":");
+            value.append(processPropertyValue);
+            value.append("\"");
+        } else if ("STEP".equals(fieldName) && !stepStatus.equals(Helper.getTranslation("notSelected")) && !stepName.isEmpty()
                 && !stepName.equals(Helper.getTranslation("notSelected"))) {
-            value = "\"" + this.fieldOperand + this.stepStatus + ":" + this.stepName + "\" ";
+            value.append("\"");
+            if (StringUtils.isNotBlank(fieldOperand)) {
+                value.append(fieldOperand);
+            }
+            value.append(stepStatus);
+            value.append(":");
+            value.append(stepName);
+            value.append("\"");
+        } else if ("JOURNAL".equals(fieldName) && !fieldValue.isEmpty()) {
+            value.append("\"");
+            if (StringUtils.isNotBlank(fieldOperand)) {
+                value.append(fieldOperand);
+            }
+            value.append(FilterString.JOURNAL);
+            value.append(fieldValue);
+            value.append("\"");
+        } else if ("INSTITUTION".equals(fieldName) && StringUtils.isNotBlank(institutionName)) {
+            value.append("\"");
+            if (StringUtils.isNotBlank(fieldOperand)) {
+                value.append(fieldOperand);
+            }
+            value.append(FilterString.INSTITUTION);
+            value.append(":");
+            value.append(institutionName);
+            value.append("\"");
+        } else if ("PROCESSDATE".equals(fieldName) && !fieldValue.isEmpty()) {
+            value.append("\"");
+            value.append(FilterString.PROCESS_DATE);
+            if (StringUtils.isNotBlank(fieldOperand)) {
+                value.append(fieldOperand);
+            }
+            value.append(fieldValue);
+            value.append("\"");
+        } else if ("STEPSTARTDATE".equals(fieldName) && !fieldValue.isEmpty()) {
+            value.append("\"");
+            value.append(FilterString.STEP_START_DATE);
+            if (StringUtils.isNotBlank(fieldOperand)) {
+                value.append(fieldOperand);
+            }
+            value.append(fieldValue);
+            value.append("\"");
+        } else if ("STEPFINISHDATE".equals(fieldName) && !fieldValue.isEmpty()) {
+            value.append("\"");
+            value.append(FilterString.STEP_FINISH_DATE);
+            if (StringUtils.isNotBlank(fieldOperand)) {
+                value.append(fieldOperand);
+            }
+            value.append(fieldValue);
+            value.append("\"");
         }
-
-        else if (fieldName.equals("JOURNAL") && !fieldValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + FilterString.JOURNAL + fieldValue + "\" ";
-        }
-
-        else if (fieldName.equals("INSTITUTION") && StringUtils.isNotBlank(institutionName)) {
-            value = "\"" + this.fieldOperand + FilterString.INSTITUTION + ":" + institutionName + "\" ";
-        } else if (fieldName.equals("PROCESSDATE") && !fieldValue.isEmpty()) {
-            value = "\"" + FilterString.PROCESS_DATE + this.fieldOperand + fieldValue + "\" ";
-        } else if (fieldName.equals("STEPSTARTDATE") && !fieldValue.isEmpty()) {
-            value = "\"" + FilterString.STEP_START_DATE + this.fieldOperand + fieldValue + "\" ";
-        } else if (fieldName.equals("STEPFINISHDATE") && !fieldValue.isEmpty()) {
-            value = "\"" + FilterString.STEP_FINISH_DATE + this.fieldOperand + fieldValue + "\" ";
-        }
-
-        return value;
+        value.append(" ");
+        return value.toString();
     }
 
 }

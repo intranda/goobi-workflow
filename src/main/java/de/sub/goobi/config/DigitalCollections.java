@@ -38,7 +38,11 @@ import de.sub.goobi.helper.XmlTools;
 /**
  * The {@code DigitalCollections} class provides methods for handling digital collections related to Goobi workflows.
  */
-public class DigitalCollections {
+public final class DigitalCollections {
+
+    private DigitalCollections() {
+        // private constructor to hide implicit one
+    }
 
     /**
      * Retrieves a list of possible digital collections for a given Goobi process based on the configuration file.

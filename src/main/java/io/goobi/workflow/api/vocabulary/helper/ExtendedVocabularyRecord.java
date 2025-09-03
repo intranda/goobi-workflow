@@ -1,14 +1,5 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.goobi.vocabulary.exchange.FieldDefinition;
-import io.goobi.vocabulary.exchange.FieldInstance;
-import io.goobi.vocabulary.exchange.VocabularyRecord;
-import io.goobi.vocabulary.exchange.VocabularySchema;
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import lombok.Getter;
-import ugh.dl.Metadata;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -17,12 +8,23 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import io.goobi.vocabulary.exchange.FieldDefinition;
+import io.goobi.vocabulary.exchange.FieldInstance;
+import io.goobi.vocabulary.exchange.VocabularyRecord;
+import io.goobi.vocabulary.exchange.VocabularySchema;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import lombok.Getter;
+import ugh.dl.Metadata;
+
 @Getter
 public class ExtendedVocabularyRecord extends VocabularyRecord {
     private Function<Long, ExtendedVocabulary> vocabularyResolver = VocabularyAPIManager.getInstance().vocabularies()::get;
     private Function<Long, ExtendedVocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
     private Function<VocabularyRecord, VocabularySchema> schemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getSchema;
-    private Function<VocabularyRecord, Optional<VocabularySchema>> metadataSchemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getMetadataSchema;
+    private Function<VocabularyRecord, Optional<VocabularySchema>> metadataSchemaResolver =
+            VocabularyAPIManager.getInstance().vocabularySchemas()::getMetadataSchema;
 
     private int level;
     @JsonIgnore
@@ -134,8 +136,10 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         List<Long> existingFields = getFields().stream()
                 .map(FieldInstance::getDefinitionId)
                 .collect(Collectors.toList());
-        Optional<VocabularySchema> schema = Boolean.TRUE.equals(this.getMetadata()) ? metadataSchemaResolver.apply(this) : Optional.of(schemaResolver.apply(this));
-        List<Long> missingFields = schema.map(s -> s.getDefinitions().stream()
+        Optional<VocabularySchema> schema =
+                Boolean.TRUE.equals(this.getMetadata()) ? metadataSchemaResolver.apply(this) : Optional.of(schemaResolver.apply(this));
+        List<Long> missingFields = schema.map(s -> s.getDefinitions()
+                .stream()
                 .map(FieldDefinition::getId)
                 .filter(i -> !existingFields.contains(i))
                 .collect(Collectors.toList()))

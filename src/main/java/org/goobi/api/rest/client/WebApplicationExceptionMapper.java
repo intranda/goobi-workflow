@@ -23,7 +23,7 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 /**
- * Catches general exceptions encountered during rest-api calls and creates an error response
+ * Catches general exceptions encountered during rest-api calls and creates an error response.
  *
  * @author Florian Alpers
  */

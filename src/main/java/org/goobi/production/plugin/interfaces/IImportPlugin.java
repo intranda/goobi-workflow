@@ -43,74 +43,76 @@ import ugh.dl.Prefs;
 
 public interface IImportPlugin extends IPlugin, Serializable {
 
-    public void setPrefs(Prefs prefs);
+    void setPrefs(Prefs prefs);
 
-    public void setData(Record r);
+    void setData(Record r);
 
-    public String getImportFolder();
+    String getImportFolder();
 
-    public String getProcessTitle();
+    String getProcessTitle();
 
-    public List<ImportObject> generateFiles(List<Record> records);
+    List<ImportObject> generateFiles(List<Record> records);
 
-    public void setForm(MassImportForm form);
+    void setForm(MassImportForm form);
 
-    public void setImportFolder(String folder);
+    void setImportFolder(String folder);
 
-    public List<Record> splitRecords(String records);
+    List<Record> splitRecords(String records);
 
-    public List<Record> generateRecordsFromFile();
+    List<Record> generateRecordsFromFile();
 
     /**
      * Create records out of the selected files. Typically the record identifiers are the same as the file names and they can be used to request a
      * catalogue
      * 
      * @param filenames List of all the files that where selected in the mass impoart mask
-     * @return
+     * @return record list
      */
-    public List<Record> generateRecordsFromFilenames(List<String> filenames);
+    List<Record> generateRecordsFromFilenames(List<String> filenames);
 
-    public void setFile(File importFile);
+    void setFile(File importFile);
 
-    public List<String> splitIds(String ids);
+    List<String> splitIds(String ids);
 
-    public List<ImportType> getImportTypes();
+    List<ImportType> getImportTypes();
 
-    public List<ImportProperty> getProperties();
+    List<ImportProperty> getProperties();
 
     /**
      * Returns a list of all the files / objects that the plugin offers in the file multiselect box to pick from for an import. Each import decides
      * what shall be listed here (files, folders etc.)
      * 
-     * @return
+     * @return file list
      */
-    public List<String> getAllFilenames();
+    List<String> getAllFilenames();
 
-    public void deleteFiles(List<String> selectedFilenames);
+    void deleteFiles(List<String> selectedFilenames);
 
-    public List<? extends DocstructElement> getCurrentDocStructs();
+    List<? extends DocstructElement> getCurrentDocStructs();
 
-    public String deleteDocstruct();
+    String deleteDocstruct();
 
-    public String addDocstruct();
+    String addDocstruct();
 
-    public List<String> getPossibleDocstructs();
+    List<String> getPossibleDocstructs();
 
-    public DocstructElement getDocstruct();
+    DocstructElement getDocstruct();
 
-    public void setDocstruct(DocstructElement dse);
+    void setDocstruct(DocstructElement dse);
 
     /**
      * should be an internal method for each plugin. Can very likely be removed from this interface. It is usually used to generate FileFormats and to
      * put these into the ImportObjects then
      * 
-     * @return
+     * @return fileformat
      * @throws ImportPluginException
      */
-    public Fileformat convertData() throws ImportPluginException;
+    Fileformat convertData() throws ImportPluginException;
 
     /**
      * Option to set the selected workflow name to the plugin. This might be used to select the correct configuration.
+     * 
+     * @param workflowTitle
      */
     default void setWorkflowTitle(String workflowTitle) {
         // the default implementation ignores this call
@@ -119,7 +121,7 @@ public interface IImportPlugin extends IPlugin, Serializable {
     /**
      * Get all plugin instances. The default implementation returns the plugin name only-
      * 
-     * @return
+     * @return plugin list
      */
 
     default List<String> getPluginNames() {

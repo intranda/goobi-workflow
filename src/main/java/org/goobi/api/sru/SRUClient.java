@@ -86,7 +86,6 @@ public class SRUClient {
      * </p>
      * 
      * @param baseUrl The Base URL for the SRU interface. Required.
-     * @param schema The SRU 'recordSchema' to use. NULL values will default to marcxml
      * @throws MalformedURLException Will be thrown if the 'baseUrl' provided is not well formed.
      */
     public SRUClient(String baseUrl) throws MalformedURLException {
@@ -136,11 +135,11 @@ public class SRUClient {
         // Make sure our URL is valid first
         try {
             @SuppressWarnings("unused")
-            URL url = new URL(baseUrl);
+            URL url = new URI(baseUrl).toURL();
             this.baseUrl = baseUrl;
-        } catch (MalformedURLException ex) {
+        } catch (MalformedURLException | URISyntaxException ex) {
             log.error("Invalid URL passed to constructor: ", ex);
-            throw ex;
+            throw new MalformedURLException(ex.getMessage());
         }
 
         // Start with the default NLA parameters if nothing has been configured
@@ -219,7 +218,7 @@ public class SRUClient {
     }
 
     /**
-     * Parse an XML document from a string
+     * Parse an XML document from a string.
      * 
      * @param xmlData The String to parse
      * @return Document The parsed XML Object. Null if any problems occur.
@@ -345,15 +344,15 @@ public class SRUClient {
      * </p>
      * 
      * @param query The query String to perform against the SRU interface. Required.
-     * @param operation The 'operation' perform. If null this will default to 'searchRetrieve'.
+     * @param inOperation The 'operation' perform. If null this will default to 'searchRetrieve'.
      * @param sortKeys Sorting. Optional, with no default.
      * @param startRecord Starting record number. Optional, with no default.
      * @param maxRecords Maximum rows to return. Optional, with no default.
      * @return String A URL that can be retrieved to execute this search.
      */
-    public String generateSearchUrl(String query, String operation, String sortKeys, String startRecord, String maxRecords) {
+    public String generateSearchUrl(String query, String inOperation, String sortKeys, String startRecord, String maxRecords) {
         String searchUrl = baseUrl;
-
+        String operation = inOperation;
         if (query == null) {
             log.error("Cannot generate a search URL without a search! 'query' parameter is required.");
             return null;

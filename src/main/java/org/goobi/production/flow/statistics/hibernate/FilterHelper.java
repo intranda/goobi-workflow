@@ -43,10 +43,10 @@ import de.sub.goobi.persistence.managers.MySQLHelper;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * class provides methods used by implementations of IEvaluableFilter
+ * class provides methods used by implementations of IEvaluableFilter.
  */
 @Log4j2
-public class FilterHelper {
+public final class FilterHelper {
 
     private static String leftTruncationCharacter = "%";
     private static String rightTruncationCharacter = "%";
@@ -367,9 +367,13 @@ public class FilterHelper {
          */
 
         String login = tok.substring(tok.indexOf(":") + 1).replace("\\_", "_");
-
-        return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login = '"
-                + login + "'))";
+        login = MySQLHelper.escapeSql(login);
+        StringBuilder sb = new StringBuilder();
+        sb.append(" prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID ");
+        sb.append("= (select BenutzerID from benutzer where benutzer.login = '");
+        sb.append(login);
+        sb.append("'))");
+        return sb.toString();
     }
 
     /**
@@ -400,25 +404,49 @@ public class FilterHelper {
     protected static String filterStepProperty(String tok, boolean negate) {
         /* Filtering by signature */
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
+        StringBuilder sb = new StringBuilder();
+
         if (!negate) {
             if (ts.length > 1) {
-                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select object_id from properties where object_type = 'error' AND property_value like ''"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND property_name like '"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
-
+                sb.append(" prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in ");
+                sb.append("(select object_id from properties where object_type = 'error' AND property_value like ''");
+                sb.append(leftTruncationCharacter);
+                sb.append(MySQLHelper.escapeSql(ts[1]));
+                sb.append(rightTruncationCharacter);
+                sb.append("'  AND property_name like '");
+                sb.append(leftTruncationCharacter);
+                sb.append(MySQLHelper.escapeSql(ts[0]));
+                sb.append(rightTruncationCharacter);
+                sb.append("' ))");
             } else {
-                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select object_id from properties where object_type = 'error' AND property_value like '"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
+                sb.append(" prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in ");
+                sb.append(" (select object_id from properties where object_type = 'error' AND property_value like '");
+                sb.append(leftTruncationCharacter);
+                sb.append(MySQLHelper.escapeSql(ts[0]));
+                sb.append(rightTruncationCharacter);
+                sb.append("'))");
+
             }
         } else if (ts.length > 1) {
-            return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select object_id from properties where object_type = 'error' AND property_value like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND property_name like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
-
+            sb.append(" prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in ");
+            sb.append("(select object_id from properties where object_type = 'error' AND property_value like '");
+            sb.append(leftTruncationCharacter);
+            sb.append(MySQLHelper.escapeSql(ts[1]));
+            sb.append(rightTruncationCharacter);
+            sb.append("'  AND property_name like '");
+            sb.append(leftTruncationCharacter);
+            sb.append(MySQLHelper.escapeSql(ts[0]));
+            sb.append(rightTruncationCharacter);
+            sb.append("' ))");
         } else {
-            return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select object_id from properties where object_type = 'error' AND property_value like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
+            sb.append(" prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in ");
+            sb.append("(select object_id from properties where object_type = 'error' AND property_value like '");
+            sb.append(leftTruncationCharacter);
+            sb.append(MySQLHelper.escapeSql(ts[0]));
+            sb.append(rightTruncationCharacter);
+            sb.append("'))");
         }
+        return sb.toString();
     }
 
     /**
@@ -435,13 +463,13 @@ public class FilterHelper {
      * 00:00:00 and the day and month to 01-01.
      * 
      * @param dateField name of the table column to search in
-     * @param value the date in a specific format, allowed are 'YYYY', 'YYYY-MM-DD', 'YYYY-MM-DDThh:mm:ssZ' and 'YYYY-MM-DD hh:mm:ss'
+     * @param inValue the date in a specific format, allowed are 'YYYY', 'YYYY-MM-DD', 'YYYY-MM-DDThh:mm:ssZ' and 'YYYY-MM-DD hh:mm:ss'
      * @param operand the operand, allowed values are = (equals), != (not equals), < (smaller) > (greater)
      * @return sql sub query
      */
 
-    protected static String filterDate(String dateField, String value, String operand) {
-
+    protected static String filterDate(String dateField, String inValue, String operand) {
+        String value = inValue;
         if (value.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z")) {
             value = operand + " '" + value.replace("T", " ").replace("Z", "'");
         } else if (value.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) {
@@ -585,16 +613,24 @@ public class FilterHelper {
      */
 
     protected static String filterInstitution(String tok, boolean negate) {
-        String query = "";
+        StringBuilder query = new StringBuilder();
         if (!negate) {
-            query = "prozesse.ProjekteID in (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+            query.append("prozesse.ProjekteID in (select ProjekteID from projekte left join ");
+            query.append("institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '");
+            query.append(leftTruncationCharacter);
+            query.append(MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)));
+            query.append(rightTruncationCharacter);
+            query.append("')");
         } else {
-            query = "prozesse.ProjekteID not sin (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+            query.append("prozesse.ProjekteID not sin (select ProjekteID from projekte left join ");
+            query.append("institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '");
+            query.append(leftTruncationCharacter);
+            query.append(MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)));
+            query.append(rightTruncationCharacter);
+            query.append("')");
         }
 
-        return query;
+        return query.toString();
     }
 
     /**
@@ -665,16 +701,18 @@ public class FilterHelper {
      * then will be applied on the corresponding criteria. A criteria is only added if needed for the presence of filters applying to it.
      * 
      * 
-     * @param inFilter
-     * @param crit
+     * @param searchFilter
      * @param isTemplate
-     * @param returnParameters Object containing values which need to be set and returned to UserDefinedFilter
-     * @param userAssignedStepsOnly
      * @param stepOpenOnly
+     * @param userAssignedStepsOnly
+     * @param hideStepsFromOtherUsers
+     * @param isProcess
+     * @param isStep
      * @return String used to pass on error messages about errors in the filter expression
      */
-    public static String criteriaBuilder(String inFilter, Boolean isTemplate, Boolean stepOpenOnly, Boolean userAssignedStepsOnly,
+    public static String criteriaBuilder(String searchFilter, Boolean isTemplate, Boolean stepOpenOnly, Boolean userAssignedStepsOnly,
             Boolean hideStepsFromOtherUsers, boolean isProcess, boolean isStep) {
+        String inFilter = searchFilter;
         if (inFilter == null) {
             inFilter = "";
         }
@@ -1227,9 +1265,6 @@ public class FilterHelper {
                     return FilterHelper.filterStepExact(parameters, inStatus, negate, dateFilter);
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
-                } catch (Exception e) {
-                    log.error(e);
-                    message = "filterpart '" + filterPart.substring(filterPart.indexOf(":") + 1) + "' in '" + filterPart + "' caused an error\n";
                 }
                 break;
 
@@ -1238,8 +1273,7 @@ public class FilterHelper {
                     return FilterHelper.filterStepMax(parameters, inStatus, negate, dateFilter);
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
-                } catch (Exception e) {
-                    message = "filterpart '" + filterPart.substring(filterPart.indexOf(":") + 1) + "' in '" + filterPart + "' caused an error\n";
+
                 }
                 break;
 
@@ -1248,8 +1282,6 @@ public class FilterHelper {
                     return FilterHelper.filterStepMin(parameters, inStatus, negate, dateFilter);
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
-                } catch (Exception e) {
-                    message = "filterpart '" + filterPart.substring(filterPart.indexOf(":") + 1) + "' in '" + filterPart + "' caused an error\n";
                 }
                 break;
 
@@ -1259,8 +1291,6 @@ public class FilterHelper {
                     return FilterHelper.filterStepName(parameters, inStatus, negate, dateFilter);
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
-                } catch (Exception e) {
-                    message = "filterpart '" + filterPart.substring(filterPart.indexOf(":") + 1) + "' in '" + filterPart + "' caused an error\n";
                 }
                 break;
 
@@ -1274,15 +1304,12 @@ public class FilterHelper {
                         return FilterHelper.filterStepName(parameters, inStatus, negate, dateFilter);
                     } catch (NullPointerException e1) {
                         message = "stepdone is preset, don't use 'step' filters";
-                    } catch (Exception e1) {
-                        message = "filterpart '" + filterPart.substring(filterPart.indexOf(":") + 1) + "' in '" + filterPart + "' caused an error\n";
                     }
-                } catch (Exception e) {
-                    message = "filterpart '" + filterPart.substring(filterPart.indexOf(":") + 1) + "' in '" + filterPart + "' caused an error\n";
                 }
                 break;
 
             case unknown:
+            default:
                 message = message + ("Filter '" + filterPart + "' is not known!\n");
         }
         return message;

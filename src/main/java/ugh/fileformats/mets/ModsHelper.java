@@ -41,7 +41,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class ModsHelper {
+public final class ModsHelper {
     /**
      * 
      * This class converts the content of a {@link DocStruct} to a jdom2 document. It must be in this package, otherwise protected methods can't be
@@ -59,11 +59,11 @@ public class ModsHelper {
     }
 
     /**
-     * Converts a a {@link DocStruct} to a mods {@link org.jdom2.Document} using the ugh xml creation methods
+     * Converts a a {@link DocStruct} to a mods {@link org.jdom2.Document} using the ugh xml creation methods.
      * 
      * @param ds
      * @param prefs
-     * @return
+     * @return jdom document
      */
 
     public static org.jdom2.Document generateModsSection(DocStruct ds, Prefs prefs) {

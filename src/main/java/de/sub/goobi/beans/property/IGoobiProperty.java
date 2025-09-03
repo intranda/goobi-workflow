@@ -31,43 +31,43 @@ import de.sub.goobi.helper.enums.PropertyType;
 
 public interface IGoobiProperty {
 
-    public Integer getId();
+    Integer getId();
 
-    public void setId(Integer id);
+    void setId(Integer id);
 
-    public String getTitel();
+    String getTitel();
 
-    public void setTitel(String titel);
+    void setTitel(String titel);
 
-    public String getWert();
+    String getWert();
 
-    public void setWert(String wert);
+    void setWert(String wert);
 
-    public void setCreationDate(Date creation);
+    void setCreationDate(Date creation);
 
-    public Date getCreationDate();
+    Date getCreationDate();
 
     /**
-     * set datentyp to specific value from {@link PropertyType}
+     * set datentyp to specific value from {@link PropertyType}.
      * 
      * @param inType as {@link PropertyType}
      */
-    public void setType(PropertyType inType);
+    void setType(PropertyType inType);
 
     /**
-     * get datentyp as {@link PropertyType}
+     * get datentyp as {@link PropertyType}.
      * 
      * @return current datentyp
      */
-    public PropertyType getType();
+    PropertyType getType();
 
-    public void setContainer(String name);
+    void setContainer(String name);
 
-    public String getContainer();
+    String getContainer();
 
-    public String getNormalizedTitle();
+    String getNormalizedTitle();
 
-    public String getNormalizedValue();
+    String getNormalizedValue();
 
-    public String getNormalizedDate();
+    String getNormalizedDate();
 }

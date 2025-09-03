@@ -72,7 +72,7 @@ public class LockingBean implements Serializable {
      * 
      * @param objectId
      * @param userName
-     * @return
+     * @return true if object was locked
      */
 
     public static boolean lockObject(String objectId, String userName) {
@@ -95,7 +95,7 @@ public class LockingBean implements Serializable {
     }
 
     /**
-     * remove lock
+     * remove lock.
      * 
      * @param objectId
      */
@@ -109,9 +109,9 @@ public class LockingBean implements Serializable {
     }
 
     /**
-     * update timestamp of a locked object
+     * update timestamp of a locked object.
      * 
-     * @param courtId
+     * @param objectId
      */
 
     public static void updateLocking(String objectId) {
@@ -123,8 +123,10 @@ public class LockingBean implements Serializable {
     }
 
     /**
-     * check if an object is locked
+     * check if an object is locked.
      *
+     * @param objectId
+     * @return true if object is locked
      */
 
     public static boolean isLocked(String objectId) {
@@ -132,8 +134,11 @@ public class LockingBean implements Serializable {
     }
 
     /**
-     * check if an object is locked by another user
+     * check if an object is locked by another user.
      *
+     * @param objectId
+     * @param userName
+     * @return true if object is locked by other user
      */
 
     public static boolean isLockedByAnotherUser(String objectId, String userName) {
@@ -150,7 +155,7 @@ public class LockingBean implements Serializable {
     }
 
     /**
-     * remove all active lockings
+     * remove all active lockings.
      */
 
     public static void resetAllLocks() {

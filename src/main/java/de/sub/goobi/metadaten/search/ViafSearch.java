@@ -147,7 +147,7 @@ public class ViafSearch {
             }
 
             if (!names.isEmpty()) {
-                md.setAutorityFile("viaf", VIAF_URL, currentDatabase.getMarcRecordUrl());
+                md.setAuthorityFile("viaf", VIAF_URL, currentDatabase.getMarcRecordUrl());
                 md.setValue(names.get(0));
             }
         }
@@ -174,7 +174,7 @@ public class ViafSearch {
             }
 
             if (!names.isEmpty()) {
-                p.setAutorityFile("viaf", VIAF_URL, currentDatabase.getMarcRecordUrl());
+                p.setAuthorityFile("viaf", VIAF_URL, currentDatabase.getMarcRecordUrl());
                 p.addAuthorityUriToMap("viaf-cluster", currentCluster);
                 p.addAuthorityUriToMap("viaf", currentDatabase.getMarcRecordUrl());
                 mainValue = names.get(0);
@@ -184,7 +184,7 @@ public class ViafSearch {
     }
 
     /**
-     * Get metadata from viaf record and write it into the corporate object
+     * Get metadata from viaf record and write it into the corporate object.
      * 
      * @param corporate
      */
@@ -237,7 +237,7 @@ public class ViafSearch {
                 } else {
                     corporate.setPartName(null);
                 }
-                corporate.setAutorityFile("viaf", VIAF_URL, currentDatabase.getMarcRecordUrl());
+                corporate.setAuthorityFile("viaf", VIAF_URL, currentDatabase.getMarcRecordUrl());
                 corporate.addAuthorityUriToMap("viaf-cluster", currentCluster);
                 corporate.addAuthorityUriToMap("viaf", currentDatabase.getMarcRecordUrl());
             }

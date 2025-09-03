@@ -43,7 +43,7 @@ import de.sub.goobi.helper.Helper;
 /**
  * Enum for all statistic modes,
  * 
- * for backward compatibility we will contain old datasets of previous chartings
+ * for backward compatibility we will contain old datasets of previous chartings.
  * 
  * @author Steffen Hankiewicz
  * @author Wulf Riebensahm
@@ -77,7 +77,7 @@ public enum StatisticsMode {
     /**
      * private constructor,
      ****************************************************************************/
-    private StatisticsMode(String inTitle, Class<? extends IStatisticalQuestion> inQuestion, Boolean renderIncludeLoops, Boolean isSimpleStatistic,
+    StatisticsMode(String inTitle, Class<? extends IStatisticalQuestion> inQuestion, Boolean renderIncludeLoops, Boolean isSimpleStatistic,
             Boolean restrictDate) {
         title = inTitle;
         if (inQuestion != null) {
@@ -95,7 +95,7 @@ public enum StatisticsMode {
     }
 
     /**
-     * return boolean, if it is an old simple jfreechart statistic
+     * return boolean, if it is an old simple jfreechart statistic.
      * 
      * @return if it is as simple old statistic
      ****************************************************************************/
@@ -104,7 +104,7 @@ public enum StatisticsMode {
     }
 
     /**
-     * return boolean, if it is an old simple jfreechart statistic
+     * return boolean, if it is an old simple jfreechart statistic.
      * 
      * @return if it is as simple old statistic
      ****************************************************************************/
@@ -113,7 +113,7 @@ public enum StatisticsMode {
     }
 
     /**
-     * return localized title of statistic view from standard-jsf-messages-files
+     * return localized title of statistic view from standard-jsf-messages-files.
      * 
      * @return title of statistic question mode
      ****************************************************************************/
@@ -122,7 +122,7 @@ public enum StatisticsMode {
     }
 
     /**
-     * return our implementation initialized
+     * return our implementation initialized.
      * 
      * @return the implemented {@link IStatisticalQuestion}
      ****************************************************************************/
@@ -131,8 +131,9 @@ public enum StatisticsMode {
     }
 
     /**
-     * return StatisticsMode by given {@link IStatisticalQuestion}-Class
-     * 
+     * return StatisticsMode by given {@link IStatisticalQuestion}-Class.
+     *
+     * @param inQuestion
      * @return {@link StatisticsMode}
      ****************************************************************************/
     public static StatisticsMode getByClassName(Class<? extends IStatisticalQuestion> inQuestion) {

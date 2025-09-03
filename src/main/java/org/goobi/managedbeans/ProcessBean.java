@@ -170,6 +170,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 @Named("ProzessverwaltungForm")
@@ -395,9 +396,9 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * needed for ExtendedSearch
+     * needed for ExtendedSearch.
      *
-     * @return
+     * @return true
      */
     public boolean getInitialize() {
         return true;
@@ -520,7 +521,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             if (StorageProvider.getInstance().isFileExists(images)) {
                 StorageProvider.getInstance().deleteDir(images);
             }
-        } catch (Exception e) {
+        } catch (IOException | SwapException e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
         }
         Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, "Deleted content for this process in process details.");
@@ -553,7 +554,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         WebDav myDav = new WebDav();
         for (User b : assignedUsers) {
             try {
-                myDav.UploadFromHome(b, this.mySchritt.getProzess());
+                myDav.uploadFromHome(b, this.mySchritt.getProzess());
             } catch (RuntimeException exception) {
                 // ignore this
             }
@@ -561,7 +562,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         // delete process folder
         try {
             StorageProvider.getInstance().deleteDir(Paths.get(this.myProzess.getProcessDataDirectory()));
-        } catch (Exception e) {
+        } catch (IOException | SwapException e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
         }
     }
@@ -779,7 +780,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 modusBearbeiten = MODUS_BEARBEITEN_SCHRITT;
                 return PAGE_PROCESS_EDIT_STEP;
             }
-        } else {//not automatic: then remove from message queue:
+        } else {
+            //not automatic: then remove from message queue:
             mySchritt.setMessageQueue(QueueType.NONE);
         }
 
@@ -846,7 +848,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         /* alle Benutzer */
         for (User b : this.mySchritt.getBenutzerList()) {
             try {
-                myDav.UploadFromHome(b, this.mySchritt.getProzess());
+                myDav.uploadFromHome(b, this.mySchritt.getProzess());
             } catch (RuntimeException exception) {
                 // ignore this
             }
@@ -855,7 +857,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         for (Usergroup bg : this.mySchritt.getBenutzergruppenList()) {
             for (User b : bg.getBenutzer()) {
                 try {
-                    myDav.UploadFromHome(b, this.mySchritt.getProzess());
+                    myDav.uploadFromHome(b, this.mySchritt.getProzess());
                 } catch (RuntimeException exception) {
                     // ignore this
                 }
@@ -933,9 +935,9 @@ public class ProcessBean extends BasicBean implements Serializable {
             Helper.addMessageToProcessJournal(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (Exception e) {
+        } catch (IOException | DocStructHasNoTypeException | UGHException | ExportFileException | UghHelperException | SwapException
+                | DAOException e) {
             String[] parameter = { "METS", this.myProzess.getTitel() };
-
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
             log.error("ExportMETS error", e);
         }
@@ -948,9 +950,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             Helper.addMessageToProcessJournal(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (Exception e) {
+        } catch (IOException | DocStructHasNoTypeException | UGHException | SwapException | DAOException e) {
             String[] parameter = { "METS", this.myProzess.getTitel() };
-
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
             log.error("ExportMETS error", e);
         }
@@ -963,7 +964,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             Helper.addMessageToProcessJournal(this.myProzess.getId(), LogType.DEBUG, "Started PDF export using 'ExportPdf'.");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (Exception e) {
+        } catch (IOException | DocStructHasNoTypeException | UGHException | ExportFileException | UghHelperException | SwapException
+                | DAOException e) {
             String[] parameter = { "PDF", this.myProzess.getTitel() };
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
 
@@ -1010,7 +1012,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (Exception e) {
+        } catch (IOException | DocStructHasNoTypeException | UGHException | ExportFileException | UghHelperException | SwapException
+                | DAOException e) {
             String[] parameter = { "DMS", process.getTitel() };
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
             log.error("ExportDMS error", e);
@@ -1059,7 +1062,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             Helper.addMessageToProcessJournal(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSSelection'.");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (Exception e) {
+        } catch (IOException | DocStructHasNoTypeException | UGHException | ExportFileException | UghHelperException | SwapException
+                | DAOException e) {
             Helper.setFehlerMeldung("ExportError", e.getMessage());
             log.error(e);
         }
@@ -1076,7 +1080,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String uploadFromHomeAlle() {
         WebDav myDav = new WebDav();
-        List<String> folder = myDav.UploadFromHomeAlle(doneDirectoryName);
+        List<String> folder = myDav.uploadFromHomeAll(doneDirectoryName);
         myDav.removeFromHomeAlle(folder, doneDirectoryName);
         Helper.setMeldung(null, "directoryRemovedAll", doneDirectoryName);
         return "";
@@ -1084,7 +1088,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String uploadFromHome() {
         WebDav myDav = new WebDav();
-        myDav.UploadFromHome(this.myProzess);
+        myDav.uploadFromHome(this.myProzess);
         Helper.setMeldung(null, "directoryRemoved", this.myProzess.getTitel());
         Helper.addMessageToProcessJournal(this.myProzess.getId(), LogType.DEBUG, "Process uploaded from home directory via process list.");
         return "";
@@ -1102,14 +1106,14 @@ public class ProcessBean extends BasicBean implements Serializable {
         String message = "Process downloaded into home directory from process list. Available access rights: ";
         if (!process.isImageFolderInUse()) {
             WebDav myDav = new WebDav();
-            myDav.DownloadToHome(process, 0, false);
+            myDav.downloadToHome(process, 0, false);
             Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, message + "write");
         } else {
             String information = Helper.getTranslation("directory ") + " " + process.getTitel() + " " + Helper.getTranslation("isInUse");
             String userName = process.getImageFolderInUseUser().getNachVorname();
             Helper.setMeldung(null, information, userName);
             WebDav myDav = new WebDav();
-            myDav.DownloadToHome(process, 0, true);
+            myDav.downloadToHome(process, 0, true);
             Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, message + "read");
         }
     }
@@ -1268,9 +1272,9 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         List<Step> steps = this.myProzess.getSchritte();
         int baseOrder = this.mySchritt.getReihenfolge().intValue();
-        int targetOrder = this.getNextAvailableOrder(baseOrder, direction);//-1 means downwards, +1 means upwards
+        int targetOrder = this.getNextAvailableOrder(baseOrder, direction); //-1 means downwards, +1 means upwards
 
-        if (targetOrder != baseOrder) {// Otherwise there is no next order, then nothing happens
+        if (targetOrder != baseOrder) { // Otherwise there is no next order, then nothing happens
             int currentOrder;
 
             // Set all steps with targetOrder to baseOrder
@@ -1597,7 +1601,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * prepare the variables for user question with all hits
+     * prepare the variables for user question with all hits.
      */
     public void prepareGoobiScriptHits() {
         this.goobiScriptHitsCount = this.paginator.getIdList().size();
@@ -1606,7 +1610,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * prepare the variables for user question with hits on the current page
+     * prepare the variables for user question with hits on the current page.
      */
     public void prepareGoobiScriptPage() {
         this.goobiScriptHitsCount = paginator.getList().size();
@@ -1615,7 +1619,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * prepare the variables for user question with selected items
+     * prepare the variables for user question with selected items.
      */
     public void prepareGoobiScriptSelection() {
         this.goobiScriptHitsCount = (int) paginator.getList().stream().filter(p -> ((Process) p).isSelected()).count();
@@ -1644,9 +1648,9 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * runs the current GoobiScript in the correct mode ("page", "hits" or "selection")
+     * runs the current GoobiScript in the correct mode ("page", "hits" or "selection").
      *
-     * @return
+     * @return redirect to process list
      */
     public String runGoobiScript() {
         if (!checkSecurityResult()) {
@@ -1693,7 +1697,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Return a list of all visible GoobiScript commands with their action name and the sample call
+     * Return a list of all visible GoobiScript commands with their action name and the sample call.
      *
      * @return the list of GoobiScripts
      */
@@ -1809,8 +1813,9 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     /**
      * ist called via jsp at the end of building a chart in include file Prozesse_Liste_Statistik.jsp and resets the statistics so that with the next
-     * reload a chart is not shown anymore
+     * reload a chart is not shown anymore.
      *
+     * @return current page
      * @author Wulf
      */
     public String getResetStatistic() {
@@ -1841,7 +1846,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public void downloadTiffHeader() throws IOException {
         TiffHeader tiff = new TiffHeader(this.myProzess);
-        tiff.ExportStart();
+        tiff.exportStart();
     }
 
     @Getter
@@ -1868,14 +1873,14 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * starts generation of xml logfile for current process
+     * starts generation of xml logfile for current process.
      */
     public void generateSimplifiedMetadataFile() {
         this.myProzess.downloadSimplifiedMetadataAsPDF();
     }
 
     /**
-     * starts generation of xml logfile for current process
+     * starts generation of xml logfile for current process.
      */
 
     public void createXML() {
@@ -1891,7 +1896,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * transforms xml logfile with given xslt and provides download
+     * transforms xml logfile with given xslt and provides download.
      */
     public void transformXml() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
@@ -1994,7 +1999,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 }
 
                 facesContext.responseComplete();
-            } catch (Exception exception) {
+            } catch (IOException exception) {
                 log.error(exception);
             } finally {
                 try {
@@ -2081,7 +2086,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 out.flush();
                 facesContext.responseComplete();
 
-            } catch (Exception exception) {
+            } catch (IOException exception) {
                 log.error(exception);
             }
         }
@@ -2172,11 +2177,9 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     private void loadProcessProperties() {
-        try {
-            this.myProzess = ProcessManager.getProcessById(this.myProzess.getId());
-        } catch (Exception e) {
-            log.warn("could not refresh process with id " + this.myProzess.getId(), e);
-        }
+
+        this.myProzess = ProcessManager.getProcessById(this.myProzess.getId());
+
         this.containers = new TreeMap<>();
         this.processPropertyList = PropertyParser.getInstance().getPropertiesForProcess(this.myProzess);
 
@@ -2509,9 +2512,9 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * generate a list of all available process templates
+     * generate a list of all available process templates.
      *
-     * @return
+     * @return process list
      */
 
     public List<Process> getAvailableProcessTemplates() {
@@ -2536,7 +2539,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Create the database information xml file and send it to the servlet output stream
+     * Create the database information xml file and send it to the servlet output stream.
      */
     public void downloadProcessDatebaseInformation() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
@@ -2581,9 +2584,9 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Check if the current element is not the last element of the filtered list
+     * Check if the current element is not the last element of the filtered list.
      *
-     * @return
+     * @return true if current page is not last
      */
 
     public boolean isHasNextEntry() {
@@ -2601,9 +2604,10 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Check if current process is not the first element of filtered list
+     * Check if current process is not the first element of filtered list.
      *
-     * @return
+     * @return true if current page is not first
+     * 
      */
 
     public boolean isHasPreviousEntry() {
@@ -2620,7 +2624,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Navigate to the next element of the filtered list
+     * Navigate to the next element of the filtered list.
      *
      */
 
@@ -2646,7 +2650,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Navigate to the previous element of the filtered list
+     * Navigate to the previous element of the filtered list.
      *
      */
 

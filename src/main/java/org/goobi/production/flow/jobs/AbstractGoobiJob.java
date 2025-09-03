@@ -34,7 +34,7 @@ import de.sub.goobi.persistence.managers.BackgroundJobManager;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * SimpleGoobiJob as basis class for all big jobs
+ * SimpleGoobiJob as basis class for all big jobs.
  * 
  * @author Steffen Hankiewicz
  * @version 21.10.2009
@@ -67,7 +67,10 @@ public abstract class AbstractGoobiJob implements Job, IGoobiJob {
                     details.setJobStatus(JobStatus.FINISH);
                     BackgroundJobManager.saveBackgroundJob(details);
                     setRunning(false);
+                    //CHECKSTYLE:OFF
+                    // generic exception is thrown
                 } catch (Exception e) {
+                    //CHECKSTYLE:ON
                     details.setJobStatus(JobStatus.ERROR);
                     BackgroundJobManager.saveBackgroundJob(details);
                     setRunning(false);

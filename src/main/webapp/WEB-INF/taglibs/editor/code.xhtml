@@ -1,3 +1,9 @@
-<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets">
-    <ui:insert />
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+    >
+    <div class="editor">
+        <ui:insert />
+    </div>
+	<h:outputScript target="head" name="js/dist/codemirror.js?v=#{HelperForm.buildVersion}" />
 </ui:composition>

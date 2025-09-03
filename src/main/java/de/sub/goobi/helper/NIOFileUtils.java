@@ -78,7 +78,7 @@ import jakarta.xml.bind.annotation.adapters.HexBinaryAdapter;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * File Utils collection
+ * File Utils collection.
  * 
  * @author Steffen Hankiewicz
  */
@@ -107,10 +107,9 @@ public class NIOFileUtils implements StorageProviderInterface {
             new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES };
 
     /**
-     * calculate all files with given file extension at specified directory recursivly
+     * calculate all files with given file extension at specified directory recursivly.
      * 
      * @param inDir the directory to run through
-     * @param ext the file extension to use for counting, not case sensitive
      * @return number of files as Integer
      */
     @Override
@@ -752,7 +751,7 @@ public class NIOFileUtils implements StorageProviderInterface {
      * fallback will check the file against a list of known extensions
      * 
      * @param path
-     * @return
+     * @return mime type
      */
 
     public static String getMimeTypeFromFile(Path path) {
@@ -913,16 +912,17 @@ public class NIOFileUtils implements StorageProviderInterface {
      * 
      * @param filePath
      * @param basePath
-     * @return
+     * @return path
      * @throws IOException
      */
 
     public static String sanitizePath(String filePath, String basePath) throws IOException {
-        if (!basePath.endsWith("/")) {
-            basePath = basePath + FileSystems.getDefault().getSeparator();
+        String base = basePath;
+        if (!base.endsWith("/")) {
+            base = base + FileSystems.getDefault().getSeparator();
         }
         String normalizedPath = Paths.get(filePath).normalize().toString();
-        if (normalizedPath.startsWith(basePath)) {
+        if (normalizedPath.startsWith(base)) {
             return normalizedPath;
         } else {
             throw new IOException("Entry is outside of the target directory");

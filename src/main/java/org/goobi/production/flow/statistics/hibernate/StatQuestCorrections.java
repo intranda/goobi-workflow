@@ -113,7 +113,7 @@ public class StatQuestCorrections implements IStatisticalQuestionLimitedTimefram
 
                 dataRow.addValue(Helper.getTranslation("Corrections/Errors"), (new Converter(objArr[0]).getDouble()));
 
-            } catch (Exception e) {
+            } catch (NullPointerException e) {
                 dataRow.addValue(e.getMessage(), Double.valueOf(0));
             }
 

@@ -33,7 +33,12 @@ import org.goobi.beans.JournalEntry.EntryType;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class InstitutionMysqlHelper implements Serializable {
+final class InstitutionMysqlHelper implements Serializable {
+
+    private InstitutionMysqlHelper() {
+        // hide implicit public constructor
+    }
+
     /**
      * 
      */
@@ -58,7 +63,7 @@ class InstitutionMysqlHelper implements Serializable {
                 log.trace(sql.toString());
             }
 
-            return new QueryRunner().query(connection, sql.toString(), InstitutionManager.resultSetToInstitutionListHandler);
+            return new QueryRunner().query(connection, sql.toString(), InstitutionManager.RESULTSET_TO_INSTITUTION_LIST_HANDLER);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -95,7 +100,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            return new QueryRunner().query(connection, sql.toString(), InstitutionManager.resultSetToInstitutionHandler);
+            return new QueryRunner().query(connection, sql.toString(), InstitutionManager.RESULTSET_TO_INSTITUTION_HANDLER);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -112,7 +117,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            return new QueryRunner().query(connection, sql.toString(), InstitutionManager.resultSetToInstitutionHandler, longName);
+            return new QueryRunner().query(connection, sql.toString(), InstitutionManager.RESULTSET_TO_INSTITUTION_HANDLER, longName);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -261,7 +266,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql);
             }
-            return new QueryRunner().query(connection, sql, InstitutionManager.resultSetToInstitutionListHandler);
+            return new QueryRunner().query(connection, sql, InstitutionManager.RESULTSET_TO_INSTITUTION_LIST_HANDLER);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

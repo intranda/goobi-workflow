@@ -49,13 +49,14 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.xmlgraphics.util.MimeConstants;
 import org.goobi.beans.Process;
+import org.xml.sax.SAXException;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
 import net.sf.saxon.lib.FeatureKeys;
 
 /**
- * This class provides generating a docket based on the generated xml log
+ * This class provides generating a docket based on the generated xml log.
  * 
  * @author Steffen Hankiewicz
  */
@@ -227,7 +228,7 @@ public class XsltToPdf {
         try {
             //parsing configuration
             return new FopConfParser(xconf);
-        } catch (Exception e) {
+        } catch (SAXException | IOException e) {
             log.error(e);
             return null;
         }

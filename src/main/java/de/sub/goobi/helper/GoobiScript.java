@@ -45,6 +45,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
@@ -55,6 +56,7 @@ import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class GoobiScript {
@@ -62,13 +64,13 @@ public class GoobiScript {
     public static final String DIRECTORY_SUFFIX = "_tif";
 
     /**
-     * executes the list of GoobiScript commands for all processes that were selected
+     * executes the list of GoobiScript commands for all processes that were selected.
      *
      * @deprecated This method is replaced by execute(List<Integer>, String, GoobiScriptManager)
      *
      * @param processes List of process identifiers
      * @param allScripts all goobiScript calls that were used
-     * @return
+     * @return result
      */
     @Deprecated(since = "23.05", forRemoval = true)
     public String execute(List<Integer> processes, String allScripts) {
@@ -77,12 +79,12 @@ public class GoobiScript {
     }
 
     /**
-     * executes the list of GoobiScript commands for all processes that were selected
+     * executes the list of GoobiScript commands for all processes that were selected.
      *
      * @param processes List of process identifiers
      * @param allScripts all goobiScript calls that were used
      * @param gsm GoobiScriptManager to use
-     * @return
+     * @return result
      */
     public String execute(List<Integer> processes, String allScripts, GoobiScriptManager gsm) {
         List<Map<String, String>> scripts = parseGoobiscripts(allScripts);
@@ -146,15 +148,15 @@ public class GoobiScript {
     }
 
     /**
-     * Parses YAML to a list of GoobiScript parameter maps
+     * Parses YAML to a list of GoobiScript parameter maps.
      *
      * @param allScripts
-     * @return
+     * @return converted scripts
      */
     public static List<Map<String, String>> parseGoobiscripts(String allScripts) {
         YAMLFactory yaml = new YAMLFactory();
         ObjectMapper mapper = new ObjectMapper();
-        TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
+        TypeReference<Map<String, String>> typeRef = new TypeReference<>() {
         };
         try {
             YAMLParser yamlParser = yaml.createParser(allScripts);
@@ -183,7 +185,7 @@ public class GoobiScript {
             } catch (ugh.exceptions.DocStructHasNoTypeException e) {
                 Helper.setFehlerMeldung("DocStructHasNoTypeException", e.getMessage());
 
-            } catch (Exception e) {
+            } catch (UGHException | IOException | SwapException e) {
                 Helper.setFehlerMeldung("Error while updating content files", e);
             }
         }
@@ -227,7 +229,7 @@ public class GoobiScript {
     }
 
     /**
-     * GoobiScript deleteTiffHeaderFile to delete an existing tiff header file tiffwriter.conf for each process
+     * GoobiScript deleteTiffHeaderFile to delete an existing tiff header file tiffwriter.conf for each process.
      *
      * @param inProzesse List of identifiers for this GoobiScript
      */
@@ -242,7 +244,7 @@ public class GoobiScript {
                 Helper.addMessageToProcessJournal(proz.getId(), LogType.DEBUG, "TiffHeaderFile deleted using GoobiScript.");
                 log.info("TiffHeaderFile deleted using GoobiScript for process with ID " + proz.getId());
                 Helper.setMeldung("TiffHeaderFile deleted: ", proz.getTitel());
-            } catch (Exception e) {
+            } catch (IOException | SwapException e) {
                 Helper.setFehlerMeldung("Error while deleting TiffHeader", e);
             }
         }
@@ -250,7 +252,7 @@ public class GoobiScript {
     }
 
     /**
-     * GoobiScript updateImagePath
+     * GoobiScript updateImagePath.
      *
      * @param inProzesse List of identifiers for this GoobiScript
      */
@@ -287,7 +289,7 @@ public class GoobiScript {
             } catch (MetadataTypeNotAllowedException e) {
                 Helper.setFehlerMeldung("MetadataTypeNotAllowedException", e.getMessage());
 
-            } catch (Exception e) {
+            } catch (UGHException | IOException | SwapException e) {
                 Helper.setFehlerMeldung("Error while updating imagepath", e);
             }
 

@@ -30,7 +30,11 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 
-class JournalMysqlHelper implements Serializable {
+final class JournalMysqlHelper implements Serializable {
+
+    private JournalMysqlHelper() {
+        // hide implicit public constructor
+    }
 
     private static final long serialVersionUID = 1125568423028562107L;
 

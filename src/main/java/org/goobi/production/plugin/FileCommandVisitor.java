@@ -54,7 +54,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
     private String lineMode = MODE_KEEP;
 
     /**
-     * A constructor to get a FileCommandVisitor object and define the initial line mode
+     * A constructor to get a FileCommandVisitor object and define the initial line mode.
      *
      * @param mode The initial line mode (may be "insertion", "deletion" or "keep"
      */
@@ -71,11 +71,12 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
      */
     @Override
     public void visitKeepCommand(Character character) {
-        if (this.lineMode.equals(MODE_INSERTION)) {
+        if (MODE_INSERTION.equals(this.lineMode)) {
             this.handleCharacter(SpanTag.TEXT_INSERTED_PASSIVE, character, MODE_KEEP);
-        } else if (this.lineMode.equals(MODE_DELETION)) {
+        } else if (MODE_DELETION.equals(this.lineMode)) {
             this.handleCharacter(SpanTag.TEXT_DELETED_PASSIVE, character, MODE_KEEP);
-        } else {// this.lineMode.equals(MODE_KEEP)
+        } else {
+            // this.lineMode.equals(MODE_KEEP)
             this.handleCharacter(SpanTag.TEXT_NORMAL, character, MODE_KEEP);
         }
     }
@@ -107,7 +108,8 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
      * @param character The character to handle
      * @param which The mode "keep", "insertion" or "deletion" to know which text should be extended
      */
-    private void handleCharacter(String mode, Character character, String which) {
+    private void handleCharacter(String inMode, Character character, String which) {
+        String mode = inMode;
         boolean spaceMode = (character == ' ');
         if (spaceMode) {
             switch (mode) {
@@ -130,7 +132,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
                     log.trace("Unused span tag in FileCommandVisitor.handleCharacter(): " + mode);
             }
         }
-        if (which.equals(MODE_KEEP) || which.equals(MODE_INSERTION)) {
+        if (MODE_KEEP.equals(which) || MODE_INSERTION.equals(which)) {
             if (!this.currentInsertionMode.equals(mode) || spaceMode) {
                 if (this.currentInsertionText.length() > 0) {
                     this.insertionSpanTags.add(new SpanTag(this.currentInsertionText, this.currentInsertionMode));
@@ -140,7 +142,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
             }
             this.currentInsertionText += this.escapeCharacter(character);
         }
-        if (which.equals(MODE_KEEP) || which.equals(MODE_DELETION)) {
+        if (MODE_KEEP.equals(which) || MODE_DELETION.equals(which)) {
             if (!this.currentDeletionMode.equals(mode) || spaceMode) {
                 if (this.currentDeletionText.length() > 0) {
                     this.deletionSpanTags.add(new SpanTag(this.currentDeletionText, this.currentDeletionMode));
@@ -166,7 +168,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
     }
 
     /**
-     * Returns the list of deletion span tag elements containing the differences for a line
+     * Returns the list of deletion span tag elements containing the differences for a line.
      *
      * @return The list of deletion span tag elements
      */
@@ -175,14 +177,14 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
     }
 
     /**
-     * Resets the list of deletion span tags
+     * Resets the list of deletion span tags.
      */
     public void resetDeletionSpanTags() {
         this.deletionSpanTags = new ArrayList<>();
     }
 
     /**
-     * Returns the list of insertion span tag elements containing the differences for a line
+     * Returns the list of insertion span tag elements containing the differences for a line.
      *
      * @return The list of insertion span tag elements
      */
@@ -191,14 +193,14 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
     }
 
     /**
-     * Resets the list of insertion span tags
+     * Resets the list of insertion span tags.
      */
     public void resetInsertionSpanTags() {
         this.insertionSpanTags = new ArrayList<>();
     }
 
     /**
-     * Returns the current deletion text
+     * Returns the current deletion text.
      *
      * @return The current deletion text
      */
@@ -207,7 +209,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
     }
 
     /**
-     * Returns the current insertion text
+     * Returns the current insertion text.
      *
      * @return The current insertion text
      */
@@ -216,7 +218,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
     }
 
     /**
-     * Returns the current deletion mode
+     * Returns the current deletion mode.
      *
      * @return The current deletion mode
      */
@@ -225,7 +227,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
     }
 
     /**
-     * Returns the current insertion mode
+     * Returns the current insertion mode.
      *
      * @return The current insertion mode
      */

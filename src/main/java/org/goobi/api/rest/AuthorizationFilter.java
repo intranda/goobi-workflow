@@ -207,7 +207,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
     }
 
     /**
-     * Verifies the JSON web token and checks if the "api_path" and "api_methods" claims match the actual request
+     * Verifies the JSON web token and checks if the "api_path" and "api_methods" claims match the actual request.
      * 
      * @param jwt
      * @param path the endpoint path the request tries to use

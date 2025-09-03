@@ -30,14 +30,14 @@ import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 /**
- * Find used but undefined data
+ * Find used but undefined data.
  * 
  * @author Paul Hankiewicz Lopez
  * @version 25.04.2025
  */
 public class ValidateUsedButUndefinedData {
     /**
-     * Validate the XML structure starting from the root element to find used but undefined values
+     * Validate the XML structure starting from the root element to find used but undefined values.
      *
      * @param root The root XML element to be validated.
      * @return A list of XMLError objects containing details about any duplicate entries found during validation.

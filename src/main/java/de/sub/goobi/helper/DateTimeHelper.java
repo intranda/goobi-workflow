@@ -7,7 +7,12 @@ import java.time.LocalDateTime;
  *
  * Feel free to extend this class with any DateTime related methods you might find useful.
  */
-public class DateTimeHelper {
+public final class DateTimeHelper {
+
+    private DateTimeHelper() {
+        // hide implicit public constructor
+    }
+
     public static LocalDateTime localDateTimeNow() {
         return LocalDateTime.now();
     }

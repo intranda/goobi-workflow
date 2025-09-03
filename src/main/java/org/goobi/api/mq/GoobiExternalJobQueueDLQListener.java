@@ -36,6 +36,7 @@ import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.StepStatus;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import jakarta.jms.BytesMessage;
@@ -98,7 +99,7 @@ public class GoobiExternalJobQueueDLQListener {
                     JournalManager.saveJournalEntry(logEntry);
 
                     message.acknowledge();
-                } catch (Exception e) {
+                } catch (JMSException | DAOException e) {
                     log.error(e);
                 }
             }

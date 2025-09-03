@@ -87,7 +87,7 @@ public class MetadatenSperrungTest extends AbstractTest {
         ms.setLocked(1, "1");
         assertTrue(MetadatenSperrung.isLocked(1));
 
-        MetadatenSperrung.UnlockProcess(1);
+        MetadatenSperrung.unlockProcess(1);
         assertFalse(MetadatenSperrung.isLocked(1));
 
     }

@@ -75,10 +75,10 @@ public class ObjectResource {
     @Path("/{processId}/{foldername}/{filename}/info.json")
     @Produces({ MediaType.APPLICATION_JSON })
     public ObjectInfo getInfo(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
-            @PathParam("foldername") String foldername, @PathParam("filename") String filename) {
+            @PathParam("foldername") String inFoldername, @PathParam("filename") String inFilename) {
 
         response.addHeader("Access-Control-Allow-Origin", "*"); //NOSONAR, CORS is needed
-        filename = Paths.get(filename).getFileName().toString();
+        String filename = Paths.get(inFilename).getFileName().toString();
         String objectURI = request.getRequestURL().toString().replace("/info.json", "");
         String baseURI = objectURI.replace(filename, "");
         String baseFilename = FilenameUtils.getBaseName(filename);
@@ -88,9 +88,8 @@ public class ObjectResource {
         }
 
         try {
-            foldername =
-                    NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername).toString(),
-                            process.getImagesDirectory());
+            String foldername = NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), inFoldername).toString(),
+                    process.getImagesDirectory());
             List<URI> resourceURIs = getResources(Paths.get(foldername).toString(), baseFilename, baseURI);
             ObjectInfo info = new ObjectInfo(objectURI);
             info.setResources(resourceURIs);
@@ -113,11 +112,11 @@ public class ObjectResource {
      * @throws DAOException
      * @throws URISyntaxException
      */
-    private List<URI> getResources(String baseFolder, String baseFilename, String baseURI)
+    private List<URI> getResources(String baseFolder, String inBaseFilename, String baseURI)
             throws IOException, URISyntaxException {
         List<URI> resourceURIs = new ArrayList<>();
 
-        baseFilename = Paths.get(baseFilename).getFileName().toString();
+        String baseFilename = Paths.get(inBaseFilename).getFileName().toString();
 
         java.nio.file.Path mtlFilePath = Paths.get(baseFolder, baseFilename + ".mtl");
         if (mtlFilePath.toFile().isFile()) {
@@ -126,7 +125,8 @@ public class ObjectResource {
 
         java.nio.file.Path resourceFolderPath = Paths.get(baseFolder, baseFilename);
         if (resourceFolderPath.toFile().isDirectory()) {
-            try (DirectoryStream<java.nio.file.Path> directoryStream = Files.newDirectoryStream(resourceFolderPath)) { //NOSONAR, input parameter are checked
+            try (DirectoryStream<java.nio.file.Path> directoryStream = Files.newDirectoryStream(resourceFolderPath)) { //NOSONAR
+                // input parameter are checked
                 for (java.nio.file.Path path : directoryStream) {
                     java.nio.file.Path relPath = resourceFolderPath.getParent().relativize(path);
                     resourceURIs.add(new URI(baseURI + relPath.toString().replace(File.separator, "/")));
@@ -141,13 +141,13 @@ public class ObjectResource {
     @Path("/{processId}/{foldername}/{filename}.js")
     @Produces({ "application/javascript" })
     public String getJS(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
-            @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
+            @PathParam("foldername") String inFoldername, @PathParam("filename") final String filenameBase)
             throws IOException, InterruptedException, SwapException, DAOException {
 
         String filename = filenameBase + ".js";
         Process process = ProcessManager.getProcessById(processId);
 
-        foldername = Paths.get(foldername).getFileName().toString();
+        String foldername = Paths.get(inFoldername).getFileName().toString();
         filename = Paths.get(filename).getFileName().toString();
 
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, filename);
@@ -173,12 +173,12 @@ public class ObjectResource {
     @Path("/{processId}/{foldername}/{filename}.xml")
     @Produces({ MediaType.TEXT_XML })
     public String getXml(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
-            @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
+            @PathParam("foldername") String inFoldername, @PathParam("filename") final String filenameBase)
             throws IOException, InterruptedException, SwapException, DAOException {
 
         String filename = filenameBase + ".xml";
 
-        foldername = Paths.get(foldername).getFileName().toString();
+        String foldername = Paths.get(inFoldername).getFileName().toString();
         filename = Paths.get(filename).getFileName().toString();
 
         Process process = ProcessManager.getProcessById(processId);
@@ -205,12 +205,12 @@ public class ObjectResource {
     @Path("/{processId}/{foldername}/images/{filename}.jpg")
     @Produces({ "image/jpeg" })
     public void getJpeg(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
-            @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
+            @PathParam("foldername") String inFoldername, @PathParam("filename") final String filenameBase)
             throws IOException, InterruptedException, SwapException, DAOException {
 
         String filename = filenameBase + ".jpg";
 
-        foldername = Paths.get(foldername).getFileName().toString();
+        String foldername = Paths.get(inFoldername).getFileName().toString();
         filename = Paths.get(filename).getFileName().toString();
 
         Process process = ProcessManager.getProcessById(processId);
@@ -241,10 +241,10 @@ public class ObjectResource {
     @Path("/{processId}/{foldername}/{filename}")
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
     public StreamingOutput getObject(@Context HttpServletRequest request, @Context HttpServletResponse response,
-            @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filename)
+            @PathParam("processId") int processId, @PathParam("foldername") String inFoldername, @PathParam("filename") final String filename)
             throws IOException, InterruptedException, SwapException, DAOException {
 
-        foldername = Paths.get(foldername).getFileName().toString();
+        String foldername = Paths.get(inFoldername).getFileName().toString();
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath =
                 Paths.get(NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername, filename).toString(),
@@ -347,7 +347,7 @@ public class ObjectResource {
                 try (InputStream inputStream = new java.io.FileInputStream(this.filePath.toString())) {
                     IOUtils.copy(inputStream, output);
                 }
-            } catch (Throwable e) {
+            } catch (IOException e) {
                 throw new WebApplicationException(e);
             }
 

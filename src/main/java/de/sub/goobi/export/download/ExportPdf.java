@@ -174,7 +174,7 @@ public class ExportPdf extends ExportMets {
                     context.responseComplete();
                 }
 
-            } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+            } catch (IOException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
 
                 /*
                  * -------------------------------- report Error to User as Error-Log --------------------------------

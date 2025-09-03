@@ -32,9 +32,6 @@ import java.util.StringTokenizer;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
-import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.display.Item;
@@ -49,6 +46,9 @@ import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Corporate;
@@ -66,13 +66,14 @@ import ugh.dl.Reference;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class MetadatenVerifizierung {
-    UghHelper ughhelp = new UghHelper();
-    List<DocStruct> docStructsOhneSeiten;
-    Process myProzess;
-    boolean autoSave = false;
+    private UghHelper ughhelp = new UghHelper();
+    private List<DocStruct> docStructsOhneSeiten;
+    private Process myProzess;
+    private boolean autoSave = false;
 
     private static final String IDENTIFIER_VALIDATION_REGEX = "[\\w|-]";
 
@@ -95,7 +96,7 @@ public class MetadatenVerifizierung {
         Fileformat gdzfile;
         try {
             gdzfile = inProzess.readMetadataFile();
-        } catch (Exception e) {
+        } catch (UGHException | IOException | SwapException e) {
             Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataReadError"),
                     e.getMessage());
             problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataReadError") + ": "
@@ -116,7 +117,7 @@ public class MetadatenVerifizierung {
         DigitalDocument dd = null;
         try {
             dd = gdzfile.getDigitalDocument();
-        } catch (Exception e) {
+        } catch (UGHException e) {
             Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
                     + Helper.getTranslation("MetadataDigitalDocumentError") + inProzess.getTitel(), e.getMessage());
             problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataDigitalDocumentError")
@@ -148,7 +149,7 @@ public class MetadatenVerifizierung {
                     if (!checkIdentifier(metadataLanguage, logical, identifierTopStruct)) {
                         ergebnis = false;
                     }
-                } catch (Exception e) {
+                } catch (NullPointerException e) {
                     // no firstChild or no identifier
                 }
             }
@@ -271,7 +272,7 @@ public class MetadatenVerifizierung {
                     problems.add(Helper.getTranslation("ImagesNotValid"));
                     ergebnis = false;
                 }
-            } catch (Exception e) {
+            } catch (IOException | SwapException e) {
                 Helper.setFehlerMeldung(inProzess.getTitel() + ": ", e);
                 problems.add(Helper.getTranslation("Exception occurred") + ": " + e.getMessage());
                 ergebnis = false;
@@ -303,7 +304,7 @@ public class MetadatenVerifizierung {
             if (this.autoSave) {
                 inProzess.writeMetadataFile(gdzfile);
             }
-        } catch (Exception e) {
+        } catch (UGHException | IOException | SwapException e) {
             Helper.setFehlerMeldung("Error while writing metadata: " + inProzess.getTitel(), e);
             problems.add(Helper.getTranslation("Error while writing metadata") + ": " + e.getMessage());
         }
@@ -492,7 +493,8 @@ public class MetadatenVerifizierung {
                     break;
                 }
                 ExtendedVocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(allowedItems.get(0).getSource());
-                List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance().vocabularyRecords()
+                List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance()
+                        .vocabularyRecords()
                         .list(vocabulary.getId())
                         .all()
                         .request()
@@ -536,10 +538,8 @@ public class MetadatenVerifizierung {
             String number = dst.getNumberOfMetadataType(mdt);
             List<? extends Metadata> ll = null;
             ll = inStruct.getAllMetadataByType(mdt);
-
             int real = 0;
             real = ll.size();
-
             if (("1m".equals(number) || "+".equals(number)) && real == 1) {
                 if (mdt.getIsPerson()) {
                     Person p = (Person) ll.get(0);
@@ -587,13 +587,10 @@ public class MetadatenVerifizierung {
                 addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
             }
         }
-
         for (MetadataGroupType mgt : dst.getAllMetadataGroupTypes()) {
             String allowedNumber = dst.getNumberOfMetadataGroups(mgt);
-
             List<MetadataGroup> assignedGroups = inStruct.getAllMetadataGroupsByType(mgt);
             int realNumber = assignedGroups.size();
-
             if (("1m".equals(allowedNumber) || "+".equals(allowedNumber)) && realNumber == 1) {
                 // check if metadata has values
                 MetadataGroup group = assignedGroups.get(0);
@@ -622,7 +619,6 @@ public class MetadatenVerifizierung {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                         + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR));
             }
-
         }
         // check fields of each metadata group
         if (inStruct.getAllMetadataGroups() != null) {
@@ -956,7 +952,9 @@ public class MetadatenVerifizierung {
     }
 
     /**
-     * automatisch speichern lassen, wenn Änderungen nötig waren ================================================================
+     * automatisch speichern lassen, wenn Änderungen nötig waren.
+     * 
+     * @return value
      */
     public boolean isAutoSave() {
         return this.autoSave;
@@ -976,38 +974,35 @@ public class MetadatenVerifizierung {
             if (uppermostStruct.getAllIdentifierMetadata() != null && !uppermostStruct.getAllIdentifierMetadata().isEmpty()) {
                 Metadata identifierTopStruct = uppermostStruct.getAllIdentifierMetadata().get(0);
 
-                try {
-                    if (identifierTopStruct.getValue() == null || identifierTopStruct.getValue().length() == 0) {
-                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in "
-                                + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_EMPTY_ERROR));
-                        return false;
-                    }
-                    if (!"".equals(identifierTopStruct.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, ""))) {
-                        Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError")
-                                + identifierTopStruct.getType().getNameByLanguage(language) + " in DocStruct "
-                                + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataInvalidCharacter"));
-                        return false;
-                    }
-                    DocStruct firstChild = uppermostStruct.getAllChildren().get(0);
-                    Metadata identifierFirstChild = firstChild.getAllIdentifierMetadata().get(0);
-                    if (identifierFirstChild.getValue() == null || identifierFirstChild.getValue().length() == 0) {
-                        return false;
-                    }
-                    if (!"".equals(identifierFirstChild.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, ""))) {
-                        Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in "
-                                + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_EMPTY_ERROR));
-                        return false;
-                    }
-                    if (StringUtils.isNotBlank(identifierTopStruct.getValue())
-                            && identifierTopStruct.getValue().equals(identifierFirstChild.getValue())) {
-                        Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError") + identifierTopStruct.getType().getName()
-                                + Helper.getTranslation("MetadataIdentifierSame") + uppermostStruct.getType().getName() + " and "
-                                + firstChild.getType().getName());
-                        return false;
-                    }
-                } catch (Exception e) {
+                if (identifierTopStruct.getValue() == null || identifierTopStruct.getValue().length() == 0) {
+                    Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in "
+                            + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_EMPTY_ERROR));
                     return false;
                 }
+                if (!"".equals(identifierTopStruct.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, ""))) {
+                    Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError")
+                            + identifierTopStruct.getType().getNameByLanguage(language) + " in DocStruct "
+                            + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataInvalidCharacter"));
+                    return false;
+                }
+                DocStruct firstChild = uppermostStruct.getAllChildren().get(0);
+                Metadata identifierFirstChild = firstChild.getAllIdentifierMetadata().get(0);
+                if (identifierFirstChild.getValue() == null || identifierFirstChild.getValue().length() == 0) {
+                    return false;
+                }
+                if (!"".equals(identifierFirstChild.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, ""))) {
+                    Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in "
+                            + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_EMPTY_ERROR));
+                    return false;
+                }
+                if (StringUtils.isNotBlank(identifierTopStruct.getValue())
+                        && identifierTopStruct.getValue().equals(identifierFirstChild.getValue())) {
+                    Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError") + identifierTopStruct.getType().getName()
+                            + Helper.getTranslation("MetadataIdentifierSame") + uppermostStruct.getType().getName() + " and "
+                            + firstChild.getType().getName());
+                    return false;
+                }
+
             }
 
         }

@@ -25,42 +25,45 @@ import org.geonames.Toponym;
 public interface GeonamesSearchProperty {
 
     /**
-     * get the current search value
+     * get the current search value.
      * 
-     * @return
+     * @return searcg value
      */
-    public String getSearchValue();
+    String getSearchValue();
 
     /**
-     * sets a new search value
+     * sets a new search value.
      * 
-     * @return
+     * @param value search value
      */
-    public void setSearchValue(String value);
+    void setSearchValue(String value);
 
-    public String getValue();
+    String getValue();
 
-    public void setValue(String option);
+    void setValue(String option);
 
-    public String getGeonamesNumber();
+    String getGeonamesNumber();
 
-    public void setGeonamesNumber(String option);
+    void setGeonamesNumber(String option);
 
-    public void searchGeonames();
+    void searchGeonames();
 
-    public Toponym getCurrentToponym();
+    Toponym getCurrentToponym();
 
-    public void setCurrentToponym(Toponym toponym);
+    void setCurrentToponym(Toponym toponym);
 
-    public List<Toponym> getResultList();
-    public void setResultList(List<Toponym> results);
+    List<Toponym> getResultList();
 
-    public int getTotalResults();
-    public void setTotalResults(int results);
+    void setResultList(List<Toponym> results);
 
-    public boolean isShowNoHits();
-    public void setShowNoHits(boolean showNotHits);
+    int getTotalResults();
 
-    public void importGeonamesData();
+    void setTotalResults(int results);
+
+    boolean isShowNoHits();
+
+    void setShowNoHits(boolean showNotHits);
+
+    void importGeonamesData();
 
 }

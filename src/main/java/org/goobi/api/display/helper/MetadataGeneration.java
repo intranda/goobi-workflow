@@ -33,7 +33,7 @@ public class MetadataGeneration {
     private String defaultValue;
 
     // list of configured parameter to replace variables in template value, see below
-    List<MetadataGenerationParameter> parameter = new ArrayList<>();
+    private List<MetadataGenerationParameter> parameter = new ArrayList<>();
 
     public void addParameter(MetadataGenerationParameter param) {
         parameter.add(param);
@@ -67,7 +67,7 @@ public class MetadataGeneration {
      * @param dd
      * @param xpfac
      * @param metadataSection
-     * @return
+     * @return generated value
      */
 
     public String generateValue(Process process, Prefs prefs, DigitalDocument dd, XPathFactory xpfac, Element metadataSection) {

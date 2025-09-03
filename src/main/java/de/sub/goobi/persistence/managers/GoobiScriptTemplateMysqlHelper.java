@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.goobi.goobiScript.GoobiScriptTemplate;
 
-public class GoobiScriptTemplateMysqlHelper {
+public final class GoobiScriptTemplateMysqlHelper {
 
     private GoobiScriptTemplateMysqlHelper() {
         // do nothing
@@ -55,7 +55,7 @@ public class GoobiScriptTemplateMysqlHelper {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql.toString(), GoobiScriptTemplateManager.resultSetToGoobiScriptTemplatetHandler, id);
+            return new QueryRunner().query(connection, sql.toString(), GoobiScriptTemplateManager.RESULTSET_TO_GOOBISCRIPTTEMPLATE_HANDLER, id);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -133,7 +133,7 @@ public class GoobiScriptTemplateMysqlHelper {
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            return new QueryRunner().query(connection, sql.toString(), GoobiScriptTemplateManager.resultSetToGoobiScriptTemplateListHandler);
+            return new QueryRunner().query(connection, sql.toString(), GoobiScriptTemplateManager.RESULTSET_TO_GOOBISCRIPTTEMPLATE_LIST_HANDLER);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -148,7 +148,7 @@ public class GoobiScriptTemplateMysqlHelper {
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            return new QueryRunner().query(connection, sql.toString(), GoobiScriptTemplateManager.resultSetToGoobiScriptTemplateListHandler);
+            return new QueryRunner().query(connection, sql.toString(), GoobiScriptTemplateManager.RESULTSET_TO_GOOBISCRIPTTEMPLATE_LIST_HANDLER);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

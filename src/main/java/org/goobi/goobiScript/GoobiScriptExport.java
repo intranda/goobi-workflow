@@ -24,6 +24,7 @@
  */
 package org.goobi.goobiScript;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +40,18 @@ import org.goobi.production.plugin.interfaces.IExportPlugin;
 
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.ExportFileException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.WriteException;
 
 @Log4j2
 public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScript {
@@ -54,14 +65,18 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb,
-                "This GoobiScript allows to export Goobi processes using the default export mechanism. It either uses the default export or alternativly an export plugin that was configured in one of the workflow steps.");
+                "This GoobiScript allows to export Goobi processes using the default export mechanism. It either uses"
+                        + " the default export or alternativly an export plugin that was configured in one of the workflow steps.");
         addParameterToSampleCall(sb, "exportImages", "false", "Decide if the images shall get exported additionally to the metdata (`true`).");
         addParameterToSampleCall(sb, "exportOcr", "false", "Decide if the OCR results shall get exported additionally as well (`true`).");
-        // allow choice among multiple export plugins 
+        // allow choice among multiple export plugins
         addParameterToSampleCall(sb, "pluginName", "",
-                "Decide which export plugin shall be used by giving the name of this export plugin. It has the highest priority if it is configured. [OPTIONAL]");
+                "Decide which export plugin shall be used by giving the name of this export plugin. It has the highest priority if"
+                        + " it is configured. [OPTIONAL]");
         addParameterToSampleCall(sb, "stepName", "",
-                "Decide which export plugin shall be used by giving the name of the export step. If it is configured then it will try to find this export step first, and only when there is no such step, will the standard choice be used instead. [OPTIONAL]");
+                "Decide which export plugin shall be used by giving the name of the export step. If it is configured then it will"
+                        + " try to find this export step first, and only when there is no such step, will "
+                        + "the standard choice be used instead. [OPTIONAL]");
         return sb.toString();
     }
 
@@ -83,8 +98,8 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
         Map<String, String> parameters = gsr.getParameters();
         String exportFullTextParameter = parameters.get("exportOcr");
         String exportImagesParameter = parameters.get("exportImages");
-        boolean exportFullText = exportFullTextParameter.equalsIgnoreCase("true");
-        boolean exportImages = exportImagesParameter.equalsIgnoreCase("true");
+        boolean exportFullText = "true".equalsIgnoreCase(exportFullTextParameter);
+        boolean exportImages = "true".equalsIgnoreCase(exportImagesParameter);
 
         String pluginNameConfigured = parameters.get("pluginName");
         String stepNameConfigured = parameters.get("stepName");
@@ -118,6 +133,7 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
 
             // 3. kick this export plugin to run
             boolean success = export.startExport(p);
+
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Export " + logExtension + " using GoobiScript.", username);
             log.info("Export " + logExtension + " using GoobiScript for process with ID " + p.getId());
 
@@ -133,7 +149,9 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
 
-        } catch (NoSuchMethodError | Exception e) {
+        } catch (NoSuchMethodError | DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException
+                | ReadException
+                | TypeNotAllowedForParentException | IOException | ExportFileException | UghHelperException | SwapException | DAOException e) {
             gsr.setResultMessage(e.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(e.getMessage());
@@ -165,12 +183,7 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
     private IExportPlugin getExportPlugin(String pluginName) {
         IExportPlugin export = null;
         if (StringUtils.isNotEmpty(pluginName)) {
-            try {
-                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-
-            } catch (Exception e) {
-                log.error("Can't load export plugin, use default export", e);
-            }
+            export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
         }
 
         if (export == null) {

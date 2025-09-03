@@ -26,7 +26,8 @@
 package de.sub.goobi.helper;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -40,7 +41,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Step;
 import org.joda.time.DateTime;
 
-import com.auth0.jwk.InvalidPublicKeyException;
 import com.auth0.jwk.JwkException;
 import com.auth0.jwk.JwkProvider;
 import com.auth0.jwk.UrlJwkProvider;
@@ -56,9 +56,13 @@ import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class JwtHelper {
+public final class JwtHelper {
 
-    private static final long rotationDuration = 1000l * 60l * 60l * 24l; //24 hours
+    private JwtHelper() {
+        // hide implicit public constructor
+    }
+
+    private static final long ROTATION_DURATION = 1000L * 60 * 60 * 24; //24 hours
 
     private static final String JWT_NOT_DEFINED =
             "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties";
@@ -72,7 +76,7 @@ public class JwtHelper {
      */
     private static Algorithm createSigningAlgorithm(String secret) {
         long currentTime = System.currentTimeMillis();
-        long rotationTime = (currentTime / rotationDuration) * rotationDuration;
+        long rotationTime = (currentTime / ROTATION_DURATION) * ROTATION_DURATION;
         return Algorithm.HMAC256(secret + rotationTime);
     }
 
@@ -87,7 +91,7 @@ public class JwtHelper {
         long currentTime = currentMillisSupplier.getAsLong();
         int maxRotations = 3;
         for (int currentRotation = 0; currentRotation < maxRotations; currentRotation++) {
-            long rotationTime = ((currentTime - (rotationDuration * currentRotation)) / rotationDuration) * rotationDuration;
+            long rotationTime = ((currentTime - (ROTATION_DURATION * currentRotation)) / ROTATION_DURATION) * ROTATION_DURATION;
             try {
                 return verifyTokenWithRotationTime(token, secret, rotationTime);
             } catch (JWTVerificationException e) {
@@ -158,11 +162,12 @@ public class JwtHelper {
     }
 
     /**
-     * Verifies the String token and returns a decoded JWT
+     * Verifies the String token and returns a decoded JWT.
      * 
      * @param token
      * @return
      * @throws ConfigurationException
+     * @return decoded jwt
      */
     public static DecodedJWT verifyTokenAndReturnClaims(String token) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
@@ -173,11 +178,12 @@ public class JwtHelper {
     }
 
     /**
-     * Creates a JSON web token that has the claims "changeStepAllowed"=true, "stepId"=step.getId() and is valid for 37 hours
+     * Creates a JSON web token that has the claims "changeStepAllowed"=true, "stepId"=step.getId() and is valid for 37 hours.
      * 
      * @param step
      * @return
      * @throws ConfigurationException
+     * @return token
      */
     public static String createChangeStepToken(Step step) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
@@ -250,7 +256,7 @@ public class JwtHelper {
         RSAKeyProvider keyProvider = null;
         final ConfigurationHelper config = ConfigurationHelper.getInstance();
         try {
-            final JwkProvider provider = new UrlJwkProvider(new URL(config.getOIDCJWKSet()));
+            final JwkProvider provider = new UrlJwkProvider(new URI(config.getOIDCJWKSet()).toURL());
 
             keyProvider = new RSAKeyProvider() {
                 @Override
@@ -260,8 +266,6 @@ public class JwtHelper {
                     try {
                         publicKey = provider.get(kid).getPublicKey();
                         return (RSAPublicKey) publicKey;
-                    } catch (InvalidPublicKeyException e) {
-                        log.error(e);
                     } catch (JwkException e) {
                         log.error(e);
                     }
@@ -278,8 +282,7 @@ public class JwtHelper {
                     return null;
                 }
             };
-        } catch (MalformedURLException e1) {
-            // TODO Auto-generated catch block
+        } catch (MalformedURLException | URISyntaxException e1) {
             log.error(e1);
         }
 

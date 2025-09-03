@@ -23,7 +23,7 @@ import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 public class FixChangeCardinality {
     /**
-     * Set the num attribute value of the error element depending on the "value"
+     * Set the num attribute value of the error element depending on the "value".
      * 
      * @param root
      * @param error

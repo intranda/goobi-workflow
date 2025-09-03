@@ -53,7 +53,11 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.CreateQueueRequest;
 
-public class ExternalConnectionFactory {
+public final class ExternalConnectionFactory {
+
+    private ExternalConnectionFactory() {
+        // hide implicit public constructor
+    }
 
     public static Connection createConnection(String username, String password) throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
@@ -69,7 +73,8 @@ public class ExternalConnectionFactory {
         ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory();
         connFactory.setTrustedPackages(Arrays.asList("org.goobi.managedbeans", "org.goobi.api.mq", "org.goobi.api.mq.ticket"));
 
-        ActiveMQConnection activeMQconn = (ActiveMQConnection) connFactory.createConnection(username, password); //NOSONAR do not close this connection, it is needed and taken care of outside of this class.
+        ActiveMQConnection activeMQconn = (ActiveMQConnection) connFactory.createConnection(username, password); //NOSONAR
+        // do not close this connection, it is needed and taken care of outside of this class.
         ActiveMQPrefetchPolicy prefetchPolicy = new ActiveMQPrefetchPolicy();
         prefetchPolicy.setAll(0);
         activeMQconn.setPrefetchPolicy(prefetchPolicy);

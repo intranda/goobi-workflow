@@ -28,12 +28,17 @@ package org.goobi.production.cli;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 
 import de.sub.goobi.helper.Helper;
 
-public class WebInterfaceConfig {
+public final class WebInterfaceConfig {
+
+    private WebInterfaceConfig() {
+        // hide implicit public constructor
+    }
 
     public static List<String> getCredencials(String requestIp, String requestPassword) {
         ArrayList<String> allowed = new ArrayList<>();
@@ -56,7 +61,7 @@ public class WebInterfaceConfig {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (ConfigurationException e) {
             allowed = new ArrayList<>();
         }
         return allowed;

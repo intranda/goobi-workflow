@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -126,13 +127,14 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
                     String basename = FilenameUtils.getBaseName(img.toString());
 
                     OutputStream out =
-                            new FileOutputStream(thumbnailDirectory + FileSystems.getDefault().getSeparator() + basename + ".jpg"); //NOSONAR, parameter are checked in calling method
+                            new FileOutputStream(thumbnailDirectory + FileSystems.getDefault().getSeparator() + basename + ".jpg"); //NOSONAR
+                    //, parameter are checked in calling method
                     ImageRequest request = new ImageRequest(new URI(img.getAbsolutePath().replace(" ", "%20")), RegionRequest.FULL, scale,
                             Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true")); //remove spaces from url
                     new GetImageAction().writeImage(request, out);
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException | URISyntaxException e) {
             log.error(e);
         }
 
@@ -168,7 +170,7 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
 
         try {
             this.generateThumbnails(process, master, media, imgDirectory, scriptCommand, sizes, step);
-        } catch (Exception e) {
+        } catch (IOException | ContentLibException e) {
             log.error(e);
         }
     }
@@ -179,7 +181,7 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
         Process process = ProcessManager.getProcessById(ticket.getProcessId());
         try {
             this.generateThumbnailsWithSettings(step, process);
-        } catch (Exception e) {
+        } catch (IOException | SwapException | DAOException e) {
             return PluginReturnValue.ERROR;
         }
         if (step.isTypAutomatisch()) {

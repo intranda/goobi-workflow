@@ -51,7 +51,12 @@ import de.sub.goobi.helper.XmlTools;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class AltoSaver {
+public final class AltoSaver {
+
+    private AltoSaver() {
+        // hide implicit public constructor
+    }
+
     private static SAXBuilder sax = XmlTools.getSAXBuilder();
     private static XPathFactory xFactory = XPathFactory.instance();
 

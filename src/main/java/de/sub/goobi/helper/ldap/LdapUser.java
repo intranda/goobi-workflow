@@ -69,21 +69,22 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class LdapUser implements DirContext {
-    String type;
-    Attributes myAttrs;
+    private String type;
+    private Attributes myAttrs;
 
     /**
-     * Constructor of LdapUser
+     * Constructor of LdapUser.
      */
     public LdapUser() {
         this.myAttrs = new BasicAttributes(true);
     }
 
     /**
-     * configure LdapUser with Userdetails
+     * configure LdapUser with Userdetails.
      * 
      * @param inUser
      * @param inPassword
+     * @param inUidNumber
      * @throws NamingException
      * @throws NoSuchAlgorithmException
      * @throws InterruptedException
@@ -125,7 +126,7 @@ public class LdapUser implements DirContext {
             this.myAttrs.put("sambaPasswordHistory", replaceVariables(lp.getSambaPasswordHistory(), inUser, inUidNumber));
             this.myAttrs.put("sambaLogonHours", replaceVariables(lp.getSambaLogonHours(), inUser, inUidNumber));
             this.myAttrs.put("sambaKickoffTime", replaceVariables(lp.getSambaKickoffTime(), inUser, inUidNumber));
-            this.myAttrs.put("sambaPwdLastSet", String.valueOf(System.currentTimeMillis() / 1000l));
+            this.myAttrs.put("sambaPwdLastSet", String.valueOf(System.currentTimeMillis() / 1000L));
 
             this.myAttrs.put("uidNumber", inUidNumber);
             this.myAttrs.put("gidNumber", replaceVariables(lp.getGidNumber(), inUser, inUidNumber));
@@ -136,7 +137,7 @@ public class LdapUser implements DirContext {
             /* LanMgr */
             try {
                 this.myAttrs.put("sambaLMPassword", toHexString(lmHash(inPassword)));
-            } catch (Exception e) {
+            } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException e) {
                 log.error(e);
             }
             /* NTLM */
@@ -246,15 +247,15 @@ public class LdapUser implements DirContext {
 
     public static String toHexString(byte[] bytes) {
         StringBuilder buffer = new StringBuilder();
-        for (int i = 0; i < bytes.length; ++i) {
-            buffer.append(Integer.toHexString(0x0100 + (bytes[i] & 0x00FF)).substring(1));
+        for (byte element : bytes) {
+            buffer.append(Integer.toHexString(0x0100 + (element & 0x00FF)).substring(1));
         }
         return buffer.toString().toUpperCase();
     }
 
     @Override
     public Attributes getAttributes(String name) throws NamingException {
-        if (!name.equals("")) {
+        if (!"".equals(name)) {
             throw new NameNotFoundException();
         }
         return (Attributes) this.myAttrs.clone();
@@ -267,14 +268,14 @@ public class LdapUser implements DirContext {
 
     @Override
     public Attributes getAttributes(String name, String[] ids) throws NamingException {
-        if (!name.equals("")) {
+        if (!"".equals(name)) {
             throw new NameNotFoundException();
         }
 
         Attributes answer = new BasicAttributes(true);
         Attribute target;
-        for (int i = 0; i < ids.length; i++) {
-            target = this.myAttrs.get(ids[i]);
+        for (String id : ids) {
+            target = this.myAttrs.get(id);
             if (target != null) {
                 answer.put(target);
             }

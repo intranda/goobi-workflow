@@ -62,7 +62,7 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests {
      * @param typeSelection - operates as additional filter
      * @param stepOrder - operates as additional filter
      * @param stepOrderGrouping - adding 'stepOrder' and 'stepName' fields in select and in group by clause
-     * @param includeCorrections - adding additional stepOpen from Correction and other loops
+     * @param includeLoops - adding additional stepOpen from Correction and other loops
      * 
      * @return SQLExpression for MySQL DBMS - default fields stepCount and intervall
      */
@@ -169,7 +169,7 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests {
      * @param eventSelection
      * @return SQL String to retrieve the highest numericvalue (stepOrder) for the event defined in eventSelection
      */
-    public String SQLMaxStepOrder(HistoryEventType eventSelection) {
+    public String sqlMaxStepOrder(HistoryEventType eventSelection) {
 
         String timeRestriction;
         String innerWhereClause = null;
@@ -194,7 +194,7 @@ public class SQLStepRequests extends SQLGenerator implements IStepRequests {
      * @param eventSelection
      * @return SQL String to retrieve the lowest numericvalue (stepOrder) for the event defined in eventSelection
      */
-    public String SQLMinStepOrder(HistoryEventType eventSelection) {
+    public String sqlMinStepOrder(HistoryEventType eventSelection) {
 
         String timeRestriction;
         String innerWhereClause = null;

@@ -37,13 +37,13 @@ import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataValue;
 
 /**
- * A class providing some utility methods for dealing with Norm data
+ * A class providing some utility methods for dealing with Norm data.
  *
  * @author Hemed Al Ruwehy
  *         <p>
  *         2021-03-12
  */
-public class NormDataUtils {
+public final class NormDataUtils {
 
     // Prevent this class from being instantiated
     private NormDataUtils() {
@@ -134,7 +134,7 @@ public class NormDataUtils {
     }
 
     /**
-     * Gets a list of values for a specific label in the norm data
+     * Gets a list of values for a specific label in the norm data.
      *
      * @param normDataList a norm data list to get vakues from
      * @param labels one or more labels

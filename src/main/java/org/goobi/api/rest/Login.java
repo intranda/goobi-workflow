@@ -200,8 +200,11 @@ public class Login {
                                     log.debug("logging in user ");
                                     User user = UserManager.getUserBySsoId(login);
                                     if (user == null) {
-                                        userBean.setSsoError(
-                                                "Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
+                                        String msg = """
+                                                Could not find user in Goobi database.
+                                                Please contact your admin to add your SSO ID to the database.
+                                                """;
+                                        userBean.setSsoError(msg);
                                         servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
                                         return;
                                     }

@@ -39,7 +39,7 @@ import org.goobi.production.flow.statistics.enums.TimeUnit;
  ***********************************************************************/
 class ImprovedSQLProduction extends SQLGenerator implements IProduction {
 
-    public ImprovedSQLProduction(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids) {
+    ImprovedSQLProduction(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids) {
         super(timeFrom, timeTo, timeUnit, ids, "h.processID");
     }
 

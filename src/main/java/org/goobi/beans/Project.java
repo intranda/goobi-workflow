@@ -195,7 +195,9 @@ public class Project extends AbstractJournal implements IPropertyHolder, Seriali
 
     /**
      * here differet Getters and Setters for the same value, because Hibernate does not like bit-Fields with null Values (thats why Boolean) and
-     * MyFaces seams not to like Boolean (thats why boolean for the GUI) ================================================================
+     * MyFaces seams not to like Boolean (thats why boolean for the GUI).
+     *
+     * @return checked box
      */
     public boolean isDmsImportCreateProcessFolder() {
         if (this.dmsImportCreateProcessFolder == null) {
@@ -281,9 +283,10 @@ public class Project extends AbstractJournal implements IPropertyHolder, Seriali
 
     public void setProjectIsArchived(Boolean projectIsArchived) {
         if (projectIsArchived == null) {
-            projectIsArchived = false;
+            this.projectIsArchived = false;
+        } else {
+            this.projectIsArchived = projectIsArchived;
         }
-        this.projectIsArchived = projectIsArchived;
     }
 
     public Boolean getProjectIsArchived() {

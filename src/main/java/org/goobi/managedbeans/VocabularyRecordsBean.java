@@ -59,7 +59,7 @@ public class VocabularyRecordsBean implements Serializable {
 
     private static final String RETURN_PAGE_OVERVIEW = "vocabulary_records";
 
-    private static final VocabularyAPIManager api = VocabularyAPIManager.getInstance();
+    private static final VocabularyAPIManager API = VocabularyAPIManager.getInstance();
 
     @Getter
     private transient HATEOASPaginator<ExtendedVocabularyRecord, VocabularyRecordPageResult> paginator;
@@ -93,7 +93,7 @@ public class VocabularyRecordsBean implements Serializable {
 
     public void setCurrentRecordUri(String id) {
         try {
-            currentRecord = api.vocabularyRecords().get(Long.parseLong(id));
+            currentRecord = API.vocabularyRecords().get(Long.parseLong(id));
         } catch (NumberFormatException e) {
             log.error("Wrong record ID \"{}\"", id);
         }
@@ -103,17 +103,17 @@ public class VocabularyRecordsBean implements Serializable {
         // TODO: Unclean to have static Helper access to user here..
         this.paginator = new HATEOASPaginator<>(
                 VocabularyRecordPageResult.class,
-                api.vocabularyRecords()
+                API.vocabularyRecords()
                         .list(this.vocabulary.getId())
                         .pageSize(Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()))
                         .request(),
                 ExtendedVocabularyRecord::getChildren,
                 ExtendedVocabularyRecord::getParentId,
-                api.vocabularyRecords()::get);
+                API.vocabularyRecords()::get);
     }
 
     private void loadSchema() {
-        this.schema = api.vocabularySchemas().get(this.vocabulary.getSchemaId());
+        this.schema = API.vocabularySchemas().get(this.vocabulary.getSchemaId());
         this.titleFields = this.schema.getDefinitions()
                 .stream()
                 .filter(d -> Boolean.TRUE.equals(d.getTitleField()))
@@ -141,12 +141,12 @@ public class VocabularyRecordsBean implements Serializable {
     }
 
     public void createEmpty(Long parentId) {
-        this.currentRecord = api.vocabularyRecords().createEmptyRecord(this.vocabulary.getId(), parentId, false);
+        this.currentRecord = API.vocabularyRecords().createEmptyRecord(this.vocabulary.getId(), parentId, false);
     }
 
     public void deleteRecord(VocabularyRecord rec) {
         try {
-            api.vocabularyRecords().delete(rec);
+            API.vocabularyRecords().delete(rec);
             paginator.reload();
             loadFirstRecord();
         } catch (APIException e) {
@@ -157,7 +157,7 @@ public class VocabularyRecordsBean implements Serializable {
 
     public void saveRecord(VocabularyRecord rec) {
         try {
-            ExtendedVocabularyRecord newRecord = api.vocabularyRecords().save(rec);
+            ExtendedVocabularyRecord newRecord = API.vocabularyRecords().save(rec);
             paginator.reload();
             ExtendedVocabularyRecord newExtendedRecord = paginator.getItems()
                     .stream()
@@ -190,16 +190,16 @@ public class VocabularyRecordsBean implements Serializable {
             switch (fileExtension) {
                 case ".csv":
                     if (clearBeforeImport) {
-                        api.vocabularies().cleanImportCsv(this.vocabulary.getId(), uploadedFile);
+                        API.vocabularies().cleanImportCsv(this.vocabulary.getId(), uploadedFile);
                     } else {
-                        api.vocabularies().importCsv(this.vocabulary.getId(), uploadedFile);
+                        API.vocabularies().importCsv(this.vocabulary.getId(), uploadedFile);
                     }
                     break;
                 case ".xlsx":
                     if (clearBeforeImport) {
-                        api.vocabularies().cleanImportExcel(this.vocabulary.getId(), uploadedFile);
+                        API.vocabularies().cleanImportExcel(this.vocabulary.getId(), uploadedFile);
                     } else {
-                        api.vocabularies().importExcel(this.vocabulary.getId(), uploadedFile);
+                        API.vocabularies().importExcel(this.vocabulary.getId(), uploadedFile);
                     }
                     break;
                 default:

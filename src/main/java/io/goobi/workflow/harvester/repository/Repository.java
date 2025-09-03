@@ -139,7 +139,7 @@ public class Repository implements Serializable, DatabaseObject {
     private String startDate;
     private String endDate;
 
-    private static final Namespace oaiNamespace = Namespace.getNamespace("oai", "http://www.openarchives.org/OAI/2.0/");
+    private static final Namespace OAI_NS = Namespace.getNamespace("oai", "http://www.openarchives.org/OAI/2.0/");
 
     private static DateTimeFormatter formatterISO8601DateTimeMS = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
     private static DateTimeFormatter formatterISO8601DateTimeFullWithTimeZone = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -158,6 +158,11 @@ public class Repository implements Serializable, DatabaseObject {
      * @param frequency
      * @param delay
      * @param enabled
+     * @param goobiImport
+     * @param importProjectName
+     * @param processTemplateName
+     * @param fileformat
+     * 
      */
     public Repository(Integer id, String name, String url, String exportFolderPath, String scriptPath, Timestamp lastHarvest, int frequency,
             int delay, boolean enabled, boolean goobiImport, String importProjectName, String processTemplateName, String fileformat) {
@@ -176,9 +181,9 @@ public class Repository implements Serializable, DatabaseObject {
         this.fileformat = fileformat;
     }
 
-    /***************************************************************************************************************
+    /*
      * This method is for GUI. Activate/Deactivates Repository
-     ***************************************************************************************************************/
+    */
     public String changeStatus() {
         if (enabled) {
             enabled = false;
@@ -204,7 +209,7 @@ public class Repository implements Serializable, DatabaseObject {
     /**
      * 
      * @param jobId
-     * @return
+     * @return number of results
      * @throws HarvestException
      * @throws ParserException
      * @throws DBException
@@ -467,13 +472,13 @@ public class Repository implements Serializable, DatabaseObject {
                 Element oaiPmh = oaiDoc.getRootElement();
                 List<Element> recordList = new ArrayList<>();
 
-                Element getRecord = oaiPmh.getChild("GetRecord", oaiNamespace);
-                Element listRecords = oaiPmh.getChild("ListRecords", oaiNamespace);
+                Element getRecord = oaiPmh.getChild("GetRecord", OAI_NS);
+                Element listRecords = oaiPmh.getChild("ListRecords", OAI_NS);
                 if (getRecord == null && listRecords == null) {
                     // no record match
                     return 0;
                 }
-                Element resumptionToken = listRecords.getChild("resumptionToken", oaiNamespace);
+                Element resumptionToken = listRecords.getChild("resumptionToken", OAI_NS);
                 if (resumptionToken == null || testMode) {
                     tokenId = null;
                 } else {
@@ -539,7 +544,7 @@ public class Repository implements Serializable, DatabaseObject {
         rec.setRepositoryId(id);
 
         // parse header
-        Element header = element.getChild("header", oaiNamespace);
+        Element header = element.getChild("header", OAI_NS);
         for (Element child : header.getChildren()) {
             switch (child.getName()) {
                 case "identifier":
@@ -560,7 +565,7 @@ public class Repository implements Serializable, DatabaseObject {
         // end: parse header
 
         // parse metadata
-        Element metadata = element.getChild("metadata", oaiNamespace);
+        Element metadata = element.getChild("metadata", OAI_NS);
         if (metadata == null) {
             return null;
         }
@@ -621,6 +626,9 @@ public class Repository implements Serializable, DatabaseObject {
 
     /**
      * Exports record to viewer or goobi.
+     *
+     * @param rec
+     * @return result
      * 
      */
     public ExportOutcome exportRecord(Record rec) {
@@ -756,12 +764,12 @@ public class Repository implements Serializable, DatabaseObject {
             Document oaiDoc = builder.build(new StringReader(response));
             Element oaiPmh = oaiDoc.getRootElement();
 
-            Element getRecordE = oaiPmh.getChild("GetRecord", oaiNamespace);
+            Element getRecordE = oaiPmh.getChild("GetRecord", OAI_NS);
             if (getRecordE == null) {
                 return null;
             }
-            Element recordE = getRecordE.getChild("record", oaiNamespace);
-            Element metadataE = recordE.getChild("metadata", oaiNamespace);
+            Element recordE = getRecordE.getChild("record", OAI_NS);
+            Element metadataE = recordE.getChild("metadata", OAI_NS);
             Element childE = metadataE.getChildren().get(0);
 
             // store it in a file
@@ -781,7 +789,7 @@ public class Repository implements Serializable, DatabaseObject {
 
     /**
      * 
-     * @return
+     * @return script result
      * @throws FileNotFoundException
      */
     public String executeScript() throws FileNotFoundException {
@@ -799,7 +807,8 @@ public class Repository implements Serializable, DatabaseObject {
     }
 
     /**
-     * @param
+     * @param defaultDownloadFolderPath folder to create
+     * @return download folder
      * @should create custom download folder correctly
      * @should create default download folder correctly
      */

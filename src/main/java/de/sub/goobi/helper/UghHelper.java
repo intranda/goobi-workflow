@@ -40,6 +40,8 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.HttpSession;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
@@ -51,10 +53,12 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 @Log4j2
 public class UghHelper {
 
-    public String lastErrorMessage;
+    @Getter
+    @Setter
+    private String lastErrorMessage;
 
     /**
-     * MetadataType aus Preferences eines Prozesses ermitteln
+     * MetadataType aus Preferences eines Prozesses ermitteln.
      * 
      * @param inProzess
      * @param inName
@@ -67,7 +71,7 @@ public class UghHelper {
     }
 
     /**
-     * MetadataType aus Preferences ermitteln
+     * MetadataType aus Preferences ermitteln.
      * 
      * @param inPrefs
      * @param inName
@@ -83,7 +87,7 @@ public class UghHelper {
     }
 
     /**
-     * Metadata eines Docstructs ermitteln
+     * Metadata eines Docstructs ermitteln.
      * 
      * @param inStruct
      * @param inMetadataType
@@ -118,10 +122,11 @@ public class UghHelper {
     }
 
     /**
-     * Metadata eines Docstructs ermitteln
+     * Metadata eines Docstructs ermitteln.
      * 
      * @param inStruct
-     * @param inMetadataTypeAsString
+     * @param inPrefs
+     * @param inMetadataType
      * @return Metadata
      * @throws UghHelperException
      */
@@ -152,10 +157,11 @@ public class UghHelper {
     }
 
     /**
-     * Metadata eines Docstructs ermitteln
+     * Metadata eines Docstructs ermitteln.
      * 
      * @param inStruct
-     * @param inMetadataTypeAsString
+     * @param inProzess
+     * @param inMetadataType
      * @return Metadata
      * @throws UghHelperException
      */
@@ -204,9 +210,6 @@ public class UghHelper {
             Helper.setMeldung(null, "MetadataTypeNotAllowedException: " + inStruct.getType().getName() + " - " + inMetadataType + " - " + inValue,
                     e.getMessage());
             log.error(e);
-        } catch (Exception e) {
-            Helper.setMeldung(null, "Exception: " + inStruct.getType().getName() + " - " + inMetadataType + " - " + inValue, e.getMessage());
-            log.error(e);
         }
     }
 
@@ -226,7 +229,8 @@ public class UghHelper {
     }
 
     /**
-     * @return
+     * @param inLanguage
+     * @return converted string
      */
     // TODO: Create a own class for iso 639 (?) Mappings or move this to UGH
 
@@ -260,7 +264,10 @@ public class UghHelper {
     }
 
     /**
-     * In einem String die Umlaute auf den Grundbuchstaben reduzieren ================================================================
+     * In einem String die Umlaute auf den Grundbuchstaben reduzieren.
+     *
+     * @param inString
+     * @return replaced value ================================================================
      */
     // TODO: Try to replace this with a external library
     public static String convertUmlaut(String inString) {

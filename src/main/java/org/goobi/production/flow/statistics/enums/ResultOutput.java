@@ -30,7 +30,7 @@ import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 
 /**
- * Enum of all result output possibilities for the statistics
+ * Enum of all result output possibilities for the statistics.
  * 
  * @author Steffen Hankiewicz
  * @version 21.05.2009
@@ -51,13 +51,13 @@ public enum ResultOutput {
      * @param inTitle title as String
      * @param inId id as string
      ****************************************************************************/
-    private ResultOutput(String inId, String inTitle) {
+    ResultOutput(String inId, String inTitle) {
         id = inId;
         title = inTitle;
     }
 
     /**
-     * return localized title for result output
+     * return localized title for result output.
      * 
      * @return localized title
      ****************************************************************************/
@@ -66,7 +66,7 @@ public enum ResultOutput {
     }
 
     /**
-     * get presentation output by unique ID
+     * get presentation output by unique ID.
      * 
      * @param inId the unique ID
      * @return {@link ResultOutput} with given ID

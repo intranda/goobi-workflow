@@ -18,7 +18,9 @@
 
 package org.goobi.production.properties;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
@@ -28,74 +30,76 @@ import de.intranda.digiverso.normdataimporter.model.NormData;
 public interface GndSearchProperty {
 
     /**
-     * get the current search value
+     * get the current search value.
      * 
-     * @return
+     * @return search value
      */
-    public String getSearchValue();
+    String getSearchValue();
 
     /**
-     * sets a new search value
+     * sets a new search value.
      * 
-     * @return
+     * @param value search value
      */
-    public void setSearchValue(String value);
+    void setSearchValue(String value);
 
     /**
-     * get the selected search option
+     * @return the selected search option.
      */
-    public String getSearchOption();
+    String getSearchOption();
 
     /**
-     * sets a new search option
+     * sets a new search option.
      * 
      * @param option
      */
-    public void setSearchOption(String option);
+    void setSearchOption(String option);
 
+    String getValue();
 
-    public String getValue();
-    public void setValue(String option);
-    public String getGndNumber();
-    public void setGndNumber(String option);
+    void setValue(String option);
+
+    String getGndNumber();
+
+    void setGndNumber(String option);
 
     /**
-     * Execute gnd search
+     * Execute gnd search.
      */
-    public void searchGnd();
+    void searchGnd();
 
     /**
-     * returns a list of all found records
+     * @return a list of all found records.
      */
-    public List<List<NormData>> getDataList();
+    List<List<NormData>> getDataList();
 
-    public void setDataList(List<List<NormData>> data);
+    void setDataList(List<List<NormData>> data);
 
     /**
-     * selected record
+     * selected record.
      * 
      * @param data
      */
-    public void setCurrentData(List<NormData> data);
+    void setCurrentData(List<NormData> data);
 
-    public List<NormData> getCurrentData();
+    List<NormData> getCurrentData();
 
     /**
-     * Import selected record
+     * Import selected record.
      */
-    public void importGndData();
+    void importGndData();
 
-    public boolean isShowNoHits();
+    boolean isShowNoHits();
 
-    public void setShowNoHits(boolean showNotHits);
+    void setShowNoHits(boolean showNotHits);
 
     default URL convertToURLEscapingIllegalCharacters(String string) {
         try {
             String decodedURL = URLDecoder.decode(string, "UTF-8");
-            URL url = new URL(decodedURL);
+            URL url = new URI(decodedURL).toURL();
             URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             return uri.toURL();
-        } catch (Exception ex) {
+        } catch (URISyntaxException | IOException ex) {
             return null;
         }
     }

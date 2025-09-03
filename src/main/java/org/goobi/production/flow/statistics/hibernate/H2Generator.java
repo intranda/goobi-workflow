@@ -38,7 +38,7 @@ import lombok.Setter;
 /**
  * 
  * This is the superclass for SQL generation and it provides some common data collection in the constructor and abstract methods which needs to be
- * implemented in the sub classes (
+ * implemented in the sub classes. (
  * 
  * 
  * @author Wulf Riebensahm
@@ -48,14 +48,14 @@ import lombok.Setter;
 @Alternative
 public abstract class H2Generator implements IGenerator {
 
-    String mySql = null;
-    Date myTimeFrom = null;
-    Date myTimeTo = null;
-    TimeUnit myTimeUnit = null;
-    String myIdsCondition = null;
-    String myIdFieldName = "prozesse.prozesseid";
+    protected String mySql = null;
+    protected Date myTimeFrom = null;
+    protected Date myTimeTo = null;
+    protected TimeUnit myTimeUnit = null;
+    protected String myIdsCondition = null;
+    protected String myIdFieldName = "prozesse.prozesseid";
     @Setter
-    List<Integer> ids;
+    private List<Integer> ids;
 
     protected H2Generator() {
         super();

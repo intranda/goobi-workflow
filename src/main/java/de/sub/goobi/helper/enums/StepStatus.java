@@ -29,7 +29,7 @@ import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 
 /**
- * Enum for status of steps, each one with integer value for database, with title and images for gui
+ * Enum for status of steps, each one with integer value for database, with title and images for gui.
  * 
  * @author Steffen Hankiewicz
  * @version 17.05.2009
@@ -37,31 +37,31 @@ import lombok.Getter;
 public enum StepStatus {
 
     /**
-     * Locked = step not startable
+     * Locked = step not startable.
      */
     LOCKED(0, "statusGesperrt", "red_10.gif", "red_15a.gif", "steplocked", "status-locked"),
     /**
-     * open = someone can beginn with this step
+     * open = someone can beginn with this step.
      */
     OPEN(1, "statusOffen", "orange_10.gif", "orange_15a.gif", "stepopen", "status-open"),
     /**
-     * inwork = someone is currently working on that step
+     * inwork = someone is currently working on that step.
      */
     INWORK(2, "statusInBearbeitung", "yellow_10.gif", "yellow_15a.gif", "stepinwork", "status-inwork"),
     /**
-     * done = step is executed
+     * done = step is executed.
      */
     DONE(3, "statusAbgeschlossen", "green_10.gif", "green_15a.gif", "stepdone", "status-done"),
     /**
-     * error = step is stopped as an error occured
+     * error = step is stopped as an error occured.
      */
     ERROR(4, "statusError", "red_10.gif", "red_15a.gif", "steperror", "status-error"),
     /**
-     * deactivated = step is deactivated and gets activated maybe
+     * deactivated = step is deactivated and gets activated maybe.
      */
     DEACTIVATED(5, "statusDeactivated", "red_10.gif", "red_15a.gif", "stepdeactivated", "status-deactivated"),
     /**
-     * inflight = step is waiting in fast queue, slow queue or external queue for automatic execution
+     * inflight = step is waiting in fast queue, slow queue or external queue for automatic execution.
      */
     INFLIGHT(6, "statusInFlight", "yellow_10.gif", "yellow_15a.gif", "stepinflight", "status-inflight");
 
@@ -77,7 +77,7 @@ public enum StepStatus {
     /**
      * private constructor, initializes integer value, title, small and big image
      */
-    private StepStatus(int inValue, String inTitle, String smallImage, String bigImage, String searchString, String color) {
+    StepStatus(int inValue, String inTitle, String smallImage, String bigImage, String searchString, String color) {
         this.value = inValue;
         this.title = inTitle;
         this.imageSmall = smallImage;
@@ -87,7 +87,7 @@ public enum StepStatus {
     }
 
     /**
-     * return integer value for database savings
+     * return integer value for database savings.
      * 
      * @return value as integer
      */
@@ -96,7 +96,7 @@ public enum StepStatus {
     }
 
     /**
-     * get title from status type
+     * get title from status type.
      * 
      * @return title as translated string for current locale from standard-jsf-messages
      */
@@ -105,7 +105,7 @@ public enum StepStatus {
     }
 
     /**
-     * get untranslated title from status type
+     * get untranslated title from status type.
      * 
      * @return title as translated string for current locale from standard-jsf-messages
      */
@@ -114,7 +114,7 @@ public enum StepStatus {
     }
 
     /**
-     * get file name for small image
+     * get file name for small image.
      * 
      * @return file name for small image
      */
@@ -123,7 +123,7 @@ public enum StepStatus {
     }
 
     /**
-     * get file name for big image
+     * get file name for big image.
      * 
      * @return file name for big image
      */
@@ -132,7 +132,7 @@ public enum StepStatus {
     }
 
     /**
-     * retrieve StepStatus by integer value, neccessary for database handlings, where only integer is saved but not type safe
+     * retrieve StepStatus by integer value, neccessary for database handlings, where only integer is saved but not type safe.
      * 
      * @param inValue as integer value
      * @return {@link StepStatus} for given integer

@@ -29,45 +29,49 @@ import ugh.dl.Prefs;
 
 public interface IOpacPlugin extends IPlugin {
 
-    public Fileformat search(String inSuchfeld, String inSuchbegriff, ConfigOpacCatalogue coc, Prefs inPrefs) throws Exception;
+    Fileformat search(String inSuchfeld, String inSuchbegriff, ConfigOpacCatalogue coc, Prefs inPrefs) throws Exception;
 
-    public int getHitcount();
+    int getHitcount();
 
-    public String getAtstsl();
+    String getAtstsl();
 
-    public ConfigOpacDoctype getOpacDocType();
+    ConfigOpacDoctype getOpacDocType();
 
-    public String createAtstsl(String value, String value2);
+    String createAtstsl(String value, String value2);
 
-    public void setAtstsl(String createAtstsl);
+    void setAtstsl(String createAtstsl);
 
-    public String getGattung();
+    String getGattung();
 
     /**
-     * Set the name of the selected process template
+     * Set the name of the selected process template.
      *
      * The default implementation does nothing with it, but it can be overwritten in the individual plugin implementation
+     * 
+     * @param template
      */
 
-    public default void setTemplateName(String template) {
+    default void setTemplateName(String template) {
     }
 
     /**
-     * Set the name of the selected project
+     * Set the name of the selected project.
      *
      * The default implementation does nothing with it, but it can be overwritten in the individual plugin implementation
+     *
+     * @param projectName
      */
 
-    public default void setProjectName(String projectName) {
+    default void setProjectName(String projectName) {
     }
 
     /**
-     * Get the url to the xhtml include to display the search options
+     * Get the url to the xhtml include to display the search options.
      *
-     * @return
+     * @return path to xhtml
      */
 
-    public default String getGui() {
+    default String getGui() {
         return "/uii/template/includes/process/process_new_opac.xhtml";
     }
 

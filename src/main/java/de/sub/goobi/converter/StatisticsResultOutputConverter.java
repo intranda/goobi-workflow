@@ -34,7 +34,7 @@ import jakarta.faces.convert.ConverterException;
 import jakarta.faces.convert.FacesConverter;
 
 /**
- * StatisticOutputConverter for statistics ResultOutput as select-items in jsf-guis
+ * StatisticOutputConverter for statistics ResultOutput as select-items in jsf-guis.
  * 
  * @author Steffen Hankiewicz
  * @version 21.05.2009
@@ -43,7 +43,7 @@ import jakarta.faces.convert.FacesConverter;
 public class StatisticsResultOutputConverter implements Converter<ResultOutput> {
 
     /**
-     * convert String to ResultOutput
+     * convert String to ResultOutput.
      **************************************************************************************/
     @Override
     public ResultOutput getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
@@ -55,7 +55,7 @@ public class StatisticsResultOutputConverter implements Converter<ResultOutput> 
     }
 
     /**
-     * convert ResultOutput to String
+     * convert ResultOutput to String.
      **************************************************************************************/
     @Override
     public String getAsString(FacesContext context, UIComponent component, ResultOutput value) throws ConverterException {

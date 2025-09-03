@@ -137,7 +137,7 @@ public class Paginator {
         int start = determinePaginationBaseValue();
 
         int end = 0;
-        if (paginationMode.equals(Mode.DOUBLE_PAGES) || paginationMode.equals(Paginator.Mode.RECTOVERSO_FOLIATION)) {
+        if (Mode.DOUBLE_PAGES.equals(paginationMode) || Paginator.Mode.RECTOVERSO_FOLIATION.equals(paginationMode)) {
             end = determinePaginationEndValue(2, start) + 1;
             doublePageDiscriminator = "-";
         } else {
@@ -153,8 +153,8 @@ public class Paginator {
             return sequence;
         }
 
-        if (paginationMode.equals(Mode.DOUBLE_PAGES)) {
-            if (paginationType.equals(Type.UNCOUNTED) || paginationType.equals(Type.FREETEXT)) {
+        if (Mode.DOUBLE_PAGES.equals(paginationMode)) {
+            if (Type.UNCOUNTED.equals(paginationType) || Type.FREETEXT.equals(paginationType)) {
                 sequence = cloneEachInSequence(sequence);
             }
             return scrunchSequence(sequence);
@@ -214,8 +214,7 @@ public class Paginator {
             toggle = !toggle;
             rectoversoSequence.add(label + (toggle ? "r" : "v"));
         }
-        sequence = rectoversoSequence;
-        return sequence;
+        return rectoversoSequence;
     }
 
     @SuppressWarnings("rawtypes")
@@ -241,8 +240,7 @@ public class Paginator {
             foliationSequence.add(o);
             foliationSequence.add(o);
         }
-        sequence = foliationSequence;
-        return sequence;
+        return foliationSequence;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

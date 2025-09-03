@@ -32,12 +32,16 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class RetryUtils {
+
     public static <V, E extends Throwable> V retry(E exception, Duration wait, int maxRetries, Callable<V> callable) throws E {
         int counter = 0;
         while (counter < maxRetries) {
             try {
                 return callable.call();
+                //CHECKSTYLE:OFF
             } catch (Exception e) {
+                // catch Exception is needed as call() throws generic Exception
+                //CHECKSTYLE:ON
                 counter++;
                 log.error(e);
                 try {

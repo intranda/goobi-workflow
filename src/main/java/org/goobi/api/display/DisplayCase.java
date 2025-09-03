@@ -84,18 +84,13 @@ public class DisplayCase {
         this.myProcess = process;
         this.metaName = metaType;
         this.itemList = new ArrayList<>();
-        try {
-            this.configDisplay = ConfigDisplayRules.getInstance();
-            if (this.configDisplay != null) {
-                String projectTitle = this.myProcess.getProjekt().getTitel();
-                this.displayType = this.configDisplay.getElementTypeByName(projectTitle, this.metaName);
-                this.itemList = this.configDisplay.getItemsByNameAndType(projectTitle, this.metaName, this.displayType);
-            } else {
-                // no ruleset file
-                this.setDefaultValues();
-            }
-        } catch (Exception e) {
-            // incorrect ruleset file
+        this.configDisplay = ConfigDisplayRules.getInstance();
+        if (this.configDisplay != null) {
+            String projectTitle = this.myProcess.getProjekt().getTitel();
+            this.displayType = this.configDisplay.getElementTypeByName(projectTitle, this.metaName);
+            this.itemList = this.configDisplay.getItemsByNameAndType(projectTitle, this.metaName, this.displayType);
+        } else {
+            // no ruleset file
             this.setDefaultValues();
         }
     }

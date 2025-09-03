@@ -39,7 +39,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
     protected long starttime;
 
     /**
-     * Return if this GoobiScript shall be publicly visible in the user interface
+     * Return if this GoobiScript shall be publicly visible in the user interface.
      * 
      * @return boolean about if the GoobiScript shall be visible
      */
@@ -49,7 +49,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
     }
 
     /**
-     * Return a sample call as yaml snippet this GoobiScript
+     * Return a sample call as yaml snippet this GoobiScript.
      * 
      * @return the sample call itself
      */
@@ -103,7 +103,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
     }
 
     /**
-     * initialize the GoobiScript with all needed information
+     * initialize the GoobiScript with all needed information.
      * 
      * @param processes a list of processes identifiers to run through
      * @param command the original command to use it for displaying only
@@ -129,7 +129,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
      */
     public boolean getParameterAsBoolean(String name) {
         boolean value = false;
-        if (parameters.get(name) != null && parameters.get(name).equals("true")) {
+        if (parameters.get(name) != null && "true".equals(parameters.get(name))) {
             value = true;
         }
         return value;

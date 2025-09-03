@@ -175,10 +175,11 @@ public final class ConfigDisplayRules {
                                     Map<String, Map<String, List<Item>>> typeList = allValues.get(projectName);
                                     if (typeList.containsKey(type.name())) {
                                         Map<String, List<Item>> currentType = typeList.get(type.name());
-                                        // TODO: The following currentType.put() call overwrites the existing metadata display rule with the same metadata-reference.
+                                        // TODO: The following currentType.put() call overwrites the existing metadata display rule with
+                                        // the same metadata-reference.
                                         // The put call should only be executed if there is no other rule for this metadata object in the map.
-                                        // If it is already present, an error message must be displayed in the GUI and in the log because this metadata
-                                        // object seems to be defined twice.
+                                        // If it is already present, an error message must be displayed in the GUI and in the log because
+                                        // this metadata object seems to be defined twice.
                                         currentType.put(metadataName, listOfItems);
                                     } else {
                                         Map<String, List<Item>> currentType = new HashMap<>();
@@ -234,9 +235,8 @@ public final class ConfigDisplayRules {
 
     /**
      * 
-     * @param project project of element
-     * @param bind create or edit
-     * @param elementName name of element
+     * @param myproject project of element
+     * @param myelementName name of element
      * @return returns type of element
      */
 
@@ -275,10 +275,9 @@ public final class ConfigDisplayRules {
     }
 
     /**
-     * @param project name of project as String
-     * @param bind create or edit
-     * @param elementName name of the element
+     * @param projectTitle name of project as String
      * @param displayType type of the element
+     * @param elementName name of the element
      * @return ArrayList with all values of given element
      */
 

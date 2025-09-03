@@ -45,7 +45,11 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
-public class StatistikLaufzeitSchritte {
+public final class StatistikLaufzeitSchritte {
+
+    private StatistikLaufzeitSchritte() {
+        // hide implicit public constructor
+    }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Dataset getDiagramm(List inProzesse) {

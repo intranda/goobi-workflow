@@ -88,9 +88,7 @@ public class LongRunningTask extends Thread {
                 return;
             }
             /* lang dauernde Schleife zur Simulierung einer langen Aufgabe */
-            for (double j = 0; j < 10000000; j++) {
-                // do nothing
-            }
+
             setStatusProgress(i);
         }
         setStatusMessage("done");

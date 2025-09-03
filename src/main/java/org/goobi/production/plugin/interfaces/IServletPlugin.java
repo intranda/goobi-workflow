@@ -34,6 +34,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public interface IServletPlugin extends IPlugin {
 
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+    void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
 
 }

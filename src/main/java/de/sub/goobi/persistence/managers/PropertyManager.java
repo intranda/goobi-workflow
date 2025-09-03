@@ -31,7 +31,12 @@ import org.goobi.beans.Processproperty;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class PropertyManager implements Serializable {
+public final class PropertyManager implements Serializable {
+
+    private PropertyManager() {
+        // hide implicit public constructor
+    }
+
     private static final long serialVersionUID = 900347502238407686L;
 
     @Deprecated

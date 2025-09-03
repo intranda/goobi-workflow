@@ -42,7 +42,12 @@ import jakarta.jms.MessageProducer;
 import jakarta.jms.Session;
 import jakarta.jms.TextMessage;
 
-public class TicketGenerator {
+public final class TicketGenerator {
+
+    private TicketGenerator() {
+        // hide implicit public constructor
+    }
+
     private static Gson gson = new Gson();
 
     public static TaskTicket generateSimpleTicket(String ticketType) {
@@ -50,12 +55,14 @@ public class TicketGenerator {
     }
 
     /**
-     * Submits a ticket to the fast or slow queue
+     * Submits a ticket to the fast or slow queue.
      * 
      * @deprecated This method is replaced by other methods with different parameters
      * 
      * @param ticket the ticket to put in the queue
      * @param slowQueue if true, the ticket goes to the StartQueueBrokerListener.SLOW_QUEUE
+     * @param ticketType
+     * @param processid
      * @return id of the generated message
      * @throws JMSException
      */
@@ -70,6 +77,8 @@ public class TicketGenerator {
      * 
      * @param ticket
      * @param queueType
+     * @param ticketType
+     * @param processid
      * @return id of the generated message
      * @throws JMSException
      */
@@ -83,6 +92,9 @@ public class TicketGenerator {
      * 
      * @param ticket
      * @param queueType
+     * @param ticketType
+     * @param processid
+     * @param delay
      * @return id of the generated message
      * @throws JMSException
      */
@@ -105,6 +117,8 @@ public class TicketGenerator {
      * 
      * @param ticket
      * @param queueType
+     * @param ticketType
+     * @param processid
      * @return id of the generated message
      * @throws JMSException
      */
@@ -117,6 +131,9 @@ public class TicketGenerator {
      * 
      * @param ticket
      * @param queueType
+     * @param ticketType
+     * @param processid
+     * @param delay
      * @return id of the generated message
      * @throws JMSException
      */
@@ -148,7 +165,7 @@ public class TicketGenerator {
 
                 // add a delay, given in seconds
                 if (delay > 0) {
-                    long seconds = delay * 1000l;
+                    long seconds = delay * 1000L;
                     message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, seconds);
                 }
 

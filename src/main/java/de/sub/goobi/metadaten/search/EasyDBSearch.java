@@ -248,7 +248,7 @@ public class EasyDBSearch {
     }
 
     /**
-     * get the configuration for the current metadata from the configuration file
+     * get the configuration for the current metadata from the configuration file.
      * 
      */
 
@@ -355,7 +355,7 @@ public class EasyDBSearch {
     }
 
     /**
-     * Create a new client instance to the easydb api
+     * Create a new client instance to the easydb api.
      * 
      * @return
      */
@@ -387,14 +387,16 @@ public class EasyDBSearch {
     }
 
     /**
-     * Show pagination area when number of found items is higher than the requested number of items
+     * Show pagination area when number of found items is higher than the requested number of items. return true if next page exists
+     * 
+     * @return true if paginator exists
      */
     public boolean isShowPagination() {
         return (request != null && searchResponse != null && request.getLimit() < searchResponse.getCount());
     }
 
     /**
-     * get results for next page
+     * get results for next page.
      * 
      */
 
@@ -406,7 +408,7 @@ public class EasyDBSearch {
     }
 
     /**
-     * get results for previous page
+     * get results for previous page.
      * 
      */
     public void previous() {
@@ -417,9 +419,9 @@ public class EasyDBSearch {
     }
 
     /**
-     * Get current page number for pagination
+     * Get current page number for pagination.
      * 
-     * @return
+     * @return current page
      */
 
     public int getCurrentPage() {
@@ -427,9 +429,9 @@ public class EasyDBSearch {
     }
 
     /**
-     * get max page number for pagination
+     * get max page number for pagination.
      * 
-     * @return
+     * @return max page number
      */
 
     public int getMaxPage() {

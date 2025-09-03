@@ -38,7 +38,7 @@ public interface IGoobiHotfolder {
      * @return a list with all xml files in GoobiHotfolder
      */
 
-    public List<Path> getCurrentFiles();
+    List<Path> getCurrentFiles();
 
     /**
      * 
@@ -46,7 +46,7 @@ public interface IGoobiHotfolder {
      * @return a list with all filenames containing the name in GoobiHotfolder
      */
 
-    public List<String> getFilesByName(String name);
+    List<String> getFilesByName(String name);
 
     /**
      * 
@@ -54,7 +54,7 @@ public interface IGoobiHotfolder {
      * @return a list with all filenames matching the filter
      */
 
-    public List<String> getFileNamesByFilter(DirectoryStream.Filter<Path> filter);
+    List<String> getFileNamesByFilter(DirectoryStream.Filter<Path> filter);
 
     /**
      * 
@@ -62,24 +62,24 @@ public interface IGoobiHotfolder {
      * @return a list with all file matching the filter
      */
 
-    public List<Path> getFilesByFilter(DirectoryStream.Filter<Path> filter);
+    List<Path> getFilesByFilter(DirectoryStream.Filter<Path> filter);
 
     /**
      * 
      * @return hotfolder as string
      */
-    public String getFolderAsString();
+    String getFolderAsString();
 
     /**
      * 
      * @return hotfolder as file
      */
-    public Path getFolderAsFile();
+    Path getFolderAsFile();
 
     /**
      * 
      * @return hotfolder as URI
      */
-    public URI getFolderAsUri();
+    URI getFolderAsUri();
 
 }

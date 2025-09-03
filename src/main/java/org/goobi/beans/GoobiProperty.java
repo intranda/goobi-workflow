@@ -93,7 +93,7 @@ public class GoobiProperty implements IGoobiProperty, Serializable {
 
     // properties and methods to display data in UI:
 
-    public List<String> valueList;
+    private List<String> valueList;
 
     @Override
     public String getContainer() {
@@ -106,9 +106,10 @@ public class GoobiProperty implements IGoobiProperty, Serializable {
     @Override
     public void setContainer(String order) {
         if (order == null) {
-            order = "0";
+            container = "0";
+        } else {
+            container = order;
         }
-        container = order;
     }
 
     @Override
@@ -134,7 +135,7 @@ public class GoobiProperty implements IGoobiProperty, Serializable {
     }
 
     /**
-     * set datentyp to specific value from {@link PropertyType}
+     * set datentyp to specific value from {@link PropertyType}.
      * 
      * @param inType as {@link PropertyType}
      */
@@ -144,7 +145,7 @@ public class GoobiProperty implements IGoobiProperty, Serializable {
     }
 
     /**
-     * get datentyp as {@link PropertyType}
+     * get datentyp as {@link PropertyType}.
      * 
      * @return current datentyp
      */

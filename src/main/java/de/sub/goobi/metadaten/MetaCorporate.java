@@ -87,13 +87,11 @@ public class MetaCorporate implements SearchableMetadata {
     private String vocabularySearchQuery;
 
     /**
-     * constructor
+     * constructor.
      * 
      * @param corporate
-     * @param inID
      * @param inPrefs
      * @param inStruct
-     * @param inProcess
      * @param bean
      */
 

@@ -24,6 +24,7 @@
  */
 package org.goobi.api.rest.process.thumbnail;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -42,6 +43,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.UriBuilder;
 import lombok.extern.log4j.Log4j2;
 
 @jakarta.ws.rs.Path("process/thumbs/{processId}/{foldername}/{filename}")
@@ -49,7 +51,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiThumbnailResource extends AbstractImageResource {
 
-    private static final Path metadataFolderPath = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
+    private static final Path METADATA_PATH = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
 
     public GoobiThumbnailResource(@Context ContainerRequestContext context, @Context HttpServletRequest request,
             @Context HttpServletResponse response, @PathParam("processId") String processId, @PathParam("foldername") String foldername,
@@ -60,7 +62,7 @@ public class GoobiThumbnailResource extends AbstractImageResource {
     }
 
     public void createImageURI(String processId, String foldername, String filename) {
-        Path imagePath = metadataFolderPath.resolve(processId).resolve("thumbs").resolve(foldername).resolve(filename);
+        Path imagePath = METADATA_PATH.resolve(processId).resolve("thumbs").resolve(foldername).resolve(filename);
         this.imageURI = Image.toURI(imagePath);
 
     }
@@ -90,5 +92,21 @@ public class GoobiThumbnailResource extends AbstractImageResource {
     @Override
     public String getGoobiURIPrefix() {
         return GoobiThumbnailResource.class.getAnnotation(jakarta.ws.rs.Path.class).value();
+    }
+
+    /**
+     * This needs to override the createResourceURI method of the ImageResource class which otherwise throws an error due to different number of path
+     * variables The actual value of the URI is created in {@link #createResourceURI(HttpServletRequest, String, String, String)
+     */
+    @Override
+    protected URI createResourceURI(URI baseURI, String directory, String filename) throws IllegalRequestException {
+        try {
+            return UriBuilder.fromUri(baseURI)
+                    .path(getURIPrefix())
+                    .build("", URLEncoder.encode(directory, "utf-8"), URLEncoder.encode(filename, "utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            log.error("Failed to create image request uri");
+            throw new IllegalRequestException("Unable to evaluate request to '" + directory + "', '" + filename + "'");
+        }
     }
 }

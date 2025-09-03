@@ -27,7 +27,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import io.goobi.workflow.harvester.HarvesterGoobiImport;
@@ -94,7 +93,7 @@ public class LidoParser extends MetadataService implements MetadataParser, IRest
         dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 
         DocumentBuilder builder = dbf.newDocumentBuilder();
-        Document doc = builder.parse(inputStream);
+        builder.parse(inputStream);
 
         Lido fileformat = new Lido(prefs);
         //TODO either implement read method for Node or temporary save file, read it from filesystem, delete file

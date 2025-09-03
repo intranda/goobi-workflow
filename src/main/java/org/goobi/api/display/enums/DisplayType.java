@@ -45,7 +45,8 @@ public enum DisplayType {
     convertibleDate,
     generate;
 
-    private DisplayType() {
+    DisplayType() {
+        // hide implicit public constructor
     }
 
     public static DisplayType getByTitle(String inName) {

@@ -1,5 +1,6 @@
 package de.unigoettingen.sub.search.opac;
 
+import java.io.UnsupportedEncodingException;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -70,7 +71,7 @@ public class Query {
 
         try {
             this.queryUrl += QUERY + this.queryTermNumber + "=" + URLEncoder.encode(query, GetOpac.URL_CHARACTER_ENCODING);
-        } catch (Exception e) {
+        } catch (UnsupportedEncodingException e) {
             log.error(e);
         }
 

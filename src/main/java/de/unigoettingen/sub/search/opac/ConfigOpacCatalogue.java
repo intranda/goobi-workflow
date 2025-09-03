@@ -1,31 +1,5 @@
 package de.unigoettingen.sub.search.opac;
 
-/**
- * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
- * Visit the websites for more information.
- *          - https://goobi.io
- *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi-workflow
- * 
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
- * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
- * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
- * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
- * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
- * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
- * exception statement from your version.
- */
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -92,12 +66,15 @@ public class ConfigOpacCatalogue {
     }
 
     public Node executeBeautifier(Node myHitlist) {
+
+        Node node = myHitlist;
+
         /* Ausgabe des Opac-Ergebnissen in Datei */
 
         /*
          * --------------------- aus dem Dom-Node ein JDom-Object machen -------------------
          */
-        Document doc = new DOMBuilder().build(myHitlist.getOwnerDocument());
+        Document doc = new DOMBuilder().build(node.getOwnerDocument());
 
         /*
          * --------------------- Im JDom-Object alle Felder durchlaufen und die notwendigen Ersetzungen vornehmen -------------------
@@ -114,22 +91,22 @@ public class ConfigOpacCatalogue {
          */
         DOMOutputter doutputter = new DOMOutputter();
         try {
-            myHitlist = doutputter.output(doc);
-            myHitlist = myHitlist.getFirstChild();
+            node = doutputter.output(doc);
+            node = node.getFirstChild();
         } catch (JDOMException e) {
             log.error("JDOMException in executeBeautifier(Node)", e);
         }
 
         /* Ausgabe des überarbeiteten Opac-Ergebnisses */
-        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("")
+        if (!"".equals(ConfigurationHelper.getInstance().getDebugFolder())
                 && StorageProvider.getInstance().isWritable(Paths.get(ConfigurationHelper.getInstance().getDebugFolder()))) {
-            debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyAfter.xml");
+            debugMyNode(node, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyAfter.xml");
         }
-        return myHitlist;
+        return node;
     }
 
     /**
-     * Beautifier für ein JDom-Object durchführen ================================================================
+     * Beautifier für ein JDom-Object durchführen.
      */
 
     private void executeBeautifierForElement(Element el) {
@@ -166,7 +143,7 @@ public class ConfigOpacCatalogue {
                      */
                     if (!prooflist.isEmpty()) {
                         for (ConfigOpacCatalogueBeautifierElement cocbe : beautifier.getTagElementsToProof()) {
-                            if (cocbe.getValue().equals("*")) {
+                            if ("*".equals(cocbe.getValue())) {
                                 if (cocbe.getTag().equals(tag) && cocbe.getSubtag().equals(subtag)) {
                                     if (!foundValue) {
                                         matchedValue = value;
@@ -205,7 +182,7 @@ public class ConfigOpacCatalogue {
             }
 
             if (subfieldToChange != null && prooflist.isEmpty()) {
-                if (beautifier.getTagElementToChange().getValue().equals("*")) {
+                if ("*".equals(beautifier.getTagElementToChange().getValue())) {
                     subfieldToChange.setText(matchedValue);
                 } else {
                     subfieldToChange.setText(beautifier.getTagElementToChange().getValue());
@@ -225,8 +202,6 @@ public class ConfigOpacCatalogue {
             Document tempDoc = new DOMBuilder().build(inNode.getOwnerDocument());
             FileOutputStream output = new FileOutputStream(fileName);
             outputter.output(tempDoc.getRootElement(), output);
-        } catch (FileNotFoundException e) {
-            log.error("debugMyNode(Node, String)", e);
         } catch (IOException e) {
             log.error("debugMyNode(Node, String)", e);
         }

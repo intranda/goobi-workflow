@@ -29,11 +29,11 @@ import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 public class ValidateDataNotMappedForExport {
     /**
-     * Find all values that are defined but not used inside the formats as <InternalName> values
+     * Find all values that are defined but not used inside the formats as <InternalName> values.
      * 
      * @param root
      * @param format
-     * @return
+     * @return error list
      */
     public List<RulesetValidationError> validate(org.jdom2.Element root, String format) {
         List<RulesetValidationError> errors = new ArrayList<>();
@@ -76,7 +76,7 @@ public class ValidateDataNotMappedForExport {
     }
 
     /**
-     * Go through the formats Name children recursivly to find all "InternalName" values and add them to the Map
+     * Go through the formats Name children recursivly to find all "InternalName" values and add them to the Map.
      * 
      * @param parent
      * @param allUsedValues
@@ -119,7 +119,7 @@ public class ValidateDataNotMappedForExport {
     }
 
     /**
-     * Create the errors for the found undefined values
+     * Create the errors for the found undefined values.
      *
      * @param errors
      * @param value

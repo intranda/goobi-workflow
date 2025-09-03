@@ -54,7 +54,7 @@ public class SearchQuery {
 
         private final String sqlStr;
 
-        private RelationalOperator(String value) {
+        RelationalOperator(String value) {
             this.sqlStr = value;
         }
 
@@ -89,6 +89,8 @@ public class SearchQuery {
             case NLIKE:
                 b.append("JSON_EXTRACT(value, ?) NOT LIKE ?");
                 break;
+            default:
+                // nothing
         }
         b.append(')');
     }

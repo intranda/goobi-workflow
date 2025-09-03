@@ -123,7 +123,7 @@ public class ConfigFileEditorBean implements Serializable {
     private transient Part uploadedFile = null;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public ConfigFileEditorBean() {
         XMLConfiguration configuration = getConfig();
@@ -374,7 +374,7 @@ public class ConfigFileEditorBean implements Serializable {
 
     /**
      *
-     * Download the selected configuration file
+     * Download the selected configuration file.
      *
      */
     public void downloadCurrentConfigFile() {
@@ -383,7 +383,7 @@ public class ConfigFileEditorBean implements Serializable {
     }
 
     /**
-     * Download a file from the list
+     * Download a file from the list.
      *
      */
 
@@ -423,7 +423,9 @@ public class ConfigFileEditorBean implements Serializable {
     }
 
     /**
-     * get a list of all backup files for the selected file
+     * get a list of all backup files for the selected file.
+     * 
+     * @return file list
      *
      */
 

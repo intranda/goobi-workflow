@@ -34,10 +34,14 @@ import org.goobi.production.cli.helper.StringPair;
 
 import com.google.gson.Gson;
 
-class MetadataMysqlHelper implements Serializable {
+final class MetadataMysqlHelper implements Serializable {
+
+    private MetadataMysqlHelper() {
+        // hide implicit public constructor
+    }
 
     private static final long serialVersionUID = -8391750763010758774L;
-    private static final Gson gson = new Gson();
+    private static Gson gson = new Gson();
 
     /**
      * deletes metadata for processID from `metadata_json` table
@@ -232,7 +236,7 @@ class MetadataMysqlHelper implements Serializable {
         }
     }
 
-    public static final ResultSetHandler<List<StringPair>> resultSetToMetadataHandler = new ResultSetHandler<List<StringPair>>() {
+    public static final ResultSetHandler<List<StringPair>> resultSetToMetadataHandler = new ResultSetHandler<>() {
         @Override
         public List<StringPair> handle(ResultSet rs) throws SQLException {
             List<StringPair> answer = new ArrayList<>();

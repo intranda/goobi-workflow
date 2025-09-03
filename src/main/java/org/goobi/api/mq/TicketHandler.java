@@ -28,14 +28,14 @@ package org.goobi.api.mq;
 public interface TicketHandler<V> {
 
     /**
-     * call this method to execute the ticket
+     * call this method to execute the ticket.
      * 
      * @param ticket
-     * @return
+     * @return result
      */
 
-    public V call(TaskTicket ticket);
+    V call(TaskTicket ticket);
 
-    public String getTicketHandlerName();
+    String getTicketHandlerName();
 
 }

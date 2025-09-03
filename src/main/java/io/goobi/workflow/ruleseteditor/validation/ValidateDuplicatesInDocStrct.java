@@ -29,7 +29,7 @@ import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 /**
- * Find duplicate metadata, group and allowedChildType values in <DocstrctType> Element and return those into the errors list
+ * Find duplicate metadata, group and allowedChildType values in <DocstrctType> Element and return those into the errors list.
  * 
  * @author Paul Hankiewicz Lopez
  * @version 04.02.2025
@@ -37,7 +37,7 @@ import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 public class ValidateDuplicatesInDocStrct {
 
     /**
-     * Validate the XML structure starting from the root element for duplicate metadata, group and allowedChildType values in <DocstrctType>
+     * Validate the XML structure starting from the root element for duplicate metadata, group and allowedChildType values in <DocstrctType>.
      *
      * @param root The root XML element to be validated.
      * @return A list of XMLError objects containing details about any duplicate entries found during validation.

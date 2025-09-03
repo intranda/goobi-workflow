@@ -28,10 +28,8 @@ import io.goobi.vocabulary.exchange.VocabularyRecord;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import jakarta.faces.model.SelectItem;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
 
 @Getter
-@Log4j2
 public class ExtendedFieldInstance extends FieldInstance {
     private Function<Long, ExtendedVocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
     private Function<Long, List<ExtendedVocabularyRecord>> recordsResolver = this::getAllRecords;

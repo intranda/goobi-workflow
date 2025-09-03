@@ -62,7 +62,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 
     /**
      * loops included means that all step open all stepdone are considered loops not included means that only min(date) or max(date) - depending on
-     * option in
+     * option in.
      * 
      * @see historyEventType
      * 
@@ -73,7 +73,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
     }
 
     /**
-     * Set status of loops included
+     * Set status of loops included.
      * 
      * @param includeLoops
      */
@@ -195,7 +195,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
         return allTables;
     }
 
-    private static class DataTableComparator implements Comparator<DataRow> {
+    private static final class DataTableComparator implements Comparator<DataRow> {
         @Override
         public int compare(DataRow o1, DataRow o2) {
             return o1.getName().compareTo(o2.getName());
@@ -318,7 +318,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
                     headerRow.addValue(new Converter(objArr[2]).getString() + " (" + new Converter(objArr[3]).getString() + ")",
                             (new Converter(objArr[0]).getDouble()));
 
-                } catch (Exception e) {
+                } catch (NullPointerException e) {
                     headerRow.addValue(e.getMessage(), Double.valueOf(0));
                 }
             }
@@ -349,30 +349,28 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 
         for (Object obj : list) {
             Object[] objArr = (Object[]) obj;
-            try {
-                // objArr[1]
-                if (!observeIntervall.equals(new Converter(objArr[1]).getString())) {
-                    observeIntervall = new Converter(objArr[1]).getString();
 
-                    // row cannot be added before it is filled because the add
-                    // process triggers
-                    // a testing for header alignement -- this is where we add
-                    // it after iterating it first
-                    if (dataRow != null) {
-                        dtbl.addDataRow(dataRow);
-                    }
+            // objArr[1]
+            if (!observeIntervall.equals(new Converter(objArr[1]).getString())) {
+                observeIntervall = new Converter(objArr[1]).getString();
 
-                    dataRow = new DataRow(null);
-                    // setting row name with localized time group and the
-                    // date/time extraction based on the group
-                    dataRow.setName(new Converter(objArr[1]).getString() + "");
+                // row cannot be added before it is filled because the add
+                // process triggers
+                // a testing for header alignement -- this is where we add
+                // it after iterating it first
+                if (dataRow != null) {
+                    dtbl.addDataRow(dataRow);
                 }
-                dataRow.addValue(new Converter(objArr[2]).getString() + " (" + new Converter(objArr[3]).getString() + ")", // NOSONAR, its not nullable here
-                        new Converter(objArr[0]).getDouble());
 
-            } catch (Exception e) {
-                dataRow.addValue(e.getMessage(), Double.valueOf(0)); // NOSONAR, its not nullable here
+                dataRow = new DataRow(null);
+                // setting row name with localized time group and the
+                // date/time extraction based on the group
+                dataRow.setName(new Converter(objArr[1]).getString() + "");
             }
+            dataRow.addValue(new Converter(objArr[2]).getString() + " (" + new Converter(objArr[3]).getString() + ")", // NOSONAR
+                    new Converter(objArr[0]).getDouble());
+            // its not nullable here
+
         }
         // to add the last row
         if (dataRow != null) {

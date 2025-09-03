@@ -25,9 +25,12 @@
  */
 package de.sub.goobi.helper;
 
+import java.io.IOException;
+
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
@@ -37,6 +40,7 @@ import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.Person;
 import ugh.exceptions.PreferencesException;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class XmlArtikelZaehlen {
@@ -47,9 +51,11 @@ public class XmlArtikelZaehlen {
     }
 
     /**
-     * Anzahl der Strukturelemente ermitteln
+     * Anzahl der Strukturelemente ermitteln.
      * 
      * @param myProzess
+     * @param inType
+     * @return number
      */
     public int getNumberOfUghElements(Process myProzess, CountType inType) {
         int rueckgabe = 0;
@@ -60,7 +66,7 @@ public class XmlArtikelZaehlen {
         Fileformat gdzfile;
         try {
             gdzfile = myProzess.readMetadataFile();
-        } catch (Exception e) {
+        } catch (UGHException | IOException | SwapException e) {
             Helper.setFehlerMeldung("xml error", e.getMessage());
             return -1;
         }
@@ -92,9 +98,11 @@ public class XmlArtikelZaehlen {
     }
 
     /**
-     * Anzahl der Strukturelemente oder der Metadaten ermitteln, die ein Band hat, rekursiv durchlaufen
+     * Anzahl der Strukturelemente oder der Metadaten ermitteln, die ein Band hat, rekursiv durchlaufen.
      * 
-     * @param myProzess
+     * @param inStruct
+     * @param inType
+     * @return number
      */
     public int getNumberOfUghElements(DocStruct inStruct, CountType inType) {
         int rueckgabe = 0;

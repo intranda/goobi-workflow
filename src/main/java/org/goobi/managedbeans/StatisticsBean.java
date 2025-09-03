@@ -27,8 +27,6 @@ package org.goobi.managedbeans;
 
 import java.io.Serializable;
 import java.security.SecureRandom;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
@@ -54,8 +52,7 @@ public class StatisticsBean implements Serializable {
 
     private static final String DATABASE_ERROR = "fehlerBeimEinlesen";
 
-    Calendar cal = new GregorianCalendar();
-    int n = 200;
+    private int n = 200;
 
     /**
      * Returns the number of literature objects. WARNING: Currently, this method is not implemented and returns 0.

@@ -24,6 +24,7 @@
  */
 package org.goobi.goobiScript;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.VariableReplacer;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
@@ -44,6 +46,7 @@ import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.Prefs;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript implements IGoobiScript {
@@ -73,15 +76,20 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to change existing metadata in the METS files.");
         addParameterToSampleCall(sb, FIELD, "Classification",
-                "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`) here.");
+                "Internal name of the metadata field to be used. Use the internal name here (e.g. `TitleDocMain`), not the "
+                        + "translated display name (e.g. `Main title`) here.");
         addParameterToSampleCall(sb, PREFIX, "Dark",
-                "Define a string that shall be added in front of the existing metadata value here. In case ending blanks are wanted please put the prefix into quotes like \"this \".");
+                "Define a string that shall be added in front of the existing metadata value here. In case ending blanks are wanted"
+                        + " please put the prefix into quotes like \"this \".");
         addParameterToSampleCall(sb, SUFFIX, "color",
-                "Define a string that shall be added behind the existing metadata value here. In case leading blanks are wanted please put the suffix into quotes like \" this\".");
+                "Define a string that shall be added behind the existing metadata value here. In case leading blanks are wanted please"
+                        + " put the suffix into quotes like \" this\".");
         addParameterToSampleCall(sb, POSITION, "work",
-                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
+                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` "
+                        + "`top` `child` `any` `physical`");
         addParameterToSampleCall(sb, CONDITION, "blue",
-                "Define a value here that shall be present in the metadata field. The metadata is only updated if this term can be found inside of the metadata value  (check if it is contained).");
+                "Define a value here that shall be present in the metadata field. The metadata is only updated if this term can be "
+                        + "found inside of the metadata value  (check if it is contained).");
         addParameterToSampleCall(sb, GROUP, "", "If the metadata to change is in a group, set the internal name of the metadata group name here.");
         return sb.toString();
     }
@@ -208,7 +216,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (Exception e1) {
+        } catch (UGHException | IOException | SwapException e1) {
             log.error("Problem while changing the metadata using GoobiScript for process with id: " + p.getId(), e1);
             gsr.setResultMessage("Error while changing metadata: " + e1.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);

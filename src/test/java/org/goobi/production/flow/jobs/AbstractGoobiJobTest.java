@@ -74,7 +74,7 @@ public class AbstractGoobiJobTest extends AbstractTest {
     }
 
 
-    private static class StubJob extends AbstractGoobiJob {
+    private static final class StubJob extends AbstractGoobiJob {
 
         @Getter
         private boolean executed = false;

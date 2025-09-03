@@ -47,7 +47,7 @@ public interface IStepPlugin extends IPlugin {
      * @param step the {@link Step} for which the plugin is started. step.getProzess() can be used to get additional data about {@link Process}
      * @param returnPath the path from where the plugin was started, it is used to return to this page on cancel or finish
      */
-    public void initialize(Step step, String returnPath);
+    void initialize(Step step, String returnPath);
 
     /**
      * This method is used to execute the plugin, when it was initialized. If a task is an automatic task, the method gets executed without
@@ -55,51 +55,51 @@ public interface IStepPlugin extends IPlugin {
      * 
      * @return true if successful, false in error case
      */
-    public boolean execute();
+    boolean execute();
 
     /**
      * This method can be used to cancel the edition of a plugin.
      * 
      * @return the path to return e.g. task_edit.xhtml or process_edit.xhtml
      */
-    public String cancel();
+    String cancel();
 
     /**
      * In automatic tasks this method is called after execute() returned true. Otherwise it can be used to save and leave the plugin.
      * 
      * @return the path to return e.g. task_edit.xhtml or process_edit.xhtml
      */
-    public String finish();
+    String finish();
 
     /**
      * This method is not used by Goobi. It may be used by the plugin during initialize
      *
      * @deprecated The validation method is not used anymore. If a step should be used for validation, the IValidatorPlugin should be used instead.
      *
-     * @return
+     * @return validation result
      */
     @Deprecated(since = "23.05", forRemoval = false)
-    public HashMap<String, StepReturnValue> validate();
+    HashMap<String, StepReturnValue> validate();
 
     /**
-     * Used to get the current step
+     * Used to get the current step.
      * 
      * @return step the {@link Step} for which the plugin is started
      */
-    public Step getStep();
+    Step getStep();
 
     /**
-     * This method is used to define, if the plugin has no UI, a part UI or a full UI
+     * This method is used to define, if the plugin has no UI, a part UI or a full UI.
      * 
      * @return the {@link PluginGuiType} of the plugin
      */
-    public PluginGuiType getPluginGuiType();
+    PluginGuiType getPluginGuiType();
 
     /**
      * Defines the relative URL to the starting xhtml page of the plugin. Mandatory, when the {@link PluginGuiType} is not NONE
      * 
      * @return path to the xhtml page
      */
-    public String getPagePath();
+    String getPagePath();
 
 }

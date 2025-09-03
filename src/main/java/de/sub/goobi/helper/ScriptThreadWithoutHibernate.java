@@ -66,7 +66,7 @@ import ugh.exceptions.WriteException;
 @Log4j2
 public class ScriptThreadWithoutHibernate extends Thread {
     private JobTypesCache jobTypesCache;
-    HelperSchritte hs = new HelperSchritte();
+    private HelperSchritte hs = new HelperSchritte();
     private Step step;
 
     public ScriptThreadWithoutHibernate(Step step) {
@@ -173,8 +173,6 @@ public class ScriptThreadWithoutHibernate extends Thread {
                         hs.CloseStepObjectAutomatic(step);
                     } else if (val == PluginReturnValue.ERROR) {
                         hs.errorStep(step);
-                    } else if (val == PluginReturnValue.WAIT) {
-                        // stay in status inwork
                     }
 
                 } else if (isp.execute()) {

@@ -1,8 +1,8 @@
 package org.goobi.production.properties;
 
-import lombok.Getter;
-
 import java.util.Arrays;
+
+import lombok.Getter;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -44,7 +44,7 @@ public enum Type {
     @Getter
     private String name;
 
-    private Type(String name) {
+    Type(String name) {
         this.name = name;
     }
 

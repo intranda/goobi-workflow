@@ -22,7 +22,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class VocabularyAPIManager {
+public final class VocabularyAPIManager {
     private static final String MIN_REQUIRED_VERSION = "1.1.9";
     private static final String MONITORING_ENDPOINT = "/api/v1/monitoring";
     private static VocabularyAPIManager instance;
@@ -86,7 +86,7 @@ public class VocabularyAPIManager {
         return true;
     }
 
-    public synchronized static VocabularyAPIManager getInstance() {
+    public static synchronized VocabularyAPIManager getInstance() {
         if (instance == null) {
             instance = new VocabularyAPIManager();
         }
@@ -132,11 +132,18 @@ public class VocabularyAPIManager {
 
             Optional<String> fileName = extractFileName(response);
             Optional<Integer> contentLength = extractContentLength(response);
+            // Some Faces component library or some Filter might have set some headers in the buffer beforehand.
+            // We want to get rid of them, else it may collide.
+            externalContext.responseReset();
 
-            externalContext.responseReset(); // Some Faces component library or some Filter might have set some headers in the buffer beforehand. We want to get rid of them, else it may collide.
-            externalContext.setResponseContentType(MediaType.APPLICATION_OCTET_STREAM); // Check https://www.iana.org/assignments/media-types for all types.
-            contentLength.ifPresent(externalContext::setResponseContentLength); // Set it with the file size. This header is optional. It will work if it's omitted, but the download progress will be unknown.
-            fileName.ifPresent(name -> externalContext.setResponseHeader("Content-Disposition", "attachment; filename=\"" + name + "\"")); // The Save As popup magic is done here. You can give it any file name you want.
+            // Check https://www.iana.org/assignments/media-types for all types.
+            externalContext.setResponseContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+            // Set it with the file size. This header is optional. It will work if it's omitted, but the download progress will be unknown.
+            contentLength.ifPresent(externalContext::setResponseContentLength);
+
+            // The Save As popup magic is done here. You can give it any file name you want.
+            fileName.ifPresent(name -> externalContext.setResponseHeader("Content-Disposition", "attachment; filename=\"" + name + "\""));
 
             OutputStream output = externalContext.getResponseOutputStream();
             IOUtils.copy(response.readEntity(InputStream.class), output);

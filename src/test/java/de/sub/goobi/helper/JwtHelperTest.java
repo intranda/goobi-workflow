@@ -67,7 +67,7 @@ public class JwtHelperTest extends AbstractTest {
         verifyToken.setAccessible(true);
 
         try {
-            Field rotationTimeField = clazz.getDeclaredField("rotationDuration");
+            Field rotationTimeField = clazz.getDeclaredField("ROTATION_DURATION");
             rotationTimeField.setAccessible(true);
             long rotationTime = rotationTimeField.getLong(null);
             verifyToken.invoke(null, token, secret, (LongSupplier) () -> System.currentTimeMillis() + rotationTime * 3);

@@ -22,11 +22,13 @@ import org.jdom2.Element;
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 public class FixRemoveFromXml {
+
     /**
-     * Remove the Element from the xml
+     * Remove the Element from the xml.
      * 
      * @param root
      * @param error
+     * @param deleteParent
      */
     public void fix(Element root, RulesetValidationError error, boolean deleteParent) {
         Element toRemove = findElementByLineNumber(root, error);

@@ -37,7 +37,7 @@ import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 
 /**
- * Enum of all time units for the statistics
+ * Enum of all time units for the statistics.
  * 
  * @author Steffen Hankiewicz
  * @version 21.05.2009
@@ -67,7 +67,7 @@ public enum TimeUnit {
      * 
      * @param inTitle title as String
      ****************************************************************************/
-    private TimeUnit(String inId, String inTitle, String inKeyword, String inSingularTitle, Boolean visible, Double dayFactor) {
+    TimeUnit(String inId, String inTitle, String inKeyword, String inSingularTitle, Boolean visible, Double dayFactor) {
         id = inId;
         title = inTitle;
         singularTitle = inSingularTitle;
@@ -77,7 +77,7 @@ public enum TimeUnit {
     }
 
     /**
-     * return localized title for TimeUnit from standard-jsf-messages-files
+     * return localized title for TimeUnit from standard-jsf-messages-files.
      * 
      * @return localized title
      ****************************************************************************/
@@ -86,7 +86,7 @@ public enum TimeUnit {
     }
 
     /**
-     * return the internal String representing the Title, use this for localisation
+     * return the internal String representing the Title, use this for localisation.
      * 
      * @return the internal title
      ****************************************************************************/
@@ -96,7 +96,7 @@ public enum TimeUnit {
     }
 
     /**
-     * get TimeUnit by unique ID
+     * get TimeUnit by unique ID.
      * 
      * @param inId the unique ID
      * @return {@link TimeUnit} with given ID
@@ -121,12 +121,11 @@ public enum TimeUnit {
     }
 
     /**
-     * function allows to retrieve a datarow based on startdaten enddate and intervall
+     * function allows to retrieve a datarow based on startdaten enddate and intervall.
      * 
      * @param start
      * @param end
-     * @param intervall
-     * @return
+     * @return list
      */
     public List<String> getDateRow(Date start, Date end) {
         List<String> dateRow = new ArrayList<>();
@@ -154,9 +153,11 @@ public enum TimeUnit {
                 return new DateTime(inDate).toString(getFormatter());
 
             case quarters:
-                return new DateTime(inDate).toString(getFormatter()) + "/" +
-                // TODO: Remove use of deprecated method
-                Integer.toString((inDate.getMonth() - 1) / 3 + 1);
+                return new DateTime(inDate).toString(getFormatter()) + "/"
+                        + Integer.toString((inDate.getMonth() - 1) / 3 + 1);
+            default:
+                // do nothing
+
         }
         return inDate.toString();
 
@@ -183,6 +184,8 @@ public enum TimeUnit {
 
             case years:
                 return new DateTime(inDate).plusYears(1).toDate();
+            default:
+                // do nothing
         }
         return inDate;
     }

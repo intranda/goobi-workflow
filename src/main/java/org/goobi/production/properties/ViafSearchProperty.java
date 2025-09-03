@@ -23,18 +23,18 @@ import de.sub.goobi.metadaten.search.ViafSearch;
 public interface ViafSearchProperty {
 
     // actual value
-    public String getValue();
+    String getValue();
 
-    public void setValue(String option);
+    void setValue(String option);
 
     // viaf number/uri
-    public String getViafNumber();
+    String getViafNumber();
 
-    public void setViafNumber(String option);
+    void setViafNumber(String option);
 
-    public ViafSearch getViafSearch();
+    ViafSearch getViafSearch();
 
-    public void searchViaf();
+    void searchViaf();
 
-    public void importViafData();
+    void importViafData();
 }

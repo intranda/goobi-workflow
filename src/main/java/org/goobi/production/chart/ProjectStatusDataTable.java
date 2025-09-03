@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /*************************************************************************************
- * A ProjectStatusDataTable object holds all the information needed for rendering a project status chart
+ * A ProjectStatusDataTable object holds all the information needed for rendering a project status chart.
  * 
  * A ProjectStatusDataTable consists of - a name - dates of project begin and project end - a list of project tasks
  * 
@@ -60,9 +60,11 @@ public class ProjectStatusDataTable implements Serializable {
     private List<String> taskTitles;
 
     /************************************************************************************
-     * public constructor, the name is set here
+     * public constructor, the name is set here.
      * 
-     * @param title the title to set
+     * @param inName the title to set
+     * @param begin
+     * @param end
      ************************************************************************************/
     public ProjectStatusDataTable(String inName, Date begin, Date end) {
         super();
@@ -88,11 +90,10 @@ public class ProjectStatusDataTable implements Serializable {
     }
 
     /************************************************************************************
-     * Add a task to the list
+     * Add a task to the list.
      * 
-     * @param title The title of the task to add
-     * @param stepsCompleted Number of steps completed
-     * @param Total number of steps
+     * @param inTask The title of the task to add
+     * 
      * 
      ************************************************************************************/
     public void addTask(IProjectTask inTask) {
@@ -111,7 +112,7 @@ public class ProjectStatusDataTable implements Serializable {
     }
 
     /************************************************************************************
-     * getter for all tasks
+     * getter for all tasks.
      * 
      * @return list of {@link ProjectTask}
      ************************************************************************************/
@@ -120,7 +121,7 @@ public class ProjectStatusDataTable implements Serializable {
     }
 
     /************************************************************************************
-     * getter for size of task list
+     * getter for size of task list.
      * 
      * @return number of tasks
      ************************************************************************************/
@@ -133,8 +134,9 @@ public class ProjectStatusDataTable implements Serializable {
     }
 
     /************************************************************************************
-     * getter for index of task in list
-     * 
+     * getter for index of task in list.
+     *
+     * @param title
      * @return index of task
      ************************************************************************************/
     public int getTaskIndex(String title) {

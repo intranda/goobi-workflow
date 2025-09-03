@@ -4,10 +4,11 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:editor="http://goobi.io/editor"
+    >
 
     <composite:interface>
     </composite:interface>
@@ -234,8 +235,7 @@
                                     data-bs-toggle="collapse"
                                     data-bs-target="#possibleActions5"
                                     aria-expanded="false"
-                                    aria-controls="possibleActions5"
-                                    onclick="handleGoobiScriptCodeEditor()">
+                                    aria-controls="possibleActions5">
                                     <span class="btn btn-blank">
                                         <span class="fa fa-cogs" />
                                     </span>
@@ -256,38 +256,45 @@
                                             var="gs"
                                             value="#{ProzessverwaltungForm.allGoobiScripts}">
                                             <ui:fragment rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') or LoginForm.hasRole('goobiscript_'.concat(gs.one))}">
-                                                <span
+                                                <button
                                                     class="badge badge-intranda-light"
-                                                    onclick="goobiScriptCodeMirror.doc.setValue('#{gs.two}')"> #{gs.one} </span>
+                                                    type="button"
+                                                    data-codemirror-set="#{gs.two}">
+                                                    #{gs.one}
+                                                </button>
                                             </ui:fragment>
                                         </ui:repeat>
                                         <ui:repeat
                                             var="template"
                                             value="#{ProzessverwaltungForm.goobiScriptTemplates}">
                                             <ui:fragment rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript') or LoginForm.hasRole('goobiscript_'.concat(template.title))}">
-                                                <span
+                                                <button
                                                     class="badge badge-intranda-blue"
-                                                    data-toggle="tooltip"
-                                                    data-bs-original-title="#{template.description}"
-                                                    onclick="goobiScriptCodeMirror.doc.setValue('#{template.escapedScripts}')"> #{template.title} </span>
+                                                    type="button"
+                                                    data-codemirror-set="#{template.escapedScripts}">
+                                                    #{template.title}
+                                                </button>
                                             </ui:fragment>
                                         </ui:repeat>
                                     </div>
                                     <div class="mb-2">
-                                        <h:inputTextarea
-                                            id="goobiScriptfield"
-                                            pt:aria-label="goobiScriptfield"
-                                            forceId="true"
-                                            styleClass="form-control"
-                                            value="#{ProzessverwaltungForm.goobiScript}" />
+                                        <editor:code>
+                                            <h:inputTextarea
+                                                id="goobiScriptfield"
+                                                pt:aria-label="goobiScriptfield"
+                                                forceId="true"
+                                                styleClass="form-control"
+                                                value="#{ProzessverwaltungForm.goobiScript}"
+                                                pt:data-codemirror-target="true"
+											    pt:data-codemirror-language="yaml"
+                                                pt:data-codemirror-update-self="true"
+                                                 />
+                                        </editor:code>
                                     </div>
 
                                     <!-- GoobiScript für selektierte Treffer der Seite -->
                                     <ui:fragment rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
                                         <!-- GoobiScript für selektierte Treffer der Seite - modal rendern  -->
-                                        <script>
-
-                                                                                                                                                                </script>
                                         <button
                                             jsf:id="selectedModalRender"
                                             class="btn btn-link d-block"

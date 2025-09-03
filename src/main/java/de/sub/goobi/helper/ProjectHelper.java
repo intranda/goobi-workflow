@@ -40,14 +40,18 @@ import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
-public class ProjectHelper {
+public final class ProjectHelper {
+
+    private ProjectHelper() {
+        // hide implicit public constructor
+    }
 
     /**
      * static to reduce load
      * 
      * 
-     * @param instance
-     * @returns a GoobiCollection of the following structure:
+     * @param project
+     * @return a GoobiCollection of the following structure:
      * @GoobiCollection 1-n representing the steps each step has the following properties @ stepTitle,stepOrder,stepCount,stepImageCount
      *                  ,totalProcessCount,totalImageCount which can get extracted by the IGoobiCollection Inteface using the getItem(<name>) method
      * 
@@ -108,7 +112,7 @@ public class ProjectHelper {
         return workFlow;
     }
 
-    private static class CompareWorkflowSteps implements Comparator<StepInformation>, Serializable {
+    private static final class CompareWorkflowSteps implements Comparator<StepInformation>, Serializable {
         private static final long serialVersionUID = 1L;
 
         /**
@@ -122,12 +126,7 @@ public class ProjectHelper {
         }
     }
 
-    public static List<StepInformation> getWorkFlow(Project inProj, Boolean notOnlyCommonFlow) {
-
-        // false as default
-        if (notOnlyCommonFlow == null) {
-            notOnlyCommonFlow = false;
-        }
+    public static List<StepInformation> getWorkFlow(Project inProj, boolean notOnlyCommonFlow) {
 
         String projectFilter = FilterHelper.criteriaBuilder("\"project:" + MySQLHelper.escapeSql(inProj.getTitel()) + "\"", false, null, null,
                 null, true, false) + " AND prozesse.istTemplate = false ";

@@ -258,7 +258,10 @@ public class DisplayProperty implements IProperty, Serializable {
         } catch (NumberFormatException e) {
             log.error("Wrong ID format \"{}\"", ref);
             return "Broken vocabulary reference";
+            //CHECKSTYLE:OFF
+            // generic exception is thrown in case api is not reachable
         } catch (Exception e) {
+            //CHECKSTYLE:ON
             log.warn("Unable to retrieve vocabulary record reference \"{}\"", ref);
             return "Broken vocabulary reference";
         }

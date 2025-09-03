@@ -38,7 +38,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 
 /**
- * Use this filter to make sure, every request gets encoded as UTF8
+ * Use this filter to make sure, every request gets encoded as UTF8.
  * 
  * @author Steffen Hankiewicz
  */

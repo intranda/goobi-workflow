@@ -18,6 +18,7 @@
 
 package io.goobi.workflow.harvester.beans;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -59,12 +60,13 @@ public class Job implements Serializable, DatabaseObject {
     private String message;
     private Timestamp timestamp;
 
-    /***************************************************************************************************************
-     * Constructor
+    /**
+     * Constructor.
      *
      * @param id String (DB)
      * @param status String (WAITING,WORKING, ERROR, DONE)
      * @param repositoryId String
+     * @param repositoryName
      * @param message String
      * @param timestamp {@link Timestamp}
      ***************************************************************************************************************/
@@ -107,9 +109,11 @@ public class Job implements Serializable, DatabaseObject {
             if (!repository.isEnabled()) {
                 setStatus(CANCELLED);
                 setMessage("Repository is disabled");
-                log.info(
-                        "Repository {} is disabled so job {} has been cancelled. No new jobs will be created for this repository until it is re-activated.",
-                        getRepositoryId(), getId());
+                String s = """
+                        Repository {} is disabled so job {} has been cancelled.
+                        No new jobs will be created for this repository until it is re-activated.
+                        """;
+                log.info(s, getRepositoryId(), getId());
 
                 HarvesterRepositoryManager.updateJobStatus(this);
 
@@ -136,14 +140,14 @@ public class Job implements Serializable, DatabaseObject {
                 for (Record rec : unexportedRecords) {
                     ExportHistoryEntry hist = new ExportHistoryEntry(rec);
                     ExportOutcome outcome = rec.export(hist);
-                    switch (outcome.status) {
+                    switch (outcome.getStatus()) {
                         case OK:
                             HarvesterRepositoryManager.addExportHistoryEntry(hist);
                             break;
                         case SKIP:
                             break;
                         default:
-                            log.error("Export failed ({}): {}", rec.getIdentifier(), outcome.message);
+                            log.error("Export failed ({}): {}", rec.getIdentifier(), outcome.getMessage());
                             HarvesterRepositoryManager.addExportHistoryEntry(hist);
                             break;
                     }
@@ -189,7 +193,7 @@ public class Job implements Serializable, DatabaseObject {
             } else {
                 error("OAI Error: " + e.getMessage(), e);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             error(e.getMessage(), e);
         }
     }

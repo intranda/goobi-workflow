@@ -115,7 +115,7 @@ public class RulesetManager implements IManager, Serializable {
         return r;
     }
 
-    public static ResultSetHandler<Ruleset> resultSetToRulesetHandler = new ResultSetHandler<Ruleset>() {
+    public static final ResultSetHandler<Ruleset> resultSetToRulesetHandler = new ResultSetHandler<>() {
         @Override
         public Ruleset handle(ResultSet rs) throws SQLException {
             try {
@@ -130,7 +130,7 @@ public class RulesetManager implements IManager, Serializable {
 
     };
 
-    public static ResultSetHandler<List<Ruleset>> resultSetToRulesetListHandler = new ResultSetHandler<List<Ruleset>>() {
+    public static final ResultSetHandler<List<Ruleset>> resultSetToRulesetListHandler = new ResultSetHandler<>() {
         @Override
         public List<Ruleset> handle(ResultSet rs) throws SQLException {
             List<Ruleset> answer = new ArrayList<>();

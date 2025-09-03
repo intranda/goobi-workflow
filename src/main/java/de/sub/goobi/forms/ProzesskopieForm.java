@@ -51,6 +51,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.GoobiProperty;
@@ -546,7 +547,9 @@ public class ProzesskopieForm implements Serializable {
     /* =============================================================== */
 
     /**
-     * OpacAnfrage
+     * OpacAnfrage.
+     *
+     * @return empty string
      */
     public String opacAuswerten() {
         clearValues();
@@ -573,7 +576,9 @@ public class ProzesskopieForm implements Serializable {
             if (currentCatalogue.getOpacPlugin().getHitcount() > 1) {
                 Helper.setMeldung(null, "Found more then one hit", " - use first hit");
             }
+            //CHECKSTYLE:OFF generic exception is thrown, so it must be handled
         } catch (Exception e) {
+            //CHECKSTYLE:ON
             Helper.setFehlerMeldung("Error on reading opac ", e);
             log.error(e.toString(), e);
         }
@@ -595,11 +600,9 @@ public class ProzesskopieForm implements Serializable {
                     /* welches Docstruct */
                     DocStruct myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
                     if ("child".equals(field.getDocstruct()) || "firstchild".equals(field.getDocstruct())) { //NOSONAR
-                        try {
-                            myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
-                        } catch (RuntimeException e) {
-                            // nothing to do here
-                        }
+
+                        myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
+
                     }
                     if ("boundbook".equals(field.getDocstruct())) {
                         myTempStruct = this.myRdf.getDigitalDocument().getPhysicalDocStruct();
@@ -663,7 +666,7 @@ public class ProzesskopieForm implements Serializable {
     }
 
     /**
-     * alle Konfigurationseigenschaften und Felder zurücksetzen ================================================================
+     * alle Konfigurationseigenschaften und Felder zurücksetzen. ================================================================
      */
     private void clearValues() {
         if (this.opacKatalog == null) {
@@ -684,11 +687,12 @@ public class ProzesskopieForm implements Serializable {
     }
 
     /**
-     * Auswahl des Processes auswerten
+     * Auswahl des Processes auswerten.
      *
      * @throws DAOException
      * @throws NamingException
      * @throws SQLException ============================================================== ==
+     * @return navigation string
      */
     public String readMetadataFromTemplate() throws DAOException {
         /* den ausgewählten Process laden */
@@ -720,7 +724,7 @@ public class ProzesskopieForm implements Serializable {
                 colStruct = colStruct.getAllChildren().get(0);
                 removeCollections(colStruct);
             }
-        } catch (Exception e) {
+        } catch (UGHException | IOException | SwapException e) {
             Helper.setFehlerMeldung("Error on reading template-metadata", e);
             log.error("Error on reading template-metadata", e);
         }
@@ -784,7 +788,8 @@ public class ProzesskopieForm implements Serializable {
         /* kein Titel */
         if (this.prozessKopie.getTitel() == null || "".equals(this.prozessKopie.getTitel())) {
             valide = false;
-            Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty")); //NOSONAR
+            Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " "
+                    + Helper.getTranslation("ProcessCreationErrorTitleEmpty")); //NOSONAR
         }
 
         String validateRegEx = ConfigurationHelper.getInstance().getProcessTitleValidationRegex();
@@ -917,11 +922,13 @@ public class ProzesskopieForm implements Serializable {
     }
 
     /**
-     * Anlegen des Processes und Speichern der Metadaten ================================================================
+     * Anlegen des Processes und Speichern der Metadaten. ================================================================
      *
      * @throws DAOException
      * @throws SwapException
      * @throws WriteException
+     * 
+     * @return navigation string
      */
     public String createNewProcess()
             throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
@@ -988,23 +995,15 @@ public class ProzesskopieForm implements Serializable {
                     DocStruct myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
                     DocStruct myTempChild = null;
                     if ("child".equals(field.getDocstruct()) || "firstchild".equals(field.getDocstruct())) {
-                        try {
-                            myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
-                        } catch (RuntimeException e) {
-                            /*
-                             * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
-                             */
-                        }
+                        myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
+
                     }
                     /*
                      * falls topstruct und firstchild das Metadatum bekommen sollen
                      */
                     if (!"firstchild".equals(field.getDocstruct()) && field.getDocstruct().contains("firstchild")) {
-                        try {
-                            myTempChild = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
-                        } catch (RuntimeException e) {
-                            // nothing to do
-                        }
+                        myTempChild = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
+
                     }
                     if ("boundbook".equals(field.getDocstruct())) {
                         myTempStruct = this.myRdf.getDigitalDocument().getPhysicalDocStruct();
@@ -1028,10 +1027,10 @@ public class ProzesskopieForm implements Serializable {
                                 Metadata md = this.ughHelper.getMetadata(myTempStruct, mdt);
                                 if (md != null) {
                                     md.setValue(field.getWert());
-                                } else if (this.ughHelper.lastErrorMessage != null && field.getWert() != null && !field.getWert().isEmpty())
+                                } else if (this.ughHelper.getLastErrorMessage() != null && field.getWert() != null && !field.getWert().isEmpty())
                                 //if the md could not be found, warn!
                                 {
-                                    Helper.setFehlerMeldung(this.ughHelper.lastErrorMessage);
+                                    Helper.setFehlerMeldung(this.ughHelper.getLastErrorMessage());
                                     String strError = mdt.getName() + " : " + field.getWert();
                                     Helper.setFehlerMeldung(strError);
                                 }
@@ -1046,7 +1045,7 @@ public class ProzesskopieForm implements Serializable {
                                 }
                             }
                         }
-                    } catch (Exception e) {
+                    } catch (UghHelperException e) {
                         Helper.setFehlerMeldung(e);
 
                     }
@@ -1057,16 +1056,13 @@ public class ProzesskopieForm implements Serializable {
              * -------------------------------- Collectionen hinzufügen --------------------------------
              */
             DocStruct colStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
-            try {
-                addCollections(colStruct);
-                /* falls ein erstes Kind vorhanden ist, sind die Collectionen dafür */
+
+            addCollections(colStruct);
+            /* falls ein erstes Kind vorhanden ist, sind die Collectionen dafür */
+            if (colStruct.getAllChildren() != null) {
                 colStruct = colStruct.getAllChildren().get(0);
-                addCollections(colStruct);
-            } catch (RuntimeException e) {
-                /*
-                 * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
-                 */
             }
+            addCollections(colStruct);
 
             /*
              * -------------------------------- Imagepfad hinzufügen (evtl. vorhandene zunächst löschen) --------------------------------
@@ -1164,7 +1160,7 @@ public class ProzesskopieForm implements Serializable {
             for (UploadImage image : uploadedFiles) {
                 try {
                     StorageProvider.getInstance().deleteFile(image.getImagePath());
-                } catch (Exception e) {
+                } catch (IOException e) {
                     // do nothing, as this happens if the same file gets used in multiple target folders
                 }
             }
@@ -1562,9 +1558,9 @@ public class ProzesskopieForm implements Serializable {
     }
 
     /**
-     * Get the UI part of the opac plugin as path to let it be embedded into the process creation interface
+     * Get the UI part of the opac plugin as path to let it be embedded into the process creation interface.
      *
-     * @return
+     * @return navigation string
      */
     public String getPluginGui() {
         if (currentCatalogue == null || currentCatalogue.getOpacPlugin() == null) {
@@ -1579,7 +1575,7 @@ public class ProzesskopieForm implements Serializable {
      */
 
     /**
-     * Processtitel und andere Details generieren
+     * Processtitel und andere Details generieren.
      */
     public void calculateProcessTitle() {
         String currentAuthors = "";
@@ -1623,8 +1619,8 @@ public class ProzesskopieForm implements Serializable {
                 isnotdoctype = "";
             }
 
-            boolean containsDoctype = StringUtils.containsIgnoreCase(isdoctype, this.docType);
-            boolean containsNotDoctype = StringUtils.containsIgnoreCase(isnotdoctype, this.docType);
+            boolean containsDoctype = Strings.CI.contains(isdoctype, this.docType);
+            boolean containsNotDoctype = Strings.CI.contains(isnotdoctype, this.docType);
 
             /* wenn nix angegeben wurde, dann anzeigen */
             boolean useTitle = "".equals(isdoctype) && "".equals(isnotdoctype);
@@ -1824,9 +1820,10 @@ public class ProzesskopieForm implements Serializable {
      */
     public void setImagesGuessed(Integer imagesGuessed) {
         if (imagesGuessed == null) {
-            imagesGuessed = 0;
+            guessedImages = 0;
+        } else {
+            this.guessedImages = imagesGuessed;
         }
-        this.guessedImages = imagesGuessed;
     }
 
     /**
@@ -1979,7 +1976,7 @@ public class ProzesskopieForm implements Serializable {
     }
 
     /**
-     * Handle the upload of a file
+     * Handle the upload of a file.
      *
      * @param event
      */

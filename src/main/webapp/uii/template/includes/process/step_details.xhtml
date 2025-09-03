@@ -8,24 +8,14 @@
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:editor="http://goobi.io/editor"
+	>
 
 	<composite:interface>
 	</composite:interface>
 
 	<composite:implementation>
-		<script
-			type="text/javascript"
-			src="template/js/static/codemirror/codemirror.js?v=#{HelperForm.buildVersion}" />
-		<script
-			src="template/js/static/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}" />
-
-		<style>
-.CodeMirror {
-	border: 1px solid #ddd;
-	height: 100px;
-}
-</style>
 
 		<!-- BOX WITH TABLE FOR STEP DETAILS -->
 		<h:panelGroup
@@ -486,14 +476,19 @@
 							value="#{ProzessverwaltungForm.mySchritt.typAutomaticThumbnail}" />
 						<intranda:formHelp content="#{msgs.helpProcessStepAutomaticThumbnail}" msgFor="autoThumbnail" />
 
-						<div id="thumbsSettings" class="ps-5 w-100">
-							<h:inputTextarea
-								id="ThumbSettings"
-								forceId="true"
-								rows="8"
-								value="#{ProzessverwaltungForm.mySchritt.automaticThumbnailSettingsYaml}"
-								styleClass="form-control"
-								required="false" />
+						<div id="thumbsSettings" class="ms-5 w-100">
+							<editor:code>
+								<h:inputTextarea
+									id="ThumbSettings"
+									rows="8"
+									value="#{ProzessverwaltungForm.mySchritt.automaticThumbnailSettingsYaml}"
+									styleClass="form-control"
+									required="false"
+									pt:data-codemirror-target="true"
+									pt:data-codemirror-language="yaml"
+									pt:data-codemirror-update-self="true"
+									 />
+							</editor:code>
 						</div>
 					</div>
 				</div>
@@ -834,21 +829,19 @@
 		<script type="text/javascript">
 			if (window.attachEvent) {
 				window.attachEvent('onload',
-						function(){txtAutomatischAnzeigen(); initThumbCodeMirror(); showThumbsSettings();});
+						function(){txtAutomatischAnzeigen(); showThumbsSettings();});
 			} else {
 				if (window.onload) {
 					var curronload = window.onload;
 					var newonload = function() {
 						curronload();
 						txtAutomatischAnzeigen();
-						initThumbCodeMirror();
 						showThumbsSettings();
 					};
 					window.onload = newonload;
 				} else {
 					window.onload = function() {
 						txtAutomatischAnzeigen();
-						initThumbCodeMirror();
 						showThumbsSettings();
 					}
 				}
@@ -931,21 +924,6 @@
 						document.getElementById("thumbsSettings").style.display="none";
 					}
 				}
-			}
-
-			var yamlCodeMirror;
-
-			function initThumbCodeMirror(){
-				var yamlTextArea = document.querySelector('[id$=ThumbSettings]');
-				if(yamlTextArea) {
-					yamlCodeMirror = CodeMirror.fromTextArea(yamlTextArea, {
-   						lineNumbers: true,
-   						mode: 'yaml'
-   					});
-					yamlCodeMirror.on('change', editor => {
-						yamlTextArea.innerHTML = editor.getValue();
-   				    });
-               	}
 			}
 		</script>
 	</composite:implementation>

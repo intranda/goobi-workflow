@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import jakarta.faces.model.SelectItem;
 import lombok.Getter;
@@ -140,12 +141,12 @@ public class AdditionalField {
         }
 
         /* wenn pflicht angegeben wurde */
-        if (!"".equals(this.isdoctype) && !StringUtils.containsIgnoreCase(isdoctype, docType)) {
+        if (!"".equals(this.isdoctype) && !Strings.CI.contains(isdoctype, docType)) {
             return false;
         }
 
         /* wenn nur "darf nicht" angegeben wurde */
-        return "".equals(this.isnotdoctype) || !StringUtils.containsIgnoreCase(isnotdoctype, docType);
+        return "".equals(this.isnotdoctype) || !Strings.CI.contains(isnotdoctype, docType);
     }
 
     /**

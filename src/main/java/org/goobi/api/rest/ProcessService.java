@@ -404,14 +404,17 @@ public class ProcessService implements IRestAuthentication {
     /*
     JSON:
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template", "projectName": "Archive_Project",
-    "rulesetName": "Standard", "docketName": "Standard", "documentType": "Monograph", "propertiesList": [ {"name": "propertyName1", "value": "propertyValue1"}, {"name": "propertyName2", "value": "propertyValue2"} ],
-    "metadataList": [ {"name": "TitleDocMainShort", "value": "short title", "authorityValue": "authorityValue1"}, {"name": "Author", "value": "Jack Sparrow"},
+    "rulesetName": "Standard", "docketName": "Standard", "documentType": "Monograph", "propertiesList": [
+    {"name": "propertyName1", "value": "propertyValue1"},{"name": "propertyName2", "value": "propertyValue2"} ],
+    "metadataList": [ {"name": "TitleDocMainShort", "value": "short title", "authorityValue": "authorityValue1"},
+    {"name": "Author", "value": "Jack Sparrow"},
     {"name": "Creator", "authorityValue": "authorityValue3", "firstName": "Nicolas", "lastName": "Bourbaki"} ]}'
     
     XML:
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template</processTemplateName>
-    <projectName>Archive_Project</projectName><rulesetName>Standard</rulesetName><docketName>Standard</docketName><documentType>Monograph</documentType>
-    <propertiesList><element><name>propertyName1</name><value>propertyValue1</value></element><element><name>propertyName2</name><value>propertyValue2</value></element></propertiesList>
+    <projectName>Archive_Project</projectName><rulesetName>Standard</rulesetName><docketName>Standard</docketName>
+    <documentType>Monograph</documentType><propertiesList><element><name>propertyName1</name><value>propertyValue1</value>
+    </element><element><name>propertyName2</name><value>propertyValue2</value></element></propertiesList>
     <metadataList><element><authorityValue>authorityValue1</authorityValue><name>TitleDocMainShort</name><value>short title</value></element>
     <element><name>Author</name><value>Jack Sparrow</value></element>
     <element><authorityValue>authorityValue3</authorityValue><firstName>Nicolas</firstName><lastName>Bourbaki</lastName><name>Creator</name></element>
@@ -545,10 +548,8 @@ public class ProcessService implements IRestAuthentication {
             // save metadata file
             process.writeMetadataFile(fileformat);
 
-        } catch (IOException | SwapException | UGHException e) {
+        } catch (IOException | SwapException | UGHException | NullPointerException e) {
             Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Cannot read or save metadata.");
-        } catch (Exception e) {
-            Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Unknown error occurred: " + e.getMessage());
         }
 
         // start open automatic steps
@@ -576,8 +577,10 @@ public class ProcessService implements IRestAuthentication {
         return property;
     }
 
-    private void addNewMetadataToDocStruct(DocStruct dst, MetadataType mdType, String metadataValue, String authorityValue, String firstName,
-            String lastName) throws MetadataTypeNotAllowedException {
+    private void addNewMetadataToDocStruct(DocStruct dst, MetadataType mdType, String metadataValue, String authorityValue, String inFirstName,
+            String inLastName) throws MetadataTypeNotAllowedException {
+        String firstName = inFirstName;
+        String lastName = inLastName;
         if (mdType.getIsPerson()) {
             Person p = new Person(mdType);
             // if firstName and lastName are both blank, create them using metadataValue

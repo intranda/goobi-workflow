@@ -36,7 +36,7 @@ import lombok.Getter;
 public enum QueueType {
 
     /**
-     * goobi-internal queue for jobs that don't run long (max 5s)
+     * goobi-internal queue for jobs that don't run long (max 5s).
      */
     FAST_QUEUE("goobi_fast", "GOOBI_INTERNAL_FAST_QUEUE"),
 
@@ -46,17 +46,17 @@ public enum QueueType {
     SLOW_QUEUE("goobi_slow", "GOOBI_INTERNAL_SLOW_QUEUE"),
 
     /**
-     * external queue mostly used for shell script execution
+     * external queue mostly used for shell script execution.
      */
     EXTERNAL_QUEUE("goobi_external", "GOOBI_EXTERNAL_JOB_QUEUE"),
 
     /**
-     * external queue mostly used for shell script execution
+     * external queue mostly used for shell script execution.
      */
     EXTERNAL_DL_QUEUE("goobi_external.DLQ", "GOOBI_EXTERNAL_JOB_DLQ"),
 
     /**
-     * the command queue is used by worker nodes to close steps and write to process logs
+     * the command queue is used by worker nodes to close steps and write to process logs.
      */
     COMMAND_QUEUE("goobi_command", "GOOBI_EXTERNAL_COMMAND_QUEUE"),
 
@@ -66,7 +66,7 @@ public enum QueueType {
     DEAD_LETTER_QUEUE("ActiveMQ.DLQ", "GOOBI_INTERNAL_DLQ"),
 
     /**
-     * This is an unknown queue / the "null" value for this enum
+     * This is an unknown queue / the "null" value for this enum.
      */
     NONE("NO_QUEUE", "");
 
@@ -74,7 +74,7 @@ public enum QueueType {
     @Getter
     private String configName;
 
-    private QueueType(String queueName, String configName) {
+    QueueType(String queueName, String configName) {
         this.queueName = queueName;
         this.configName = configName;
     }

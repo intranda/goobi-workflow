@@ -31,7 +31,12 @@ import org.goobi.beans.Ruleset;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class RulesetMysqlHelper implements Serializable {
+final class RulesetMysqlHelper implements Serializable {
+
+    private RulesetMysqlHelper() {
+        // hide implicit public constructor
+    }
+
     private static final long serialVersionUID = -4768263760579941811L;
 
     public static List<Ruleset> getRulesets(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
@@ -49,8 +54,8 @@ class RulesetMysqlHelper implements Serializable {
             } else {
                 sql.append(" WHERE ");
             }
-            sql.append(
-                    "MetadatenKonfigurationID in (SELECT object_id FROM institution_configuration where object_type = 'ruleset' and selected = true and institution_id = ");
+            sql.append("MetadatenKonfigurationID in (SELECT object_id FROM institution_configuration where ");
+            sql.append("object_type = 'ruleset' and selected = true and institution_id = ");
             sql.append(institution.getId());
             sql.append(") ");
         }

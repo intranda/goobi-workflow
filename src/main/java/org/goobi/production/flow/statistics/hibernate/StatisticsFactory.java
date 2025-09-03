@@ -33,7 +33,11 @@ import org.goobi.production.flow.statistics.enums.TimeUnit;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 
-public class StatisticsFactory {
+public final class StatisticsFactory {
+
+    private StatisticsFactory() {
+        // hide implicit public constructor
+    }
 
     public static IStepRequestByName getStepRequestByName(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids) {
         if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.H2) {

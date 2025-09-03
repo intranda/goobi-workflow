@@ -35,13 +35,13 @@ import org.goobi.production.flow.statistics.StatisticsManager;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * class helps to convert results returned from Projections or Queries, where data types don't match the target data type
+ * class helps to convert results returned from Projections or Queries, where data types don't match the target data type.
  */
 @Log4j2
 public class Converter {
 
-    Object myObject = null;
-    SimpleDateFormat sdf;
+    private Object myObject = null;
+    private SimpleDateFormat sdf;
 
     /**
      * constructor retrieves current locale and uses it for formatting data
@@ -55,9 +55,9 @@ public class Converter {
     }
 
     /**
-     * constructor (parameterless constructor is set to private)
+     * constructor (parameterless constructor is set to private).
      * 
-     * @param Object which will get converted
+     * @param obj Object which will get converted
      */
     public Converter(Object obj) {
         this();

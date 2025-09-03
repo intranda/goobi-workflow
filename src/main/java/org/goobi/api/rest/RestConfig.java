@@ -38,7 +38,11 @@ import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 
 import de.sub.goobi.helper.Helper;
 
-public class RestConfig {
+public final class RestConfig {
+
+    private RestConfig() {
+        // hide implicit public constructor
+    }
 
     private static XMLConfiguration config = null;
 
@@ -62,8 +66,8 @@ public class RestConfig {
 
         SubnodeConfiguration endpoint = null;
         List<?> endpoints = config.configurationsAt("//endpoint");
-        for (int i = 0; i < endpoints.size(); i++) {
-            SubnodeConfiguration possibleEp = (SubnodeConfiguration) endpoints.get(i);
+        for (Object endpoint2 : endpoints) {
+            SubnodeConfiguration possibleEp = (SubnodeConfiguration) endpoint2;
             String regex = possibleEp.getString("@path");
             if (Pattern.matches(regex, path)) {
                 endpoint = possibleEp;

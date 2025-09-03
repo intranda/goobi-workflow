@@ -22,10 +22,9 @@ import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import io.goobi.workflow.api.vocabulary.helper.RecordListRequest;
 import jakarta.faces.model.SelectItem;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 public class VocabularyRecordAPI {
+
     private static final String IN_VOCABULARY_RECORDS_ENDPOINT = "/api/v1/vocabularies/{{0}}/records";
     private static final String METADATA_ENDPOINT = "/api/v1/vocabularies/{{0}}/metadata";
     private static final String INSTANCE_ENDPOINT = "/api/v1/records/{{0}}";
@@ -34,7 +33,7 @@ public class VocabularyRecordAPI {
     private final CachedLookup<Long, ExtendedVocabularyRecord> singleLookupCache;
     private final CachedLookup<RecordListRequest, VocabularyRecordPageResult> listLookupCache;
 
-    public class VocabularyRecordQueryBuilder {
+    public final class VocabularyRecordQueryBuilder {
         private final long vocabularyId;
         private Optional<Integer> page = Optional.empty();
         private Optional<Integer> pageSize = Optional.empty();
@@ -260,8 +259,8 @@ public class VocabularyRecordAPI {
     }
 
     private boolean translationIsEmpty(TranslationInstance translationInstance) {
-        return translationInstance.getValue().isEmpty() ||
-                translationInstance.getLanguage() == null && "null".equals(translationInstance.getValue());
+        return translationInstance.getValue().isEmpty()
+                || translationInstance.getLanguage() == null && "null".equals(translationInstance.getValue());
     }
 
     private boolean valueIsEmpty(FieldValue fieldValue) {

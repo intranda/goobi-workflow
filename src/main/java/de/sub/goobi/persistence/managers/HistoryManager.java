@@ -29,7 +29,12 @@ import org.goobi.beans.HistoryEvent;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class HistoryManager implements Serializable {
+public final class HistoryManager implements Serializable {
+
+    private HistoryManager() {
+        // hide implicit public constructor
+    }
+
     private static final long serialVersionUID = -6083287984702600461L;
 
     private static final String HISTORY_EVENT_SAVE_ERROR = "Cannot save history event";

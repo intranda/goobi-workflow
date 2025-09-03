@@ -54,7 +54,11 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
 
 @Log4j2
-public class JobCreation {
+public final class JobCreation {
+
+    private JobCreation() {
+        // hide implicit public constructor
+    }
 
     public static Process generateProcess(ImportObject io, Process vorlage) {
         String processTitle = io.getProcessTitle();
@@ -83,15 +87,11 @@ public class JobCreation {
                     deleteDirectory(imagesFolder);
                 }
             }
-            try {
-                StorageProvider.getInstance().deleteDir(metsfile);
-                if (StorageProvider.getInstance().isFileExists(metsAnchorFile)) {
-                    StorageProvider.getInstance().deleteDir(metsAnchorFile);
-                }
-            } catch (Exception e) {
-                log.error("Can not delete file " + processTitle, e);
-                return null;
+            StorageProvider.getInstance().deleteDir(metsfile);
+            if (StorageProvider.getInstance().isFileExists(metsAnchorFile)) {
+                StorageProvider.getInstance().deleteDir(metsAnchorFile);
             }
+
             Path anchor = Paths.get(basepath + "_anchor.xml");
             if (StorageProvider.getInstance().isFileExists(anchor)) {
                 StorageProvider.getInstance().deleteDir(anchor);

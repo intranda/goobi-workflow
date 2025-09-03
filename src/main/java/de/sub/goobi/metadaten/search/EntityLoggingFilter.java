@@ -48,7 +48,7 @@ import lombok.extern.log4j.Log4j2;
 public class EntityLoggingFilter implements ClientRequestFilter, ClientResponseFilter, WriterInterceptor {
     private static final String ENTITY_STREAM_PROPERTY = "EntityLoggingFilter.entityStream";
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private static final int maxEntitySize = 1024 * 8;
+    private static final int MAX_ENTITY_SIZE = 1024 * 8;
 
     private void log(StringBuilder sb) {
         log.info(sb.toString());
@@ -58,11 +58,11 @@ public class EntityLoggingFilter implements ClientRequestFilter, ClientResponseF
         if (!stream.markSupported()) {
             stream = new BufferedInputStream(stream);
         }
-        stream.mark(maxEntitySize + 1);
-        final byte[] entity = new byte[maxEntitySize + 1];
+        stream.mark(MAX_ENTITY_SIZE + 1);
+        final byte[] entity = new byte[MAX_ENTITY_SIZE + 1];
         final int entitySize = stream.read(entity);
-        b.append(new String(entity, 0, Math.min(entitySize, maxEntitySize), charset));
-        if (entitySize > maxEntitySize) {
+        b.append(new String(entity, 0, Math.min(entitySize, MAX_ENTITY_SIZE), charset));
+        if (entitySize > MAX_ENTITY_SIZE) {
             b.append("...more...");
         }
         b.append('\n');
@@ -115,7 +115,7 @@ public class EntityLoggingFilter implements ClientRequestFilter, ClientResponseF
             final byte[] entity = baos.toByteArray();
 
             sb.append(new String(entity, 0, entity.length, charset));
-            if (entity.length > maxEntitySize) {
+            if (entity.length > MAX_ENTITY_SIZE) {
                 sb.append("...more...");
             }
             sb.append('\n');

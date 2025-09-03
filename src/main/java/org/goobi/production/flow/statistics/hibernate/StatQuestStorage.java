@@ -106,7 +106,7 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
 
                 dataRow.addValue(Helper.getTranslation("storageDifference"), (new Converter(objArr[0]).getGB()));
 
-            } catch (Exception e) {
+            } catch (NullPointerException e) {
                 dataRow.addValue(e.getMessage(), Double.valueOf(0));
             }
 

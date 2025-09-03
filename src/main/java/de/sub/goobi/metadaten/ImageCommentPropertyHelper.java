@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * class used to replace the ImageCommentHelper to save image comments as process properties
+ * class used to replace the ImageCommentHelper to save image comments as process properties.
  * 
  * @author zehong
  *
@@ -91,10 +91,12 @@ public class ImageCommentPropertyHelper {
     }
 
     private ImageComments loadImageComments() {
+        @SuppressWarnings("deprecation")
         Processproperty currentProperty = prepareProcessproperty(IMAGE_COMMENTS_PROPERTY_NAME);
         return loadImageCommentsFromProcessProperty(currentProperty);
     }
 
+    @SuppressWarnings("deprecation")
     private void saveImageComments(ImageComments ic) {
         Processproperty currentProperty = prepareProcessproperty(IMAGE_COMMENTS_PROPERTY_NAME);
         String newPropertyValue = createPropertyValue(ic);
@@ -107,6 +109,7 @@ public class ImageCommentPropertyHelper {
         return gson.toJson(comments, ImageComments.class);
     }
 
+    @SuppressWarnings("deprecation")
     private Processproperty prepareProcessproperty(String propertyTitle) {
         List<Processproperty> props = PropertyManager.getProcessPropertiesForProcess(process.getId());
         for (Processproperty p : props) {
@@ -122,6 +125,7 @@ public class ImageCommentPropertyHelper {
         return property;
     }
 
+    @SuppressWarnings("deprecation")
     private ImageComments loadImageCommentsFromProcessProperty(Processproperty property) {
         String propertyValue = property.getPropertyValue();
         if (propertyValue == null) {
@@ -136,7 +140,7 @@ public class ImageCommentPropertyHelper {
         }
     }
 
-    private class ImageComments {
+    private final class ImageComments {
         private List<ImageComment> comments = new LinkedList<>();
     }
 

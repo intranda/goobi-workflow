@@ -8,7 +8,9 @@
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-	xmlns:util="http://goobi.io/util">
+	xmlns:util="http://goobi.io/util"
+	xmlns:editor="http://goobi.io/editor"
+	>
 
 	<ui:param name="myPageTitle"
 		value="#{msgs.intranda_administration_ruleset_editor}" />
@@ -373,7 +375,7 @@
 									</button>
 								</div>
 								<!-- Text editor -->
-								<div id="rulesetEditorBorder" style="border: 1px solid #ddd;">
+								<editor:code>
 									<h:inputTextarea
 										id="rulesetEditor"
 										style="resize: none;"
@@ -381,8 +383,8 @@
 										forceId="true"
 										styleClass="form-control"
 										value="#{rulesetEditorBean.currentRulesetFileContent}"
-                                        pt:data-codemirror-target="true"
-                                        pt:data-codemirror-language="xml" />
+										pt:data-codemirror-target="true"
+										pt:data-codemirror-language="xml" />
 									<h:inputText
 										id="rulesetEditorBase64"
 										style="display: none;"
@@ -390,8 +392,8 @@
 										forceId="true"
 										styleClass="form-control"
 										value="#{rulesetEditorBean.currentRulesetFileContentBase64}"
-                                        pt:data-codemirror-reference="#{cc.clientId}:rulesetEditor" />
-								</div>
+										pt:data-codemirror-reference="#{cc.clientId}:rulesetEditor" />
+								</editor:code>
 							</div>
 						</intranda:box>
 					</h:panelGroup>

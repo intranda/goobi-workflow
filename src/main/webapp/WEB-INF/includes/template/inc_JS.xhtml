@@ -49,6 +49,9 @@
             (() => {
                 document.querySelectorAll('.grow-wrap').forEach( (wrap) => {
                     const textarea = wrap.querySelector('textarea');
+                    if (!textarea) {
+                        return;
+                    }
                     // Sync wrap and textarea on load
                     wrap.dataset.content = textarea.value;
                     textarea.addEventListener('input', () => {
@@ -63,6 +66,9 @@
                 document.querySelectorAll('.grow-wrap').forEach( (wrap) => {
                     // Sync wrap and textarea on load
                     const textarea = wrap.querySelector('textarea');
+                    if (!textarea) {
+                        return;
+                    }
                     wrap.dataset.content = textarea.value;
                     textarea.addEventListener('input', () => {
                         wrap.dataset.content = textarea.value;

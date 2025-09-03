@@ -31,7 +31,7 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * This class provides a simple data structure for holding required information on Export Validators
+ * This class provides a simple data structure for holding required information on Export Validators.
  * 
  * @author Janos Sebök
  */
@@ -53,7 +53,6 @@ public class ExportValidator {
      * Constructor to allow quickly building ExportValidator objects based on label.
      * 
      * @param label A unique Export Validator label to find the associated command for
-     * @return An ExportValidator bean with both the label and the command properly set up
      */
     public ExportValidator(String label) {
 

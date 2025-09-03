@@ -51,7 +51,7 @@ public class Object {
     }
 
     /**
-     * @param objectURI
+     * @param uriString
      * @throws URISyntaxException
      */
     public Object(String uriString) throws URISyntaxException {

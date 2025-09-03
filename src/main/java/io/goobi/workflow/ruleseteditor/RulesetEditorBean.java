@@ -133,7 +133,7 @@ public class RulesetEditorBean implements Serializable {
     private boolean showMore = false;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public RulesetEditorBean() {
         XMLConfiguration configuration = new XMLConfiguration();
@@ -397,7 +397,7 @@ public class RulesetEditorBean implements Serializable {
             // validate the new xml
             this.validate();
 
-        } catch (Exception e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             Helper.setFehlerMeldung("Error while trying to fix the problem", e);
             log.error(e);
         }
@@ -570,7 +570,7 @@ public class RulesetEditorBean implements Serializable {
         try {
             StreamSource source = new StreamSource(new StringReader(xml));
             rulesetValidator.validate(source);
-        } catch (Exception e) {
+        } catch (IOException | SAXException e) {
             if (e instanceof SAXParseException se) {
                 validationErrors.add(new RulesetValidationError(
                         se.getLineNumber(), 0, "ERROR", e.getMessage(), null, null));

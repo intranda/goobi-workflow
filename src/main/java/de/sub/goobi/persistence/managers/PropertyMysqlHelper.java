@@ -37,7 +37,13 @@ import de.sub.goobi.helper.enums.PropertyType;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class PropertyMysqlHelper implements Serializable {
+@SuppressWarnings("deprecation")
+final class PropertyMysqlHelper implements Serializable {
+
+    private PropertyMysqlHelper() {
+        // hide implicit public constructor
+    }
+
     private static final long serialVersionUID = 5175567943231852013L;
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) throws SQLException {
@@ -259,7 +265,7 @@ class PropertyMysqlHelper implements Serializable {
     }
 
     public static List<String> getPropertyTitles(PropertyOwnerType propertyType) throws SQLException {
-        String sql = "select distinct property_name from properties where object_type = ? order by property_name";
+        String sql = "select distinct property_name from properties where object_type = ? and property_name is not null order by property_name";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

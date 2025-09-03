@@ -120,7 +120,7 @@ public class GoobiScriptTemplateManager implements IManager, Serializable {
         return r;
     }
 
-    public static final ResultSetHandler<GoobiScriptTemplate> resultSetToGoobiScriptTemplatetHandler = new ResultSetHandler<GoobiScriptTemplate>() {
+    public static final ResultSetHandler<GoobiScriptTemplate> RESULTSET_TO_GOOBISCRIPTTEMPLATE_HANDLER = new ResultSetHandler<GoobiScriptTemplate>() {
         @Override
         public GoobiScriptTemplate handle(ResultSet rs) throws SQLException {
             try {
@@ -135,7 +135,7 @@ public class GoobiScriptTemplateManager implements IManager, Serializable {
 
     };
 
-    public static final ResultSetHandler<List<GoobiScriptTemplate>> resultSetToGoobiScriptTemplateListHandler =
+    public static final ResultSetHandler<List<GoobiScriptTemplate>> RESULTSET_TO_GOOBISCRIPTTEMPLATE_LIST_HANDLER =
             new ResultSetHandler<List<GoobiScriptTemplate>>() {
                 @Override
                 public List<GoobiScriptTemplate> handle(ResultSet rs) throws SQLException {

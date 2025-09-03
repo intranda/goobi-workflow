@@ -70,10 +70,9 @@ import lombok.extern.log4j.Log4j2;
  * TODO: implement {@link #getObjectUrl()} for audio/video to deliver the appropriate file/information
  */
 @Log4j2
-public @Data class Image {
+@Data
+public class Image {
     private static final int LARGE_THUMBNAIL_SIZE_FACTOR = 3;
-    private static final String PLACEHOLDER_URL_PDF = "/uii/template/img/goobi_placeholder_pdf_large.png?version=1";
-    private static final String PLACEHOLDER_URL_EPUB = "/uii/template/img/goobi_placeholder_epub_large.png?version=1";
     private static final String PLACEHOLDER_URL_3D = "/uii/template/img/goobi_3d_object_placeholder_large.png?version=1";
     private static final String PLACEHOLDER_URL_VIDEO = "/uii/template/img/goobi_placeholder_video_large.png?version=1";
     private static final String PLACEHOLDER_URL_AUDIO = "/uii/template/img/goobi_placeholder_audio_large.png?version=1";
@@ -148,7 +147,7 @@ public @Data class Image {
      * thumbnails.
      *
      * @param process The goobi process containing the image
-     * @param imageFolderName The name of the image folder (typically ..._media or master_..._media)
+     * @param inImageFolderName The name of the image folder (typically ..._media or master_..._media)
      * @param filename The filename of the image file
      * @param order The order of the image within the goobi process
      * @param thumbnailSize The size of the thumbnails to create. May be null, in which case the configured default is used
@@ -157,15 +156,16 @@ public @Data class Image {
      * @throws SwapException From {@link Process#getImagesDirectory()}
      * @throws DAOException From {@link Process#getImagesDirectory()}
      */
-    public Image(Process process, String imageFolderName, String filename, int order, Integer thumbnailSize)
+    public Image(Process process, String inImageFolderName, String filename, int order, Integer thumbnailSize)
             throws IOException, SwapException, DAOException {
-        imageFolderName = Paths.get(imageFolderName).getFileName().toString();
+        String imageFolderName = Paths.get(inImageFolderName).getFileName().toString();
         this.imagePath = getImagePath(process, imageFolderName, filename);
         this.imageName = this.imagePath.getFileName().toString();
         this.type = Type.getFromPath(imagePath);
         this.order = order;
         this.tooltip = filename;
-        if (Type.image.equals(this.type) || Type.pdf.equals(this.type)) { //handle pdfs like images since they can be read as such by the contentServer
+        //handle pdfs like images since they can be read as such by the contentServer
+        if (Type.image.equals(this.type) || Type.pdf.equals(this.type)) {
             this.bookmarkUrl = createThumbnailUrl(process, 1000, imageFolderName, filename);
             this.objectUrl = createIIIFUrl(process, imageFolderName, filename);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type) || Type.object2vr.equals(this.type)) {
@@ -229,12 +229,13 @@ public @Data class Image {
     }
 
     /**
-     * Recreates the urls to the image thumbnails using the given size
+     * Recreates the urls to the image thumbnails using the given size.
      *
      * @param size The size of the smaller thumbnails
      */
     public void createThumbnailUrls(int size) {
-        if (Type.image.equals(this.type) || Type.pdf.equals(this.type)) { //handle pdfs like images since they can be read as such by the contentServer
+        //handle pdfs like images since they can be read as such by the contentServer
+        if (Type.image.equals(this.type) || Type.pdf.equals(this.type)) {
             this.thumbnailUrl = replaceSizeInUri(thumbnailUrl, size);
             this.largeThumbnailUrl = replaceSizeInUri(thumbnailUrl, size * LARGE_THUMBNAIL_SIZE_FACTOR);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type)) {
@@ -250,7 +251,8 @@ public @Data class Image {
         }
     }
 
-    private String replaceSizeInUri(String uri, int size) {
+    private String replaceSizeInUri(String inUuri, int size) {
+        String uri = inUuri;
         Pattern pattern = Pattern.compile("(.*\\/full\\/)\\d+,\\d*(\\/\\d+\\/\\w+\\.\\w+)");
         Matcher matcher = pattern.matcher(uri);
         if (matcher.matches()) {
@@ -264,9 +266,13 @@ public @Data class Image {
      * Recreates the urls to the image thumbnails using the given size
      *
      * @param size The size of the smaller thumbnails
+     * @param process
+     * @param imageFoldername
+     * @param filename
      */
     public void createThumbnailUrls(int size, Process process, String imageFoldername, String filename) {
-        if (Type.image.equals(this.type) || Type.pdf.equals(this.type)) { //handle pdfs like images since they can be read as such by the contentServer
+        //handle pdfs like images since they can be read as such by the contentServer
+        if (Type.image.equals(this.type) || Type.pdf.equals(this.type)) {
             this.thumbnailUrl = createThumbnailUrl(process, size, imageFoldername, filename);
             this.largeThumbnailUrl = createThumbnailUrl(process, size * LARGE_THUMBNAIL_SIZE_FACTOR, imageFoldername, filename);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type) || Type.object2vr.equals(this.type)) {
@@ -295,7 +301,7 @@ public @Data class Image {
     }
 
     /**
-     * Add a level to pyramid image display
+     * Add a level to pyramid image display.
      *
      * @param imageUrl The url to call
      * @param size The size of this level
@@ -313,7 +319,7 @@ public @Data class Image {
     }
 
     /**
-     * Returns true if any image levels were created, false otherwise
+     * Returns true if any image levels were created, false otherwise.
      *
      * @return true if any image levels were created, false otherwise
      */
@@ -322,7 +328,7 @@ public @Data class Image {
     }
 
     /**
-     * Returns a json object containing the image information as required by an OpenSeadragon viewer as String
+     * Returns a json object containing the image information as required by an OpenSeadragon viewer as String.
      */
     @Override
     public String toString() {
@@ -330,7 +336,7 @@ public @Data class Image {
     }
 
     /**
-     * Gets the size of the image
+     * Gets the size of the image.
      *
      * @return The size of the images, or null if the size could not be determined
      */
@@ -351,7 +357,7 @@ public @Data class Image {
     }
 
     /**
-     * Reads the size of an image file from its image header
+     * Reads the size of an image file from its image header.
      *
      * @param path Path to image file
      * @return The width and height of the image
@@ -370,7 +376,7 @@ public @Data class Image {
     }
 
     /**
-     * Creates a goobi rest api url to a json object containing the information about the 3D object (mostly associated files)
+     * Creates a goobi rest api url to a json object containing the information about the 3D object (mostly associated files).
      *
      * @param process
      * @param imageFolderName
@@ -405,7 +411,7 @@ public @Data class Image {
     }
 
     /**
-     * Creates a rest url to the iiif image information about this image
+     * Creates a rest url to the iiif image information about this image.
      *
      * @param process The process containing the image
      * @param imageFolderName The name of the image folder used
@@ -458,7 +464,7 @@ public @Data class Image {
     }
 
     /**
-     * Enum for media types to be handled
+     * Enum for media types to be handled.
      *
      * @author Florian Alpers
      *
@@ -475,7 +481,7 @@ public @Data class Image {
         epub;
 
         /**
-         * Determine the media type from the file extension of the given path
+         * Determine the media type from the file extension of the given path.
          *
          * @param path
          * @return The corresponding type, {@link #unknown} if no media type could be determined
@@ -503,9 +509,9 @@ public @Data class Image {
         }
 
         /**
-         * Returns the corresponding type, {@link #unknown} if no media type could be determined
+         * Returns the corresponding type, {@link #unknown} if no media type could be determined.
          *
-         * @param extension The file extension, without the preceding dot
+         * @param filename The file extension, without the preceding dot
          * @return The corresponding type, {@link #unknown} if no media type could be determined
          */
         public static Type getFromFilenameExtension(String filename) {

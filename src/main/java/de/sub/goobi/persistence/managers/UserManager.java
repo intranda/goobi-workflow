@@ -260,7 +260,7 @@ public class UserManager implements IManager, Serializable {
         return r;
     }
 
-    public static final ResultSetHandler<User> resultSetToUserHandler = new ResultSetHandler<User>() {
+    public static final ResultSetHandler<User> resultSetToUserHandler = new ResultSetHandler<>() {
         @Override
         public User handle(ResultSet rs) throws SQLException {
             try {
@@ -274,7 +274,7 @@ public class UserManager implements IManager, Serializable {
         }
     };
 
-    public static final ResultSetHandler<List<User>> resultSetToUserListHandler = new ResultSetHandler<List<User>>() {
+    public static final ResultSetHandler<List<User>> resultSetToUserListHandler = new ResultSetHandler<>() {
         @Override
         public List<User> handle(ResultSet rs) throws SQLException {
             List<User> answer = new ArrayList<>();
@@ -304,7 +304,7 @@ public class UserManager implements IManager, Serializable {
         return null;
     }
 
-    public static final ResultSetHandler<AuthenticationToken> resultSetToAuthenticationTokenHandler = new ResultSetHandler<AuthenticationToken>() {
+    public static final ResultSetHandler<AuthenticationToken> resultSetToAuthenticationTokenHandler = new ResultSetHandler<>() {
         @Override
         public AuthenticationToken handle(ResultSet rs) throws SQLException {
             try {
@@ -319,41 +319,41 @@ public class UserManager implements IManager, Serializable {
     };
 
     public static final ResultSetHandler<List<AuthenticationToken>> resultSetToAuthenticationTokenListHandler =
-            new ResultSetHandler<List<AuthenticationToken>>() {
-        @Override
-        public List<AuthenticationToken> handle(ResultSet rs) throws SQLException {
-            List<AuthenticationToken> answer = new ArrayList<>();
-            try {
-                while (rs.next()) {
-                    answer.add(convertToken(rs));
+            new ResultSetHandler<>() {
+                @Override
+                public List<AuthenticationToken> handle(ResultSet rs) throws SQLException {
+                    List<AuthenticationToken> answer = new ArrayList<>();
+                    try {
+                        while (rs.next()) {
+                            answer.add(convertToken(rs));
+                        }
+                    } finally {
+                        rs.close();
+                    }
+                    return answer;
                 }
-            } finally {
-                rs.close();
-            }
-            return answer;
-        }
-    };
+            };
 
     public static final ResultSetHandler<List<AuthenticationMethodDescription>> resultSetToAuthenticationTokenMethodListHandler =
-            new ResultSetHandler<List<AuthenticationMethodDescription>>() {
-        @Override
-        public List<AuthenticationMethodDescription> handle(ResultSet rs) throws SQLException {
-            List<AuthenticationMethodDescription> answer = new ArrayList<>();
-            try {
-                while (rs.next()) {
-                    AuthenticationMethodDescription o = new AuthenticationMethodDescription(rs.getString("method_type"),
-                            rs.getString("method_description"), rs.getString("method_url"));
-                    o.setMethodID(rs.getInt("id"));
-                    o.setApiTokenId(rs.getInt("token_id"));
-                    o.setSelected(rs.getBoolean("selected"));
-                    answer.add(o);
+            new ResultSetHandler<>() {
+                @Override
+                public List<AuthenticationMethodDescription> handle(ResultSet rs) throws SQLException {
+                    List<AuthenticationMethodDescription> answer = new ArrayList<>();
+                    try {
+                        while (rs.next()) {
+                            AuthenticationMethodDescription o = new AuthenticationMethodDescription(rs.getString("method_type"),
+                                    rs.getString("method_description"), rs.getString("method_url"));
+                            o.setMethodID(rs.getInt("id"));
+                            o.setApiTokenId(rs.getInt("token_id"));
+                            o.setSelected(rs.getBoolean("selected"));
+                            answer.add(o);
+                        }
+                    } finally {
+                        rs.close();
+                    }
+                    return answer;
                 }
-            } finally {
-                rs.close();
-            }
-            return answer;
-        }
-    };
+            };
 
     public static void addUsergroupAssignment(User user, Integer gruppenID) {
         try {
@@ -430,7 +430,7 @@ public class UserManager implements IManager, Serializable {
      * @param stepName
      * @param projectId
      * @param stepStatus
-     * @return
+     * @return user list
      */
 
     public static List<User> getUsersToInformByMail(String stepName, Integer projectId, String stepStatus) {
@@ -444,9 +444,9 @@ public class UserManager implements IManager, Serializable {
     }
 
     /**
-     * Remove email configuration for a project
+     * Remove email configuration for a project.
      * 
-     * @param myClass
+     * @param user
      * @param projektID
      */
 
@@ -459,10 +459,11 @@ public class UserManager implements IManager, Serializable {
     }
 
     /**
-     * Remove email configuration for a single step within a project
+     * Remove email configuration for a single step within a project.
      * 
-     * @param myClass
-     * @param projektID
+     * @param user
+     * @param projectID
+     * @param stepName
      */
 
     public static void deleteEmailAssignmentForStep(User user, int projectID, String stepName) {

@@ -217,7 +217,7 @@ public class ProcessManager implements IManager, Serializable {
      * @param start position in case of a paginated list, set to null or 0 in case you need all entries
      * @param count number of entries in a paginated list, set to null in case you need all entries
      * @param institution limit the result to Batches within an institution. Set to null, if limitation is not needed
-     * @return
+     * @return batch list
      */
 
     public static List<Batch> getBatchesWithFilter(String filter, Integer start, Integer count, Institution institution) {
@@ -232,7 +232,7 @@ public class ProcessManager implements IManager, Serializable {
     /**
      * Returns a list of all batches without any assigned processes ordered by id/creation time.
      * 
-     * @return
+     * @return all empty batches
      * @throws SQLException
      */
 
@@ -362,6 +362,7 @@ public class ProcessManager implements IManager, Serializable {
     /**
      *
      * @deprecated use {@link JournalManager#saveJournalEntry(JournalEntry entry} instead
+     * @param entry entry to save
      */
     @Deprecated(since = "2022-09", forRemoval = true)
     public static void saveLogEntry(JournalEntry entry) {
@@ -371,6 +372,7 @@ public class ProcessManager implements IManager, Serializable {
     /**
      *
      * @deprecated use {@link JournalManager#deleteJournalEntry(JournalEntry entry)} instead
+     * @param entry entry to delete
      */
     @Deprecated(since = "2022-09", forRemoval = true)
     public static void deleteLogEntry(JournalEntry entry) {

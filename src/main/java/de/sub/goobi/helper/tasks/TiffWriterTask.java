@@ -1,5 +1,7 @@
 package de.sub.goobi.helper.tasks;
 
+import java.io.IOException;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -35,6 +37,7 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.exceptions.SwapException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -58,13 +61,13 @@ public class TiffWriterTask extends LongRunningTask {
          * -------------------*/
         try {
             imageFolder = getProzess().getImagesDirectory();
-        } catch (Exception e) {
+        } catch (IOException | SwapException e) {
             log.error(e);
             setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - " + e.getMessage());
             setStatusProgress(-1);
             return;
         }
-        if (imageFolder.equals("")) {
+        if ("".equals(imageFolder)) {
             setStatusMessage("No imagefolder found");
             setStatusProgress(-1);
             return;

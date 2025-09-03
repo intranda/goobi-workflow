@@ -41,6 +41,10 @@ import net.xeoh.plugins.base.util.PluginManagerUtil;
 
 public class PluginLoader implements Serializable {
 
+    public PluginLoader() {
+        // default constructor is needed, class gets extended
+    }
+
     private static final long serialVersionUID = -5922522891886118875L;
 
     public static List<IPlugin> getPluginList(PluginType inType) {

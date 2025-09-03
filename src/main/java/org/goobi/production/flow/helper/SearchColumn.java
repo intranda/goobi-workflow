@@ -96,7 +96,8 @@ public class SearchColumn implements Serializable {
         }
         if (value.startsWith(TABLE_PROCESS_PROPERTIES)) {
             return " properties " + getTableName() + " ON prozesse.ProzesseID = " + getTableName() + ".object_id AND "
-                    + getTableName() + ".object_type = 'process' AND " + getTableName() + ".property_name = \"" + value.substring(value.indexOf(".") + 1)
+                    + getTableName() + ".object_type = 'process' AND " + getTableName() + ".property_name = \""
+                    + value.substring(value.indexOf(".") + 1)
                     + "\"";
 
         } else if (value.startsWith(TABLE_METADATA)) {

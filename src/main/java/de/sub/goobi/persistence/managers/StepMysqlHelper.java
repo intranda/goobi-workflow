@@ -51,7 +51,11 @@ import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class StepMysqlHelper implements Serializable {
+public final class StepMysqlHelper implements Serializable {
+
+    private StepMysqlHelper() {
+        // hide implicit public constructor
+    }
 
     private static final long serialVersionUID = -2064912552692963L;
 
@@ -387,6 +391,7 @@ class StepMysqlHelper implements Serializable {
         return s;
     }
 
+    @SuppressWarnings("deprecation")
     public static final ResultSetHandler<List<ErrorProperty>> resultSetToErrorPropertyListHandler = new ResultSetHandler<>() {
 
         @Override
@@ -524,20 +529,8 @@ class StepMysqlHelper implements Serializable {
 
     }
 
-    private static void saveErrorProperty(ErrorProperty property) throws SQLException {
-        if (property.getId() == null) {
-            PropertyMysqlHelper.insertProperty(property);
-        } else {
-            PropertyMysqlHelper.updateProperty(property);
-        }
-    }
-
     private static List<GoobiProperty> getErrorPropertiesForStep(int stepId) throws SQLException {
         return PropertyMysqlHelper.getPropertiesForObject(stepId, PropertyOwnerType.ERROR);
-    }
-
-    private static void deleteErrorProperty(ErrorProperty property) throws SQLException {
-        PropertyMysqlHelper.deleteProperty(property);
     }
 
     private static void insertStep(Step o) throws SQLException {
@@ -592,7 +585,8 @@ class StepMysqlHelper implements Serializable {
                     o.isTypBeimAnnehmenModul(), // typBeimAnnehmenModul
                     o.isTypBeimAnnehmenAbschliessen(), // typBeimAnnehmenAbschliessen
                     o.isTypBeimAnnehmenModulUndAbschliessen(), // typBeimAnnehmenModulUndAbschliessen
-                    (o.getTypAutomatischScriptpfad() == null || "".equals(o.getTypAutomatischScriptpfad())) ? null : o.getTypAutomatischScriptpfad(), // typAutomatischScriptpfad
+                    (o.getTypAutomatischScriptpfad() == null || "".equals(o.getTypAutomatischScriptpfad()))
+                            ? null : o.getTypAutomatischScriptpfad(), // typAutomatischScriptpfad
                     o.isTypBeimAbschliessenVerifizieren(), // typBeimAbschliessenVerifizieren
                     (o.getTypModulName() == null || "".equals(o.getTypModulName())) ? null : o.getTypModulName(), // typModulName
                     o.getUserId() == null ? null : o.getUserId(), //BearbeitungsBenutzerID
@@ -638,7 +632,7 @@ class StepMysqlHelper implements Serializable {
                     o.isTypBeimAnnehmenModul(), // typBeimAnnehmenModul
                     o.isTypBeimAnnehmenAbschliessen(), // typBeimAnnehmenAbschliessen
                     o.isTypBeimAnnehmenModulUndAbschliessen(), // typBeimAnnehmenModulUndAbschliessen
-                    (o.getTypAutomatischScriptpfad() == null || "".equals(o.getTypAutomatischScriptpfad())) ? null : o.getTypAutomatischScriptpfad(), // typAutomatischScriptpfad
+                    (o.getTypAutomatischScriptpfad() == null || "".equals(o.getTypAutomatischScriptpfad())) ? null : o.getTypAutomatischScriptpfad(),
                     o.isTypBeimAbschliessenVerifizieren(), // typBeimAbschliessenVerifizieren
                     (o.getTypModulName() == null || "".equals(o.getTypModulName())) ? null : o.getTypModulName(), // typModulName
                     o.getUserId() == null ? null : o.getUserId(), //BearbeitungsBenutzerID
@@ -669,9 +663,11 @@ class StepMysqlHelper implements Serializable {
 
     private static String generateValueQuery(boolean includeID) {
         if (!includeID) {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
+                    + " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         } else {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                    + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
     }
@@ -682,12 +678,13 @@ class StepMysqlHelper implements Serializable {
             answer.append(" SchritteID, ");
         }
         answer.append("Titel, Prioritaet, Reihenfolge, Bearbeitungsstatus, BearbeitungsZeitpunkt, BearbeitungsBeginn, BearbeitungsEnde, ")
-                .append("homeverzeichnisNutzen, typMetadaten, typAutomatisch, typAutomaticThumbnail, automaticThumbnailSettingsYaml, typImportFileUpload, typExportRus, typImagesLesen, typImagesSchreiben, ")
-                .append("typExportDMS, typBeimAnnehmenModul, typBeimAnnehmenAbschliessen, typBeimAnnehmenModulUndAbschliessen, typAutomatischScriptpfad, ")
+                .append("homeverzeichnisNutzen, typMetadaten, typAutomatisch, typAutomaticThumbnail, automaticThumbnailSettingsYaml, ")
+                .append("typImportFileUpload, typExportRus, typImagesLesen, typImagesSchreiben, typExportDMS, ")
+                .append("typBeimAnnehmenModul, typBeimAnnehmenAbschliessen, typBeimAnnehmenModulUndAbschliessen, typAutomatischScriptpfad, ")
                 .append("typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, ")
                 .append("scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, ")
-                .append("scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex, generateDocket,")
-                .append("httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep, httpEscapeBodyJson, messageQueue)")
+                .append("scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex, ")
+                .append("generateDocket, httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep, httpEscapeBodyJson, messageQueue)")
                 .append(" VALUES ");
         return answer.toString();
     }
@@ -1276,7 +1273,7 @@ class StepMysqlHelper implements Serializable {
     }
 
     /**
-     * Delete a list of steps in a single statement
+     * Delete a list of steps in a single statement.
      * 
      * @param steps
      * @throws SQLException

@@ -201,7 +201,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     private Integer docketId;
 
     private final MetadatenSperrung msp = new MetadatenSperrung();
-    Helper help = new Helper();
+    private Helper help = new Helper();
 
     private HashMap<String, String> tempVariableMap = new HashMap<>();
 
@@ -227,7 +227,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     @Getter
     private boolean pauseAutomaticExecution;
 
-    private static final Object xmlWriteLock = new Object();
+    private static final Object XML_WRITE_LOCK = new Object();
 
     @Getter
     private EntryType entryType = EntryType.PROCESS;
@@ -297,7 +297,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             String benutzerID = this.msp.getLockBenutzer(this.id.intValue());
             try {
                 rueckgabe = UserManager.getUserById(Integer.parseInt(benutzerID));
-            } catch (Exception e) {
+            } catch (NumberFormatException | DAOException e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("userNotFound"), e);
             }
         }
@@ -435,11 +435,12 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             } else {
                 rueckgabe = masterFolder;
             }
-            if (ConfigurationHelper.getInstance().isUseMasterDirectory() && this.getSortHelperStatus() != "100000000"
+            if (ConfigurationHelper.getInstance().isUseMasterDirectory() && !"100000000".equals(getSortHelperStatus())
                     && ConfigurationHelper.getInstance().isCreateMasterDirectory()) {
                 try {
                     FilesystemHelper.createDirectory(rueckgabe);
-                } catch (IOException | InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+                } catch (IOException | InterruptedException e) { //NOSONAR
+                    // InterruptedException must not be re-thrown as it is not running in a separate thread
                     log.error(e);
                 }
             }
@@ -455,7 +456,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
      * then that part is removed from the returned name Otherwise, the whole name is returned
      *
      * @param thumbDirName
-     * @return
+     * @return folder name
      */
     public String getMatchingImageDir(String thumbDirName) {
         if (thumbDirName.matches(".*_\\d+")) {
@@ -526,7 +527,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     /**
      * @deprecated This method is not used anymore
      *
-     * @return
+     * @return _wc folder
      */
     @Deprecated(since = "23.05", forRemoval = true)
     public String getOcrWcDirectory() throws SwapException, IOException {
@@ -586,14 +587,15 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
         try {
             FilesystemHelper.createDirectory(pfad);
-        } catch (IOException | InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+        } catch (IOException | InterruptedException e) { //NOSONAR
+            // InterruptedException must not be re-thrown as it is not running in a separate thread
             log.error(e);
         }
         return pfad;
     }
 
     /**
-     * Get the process thumbnail directory which is located directly in the process directory and named 'thumbs'
+     * Get the process thumbnail directory which is located directly in the process directory and named 'thumbs'.
      *
      * @return The full path to the thumbnail directory ending with a path separator
      * @throws IOException
@@ -716,10 +718,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * Get the image sizes of all thumbnail folders for the given image Folder
+     * Get the image sizes of all thumbnail folders for the given image Folder.
      *
      * @param imageDirectory
-     * @return
+     * @return list of all thumbs folder
      * @throws IOException
      * @throws InterruptedException
      * @throws SwapException
@@ -978,7 +980,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         Path metaFile = Paths.get(path, META_FILE);
 
         // cancel if less than 10 mb free storage is available
-        if (Files.getFileStore(Paths.get(path)).getUsableSpace() < 10485760l) {
+        if (Files.getFileStore(Paths.get(path)).getUsableSpace() < 10485760L) {
             Helper.setFehlerMeldung(Helper.getTranslation("process_writeErrorNoSpace"));
             log.error("Saving metadata for {} was cancelled because there is not enough storage available.", id);
             return false;
@@ -994,7 +996,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
 
-        synchronized (xmlWriteLock) {
+        synchronized (XML_WRITE_LOCK) {
             ff.setDigitalDocument(gdzfile.getDigitalDocument());
             try {
                 ff.write(path + META_FILE);
@@ -1135,8 +1137,11 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * prüfen, ob der Vorgang Schritte enthält, die keinem Benutzer und keiner Benutzergruppe zugewiesen ist
-     * ================================================================
+     * prüfen, ob der Vorgang Schritte enthält, die keinem Benutzer und keiner Benutzergruppe zugewiesen ist.
+     * 
+     * @return true, if a step has no user/group assigned
+     * 
+     *         ================================================================
      */
     public boolean getContainsUnreachableSteps() {
         if (getSchritteList().isEmpty()) {
@@ -1151,8 +1156,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * check if there is one task in edit mode, where the user has the rights to write to image folder
-     * ================================================================
+     * check if there is one task in edit mode, where the user has the rights to write to image folder.
+     * 
+     * @return true, if a step with write access is in work
      */
     public boolean isImageFolderInUse() {
         for (Step s : getSchritteList()) {
@@ -1164,7 +1170,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * get user of task in edit mode with rights to write to image folder ================================================================
+     * get user of task in edit mode with rights to write to image folder.
+     * 
+     * @return user name
      */
     public User getImageFolderInUseUser() {
         for (Step s : getSchritteList()) {
@@ -1177,7 +1185,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     /**
      * here different Getters and Setters for the same value, because Hibernate does not like bit-Fields with null Values (thats why Boolean) and
-     * MyFaces seams not to like Boolean (thats why boolean for the GUI) ================================================================
+     * MyFaces seams not to like Boolean (thats why boolean for the GUI).
+     * 
+     * @return true if process is swapped out
      */
     public Boolean isSwappedOutHibernate() {
         return this.swappedOut;
@@ -1211,7 +1221,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * download xml logfile for current process
+     * download xml logfile for current process.
      */
     public void downloadLogFile() {
 
@@ -1266,7 +1276,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * generate simplified set of structure and metadata to provide a PDF generation for printing
+     * generate simplified set of structure and metadata to provide a PDF generation for printing.
      */
     public void downloadSimplifiedMetadataAsPDF() {
         log.debug("generate simplified metadata xml for process " + this.id);
@@ -1456,7 +1466,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * getter for the representative as IIIF URL of the configured thumbnail size
+     * getter for the representative as IIIF URL of the configured thumbnail size.
      *
      * @return IIIF URL for the representative thumbnail image
      */
@@ -1466,7 +1476,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * convert the path of the representative into a IIIF URL of the given size
+     * convert the path of the representative into a IIIF URL of the given size.
      *
      * @param thumbnailWidth max width of the image
      * @return IIIF URL for the representative image
@@ -1508,7 +1518,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * get the path of the representative as string from the filesystem
+     * get the path of the representative as string from the filesystem.
      *
      * @return path of representative image
      */
@@ -1583,7 +1593,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * return specific variable for this process adapted by the central VariableReplacer
+     * return specific variable for this process adapted by the central VariableReplacer.
      *
      * @param inVariable
      * @return adapted result with replaced value
@@ -1599,7 +1609,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                 try {
                     Fileformat gdzfile = readMetadataFile();
                     dd = gdzfile.getDigitalDocument();
-                } catch (Exception e) {
+                } catch (UGHException | IOException | SwapException e) {
                     log.error("error reading METS file for process " + id, e);
                 }
             }
@@ -1617,7 +1627,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * Get all Step titles for steps of a given status as String with a given separator
+     * Get all Step titles for steps of a given status as String with a given separator.
      *
      * @param status long value for the status (0=Locked, 1=Open, 2=InWork, 3=Done, 4=Error, 5=Deactivated)
      * @param separator String value to use as separator
@@ -1642,7 +1652,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     /**
      * Get a list of folder names to select from. Not all folder can be selected.
      *
-     * @return
+     * @return folder list
      */
 
     public List<SelectItem> getVisibleFolder() {
@@ -1757,7 +1767,11 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * Change the process title and rename folders, property values ezc
+     * Change the process title and rename folders, property values etc.
+     *
+     * @param newTitle
+     *
+     * @return success
      */
 
     public boolean changeProcessTitle(String newTitle) {
@@ -1794,7 +1808,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException | SwapException | NullPointerException e) {
             log.trace("could not rename folder", e);
         }
 
@@ -1855,10 +1869,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * get the complete path to a folder as string, or null if the folder name is unknown
+     * get the complete path to a folder as string, or null if the folder name is unknown.
      *
      * @param folderName
-     * @return
+     * @return folder name
      * @throws IOException
      * @throws InterruptedException
      * @throws SwapException
@@ -1892,7 +1906,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * Get the date of the last finished step
+     * Get the date of the last finished step.
+     *
+     * @return date as string
      */
 
     public String getLastStatusChangeDate() {
@@ -1913,7 +1929,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * Get the user name of the last finished step
+     * Get the user name of the last finished step.
+     * 
+     * @return user name
      */
 
     public String getLastStatusChangeUser() {
@@ -1941,7 +1959,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     * Get the name of the last finished task
+     * Get the name of the last finished task.
+     * 
+     * @return last task name
      *
      */
 
@@ -1982,6 +2002,9 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                         case INWORK:
                         case OPEN:
                             automaticTasks.add(step);
+                            break;
+                        default:
+                            // nothing
                     }
                 }
             }
@@ -2026,6 +2049,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     /**
      *
      * @deprecated use getJournal() instead
+     * @return entry list
      */
     @Deprecated(since = "23.05", forRemoval = true)
     public List<JournalEntry> getProcessLog() {
@@ -2033,7 +2057,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
-     *
+     * @param journal
      * @deprecated use setJournal() instead
      */
     @Deprecated(since = "23.05", forRemoval = true)

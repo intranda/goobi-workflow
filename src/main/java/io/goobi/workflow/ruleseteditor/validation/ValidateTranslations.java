@@ -27,7 +27,7 @@ import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
 public class ValidateTranslations {
     /**
-     * Validate the XML structure starting from the root element to find empty <language> fields in xml
+     * Validate the XML structure starting from the root element to find empty <language> fields in xml.
      * 
      * @param root The root XML element to be validated.
      * @return errors A list of XMLError objects containing details about unvalid Translations

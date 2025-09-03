@@ -109,7 +109,7 @@ public class StatisticalQuestionBean implements Serializable {
     }
 
     /**
-     * Get all {@link TimeUnit} from enum
+     * Get all {@link TimeUnit} from enum.
      * 
      * @return all timeUnits
      *************************************************************************************/
@@ -130,7 +130,7 @@ public class StatisticalQuestionBean implements Serializable {
     }
 
     /**
-     * Get all {@link CalculationUnit} from enum
+     * Get all {@link CalculationUnit} from enum.
      * 
      * @return all calculationUnit
      *************************************************************************************/

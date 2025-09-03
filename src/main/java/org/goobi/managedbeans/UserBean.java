@@ -176,13 +176,17 @@ public class UserBean extends BasicBean implements Serializable {
                 String like = MySQLHelper.escapeString(searchParts[index]);
                 like = "\'%" + MySQLHelper.escapeSql(like) + "%\'";
                 String inGroup =
-                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzergruppenmitgliedschaft, benutzergruppen WHERE benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel LIKE "
+                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzergruppenmitgliedschaft, benutzergruppen "
+                                + "WHERE benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID "
+                                + "AND benutzergruppen.titel LIKE "
                                 + like + ")";
                 String inProject =
-                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE "
+                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID "
+                                + "= projekte.ProjekteID AND projekte.titel LIKE "
                                 + like + ")";
                 String inInstitution =
-                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzer, institution WHERE benutzer.institution_id = institution.id AND (institution.shortName LIKE "
+                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzer, institution WHERE benutzer.institution_id = "
+                                + "institution.id AND (institution.shortName LIKE "
                                 + like + " OR institution.longName LIKE " + like + "))";
                 String inName = "Vorname LIKE " + like + " OR Nachname LIKE " + like + " OR login LIKE " + like + " OR Standort LIKE " + like;
                 sqlQueryBuilder.append(inName).append(" OR ").append(inGroup).append(" OR ").append(inProject).append(" OR ").append(inInstitution);

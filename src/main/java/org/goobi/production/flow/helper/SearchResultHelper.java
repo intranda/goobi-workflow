@@ -227,20 +227,20 @@ public class SearchResultHelper {
         document.close();
     }
 
-    public XSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
+    public XSSFWorkbook getResult(List<SearchColumn> inColumnList, String filter, String order, boolean showClosedProcesses,
             boolean showArchivedProjects) {
-        List<SearchColumn> sortedList = new ArrayList<>(columnList.size());
-        for (SearchColumn sc : columnList) {
+        List<SearchColumn> sortedList = new ArrayList<>(inColumnList.size());
+        for (SearchColumn sc : inColumnList) {
             if (!sc.getTableName().startsWith(METADATA)) {
                 sortedList.add(sc);
             }
         }
-        for (SearchColumn sc : columnList) {
+        for (SearchColumn sc : inColumnList) {
             if (sc.getTableName().startsWith(METADATA)) {
                 sortedList.add(sc);
             }
         }
-        columnList = sortedList;
+        List<SearchColumn> columnList = sortedList;
 
         @SuppressWarnings("rawtypes")
         List list = search(columnList, filter, order, showClosedProcesses, showArchivedProjects);

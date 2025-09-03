@@ -55,13 +55,14 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import io.goobi.workflow.api.connection.HttpUtils;
 import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilderException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-/*************************************************************************************
+/**
  * Creation of PDF-Files as long running task for GoobiContentServerServlet First of all the variables have to be set via the setters after that you
- * can initialize and run it
+ * can initialize and run it.
  * 
  * @author Steffen Hankiewicz
  * @version 12.02.2009
@@ -92,7 +93,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
     }
 
     /**
-     * Aufruf als Thread ================================================================
+     * Aufruf als Thread. ================================================================
      */
     @Override
     public void run() {
@@ -219,7 +220,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                 Path tempMets = Paths.get(this.metsURL.toString());
                 StorageProvider.getInstance().deleteDir(tempMets);
             }
-        } catch (Exception e) {
+        } catch (IOException | IllegalArgumentException | UriBuilderException | SwapException e) {
             log.error("Error while creating pdf for " + this.getProzess().getTitel(), e);
             setStatusMessage("error " + e.getClass().getSimpleName() + " while pdf creation: " + e.getMessage());
             setStatusProgress(-1);

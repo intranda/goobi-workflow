@@ -30,7 +30,12 @@ import org.goobi.beans.Institution;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class DocketMysqlHelper implements Serializable {
+final class DocketMysqlHelper implements Serializable {
+
+    private DocketMysqlHelper() {
+        // hide implicit public constructor
+    }
+
     private static final long serialVersionUID = 8079331483121462356L;
 
     public static List<Docket> getDockets(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
@@ -65,7 +70,7 @@ class DocketMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            return new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketListHandler);
+            return new QueryRunner().query(connection, sql.toString(), DocketManager.RESULTSET_TO_DOCKET_LIST_HANDLER);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -117,7 +122,7 @@ class DocketMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            return new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketHandler);
+            return new QueryRunner().query(connection, sql.toString(), DocketManager.RESULTSET_TO_DOCKET_HANDLER);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -195,7 +200,7 @@ class DocketMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            return new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketListHandler);
+            return new QueryRunner().query(connection, sql.toString(), DocketManager.RESULTSET_TO_DOCKET_LIST_HANDLER);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -213,7 +218,7 @@ class DocketMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            return new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketHandler, name);
+            return new QueryRunner().query(connection, sql.toString(), DocketManager.RESULTSET_TO_DOCKET_HANDLER, name);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

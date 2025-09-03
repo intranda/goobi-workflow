@@ -55,9 +55,9 @@ public class ProcessSwapOutTask extends LongRunningTask {
     }
 
     /**
-     * Aufruf als Thread ================================================================
+     * Aufruf als Thread. ================================================================
      */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     @Override
     public void run() {
         setStatusProgress(5);
@@ -85,8 +85,7 @@ public class ProcessSwapOutTask extends LongRunningTask {
         }
         try {
             processDirectory = getProzess().getProcessDataDirectoryIgnoreSwapping();
-            //TODO: Don't catch Exception (the super class)
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.warn("Exception:", e);
             setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - " + e.getMessage());
             setStatusProgress(-1);
@@ -148,8 +147,7 @@ public class ProcessSwapOutTask extends LongRunningTask {
             FileOutputStream fos = new FileOutputStream(processDirectory + FileSystems.getDefault().getSeparator() + "swapped.xml");
             xmlOut.output(doc, fos);
             fos.close();
-            //TODO: Don't catch Exception (the super class)
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.warn("Exception:", e);
             setStatusMessage(e.getClass().getName() + " in xmlOut.output: " + e.getMessage());
             setStatusProgress(-1);

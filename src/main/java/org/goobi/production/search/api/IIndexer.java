@@ -38,24 +38,24 @@ import org.goobi.beans.Process;
 public interface IIndexer {
 
     /**
-     * adds am Object to index
+     * adds am Object to index.
      * 
-     * @param p the process to add
+     * @param process the process to add
      */
-    public void addObject(Process process);
+    void addObject(Process process);
 
     /**
-     * removes an Object from index
+     * removes an Object from index.
      * 
-     * @param p the process to remove
+     * @param process the process to remove
      */
-    public void removeObject(Process process);
+    void removeObject(Process process);
 
     /**
-     * updates an Object in index
+     * updates an Object in index.
      * 
-     * @param p the process to update
+     * @param process the process to update
      */
-    public void updateObject(Process process);
+    void updateObject(Process process);
 
 }

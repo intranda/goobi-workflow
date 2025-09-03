@@ -19,12 +19,12 @@ package org.goobi.beans;
 
 import java.io.Serializable;
 import java.nio.file.Path;
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.goobi.production.enums.LogType;
-import java.text.DateFormat;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
@@ -81,7 +81,7 @@ public class JournalEntry implements Serializable {
     /**
      * Return the base name of a file. The basename is the name part of the file without the path
      *
-     * @return
+     * @return basename of a file
      */
 
     public String getBasename() {

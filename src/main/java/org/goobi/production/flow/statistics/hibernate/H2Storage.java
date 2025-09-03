@@ -35,7 +35,7 @@ import de.sub.goobi.helper.enums.HistoryEventType;
 import jakarta.enterprise.inject.Alternative;
 
 /**
- * Class provides SQL for storage statistics
+ * Class provides SQL for storage statistics.
  * 
  * 
  * @author Wulf Riebensahm

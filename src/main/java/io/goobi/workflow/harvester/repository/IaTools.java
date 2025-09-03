@@ -44,7 +44,7 @@ import io.goobi.workflow.harvester.beans.Record;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class IaTools {
+public final class IaTools {
 
     private static final String FOLDER_NAME_MONOGRAPH = "monograph";
     private static final String FOLDER_NAME_MULTIVOLUME = "multivolume";

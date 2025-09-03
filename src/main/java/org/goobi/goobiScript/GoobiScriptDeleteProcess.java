@@ -137,7 +137,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                             log.info(contentCouldBeDeletedWithId);
                             gsr.setResultMessage(contentCouldBeDeleted);
                             gsr.setResultType(GoobiScriptResultType.OK);
-                        } catch (Exception e) {
+                        } catch (IOException e) {
                             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, contentCouldNotBeDeleted, username);
                             log.error(contentCouldNotBeDeletedWithId);
                             gsr.setResultMessage(contentCouldNotBeDeleted + " process OCR directory deletion error: " + e.getMessage());
@@ -157,7 +157,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                             log.info(contentCouldBeDeletedWithId);
                             gsr.setResultMessage(contentCouldBeDeleted);
                             gsr.setResultType(GoobiScriptResultType.OK);
-                        } catch (Exception e) {
+                        } catch (IOException e) {
                             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, contentCouldNotBeDeleted, username);
                             log.error(contentCouldNotBeDeletedWithId);
                             gsr.setResultMessage(contentCouldNotBeDeleted + " process content deletion error: " + e.getMessage());
@@ -172,7 +172,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                             log.info(processCouldBeDeletedWithId);
                             gsr.setResultMessage(processCouldBeDeleted);
                             gsr.setResultType(GoobiScriptResultType.OK);
-                        } catch (Exception e) {
+                        } catch (IOException e) {
                             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, processCouldNotBeDeleted, username);
                             log.error(processCouldNotBeDeletedWithId);
                             gsr.setResultMessage(processCouldNotBeDeleted + " process deletion error: " + e.getMessage());

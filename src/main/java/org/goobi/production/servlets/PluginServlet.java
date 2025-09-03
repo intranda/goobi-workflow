@@ -39,7 +39,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * Servlet implementation class PluginServlet
+ * Servlet implementation class PluginServlet.
  */
 @Log4j2
 public class PluginServlet extends HttpServlet {

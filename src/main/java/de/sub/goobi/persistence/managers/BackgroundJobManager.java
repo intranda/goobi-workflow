@@ -109,7 +109,7 @@ public class BackgroundJobManager implements IManager, Serializable {
 
     }
 
-    public static final ResultSetHandler<BackgroundJob> resultSetToJobHandler = new ResultSetHandler<BackgroundJob>() {
+    public static final ResultSetHandler<BackgroundJob> RESULT_SET_TO_JOB_HANDLER = new ResultSetHandler<BackgroundJob>() {
         @Override
         public BackgroundJob handle(ResultSet rs) throws SQLException {
             try {
@@ -123,7 +123,7 @@ public class BackgroundJobManager implements IManager, Serializable {
         }
     };
 
-    public static final ResultSetHandler<List<BackgroundJob>> resultSetToJoListbHandler = new ResultSetHandler<List<BackgroundJob>>() {
+    public static final ResultSetHandler<List<BackgroundJob>> RESULT_SET_TO_JOB_LIST_HANDLER = new ResultSetHandler<List<BackgroundJob>>() {
         @Override
         public List<BackgroundJob> handle(ResultSet rs) throws SQLException {
             List<BackgroundJob> answer = new ArrayList<>();

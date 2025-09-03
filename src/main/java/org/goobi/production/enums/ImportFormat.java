@@ -39,7 +39,7 @@ public enum ImportFormat {
     @Setter
     private String title;
 
-    private ImportFormat(String inValue, String inTitle) {
+    ImportFormat(String inValue, String inTitle) {
         setValue(inValue);
         setTitle(inTitle);
     }

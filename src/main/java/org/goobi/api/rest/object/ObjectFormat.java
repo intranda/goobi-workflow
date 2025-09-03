@@ -37,8 +37,8 @@ public enum ObjectFormat {
     TDS;
 
     /**
-     * @param substring
-     * @return
+     * @param filename
+     * @return format
      */
     public static ObjectFormat getByFileExtension(String filename) {
         switch (FilenameUtils.getExtension(filename.toLowerCase())) {

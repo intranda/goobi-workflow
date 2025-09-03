@@ -50,8 +50,6 @@ public class GenericAutomaticStepHandler implements TicketHandler<PluginReturnVa
             myThread.join();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (Exception e) {
-            return PluginReturnValue.ERROR;
         }
         return PluginReturnValue.FINISH;
     }

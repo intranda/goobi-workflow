@@ -41,7 +41,7 @@ import org.goobi.production.flow.statistics.enums.TimeUnit;
  ***********************************************************************/
 class SQLProduction extends SQLGenerator {
 
-    public SQLProduction(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids) {
+    SQLProduction(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids) {
         super(timeFrom, timeTo, timeUnit, ids, null);
     }
 

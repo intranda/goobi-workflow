@@ -32,13 +32,19 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Hashtable;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -93,7 +99,7 @@ public class LdapAuthentication {
     }
 
     /**
-     * create new user in LDAP-directory
+     * create new user in LDAP-directory.
      * 
      * @param inBenutzer
      * @param inPasswort
@@ -106,7 +112,7 @@ public class LdapAuthentication {
             throws NamingException, NoSuchAlgorithmException, IOException, InterruptedException {
 
         if (!inBenutzer.getLdapGruppe().isReadonly()) {
-            Hashtable<String, String> env = LdapConnectionSettings(inBenutzer);
+            Hashtable<String, String> env = ldapConnectionSettings(inBenutzer);
             env.put(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
             env.put(Context.SECURITY_CREDENTIALS, inBenutzer.getLdapGruppe().getAdminPassword());
 
@@ -145,7 +151,7 @@ public class LdapAuthentication {
     }
 
     /**
-     * Check if connection with login and password possible
+     * Check if connection with login and password possible.
      * 
      * @param inBenutzer
      * @param inPasswort
@@ -155,7 +161,7 @@ public class LdapAuthentication {
         if (log.isDebugEnabled()) {
             log.debug("start login session with ldap");
         }
-        Hashtable<String, String> env = LdapConnectionSettings(inBenutzer);
+        Hashtable<String, String> env = ldapConnectionSettings(inBenutzer);
 
         // Start TLS
         if (inBenutzer.getLdapGruppe().isUseTLS()) {
@@ -264,7 +270,7 @@ public class LdapAuthentication {
     }
 
     /**
-     * retrieve home directory of given user
+     * retrieve home directory of given user.
      * 
      * @param inBenutzer
      * @return path as string
@@ -282,7 +288,7 @@ public class LdapAuthentication {
             return ConfigurationHelper.getInstance().getUserFolder() + inBenutzer.getLogin();
         }
 
-        Hashtable<String, String> env = LdapConnectionSettings(inBenutzer);
+        Hashtable<String, String> env = ldapConnectionSettings(inBenutzer);
         if (inBenutzer.getLdapGruppe().isUseTLS()) {
 
             env = new Hashtable<>();
@@ -362,13 +368,13 @@ public class LdapAuthentication {
     }
 
     /**
-     * check if User already exists on system
+     * check if User already exists on system.
      * 
      * @param inBenutzer
      * @return path as string
      */
     public boolean isUserAlreadyExists(User inBenutzer) {
-        Hashtable<String, String> env = LdapConnectionSettings(inBenutzer);
+        Hashtable<String, String> env = ldapConnectionSettings(inBenutzer);
         env.put(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
         env.put(Context.SECURITY_CREDENTIALS, inBenutzer.getLdapGruppe().getAdminPassword());
         DirContext ctx;
@@ -392,27 +398,27 @@ public class LdapAuthentication {
                 String hd;
                 try {
                     givenName = attrs.get("givenName").toString();
-                } catch (Exception err) {
+                } catch (NullPointerException err) {
                     givenName = " ";
                 }
                 try {
                     surName = attrs.get("sn").toString();
-                } catch (Exception e2) {
+                } catch (NullPointerException e2) {
                     surName = " ";
                 }
                 try {
                     mail = attrs.get("mail").toString();
-                } catch (Exception e3) {
+                } catch (NullPointerException e3) {
                     mail = " ";
                 }
                 try {
                     cn = attrs.get("cn").toString();
-                } catch (Exception e4) {
+                } catch (NullPointerException e4) {
                     cn = " ";
                 }
                 try {
                     hd = attrs.get(inBenutzer.getLdapGruppe().getLdapHomeDirectoryAttributeName()).toString();
-                } catch (Exception e4) {
+                } catch (NullPointerException e4) {
                     hd = " ";
                 }
                 if (log.isDebugEnabled()) {
@@ -438,7 +444,7 @@ public class LdapAuthentication {
      * @throws NamingException
      */
     private String getNextUidNumber(User inBenutzer) {
-        Hashtable<String, String> env = LdapConnectionSettings(inBenutzer);
+        Hashtable<String, String> env = ldapConnectionSettings(inBenutzer);
         env.put(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
         env.put(Context.SECURITY_CREDENTIALS, inBenutzer.getLdapGruppe().getAdminPassword());
         DirContext ctx;
@@ -462,7 +468,7 @@ public class LdapAuthentication {
      * @throws NamingException
      */
     private void setNextUidNumber(User inBenutzer) {
-        Hashtable<String, String> env = LdapConnectionSettings(inBenutzer);
+        Hashtable<String, String> env = ldapConnectionSettings(inBenutzer);
         env.put(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
         env.put(Context.SECURITY_CREDENTIALS, inBenutzer.getLdapGruppe().getAdminPassword());
         DirContext ctx;
@@ -487,7 +493,7 @@ public class LdapAuthentication {
 
     public void deleteUser(User inBenutzer) {
 
-        Hashtable<String, String> env = LdapConnectionSettings(inBenutzer);
+        Hashtable<String, String> env = ldapConnectionSettings(inBenutzer);
         if (inBenutzer.getLdapGruppe().isUseTLS()) {
             env = new Hashtable<>();
             env.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY_CLASS);
@@ -554,16 +560,16 @@ public class LdapAuthentication {
     }
 
     /**
-     * change password of given user, needs old password for authentification
+     * change password of given user, needs old password for authentification.
      * 
-     * @param inUser
+     * @param inBenutzer
      * @param inOldPassword
      * @param inNewPassword
      * @return boolean about result of change
      * @throws NoSuchAlgorithmException
      */
     public boolean changeUserPassword(User inBenutzer, String inOldPassword, String inNewPassword) throws NoSuchAlgorithmException {
-        Hashtable<String, String> env = LdapConnectionSettings(inBenutzer);
+        Hashtable<String, String> env = ldapConnectionSettings(inBenutzer);
         if (!inBenutzer.getLdapGruppe().isReadonly()) {
             env.put(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
             env.put(Context.SECURITY_CREDENTIALS, inBenutzer.getLdapGruppe().getAdminPassword());
@@ -591,8 +597,7 @@ public class LdapAuthentication {
                 BasicAttribute lanmgrpassword = null;
                 try {
                     lanmgrpassword = new BasicAttribute("sambaLMPassword", LdapUser.toHexString(LdapUser.lmHash(inNewPassword)));
-                    // TODO: Don't catch super class exception, make sure that the password isn't logged here
-                } catch (Exception e) {
+                } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException e) {
                     log.error(e);
                 }
 
@@ -602,7 +607,7 @@ public class LdapAuthentication {
                 BasicAttribute ntlmpassword = null;
                 byte[] hmm = MD4.mdfour(inNewPassword.getBytes(StandardCharsets.UTF_16LE));
                 ntlmpassword = new BasicAttribute("sambaNTPassword", LdapUser.toHexString(hmm));
-                BasicAttribute sambaPwdLastSet = new BasicAttribute("sambaPwdLastSet", String.valueOf(System.currentTimeMillis() / 1000l));
+                BasicAttribute sambaPwdLastSet = new BasicAttribute("sambaPwdLastSet", String.valueOf(System.currentTimeMillis() / 1000L));
                 mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, userpassword);
                 mods[1] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, lanmgrpassword);
                 mods[2] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, ntlmpassword);
@@ -622,7 +627,7 @@ public class LdapAuthentication {
         return false;
     }
 
-    private Hashtable<String, String> LdapConnectionSettings(User inBenutzer) {
+    private Hashtable<String, String> ldapConnectionSettings(User inBenutzer) {
         // Set up environment for creating initial context
         Hashtable<String, String> env = new Hashtable<>(11);
         env.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY_CLASS);
@@ -672,7 +677,7 @@ public class LdapAuthentication {
 
                     ks.store(ksos, password);
                 }
-            } catch (Exception e) {
+            } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException e) {
                 log.error(e);
             }
 

@@ -29,9 +29,11 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.commons.pool2.ObjectPool;
@@ -51,17 +53,10 @@ public class ConnectionManager implements Serializable {
 
     private transient DataSource ds = null;
     @SuppressWarnings("rawtypes")
-    private static GenericObjectPool _pool = null; // NOSONAR
+    private static GenericObjectPool pool = null; // NOSONAR
 
-    /**
-     * @param config configuration from an XML file.
-     */
     public ConnectionManager() {
-        try {
-            connectToDB();
-        } catch (Exception e) {
-            log.error("Failed to construct ConnectionManager", e);
-        }
+        connectToDB();
     }
 
     private void connectToDB() {
@@ -74,14 +69,14 @@ public class ConnectionManager implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace("Connection attempt to database succeeded.");
             }
-        } catch (Exception e) {
+        } catch (NamingException e) {
             log.error("Error when attempting to connect to DB ", e);
         }
     }
 
     @SuppressWarnings("rawtypes")
     public static void printDriverStats() throws Exception {
-        ObjectPool connectionPool = ConnectionManager._pool;
+        ObjectPool connectionPool = ConnectionManager.pool;
         if (log.isTraceEnabled()) {
             log.trace("NumActive: " + connectionPool.getNumActive());
             log.trace("NumIdle: " + connectionPool.getNumIdle());
@@ -89,7 +84,7 @@ public class ConnectionManager implements Serializable {
     }
 
     /**
-     * getNumLockedProcesses - gets the number of currently locked processes on the MySQL db
+     * getNumLockedProcesses - gets the number of currently locked processes on the MySQL db.
      * 
      * @return Number of locked processes
      */
@@ -103,11 +98,11 @@ public class ConnectionManager implements Serializable {
             preparedStatement = con.prepareStatement("SHOW PROCESSLIST"); //NOSONAR as it is closed in the finally statement
             rs = preparedStatement.executeQuery(); //NOSONAR as it is closed in the finally statement
             while (rs.next()) {
-                if (rs.getString("State") != null && rs.getString("State").equals("Locked")) {
+                if (rs.getString("State") != null && "Locked".equals(rs.getString("State"))) {
                     numLockedConnections++;
                 }
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             if (log.isTraceEnabled()) {
                 log.trace("Failed to get get Locked Connections - Exception: " + e.toString());
             }

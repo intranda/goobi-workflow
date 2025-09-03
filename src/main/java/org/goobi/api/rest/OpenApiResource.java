@@ -118,7 +118,7 @@ public class OpenApiResource {
     }
 
     /**
-     * @return
+     * @return Info object
      */
     public Info getInfo() {
         return new Info()

@@ -45,9 +45,10 @@ public class Item {
     }
 
     /**
-     * This constructor is used for empty default values in ConfigDisplayRules.java
+     * This constructor is used for empty default values in ConfigDisplayRules.java.
      *
      * @param label The label for this item
+     * 
      */
     public Item(String label) {
         this(label, "", false, "", "");

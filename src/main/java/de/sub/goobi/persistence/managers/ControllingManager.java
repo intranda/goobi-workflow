@@ -64,7 +64,7 @@ public class ControllingManager implements IManager, Serializable {
      * search for a query and return the result values as a list of Object[] for each row.
      * 
      * @param sql
-     * @return
+     * @return results as list
      * @throws SQLException
      */
 
@@ -82,7 +82,7 @@ public class ControllingManager implements IManager, Serializable {
      * search for a query and return the first result as a map. The column names are used as keys
      * 
      * @param sql
-     * @return
+     * @return row as map
      * @throws SQLException
      */
 
@@ -100,7 +100,7 @@ public class ControllingManager implements IManager, Serializable {
      * rows are returned as a list. The order of the entries in the list is the same as in the sql result
      * 
      * @param sql
-     * @return
+     * @return result list
      * @throws SQLException
      */
 

@@ -24,6 +24,7 @@
  */
 package org.goobi.goobiScript;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +36,14 @@ import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.UghHelper;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements IGoobiScript {
@@ -98,7 +102,7 @@ public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements 
             log.info("ImagePath updated using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("ImagePath updated successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
-        } catch (Exception e) {
+        } catch (UGHException | SwapException | IOException | UghHelperException e) {
             gsr.setResultMessage("ImagePath cannot be updated: " + e.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(e.getMessage());

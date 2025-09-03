@@ -76,7 +76,7 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
         buffer.append("`" + PROPERTY_EXPORT_DMS + "` ");
         buffer.append("`" + PROPERTY_BATCH + "` ");
         buffer.append("`" + PROPERTY_AUTOMATIC + "` ");
-        buffer.append("`" + PROPERTY_IMPORT_FILE_UPLOAD + "` \\n#");// newline because YAML line gets too long otherwise, '#' is the comment char
+        buffer.append("`" + PROPERTY_IMPORT_FILE_UPLOAD + "` \\n#"); // newline because YAML line gets too long otherwise, '#' is the comment char
         buffer.append("`" + PROPERTY_ACCEPT_AND_CLOSE + "` ");
         buffer.append("`" + PROPERTY_ACCEPT_MODULE_AND_CLOSE + "` ");
         buffer.append("`" + PROPERTY_SCRIPT + "` ");
@@ -86,7 +86,8 @@ public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements 
 
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb,
-                "This GoobiScript allow to configure a specific workflow step (e.g. to work as metadata edition step, to automatically run a plugin).");
+                "This GoobiScript allow to configure a specific workflow step "
+                        + "(e.g. to work as metadata edition step, to automatically run a plugin).");
         addParameterToSampleCall(sb, STEPTITLE, "Metadata edition", "Title of the workflow step to configure");
         addParameterToSampleCall(sb, PROPERTY, PROPERTY_METADATA,
                 "Name of the property to be changed. Possible values are: \\n# " + buffer.toString());

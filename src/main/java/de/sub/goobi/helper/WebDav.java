@@ -34,7 +34,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.goobi.beans.Process;
@@ -62,10 +61,13 @@ public class WebDav implements Serializable {
     }
 
     /**
-     * Retrieve all folders from one directory ================================================================
+     * Retrieve all folders from one directory.
+     *
+     * @param inVerzeichnis
+     * @return folder list
      */
 
-    public List<String> UploadFromHomeAlle(String inVerzeichnis) {
+    public List<String> uploadFromHomeAll(String inVerzeichnis) {
         List<String> rueckgabe = new ArrayList<>();
         User aktuellerBenutzer = Helper.getCurrentUser();
         String folder;
@@ -73,8 +75,8 @@ public class WebDav implements Serializable {
         try {
             folder = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
         } catch (IOException e) {
-            log.error("Exception UploadFromHomeAlle()", e);
-            Helper.setFehlerMeldung("UploadFromHomeAlle abgebrochen, Fehler", e.getMessage());
+            log.error("Exception uploadFromHomeAll()", e);
+            Helper.setFehlerMeldung("uploadFromHomeAll abgebrochen, Fehler", e.getMessage());
             return rueckgabe;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -85,7 +87,10 @@ public class WebDav implements Serializable {
     }
 
     /**
-     * Remove Folders from Directory ================================================================
+     * Remove Folders from Directory.
+     *
+     * @param inList
+     * @param inVerzeichnis
      */
     public void removeFromHomeAlle(List<String> inList, String inVerzeichnis) {
         String folder;
@@ -101,26 +106,25 @@ public class WebDav implements Serializable {
             return;
         }
 
-        for (Iterator<String> it = inList.iterator(); it.hasNext();) {
-            String myname = it.next();
+        for (String myname : inList) {
             FilesystemHelper.deleteSymLink(folder + myname);
         }
     }
 
-    public void UploadFromHome(Process myProzess) {
+    public void uploadFromHome(Process myProzess) {
         User aktuellerBenutzer = Helper.getCurrentUser();
         if (aktuellerBenutzer != null) {
-            UploadFromHome(aktuellerBenutzer, myProzess);
+            uploadFromHome(aktuellerBenutzer, myProzess);
         }
     }
 
-    public void UploadFromHome(User inBenutzer, Process myProzess) {
+    public void uploadFromHome(User inBenutzer, Process myProzess) {
         String targetDirectory = "";
 
         try {
             targetDirectory = inBenutzer.getHomeDir(); // implies that inBenutzer != null
         } catch (IOException ioe) {
-            log.error("Exception UploadFromHome(...)", ioe);
+            log.error("Exception uploadFromHome(...)", ioe);
             Helper.setFehlerMeldung("Aborted upload from home, error", ioe.getMessage());
             return;
         } catch (InterruptedException e) {
@@ -160,7 +164,7 @@ public class WebDav implements Serializable {
         FilesystemHelper.deleteSymLink(benutzerHome.toString());
     }
 
-    public void DownloadToHome(Process myProzess, int inSchrittID, boolean inNurLesen) {
+    public void downloadToHome(Process myProzess, int inSchrittID, boolean inNurLesen) {
         saveTiffHeader(myProzess);
         User aktuellerBenutzer = Helper.getCurrentUser();
         String von = "";
@@ -257,7 +261,7 @@ public class WebDav implements Serializable {
                     BufferedWriter outwriter = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
                 outwriter.write(tif.getTiffAlles());
             }
-        } catch (Exception e) {
+        } catch (IOException | SwapException e) {
             Helper.setFehlerMeldung("Download aborted", e);
             log.error(e);
         }

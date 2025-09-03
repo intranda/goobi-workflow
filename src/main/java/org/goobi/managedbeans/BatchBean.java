@@ -100,7 +100,8 @@ public class BatchBean extends BasicBean implements Serializable {
         }
     }
 
-    private Batch generateBatch(Batch batch) {
+    private Batch generateBatch(Batch inBatch) {
+        Batch batch = inBatch;
         String filter = "";
         if (batch != null) {
             filter = " batchID = " + batch.getBatchId() + " AND istTemplate = false ";
@@ -327,19 +328,14 @@ public class BatchBean extends BasicBean implements Serializable {
         } else if (this.selectedBatches.size() > 1) {
             Helper.setFehlerMeldung(TOO_MANY_BATCHES_SELECTED);
         } else {
-            try {
-                Batch batch = this.selectedBatches.get(0);
-                for (Process p : this.selectedProcesses) {
-                    p.setBatch(batch);
-                    JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), DEFAULT_BATCH_NAME, LogType.DEBUG,
-                            "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
-                    JournalManager.saveJournalEntry(logEntry);
+            Batch batch = this.selectedBatches.get(0);
+            for (Process p : this.selectedProcesses) {
+                p.setBatch(batch);
+                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), DEFAULT_BATCH_NAME, LogType.DEBUG,
+                        "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
+                JournalManager.saveJournalEntry(logEntry);
 
-                    ProcessManager.saveProcessInformation(p);
-                }
-
-            } catch (Exception e) {
-                Helper.setFehlerMeldung(NO_BATCH_SELECTED);
+                ProcessManager.saveProcessInformation(p);
             }
         }
         FilterAlleStart();

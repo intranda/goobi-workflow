@@ -144,11 +144,11 @@ public class DatabasePaginator implements Serializable {
     }
 
     public Long getPageNumberCurrent() {
-        return Long.valueOf(this.page + 1l);
+        return Long.valueOf(this.page + 1L);
     }
 
     public Long getPageNumberLast() {
-        return Long.valueOf(getLastPageNumber() + 1l);
+        return Long.valueOf(getLastPageNumber() + 1L);
     }
 
     public String cmdMoveFirst() {

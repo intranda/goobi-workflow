@@ -33,8 +33,8 @@ import net.xeoh.plugins.base.Plugin;
 
 public interface IPlugin extends Plugin, Serializable {
 
-    public PluginType getType();
+    PluginType getType();
 
-    public String getTitle();
+    String getTitle();
 
 }

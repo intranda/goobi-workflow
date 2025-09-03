@@ -1,12 +1,5 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
-import io.goobi.vocabulary.exchange.FieldValue;
-import io.goobi.vocabulary.exchange.HateoasHref;
-import io.goobi.vocabulary.exchange.TranslationDefinition;
-import io.goobi.vocabulary.exchange.TranslationInstance;
-import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +7,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import io.goobi.vocabulary.exchange.FieldValue;
+import io.goobi.vocabulary.exchange.HateoasHref;
+import io.goobi.vocabulary.exchange.TranslationDefinition;
+import io.goobi.vocabulary.exchange.TranslationInstance;
+import lombok.Getter;
+
 @Getter
-@Log4j2
 public class ExtendedFieldValue extends FieldValue {
     private final FieldValue wrapped;
     private List<ExtendedTranslationInstance> extendedTranslations;
@@ -62,8 +60,8 @@ public class ExtendedFieldValue extends FieldValue {
     }
 
     @Override
-    public void set_links(Map<String, HateoasHref> _links) {
-        wrapped.set_links(_links);
+    public void set_links(Map<String, HateoasHref> links) {
+        wrapped.set_links(links);
     }
 
     private void postInit(Set<TranslationDefinition> definitions) {

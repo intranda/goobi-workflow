@@ -35,7 +35,11 @@ import jakarta.faces.lifecycle.LifecycleFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class ServletHelper {
+public final class ServletHelper {
+
+    private ServletHelper() {
+        // hide implicit public constructor
+    }
 
     public static FacesContext getFacesContext(HttpServletRequest request, HttpServletResponse response) {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();

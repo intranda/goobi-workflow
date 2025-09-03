@@ -41,6 +41,8 @@ import lombok.NoArgsConstructor;
 public class EasydbResponseObject {
 
     private Map<String, String> metadata = new LinkedHashMap<>();
+    //CHECKSTYLE:OFF
+    // spelling is needed for automatic json conversion
     private int _system_object_id;
     private String _created;
     private String _last_modified;
@@ -56,9 +58,11 @@ public class EasydbResponseObject {
     private List<String> _collections;
     private int _level;
     private double _score;
+    //CHECKSTYLE:ON
 
     /**
-     * Convert the submap of the json object into the pojo object
+     * 
+     * Convert the submap of the json object into the pojo object.
      * 
      * @param objectMap
      */
@@ -138,8 +142,6 @@ public class EasydbResponseObject {
                     metadata.put(prefix + key, String.valueOf((value)));
                 } else if (value instanceof Double) {
                     metadata.put(prefix + key, String.valueOf((value)));
-                } else {
-                    // TODO java.util.ArrayList ?
                 }
             }
         }
