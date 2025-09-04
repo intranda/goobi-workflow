@@ -56,13 +56,12 @@
                     disabled="#{cc.attrs.readonly}"
                     validator="#{cc.attrs.validationMethod}"
                     idForValidator="#{cc.attrs.idForValidator}">
-                    <ui:fragment rendered="#{cc.attrs.required}">
+                    <c:if test="#{cc.attrs.placeholder}">
                         <f:selectItem
                             itemValue="null"
                             itemLabel="#{msgs.bitteAuswaehlen}"
-                            itemDisabled="#{cc.attrs.placeholderDisabled}"
-                            rendered="#{cc.attrs.placeholder}" />
-                    </ui:fragment>
+                            itemDisabled="#{cc.attrs.placeholderDisabled}" />
+                    </c:if>
                     <f:selectItems value="#{cc.attrs.selectItems}" />
                 </h:selectOneMenu>
                 <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline text-danger" />

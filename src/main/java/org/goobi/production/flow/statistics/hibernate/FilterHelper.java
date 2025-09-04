@@ -863,10 +863,10 @@ public final class FilterHelper {
                     }
                     filter.append(FilterHelper.filterDate("erstellungsdatum", value, operand));
                 }
-                //            } else if (tok.toLowerCase().startsWith(FilterString.STEP_START_DATE)) {
-                //                // skip
-                //            } else if (tok.toLowerCase().startsWith(FilterString.STEP_FINISH_DATE)) {
-                //                // skip
+            } else if (tok.toLowerCase().startsWith(FilterString.STEP_START_DATE)) {
+                // skip
+            } else if (tok.toLowerCase().startsWith(FilterString.STEP_FINISH_DATE)) {
+                // skip
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESSPROPERTY) || tok.toLowerCase().startsWith(FilterString.PROZESSEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterProcessProperty(tok, false));

@@ -45,6 +45,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
           'Metadaten': 'meMetadata',
           'File': 'meFile',
           'default': 'default',
+          'thumbnails': 'meThumbnails'
         }
         return keys[view] || keys['default'];
       },
@@ -91,11 +92,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     storeScrollPos: function() {
         if(_debug) console.log('RESTORE SCROLL POS')
 
-        const contentLeft = document.querySelector('#pageContentLeft');
-        const contentCenter = document.querySelector('#pageContentCenter');
-        const contentRight = document.querySelector('#pageContentRight #thumbnails');
         const view = goobiWorkflowConfig.currentView;
         const key =  this.getScrollPosKey(view);
+        const contentLeft = document.querySelector('#pageContentLeft');
+        const contentCenter = view === 'Paginierung' ? document.querySelector('#paginationList') : document.querySelector('#pageContentCenter');
+        const contentRight = document.querySelector('#pageContentRight #thumbnailsContainer');
 
         // Restore previous scroll positions of all views
         const restoredScrollPosAll = sessionStorage.getItem('gw_me_scrollPos');
@@ -115,7 +116,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         scrollPosAll.meLeft = contentLeft.scrollTop;
 
         // Init or update current scroll position of the right column
-        scrollPosAll.mePagination = contentRight?.scrollTop;
+        scrollPosAll.meThumbnails = contentRight?.scrollTop;
 
         // Init or update current scroll position of the center column
         scrollPosAll[key] = curScrollPos;
@@ -133,15 +134,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
        * calculate + restore current scroll position based on these values.
        */
       restoreScrollPos: function() {
-        const contentLeft = document.querySelector('#pageContentLeft');
-        const contentCenter = document.querySelector('#pageContentCenter');
-        const contentRight = document.querySelector('#pageContentRight #thumbnails');
-        const activeThumbnail = document.querySelector('.thumbnails__thumb.active');
-
         // Get scroll position from session storage
         const view = goobiWorkflowConfig.currentView;
         const key = this.getScrollPosKey(view)
         const restoredScrollPosAll = JSON.parse(sessionStorage.getItem('gw_me_scrollPos'));
+
+        const contentLeft = document.querySelector('#pageContentLeft');
+        const contentCenter = view === 'Paginierung' ? document.querySelector('#paginationList') : document.querySelector('#pageContentCenter');
+        const contentRight = document.querySelector('#pageContentRight #thumbnailsContainer');
 
         // Abort if session storage is empty
         if(!restoredScrollPosAll) return;
@@ -151,8 +151,10 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         // Set new scroll positions
         contentLeft.scrollTop = restoredScrollPosAll.meLeft;
         contentCenter.scrollTop = oldPos + this.getErrorMsgHeight();
-        if (contentRight && !activeThumbnail) {
-          contentRight.scrollTop = restoredScrollPosAll.mePagination;
+        if (contentRight) {
+          setTimeout(() => {
+            contentRight.scrollTop = restoredScrollPosAll.meThumbnails;
+          }, 300);
         }
 
         [contentLeft, contentCenter, contentRight].forEach((el) => {
