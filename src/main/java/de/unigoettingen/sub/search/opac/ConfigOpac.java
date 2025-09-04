@@ -46,8 +46,10 @@ import de.sub.goobi.helper.StorageProvider;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public final class ConfigOpac {
-
+//CHECKSTYLE:OFF
+// no final modifier, otherwise mockito cannot mock this class
+public class ConfigOpac {
+    //CHECKSTYLE:ON
     private XMLConfiguration config;
     private static String configPfad;
 
