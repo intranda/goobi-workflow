@@ -218,10 +218,8 @@ figure.video_chapters figcaption::-webkit-scrollbar-thumb:vertical {
                                             controls=""
                                             preload="metadata"
                                             src="#{Metadaten.image.objectUrl}">
-                                            <!-- TODO: <track kind="chapters" src="path/to/*.vtt" /> -->
-
                                             <track
-                                                default=""
+                                                default="default"
                                                 kind="chapters"
                                                 src="#{Metadaten.chapterInformationAsVTT}"
                                                 onload="displayChapters(this)" />
