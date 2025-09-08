@@ -65,4 +65,20 @@
         <tag-name>ajax-loader</tag-name>
         <source>util/ajax-loader.xhtml</source>
     </tag>
+    <tag>
+        <tag-name>missing-rights</tag-name>
+        <source>util/missing-rights.xhtml</source>
+        <attribute>
+            <description>The condition under which the missing rights alert should be displayed</description>
+            <name>condition</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The message to display when the user lacks the necessary rights</description>
+            <name>message</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
 </facelet-taglib>
