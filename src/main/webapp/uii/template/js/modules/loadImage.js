@@ -26,6 +26,12 @@ var rotationControl;
 var eventListeners = new Map();
 
 export const loadImage = function() {
+
+    if(loadedImage?.element?.isConnected) {
+        console.log("viewer already initialized");
+        return;
+    }
+
     console.log("prepare image with  ", settings.imageView, document.querySelector(settings.imageView.element));
 
     if(!loadedImage) {
@@ -71,7 +77,6 @@ export const loadImage = function() {
     loadedImage.load(tileSource).then(() => {
         zoomControl.goHome();
     })
-    //imageView.draw =  new ImageView.AreaSelect(imageView.image, {drawStyle: {className:"overlay", borderColor: "green", borderWidth: 2}});
 
     return loadedImage;
 }
@@ -84,12 +89,12 @@ const getElement = function(obj) {
     }
 }
 
-const getValue = function(input) {
+ export const getValue = function(input) {
     const element = getElement(input);
     return element?.value;
 }
 
-const setValue = function(input, value, commit) {
+export const setValue = function(input, value, commit) {
     const element = getElement(input);
     if(element) {
         element.value = value;
