@@ -11,7 +11,9 @@ import { initMirrorValueTo } from './mirrorValueTo';
 import { initAccessibilityModeButton } from './accessibilityMode';
 import { initShowDevelopertools } from './showDeveloperTools';
 import { loadImage } from './loadImage';
-import { initImageAreaSelection } from './selectImageAreas.js';
+import { initImageAreaCreation } from './createImageArea.js';
+import { initEditImageAreas } from './editImageAreas.js';
+
 
 export const initFunctions = function initFunctions() {
     initializeAjaxLoader();
@@ -29,5 +31,6 @@ export const initFunctions = function initFunctions() {
     toggleHelp();
 
     const zoomableImage = loadImage();
-    initImageAreaSelection(zoomableImage);
+    initImageAreaCreation(zoomableImage);
+    initEditImageAreas(zoomableImage);
 };

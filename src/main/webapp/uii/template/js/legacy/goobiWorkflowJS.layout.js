@@ -59,8 +59,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          */
         setObjectViewHeight: function() {
             if ( _debug ) {
-            }
                 console.log( 'EXECUTE: goobiWorkflowJS.layout.setObjectViewHeight' );
+            }
 
             var pageContentRightHeight = $( '#pageContentRight' ).outerHeight();
             var controlWrapperHeight = $( '#imageNavigation' ).outerHeight();
