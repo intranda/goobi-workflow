@@ -18,62 +18,41 @@
 
 package org.goobi.api.rest.model;
 
+import de.sub.goobi.metadaten.Metadaten;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ContextNotActiveException;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.Getter;
+import lombok.Setter;
 
 @Path("/view/video")
+@ApplicationScoped
 public class RestVideoVttResource {
+
+    @Getter
+    @Setter
+    @Inject
+    private Metadaten metadataBean;
 
     @GET
     @Path("/vtt")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getVttFile() {
-        // check session, get Metadata class
+        String content = "";
 
-        // load vtt from Metadata instance
-        StringBuilder vtt = new StringBuilder();
-        // get physical docstruct for video file
-
-        // get total duration
-
-        // find top logical docstruct for physical
-
-        // find page areas
-
-        // for each:
-
-        // start, optional end (if end is empty, use start -1ms of next or file duration
-
-        // get deepest logical, get title data
-        vtt.append("WEBVTT - Sample");
-        vtt.append("\n");
-        vtt.append("\n");
-        vtt.append("1");
-        vtt.append("\n");
-        vtt.append("00:00:00.000 --> 00:00:10.000");
-        vtt.append("\n");
-        vtt.append("Opening");
-        vtt.append("\n");
-        vtt.append("\n");
-        vtt.append("2");
-        vtt.append("\n");
-        vtt.append("00:00:10.001 --> 00:00:20.000");
-        vtt.append("\n");
-        vtt.append("Main section");
-        vtt.append("\n");
-        vtt.append("\n");
-        vtt.append("3");
-        vtt.append("\n");
-        vtt.append("00:00:20.001 --> 00:00:30.527");
-        vtt.append("\n");
-        vtt.append("End credits");
-        vtt.append("\n");
-        vtt.append("\n");
-        String content = vtt.toString();
-
+        // jsf context is present, search for metadata bean
+        try {
+            if (metadataBean != null) {
+                content = metadataBean.getChapterInformationAsVTT();
+            }
+        } catch (ContextNotActiveException e) {
+            // TODO: handle exception
+        }
         return Response.ok(content, MediaType.APPLICATION_OCTET_STREAM)
                 .header("Content-Disposition", "attachment; filename=\"video.vtt\"")
                 .build();

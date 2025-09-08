@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -94,12 +93,14 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.metadaten.Image.Type;
 import de.sub.goobi.metadaten.MetaConvertibleDate.DateType;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import io.goobi.workflow.api.connection.HttpUtils;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -143,7 +144,7 @@ import ugh.exceptions.WriteException;
  * @version 1.00 - 17.01.2005
  */
 @Named("Metadaten")
-@WindowScoped
+@SessionScoped
 @Log4j2
 public class Metadaten implements Serializable {
 
@@ -5323,49 +5324,58 @@ public class Metadaten implements Serializable {
      * @return chapter data
      */
 
-    public String getChapterInformationAsVTT() {
-        //        // no file selected or no video file
-        //        if (image == null || image.getType() != Type.video) {
-        //            return "";
-        //        }
-        //
-        //        StringBuilder vtt = new StringBuilder();
-        //        // get physical docstruct for video file
-        //
-        //        // get total duration
-        //
-        //        // find top logical docstruct for physical
-        //
-        //        // find page areas
-        //
-        //        // for each:
-        //
-        //        // start, optional end (if end is empty, use start -1ms of next or file duration
-        //
-        //        // get deepest logical, get title data
-        //
-        //        vtt.append("\n");
-        //        vtt.append("WEBVTT - Eine Veranstaltung");
-        //        vtt.append("\n");
-        //        vtt.append("1");
-        //        vtt.append("00:00:00.000 --> 00:0:10.000");
-        //        vtt.append("Thema 1");
-        //        vtt.append("\n");
-        //
-        //        vtt.append("2");
-        //        vtt.append("00:00:10.001 --> 00:00:20.000");
-        //        vtt.append("Thema 2");
-        //        vtt.append("\n");
-        //        vtt.append("3");
-        //        vtt.append("00:00:20.001 --> 00:00:30.527");
-        //        vtt.append("Thema 3");
-        //        vtt.append("\n");
-        //        return vtt.toString();
+    public String getVttUrl() {
 
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/view/video/vtt");
 
         return sb.toString();
 
+    }
+
+    public String getChapterInformationAsVTT() {
+        // no file selected or no video file
+        if (image == null || image.getType() != Type.video) {
+            return "";
+        }
+        // get physical docstruct for video file
+
+        // get total duration
+
+        // find top logical docstruct for physical
+
+        // find page areas
+
+        // for each:
+
+        // start, optional end (if end is empty, use start -1ms of next or file duration
+
+        // get deepest logical, get title data
+        StringBuilder vtt = new StringBuilder();
+        vtt.append("WEBVTT");
+        vtt.append("\n");
+        vtt.append("\n");
+        vtt.append("1");
+        vtt.append("\n");
+        vtt.append("00:00:00.000 --> 00:00:10.000");
+        vtt.append("\n");
+        vtt.append("Opening");
+        vtt.append("\n");
+        vtt.append("\n");
+        vtt.append("2");
+        vtt.append("\n");
+        vtt.append("00:00:10.001 --> 00:00:20.000");
+        vtt.append("\n");
+        vtt.append("Main section");
+        vtt.append("\n");
+        vtt.append("\n");
+        vtt.append("3");
+        vtt.append("\n");
+        vtt.append("00:00:20.001 --> 00:00:30.527");
+        vtt.append("\n");
+        vtt.append("End credits");
+        vtt.append("\n");
+        vtt.append("\n");
+        return vtt.toString();
     }
 }
