@@ -1,0 +1,72 @@
+<ui:component
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:util="http://goobi.io/util"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:dl="http://goobi.io/dl"
+>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn footer-text" data-bs-toggle="modal" data-bs-target="#shortcutsHelpModal">
+        <span class="visually-hidden">
+            #{msgs.shortcuts}
+        </span>
+        <util:icon icon="keyboard" />
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="shortcutsHelpModal" tabindex="-1" aria-labelledby="shortcutsHelpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+            <h1 class="modal-title fs-5" id="shortcutsHelpModalLabel">
+                #{msgs.shortcuts}
+            </h1>
+            <button type="button" class="btn text-white" data-bs-dismiss="modal">
+                <span class="visually-hidden">#{msgs.close}</span>
+                <span aria-hidden="true" class="fa fa-times"></span>
+            </button>
+        </div>
+        <div class="modal-body p-0">
+            <dl:list>
+                <c:forEach var="shortcutEntry" items="#{ShortcutsBean.shortcutKeys}">
+                    <dl:term>
+                        <span class="keyboard-key">#{msgs['shortcutKey_'.concat(ShortcutsBean.userShortcutFirstPart)]}</span>
+                        <c:if test="#{not empty ShortcutsBean.userShortcutSecondPart}">
+                            + <span class="keyboard-key">#{msgs['shortcutKey_'.concat(ShortcutsBean.userShortcutSecondPart)]}</span>
+                        </c:if>
+                        +
+                        <span class="keyboard-key">
+                            #{msgs['shortcutKey_'.concat(shortcutEntry.key)]}
+                        </span>
+                    </dl:term>
+                    <dl:description>
+                        #{msgs[shortcutEntry.value]}
+                    </dl:description>
+                </c:forEach>
+            </dl:list>
+        </div>
+        </div>
+    </div>
+    </div>
+        <div class="footer-keys">
+            <c:forEach var="shortcutEntry" items="#{ShortcutsBean.shortcutKeys}">
+                <div class="footer-key">
+                    <span class="keyboard-key">#{msgs['shortcutKey_'.concat(ShortcutsBean.userShortcutFirstPart)]}</span>
+                    <c:if test="#{not empty ShortcutsBean.userShortcutSecondPart}">
+                        <span class="my-auto">
+                            +
+                        </span>
+                        <span class="keyboard-key">#{msgs['shortcutKey_'.concat(ShortcutsBean.userShortcutSecondPart)]}</span>
+                    </c:if>
+                    <span class="my-auto">
+                        +
+                    </span>
+                    <span class="keyboard-key">
+                        #{msgs['shortcutKey_'.concat(shortcutEntry.key)]}
+                    </span>
+                    <span class="my-auto">
+                        #{msgs[shortcutEntry.value]}
+                    </span>
+                </div>
+            </c:forEach>
+        </div>
+</ui:component>
