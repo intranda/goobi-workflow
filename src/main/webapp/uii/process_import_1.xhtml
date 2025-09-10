@@ -72,37 +72,37 @@
 
             </h:panelGroup>
             <script type="text/javascript">
-                function displayProgressBar() {
-                    var element = document
-                            .getElementById('progressPanel');
-                    if (element.style.display == 'block') {
-                        element.style.display = 'none';
-                    } else {
-                        element.style.display = 'block';
-                    }
-                    document
-                            .getElementById(
-                                    'progressbutton')
-                            .click();
-                }
+													function displayProgressBar() {
+														var element = document
+																.getElementById('progressPanel');
+														if (element.style.display == 'block') {
+															element.style.display = 'none';
+														} else {
+															element.style.display = 'block';
+														}
+														document
+																.getElementById(
+																		'progressbutton')
+																.click();
+													}
 
-                function start() {
-                    window['progress'] = setInterval(
-                            function() {
-                                var pbClient = PF('pbClient'), oldValue = pbClient
-                                        .getValue(), newValue = oldValue + 10;
+													function start() {
+														window['progress'] = setInterval(
+																function() {
+																	var pbClient = PF('pbClient'), oldValue = pbClient
+																			.getValue(), newValue = oldValue + 10;
 
-                                pbClient
-                                        .setValue(pbClient
-                                                .getValue() + 10);
+																	pbClient
+																			.setValue(pbClient
+																					.getValue() + 10);
 
-                                if (newValue === 100) {
-                                    clearInterval(window['progress']);
+																	if (newValue === 100) {
+																		clearInterval(window['progress']);
 
-                                }
-                            }, 1000);
-                }
-            </script>
+																	}
+																}, 1000);
+													}
+												</script>
             <!-- // UGLY PROGRESSBAR PART -->
 
 
@@ -228,7 +228,7 @@
                                     required="true"
                                     itemLabel="#{var}"
                                     itemValue="#{var}"
-                                    hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
+                                    placeholder="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
 
 
                                 <intranda:formInputSelectManyChildren
@@ -258,29 +258,29 @@
                                 layout="block"
                                 rendered="#{NavigationForm.activeImportTab == 'idImport'}">
 
-								<intranda:formOutputText
-									label="#{msgs.project}"
-									field="#{MassImportForm.template.projekt.titel}"
-									name="secondtab_project" />
+                                <intranda:formOutputText
+                                    label="#{msgs.project}"
+                                    field="#{MassImportForm.template.projekt.titel}"
+                                    name="secondtab_project" />
 
-								<intranda:formOutputText
-									label="#{msgs.prozessvorlage}"
-									field="#{MassImportForm.template.titel}"
-									name="secondtab_prozessvorlage" />
+                                <intranda:formOutputText
+                                    label="#{msgs.prozessvorlage}"
+                                    field="#{MassImportForm.template.titel}"
+                                    name="secondtab_prozessvorlage" />
 
-								<intranda:formInputDropDownAjax
-									id="plugin2"
-									ajaxEvent="change"
-									ajaxRender="@form"
-									label="#{msgs.importplugin}"
-									field="#{MassImportForm.currentPlugin}"
-									help="#{msgs.help_import_ImportPlugin}"
-									name="secondtab_plugins"
-									selectItems="#{MassImportForm.usablePluginsForIDs}"
-									required="true"
+                                <intranda:formInputDropDownAjax
+                                    id="plugin2"
+                                    ajaxEvent="change"
+                                    ajaxRender="@form"
+                                    label="#{msgs.importplugin}"
+                                    field="#{MassImportForm.currentPlugin}"
+                                    help="#{msgs.help_import_ImportPlugin}"
+                                    name="secondtab_plugins"
+                                    selectItems="#{MassImportForm.usablePluginsForIDs}"
+                                    required="true"
                                     itemLabel="#{var}"
                                     itemValue="#{var}"
-									hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
+                                    placeholder="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
 
                                 <intranda:formInputSelectManyChildren
                                     id="collections2"
@@ -292,13 +292,13 @@
                                     <f:selectItems value="#{MassImportForm.possibleDigitalCollection}" />
                                 </intranda:formInputSelectManyChildren>
 
-								<intranda:formInputTextArea
-									id="listOfIds"
-									label="#{msgs.listOfIds}"
-									field="#{MassImportForm.idList}"
-									help="#{msgs.help_import_ListOfIds}"
-									name="secondtab_ids"
-									required="false" />
+                                <intranda:formInputTextArea
+                                    id="listOfIds"
+                                    label="#{msgs.listOfIds}"
+                                    field="#{MassImportForm.idList}"
+                                    help="#{msgs.help_import_ListOfIds}"
+                                    name="secondtab_ids"
+                                    required="false" />
 
                             </h:panelGroup>
                             <!-- // TAB CONTENT 2 -->
@@ -330,7 +330,7 @@
                                     required="true"
                                     itemLabel="#{var}"
                                     itemValue="#{var}"
-                                    hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
+                                    placeholder="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
 
                                 <intranda:formInputSelectManyChildren
                                     id="collections3"
@@ -363,9 +363,7 @@
                                             storage="file"
                                             styleClass="form-control"
                                             required="false">
-                                            <f:ajax
-                                                listener="#{MassImportForm.uploadFile}"
-                                                />
+                                            <f:ajax listener="#{MassImportForm.uploadFile}" />
                                         </h:inputFile>
 
                                         <!-- Help messages, inline + warning -->
@@ -387,29 +385,29 @@
                             <h:panelGroup
                                 layout="block"
                                 rendered="#{NavigationForm.activeImportTab == 'folder'}">
-								<intranda:formOutputText
-									label="#{msgs.project}"
-									field="#{MassImportForm.template.projekt.titel}"
-									name="forth_project" />
+                                <intranda:formOutputText
+                                    label="#{msgs.project}"
+                                    field="#{MassImportForm.template.projekt.titel}"
+                                    name="forth_project" />
 
-								<intranda:formOutputText
-									label="#{msgs.prozessvorlage}"
-									field="#{MassImportForm.template.titel}"
-									name="forth_prozessvorlage" />
+                                <intranda:formOutputText
+                                    label="#{msgs.prozessvorlage}"
+                                    field="#{MassImportForm.template.titel}"
+                                    name="forth_prozessvorlage" />
 
-								<intranda:formInputDropDownAjax
-									id="pluginFolder"
-									ajaxEvent="change"
-									ajaxRender="@form"
-									label="#{msgs.importplugin}"
-									field="#{MassImportForm.currentPlugin}"
-									help="#{msgs.help_import_ImportPlugin}"
-									name="firsttab_plugins"
-									selectItems="#{MassImportForm.usablePluginsForFolder}"
-									required="true"
+                                <intranda:formInputDropDownAjax
+                                    id="pluginFolder"
+                                    ajaxEvent="change"
+                                    ajaxRender="@form"
+                                    label="#{msgs.importplugin}"
+                                    field="#{MassImportForm.currentPlugin}"
+                                    help="#{msgs.help_import_ImportPlugin}"
+                                    name="firsttab_plugins"
+                                    selectItems="#{MassImportForm.usablePluginsForFolder}"
+                                    required="true"
                                     itemLabel="#{var}"
                                     itemValue="#{var}"
-									hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFolder.size() gt 1 ? 'false' : 'true'}" />
+                                    placeholder="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
 
                                 <intranda:formInputSelectManyChildren
                                     id="collections4"
@@ -421,18 +419,22 @@
                                     <f:selectItems value="#{MassImportForm.possibleDigitalCollection}" />
                                 </intranda:formInputSelectManyChildren>
 
-								<h:panelGroup id="plugin_data">
-									<intranda:formInputSelectManyChildren
-										id="files"
-										label="#{msgs.dateien}"
-										field="#{MassImportForm.selectedFilenames}"
-										help="#{msgs.help_import_Files}"
-										name="forthtab_filenames"
-										selectItems="#{MassImportForm.allFilenames}"
-										required="false">
-                                        <f:selectItems value="#{MassImportForm.possibleDigitalCollection}" var="file" itemLabel="#{file}" itemValue="#{file}" />
-                                        </intranda:formInputSelectManyChildren>
-								</h:panelGroup>
+                                <h:panelGroup id="plugin_data">
+                                    <intranda:formInputSelectManyChildren
+                                        id="files"
+                                        label="#{msgs.dateien}"
+                                        field="#{MassImportForm.selectedFilenames}"
+                                        help="#{msgs.help_import_Files}"
+                                        name="forthtab_filenames"
+                                        selectItems="#{MassImportForm.allFilenames}"
+                                        required="false">
+                                        <f:selectItems
+                                            value="#{MassImportForm.possibleDigitalCollection}"
+                                            var="file"
+                                            itemLabel="#{file}"
+                                            itemValue="#{file}" />
+                                    </intranda:formInputSelectManyChildren>
+                                </h:panelGroup>
                             </h:panelGroup>
                             <!-- // TAB CONTENT 4 -->
 
@@ -470,6 +472,7 @@
                                 <span class="fa fa-save" />
                                 <span>#{msgs.speichern}</span>
                                 <f:ajax
+                                    execute="@form"
                                     render="@form" />
                             </button>
 
