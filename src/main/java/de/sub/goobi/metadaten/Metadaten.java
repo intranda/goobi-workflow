@@ -37,6 +37,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -75,6 +76,11 @@ import org.goobi.production.plugin.interfaces.IPlugin;
 import org.jdom2.JDOMException;
 import org.omnifaces.util.Faces;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.MetadataException;
+import com.drew.metadata.mp4.Mp4Directory;
 import com.google.gson.Gson;
 
 import de.intranda.digiverso.ocr.alto.model.structureclasses.logical.AltoDocument;
@@ -5339,12 +5345,40 @@ public class Metadaten implements Serializable {
             return "";
         }
         // get physical docstruct for video file
-
-        // get total duration
-
-        // find top logical docstruct for physical
+        DocStruct page = getCurrentPage();
 
         // find page areas
+
+        List<String> startTimeList = new ArrayList<>();
+        List<String> endTimeList = new ArrayList<>();
+        List<String> labelList = new ArrayList<>();
+
+        for (DocStruct area : page.getAllChildren()) {
+            String start = "";
+            String end = "";
+            String label = "";
+            for (Metadata md : area.getAllMetadata()) {
+                if ("_BEGIN".equals(md.getType().getName())) {
+                    start = md.getValue();
+                } else if ("_END".equals(md.getType().getName())) {
+                    end = md.getValue();
+                }
+            }
+
+            List<DocStruct> referencedLogDs =
+                    area.getAllFromReferences().stream().map(Reference::getSource).filter(Objects::nonNull).collect(Collectors.toList());
+            if (!referencedLogDs.isEmpty()) {
+                DocStruct ds = referencedLogDs.getLast();
+                for (Metadata md : ds.getAllMetadata()) {
+                    if ("TitleDocMain".equals(md.getType().getName())) {
+                        label = md.getValue();
+                    }
+                }
+            }
+            startTimeList.add(start);
+            endTimeList.add(end);
+            labelList.add(label);
+        }
 
         // for each:
 
@@ -5355,27 +5389,85 @@ public class Metadaten implements Serializable {
         vtt.append("WEBVTT");
         vtt.append("\n");
         vtt.append("\n");
-        vtt.append("1");
-        vtt.append("\n");
-        vtt.append("00:00:00.000 --> 00:00:10.000");
-        vtt.append("\n");
-        vtt.append("Opening");
-        vtt.append("\n");
-        vtt.append("\n");
-        vtt.append("2");
-        vtt.append("\n");
-        vtt.append("00:00:10.001 --> 00:00:20.000");
-        vtt.append("\n");
-        vtt.append("Main section");
-        vtt.append("\n");
-        vtt.append("\n");
-        vtt.append("3");
-        vtt.append("\n");
-        vtt.append("00:00:20.001 --> 00:00:30.527");
-        vtt.append("\n");
-        vtt.append("End credits");
-        vtt.append("\n");
-        vtt.append("\n");
+
+        for (int i = 0; i < startTimeList.size(); i++) {
+            vtt.append(i + 1);
+            vtt.append("\n");
+
+            String durationStart = startTimeList.get(i);
+            vtt.append(durationStart);
+            if (!durationStart.matches("\\d{2}:\\d{2}:\\d{2}.\\d{3}")) {
+                vtt.append(".000");
+            }
+            vtt.append(" --> ");
+
+            String durationEnd = endTimeList.get(i);
+            if (StringUtils.isBlank(durationEnd)) {
+                // if no end time is set, use start time of the next section
+                // if its the last section, use total time instead
+                if (startTimeList.size() > i + 1) {
+                    durationEnd = startTimeList.get(i + 1);
+                } else {
+                    durationEnd = getVideoDuration();
+                    ;
+                }
+            }
+            vtt.append(durationEnd);
+            if (!durationEnd.matches("\\d{2}:\\d{2}:\\d{2}.\\d{3}")) {
+                vtt.append(".000");
+            }
+            vtt.append("\n");
+            vtt.append(labelList.get(i));
+            vtt.append("\n");
+            vtt.append("\n");
+        }
+
         return vtt.toString();
+    }
+
+    public String getVideoDuration() {
+        Path imagePath = image.getImagePath();
+
+        String totalDuration = "";
+        try {
+            com.drew.metadata.Metadata m = ImageMetadataReader.readMetadata(imagePath.toFile());
+            Directory dir = null;
+            dir = m.getFirstDirectoryOfType(Mp4Directory.class);
+            //                Duration:   259
+            //                Media Time Scale:   258
+            //                Duration in Seconds:   260
+            try {
+                double duration = dir.getInt(259);
+                int scale = dir.getInt(258);
+                double calculated = duration / scale;
+
+                String stringvalue = String.valueOf(calculated);
+                String ms = stringvalue.substring(stringvalue.indexOf(".") + 1);
+                if (ms.isEmpty()) {
+                    ms = "000";
+                } else if (ms.length() == 1) {
+                    ms = ms + "00";
+                } else if (ms.length() == 2) {
+                    ms = ms + "0";
+                } else if (ms.length() > 2) {
+                    ms = ms.substring(0, 2);
+                }
+
+                long milliseconds = (int) calculated * 1000;
+                milliseconds = milliseconds + Integer.valueOf(ms);
+
+                Duration dur = Duration.ofMillis(milliseconds);
+
+                totalDuration =
+                        String.format("%02d:%02d:%02d.%03d", dur.toHoursPart(), dur.toMinutesPart(), dur.toSecondsPart(), dur.toMillisPart());
+
+            } catch (MetadataException e) {
+                log.error(e);
+            }
+
+        } catch (ImageProcessingException | IOException e) {
+            log.error(e);
+        }
+        return totalDuration;
     }
 }
