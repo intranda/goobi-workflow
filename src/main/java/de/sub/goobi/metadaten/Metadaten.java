@@ -5409,7 +5409,6 @@ public class Metadaten implements Serializable {
                     durationEnd = startTimeList.get(i + 1);
                 } else {
                     durationEnd = getVideoDuration();
-                    ;
                 }
             }
             vtt.append(durationEnd);
