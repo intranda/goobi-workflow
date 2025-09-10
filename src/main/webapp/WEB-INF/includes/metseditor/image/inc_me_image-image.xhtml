@@ -188,13 +188,13 @@ figure.video_chapters figcaption::-webkit-scrollbar-thumb:vertical {
                             type="hidden"
                             id="objectUrl"
                             value="#{Metadaten.image.objectUrl}" />
-                        <ui:fragment rendered="#{Metadaten.imageIndex lt Metadaten.allImages.size()-1}">
+                        <ui:fragment rendered="#{Metadaten.imageIndex lt Metadaten.allImages.size()-1 and Metadaten.allImages.get(Metadaten.imageIndex+1).type=='image' }">
                             <input
                                 type="hidden"
                                 id="tileSource_next"
                                 value="#{Metadaten.allImages.get(Metadaten.imageIndex+1).url}" />
                         </ui:fragment>
-                        <ui:fragment rendered="#{Metadaten.imageIndex gt 0}">
+                        <ui:fragment rendered="#{Metadaten.imageIndex gt 0} and Metadaten.allImages.get(Metadaten.imageIndex-1).type=='image'">
                             <input
                                 type="hidden"
                                 id="tileSource_previous"
