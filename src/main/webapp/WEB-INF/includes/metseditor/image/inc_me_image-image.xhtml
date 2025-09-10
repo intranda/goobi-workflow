@@ -194,7 +194,7 @@ figure.video_chapters figcaption::-webkit-scrollbar-thumb:vertical {
                                 id="tileSource_next"
                                 value="#{Metadaten.allImages.get(Metadaten.imageIndex+1).url}" />
                         </ui:fragment>
-                        <ui:fragment rendered="#{Metadaten.imageIndex gt 0} and Metadaten.allImages.get(Metadaten.imageIndex-1).type=='image'">
+                        <ui:fragment rendered="#{Metadaten.imageIndex gt 0 and Metadaten.allImages.get(Metadaten.imageIndex-1).type=='image'}">
                             <input
                                 type="hidden"
                                 id="tileSource_previous"
