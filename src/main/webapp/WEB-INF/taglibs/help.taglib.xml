@@ -9,4 +9,8 @@
         <tag-name>shortcuts</tag-name>
         <source>help/shortcuts.xhtml</source>
     </tag>
+    <tag>
+        <tag-name>menu</tag-name>
+        <source>help/menu.xhtml</source>
+    </tag>
 </facelet-taglib>

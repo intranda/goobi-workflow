@@ -9,7 +9,9 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:p="http://primefaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:notification="http://goobi.io/notification">
+    xmlns:notification="http://goobi.io/notification"
+    xmlns:help="http://goobi.io/help"
+    >
 
     <composite:interface />
 
@@ -44,26 +46,7 @@
                         </a>
                     </ui:fragment>
                 </ui:repeat>
-                <!-- Icon to enable help texts -->
-                <button
-                    type="button"
-                    class="nav-item nav-link btn-link"
-                    jsf:id="showHelp"
-                    title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-                    aria-label="#{msgs.showHelpMessages}"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
-                    data-goobi="handle-tooltip"
-                    data-show-help="#{NavigationForm.showHelp}"
-                    >
-                    <span class="fa #{not NavigationForm.showHelp ? 'fa-question' : 'fa-question-circle'}" />
-                    <f:setPropertyActionListener
-                        target="#{NavigationForm.showHelp}"
-                        value="#{not NavigationForm.showHelp}" />
-                    <f:ajax
-                        render="@this"
-                        execute="@form" />
-                </button>
+                <help:menu></help:menu>
 
                 <!-- toggle contrast mode -->
                 <button
