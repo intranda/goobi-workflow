@@ -33,6 +33,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -5333,7 +5334,7 @@ public class Metadaten implements Serializable {
     public String getVttUrl() {
 
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
-        sb.append("/api/view/video/vtt");
+        sb.append("/api/view/video/chapter");
 
         return sb.toString();
 
@@ -5468,5 +5469,54 @@ public class Metadaten implements Serializable {
             log.error(e);
         }
         return totalDuration;
+    }
+
+    public Map<String, String> getVideoSubtitles() {
+        Map<String, String> map = new HashMap<>();
+
+        if (image == null || image.getType() != Type.video) {
+            return map;
+        }
+        // get current filename without extension
+        Path imagePath = image.getImagePath();
+        String filename = imagePath.getFileName().toString();
+        if (filename.contains(".")) {
+            filename = filename.substring(0, filename.indexOf("."));
+        }
+        final String filePrefix = filename;
+        // search in vtt folder for files with the exact filename or filename + '_' + language code
+        try {
+            Path dir = Paths.get(myProzess.getVideoSubtitleDirectory());
+            if (StorageProvider.getInstance().isDirectory(dir)) {
+                List<String> list = StorageProvider.getInstance().list(dir.toString(), new DirectoryStream.Filter<Path>() {
+                    @Override
+                    public boolean accept(Path path) throws IOException {
+                        return path.getFileName().toString().startsWith(filePrefix);
+                    }
+                });
+                StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
+                sb.append("/api/view/video/");
+                if (list.isEmpty()) {
+                    // no subtitles available
+                    return map;
+                } else if (list.size() == 1) {
+                    // one subtitle file is available, use it as default
+                    String file = list.get(0);
+                    map.put("default", sb.toString() + myProzess.getId() + "/" + dir.getFileName().toString() + "/" + file);
+                } else {
+                    // multiple subtitle files are available, set up languages
+                    for (String file : list) {
+                        // get language code
+                        String code = file.substring(0, file.indexOf(".")).replace(filePrefix, "").replaceAll("\\W", "");
+                        map.put(code, sb.toString() + myProzess.getId() + "/" + dir.getFileName().toString() + "/" + file);
+                    }
+                }
+            }
+
+        } catch (SwapException | IOException e) {
+            log.error(e);
+        }
+
+        return map;
     }
 }

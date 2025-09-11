@@ -188,7 +188,8 @@ figure.video_chapters figcaption::-webkit-scrollbar-thumb:vertical {
                             type="hidden"
                             id="objectUrl"
                             value="#{Metadaten.image.objectUrl}" />
-                        <ui:fragment rendered="#{Metadaten.imageIndex lt Metadaten.allImages.size()-1 and Metadaten.allImages.get(Metadaten.imageIndex+1).type=='image' }">
+                        <ui:fragment
+                            rendered="#{Metadaten.imageIndex lt Metadaten.allImages.size()-1 and Metadaten.allImages.get(Metadaten.imageIndex+1).type=='image' }">
                             <input
                                 type="hidden"
                                 id="tileSource_next"
@@ -249,21 +250,22 @@ figure.video_chapters figcaption::-webkit-scrollbar-thumb:vertical {
                                                 src="#{Metadaten.vttUrl}"
                                                 onload="displayChapters(this)"
                                                 srclang="en" />
-
-                                            <track
-                                                kind="subtitles"
-                                                src="#{Metadaten.vttUrl}"
-                                                srclang="de" />
-                                            <track
-                                                kind="subtitles"
-                                                src="#{Metadaten.vttUrl}"
-                                                srclang="en" />
-                                            <track
-                                                kind="metadata"
-                                                src="#{Metadaten.vttUrl}"
-                                                srclang="en"
-                                                label="Key Stage 1" />
-
+                                            <ui:repeat
+                                                var="title"
+                                                value="#{Metadaten.videoSubtitles}">
+                                                <ui:fragment rendered="#{title.key=='default'}">
+                                                    <track
+                                                        kind="subtitles"
+                                                        src="#{title.value}"
+                                                        default="default" />
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{title.key!='default'}">
+                                                    <track
+                                                        kind="subtitles"
+                                                        src="#{title.value}"
+                                                        srclang="#{title.key}" />
+                                                </ui:fragment>
+                                            </ui:repeat>
                                         </video>
 
                                         <figcaption>
