@@ -512,3 +512,18 @@ fieldSet:disabled .badge > a {
 .select-max-height {
   max-height: var(--select-max-height, 30lh);
 }
+
+.has-validation-error {
+  .form-control,
+  .form-select,
+  .input-group-text {
+    border: var(--bs-border-width) solid rgba(var(--bs-danger-rgb), .5);
+    &:hover {
+      border-color: rgba(var(--bs-danger-rgb)) !important;
+    }
+    &:focus {
+      border-color: rgba(var(--bs-danger-rgb));
+      box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb), .25);
+    }
+  }
+}

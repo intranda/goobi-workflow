@@ -97,7 +97,7 @@ public class ExtendedSearchRow implements Serializable {
                 value.append(fieldOperand);
             }
             value.append(FilterString.PROJECT);
-            value.append(fieldValue);
+            value.append(projectName);
             value.append("\"");
         } else if ("METADATA".equals(fieldName) && !this.metadataName.equals(Helper.getTranslation("notSelected")) && !metadataValue.isEmpty()) {
             value.append("\"");
@@ -107,7 +107,7 @@ public class ExtendedSearchRow implements Serializable {
             value.append(FilterString.METADATA);
             value.append(metadataName);
             value.append(":");
-            value.append(fieldValue);
+            value.append(metadataValue);
             value.append("\"");
         } else if ("PROCESSPROPERTY".equals(fieldName) && !processPropertyName.equals(Helper.getTranslation("notSelected"))
                 && !processPropertyValue.isEmpty()) {
@@ -144,6 +144,7 @@ public class ExtendedSearchRow implements Serializable {
                 value.append(fieldOperand);
             }
             value.append(FilterString.INSTITUTION);
+            value.append(":");
             value.append(institutionName);
             value.append("\"");
         } else if ("PROCESSDATE".equals(fieldName) && !fieldValue.isEmpty()) {
@@ -171,6 +172,7 @@ public class ExtendedSearchRow implements Serializable {
             value.append(fieldValue);
             value.append("\"");
         }
+        value.append(" ");
         return value.toString();
     }
 

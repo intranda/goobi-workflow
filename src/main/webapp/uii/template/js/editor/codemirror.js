@@ -8,12 +8,9 @@
 import { basicSetup } from "codemirror";
 import {
     EditorState,
-    StateField,
-    StateEffect,
 } from "@codemirror/state";
 import {
     EditorView,
-    Decoration,
 } from "@codemirror/view";
 import { indentUnit } from "@codemirror/language";
 import { javascript } from "@codemirror/lang-javascript";
@@ -22,6 +19,7 @@ import { json } from "@codemirror/lang-json";
 import { markdown } from "@codemirror/lang-markdown";
 import { yaml } from "@codemirror/lang-yaml";
 import { properties } from './codemirror/properties.js';
+import { highlightStateField } from "./codemirror/highlightLine.js";
 import { initScrollToLine } from "./codemirror/scrollToLine.js";
 
 // Global view reference for line highlighting and scrolling
@@ -39,30 +37,6 @@ const LANGUAGE_MAP = {
     yaml: yaml(),
     properties: properties(),
 };
-
-// Line highlighting state management
-const addLineHighlight = StateEffect.define();
-const lineHighlight = Decoration.line({
-    attributes: { style: 'background-color: yellow;' },
-});
-
-const highlightStateField = StateField.define({
-    create() {
-        return Decoration.none;
-    },
-    update(lines, tr) {
-        lines = lines.map(tr.changes);
-        for (let effect of tr.effects) {
-            if (effect.is(addLineHighlight)) {
-                // Reset previous highlights and add new one
-                lines = Decoration.none;
-                lines = lines.update({ add: [lineHighlight.range(effect.value)] });
-            }
-        }
-        return lines;
-    },
-    provide: (f) => EditorView.decorations.from(f),
-});
 
 /**
  * Encodes a string to base64 with proper Unicode handling
@@ -194,7 +168,7 @@ export const initCodemirror = () => {
 
     // Set up content setters after initializing editors (only once)
     setupContentSetters();
-    initScrollToLine();
+    initScrollToLine(view);
 };
 
 /**
