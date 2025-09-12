@@ -83,6 +83,7 @@ public class RestVideoVttResource {
         if (StorageProvider.getInstance().isFileExists(file)) {
             // read content
             try {
+                // TODO move this to StorageProvider implementations
                 content = Files.readString(file);
             } catch (IOException e) {
                 log.error(e);

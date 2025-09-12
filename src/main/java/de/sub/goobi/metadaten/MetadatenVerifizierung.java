@@ -26,6 +26,8 @@ package de.sub.goobi.metadaten;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -42,6 +44,7 @@ import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -1007,5 +1010,58 @@ public class MetadatenVerifizierung {
 
         }
         return true;
+    }
+
+    public boolean validateVideoSections(DocStruct physical, Path imageFolder) {
+
+        if (physical == null || physical.getAllChildren() == null) {
+            // nothing to check
+            return true;
+        }
+
+        // else search for video files
+        for (DocStruct page : physical.getAllChildren()) {
+
+            if ("video".equals(page.getType().getName())) {
+                // check, if the file has sub sections
+                List<DocStruct> areas = page.getAllChildren();
+                if (areas != null) {
+                    List<String> startTimeList = new ArrayList<>();
+                    List<String> endTimeList = new ArrayList<>();
+                    for (DocStruct area : areas) {
+                        String start = "";
+                        String end = "";
+                        for (Metadata md : area.getAllMetadata()) {
+                            if ("_BEGIN".equals(md.getType().getName())) {
+                                start = md.getValue();
+                            } else if ("_END".equals(md.getType().getName())) {
+                                end = md.getValue();
+                            }
+                        }
+                        startTimeList.add(start);
+                        endTimeList.add(end);
+                    }
+                    String filename = page.getImageName();
+
+                    // TODO check if file exists, get duration from file
+                    Path p = imageFolder.resolve(Paths.get(filename).getFileName());
+                    if (StorageProvider.getInstance().isFileExists(p)) {
+
+                        // TODO check if all sections have a begin time
+
+                        // TODO begin time is ascending
+
+                        // TODO if end time exists: its <= than begin time of next element
+
+                        // TODO begin time and end time are between 00:00:00 and total duration
+
+                    }
+                }
+
+            }
+
+        }
+
+        return false;
     }
 }
