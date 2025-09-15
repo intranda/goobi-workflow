@@ -82,6 +82,7 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.mp4.Mp4Directory;
+import com.drew.metadata.wav.WavDirectory;
 import com.google.gson.Gson;
 
 import de.intranda.digiverso.ocr.alto.model.structureclasses.logical.AltoDocument;
@@ -5342,7 +5343,7 @@ public class Metadaten implements Serializable {
 
     public String getChapterInformationAsVTT() {
         // no file selected or no video file
-        if (image == null || image.getType() != Type.video) {
+        if (image == null || (image.getType() != Type.video && image.getType() != Type.audio)) {
             return "";
         }
         // get physical docstruct for video file
@@ -5425,49 +5426,78 @@ public class Metadaten implements Serializable {
         return vtt.toString();
     }
 
-    public static String getVideoDuration(final Path filePath) {
+    public static String getVideoDuration(Path filePath) {
         Path imagePath = filePath;
-
         String totalDuration = "";
-        try {
-            com.drew.metadata.Metadata m = ImageMetadataReader.readMetadata(imagePath.toFile());
-            Directory dir = null;
-            dir = m.getFirstDirectoryOfType(Mp4Directory.class);
-            //                Duration:   259
-            //                Media Time Scale:   258
-            //                Duration in Seconds:   260
-            try {
-                double duration = dir.getInt(259);
-                int scale = dir.getInt(258);
-                double calculated = duration / scale;
 
-                String stringvalue = String.valueOf(calculated);
-                String ms = stringvalue.substring(stringvalue.indexOf(".") + 1);
-                if (ms.isEmpty()) {
-                    ms = "000";
-                } else if (ms.length() == 1) {
-                    ms = ms + "00";
-                } else if (ms.length() == 2) {
-                    ms = ms + "0";
-                } else if (ms.length() > 2) {
-                    ms = ms.substring(0, 2);
+        double calculatedDuration = 0;
+        switch (NIOFileUtils.getMimeTypeFromFile(imagePath)) {
+            case "audio/mpeg": // mp3
+
+                // TODO
+                break;
+            case "audio/wav", "audio/x-wav": // wav
+                // TODO
+                try {
+                    com.drew.metadata.Metadata m1 = ImageMetadataReader.readMetadata(imagePath.toFile());
+                    Directory dir1 = m1.getFirstDirectoryOfType(WavDirectory.class);
+                    return dir1.getString(16);
+
+                } catch (ImageProcessingException | IOException e) {
+                    log.error(e);
                 }
+                break;
+            case "video/mp4": // mp4
+                try {
+                    com.drew.metadata.Metadata m = ImageMetadataReader.readMetadata(imagePath.toFile());
+                    Directory dir = null;
+                    dir = m.getFirstDirectoryOfType(Mp4Directory.class);
+                    //                Duration:   259
+                    //                Media Time Scale:   258
+                    //                Duration in Seconds:   260
+                    try {
+                        double duration = dir.getInt(259);
+                        int scale = dir.getInt(258);
+                        calculatedDuration = duration / scale;
 
-                long milliseconds = (int) calculated * 1000;
-                milliseconds = milliseconds + Integer.valueOf(ms);
+                    } catch (MetadataException e) {
+                        log.error(e);
+                    }
 
-                Duration dur = Duration.ofMillis(milliseconds);
+                } catch (ImageProcessingException | IOException e) {
+                    log.error(e);
+                }
+                break;
 
-                totalDuration =
-                        String.format("%02d:%02d:%02d.%03d", dur.toHoursPart(), dur.toMinutesPart(), dur.toSecondsPart(), dur.toMillisPart());
-
-            } catch (MetadataException e) {
-                log.error(e);
-            }
-
-        } catch (ImageProcessingException | IOException e) {
-            log.error(e);
+            case "video/ogg": // ogg
+                // TODO
+                break;
+            case "video/webm": // webm
+                // TODO
+                break;
+            default:
         }
+
+        String stringvalue = String.valueOf(calculatedDuration);
+        String ms = stringvalue.substring(stringvalue.indexOf(".") + 1);
+        if (ms.isEmpty()) {
+            ms = "000";
+        } else if (ms.length() == 1) {
+            ms = ms + "00";
+        } else if (ms.length() == 2) {
+            ms = ms + "0";
+        } else if (ms.length() > 2) {
+            ms = ms.substring(0, 2);
+        }
+
+        long milliseconds = (int) calculatedDuration * 1000;
+        milliseconds = milliseconds + Integer.valueOf(ms);
+
+        Duration dur = Duration.ofMillis(milliseconds);
+
+        totalDuration =
+                String.format("%02d:%02d:%02d.%03d", dur.toHoursPart(), dur.toMinutesPart(), dur.toSecondsPart(), dur.toMillisPart());
+
         return totalDuration;
     }
 
@@ -5519,4 +5549,5 @@ public class Metadaten implements Serializable {
 
         return map;
     }
+
 }

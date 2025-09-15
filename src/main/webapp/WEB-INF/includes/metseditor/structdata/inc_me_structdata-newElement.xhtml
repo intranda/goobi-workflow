@@ -229,7 +229,7 @@
                                 styleClass="form-row structdata__page-area"
                                 layout="block"
                                 rendered="#{Metadaten.enablePageArea}">
-                                <ui:fragment rendered="#{Metadaten.image.type=='video'}">
+                                <ui:fragment rendered="#{Metadaten.image.type=='video' or Metadaten.image.type=='audio'}">
                                     <form:fieldset label="#{msgs.mets_videoSection}">
                                         <form:field
                                             label="#{msgs.begin}"
