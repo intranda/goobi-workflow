@@ -1,4 +1,6 @@
 
+const _debug= false;
+
 const settings = {
     tileSources: "#tileSource",
     controls: {
@@ -27,12 +29,13 @@ var eventListeners = new Map();
 
 export const loadImage = function() {
 
+
     if(loadedImage?.element?.isConnected) {
-        console.log("viewer already initialized");
-        return;
+        if(_debug)console.log("viewer already initialized");
+        return loadedImage;
     }
 
-    console.log("prepare image with  ", settings.imageView, document.querySelector(settings.imageView.element));
+    if(_debug)console.log("prepare image with  ", settings.imageView, document.querySelector(settings.imageView.element));
 
     if(!loadedImage) {
         loadedImage = new ImageView.Image(settings.imageView);
@@ -73,7 +76,7 @@ export const loadImage = function() {
     getElement(settings.controls.rotateRight)?.addEventListener("click", turnRightEvent)
     getElement(settings.controls.reset)?.addEventListener("click", resetEvent);
     const tileSource = getValue(settings.tileSources);
-    console.log("load tilesource ", tileSource);
+    if(_debug)console.log("load tilesource ", tileSource);
     loadedImage.load(tileSource).then(() => {
         zoomControl.goHome();
     })
@@ -91,7 +94,7 @@ const getElement = function(obj) {
 
  export const getValue = function(input) {
     const element = getElement(input);
-    return element?.value;
+    return element?.value || element?.innerHTML;
 }
 
 export const setValue = function(input, value, commit) {

@@ -1,4 +1,6 @@
 
+const _debug = false;
+
 const settings = {
 
     startSelectionButtons: ".start-area-edition",
@@ -37,12 +39,13 @@ export const initImageAreaCreation = function(image) {
 
     //check if canvas has been replaced. If not, don't reinitialze areaSelect
     if(oldImageElement?.isConnected) {
-        console.log("draw area already initialized");
+        if(_debug)console.log("draw area already initialized", areaSelect);
+        areaSelect?.removeOverlays();
         return;
     } else {
         oldImageElement = image.element;
-    }
-    console.log("image element", oldImageElement);
+    } 
+    if(_debug)console.log("image element", oldImageElement);
 
     if(areaSelect) {
         areaSelect.close();
@@ -57,11 +60,11 @@ export const initImageAreaCreation = function(image) {
 
     areaSelect.finishedHook.subscribe(rect => {
         drawActive = false; 
-        console.log("finished overlay", rect);
+        if(_debug)console.log("finished overlay", rect);
         const area = createImageArea(rect);
         area.addTo = target;
-        console.log("created image area ", area);
-        console.log("addPageArea", addPageArea, window.addPageArea);
+        if(_debug)console.log("created image area ", area);
+        if(_debug)console.log("addPageArea", addPageArea, window.addPageArea);
         addPageArea(area);
         enableInteractions();
     })

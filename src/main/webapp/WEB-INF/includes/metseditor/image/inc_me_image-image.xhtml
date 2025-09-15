@@ -213,30 +213,11 @@
 
 
             <!-- PAGE AREAS -->
-            <h:outputLabel
-                id="pageareas"
-                data-content="pageareas"
-                value="#{Metadaten.pageAreas}"
-                styleClass="d-none"></h:outputLabel>
-            <h:commandScript
-                name="deletePageArea"
-                action="#{Metadaten.deletePageAreaCommand}"
-                render="pageareas"
-                pt:data-ajax-behaviour="ignore" />
-            <h:commandScript
-                name="addPageArea"
-                action="#{Metadaten.addPageAreaCommand}"
-                render="pageareas"
-                pt:data-ajax-behaviour="ignore" />
-            <h:commandScript
-                name="setPageArea"
-                action="#{Metadaten.setPageAreaCommand}"
-                pt:data-ajax-behaviour="ignore" />
-            <h:commandScript
-                name="cancelPageAreaEdition"
-                action="#{Metadaten.cancelPageAreaEdition}"
-                render="pageareas"
-                pt:data-ajax-behaviour="ignore" />
+			<h:outputLabel id="pageareas" pt:data-content="pageareas" value="#{Metadaten.pageAreas}" styleClass="d-none"></h:outputLabel>
+            <h:commandScript name="deletePageArea" action="#{Metadaten.deletePageAreaCommand}" render="pageareas" pt:data-ajax-behaviour="ignore"/>
+            <h:commandScript name="addPageArea" action="#{Metadaten.addPageAreaCommand}" render="pageareas" pt:data-ajax-behaviour="update-image"/>
+            <h:commandScript name="setPageArea" action="#{Metadaten.setPageAreaCommand}" pt:data-ajax-behaviour="ignore"/>
+            <h:commandScript name="cancelPageAreaEdition" action="#{Metadaten.cancelPageAreaEdition}" render="pageareas" pt:data-ajax-behaviour="ignore"/>
         </h:form>
     </composite:implementation>
 </ui:composition>
