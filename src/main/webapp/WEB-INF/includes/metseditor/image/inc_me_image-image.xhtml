@@ -8,7 +8,9 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:p="http://primefaces.org/ui"
     xmlns:o="http://omnifaces.org/ui"
-    xmlns:form="http://goobi.io/form">
+    xmlns:form="http://goobi.io/form"
+    xmlns:media="http://goobi.io/media"
+    >
 
     <composite:interface />
 
@@ -16,105 +18,6 @@
 
         <style>
 
-/* START Videos with Chapters */
-figure.video_chapters {
-    font-size: 0;
-    position: relative;
-    background: #000;
-    margin: 0;
-}
-
-figure.video_chapters video {
-    width: 75%;
-    height: auto;
-    display: inline-block;
-}
-
-figure.video_chapters figcaption {
-    position: absolute;
-    right: 0;
-    top: 0;
-    background: #222;
-    width: 25%;
-    font-size: 1rem;
-    color: #999;
-    height: 100%;
-    overflow-y: scroll;
-    -moz-scrollbars-vertical:;
-}
-
-figure.video_chapters figcaption ol {
-    position: relative;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-figure.video_chapters figcaption ol li a {
-    display: block;
-    padding: .7rem 1rem;
-    border-bottom: 1px dashed #000;
-    transition: .3s;
-    font-family: 'Merriweather', serif;
-}
-
-figure.video_chapters figcaption ol li.watched a {
-    background: hsla(45, 80%, 50%, .3);
-}
-
-figure.video_chapters figcaption ol li a.current {
-    background: hsl(45, 80%, 50%);
-    color: #000;
-}
-
-figure.video_chapters figcaption ol li a:not(.current):hover, figure.video_chapters figcaption ol li a:not(.current):focus
-    {
-    background: hsl(45, 80%, 30%);
-    color: #000;
-    cursor: pointer;
-}
-
-figure.video_chapters figcaption ol li a small {
-    clear: both;
-    display: block;
-    font-size: .75em;
-    font-family: 'Source Sans Pro', Helvetica, sans-serif;
-}
-
-figure.video_chapters figcaption ol li a small::before {
-    content: '';
-    clear: both;
-    display: block;
-}
-
-figure.video_chapters figcaption::-webkit-scrollbar {
-    width: 13px;
-    height: 100%;
-}
-
-figure.video_chapters figcaption::-webkit-scrollbar-track {
-    background-color: #000;
-}
-
-figure.video_chapters figcaption::-webkit-scrollbar-thumb:vertical {
-    background: hsl(45, 80%, 20%);
-    width: 13px;
-    height: 20px;
-}
-
-@media screen and (max-width: 500px) {
-    figure.video_chapters video, figure.video_chapters figcaption {
-        display: block;
-        width: 100%;
-    }
-    figure.video_chapters video {
-        border-bottom: 10px solid #111;
-    }
-    figure.video_chapters figcaption {
-        position: static;
-        height: 200px;
-    }
-}
 </style>
 
 
@@ -231,49 +134,9 @@ figure.video_chapters figcaption::-webkit-scrollbar-thumb:vertical {
 
                         <ui:fragment rendered="#{Metadaten.image.type == 'video'}">
 
-                            <div class="wrapper">
-                                <div class="center">
-                                    <figure
-                                        class="video_chapters"
-                                        id="video-track-container">
-                                        <video
-                                            width="640"
-                                            height="480"
-                                            class="videoplayer"
-                                            id="videoplayer"
-                                            controls=""
-                                            preload="metadata"
-                                            src="#{Metadaten.image.objectUrl}">
-                                            <track
-                                                default="default"
-                                                kind="chapters"
-                                                src="#{Metadaten.vttUrl}"
-                                                onload="displayChapters(this)"
-                                                srclang="en" />
-                                            <ui:repeat
-                                                var="title"
-                                                value="#{Metadaten.videoSubtitles}">
-                                                <ui:fragment rendered="#{title.key=='default'}">
-                                                    <track
-                                                        kind="subtitles"
-                                                        src="#{title.value}"
-                                                        default="default" />
-                                                </ui:fragment>
-                                                <ui:fragment rendered="#{title.key!='default'}">
-                                                    <track
-                                                        kind="subtitles"
-                                                        src="#{title.value}"
-                                                        srclang="#{title.key}" />
-                                                </ui:fragment>
-                                            </ui:repeat>
-                                        </video>
-
-                                        <figcaption>
-                                            <ol class="chapters"></ol>
-                                        </figcaption>
-                                    </figure>
-                                </div>
-                            </div>
+                            <media:video
+                                src="#{Metadaten}"
+                                />
                         </ui:fragment>
                         <ui:fragment rendered="#{Metadaten.image.type == 'object2vr'}">
 
