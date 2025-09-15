@@ -1,0 +1,110 @@
+/* Video Chapters Component Styles */
+video-chapters {
+  display: block;
+  font-family: inherit;
+}
+
+.video-chapters {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.chapters-title {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #212529;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 0.5rem;
+}
+
+.chapters-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chapter-item {
+  margin-bottom: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.chapter-item:last-child {
+  margin-bottom: 0;
+}
+
+.chapter-link {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+  color: #495057;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.chapter-link:hover {
+  background-color: #e9ecef;
+  color: #212529;
+  text-decoration: none;
+}
+
+.chapter-link:focus {
+  outline: 2px solid var(--clr-primary, #368ee0);
+  outline-offset: -2px;
+}
+
+.chapter-timestamp {
+  color: #6c757d;
+  margin-right: 0.75rem;
+  min-width: 3rem;
+  flex-shrink: 0;
+}
+
+.chapter-title {
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Active chapter styles */
+.chapter-item.active .chapter-link {
+  background-color: var(--clr-primary, #368ee0);
+  color: white;
+}
+
+.chapter-item.active .chapter-timestamp {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Watched chapters styles */
+.chapter-item.watched .chapter-link {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.chapter-item.watched .chapter-timestamp {
+  color: #0c5460;
+}
+
+.chapter-item.watched .chapter-title {
+  position: relative;
+}
+
+.chapter-item.watched .chapter-title::after {
+  content: '✓';
+  position: absolute;
+  right: 0;
+  color: #28a745;
+  font-weight: bold;
+}
+
+/* Progress indicator */
+.chapter-item.active .chapter-link::before {
+  content: '▶';
+  margin-right: 0.5rem;
+  font-size: 0.75rem;
+}

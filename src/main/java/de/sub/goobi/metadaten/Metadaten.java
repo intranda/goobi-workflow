@@ -5507,7 +5507,7 @@ public class Metadaten implements Serializable {
                     // multiple subtitle files are available, set up languages
                     for (String file : list) {
                         // get language code
-                        String code = file.substring(0, file.indexOf(".")).replace(filePrefix, "").replaceAll("\\W", "");
+                        String code = file.substring(0, file.indexOf(".")).replace(filePrefix, "").replaceAll("[\\W_]", "");
                         map.put(code, sb.toString() + myProzess.getId() + "/" + dir.getFileName().toString() + "/" + file);
                     }
                 }

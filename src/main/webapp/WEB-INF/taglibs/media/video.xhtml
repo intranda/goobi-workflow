@@ -1,0 +1,51 @@
+<ui:component
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+    <c:set var="mimeType" value="video" />
+    <div class="wrapper">
+        <div class="center">
+            <figure
+                class="video_chapters"
+                id="video-track-container">
+                <video
+                    playsinline=""
+                    id="videoplayer"
+                    controls=""
+                    preload="metadata">
+                    <source src="#{src.image.objectUrl}" />
+                    <track
+                        default="default"
+                        kind="chapters"
+                        src="#{src.vttUrl}"
+                        srclang="en" />
+                    <ui:repeat
+                        var="title"
+                        value="#{src.videoSubtitles}">
+                        <ui:fragment rendered="#{title.key=='default'}">
+                            <track
+                                kind="captions"
+                                src="#{title.value}"
+                                label="#{msgs[title.key]}"
+                                default="default" />
+                        </ui:fragment>
+                        <ui:fragment rendered="#{title.key!='default'}">
+                            <track
+                                kind="captions"
+                                src="#{title.value}"
+                                label="#{msgs[title.key]}"
+                                srclang="#{title.key}" />
+                        </ui:fragment>
+                    </ui:repeat>
+                </video>
+
+                <figcaption>
+                    <video-chapters video-id="videoplayer" label="#{msgs.chapters}"></video-chapters>
+                </figcaption>
+            </figure>
+        </div>
+    </div>
+    <h:outputScript target="head" name="js/dist/video.min.js?v=#{HelperForm.buildVersion}" />
+    <h:outputStylesheet name="js/dist/video.min.css?v=#{HelperForm.buildVersion}" />
+</ui:component>
