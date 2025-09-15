@@ -28,6 +28,9 @@
         <link rel="stylesheet" href="template/css/lib/x3dom.css?v=1" />
 		<!-- Javascript -->
 		<ui:include src="/WEB-INF/includes/template/inc_JS.xhtml" />
+		<!-- OPEN SEADRAGON AND IMAGE VIEW -->
+        <script src="template/js/static/openseadragon/openseadragon.min.js?v=#{HelperForm.buildVersion}"></script>
+        <script src="#{request.contextPath}/resources/js/dist/imageView.min.js?v=#{HelperForm.buildVersion}"></script>
         <style>
             #pageContentRight {
                 left: 0 !important;
@@ -119,9 +122,6 @@
         <script src="template/js/static/riot.min.js?v=#{HelperForm.buildVersion}"></script>
         <script src="template/js/static/q-promises/q.min.js?v=#{HelperForm.buildVersion}"></script>
         <script src="template/js/static/plugins/tinymce/tinymce.min.js"></script>
-        <!-- OPEN SEADRAGON AND IMAGE VIEW -->
-        <script src="template/js/static/openseadragon/openseadragon.min.js?v=#{HelperForm.buildVersion}"></script>
-        <script src="#{request.contextPath}/resources/js/dist/imageView.min.js?v=#{HelperForm.buildVersion}"></script>
         <!-- 3D-MODELS -->
         <script src="template/js/static/three/three.min.js?v=#{HelperForm.buildVersion}"></script>
         <script src="template/js/static/three/loaders/OBJLoader.js?v=#{HelperForm.buildVersion}"></script>

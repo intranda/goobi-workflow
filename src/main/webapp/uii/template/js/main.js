@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // Initialize all functions after an ajax call
 faces.ajax.addOnEvent((data) => {
+    if(data.source.dataset.ajaxBehaviour === "ignore") {
+        return;
+    }
     switch (data.status) {
         case 'begin':
             toggleLoaders(true)
