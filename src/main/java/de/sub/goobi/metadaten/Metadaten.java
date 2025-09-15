@@ -5409,7 +5409,7 @@ public class Metadaten implements Serializable {
                 if (startTimeList.size() > i + 1) {
                     durationEnd = startTimeList.get(i + 1);
                 } else {
-                    durationEnd = getVideoDuration();
+                    durationEnd = getVideoDuration(image.getImagePath());
                 }
             }
             vtt.append(durationEnd);
@@ -5425,8 +5425,8 @@ public class Metadaten implements Serializable {
         return vtt.toString();
     }
 
-    public String getVideoDuration() {
-        Path imagePath = image.getImagePath();
+    public static String getVideoDuration(final Path filePath) {
+        Path imagePath = filePath;
 
         String totalDuration = "";
         try {

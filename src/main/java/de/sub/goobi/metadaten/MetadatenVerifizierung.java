@@ -48,6 +48,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
@@ -204,6 +205,26 @@ public class MetadatenVerifizierung {
                 }
                 ergebnis = false;
             }
+
+            // validate video sections
+            DocStruct physical = dd.getPhysicalDocStruct();
+            // folder order: media, master, fallback
+            try {
+                Path imageFolder = Paths.get(myProzess.getImagesTifDirectory(false));
+                if (!StorageProvider.getInstance().isDirectory(imageFolder)) {
+                    imageFolder = Paths.get(myProzess.getImagesOrigDirectory(false));
+                }
+                if (!StorageProvider.getInstance().isDirectory(imageFolder)) {
+                    imageFolder = Paths.get(myProzess.getImagesTifDirectory(true));
+                }
+                // validate video sections only if folder exists
+                if (!StorageProvider.getInstance().isDirectory(imageFolder)) {
+                    validateVideoSections(physical, imageFolder);
+                }
+            } catch (IOException | DAOException | SwapException e) {
+                log.error(e);
+            }
+
         }
 
         /*
@@ -1028,6 +1049,7 @@ public class MetadatenVerifizierung {
                 // check, if the file has sub sections
                 List<DocStruct> areas = page.getAllChildren();
                 if (areas != null) {
+                    // collect metadata to validate
                     List<String> startTimeList = new ArrayList<>();
                     List<String> endTimeList = new ArrayList<>();
                     for (DocStruct area : areas) {
@@ -1043,20 +1065,19 @@ public class MetadatenVerifizierung {
                         startTimeList.add(start);
                         endTimeList.add(end);
                     }
+
                     String filename = page.getImageName();
-
                     // check if file exists, get duration from file
-                    LocalTime totalDuration = LocalTime.parse("00:00:11.500"); //TODO
-
                     Path p = imageFolder.resolve(Paths.get(filename).getFileName());
                     if (StorageProvider.getInstance().isFileExists(p)) {
+                        LocalTime totalDuration = LocalTime.parse(Metadaten.getVideoDuration(p));
 
                         for (int i = 0; i < startTimeList.size(); i++) {
                             String begin = startTimeList.get(i);
                             String end = endTimeList.get(i);
 
                             if (StringUtils.isBlank(begin)) {
-                                problems.add("begin time missing"); //TODO
+                                problems.add("begin time missing");
                                 return false;
                             }
 
@@ -1071,20 +1092,21 @@ public class MetadatenVerifizierung {
                                 endTime = totalDuration;
                             }
 
+                            // begin time is after end time
                             if (Duration.between(beginTime, endTime).isNegative()) {
-                                problems.add("begin time is after end time"); //TODO
+                                problems.add("begin time is after end time");
                                 return false;
                             }
 
-                            // TODO begin time and end time are between 00:00:00 and total duration
+                            // begin time and end time are between 00:00:00 and total duration
                             if (Duration.between(beginTime, totalDuration).isNegative()) {
-                                // start time is after total duration
-                                problems.add("Video section begin time " + beginTime + " is after total time"); //TODO
+                                // begin time is after total duration
+                                problems.add("Video section begin time " + beginTime + " is after total time");
                                 return false;
                             }
                             if (Duration.between(endTime, totalDuration).isNegative()) {
                                 // end time is after total duration
-                                problems.add("Video section end time " + endTime + " is after total time"); //TODO
+                                problems.add("Video section end time " + endTime + " is after total time");
                                 return false;
                             }
                         }
