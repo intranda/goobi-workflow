@@ -16,6 +16,7 @@ const initPlayer = () => {
     try {
         const player = new Plyr('#videoplayer', {
             settings: ['captions', 'quality', 'speed'],
+            invertTime: false,
             iconUrl: '../resources/js/dist/plyr.svg',
         });
 
