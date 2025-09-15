@@ -28,6 +28,8 @@ package de.sub.goobi.metadaten;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -1043,25 +1045,55 @@ public class MetadatenVerifizierung {
                     }
                     String filename = page.getImageName();
 
-                    // TODO check if file exists, get duration from file
+                    // check if file exists, get duration from file
+                    LocalTime totalDuration = LocalTime.parse("00:00:11.500"); //TODO
+
                     Path p = imageFolder.resolve(Paths.get(filename).getFileName());
                     if (StorageProvider.getInstance().isFileExists(p)) {
 
-                        // TODO check if all sections have a begin time
+                        for (int i = 0; i < startTimeList.size(); i++) {
+                            String begin = startTimeList.get(i);
+                            String end = endTimeList.get(i);
 
-                        // TODO begin time is ascending
+                            if (StringUtils.isBlank(begin)) {
+                                problems.add("begin time missing"); //TODO
+                                return false;
+                            }
 
-                        // TODO if end time exists: its <= than begin time of next element
+                            LocalTime beginTime = LocalTime.parse(begin);
+                            LocalTime endTime;
+                            if (StringUtils.isBlank(end) && startTimeList.size() > i + 1) {
+                                end = startTimeList.get(i + 1);
+                            }
+                            if (StringUtils.isNotBlank(end)) {
+                                endTime = LocalTime.parse(end);
+                            } else {
+                                endTime = totalDuration;
+                            }
 
-                        // TODO begin time and end time are between 00:00:00 and total duration
+                            if (Duration.between(beginTime, endTime).isNegative()) {
+                                problems.add("begin time is after end time"); //TODO
+                                return false;
+                            }
 
+                            // TODO begin time and end time are between 00:00:00 and total duration
+                            if (Duration.between(beginTime, totalDuration).isNegative()) {
+                                // start time is after total duration
+                                problems.add("Video section begin time " + beginTime + " is after total time"); //TODO
+                                return false;
+                            }
+                            if (Duration.between(endTime, totalDuration).isNegative()) {
+                                // end time is after total duration
+                                problems.add("Video section end time " + endTime + " is after total time"); //TODO
+                                return false;
+                            }
+                        }
                     }
                 }
-
             }
 
         }
 
-        return false;
+        return true;
     }
 }
