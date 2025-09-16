@@ -29,6 +29,9 @@ var eventListeners = new Map();
 
 export const loadImage = function() {
 
+    if(!document.querySelector(settings.imageView.element)) {
+        console.warn("No element to host image found" , settings.imageView.element);
+    }
 
     if(loadedImage?.element?.isConnected) {
         if(_debug)console.log("viewer already initialized");

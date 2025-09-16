@@ -60,21 +60,23 @@
                 });
             })();
         })
-        faces.ajax.addOnEvent((data) => {
-            const ajaxstatus = data.status;
-            if (ajaxstatus === 'success') {
-                document.querySelectorAll('.grow-wrap').forEach( (wrap) => {
-                    // Sync wrap and textarea on load
-                    const textarea = wrap.querySelector('textarea');
-                    if (!textarea) {
-                        return;
-                    }
-                    wrap.dataset.content = textarea.value;
-                    textarea.addEventListener('input', () => {
-                        wrap.dataset.content = textarea.value;
-                    });
-                });
-            }
-        });
+        if(typeof faces !== "undefined") {
+	        faces.ajax.addOnEvent((data) => {
+	            const ajaxstatus = data.status;
+	            if (ajaxstatus === 'success') {
+	                document.querySelectorAll('.grow-wrap').forEach( (wrap) => {
+	                    // Sync wrap and textarea on load
+	                    const textarea = wrap.querySelector('textarea');
+	                    if (!textarea) {
+	                        return;
+	                    }
+	                    wrap.dataset.content = textarea.value;
+	                    textarea.addEventListener('input', () => {
+	                        wrap.dataset.content = textarea.value;
+	                    });
+	                });
+	            }
+	        });
+        }
     </script>
 </ui:composition>
