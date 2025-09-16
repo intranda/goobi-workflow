@@ -122,19 +122,13 @@
                             <ui:include src="inc_me_image-objectControls.xhtml" />
                         </ui:fragment>
 
-                        <ui:fragment rendered="#{Metadaten.image.type == 'audio'}">
-                            <audio
-                                class="audioplayer"
-                                id="audioplayer"
-                                controls="controls"
-                                preload="none"
-                                src="#{Metadaten.image.objectUrl}">
-                            </audio>
-                        </ui:fragment>
-
                         <ui:fragment rendered="#{Metadaten.image.type == 'video'}">
-
                             <media:video
+                                src="#{Metadaten}"
+                                />
+                        </ui:fragment>
+                        <ui:fragment rendered="#{Metadaten.image.type == 'audio'}">
+                            <media:audio
                                 src="#{Metadaten}"
                                 />
                         </ui:fragment>

@@ -15,4 +15,14 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+    <tag>
+        <tag-name>audio</tag-name>
+        <source>media/audio.xhtml</source>
+        <attribute>
+            <description>The URL of the audio file.</description>
+            <name>source</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
 </facelet-taglib>

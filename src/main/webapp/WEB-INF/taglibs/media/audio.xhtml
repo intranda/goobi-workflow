@@ -1,0 +1,41 @@
+<ui:component
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+    <div class="wrapper">
+        <div class="center">
+            <figure
+                class="video_chapters"
+                id="video-track-container">
+                <audio
+                    playsinline=""
+                    id="videoplayer"
+                    controls=""
+                    preload="metadata">
+                    <source src="#{src.image.objectUrl}" />
+                    <track
+                        default="default"
+                        kind="chapters"
+                        src="#{src.vttUrl}"
+                        srclang="en" />
+                </audio>
+
+                <figcaption>
+                    <video-chapters video-id="videoplayer" label="#{msgs.chapters}"></video-chapters>
+                    <!-- Audio Transcript Display -->
+                    <!-- <ui:repeat
+                        var="subtitle"
+                        value="#{src.videoSubtitles}"> -->
+                        <audio-transcript
+                            audio-id="videoplayer"
+                            src="http://localhost:8080/goobi/api/view/video/45/ilw00001_2_vtt/Night_Mail_en.vtt"
+                            label="#{msgs.transcript}"></audio-transcript>
+                    <!-- </ui:repeat> -->
+                </figcaption>
+            </figure>
+        </div>
+    </div>
+    <h:outputScript target="head" name="js/dist/audio.min.js?v=#{HelperForm.buildVersion}" />
+    <h:outputStylesheet name="js/dist/video.min.css?v=#{HelperForm.buildVersion}" />
+</ui:component>
