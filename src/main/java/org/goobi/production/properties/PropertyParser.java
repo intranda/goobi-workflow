@@ -285,8 +285,13 @@ public final class PropertyParser {
                         // possible values
                         count = config.getMaxIndex(property + "/value");
                         for (int j = 0; j <= count; j++) {
+                            String label = config.getString(property + "/value[" + (j + 1) + "]/@label");
                             String value = config.getString(property + "/value[" + (j + 1) + "]");
-                            pp.getPossibleValues().add(new SelectItem(value, value));
+                            if (StringUtils.isBlank(label)) {
+                                label = value;
+                            }
+
+                            pp.getPossibleValues().add(new SelectItem(value, label));
                         }
                     }
 
@@ -417,7 +422,12 @@ public final class PropertyParser {
                     }
                     for (int j = 0; j <= count; j++) {
                         String value = config.getString(property + "/value[" + (j + 1) + "]");
-                        pp.getPossibleValues().add(new SelectItem(value, value));
+
+                        String label = config.getString(property + "/value[" + (j + 1) + "]/@label");
+                        if (StringUtils.isBlank(label)) {
+                            label = value;
+                        }
+                        pp.getPossibleValues().add(new SelectItem(value, label));
                     }
                 }
                 log.trace("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
@@ -536,10 +546,20 @@ public final class PropertyParser {
                     populatePossibleValuesWithVocabulary(property, pp);
                 } else {
                     // possible values
-                    pp.getPossibleValues()
-                            .addAll(Arrays.stream(prop.getStringArray("/value"))
-                                    .map(v -> new SelectItem(v, v))
-                                    .toList());
+                    int count = config.getMaxIndex(property + "/value");
+                    if (count > 0 && pp.getPossibleValues().isEmpty() && !Type.LISTMULTISELECT.equals(pp.getType())) {
+                        pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+                    }
+                    for (int j = 0; j <= count; j++) {
+                        String label = config.getString(property + "/value[" + (j + 1) + "]/@label");
+                        String value = config.getString(property + "/value[" + (j + 1) + "]");
+                        if (StringUtils.isBlank(label)) {
+                            label = value;
+                        }
+
+                        pp.getPossibleValues().add(new SelectItem(value, label));
+
+                    }
                 }
 
                 properties.add(pp);
