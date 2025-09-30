@@ -95,12 +95,14 @@ function drawAreas(areas, image) {
         const rect = new OpenSeadragon.Rect(parseInt(area.x), parseInt(area.y), parseInt(area.w), parseInt(area.h));
 	    const displayRect = ImageView.CoordinateConversion.convertRectFromImageToOpenSeadragon(rect, image.openseadragon, image.getOriginalImageSize());
         if(_debug)console.log("draw rect", rect, displayRect );
-        const overlay = new ImageView.Overlay(displayRect, settings.style, area.areaId);
+        const overlay = new ImageView.Overlay(displayRect, {style: settings.style}, area.areaId);
         overlay.draw(image);
         overlay.transform = new ImageView.Transform(image, overlay, () => !deleting && isHighlighted(overlay));
         overlay.transform.finishedTransforming().subscribe(o => {
-            if(_debug)console.log("changed overlay ", o, o.getBounds());
-            const updatedArea = createImageArea(o.getBounds(), o.id);
+            const viewportBounds = o.getBounds();
+            const imageBounds = o.convertFromViewportToImage(viewportBounds);
+            if(_debug)console.log("changed overlay ", o, imageBounds);
+            const updatedArea = createImageArea(imageBounds, o.id);
             setPageArea(updatedArea);
         });
         if(area.highlight) {
