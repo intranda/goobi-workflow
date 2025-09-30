@@ -47,7 +47,7 @@ public class RestVideoVttResource {
 
     @Getter
     @Setter
-    @Inject
+    @Inject // NOSONAR constructor injection is not possible, as an empty constructor is needed
     private Metadaten metadataBean;
 
     @GET

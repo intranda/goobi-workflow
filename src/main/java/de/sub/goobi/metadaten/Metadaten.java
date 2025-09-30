@@ -5490,7 +5490,7 @@ public class Metadaten implements Serializable {
             ms = ms.substring(0, 2);
         }
 
-        long milliseconds = (int) calculatedDuration * 1000;
+        long milliseconds = (int) calculatedDuration * 1000L;
         milliseconds = milliseconds + Integer.valueOf(ms);
 
         Duration dur = Duration.ofMillis(milliseconds);
