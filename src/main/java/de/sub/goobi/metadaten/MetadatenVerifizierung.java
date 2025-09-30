@@ -26,6 +26,10 @@ package de.sub.goobi.metadaten;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -42,7 +46,9 @@ import org.goobi.beans.Process;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
@@ -199,6 +205,26 @@ public class MetadatenVerifizierung {
                 }
                 ergebnis = false;
             }
+
+            // validate video sections
+            DocStruct physical = dd.getPhysicalDocStruct();
+            // folder order: media, master, fallback
+            try {
+                Path imageFolder = Paths.get(myProzess.getImagesTifDirectory(false));
+                if (!StorageProvider.getInstance().isDirectory(imageFolder)) {
+                    imageFolder = Paths.get(myProzess.getImagesOrigDirectory(false));
+                }
+                if (!StorageProvider.getInstance().isDirectory(imageFolder)) {
+                    imageFolder = Paths.get(myProzess.getImagesTifDirectory(true));
+                }
+                // validate video sections only if folder exists
+                if (!StorageProvider.getInstance().isDirectory(imageFolder)) {
+                    validateVideoSections(physical, imageFolder);
+                }
+            } catch (IOException | DAOException | SwapException e) {
+                log.error(e);
+            }
+
         }
 
         /*
@@ -1006,6 +1032,90 @@ public class MetadatenVerifizierung {
             }
 
         }
+        return true;
+    }
+
+    public boolean validateVideoSections(DocStruct physical, Path imageFolder) {
+
+        if (physical == null || physical.getAllChildren() == null) {
+            // nothing to check
+            return true;
+        }
+
+        // else search for video files
+        for (DocStruct page : physical.getAllChildren()) {
+
+            if ("video".equals(page.getType().getName())) {
+                // check, if the file has sub sections
+                List<DocStruct> areas = page.getAllChildren();
+                if (areas != null) {
+                    // collect metadata to validate
+                    List<String> startTimeList = new ArrayList<>();
+                    List<String> endTimeList = new ArrayList<>();
+                    for (DocStruct area : areas) {
+                        String start = "";
+                        String end = "";
+                        for (Metadata md : area.getAllMetadata()) {
+                            if ("_BEGIN".equals(md.getType().getName())) {
+                                start = md.getValue();
+                            } else if ("_END".equals(md.getType().getName())) {
+                                end = md.getValue();
+                            }
+                        }
+                        startTimeList.add(start);
+                        endTimeList.add(end);
+                    }
+
+                    String filename = page.getImageName();
+                    // check if file exists, get duration from file
+                    Path p = imageFolder.resolve(Paths.get(filename).getFileName());
+                    if (StorageProvider.getInstance().isFileExists(p)) {
+                        LocalTime totalDuration = LocalTime.parse(Metadaten.getVideoDuration(p));
+
+                        for (int i = 0; i < startTimeList.size(); i++) {
+                            String begin = startTimeList.get(i);
+                            String end = endTimeList.get(i);
+
+                            if (StringUtils.isBlank(begin)) {
+                                problems.add("begin time missing");
+                                return false;
+                            }
+
+                            LocalTime beginTime = LocalTime.parse(begin);
+                            LocalTime endTime;
+                            if (StringUtils.isBlank(end) && startTimeList.size() > i + 1) {
+                                end = startTimeList.get(i + 1);
+                            }
+                            if (StringUtils.isNotBlank(end)) {
+                                endTime = LocalTime.parse(end);
+                            } else {
+                                endTime = totalDuration;
+                            }
+
+                            // begin time is after end time
+                            if (Duration.between(beginTime, endTime).isNegative()) {
+                                problems.add("begin time is after end time");
+                                return false;
+                            }
+
+                            // begin time and end time are between 00:00:00 and total duration
+                            if (Duration.between(beginTime, totalDuration).isNegative()) {
+                                // begin time is after total duration
+                                problems.add("Video section begin time " + beginTime + " is after total time");
+                                return false;
+                            }
+                            if (Duration.between(endTime, totalDuration).isNegative()) {
+                                // end time is after total duration
+                                problems.add("Video section end time " + endTime + " is after total time");
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
         return true;
     }
 }

@@ -80,6 +80,7 @@ import jakarta.faces.model.SelectItem;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import ugh.dl.Corporate;
+import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
@@ -98,7 +99,6 @@ public class MetadatenTest extends AbstractTest {
     private Process process;
     private Prefs prefs;
 
-    @SuppressWarnings("deprecation")
     @Before
     public void setUp() throws Exception {
 
@@ -353,15 +353,15 @@ public class MetadatenTest extends AbstractTest {
         MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
 
         Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
-        m.setAutorityFile("id", "uri", "value");
+        m.setAuthorityFile("id", "uri", "value");
         md.addMetadata(m);
         Person p = new Person(prefs.getMetadataTypeByName("junitPerson"));
         p.addNamePart(new NamePart("type", "value"));
-        p.setAutorityFile("id", "uri", "value");
+        p.setAuthorityFile("id", "uri", "value");
         md.addPerson(p);
 
         Corporate c = new Corporate(prefs.getMetadataTypeByName("junitCorporate"));
-        c.setAutorityFile("id", "uri", "value");
+        c.setAuthorityFile("id", "uri", "value");
         c.addSubName(new NamePart("type", "value"));
         md.addCorporate(c);
 
@@ -380,7 +380,7 @@ public class MetadatenTest extends AbstractTest {
         fixture.XMLlesenStart();
 
         Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
-        m.setAutorityFile("id", "uri", "value");
+        m.setAuthorityFile("id", "uri", "value");
         fixture.getDocument().getLogicalDocStruct().addMetadata(m);
 
         fixture.setCurrentMetadata(m);
@@ -397,7 +397,7 @@ public class MetadatenTest extends AbstractTest {
         fixture.XMLlesenStart();
 
         Corporate c = new Corporate(prefs.getMetadataTypeByName("junitCorporate"));
-        c.setAutorityFile("id", "uri", "value");
+        c.setAuthorityFile("id", "uri", "value");
         c.addSubName(new NamePart("type", "value"));
         fixture.getDocument().getLogicalDocStruct().addCorporate(c);
         fixture.setCurrentCorporate(c);
@@ -414,7 +414,7 @@ public class MetadatenTest extends AbstractTest {
 
         Person p = new Person(prefs.getMetadataTypeByName("junitPerson"));
 
-        p.setAutorityFile("id", "uri", "value");
+        p.setAuthorityFile("id", "uri", "value");
         MetaPerson md = new MetaPerson(p, 0, prefs, null, process, null);
         p.addNamePart(new NamePart("type", "value"));
         fixture.getDocument().getLogicalDocStruct().addPerson(p);
@@ -449,7 +449,7 @@ public class MetadatenTest extends AbstractTest {
         fixture.setTempTyp("junitMetadata");
         // add new metadata
         Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
-        m.setAutorityFile("id", "uri", "value");
+        m.setAuthorityFile("id", "uri", "value");
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
         md.setValue("test");
         fixture.setSelectedMetadatum(md);
@@ -517,14 +517,14 @@ public class MetadatenTest extends AbstractTest {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
 
         Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
-        m.setAutorityFile("id", "uri", "value");
+        m.setAuthorityFile("id", "uri", "value");
         md.addMetadata(m);
         Person p = new Person(prefs.getMetadataTypeByName("junitPerson"));
         p.addNamePart(new NamePart("type", "value"));
-        p.setAutorityFile("id", "uri", "value");
+        p.setAuthorityFile("id", "uri", "value");
         md.addPerson(p);
         Corporate c = new Corporate(prefs.getMetadataTypeByName("junitCorporate"));
-        c.setAutorityFile("id", "uri", "value");
+        c.setAuthorityFile("id", "uri", "value");
         c.addSubName(new NamePart("type", "value"));
         md.addCorporate(c);
         MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
@@ -985,7 +985,6 @@ public class MetadatenTest extends AbstractTest {
         // 4
         fixture.setNeuesElementWohin("4");
         assertEquals("metseditor", fixture.KnotenAdd());
-        // TODO addablePersondata addableCorporates pageAreaManager
 
     }
 
@@ -1985,7 +1984,7 @@ public class MetadatenTest extends AbstractTest {
         Metadaten fixture = initMetadaten();
         fixture.setNumberOfImagesPerPage(2);
         fixture.setTxtMoveTo(2);
-        assertEquals(2l, fixture.getPageNumberCurrent().longValue());
+        assertEquals(2L, fixture.getPageNumberCurrent().longValue());
     }
 
     @Test
@@ -1993,7 +1992,7 @@ public class MetadatenTest extends AbstractTest {
         Metadaten fixture = initMetadaten();
         fixture.setNumberOfImagesPerPage(2);
         fixture.setTxtMoveTo(2);
-        assertEquals(3l, fixture.getPageNumberLast().longValue());
+        assertEquals(3L, fixture.getPageNumberLast().longValue());
     }
 
     @Test
@@ -2080,6 +2079,88 @@ public class MetadatenTest extends AbstractTest {
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
         fixture.setCurrentMetadataToPerformSearch(md);
         assertEquals(DisplayType.select, fixture.getCurrentMetadataToPerformSearch().getMetadataDisplaytype());
+    }
+
+    @Test
+    public void testVttGeneration() throws Exception {
+        Metadaten fixture = initMetadaten();
+        // no file set or file is no video
+        assertTrue(fixture.getChapterInformationAsVTT().isEmpty());
+
+        // prepare video data
+        DigitalDocument dd = fixture.getDocument();
+        DocStruct phys = dd.getPhysicalDocStruct();
+
+        DocStruct video = dd.createDocStruct(prefs.getDocStrctTypeByName("video"));
+        video.setImageName("sample.mp4");
+        // logical
+        Metadata md = new Metadata(prefs.getMetadataTypeByName("physPageNumber"));
+        md.setValue("7");
+        video.addMetadata(md);
+
+        md = new Metadata(prefs.getMetadataTypeByName("logicalPageNumber"));
+        md.setValue("7");
+        video.addMetadata(md);
+        Image currentImage = new Image(process, "", "sample.mp4", 7, 200);
+        fixture.getAllImages().add(currentImage);
+
+        phys.addChild(video);
+
+        DocStruct area1 = dd.createDocStruct(prefs.getDocStrctTypeByName("area"));
+        DocStruct area2 = dd.createDocStruct(prefs.getDocStrctTypeByName("area"));
+        area1.setDocstructType("area");
+        area2.setDocstructType("area");
+
+        md = new Metadata(prefs.getMetadataTypeByName("_BEGIN"));
+        md.setValue("00:00:00.000");
+        area1.addMetadata(md);
+        md = new Metadata(prefs.getMetadataTypeByName("_END"));
+        md.setValue("00:01:00.000");
+        area1.addMetadata(md);
+        md = new Metadata(prefs.getMetadataTypeByName("_BEGIN"));
+        md.setValue("00:01:00.000");
+        area2.addMetadata(md);
+
+        md = new Metadata(prefs.getMetadataTypeByName("_END"));
+        md.setValue("00:02:00.000");
+        area2.addMetadata(md);
+        video.addChild(area1);
+        video.addChild(area2);
+
+        DocStruct section1 = dd.createDocStruct(prefs.getDocStrctTypeByName("Chapter"));
+        DocStruct section2 = dd.createDocStruct(prefs.getDocStrctTypeByName("Chapter"));
+
+        md = new Metadata(prefs.getMetadataTypeByName("TitleDocMain"));
+        md.setValue("section 1");
+        section1.addMetadata(md);
+
+        md = new Metadata(prefs.getMetadataTypeByName("TitleDocMain"));
+        md.setValue("section 2");
+        section2.addMetadata(md);
+
+        dd.getLogicalDocStruct().addChild(section1);
+        dd.getLogicalDocStruct().addChild(section2);
+
+        section1.addReferenceTo(area1, "logical_physical");
+        section2.addReferenceTo(area2, "logical_physical");
+
+        fixture.setImageIndex(7);
+
+        String expected = """
+                WEBVTT
+
+                1
+                00:00:00.000 --> 00:01:00.000
+                section 1
+
+                2
+                00:01:00.000 --> 00:02:00.000
+                section 2
+
+                                """;
+
+        assertEquals(expected, fixture.getChapterInformationAsVTT());
+
     }
 
     private Metadaten initMetadaten() throws ReadException, IOException, PreferencesException, SwapException, DAOException {
