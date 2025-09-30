@@ -1,5 +1,6 @@
 // custom JS
 import { initFunctions } from './modules/inits';
+import { toggleLoaders } from './modules/gwAjaxLoader';
 
 // Initialize all functions on initial page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,10 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
 faces.ajax.addOnEvent((data) => {
     switch (data.status) {
         case 'begin':
+            toggleLoaders(true)
             break;
         case 'complete':
             break;
         case 'success':
+            toggleLoaders(false)
             initFunctions();
             break;
     }

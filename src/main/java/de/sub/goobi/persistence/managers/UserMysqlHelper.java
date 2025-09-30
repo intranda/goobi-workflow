@@ -420,7 +420,7 @@ final class UserMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            String sql = "DELETE FROM properties WHERE Titel = '_filter' AND object_id = ? and object_type = 'user' AND property_value = ?";
+            String sql = "DELETE FROM properties WHERE property_name = '_filter' AND object_id = ? and object_type = 'user' AND property_value = ?";
             run.update(connection, sql, userId, filter);
         } finally {
             if (connection != null) {

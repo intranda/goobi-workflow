@@ -1,8 +1,12 @@
+import {
+	addLineHighlight,
+} from "./highlightLine.js";
+
 /**
  * Highlights a specific line in the editor
  * @param {number} lineNumber - The line number to highlight (1-based)
  */
-export const highlightLine = (lineNumber) => {
+export const highlightLine = (view,lineNumber) => {
 	if (!view) {
 		console.warn('CodeMirror view not initialized');
 		return;
@@ -19,7 +23,7 @@ export const highlightLine = (lineNumber) => {
  * Scrolls to a specific line in the editor
  * @param {number} lineNumber - The line number to scroll to (1-based)
  */
-export const scrollToLine = (lineNumber) => {
+export const scrollToLine = (view, lineNumber) => {
 	if (!view) {
 		console.warn('CodeMirror view not initialized');
 		return;
@@ -41,7 +45,7 @@ export const scrollToLine = (lineNumber) => {
 	});
 };
 
-export const initScrollToLine = () => {
+export const initScrollToLine = (view) => {
 	const elements = document.querySelectorAll('[data-scroll-to-line]');
 	if (elements.length === 0) {
 		return;
@@ -56,8 +60,8 @@ export const initScrollToLine = () => {
 				targetLine = targetLine.substring(1);
 			}
 			targetLine = parseInt(targetLine, 10);
-			highlightLine(targetLine);
-			scrollToLine(targetLine);
+			highlightLine(view, targetLine);
+			scrollToLine(view, targetLine);
 		});
 	});
 }
