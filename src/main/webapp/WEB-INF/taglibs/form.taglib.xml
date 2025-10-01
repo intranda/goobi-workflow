@@ -51,6 +51,12 @@
             <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
+            <description>If group is true: Determine whether the field elements should be displayed distinctly or joined visually</description>
+            <name>distinct</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
             <description>The label to be displayed for this component</description>
             <name>label</name>
             <required>true</required>
