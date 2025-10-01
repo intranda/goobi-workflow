@@ -51,8 +51,8 @@
             <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
-            <description>If group is true: Determine whether the field elements should be displayed distinctly or joined visually</description>
-            <name>distinct</name>
+            <description>If group is true: Determine whether the field elements should be displayed distinctly or joined visually. True if not defined</description>
+            <name>join</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
         </attribute>
