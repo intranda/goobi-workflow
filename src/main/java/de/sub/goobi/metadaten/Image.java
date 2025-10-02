@@ -38,6 +38,13 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.goobi.beans.Process;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.MetadataException;
+import com.drew.metadata.mp4.media.Mp4VideoDirectory;
+
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.helper.NIOFileUtils;
@@ -263,7 +270,7 @@ public class Image {
     }
 
     /**
-     * Recreates the urls to the image thumbnails using the given size
+     * Recreates the urls to the image thumbnails using the given size.
      *
      * @param size The size of the smaller thumbnails
      * @param process
@@ -342,14 +349,33 @@ public class Image {
      */
     public Dimension getSize() {
         if (this.size == null) {
-            if (Type.image.equals(getType()) || Type.pdf.equals(getType())) {
-                try {
-                    this.size = getImageSize(getImagePath());
-                } catch (ImageManagerException | FileNotFoundException e) {
-                    log.error("Error reading image size of " + getImagePath(), e);
-                }
-            } else {
-                this.size = new Dimension();
+            switch (getType()) {
+                case image, pdf:
+                    if (Type.image.equals(getType()) || Type.pdf.equals(getType())) {
+                        try {
+                            this.size = getImageSize(getImagePath());
+                        } catch (ImageManagerException | FileNotFoundException e) {
+                            log.error("Error reading image size of " + getImagePath(), e);
+                        }
+                    }
+                    break;
+                case video:
+                    try {
+                        Metadata m = ImageMetadataReader.readMetadata(getImagePath().toFile());
+                        Directory dir = m.getFirstDirectoryOfType(Mp4VideoDirectory.class);
+
+                        // Width: 204
+                        // Height: 205
+                        int width = dir.getInt(204);
+                        int height = dir.getInt(205);
+                        size = new Dimension(width, height);
+                    } catch (ImageProcessingException | IOException | MetadataException e) {
+                        log.error("Error reading image size of " + getImagePath(), e);
+                    }
+                    break;
+
+                default:
+                    this.size = new Dimension();
             }
 
         }

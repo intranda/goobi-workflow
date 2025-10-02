@@ -1,4 +1,5 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -8,32 +9,68 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:section="http://goobi.io/section"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:form="http://goobi.io/form">
 
-    <composite:interface/>
+    <composite:interface />
 
     <composite:implementation>
-        <div id="meStructdataNewElementBox" class="pb-3">
+        <div
+            id="meStructdataNewElementBox"
+            class="pb-3">
             <section:section type="neutral">
-                <section:header icon="bars" title="#{msgs.neuesStrukturelement}">
+                <section:header
+                    icon="bars"
+                    title="#{msgs.neuesStrukturelement}">
                     <section:header-actions>
-                        <button aria-label="#{msgs.minimizeBox}" type="button" class="btn" data-bs-toggle="collapse" data-bs-target="#newElementBoxBody" aria-expanded="true" aria-controls="newElementBoxBody">
-                            <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
-                            <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
+                        <button
+                            aria-label="#{msgs.minimizeBox}"
+                            type="button"
+                            class="btn"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#newElementBoxBody"
+                            aria-expanded="true"
+                            aria-controls="newElementBoxBody">
+                            <span
+                                class="collapse-caret fa fa-angle-up"
+                                aria-hidden="true" />
+                            <span
+                                class="extend-caret fa fa-angle-down"
+                                aria-hidden="true" />
                         </button>
                     </section:header-actions>
                 </section:header>
-                <div id="newElementBoxBody" class="collapse show">
+                <div
+                    id="newElementBoxBody"
+                    class="collapse show">
                     <section:body>
-                        <h:panelGroup id="struct" layout="block">
+                        <h:panelGroup
+                            id="struct"
+                            layout="block">
                             <div class="p-3 border-bottom">
                                 <!-- PLACEMENT SELECTION -->
-                                <h:selectOneRadio id="auswahlElementWohin" styleClass="select-radio focusableChildCss" forceId="true" layout="pageDirection" value="#{Metadaten.neuesElementWohin}">
-                                    <f:selectItem itemValue="1" itemLabel="#{msgs.vorDasAktuelleElement}"/>
-                                    <f:selectItem itemValue="2" itemLabel="#{msgs.hinterDasAktuelleElement}"/>
-                                    <f:selectItem itemValue="3" itemLabel="#{msgs.alsErstesKindDesAktuellenElements}"/>
-                                    <f:selectItem itemValue="4" itemLabel="#{msgs.alsLetztesKindDesAktuellenElements}"/>
-                                    <f:ajax render="struct" event="change" execute="struct"/>
+                                <h:selectOneRadio
+                                    id="auswahlElementWohin"
+                                    styleClass="select-radio focusableChildCss"
+                                    forceId="true"
+                                    layout="pageDirection"
+                                    value="#{Metadaten.neuesElementWohin}">
+                                    <f:selectItem
+                                        itemValue="1"
+                                        itemLabel="#{msgs.vorDasAktuelleElement}" />
+                                    <f:selectItem
+                                        itemValue="2"
+                                        itemLabel="#{msgs.hinterDasAktuelleElement}" />
+                                    <f:selectItem
+                                        itemValue="3"
+                                        itemLabel="#{msgs.alsErstesKindDesAktuellenElements}" />
+                                    <f:selectItem
+                                        itemValue="4"
+                                        itemLabel="#{msgs.alsLetztesKindDesAktuellenElements}" />
+                                    <f:ajax
+                                        render="struct"
+                                        event="change"
+                                        execute="struct" />
                                 </h:selectOneRadio>
                             </div>
                             <!-- PREVIOUS PAGE -->
@@ -43,7 +80,14 @@
                                 </div>
                                 <div class="form-input">
                                     <div class="d-flex w-100 my-auto">
-                                        <p:autoComplete pt:aria-label="#{msgs.firstPage}" scrollHeight="300" id="pagestart1" styleClass="form-control" inputStyleClass="border-0 w-100 p-0" value="#{Metadaten.pagesStart}" completeMethod="#{Metadaten.autocomplete}"/>
+                                        <p:autoComplete
+                                            pt:aria-label="#{msgs.firstPage}"
+                                            scrollHeight="300"
+                                            id="pagestart1"
+                                            styleClass="form-control"
+                                            inputStyleClass="border-0 w-100 p-0"
+                                            value="#{Metadaten.pagesStart}"
+                                            completeMethod="#{Metadaten.autocomplete}" />
                                         <button
                                             jsf:id="takePreviousImage"
                                             aria-label="#{msgs.previousImage}"
@@ -54,9 +98,14 @@
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="left"
                                             jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                            <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
-                                            <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                            <f:ajax render="pagestart1"/>
+                                            <span
+                                                class="fa fa-angle-left fa-lg"
+                                                aria-hidden="true" />
+                                            <f:setPropertyActionListener
+                                                value="#{Metadaten.imageIndex}"
+                                                property="#{Metadaten.pageNumber}"
+                                                target="#{Metadaten.pageNumber}" />
+                                            <f:ajax render="pagestart1" />
                                         </button>
                                         <button
                                             jsf:id="takeCurrentImage"
@@ -68,9 +117,14 @@
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="top"
                                             jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                            <span class="fa fa-picture-o" aria-hidden="true"/>
-                                            <f:setPropertyActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                            <f:ajax render="pagestart1"/>
+                                            <span
+                                                class="fa fa-picture-o"
+                                                aria-hidden="true" />
+                                            <f:setPropertyActionListener
+                                                value="#{Metadaten.imageIndex+1}"
+                                                property="#{Metadaten.pageNumber}"
+                                                target="#{Metadaten.pageNumber}" />
+                                            <f:ajax render="pagestart1" />
                                         </button>
                                         <button
                                             jsf:id="takeNextImage"
@@ -82,9 +136,14 @@
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="right"
                                             jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                            <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
-                                            <f:setPropertyActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                            <f:ajax render="pagestart1"/>
+                                            <span
+                                                class="fa fa-angle-right fa-lg"
+                                                aria-hidden="true" />
+                                            <f:setPropertyActionListener
+                                                value="#{Metadaten.imageIndex+2}"
+                                                property="#{Metadaten.pageNumber}"
+                                                target="#{Metadaten.pageNumber}" />
+                                            <f:ajax render="pagestart1" />
                                         </button>
                                     </div>
                                 </div>
@@ -96,7 +155,15 @@
                                 </div>
                                 <div class="form-input">
                                     <div class="d-flex w-100 my-auto">
-                                        <p:autoComplete scrollHeight="300" id="pageend1" pt:aria-label="#{msgs.lastPage}" styleClass="form-control" inputStyleClass="border-0 w-100 p-0" forceId="true" value="#{Metadaten.pagesEnd}" completeMethod="#{Metadaten.autocomplete}"/>
+                                        <p:autoComplete
+                                            scrollHeight="300"
+                                            id="pageend1"
+                                            pt:aria-label="#{msgs.lastPage}"
+                                            styleClass="form-control"
+                                            inputStyleClass="border-0 w-100 p-0"
+                                            forceId="true"
+                                            value="#{Metadaten.pagesEnd}"
+                                            completeMethod="#{Metadaten.autocomplete}" />
                                         <button
                                             jsf:id="takePreviousImage2"
                                             aria-label="#{msgs.previousImage}"
@@ -107,9 +174,14 @@
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="left"
                                             jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                            <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
-                                            <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                            <f:ajax render="pageend1"/>
+                                            <span
+                                                class="fa fa-angle-left fa-lg"
+                                                aria-hidden="true" />
+                                            <f:setPropertyActionListener
+                                                value="#{Metadaten.imageIndex}"
+                                                property="#{Metadaten.pageNumber}"
+                                                target="#{Metadaten.pageNumber}" />
+                                            <f:ajax render="pageend1" />
                                         </button>
                                         <button
                                             jsf:id="takeCurrentImage2"
@@ -121,9 +193,14 @@
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="bottom"
                                             jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                            <span class="fa fa-picture-o" aria-hidden="true"/>
-                                            <f:setPropertyActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                            <f:ajax render="pageend1"/>
+                                            <span
+                                                class="fa fa-picture-o"
+                                                aria-hidden="true" />
+                                            <f:setPropertyActionListener
+                                                value="#{Metadaten.imageIndex +1}"
+                                                property="#{Metadaten.pageNumber}"
+                                                target="#{Metadaten.pageNumber}" />
+                                            <f:ajax render="pageend1" />
                                         </button>
                                         <button
                                             jsf:id="takeNextImage2"
@@ -135,45 +212,127 @@
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="right"
                                             jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                            <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
-                                            <f:setPropertyActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                            <f:ajax render="pageend1"/>
+                                            <span
+                                                class="fa fa-angle-right fa-lg"
+                                                aria-hidden="true" />
+                                            <f:setPropertyActionListener
+                                                value="#{Metadaten.imageIndex +2}"
+                                                property="#{Metadaten.pageNumber}"
+                                                target="#{Metadaten.pageNumber}" />
+                                            <f:ajax render="pageend1" />
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <h:panelGroup id="addNewPageArea" styleClass="form-row structdata__page-area" layout="block" rendered="#{Metadaten.enablePageArea}">
-                                <div class="form-label">
-                                    <label for="pageArea">#{msgs.pageArea}:</label>
-                                </div>
-                                <div class="form-input">
-                                    <div class="d-flex w-100">
-                                        <h:inputText id="pageAreaName" pt:aria-label="#{msgs.pageArea}" styleClass="form-control focusableChildCss" value="#{Metadaten.pageArea}" disabled="true"/>
-                                            <ui:fragment rendered="#{(Metadaten.neuesElementWohin gt 2 and not empty Metadaten.addDocStructType2) or (Metadaten.neuesElementWohin lt 3 and not empty Metadaten.addDocStructType1)}">
-                                    <!-- ADD PAGE AREA -->
-                                        <button
-                                            class="btn font-light start-area-edition"
-                                            title="#{msgs.mets_createPageArea}"
-                                            type="button"
-                                            aria-label="#{msgs.mets_createPageArea}"
-                                            data-image-area-target="new"
-                                            data-bs-toggle="tooltip"
-                                            data-placement="left">
-                                            <span class="fa fa-crop" aria-hidden="true"/>
-                                        </button>
-                                        <button
-                                            class="btn btn--icon-red cancel-area-edition above-overlay"
-                                            style="display:none;"
-                                            title="#{msgs.mets_cancelPageArea}"
-                                            type="button"
-                                            aria-label="#{msgs.mets_cancelPageArea}"
-                                            data-bs-toggle="tooltip"
-                                            data-placement="right">
-                                            <span class="fa fa-ban" aria-hidden="true"/>
-                                        </button>
+                            <h:panelGroup
+                                id="addNewPageArea"
+                                layout="block"
+                                rendered="#{Metadaten.enablePageArea}">
+                                <ui:fragment rendered="#{Metadaten.image.type=='video' or Metadaten.image.type=='audio'}">
+                                    <form:fieldset label="#{msgs.mets_videoSection}">
+                                        <form:field
+                                            label="#{msgs.begin}"
+                                            group="true"
+                                            help="">
+                                            <h:inputText
+                                                id="videoSectionBegin"
+                                                pt:aria-label="#{msgs.begin}"
+                                                styleClass="form-control"
+                                                value="#{Metadaten.videoSectionBegin}"
+                                                pt:pattern="[0-9]{1,2}:[0-9]{2}:[0-9]{2}(\.[0-9]{1,3})?"
+                                                pt:placeholder="00:00:00"
+                                                pt:title="Time format: HH:MM:SS or HH:MM:SS.mmm" />
+                                            <button
+                                                id="takeCurrentTimestamp1"
+                                                aria-label="#{msgs.mets_currentTimestamp}"
+                                                class="btn font-light"
+                                                title="#{msgs.mets_currentTimestamp}"
+                                                type="button"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
+                                                data-video-set-timestamp="true"
+                                                data-video-target="videoSectionBegin"
+                                                onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                                <span
+                                                    class="fa fa-clock-o"
+                                                    aria-hidden="true" />
+                                            </button>
+                                        </form:field>
+                                        <form:field
+                                            label="#{msgs.end}"
+                                            group="true"
+                                            help="">
+                                            <h:inputText
+                                                id="videoSectionEnd"
+                                                pt:aria-label="#{msgs.end}"
+                                                styleClass="form-control"
+                                                value="#{Metadaten.videoSectionEnd}"
+                                                pt:pattern="[0-9]{1,2}:[0-9]{2}:[0-9]{2}(\.[0-9]{1,3})?"
+                                                pt:placeholder="00:00:00"
+                                                pt:title="Time format: HH:MM:SS or HH:MM:SS.mmm" />
+                                            <button
+                                                id="takeCurrentTimestamp2"
+                                                aria-label="#{msgs.mets_currentTimestamp}"
+                                                class="btn font-light"
+                                                title="#{msgs.mets_currentTimestamp}"
+                                                type="button"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
+                                                data-video-set-timestamp="true"
+                                                data-video-target="videoSectionEnd"
+                                                onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                                <span
+                                                    class="fa fa-clock-o"
+                                                    aria-hidden="true" />
+                                            </button>
+                                        </form:field>
+                                    </form:fieldset>
+
+                                </ui:fragment>
+                                <ui:fragment rendered="#{Metadaten.image.type=='image'}">
+                                    <form:field
+                                        label="#{msgs.pageArea}"
+                                        group="true"
+                                        join="false"
+                                        >
+
+                                        <h:inputText
+                                            id="pageAreaName"
+                                            pt:aria-label="#{msgs.pageArea}"
+                                            styleClass="form-control focusableChildCss"
+                                            value="#{Metadaten.pageArea}"
+                                            disabled="true" />
+                                        <ui:fragment
+                                            rendered="#{(Metadaten.neuesElementWohin gt 2 and not empty Metadaten.addDocStructType2) or (Metadaten.neuesElementWohin lt 3 and not empty Metadaten.addDocStructType1)}">
+                                            <!-- ADD PAGE AREA -->
+                                            <button
+                                                class="btn font-light start-area-edition"
+                                                title="#{msgs.mets_createPageArea}"
+                                                type="button"
+                                                onclick="goobiWorkflowJS.object.startDrawArea(this, 'new')"
+                                                aria-label="#{msgs.mets_createPageArea}"
+                                                data-bs-toggle="tooltip"
+                                                data-placement="left">
+                                                <span
+                                                    class="fa fa-crop"
+                                                    aria-hidden="true" />
+                                            </button>
+                                            <button
+                                                class="btn btn--icon-red cancel-area-edition above-overlay"
+                                                style="display: none;"
+                                                title="#{msgs.mets_cancelPageArea}"
+                                                type="button"
+                                                onclick="goobiWorkflowJS.object.cancelDrawArea(this)"
+                                                aria-label="#{msgs.mets_cancelPageArea}"
+                                                data-bs-toggle="tooltip"
+                                                data-placement="right">
+                                                <span
+                                                    class="fa fa-ban"
+                                                    aria-hidden="true" />
+                                            </button>
                                         </ui:fragment>
-                                    </div>
-                                </div>
+                                    </form:field>
+                                </ui:fragment>
                             </h:panelGroup>
                             <!-- STRUCTURE TYPE -->
                             <div class="form-row structdata__structure-type">
@@ -186,42 +345,97 @@
                                     </ui:fragment>
                                 </div>
                                 <div class="form-input">
-                                    <h:selectOneMenu id="auswahlAddable1" forceId="true" value="#{Metadaten.addDocStructType1}" rendered="#{Metadaten.neuesElementWohin lt 3}" styleClass="form-select">
-                                        <f:selectItems value="#{Metadaten.addableDocStructTypenAlsNachbar}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item"/>
-                                        <f:ajax render="struct" event="change" execute="struct"/>
+                                    <h:selectOneMenu
+                                        id="auswahlAddable1"
+                                        forceId="true"
+                                        value="#{Metadaten.addDocStructType1}"
+                                        rendered="#{Metadaten.neuesElementWohin lt 3}"
+                                        styleClass="form-select">
+                                        <f:selectItems
+                                            value="#{Metadaten.addableDocStructTypenAlsNachbar}"
+                                            itemLabel="#{item.label}"
+                                            itemValue="#{item.value.name}"
+                                            var="item" />
+                                        <f:ajax
+                                            render="struct"
+                                            event="change"
+                                            execute="struct" />
                                     </h:selectOneMenu>
-                                    <h:selectOneMenu id="auswahlAddable2" styleClass="form-select" forceId="true" value="#{Metadaten.addDocStructType2}" rendered="#{Metadaten.neuesElementWohin gt 2}">
-                                        <f:selectItems value="#{Metadaten.addableDocStructTypenAlsKind}" itemLabel="#{item.label}" itemValue="#{item.value.name}" var="item"/>
-                                        <f:ajax render="struct" event="change" execute="struct"/>
-                                </h:selectOneMenu>
+                                    <h:selectOneMenu
+                                        id="auswahlAddable2"
+                                        styleClass="form-select"
+                                        forceId="true"
+                                        value="#{Metadaten.addDocStructType2}"
+                                        rendered="#{Metadaten.neuesElementWohin gt 2}">
+                                        <f:selectItems
+                                            value="#{Metadaten.addableDocStructTypenAlsKind}"
+                                            itemLabel="#{item.label}"
+                                            itemValue="#{item.value.name}"
+                                            var="item" />
+                                        <f:ajax
+                                            render="struct"
+                                            event="change"
+                                            execute="struct" />
+                                    </h:selectOneMenu>
                                 </div>
                             </div>
 
                             <!-- ADD ABLE PERSONDATA -->
                             <h:panelGroup rendered="#{Metadaten.addablePersondata.size() &gt; 0}">
-                                <ui:repeat id="addablePersondata" var="addablePersondata" value="#{Metadaten.addablePersondata}">
-                                    <intranda:formGroupPerson id="person" person="#{addablePersondata}" renderDelete="false" datatype="addablePerson"/>
+                                <ui:repeat
+                                    id="addablePersondata"
+                                    var="addablePersondata"
+                                    value="#{Metadaten.addablePersondata}">
+                                    <intranda:formGroupPerson
+                                        id="person"
+                                        person="#{addablePersondata}"
+                                        renderDelete="false"
+                                        datatype="addablePerson" />
                                 </ui:repeat>
                             </h:panelGroup>
 
                             <!-- ADD ABLE METADATA -->
                             <ui:fragment rendered="#{Metadaten.addableMetadata.size() &gt; 0}">
-                                <ui:repeat id="addableMetadata" var="Item" value="#{Metadaten.addableMetadata}">
-                                    <intranda:formGroupMetadata cols="2" metadata="#{Item}" datatype="addableMetadata" renderDelete="false" renderDuplicate="false" />
+                                <ui:repeat
+                                    id="addableMetadata"
+                                    var="Item"
+                                    value="#{Metadaten.addableMetadata}">
+                                    <intranda:formGroupMetadata
+                                        cols="2"
+                                        metadata="#{Item}"
+                                        datatype="addableMetadata"
+                                        renderDelete="false"
+                                        renderDuplicate="false" />
                                 </ui:repeat>
                             </ui:fragment>
 
                             <!-- ADD ELEMENT -->
                             <section:footer>
-                                <button jsf:id="fastPagination" class="btn btn-outline me-auto ps-0" type="button">
-                                    <span class="fa #{Metadaten.enableFastPagination == false?'fa fa-square-o':'fa fa-check-square-o'}" aria-hidden="true"/>
-                                    <h:outputText value="#{msgs.mets_easyPagination}" styleClass="structdata__easyPagination"/>
-                                    <f:setPropertyActionListener value="#{not Metadaten.enableFastPagination}" target="#{Metadaten.enableFastPagination}"/>
-                                    <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render=":pageContentCenter"/>
+                                <button
+                                    jsf:id="fastPagination"
+                                    class="btn btn-outline me-auto ps-0"
+                                    type="button">
+                                    <span
+                                        class="fa #{Metadaten.enableFastPagination == false?'fa fa-square-o':'fa fa-check-square-o'}"
+                                        aria-hidden="true" />
+                                    <h:outputText
+                                        value="#{msgs.mets_easyPagination}"
+                                        styleClass="structdata__easyPagination" />
+                                    <f:setPropertyActionListener
+                                        value="#{not Metadaten.enableFastPagination}"
+                                        target="#{Metadaten.enableFastPagination}" />
+                                    <f:ajax
+                                        onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)"
+                                        render=":pageContentCenter" />
                                 </button>
-                                <button jsf:id="add" class="btn btn-neutral-600" jsf:action="#{Metadaten.KnotenAdd}">
+                                <button
+                                    jsf:id="add"
+                                    class="btn btn-neutral-600"
+                                    jsf:action="#{Metadaten.KnotenAdd}">
                                     #{msgs.strukturelementHinzufuegen}
-                                    <f:ajax render="@form :treeform :openseadragonform:pageareas" execute="@form"/>
+                                    <f:ajax
+                                        render="@form :treeform :openseadragonform:pageareas"
+                                        execute="@form" />
                                 </button>
                             </section:footer>
                         </h:panelGroup>

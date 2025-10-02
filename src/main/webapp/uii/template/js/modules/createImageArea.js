@@ -1,5 +1,5 @@
 
-const _debug = true;
+const _debug = false;
 
 const settings = {
 

@@ -11,6 +11,21 @@
     <language name="en">Shape</language>
   </MetadataType>
   <MetadataType>
+    <Name>_BEGIN</Name>
+    <language name="de">_BEGIN</language>
+    <language name="en">_BEGIN</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>_END</Name>
+    <language name="de">_END</language>
+    <language name="en">_END</language>
+  </MetadataType>
+    <MetadataType>
+    <Name>_BETYPE</Name>
+    <language name="de">_BETYPE</language>
+    <language name="en">_BETYPE</language>
+  </MetadataType>  
+  <MetadataType>
     <Name>_directionRTL</Name>
     <language name="de">Leserichtung RTL</language>
     <language name="en">Reading direction RTL</language>
@@ -1538,11 +1553,22 @@
 		<metadata num="1m">logicalPageNumber</metadata>
 	</DocStrctType>
   <DocStrctType>
+    <Name>video</Name>
+    <language name="de">Video</language>
+    <language name="en">Video</language>
+    <metadata num="1m">logicalPageNumber</metadata>
+    <metadata num="1m">physPageNumber</metadata>
+    <allowedchildtype>area</allowedchildtype> 
+  </DocStrctType>    
+  <DocStrctType>
     <Name>area</Name>
     <language name="de">Region</language>
     <language name="en">Area</language>
     <metadata num="1o">_COORDS</metadata>
     <metadata num="1o">_SHAPE</metadata>
+    <metadata num="1o">_BEGIN</metadata>
+    <metadata num="1o">_END</metadata>
+    <metadata num="1o">_BETYPE</metadata>    
     <metadata num="1m">physPageNumber</metadata>
     <metadata num="1m">logicalPageNumber</metadata>
   </DocStrctType>    
@@ -1560,8 +1586,8 @@
 		<metadata num="1o">datedigit</metadata>
 		<metadata num="1o">pathimagefiles</metadata>
 		<allowedchildtype>page</allowedchildtype>
-            <metadata num="1o">_representative</metadata>
-        
+        <metadata num="1o">_representative</metadata>
+        <allowedchildtype>video</allowedchildtype>
 	</DocStrctType>
 	<!-- DO NOT CHANGE!! -->
 

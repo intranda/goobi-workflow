@@ -31,6 +31,8 @@ export const loadImage = function() {
 
     if(typeof ImageView === "undefined" || !document.querySelector(settings.imageView.element)) {
         return;
+    if(!document.querySelector(settings.imageView.element)) {
+        console.warn("No element to host image found" , settings.imageView.element);
     }
 
     if(loadedImage?.element?.isConnected) {

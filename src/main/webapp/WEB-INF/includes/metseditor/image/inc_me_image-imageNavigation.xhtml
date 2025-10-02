@@ -27,7 +27,7 @@
                         <span class="fa fa-angle-double-left" aria-hidden="true"/>
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@form :pageareas :altoEditAutocomplete" />
+                            render="@form :pageareas structureform:addNewPageArea :altoEditAutocomplete" />
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
                 </li>
@@ -46,7 +46,7 @@
                         <span class="fa fa-angle-left" aria-hidden="true"/>
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@form :pageareas :altoEditAutocomplete"/>
+                            render="@form :pageareas :altoEditAutocomplete structureform:addNewPageArea"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
                 </li>
@@ -57,7 +57,7 @@
                         <span>#{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}</span>
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@form :pageareas :altoEditAutocomplete"/>
+                            render="@form :pageareas :altoEditAutocomplete structureform:addNewPageArea"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
                 </li>
@@ -95,7 +95,7 @@
                         <span class="fa fa-angle-right" aria-hidden="true"/>
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@form :pageareas :altoEditAutocomplete"/>
+                            render="@form :pageareas :altoEditAutocomplete structureform:addNewPageArea"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                     </button>
                 </li>
@@ -114,7 +114,7 @@
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@form :pageareas :altoEditAutocomplete"/>
+                            render="@form :pageareas :altoEditAutocomplete structureform:addNewPageArea"/>
                     </button>
                 </li>
 
@@ -133,7 +133,7 @@
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                         <f:ajax
                             execute="@form :pageareas"
-                            render="@form :pageareas :altoEditAutocomplete"/>
+                            render="@form :pageareas :altoEditAutocomplete structureform:addNewPageArea" />
                     </button>
                 </li>
 
@@ -142,13 +142,13 @@
 
             <h:commandButton id="imageBack20" style="display:none">
                 <f:setPropertyActionListener value="#{Metadaten.imageIndex -20}" property="#{Metadaten.imageIndex}" target="#{Metadaten.imageIndex}"/>
-                <f:ajax execute="@form :pageareas" render="@form :pageareas"/>
+                <f:ajax execute="@form :pageareas" render="@form :pageareas structureform:addNewPageArea"/>
                 <f:passThroughAttribute name="data-renderimage" value="true"/>
             </h:commandButton>
 
             <h:commandButton id="imageNext20" style="display:none">
                 <f:setPropertyActionListener value="#{Metadaten.imageIndex +20}" property="#{Metadaten.imageIndex}" target="#{Metadaten.imageIndex}"/>
-                <f:ajax execute="@form :pageareas" render="@form :pageareas"/>
+                <f:ajax execute="@form :pageareas" render="@form :pageareas structureform:addNewPageArea"/>
                 <f:passThroughAttribute name="data-renderimage" value="true"/>
             </h:commandButton>
 

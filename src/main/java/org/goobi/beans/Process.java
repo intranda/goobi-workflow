@@ -186,8 +186,11 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     private String imagesSourceDirectory = null;
     private String importDirectory = null;
     private String exportDirectory = null;
+    private String videoSubtitleDirectory = null;
 
     private BeanHelper bhelp = new BeanHelper();
+
+    private String separator = FileSystems.getDefault().getSeparator();
 
     // temporär
     @Getter
@@ -518,7 +521,6 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     public String getOcrTxtDirectory() throws SwapException, IOException {
         if (ocrTxtDirectory == null) {
             ConfigurationHelper config = ConfigurationHelper.getInstance();
-            String separator = FileSystems.getDefault().getSeparator();
             ocrTxtDirectory = getOcrDirectory() + VariableReplacer.simpleReplace(config.getProcessOcrTxtDirectoryName(), this) + separator;
         }
         return ocrTxtDirectory;
@@ -537,7 +539,6 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     public String getOcrPdfDirectory() throws SwapException, IOException {
         if (ocrPdfDirectory == null) {
             ConfigurationHelper config = ConfigurationHelper.getInstance();
-            String separator = FileSystems.getDefault().getSeparator();
             ocrPdfDirectory = getOcrDirectory() + VariableReplacer.simpleReplace(config.getProcessOcrPdfDirectoryName(), this) + separator;
         }
         return ocrPdfDirectory;
@@ -555,7 +556,6 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     public String getOcrXmlDirectory() throws SwapException, IOException {
         if (ocrXmlDirectory == null) {
             ConfigurationHelper config = ConfigurationHelper.getInstance();
-            String separator = FileSystems.getDefault().getSeparator();
             ocrXmlDirectory = getOcrDirectory() + VariableReplacer.simpleReplace(config.getProcessOcrXmlDirectoryName(), this) + separator;
         }
         return ocrXmlDirectory;
@@ -564,7 +564,6 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     public String getImportDirectory() throws SwapException, IOException {
         if (importDirectory == null) {
             ConfigurationHelper config = ConfigurationHelper.getInstance();
-            String separator = FileSystems.getDefault().getSeparator();
             importDirectory = getProcessDataDirectory() + VariableReplacer.simpleReplace(config.getProcessImportDirectoryName(), this) + separator;
         }
         return importDirectory;
@@ -573,10 +572,29 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     public String getExportDirectory() throws SwapException, IOException {
         if (exportDirectory == null) {
             ConfigurationHelper config = ConfigurationHelper.getInstance();
-            String separator = FileSystems.getDefault().getSeparator();
             exportDirectory = getProcessDataDirectory() + VariableReplacer.simpleReplace(config.getProcessExportDirectoryName(), this) + separator;
         }
         return exportDirectory;
+    }
+
+    /**
+     * Get directory for video subtitles.
+     * 
+     * @return directory path
+     * @throws SwapException
+     * @throws IOException
+     */
+
+    public String getVideoSubtitleDirectory() throws SwapException, IOException {
+        if (videoSubtitleDirectory == null) {
+
+            String configuredFolder = ConfigurationHelper.getInstance().getAdditionalProcessFolderName("ocr", "vtt");
+            if (StringUtils.isBlank(configuredFolder)) {
+                configuredFolder = "{processtitle}_vtt";
+            }
+            videoSubtitleDirectory = getOcrDirectory() + VariableReplacer.simpleReplace(configuredFolder, this) + separator;
+        }
+        return videoSubtitleDirectory;
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException {
