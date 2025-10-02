@@ -1,5 +1,5 @@
 
-const _debug = false;
+const _debug = true;
 
 const settings = {
 
@@ -24,6 +24,10 @@ let oldImageElement = undefined
 
 export const initImageAreaCreation = function(image) {
 
+    if(!image) {
+        return;
+    }
+
     //always initialize button listeners
     subscriptions.forEach(s => s.unsubscribe());
     subscriptions = [];
@@ -40,7 +44,7 @@ export const initImageAreaCreation = function(image) {
     //check if canvas has been replaced. If not, don't reinitialze areaSelect
     if(oldImageElement?.isConnected) {
         if(_debug)console.log("draw area already initialized", areaSelect);
-        areaSelect?.removeOverlays();
+        //areaSelect?.removeOverlays();
         return;
     } else {
         oldImageElement = image.element;
@@ -60,6 +64,7 @@ export const initImageAreaCreation = function(image) {
 
     areaSelect.finishedHook.subscribe(rect => {
         drawActive = false; 
+        rect = areaSelect.currentOverlay.getBoundsInImage();
         if(_debug)console.log("finished overlay", rect);
         const area = createImageArea(rect);
         area.addTo = target;
@@ -73,7 +78,7 @@ export const initImageAreaCreation = function(image) {
 
 function handleClickStart(event) {
     target = event.target.dataset.imageAreaTarget;
-    console.log("init target ",target )
+    console.log("init target ", event.target, target )
     drawActive = true;
     disableInteractions();
 }
@@ -108,6 +113,7 @@ function disableInteractions() {
 
 
 function enableInteractions() {
+    console.log("disable overlay");
     document.querySelectorAll(".cancel-area-edition").forEach(btn => btn.style.display = "none");
     document.querySelectorAll(".start-area-edition").forEach(btn => btn.style.display = "block");
     const overlay = document.querySelector(settings.disableInteractionOverlay);
@@ -132,6 +138,8 @@ function resetZIndex(element) {
     if(z != undefined) {
         element.dataset.zIndex = "";
         element.style.zIndex = z;
+    } else {
+        element.style.zIndex = "auto";
     }
 }
 

@@ -21,6 +21,11 @@ let deletionSubscriptions = [];
 let deleting = false;
 
 export const initEditImageAreas = function(image) {
+
+    if(!image) {
+        return;
+    }
+
     closeSubscriptions();
     const areaString = getValue(settings.inputPageAreas);
     if(_debug)console.log("read area strings", settings.inputPageAreas, areaString);
@@ -93,11 +98,13 @@ function drawAreas(areas, image) {
     for(let area of areas) {
         if(_debug)console.log("draw area ", area);
         const rect = new OpenSeadragon.Rect(parseInt(area.x), parseInt(area.y), parseInt(area.w), parseInt(area.h));
-	    const displayRect = ImageView.CoordinateConversion.convertRectFromImageToOpenSeadragon(rect, image.openseadragon, image.getOriginalImageSize());
+	    const displayRect = ImageView.CoordinateConversion.scaleToOpenSeadragonCoordinates(rect, image.openseadragon, image.getOriginalImageSize());
         if(_debug)console.log("draw rect", rect, displayRect );
         const overlay = new ImageView.Overlay(displayRect, {style: settings.style}, area.areaId);
         overlay.draw(image);
-        overlay.transform = new ImageView.Transform(image, overlay, () => !deleting && isHighlighted(overlay));
+        overlay.transform = new ImageView.Transform(image, overlay, {
+        	startCondition: () => !deleting && isHighlighted(overlay)
+        });
         overlay.transform.finishedTransforming().subscribe(o => {
             const viewportBounds = o.getBounds();
             const imageBounds = o.convertFromViewportToImage(viewportBounds);
