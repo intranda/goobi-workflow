@@ -211,7 +211,16 @@
                         from this button and from #saveMetsFileButton. In Firefox only the second submit is sent, resulting
                         in the desired behaviour. In Chromium-browsers, the first submit is sent, resulting in Metadaten.Reload
                         not being called (Florian 06-10-2022) -->
-                        <button type="button" class="nav-link" id="saveMetsFileButtonSimulation" onclick="document.activeElement.blur();document.getElementById('meMenuActionsForm:saveMetsFileButton').click();" title="#{msgs.speichern}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <button
+                            type="button"
+                            class="nav-link"
+                            id="saveMetsFileButtonSimulation"
+                            onclick="document.activeElement.blur();document.getElementById('meMenuActionsForm:saveMetsFileButton').click();"
+                            title="#{msgs.speichern}"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="bottom"
+                            data-save-scroll-positions="true"
+                        >
 
                             <span class="fa fa-floppy-o fa-lg" aria-hidden="true"/>
 

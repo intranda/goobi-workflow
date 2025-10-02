@@ -1,3 +1,8 @@
+/**
+ * @deprecated This module is deprecated and will be removed in future versions.
+ * Please use the `saveScrollPosition` module instead.
+ */
+
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
 
@@ -97,6 +102,13 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         const contentLeft = document.querySelector('#pageContentLeft');
         const contentCenter = view === 'Paginierung' ? document.querySelector('#paginationList') : document.querySelector('#pageContentCenter');
         const contentRight = document.querySelector('#pageContentRight #thumbnailsContainer');
+        const selectPages = document.getElementById('structureform:selectPages');
+
+        // Save scroll position of page assignment select boxes
+        if(selectPages && selectPages.dataset.saveScrollPosition === undefined) {
+          const selectPagesScrollPos = selectPages.scrollTop;
+          sessionStorage.setItem('meStructData_selectPages', selectPagesScrollPos);
+        }
 
         // Restore previous scroll positions of all views
         const restoredScrollPosAll = sessionStorage.getItem('gw_me_scrollPos');
@@ -142,6 +154,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         const contentLeft = document.querySelector('#pageContentLeft');
         const contentCenter = view === 'Paginierung' ? document.querySelector('#paginationList') : document.querySelector('#pageContentCenter');
         const contentRight = document.querySelector('#pageContentRight #thumbnailsContainer');
+        const selectPages = document.getElementById('structureform:selectPages');
 
         // Abort if session storage is empty
         if(!restoredScrollPosAll) return;
@@ -155,6 +168,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
           setTimeout(() => {
             contentRight.scrollTop = restoredScrollPosAll.meThumbnails;
           }, 300);
+        }
+
+        // Restore scroll position of page assignment select boxes
+        if(selectPages && selectPages.dataset.saveScrollPosition === undefined) {
+          const selectPagesScrollPos = sessionStorage.getItem('meStructData_selectPages');
+          if(selectPagesScrollPos) {
+            selectPages.scrollTop = selectPagesScrollPos;
+          }
         }
 
         [contentLeft, contentCenter, contentRight].forEach((el) => {
