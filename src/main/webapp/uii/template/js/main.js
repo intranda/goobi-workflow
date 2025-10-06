@@ -14,19 +14,27 @@ document.addEventListener('DOMContentLoaded', () => {
     restoreAllScrollPositions();
 });
 // Initialize all functions after an ajax call
-faces.ajax.addOnEvent((data) => {
-    switch (data.status) {
-        case 'begin':
-            toggleLoaders(true);
-            saveAllScrollPositions();
-            break;
-        case 'complete':
-            break;
-        case 'success':
-            toggleLoaders(false)
-            initFunctions();
-            initSaveScrollPosition();
-            restoreAllScrollPositions();
-            break;
-    }
-});
+if(typeof faces !== "undefined") {
+    faces.ajax.addOnEvent((data) => {
+        if(data.source.dataset.ajaxBehaviour === "ignore") {
+                return;
+            }
+        switch (data.status) {
+            case 'begin':
+                toggleLoaders(true);
+                saveAllScrollPositions();
+                break;
+            case 'complete':
+                break;
+            case 'success':
+                toggleLoaders(false)
+                initFunctions();
+                initSaveScrollPosition();
+                restoreAllScrollPositions();
+                break;
+        }
+        
+    });
+} else {
+    console.warn("No Jakarta faces initialized");
+}

@@ -9,6 +9,10 @@ import { initSubmitOnEnter } from './submitOnEnter';
 import { initMirrorValueTo } from './mirrorValueTo';
 import { initAccessibilityModeButton } from './accessibilityMode';
 import { initShowDevelopertools } from './showDeveloperTools';
+import { loadImage } from './loadImage';
+import { initImageAreaCreation } from './createImageArea.js';
+import { initEditImageAreas } from './editImageAreas.js';
+
 
 export const initFunctions = function initFunctions() {
     initializeResizeTable();
@@ -23,4 +27,8 @@ export const initFunctions = function initFunctions() {
 
     focusOnLoad();
     toggleHelp();
+
+    const zoomableImage = loadImage();
+    initImageAreaCreation(zoomableImage);
+    initEditImageAreas(zoomableImage);
 };

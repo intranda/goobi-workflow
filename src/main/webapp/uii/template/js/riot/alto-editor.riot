@@ -87,6 +87,18 @@
 </style>
 
 <script>
+
+    const imageViewConfig = {
+        element: "#bigImage",
+        fittingMode: "fixed",
+        margins: {bottom:0},
+        sequence: {
+            columns: 1,
+            columnOffset: 0,
+            rowMargin: 0
+        } 
+    }
+
     this.on('before-mount', () => {
     	this.msgs = this.opts.messages;
         this.lines = [];
@@ -122,20 +134,30 @@
     }
 
     highlightWord(e) {
+
     	if(this.wordLocked && e.type === "mousemove") {
     		return;
     	}
-    	var add = 14;
-    	var box = this.alto.lineMap[e.item.word.lineId];
-    	var rect = new OpenSeadragon.Rect((box.x)-add, (box.y)-add, (box.width)+add*2, (box.height)+add*2);
-    	this.viewImage.overlays.unDraw("line");
-        this.viewImage.overlays.drawRect(rect, "line");
+    	const add = 14;
+    	const lineBox = this.alto.lineMap[e.item.word.lineId];
+    	const lineRect = new OpenSeadragon.Rect((lineBox.x)-add, (lineBox.y)-add, (lineBox.width)+add*2, (lineBox.height)+add*2);
+        const lineRectViewport = this.imageView.openseadragon.viewport.imageToViewportRectangle(lineRect);
+        
+        const wordBox = e.item.word
+    	const wordRect = new OpenSeadragon.Rect((wordBox.x)-add, (wordBox.y)-add, (wordBox.width)+add*2, (wordBox.height)+add*2);
+        const wordRectViewport = this.imageView.openseadragon.viewport.imageToViewportRectangle(wordRect);
 
-        box = e.item.word
-    	var rect = new OpenSeadragon.Rect((box.x)-add, (box.y)-add, (box.width)+add*2, (box.height)+add*2);
-    	this.viewImage.overlays.unDraw("word");
-        this.viewImage.overlays.drawRect(rect, "word");
+        if(this.lineOverlay) {
+            this.lineOverlay.remove();
+        }
+        this.lineOverlay = new ImageView.Overlay(lineRectViewport, {className:"line-marker"}, "overlay_" + e.item.word.lineId);
+        this.lineOverlay.draw(this.imageView);
 
+        if(this.wordOverlay) {
+            this.wordOverlay.remove();
+        }
+        this.wordOverlay = new ImageView.Overlay(wordRectViewport, {className:"word-marker"}, "overlay_" + e.item.word.id);
+        this.wordOverlay.draw(this.imageView);
     }
 
     keyup(e) {
@@ -227,7 +249,6 @@
     		    changeArr.push({action: change.action, value: change.value, wordId: wordId});
             }
     	}
-        console.log("get changes", changeArr, this.changes);
     	return JSON.stringify(changeArr);
     }
 
@@ -238,51 +259,17 @@
     }
 
     initOpenseadragon() {
-    	var configViewer = {
-        	global: {
-                divId: 'bigImage',
-                useTiles: true,
-                footerHeight: 0,
-                adaptContainerHeight: false,
-                zoomSlider: "#zoomSlider",
-                zoomSliderHandle: "#zoomSlider .zoom-slider-handle",
-                zoomSliderLabel: "#zoomSliderLabel input",
-                overlayGroups: [
-                	{
-                        name : "line",
-                        styleClass : "line-marker",
-                        interactive: false
-                    },
-                    {
-                        name : "word",
-                        styleClass : "word-marker",
-                        interactive: false
-                    }
-                ]
-            },
-            image: {
-                mimeType: "image/jpeg",
-                tileSource: document.querySelector(this.opts.tileSourceSelector).value
-            }
-        };
-
-        this.viewImage = new ImageView.Image( configViewer );
-        this.viewImage.load()
-        .then(function(image) {
-            image.onFirstTileLoaded()
-            .then(function() {
-                $('#ajaxloader_image').fadeOut(800);
-            })
-            .catch(function() {
-                $('#ajaxloader_image').fadeOut(800);
-            })
-        })
+        const imageUrl = document.querySelector(this.opts.tileSourceSelector).value;
+    	
+        this.imageView = new ImageView.Image(imageViewConfig);
+        this.zoomControl = new ImageView.Controls.Zoom(this.imageView);
+        this.imageView.load(imageUrl)
+        .then(e => $('#ajaxloader_image').fadeOut(800))
         .catch(function(error){
             console.error( 'Error opening image', error );
             $('#ajaxloader_image').fadeOut(800);
-            $('#' + configViewer.global.divId).html( 'Failed to load image: "' + error + '"' );
+            $("#bigImage").html( 'Failed to load image: "' + error + '"' );
         });
-
     }
 
     initNamedEntityEditor(element, config) {
@@ -316,13 +303,14 @@
 	        var y = e.clientY - rect.top;  //y position within the element.
 	        pixel = new OpenSeadragon.Point(x, y);
         }
-        var pos = this.viewImage.viewer.viewport.viewerElementToImageCoordinates( pixel );
+        var pos = this.imageView.openseadragon.viewport.viewerElementToImageCoordinates( pixel );
         for(let line of this.lines) {
         	if(this.posInRect(pos, line)) {
         		for(let word of line.words) {
         			if(this.posInRect(pos, word)) {
         				let wordElement = document.querySelector('#'+word.id);
         				if(e.type === "click") {
+                            console.log("clicked word", word, wordElement);
         					wordElement.focus();
         				} else {
         					e.item = {word: word}
@@ -343,7 +331,7 @@
     }
 
     this.on('before-unmount', () => {
-    	this.viewImage.close();
+    	this.imageView.close();
     })
 
 </script>

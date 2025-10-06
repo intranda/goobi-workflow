@@ -15,13 +15,7 @@
     <composite:interface />
 
     <composite:implementation>
-
-        <style>
-
-</style>
-
-
-        <h:form
+        <h:form 
             prependId="false"
             id="openseadragonform">
             <h:panelGroup id="jsonAltoGroup">
@@ -191,9 +185,8 @@
                         <ui:fragment rendered="#{Metadaten.image.type == 'image' or Metadaten.image.type == 'pdf'}">
                             <!-- MAIN IMAGE CONTAINER -->
                             <div
-                                id="mainImage"
-                                class="image__main-image above-overlay border"
-                                style="z-index: -1">
+                                id="mainImage" style="width:100%; height:80vh;"
+                                class="image__main-image above-overlay border">
                                 <!-- AJAX LOADER -->
                                 <div
                                     id="ajaxloader"
@@ -201,7 +194,7 @@
                                     style="display: none;">
                                     <img src="template/img/goobi/ajaxloader2.gif" />
                                 </div>
-                            </div>
+                            </div> 
                         </ui:fragment>
                     </div>
                     <!-- IMAGE CONTROLS -->
@@ -219,30 +212,11 @@
 
 
             <!-- PAGE AREAS -->
-            <h:outputLabel
-                id="pageareas"
-                data-content="pageareas"
-                value="#{Metadaten.pageAreas}"
-                styleClass="d-none"></h:outputLabel>
-            <h:commandScript
-                name="deletePageArea"
-                action="#{Metadaten.deletePageAreaCommand}"
-                render="pageareas"
-                pt:data-ajax-behaviour="ignore" />
-            <h:commandScript
-                name="addPageArea"
-                action="#{Metadaten.addPageAreaCommand}"
-                render="pageareas"
-                pt:data-ajax-behaviour="ignore" />
-            <h:commandScript
-                name="setPageArea"
-                action="#{Metadaten.setPageAreaCommand}"
-                pt:data-ajax-behaviour="ignore" />
-            <h:commandScript
-                name="cancelPageAreaEdition"
-                action="#{Metadaten.cancelPageAreaEdition}"
-                render="pageareas"
-                pt:data-ajax-behaviour="ignore" />
+			<h:outputLabel id="pageareas" pt:data-content="pageareas" value="#{Metadaten.pageAreas}" styleClass="d-none"></h:outputLabel>
+            <h:commandScript name="deletePageArea" action="#{Metadaten.deletePageAreaCommand}" render="pageareas" pt:data-ajax-behaviour="ignore"/>
+            <h:commandScript name="addPageArea" action="#{Metadaten.addPageAreaCommand}" render="pageareas" pt:data-ajax-behaviour="update-image"/>
+            <h:commandScript name="setPageArea" action="#{Metadaten.setPageAreaCommand}" pt:data-ajax-behaviour="ignore"/>
+            <h:commandScript name="cancelPageAreaEdition" action="#{Metadaten.cancelPageAreaEdition}" render="pageareas" pt:data-ajax-behaviour="ignore"/>
         </h:form>
     </composite:implementation>
 </ui:composition>
