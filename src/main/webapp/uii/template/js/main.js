@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSaveScrollPosition();
     restoreAllScrollPositions();
 });
+
 // Initialize all functions after an ajax call
 if(typeof faces !== "undefined") {
     faces.ajax.addOnEvent((data) => {
