@@ -18,6 +18,8 @@ import * as rollup from 'rollup';
 import cleanup from 'rollup-plugin-cleanup';
 import terser from '@rollup/plugin-terser';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import css from 'rollup-plugin-css-only';
 
 import * as cheerio from 'cheerio';
 import * as through2 from 'through2';
@@ -48,12 +50,17 @@ const sources = {
         './uii/template/js/**/*.js',
         '!./uii/template/js/legacy/**/*',
         '!./uii/template/js/editor/**/*.js',
+        '!./uii/template/js/media/**/*.js',
     ],
     editors: [
         'uii/template/js/editor/**/*.js',
     ],
     prosemirror: 'uii/template/js/editor/prosemirror.js',
     codemirror: 'uii/template/js/editor/codemirror.js',
+    media: [
+        'uii/template/js/media/**/*.js',
+    ],
+    video: 'uii/template/js/media/video.js',
     icons: ['node_modules/@tabler/icons/icons/**/*.svg'],
     staticAssets: [
         'uii/**/*.xhtml',
@@ -173,6 +180,7 @@ function devJsRollup() {
             ],
         })
         .then(bundle => {
+        	console.log("Write", bundle, " to ", `${customLocation}${targetFolder.js}main.min.js`);
             return bundle.write({
                 file: `${customLocation}${targetFolder.js}main.min.js`,
                 format: 'iife',
@@ -230,6 +238,51 @@ function editors() {
     ]);
 };
 
+function media() {
+    const buildMedia = (inputFile, outputName) => {
+    return rollup
+        .rollup({
+            input: inputFile,
+            plugins: [
+                nodeResolve({
+                    browser: true,
+                    preferBuiltins: false,
+                    exportConditions: ['browser'],
+                    skip: ['fs', 'path', 'url'],
+                }),
+                commonjs({
+                    include: /node_modules/,
+                }),
+                css({
+                    output: `${outputName}.min.css`
+                }),
+                cleanup(),
+            ],
+        }).then(bundle => {
+            return bundle.write({
+                file: `${customLocation}${targetFolder.js}${outputName}.min.js`,
+                format: 'iife',
+                sourcemap: true,
+                plugins: [
+                    // terser({
+                    //     mangle: true,
+                    // }),
+                ]
+            });
+        });
+    };
+
+    const copyPlyrSprite = () => {
+        return src('node_modules/plyr/dist/plyr.svg')
+            .pipe(dest(`${customLocation}${targetFolder.js}`));
+    };
+
+    return Promise.all([
+        buildMedia(sources.video, 'video'),
+        copyPlyrSprite(),
+    ]);
+};
+
 /*
  * preprocess svgs as needed
  */
@@ -267,6 +320,7 @@ function dev() {
     icons();
     BsJs();
     watch(sources.editors, { ignoreInitial: false }, editors);
+    watch(sources.media, { ignoreInitial: false }, media);
     watch(sources.legacyJS, { ignoreInitial: false }, jsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
@@ -276,6 +330,15 @@ function dev() {
     watch(sources.taglibs, { ignoreInitial: false }, taglibs);
     watch(sources.includes, { ignoreInitial: false }, includes);
 };
-const prod = parallel(BsJs,jsLegacy, prodJsRollup, prodBSCss, prodCss, icons, editors,);
+const prod = parallel(
+    BsJs,
+    jsLegacy,
+    prodJsRollup,
+    prodBSCss,
+    prodCss,
+    icons,
+    editors,
+    media,
+);
 
-export { dev, prod };
+export { dev, prod, media };

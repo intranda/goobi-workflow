@@ -33,10 +33,12 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -52,7 +54,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -76,6 +77,12 @@ import org.goobi.production.plugin.interfaces.IPlugin;
 import org.jdom2.JDOMException;
 import org.omnifaces.util.Faces;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.MetadataException;
+import com.drew.metadata.mp4.Mp4Directory;
+import com.drew.metadata.wav.WavDirectory;
 import com.google.gson.Gson;
 
 import de.intranda.digiverso.ocr.alto.model.structureclasses.logical.AltoDocument;
@@ -94,12 +101,14 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.metadaten.Image.Type;
 import de.sub.goobi.metadaten.MetaConvertibleDate.DateType;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import io.goobi.workflow.api.connection.HttpUtils;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -143,7 +152,7 @@ import ugh.exceptions.WriteException;
  * @version 1.00 - 17.01.2005
  */
 @Named("Metadaten")
-@WindowScoped
+@SessionScoped
 @Log4j2
 public class Metadaten implements Serializable {
 
@@ -490,6 +499,8 @@ public class Metadaten implements Serializable {
 
     private transient PageAreaManager pageAreaManager;
 
+    private transient VideoSectionManager videoSectionManager;
+
     private transient ImageCommentPropertyHelper commentPropertyHelper;
 
     //this is set whenever setImage() is called.
@@ -500,6 +511,14 @@ public class Metadaten implements Serializable {
 
     @Getter
     private List<IMetadataEditorExtension> extensions;
+
+    @Getter
+    @Setter
+    private String videoSectionBegin;
+
+    @Getter
+    @Setter
+    private String videoSectionEnd;
 
     @Getter
     @Setter
@@ -1660,6 +1679,7 @@ public class Metadaten implements Serializable {
 
         //initialize page area editor
         this.pageAreaManager = new PageAreaManager(this.myPrefs, this.document);
+        videoSectionManager = new VideoSectionManager(myPrefs, document);
 
         checkImageNames();
         retrieveAllImages();
@@ -2398,6 +2418,19 @@ public class Metadaten implements Serializable {
             }
         }
 
+        // if video section was selected, create it
+        if (StringUtils.isNotBlank(videoSectionBegin)) {
+            try {
+                DocStruct section = videoSectionManager.createVideoSection(ds, videoSectionBegin, videoSectionEnd);
+                videoSectionManager.assignToPhysicalDocStruct(section, getCurrentPage());
+                videoSectionManager.assignToLogicalDocStruct(section, ds);
+                retrieveAllImages();
+            } catch (TypeNotAllowedForParentException | MetadataTypeNotAllowedException | TypeNotAllowedAsChildException e) {
+                log.error(e);
+            }
+
+        }
+
         //if page area was set, assign to docStruct
         if (this.pageAreaManager.hasNewPageArea()) {
             this.pageAreaManager.assignToPhysicalDocStruct(this.pageAreaManager.getNewPageArea(), getCurrentPage());
@@ -2590,8 +2623,16 @@ public class Metadaten implements Serializable {
                 pageMap.put(lastPhysPageNo, pi);
             } else {
                 // add placeholder for areas
-                pi = this.pageAreaManager.createPhysicalObject(pageStruct);
-                pageMap.put(pi.getPhysicalPageNo(), pi);
+                // TODO video/page
+                PhysicalObject parentObject = pageMap.get(lastPhysPageNo);
+                if ("page".equals(parentObject.getDocStruct().getType().getName())) {
+                    pi = this.pageAreaManager.createPhysicalObject(pageStruct);
+                    pageMap.put(pi.getPhysicalPageNo(), pi);
+                } else {
+                    pi = videoSectionManager.createPhysicalObject(pageStruct);
+                    pageMap.put(pi.getPhysicalPageNo(), pi);
+                }
+
             }
             pi.setType(pageStruct.getDocstructType());
             pi.setImagename(pageStruct.getImageName());
@@ -5284,4 +5325,229 @@ public class Metadaten implements Serializable {
 
         return new Gson().toJson(authorityList);
     }
+
+    /**
+     * get chapter information as WebVTT format to display in video.
+     *
+     * @return chapter data
+     */
+
+    public String getVttUrl() {
+
+        StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
+        sb.append("/api/view/video/chapter");
+
+        return sb.toString();
+
+    }
+
+    public String getChapterInformationAsVTT() {
+        // no file selected or no video file
+        if (image == null || (image.getType() != Type.video && image.getType() != Type.audio)) {
+            return "";
+        }
+        // get physical docstruct for video file
+        DocStruct page = getCurrentPage();
+
+        // find page areas
+
+        List<String> startTimeList = new ArrayList<>();
+        List<String> endTimeList = new ArrayList<>();
+        List<String> labelList = new ArrayList<>();
+
+        for (DocStruct area : page.getAllChildren()) {
+            String start = "";
+            String end = "";
+            String label = "";
+            for (Metadata md : area.getAllMetadata()) {
+                if ("_BEGIN".equals(md.getType().getName())) {
+                    start = md.getValue();
+                } else if ("_END".equals(md.getType().getName())) {
+                    end = md.getValue();
+                }
+            }
+
+            List<DocStruct> referencedLogDs =
+                    area.getAllFromReferences().stream().map(Reference::getSource).filter(Objects::nonNull).collect(Collectors.toList());
+            if (!referencedLogDs.isEmpty()) {
+                DocStruct ds = referencedLogDs.getLast();
+                for (Metadata md : ds.getAllMetadata()) {
+                    if ("TitleDocMain".equals(md.getType().getName())) {
+                        label = md.getValue();
+                    }
+                }
+            }
+            startTimeList.add(start);
+            endTimeList.add(end);
+            labelList.add(label);
+        }
+
+        // for each:
+
+        // start, optional end (if end is empty, use start -1ms of next or file duration
+
+        // get deepest logical, get title data
+        StringBuilder vtt = new StringBuilder();
+        vtt.append("WEBVTT");
+        vtt.append("\n");
+        vtt.append("\n");
+
+        for (int i = 0; i < startTimeList.size(); i++) {
+            vtt.append(i + 1);
+            vtt.append("\n");
+
+            String durationStart = startTimeList.get(i);
+            vtt.append(durationStart);
+            if (!durationStart.matches("\\d{2}:\\d{2}:\\d{2}.\\d{3}")) {
+                vtt.append(".000");
+            }
+            vtt.append(" --> ");
+
+            String durationEnd = endTimeList.get(i);
+            if (StringUtils.isBlank(durationEnd)) {
+                // if no end time is set, use start time of the next section
+                // if its the last section, use total time instead
+                if (startTimeList.size() > i + 1) {
+                    durationEnd = startTimeList.get(i + 1);
+                } else {
+                    durationEnd = getVideoDuration(image.getImagePath());
+                }
+            }
+            vtt.append(durationEnd);
+            if (!durationEnd.matches("\\d{2}:\\d{2}:\\d{2}.\\d{3}")) {
+                vtt.append(".000");
+            }
+            vtt.append("\n");
+            vtt.append(labelList.get(i));
+            vtt.append("\n");
+            vtt.append("\n");
+        }
+
+        return vtt.toString();
+    }
+
+    public static String getVideoDuration(Path filePath) {
+        Path imagePath = filePath;
+        String totalDuration = "";
+
+        double calculatedDuration = 0;
+        switch (NIOFileUtils.getMimeTypeFromFile(imagePath)) {
+            case "audio/mpeg": // mp3
+
+                // TODO
+                break;
+            case "audio/wav", "audio/x-wav": // wav
+                // TODO
+                try {
+                    com.drew.metadata.Metadata m1 = ImageMetadataReader.readMetadata(imagePath.toFile());
+                    Directory dir1 = m1.getFirstDirectoryOfType(WavDirectory.class);
+                    return dir1.getString(16);
+
+                } catch (ImageProcessingException | IOException e) {
+                    log.error(e);
+                }
+                break;
+            case "video/mp4": // mp4
+                try {
+                    com.drew.metadata.Metadata m = ImageMetadataReader.readMetadata(imagePath.toFile());
+                    Directory dir = null;
+                    dir = m.getFirstDirectoryOfType(Mp4Directory.class);
+                    //                Duration:   259
+                    //                Media Time Scale:   258
+                    //                Duration in Seconds:   260
+                    try {
+                        double duration = dir.getInt(259);
+                        int scale = dir.getInt(258);
+                        calculatedDuration = duration / scale;
+
+                    } catch (MetadataException e) {
+                        log.error(e);
+                    }
+
+                } catch (ImageProcessingException | IOException e) {
+                    log.error(e);
+                }
+                break;
+
+            case "video/ogg": // ogg
+                // TODO
+                break;
+            case "video/webm": // webm
+                // TODO
+                break;
+            default:
+        }
+
+        String stringvalue = String.valueOf(calculatedDuration);
+        String ms = stringvalue.substring(stringvalue.indexOf(".") + 1);
+        if (ms.isEmpty()) {
+            ms = "000";
+        } else if (ms.length() == 1) {
+            ms = ms + "00";
+        } else if (ms.length() == 2) {
+            ms = ms + "0";
+        } else if (ms.length() > 2) {
+            ms = ms.substring(0, 2);
+        }
+
+        long milliseconds = (int) calculatedDuration * 1000L;
+        milliseconds = milliseconds + Integer.valueOf(ms);
+
+        Duration dur = Duration.ofMillis(milliseconds);
+
+        totalDuration =
+                String.format("%02d:%02d:%02d.%03d", dur.toHoursPart(), dur.toMinutesPart(), dur.toSecondsPart(), dur.toMillisPart());
+
+        return totalDuration;
+    }
+
+    public Map<String, String> getVideoSubtitles() {
+        Map<String, String> map = new HashMap<>();
+
+        if (image == null || image.getType() != Type.video) {
+            return map;
+        }
+        // get current filename without extension
+        Path imagePath = image.getImagePath();
+        String filename = imagePath.getFileName().toString();
+        if (filename.contains(".")) {
+            filename = filename.substring(0, filename.indexOf("."));
+        }
+        final String filePrefix = filename;
+        // search in vtt folder for files with the exact filename or filename + '_' + language code
+        try {
+            Path dir = Paths.get(myProzess.getVideoSubtitleDirectory());
+            if (StorageProvider.getInstance().isDirectory(dir)) {
+                List<String> list = StorageProvider.getInstance().list(dir.toString(), new DirectoryStream.Filter<Path>() {
+                    @Override
+                    public boolean accept(Path path) throws IOException {
+                        return path.getFileName().toString().startsWith(filePrefix);
+                    }
+                });
+                StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
+                sb.append("/api/view/video/");
+                if (list.isEmpty()) {
+                    // no subtitles available
+                    return map;
+                } else if (list.size() == 1) {
+                    // one subtitle file is available, use it as default
+                    String file = list.get(0);
+                    map.put("default", sb.toString() + myProzess.getId() + "/" + dir.getFileName().toString() + "/" + file);
+                } else {
+                    // multiple subtitle files are available, set up languages
+                    for (String file : list) {
+                        // get language code
+                        String code = file.substring(0, file.indexOf(".")).replace(filePrefix, "").replaceAll("[\\W_]", "");
+                        map.put(code, sb.toString() + myProzess.getId() + "/" + dir.getFileName().toString() + "/" + file);
+                    }
+                }
+            }
+
+        } catch (SwapException | IOException e) {
+            log.error(e);
+        }
+
+        return map;
+    }
+
 }

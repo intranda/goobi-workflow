@@ -381,10 +381,9 @@
                                     <h:dataTable
                                         value="#{ProzessverwaltungForm.searchField}"
                                         var="field"
-                                        rowIndexVar="id"
                                         styleClass="no-borders">
                                         <h:column>
-                                            <h:outputText value="#{msgs.column} #{id +1}:" />
+                                            <h:outputText value="#{msgs.column} #{component.namingContainer.rowIndex + 1}:" />
                                         </h:column>
                                         <h:column>
                                             <h:selectOneMenu

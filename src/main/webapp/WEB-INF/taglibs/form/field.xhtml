@@ -8,7 +8,7 @@
                 #{label}
             </form:label>
             <span class="form-input">
-                <span class="input-group #{styleClass}">
+                <span class="#{join == false ? 'input-group-distinct' : 'input-group ' }#{styleClass}">
                     <ui:insert />
                     <form:help>
                         #{help}

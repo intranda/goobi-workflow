@@ -830,7 +830,7 @@ public class ProzesskopieForm implements Serializable {
 
         // property validation
 
-        for (DisplayProperty pt : configuredProperties) {
+        for (DisplayProperty pt : getConfiguredProperties()) {
             if (!pt.isValid()
                     || (AccessCondition.WRITEREQUIRED.equals(pt.getShowProcessGroupAccessCondition())
                             && StringUtils.isBlank(pt.getValue()))) {
@@ -947,7 +947,7 @@ public class ProzesskopieForm implements Serializable {
 
         this.prozessKopie.setSortHelperImages(this.guessedImages);
 
-        for (DisplayProperty pt : configuredProperties) {
+        for (DisplayProperty pt : getConfiguredProperties()) {
             GoobiProperty pe = new GoobiProperty(PropertyOwnerType.PROCESS);
             pe.setOwner(prozessKopie);
             pt.setProzesseigenschaft(pe);
@@ -1061,8 +1061,10 @@ public class ProzesskopieForm implements Serializable {
             /* falls ein erstes Kind vorhanden ist, sind die Collectionen dafür */
             if (colStruct.getAllChildren() != null) {
                 colStruct = colStruct.getAllChildren().get(0);
+                if (colStruct != null) {
+                    addCollections(colStruct);
+                }
             }
-            addCollections(colStruct);
 
             /*
              * -------------------------------- Imagepfad hinzufügen (evtl. vorhandene zunächst löschen) --------------------------------

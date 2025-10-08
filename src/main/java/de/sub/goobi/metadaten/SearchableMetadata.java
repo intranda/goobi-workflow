@@ -26,14 +26,14 @@
 
 package de.sub.goobi.metadaten;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 
 import org.goobi.api.display.enums.DisplayType;
+
+import com.google.common.net.UrlEscapers;
 
 public interface SearchableMetadata {
 
@@ -90,10 +90,9 @@ public interface SearchableMetadata {
 
     default URL convertToURLEscapingIllegalCharacters(String string) {
         try {
-            String decodedURL = URLDecoder.decode(string, "UTF-8");
-            URI uri = new URI(decodedURL);
+            URI uri = new URI(UrlEscapers.urlFragmentEscaper().escape(string));
             return uri.toURL();
-        } catch (UnsupportedEncodingException | URISyntaxException | MalformedURLException ex) {
+        } catch (URISyntaxException | MalformedURLException ex) {
             return null;
         }
     }

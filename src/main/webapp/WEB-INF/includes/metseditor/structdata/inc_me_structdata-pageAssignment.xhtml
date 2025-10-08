@@ -190,7 +190,9 @@
                                                             id="selectPages"
                                                             pt:aria-label="#{msgs.alleSeiten}"
                                                             styleClass="form-control select-max-height"
-                                                            value="#{Metadaten.alleSeitenAuswahl}">
+                                                            value="#{Metadaten.alleSeitenAuswahl}"
+                                                            pt:data-save-scroll-position="true"
+                                                            >
                                                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                             <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
                                                     </h:selectManyListbox>
@@ -227,7 +229,12 @@
                                                     </div>
                                                     <div class="col-5">
                                                         <h:outputText styleClass="form-group__label" value="#{msgs.zugehoerigeSeiten}"/>
-                                                        <h:selectManyListbox id="selectPages2" pt:aria-label="#{msgs.zugehoerigeSeiten}" styleClass="form-control select-max-height" value="#{Metadaten.structSeitenAuswahl}">
+                                                        <h:selectManyListbox
+                                                            id="selectPages2"
+                                                            pt:aria-label="#{msgs.zugehoerigeSeiten}"
+                                                            styleClass="form-control select-max-height"
+                                                            value="#{Metadaten.structSeitenAuswahl}"
+                                                            >
                                                             <f:selectItems value="#{Metadaten.structSeiten}"/>
                                                     </h:selectManyListbox>
                                                     </div>

@@ -1,5 +1,4 @@
 import { init as initializeResizeTable } from './gwResizableTable';
-import { init as initializeAjaxLoader } from './gwAjaxLoader';
 import { init as initializeTooltips } from './gwInitTooltips';
 import { dropdownTooltips } from './gwTooltipsForDropdowns';
 import { focusOnLoad } from './gwFocusOnLoad';
@@ -10,9 +9,12 @@ import { initSubmitOnEnter } from './submitOnEnter';
 import { initMirrorValueTo } from './mirrorValueTo';
 import { initAccessibilityModeButton } from './accessibilityMode';
 import { initShowDevelopertools } from './showDeveloperTools';
+import { loadImage } from './loadImage';
+import { initImageAreaCreation } from './createImageArea.js';
+import { initEditImageAreas } from './editImageAreas.js';
+
 
 export const initFunctions = function initFunctions() {
-    initializeAjaxLoader();
     initializeResizeTable();
     initializeTooltips();
     dropdownTooltips();
@@ -25,4 +27,8 @@ export const initFunctions = function initFunctions() {
 
     focusOnLoad();
     toggleHelp();
+
+    const zoomableImage = loadImage();
+    initImageAreaCreation(zoomableImage);
+    initEditImageAreas(zoomableImage);
 };

@@ -263,13 +263,13 @@
                                 <ui:fragment rendered="#{Metadaten.enablePageArea}">
                                     <!-- ADD PAGE AREA TO CURRENT DOCSTRUCT -->
                                     <li>
-                                        <button class="btn btn-link start-area-edition" type="button" aria-label="#{msgs.mets_createPageArea}" onclick="goobiWorkflowJS.object.startDrawArea(this, 'current')">
+                                        <button class="btn btn-link start-area-edition" type="button" aria-label="#{msgs.mets_createPageArea}" data-image-area-target="current">
                                             <span class="btn btn-blank">
                                                 <span class="fa fa-crop" aria-hidden="true"/>
                                             </span>
                                             <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}"/>
                                        </button>
-                                       <button class="btn btn-link cancel-area-edition above-overlay" style="display: none; position:relative;" type="button" onclick="goobiWorkflowJS.object.cancelDrawArea(this)">
+                                       <button class="btn btn-link cancel-area-edition above-overlay" style="display: none; position:relative;" type="button">
                                             <span class="btn btn-blank">
                                                 <span class="fa fa-ban" aria-hidden="true"/>
                                             </span>
@@ -286,11 +286,11 @@
                                         </button>
                                     </li>
                                     <li>
-                                        <button type="button" class="btn btn-link delete-page-area" data-pagearea-delete="cancel" data-renderimage="true">
+                                        <button type="button" class="btn btn-link delete-page-area above-overlay" style="display: none; position:relative;" data-pagearea-delete="cancel" data-renderimage="true">
                                             <span class="btn btn-blank">
                                                 <span class="fa fa-ban fa-lg" aria-hidden="true"/>
                                             </span>
-                                            <h:outputText value="#{msgs.mets_deletePageArea}"/>
+                                            <h:outputText value="#{msgs.mets_cancelPageArea}"/>
                                         </button>
                                     </li>
                                 </ui:fragment>
