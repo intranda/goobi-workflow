@@ -17,7 +17,7 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
             style="width: 2.75rem;">
-            <util:icon icon="help" styleClass="mb-1" />
+            <util:icon icon="man" styleClass="mb-1" />
             <span class="visually-hidden">#{msgs.showHelpFunctions}</span>
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="helpMenuButton">
@@ -35,6 +35,29 @@
                     <f:ajax
                         render="@this"
                         execute="@form" />
+                </button>
+            </li>
+            <li class="nav-item">
+                <!-- toggle contrast mode -->
+                <button
+                    type="button"
+                    class="btn dropdown-item"
+                    jsf:id="toggleContrastMode"
+                    jsf:action="#{NavigationForm.Reload}"
+                    title=""
+                    aria-label="#{msgs.toggleContrastMode}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    data-toggle-accessibility-mode="true">
+                    <util:icon icon="contrast" filled="true" />
+                    <span>
+                        #{msgs.toggleContrastMode}
+                    </span>
+                    <f:ajax
+                        render="@this" />
+                    <f:setPropertyActionListener
+                        target="#{LoginForm.myBenutzer.uiMode}"
+                        value="#{LoginForm.myBenutzer.uiMode == 'regular' ? 'accessibility' : 'regular'}" />
                 </button>
             </li>
             <li class="nav-item">
