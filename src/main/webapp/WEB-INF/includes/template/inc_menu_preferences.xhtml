@@ -19,14 +19,14 @@
 
 
         <div class="user">
-            <div class="nav icon-nav">
+            <ul class="nav icon-nav">
                 <notification:area />
                 <ui:repeat
                     value="#{GenericPluginBean.genericPlugins}"
                     var="plugin"
                     >
                     <ui:fragment rendered="#{plugin.isMenuBarDockable()}">
-                        <a
+                        <li
                             class="nav-item"
                             data-bs-toggle="tooltip"
                             title="#{plugin.title}">
@@ -43,13 +43,15 @@
                                     aria-hidden="true"
                                     class="fa #{plugin.icon} fa-2x"/>
                             </button>
-                        </a>
+                        </li>
                     </ui:fragment>
                 </ui:repeat>
-                <help:menu></help:menu>
+                <li class="nav-item dropdown">
+                    <help:menu></help:menu>
+                </li>
 
                 <!-- Search Dropdown -->
-                <div
+                <li
                     class="nav-item dropdown header-search"
                     title="#{msgs.nachEinemBandSuchen}"
                     data-bs-toggle="tooltip"
@@ -131,10 +133,10 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </li>
 
                 <!-- Language dropdown -->
-                <div
+                <li
                     class="nav-item dropdown language-select"
                     title="#{msgs.spracheAendern}"
                     data-bs-toggle="tooltip"
@@ -180,9 +182,9 @@
                             </li>
                         </ui:repeat>
                     </ul>
-                </div>
+                </li>
                 <!-- end nav-item dropdown language-select -->
-            </div>
+            </ul>
 
             <!-- Account menu (only rendered when user is logged in) -->
             <!-- mailNotificationDisabled.xhtml does not need this block when no user is logged in -->
