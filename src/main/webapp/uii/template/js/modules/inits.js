@@ -8,11 +8,10 @@ import { initFocusOnClick } from './focusOnClick';
 import { initSubmitOnEnter } from './submitOnEnter';
 import { initMirrorValueTo } from './mirrorValueTo';
 import { initAccessibilityModeButton } from './accessibilityMode';
-import { initShowDevelopertools } from './showDeveloperTools';
 import { loadImage } from './loadImage';
 import { initImageAreaCreation } from './createImageArea.js';
 import { initEditImageAreas } from './editImageAreas.js';
-
+import { initHotkeys } from './hotkeys.js';
 
 export const initFunctions = function initFunctions() {
     initializeResizeTable();
@@ -23,7 +22,7 @@ export const initFunctions = function initFunctions() {
     initSubmitOnEnter();
     initMirrorValueTo();
     initAccessibilityModeButton();
-    initShowDevelopertools();
+    initHotkeys();
 
     focusOnLoad();
     toggleHelp();

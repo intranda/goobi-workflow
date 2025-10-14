@@ -9,7 +9,9 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:p="http://primefaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:notification="http://goobi.io/notification">
+    xmlns:notification="http://goobi.io/notification"
+    xmlns:help="http://goobi.io/help"
+    >
 
     <composite:interface />
 
@@ -17,14 +19,14 @@
 
 
         <div class="user">
-            <div class="nav icon-nav">
+            <ul class="nav icon-nav">
                 <notification:area />
                 <ui:repeat
                     value="#{GenericPluginBean.genericPlugins}"
                     var="plugin"
                     >
                     <ui:fragment rendered="#{plugin.isMenuBarDockable()}">
-                        <a
+                        <li
                             class="nav-item"
                             data-bs-toggle="tooltip"
                             title="#{plugin.title}">
@@ -41,53 +43,15 @@
                                     aria-hidden="true"
                                     class="fa #{plugin.icon} fa-2x"/>
                             </button>
-                        </a>
+                        </li>
                     </ui:fragment>
                 </ui:repeat>
-                <!-- Icon to enable help texts -->
-                <button
-                    type="button"
-                    class="nav-item nav-link btn-link"
-                    jsf:id="showHelp"
-                    title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-                    aria-label="#{msgs.showHelpMessages}"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
-                    data-goobi="handle-tooltip"
-                    data-show-help="#{NavigationForm.showHelp}"
-                    >
-                    <span class="fa #{not NavigationForm.showHelp ? 'fa-question' : 'fa-question-circle'}" />
-                    <f:setPropertyActionListener
-                        target="#{NavigationForm.showHelp}"
-                        value="#{not NavigationForm.showHelp}" />
-                    <f:ajax
-                        render="@this"
-                        execute="@form" />
-                </button>
-
-                <!-- toggle contrast mode -->
-                <button
-                    type="button"
-                    class="nav-item nav-link btn-link"
-                    jsf:id="toggleContrastMode"
-                    jsf:action="#{NavigationForm.Reload}"
-                    title="#{msgs.toggleContrastMode}"
-                    aria-label="#{msgs.toggleContrastMode}"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
-                    data-toggle-accessibility-mode="true">
-                    <span
-                        aria-hidden="true"
-                        class="fa fa-adjust" />
-                    <f:ajax
-                        render="@this" />
-                    <f:setPropertyActionListener
-                        target="#{LoginForm.myBenutzer.uiMode}"
-                        value="#{LoginForm.myBenutzer.uiMode == 'regular' ? 'accessibility' : 'regular'}" />
-                </button>
+                <li class="nav-item dropdown">
+                    <help:menu></help:menu>
+                </li>
 
                 <!-- Search Dropdown -->
-                <div
+                <li
                     class="nav-item dropdown header-search"
                     title="#{msgs.nachEinemBandSuchen}"
                     data-bs-toggle="tooltip"
@@ -169,10 +133,10 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </li>
 
                 <!-- Language dropdown -->
-                <div
+                <li
                     class="nav-item dropdown language-select"
                     title="#{msgs.spracheAendern}"
                     data-bs-toggle="tooltip"
@@ -218,9 +182,9 @@
                             </li>
                         </ui:repeat>
                     </ul>
-                </div>
+                </li>
                 <!-- end nav-item dropdown language-select -->
-            </div>
+            </ul>
 
             <!-- Account menu (only rendered when user is logged in) -->
             <!-- mailNotificationDisabled.xhtml does not need this block when no user is logged in -->

@@ -144,23 +144,6 @@
         <script src="template/js/riot/named-entity-selector.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
         <script src="template/js/riot/autocomplete.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
         <script>
-            goobiWorkflowConfig = {
-                currentView: "#{Metadaten.modusAnsicht}",
-                readOnlyMode: "#{Metadaten.nurLesenModus}",
-                autoSaveInterval: "#{LoginForm.myBenutzer.metsEditorTime}",
-                baseUrl: "#{HelperForm.servletPathWithHostAsUrl}",
-                openImageTitleText: "#{msgs.mets_showThisImage}",
-                setRepresentativeImageText: "#{msgs.mets_setRepresentativeImage}",
-                displayImageArea: #{Metadaten.bildAnzeigen},
-                navigationShortcut: "#{LoginForm.myBenutzer.shortcutPrefix}",
-                metseditor: {
-                    thumbnails: {
-                        maxParallelRequests : #{Metadaten.maxParallelThumbnailRequests}
-                    }
-                },
-                isInitialLoad: true,
-                reloadObject: false,
-            };
             faces.ajax.addOnEvent((data) => {
                 const ajaxstatus = data.status;
                 const ajaxBehaviour = data.source.dataset.ajaxBehaviour;
@@ -168,6 +151,8 @@
                 	return;
                 }
                 if (ajaxstatus === 'success') {
+                    const configElement = document.getElementById('gwConfig');
+                    const goobiWorkflowConfig = configElement ? JSON.parse(configElement.textContent) : {};
                     goobiWorkflowConfig.reloadObject = data?.source?.dataset.renderimage === 'true';
                     goobiWorkflowConfig.isInitialLoad = false;
                     goobiWorkflowJS.init( goobiWorkflowConfig );
@@ -175,6 +160,8 @@
                 }
             });
             document.addEventListener('DOMContentLoaded', function() {
+                const configElement = document.getElementById('gwConfig');
+                const goobiWorkflowConfig = configElement ? JSON.parse(configElement.textContent) : {};
                 goobiWorkflowJS.init( goobiWorkflowConfig );
                 goobiWorkflowJS.meScrollPos.restoreScrollPos();
                 goobiWorkflowJS.navigation.init(goobiWorkflowConfig);

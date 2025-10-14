@@ -3,18 +3,21 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
     var _debug = false;
     var _defaults = {};
+    let goobiWorkflowConfig;
 
     goobiWorkflow.navigation = {
         /**
          * @description Method to initialize the buttons.
          * @method init
          */
-        init: function( config ) {
+        init: function() {
             if ( _debug ) {
                 console.log( 'Initializing: goobiWorkflowJS.navigation.init' );
             }
 
-            $.extend( true, _defaults, config );
+            const configElement = document.getElementById('gwConfig');
+            goobiWorkflowConfig = configElement ? JSON.parse(configElement.textContent) : {};
+            $.extend( true, _defaults, goobiWorkflowConfig );
 
             _setImageNavigationButtonEvents();
         }
