@@ -20,7 +20,7 @@
         <div class="modal-body p-0">
             <dl:list>
                 <c:forEach var="shortcutEntry" items="#{ShortcutsBean.shortcutKeys}">
-                    <dl:term>
+                    <dl:term styleClass="d-none">
                         <span class="keyboard-key">#{msgs['shortcutKey_'.concat(ShortcutsBean.userShortcutFirstPart)]}</span>
                         <c:if test="#{not empty ShortcutsBean.userShortcutSecondPart}">
                             + <span class="keyboard-key">#{msgs['shortcutKey_'.concat(ShortcutsBean.userShortcutSecondPart)]}</span>
@@ -30,8 +30,10 @@
                             #{msgs['shortcutKey_'.concat(shortcutEntry.key)]}
                         </span>
                     </dl:term>
-                    <dl:description>
-                        #{msgs[shortcutEntry.value]}
+                    <dl:description styleClass="d-none">
+                        <span data-shortcut-helper="#{shortcutEntry.value}">
+                            #{msgs[shortcutEntry.value]}
+                        </span>
                     </dl:description>
                 </c:forEach>
             </dl:list>

@@ -62,7 +62,12 @@
             </li>
             <li class="nav-item">
                 <!-- Button to trigger shortcuts modal -->
-                <button type="button" class="btn dropdown-item" data-bs-toggle="modal" data-bs-target="#shortcutsHelpModal">
+                <button
+                    id="shortcutsHelpButton"
+                    type="button"
+                    class="btn dropdown-item d-none"
+                    data-bs-toggle="modal"
+                    data-bs-target="#shortcutsHelpModal">
                     <util:icon icon="keyboard" />
                     <span>
                         #{msgs.shortcuts}
