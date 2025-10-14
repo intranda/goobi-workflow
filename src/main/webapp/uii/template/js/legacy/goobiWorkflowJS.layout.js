@@ -29,6 +29,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 window.addEventListener( 'resize', _setResizeEvents );
                 window.addEventListener( 'orientationchange', _setResizeEvents );
 
+                const isMetseditor = document.querySelector('#metseditorMenuForm') !== null;
+                if (!isMetseditor) return; // only metseditor has resizable columns
+
                 // set resizable elements
                 _setResizableElements();
 

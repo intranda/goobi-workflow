@@ -1,24 +1,29 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
-    
+
     var _debug = false;
     var _defaults = {
 		maxParallelRequests: 100
 	};
     var _intrandaImages = {};
-    
+
     goobiWorkflow.thumbnails = {
         /**
          * @description Method to initialize the thumbnail rendering.
          * @method init
          */
     	init: function(config) {
-			if(config) {				
-				this.config = $.extend( true, {}, _defaults, config );
+            const configElement = document.getElementById('gwConfig');
+            let goobiWorkflowConfig = configElement ? JSON.parse(configElement.textContent) : {};
+			if(goobiWorkflowConfig) {
+				this.config = $.extend( true, {}, _defaults, goobiWorkflowConfig );
 			}
             if ( _debug ) {
                 console.log( 'Initializing: goobiWorkflowJS.thumbnails.init', this.config);
             }
+            // Only relevant in metseditor
+            const isMetseditor = document.querySelector('#metseditorMenuForm') !== null;
+            if (!isMetseditor) return;
 
 			var promises = [];
 			var elements = [];
@@ -26,7 +31,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             $( '.thumbnails__thumb-canvas' ).each( function( index, el ) {
 				elements.push(el);
 			});
-			
+
 			let elementGroups = groupArray(elements, this.config.maxParallelRequests);
 			let activeObservable = new rxjs.Subject();
 			let thumbnailLoadObservables = rxjs.from(elementGroups)
@@ -61,7 +66,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 					complete: () => {
 			            Promise.all(promises).then( () => {
 		            		activeThumbnail.scrollIntoView({block: "center"});
-	           			}); 
+	           			});
 					}
 				});
         	}
@@ -70,7 +75,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 			return el.parentElement.parentElement.parentElement.classList.contains("active");
 		},
     };
-    
+
     /**
      * @description Method to set the active thumbnail when it gets selected
      */
@@ -78,12 +83,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         var galleryLinks;
         galleryLinks = document.getElementsByClassName('thumbnails__thumb');
         for (var i = 0; i < galleryLinks.length; i++) {
-            galleryLinks[i].className = "thumbnails__thumb";            
+            galleryLinks[i].className = "thumbnails__thumb";
         }
         element.parentElement.parentElement.className = "thumbnails__thumb active";
         return true;
     }
-    
+
     /**
      * @description Method to draw the thumbnail images on a canvas.
      * @method drawOnCanvas
@@ -97,14 +102,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 	            }
 	            var ctx = canvas.getContext( '2d' );
 	            var d = canvas.dataset;
-	            
+
 	            if ( !d ) {
 	                // fix for ie not supporting element.dataset
 	                d = {};
 	                d.image_small = canvas.getAttribute( 'data-image_small' );
 	                d.image_large = canvas.getAttribute( 'data-image_large' );
 	            }
-	            
+
 	            var img = new Image();
 	            img.onload = function() {
 	                var scale = ( canvas.width * 2 ) / this.width;
@@ -208,7 +213,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             img.src = _intrandaImages[ canvas.id ].largeUrl;
         }
     }
-    
+
     function groupArray(array, groupSize) {
         let allGroups = array.reduce((groups, item) => {
             if(groups[groups.length - 1].length < groupSize) {
@@ -220,7 +225,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         }, [[]]);
         return allGroups;
     }
-    
+
     return goobiWorkflow;
-    
+
 } )( goobiWorkflowJS || {}, jQuery );
