@@ -3,6 +3,8 @@ import hotkeys from 'hotkeys-js';
 export const initHotkeys = () => {
     // Remove existing hotkeys to avoid duplicates
     hotkeys.deleteScope('paginator');
+    hotkeys.deleteScope('metseditor');
+    hotkeys.deleteScope('global');
     // Set active scope only for pages with paginator
     // This is temporary, as soon as all hotkeys are moved to this module,
     // this can be refactored to a more permanent solution
@@ -19,12 +21,24 @@ export const initHotkeys = () => {
     // Set up help modal with available hotkeys
     initHotkeysHelper();
 
-    if (hotkeys.getScope() !== 'paginator') return;
-
     // Get config
     const configElement = document.getElementById('gwConfig');
     const goobiWorkflowConfig = configElement ? JSON.parse(configElement.textContent) : {};
     const hotkeysPrefix = goobiWorkflowConfig.navigationShortcut || '';
+
+    // If developer tools are present, add a hotkey to toggle their visibility
+    const developerTools = document.querySelectorAll('[data-developer-tool');
+    if (developerTools.length > 0) {
+        hotkeys(`${hotkeysPrefix}+d`, 'global', (event, handler) => {
+            event.preventDefault();
+            event.stopPropagation();
+            developerTools.forEach((element) => {
+                element.classList.toggle('d-none');
+            });
+        });
+    }
+
+    if (hotkeys.getScope() !== 'paginator') return;
 
     // Define hotkeys
     hotkeys(`${hotkeysPrefix}+right`, 'paginator', () => {
