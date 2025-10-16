@@ -322,6 +322,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     private Process template;
 
     private List<StringPair> allGoobiScripts;
+    private List<StringPair> hiddenGoobiScripts;
 
     @Getter
     @Setter
@@ -1715,6 +1716,24 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
+     * Return a list of all hidden GoobiScript commands with their action name and the sample call.
+     *
+     * @return the list of hidden GoobiScripts
+     */
+    public List<StringPair> getHiddenGoobiScripts() {
+        if (hiddenGoobiScripts == null) {
+            hiddenGoobiScripts = new ArrayList<>();
+            for (IGoobiScript gs : goobiScriptManager.getAvailableGoobiScripts()) {
+                if (!gs.isVisible()) {
+                    hiddenGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));
+                }
+            }
+        }
+        Collections.sort(hiddenGoobiScripts, new StringPair.OneComparator());
+        return hiddenGoobiScripts;
+    }
+
+    /**
      * Returns the list of process ids for the current search results.
      *
      * @return The list of ids of all found processes
@@ -2607,7 +2626,7 @@ public class ProcessBean extends BasicBean implements Serializable {
      * Check if current process is not the first element of filtered list.
      *
      * @return true if current page is not first
-     * 
+     *
      */
 
     public boolean isHasPreviousEntry() {

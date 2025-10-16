@@ -5,6 +5,8 @@ export const initHotkeys = () => {
     hotkeys.deleteScope('paginator');
     hotkeys.deleteScope('metseditor');
     hotkeys.deleteScope('global');
+    hotkeys.unbind();
+
     // Set active scope only for pages with paginator
     // This is temporary, as soon as all hotkeys are moved to this module,
     // this can be refactored to a more permanent solution
@@ -27,9 +29,9 @@ export const initHotkeys = () => {
     const hotkeysPrefix = goobiWorkflowConfig.navigationShortcut || '';
 
     // If developer tools are present, add a hotkey to toggle their visibility
-    const developerTools = document.querySelectorAll('[data-developer-tool');
+    const developerTools = document.querySelectorAll('[data-developer-tool]');
     if (developerTools.length > 0) {
-        hotkeys(`${hotkeysPrefix}+d`, 'global', (event, handler) => {
+        hotkeys(`${hotkeysPrefix}+d`, (event, handler) => {
             event.preventDefault();
             event.stopPropagation();
             developerTools.forEach((element) => {
