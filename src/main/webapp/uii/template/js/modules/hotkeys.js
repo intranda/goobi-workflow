@@ -64,7 +64,6 @@ export const initHotkeys = () => {
  * This function displays any hotkeys that are available in the current view.
  */
 const initHotkeysHelper = () => {
-    console.log('current scope:', hotkeys.getScope());
     const hotkeyTermsMetseditor = [
         'shortcut_imagePrev20',
         'shortcut_imageNext20',
