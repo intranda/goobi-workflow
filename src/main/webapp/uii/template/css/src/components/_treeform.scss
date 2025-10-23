@@ -1,0 +1,18 @@
+.treeform {
+    display: grid;
+    gap: 0.25rem;
+    grid-template-columns: auto 1fr;
+    max-height: 100%;
+
+    .treeform-list {
+        margin: 0;
+        max-height: 100%;
+        overflow-y: auto;
+        padding: 0 0.75rem 0 0;
+    }
+
+    .treeform-actions {
+        margin: 0;
+        padding: 0;
+    }
+}
