@@ -314,13 +314,15 @@ final class ProjectMysqlHelper implements Serializable {
                 Object[] param = { StringUtils.isBlank(pfg.getName()) ? null : pfg.getName(),
                         StringUtils.isBlank(pfg.getPath()) ? null : pfg.getPath(), StringUtils.isBlank(pfg.getMimetype()) ? null : pfg.getMimetype(),
                         StringUtils.isBlank(pfg.getSuffix()) ? null : pfg.getSuffix(), pfg.getProject().getId(),
-                        StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder(), pfg.getIgnoreMimetypes(), pfg.isUseOriginalFiles() };
+                        StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder(), pfg.getIgnoreMimetypes(), pfg.isUseOriginalFiles(),
+                        pfg.isExportContent(), pfg.isSingleFile(), pfg.isUseFileNameFromFolder() };
                 if (pfg.getId() == null) {
                     StringBuilder sql = new StringBuilder();
                     sql.append("INSERT INTO projectfilegroups ");
-                    sql.append("(name, path, mimetype, suffix, ProjekteID, folder, ignore_file_extensions, original_mimetypes) ");
+                    sql.append("(name, path, mimetype, suffix, ProjekteID, folder, ignore_file_extensions, original_mimetypes, ");
+                    sql.append("export_content, single_file_export, filename_from_folder) ");
                     sql.append("VALUES ");
-                    sql.append("(?, ?, ?, ?, ?, ?,?,? ) ");
+                    sql.append("(?, ?, ?, ?, ?, ?,?,?,?,?,? ) ");
                     Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                     if (id != null) {
                         pfg.setId(id);
@@ -335,7 +337,10 @@ final class ProjectMysqlHelper implements Serializable {
                     sql.append("ProjekteID = ?, ");
                     sql.append("folder = ?, ");
                     sql.append("ignore_file_extensions = ?, ");
-                    sql.append("original_mimetypes = ? ");
+                    sql.append("original_mimetypes = ?, ");
+                    sql.append("export_content = ?, ");
+                    sql.append("single_file_export = ?, ");
+                    sql.append("filename_from_folder = ? ");
                     sql.append("WHERE ProjectFileGroupID = ");
                     sql.append(pfg.getId());
                     run.update(connection, sql.toString(), param);
@@ -356,9 +361,12 @@ final class ProjectMysqlHelper implements Serializable {
 
             Object[] param = { StringUtils.isBlank(pfg.getName()) ? null : pfg.getName(), StringUtils.isBlank(pfg.getPath()) ? null : pfg.getPath(),
                     StringUtils.isBlank(pfg.getMimetype()) ? null : pfg.getMimetype(), StringUtils.isBlank(pfg.getSuffix()) ? null : pfg.getSuffix(),
-                    pfg.getProject().getId(), StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder() };
+                    pfg.getProject().getId(), pfg.isExportContent(), pfg.isSingleFile(), pfg.isUseFileNameFromFolder(),
+                    StringUtils.isBlank(pfg.getFolder()) ? null : pfg.getFolder() };
+
             if (pfg.getId() == null) {
-                String sql = "INSERT INTO projectfilegroups (name, path, mimetype, suffix, ProjekteID, folder) VALUES (?, ?, ?, ?, ?, ? )";
+                String sql = "INSERT INTO projectfilegroups (name, path, mimetype, suffix, ProjekteID, export_content, single_file_export, "
+                        + "filename_from_folder, folder) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ? )";
 
                 Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
@@ -371,6 +379,9 @@ final class ProjectMysqlHelper implements Serializable {
                 sql.append("mimetype = ?, ");
                 sql.append("suffix = ?, ");
                 sql.append("ProjekteID = ?, ");
+                sql.append("export_content = ?,");
+                sql.append("single_file_export = ?,");
+                sql.append("filename_from_folder = ?,");
                 sql.append("folder = ? ");
                 sql.append("WHERE ProjectFileGroupID = ");
                 sql.append(pfg.getId());
@@ -439,6 +450,9 @@ final class ProjectMysqlHelper implements Serializable {
                             pfg.setSuffix(suffix);
                             pfg.setIgnoreMimetypes(rs.getString("ignore_file_extensions"));
                             pfg.setUseOriginalFiles(rs.getBoolean("original_mimetypes"));
+                            pfg.setExportContent(rs.getBoolean("export_content"));
+                            pfg.setSingleFile(rs.getBoolean("single_file_export"));
+                            pfg.setUseFileNameFromFolder(rs.getBoolean("filename_from_folder"));
                             // ProjekteId?
                             pfg.setFolder(folder);
                             answer.add(pfg);
