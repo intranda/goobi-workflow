@@ -995,14 +995,18 @@ public class ProzesskopieForm implements Serializable {
                     DocStruct myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
                     DocStruct myTempChild = null;
                     if ("child".equals(field.getDocstruct()) || "firstchild".equals(field.getDocstruct())) {
-                        myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
+                        if (myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren() != null) {
+                            myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
+                        }
 
                     }
                     /*
                      * falls topstruct und firstchild das Metadatum bekommen sollen
                      */
                     if (!"firstchild".equals(field.getDocstruct()) && field.getDocstruct().contains("firstchild")) {
-                        myTempChild = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
+                        if (myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren() != null) {
+                            myTempChild = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
+                        }
 
                     }
                     if ("boundbook".equals(field.getDocstruct())) {
