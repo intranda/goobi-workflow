@@ -1,7 +1,7 @@
 .treeform {
     display: grid;
     gap: 0.25rem;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto min-content;
     max-height: 100%;
 
     .treeform-list {
