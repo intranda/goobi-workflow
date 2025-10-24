@@ -602,6 +602,31 @@
                                                 required="false"
                                                 help="#{msgs.helpProjectfilegroup_IgnoreMimetypes}" />
 
+
+                                            <intranda:formInputCheckBox
+                                                id="exportContent"
+                                                label="#{msgs.projectfilegroup_exportContent}"
+                                                field="#{ProjekteForm.myFilegroup.exportContent}"
+                                                help="#{msgs.helpProjectfilegroup_exportContent}"
+                                                name="exportContent" />
+
+                                            <intranda:formInputCheckBoxAjax
+                                                id="singleFile"
+                                                label="#{msgs.projectfilegroup_singleFile}"
+                                                field="#{ProjekteForm.myFilegroup.singleFile}"
+                                                help="#{msgs.helpProjectfilegroup_singleFile}"
+                                                name="singleFile"
+                                                ajaxEvent="click"
+                                                ajaxRender="myform:projecteditbox:filegroupbox:single_file_check" />
+                                            <h:panelGroup id="single_file_check">
+                                                <intranda:formInputCheckBox
+                                                    rendered="#{ProjekteForm.myFilegroup.singleFile}"
+                                                    id="useFileNameFromFolder"
+                                                    label="#{msgs.projectfilegroup_useFileNameFromFolder}"
+                                                    field="#{ProjekteForm.myFilegroup.useFileNameFromFolder}"
+                                                    help="#{msgs.helpProjectfilegroup_useFileNameFromFolder}"
+                                                    name="useFileNameFromFolder" />
+                                            </h:panelGroup>
                                             <div class="form-actions">
 
                                                 <!-- Abbrechen-Schaltknopf -->
@@ -766,8 +791,7 @@
                                             </dl:description>
                                         </ui:repeat>
                                     </dl:list>
-                                    <div
-                                        class="section-footer p-3 border-bottom">
+                                    <div class="section-footer p-3 border-bottom">
                                         <button
                                             jsf:action="#{ProjekteForm.newProperty}"
                                             jsf:id="newProperty"
@@ -804,7 +828,7 @@
                                         <button
                                             jsf:id="cancelProperty"
                                             class="btn btn-blank"
-                                                jsf:immediate="true"
+                                            jsf:immediate="true"
                                             jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="#{msgs.abbrechen}" />
                                             <f:setPropertyActionListener
