@@ -12,7 +12,7 @@ const settings = {
     },
 
     imageView: {
-        element: "#mainImage",
+        element: "#pageContentRight #mainimagearea #mainImage",
         fittingMode: "fixed",
         margins: {bottom:0},
         sequence: {
@@ -37,7 +37,7 @@ export const loadImage = function() {
     }
     
     if(!document.querySelector(settings.imageView.element)) {
-        console.warn("No element to host image found" , settings.imageView.element);
+        return;
     }
 
     if(loadedImage?.element?.isConnected) {
