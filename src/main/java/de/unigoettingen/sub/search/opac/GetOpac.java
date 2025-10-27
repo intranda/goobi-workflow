@@ -622,7 +622,7 @@ public class GetOpac {
 
             if (ConfigurationHelper.getInstance().isUseProxy()) {
                 try {
-                    URL ipAsURL = new URI(url).toURL();
+                    URL ipAsURL = new URI(cat.getProtocol() + this.cat.getServerAddress()).toURL();
                     if (!ConfigurationHelper.getInstance().isProxyWhitelisted(ipAsURL)) {
                         HttpHost proxy =
                                 new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
@@ -639,7 +639,6 @@ public class GetOpac {
                     log.debug("could not convert into URL: ", url);
                 }
             }
-
             String result = this.opacClient.execute(opacRequest, HttpUtils.stringResponseHandler);
             result = org.apache.commons.text.StringEscapeUtils.unescapeHtml4(result);
             return result;
