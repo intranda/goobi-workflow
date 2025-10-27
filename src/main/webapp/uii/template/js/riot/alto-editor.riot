@@ -66,15 +66,6 @@
         height: var(--column-height);
         border: 1px solid #ddd;
     }
-    .line-marker {
-        border: 1px solid red;
-    }
-    .line-marker {
-        border: 2px solid blue;
-    }
-    .word-marker {
-        border: 2px solid red;
-    }
     .rightToLeft {
         direction: rtl;
     }
@@ -96,7 +87,7 @@
             columns: 1,
             columnOffset: 0,
             rowMargin: 0
-        } 
+        }
     }
 
     this.on('before-mount', () => {
@@ -142,7 +133,7 @@
     	const lineBox = this.alto.lineMap[e.item.word.lineId];
     	const lineRect = new OpenSeadragon.Rect((lineBox.x)-add, (lineBox.y)-add, (lineBox.width)+add*2, (lineBox.height)+add*2);
         const lineRectViewport = this.imageView.openseadragon.viewport.imageToViewportRectangle(lineRect);
-        
+
         const wordBox = e.item.word
     	const wordRect = new OpenSeadragon.Rect((wordBox.x)-add, (wordBox.y)-add, (wordBox.width)+add*2, (wordBox.height)+add*2);
         const wordRectViewport = this.imageView.openseadragon.viewport.imageToViewportRectangle(wordRect);
@@ -260,7 +251,7 @@
 
     initOpenseadragon() {
         const imageUrl = document.querySelector(this.opts.tileSourceSelector).value;
-    	
+
         this.imageView = new ImageView.Image(imageViewConfig);
         this.zoomControl = new ImageView.Controls.Zoom(this.imageView);
         this.imageView.load(imageUrl)
