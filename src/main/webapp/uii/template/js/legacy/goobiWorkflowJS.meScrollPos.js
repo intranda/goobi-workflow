@@ -150,7 +150,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
        */
       restoreScrollPos: function() {
         // Get scroll position from session storage
-        const view = goobiWorkflowConfig.currentView;
+        const view = goobiWorkflowConfig?.currentView || 'Paginierung';
         const key = this.getScrollPosKey(view)
         const restoredScrollPosAll = JSON.parse(sessionStorage.getItem('gw_me_scrollPos'));
 
