@@ -478,12 +478,12 @@
 														<ui:repeat
 															value="#{item.benutzergruppen}"
 															var="group"
-															rowCountVar="count"
-															rowIndexVar="index">
-															<h:outputText value="#{group.titel}" />
+															varStatus="userGroup">
 															<h:outputText
-																value=", "
-																rendered="#{index lt count-1}"></h:outputText>
+																value=","
+																rendered="#{!userGroup.first}"></h:outputText>
+															<br jsf:rendered="#{!userGroup.first}" />
+															<h:outputText value="#{group.titel}" />
 														</ui:repeat>
 													</h:panelGroup>
 												</h:panelGrid>
