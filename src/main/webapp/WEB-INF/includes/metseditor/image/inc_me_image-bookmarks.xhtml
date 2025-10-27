@@ -14,9 +14,16 @@
 
     <composite:implementation>
         <div
-            id="bookmarks"
-            class="bookmarks">
-            <h:form id="bookmarkForm">
+        id="bookmarks"
+        class="bookmarks">
+        <h:form id="bookmarkForm">
+            <f:passThroughAttribute name="data-number-of-bookmarks" value="#{
+                    NavigationForm.uiStatus.mets_toc1 != null ?
+                    NavigationForm.uiStatus.mets_toc2 != null ?
+                    NavigationForm.uiStatus.mets_toc3 != null ?
+                    NavigationForm.uiStatus.mets_toc4 != null ?
+                    NavigationForm.uiStatus.mets_toc5 != null ? 5 : 4 : 3 : 2 : 1 : 0
+                }" />
                 <ul role="list" class="d-flex flex-column gap-1">
                     <!-- BOOKMARK 1 -->
                     <ui:fragment rendered="#{NavigationForm.uiStatus.mets_toc1 != null}">
@@ -276,13 +283,33 @@
                             icon="image"
                             title="#{msgs.mets_bookmarkShow}"
                             titleId="bookmarkModalLabel">
-                            <button
-                                type="button"
-                                class="btn text-white"
-                                data-bs-dismiss="modal"
-                                aria-label="Close">
-                                <span class="fa fa-times" aria-hidden="true" />
-                            </button>
+                            <div>
+                                <button
+                                    type="button"
+                                    class="btn text-white d-none"
+                                    data-metseditor-bookmark-button="prev"
+                                    title="#{msgs.zurueck}"
+                                    aria-label="#{msgs.zurueck}"
+                                    data-bs-toggle="tooltip">
+                                    <span class="fa fa-arrow-left" aria-hidden="true"></span>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn text-white d-none"
+                                    data-metseditor-bookmark-button="next"
+                                    title="#{msgs.weiter}"
+                                    aria-label="#{msgs.weiter}"
+                                    data-bs-toggle="tooltip">
+                                    <span class="fa fa-arrow-right" aria-hidden="true"></span>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn text-white"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    <span class="fa fa-times" aria-hidden="true" />
+                                </button>
+                            </div>
                         </section:header>
                         <section:body>
                             <h:panelGroup
@@ -308,7 +335,29 @@
                 const bookmarkImageElement = document.querySelector(`[id$="bookmarkCurrent"]`);
                 const buttonElement = document.querySelector('[id$="showBookmark' + number + '"]');
                 const href = buttonElement.dataset.href;
+                handleButtons(number);
                 bookmarkImageElement.setAttribute('src', href);
+            };
+
+            const handleButtons = (number) => {
+                const nextButton = document.querySelector('[data-metseditor-bookmark-button="next"]');
+                const prevButton = document.querySelector('[data-metseditor-bookmark-button="prev"]');
+                const totalBookmarks = parseInt(document.querySelector('[id$="bookmarkForm"]').dataset.numberOfBookmarks);
+
+                const showprevButton = number &gt; 1;
+                const shownextButton = number &lt; totalBookmarks;
+
+                const toggleButton = (button, show, targetBookmark) => {
+                    button.classList.toggle('d-none', !show);
+                    if (show) {
+                        button.onclick = () => {
+                            loadBookmark(targetBookmark);
+                        };
+                    }
+                };
+
+                toggleButton(prevButton, showprevButton, number - 1);
+                toggleButton(nextButton, shownextButton, number + 1);
             };
         </script>
     </composite:implementation>
