@@ -89,12 +89,11 @@ export const hoverableTooltip = function keepTooltipOpenOnHoverOverContent(eleme
 
       // make sure no tooltips are open before opening a new one
       hideAllTooltips(element);
- 
+
       clearTimeout(tooltipHideTimeout);
       tooltipShowTimeout = setTimeout(() => {
-        if(tooltip.isConnected) {
-        	tooltip.show();
-		}        
+        tooltip?.show();
+
         tooltip?.tip?.addEventListener('mouseleave', () => {
           event.preventDefault;
           event.stopPropagation;
