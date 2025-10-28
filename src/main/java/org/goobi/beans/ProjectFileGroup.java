@@ -44,8 +44,17 @@ public class ProjectFileGroup implements Serializable {
     // use original mimetype, suffix in export
     private boolean useOriginalFiles = false;
 
-    // list of mimetypes to ignore during export. Can be images/jpeg or images/*
+    // list of MIME-Types  to ignore during export. Can be image/jpeg or image/*
     private String ignoreMimetypes;
+
+    // export additional folder, if a folder was configured and exists
+    private boolean exportContent = false;
+
+    // defines, if a single file filegroup for the physSequence or a regular multi file fileGroup for each image is created
+    private boolean singleFile = false;
+
+    // defines, if the (first) base name/original name from the configured folder should be used or if the path contains an absolute URI
+    private boolean useFileNameFromFolder = false;
 
     private Project project;
 
@@ -66,6 +75,9 @@ public class ProjectFileGroup implements Serializable {
         setFolder(source.getFolder());
         setUseOriginalFiles(source.isUseOriginalFiles());
         setIgnoreMimetypes(source.getIgnoreMimetypes());
+        setExportContent(source.isExportContent());
+        setSingleFile(source.isSingleFile());
+        setUseFileNameFromFolder(source.isUseFileNameFromFolder());
     }
 
 }
