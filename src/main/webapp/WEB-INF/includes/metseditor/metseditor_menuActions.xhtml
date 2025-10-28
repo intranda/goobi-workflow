@@ -68,19 +68,9 @@
                         <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showOcr}"/>
                     </button>
                 </li>
-                <!-- VALIDATION -->
-                <li class="nav-item d-none d-md-block">
-                    <button style="display: none" jsf:id="startValidationButton" jsf:action="#{Metadaten.Validate}">
-                    </button>
 
-                    <button class="nav-link" jsf:id="startValidation" aria-label="#{msgs.validieren}" jsf:action="#{Metadaten.Validate}" title="#{msgs.validieren}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                        <span class="fa fa-check fa-lg" aria-hidden="true"/>
-                        <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render="@form :pageContentCenter @form :treeform"/>
-                    </button>
-
-                    <h:commandButton type="button" id="startValidationButtonAjax" style="display:none" action="#{Metadaten.Validate}" title="#{msgs.validieren}" rel="tooltip">
-                            <f:ajax render="@form"/>
-                    </h:commandButton>
+                <li class="nav-item dropdown d-none d-md-block">
+                    <help:menu />
                 </li>
 
                 <!-- CONFIGURATION -->
@@ -194,9 +184,19 @@
                         </ui:repeat>
                     </ul>
                 </li>
+                <!-- VALIDATION -->
+                <li class="nav-item d-none d-md-block">
+                    <button style="display: none" jsf:id="startValidationButton" jsf:action="#{Metadaten.Validate}">
+                    </button>
 
-                <li class="nav-item dropdown d-none d-md-block">
-                    <help:menu />
+                    <button class="nav-link" jsf:id="startValidation" aria-label="#{msgs.validieren}" jsf:action="#{Metadaten.Validate}" title="#{msgs.validieren}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <span class="fa fa-check fa-lg" aria-hidden="true"/>
+                        <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render="@form :pageContentCenter @form :treeform"/>
+                    </button>
+
+                    <h:commandButton type="button" id="startValidationButtonAjax" style="display:none" action="#{Metadaten.Validate}" title="#{msgs.validieren}" rel="tooltip">
+                            <f:ajax render="@form"/>
+                    </h:commandButton>
                 </li>
 
                 <!-- SAVE -->
