@@ -93,7 +93,6 @@
     this.on('before-mount', () => {
     	this.msgs = this.opts.messages;
         this.lines = [];
-        console.log(opts)
         this.alignRtl =this.opts.alignRtl;
         let altoDiv = document.querySelector(opts.altoDivSelector);
         let altoJson = altoDiv.value;
@@ -261,7 +260,6 @@
     }
 
     initNamedEntityEditor(element, config) {
-    console.log("init entity editor", this.alto);
         const opts = $.extend(true, {}, config, {
             wordSelector: ".altoword",
             wordContainerSelector: ".alto-edit",
@@ -273,7 +271,6 @@
             changeCallback: (changesList) => {
                 //remove all changes regarding named entities. They will be replaced by the changesList
                 this.changes.namedEntities = changesList;
-                console.log("add named entites changes to ", this.changes, changesList);
             }
         });
         riot.mount(this.refs.namedEntityEditorWrapper, "named-entity-selector", opts);
@@ -298,7 +295,6 @@
         			if(this.posInRect(pos, word)) {
         				let wordElement = document.querySelector('#'+word.id);
         				if(e.type === "click") {
-                            console.log("clicked word", word, wordElement);
         					wordElement.focus();
         				} else {
         					e.item = {word: word}
