@@ -97,10 +97,8 @@
         this.alignRtl =this.opts.alignRtl;
         let altoDiv = document.querySelector(opts.altoDivSelector);
         let altoJson = altoDiv.value;
-        console.log("load alto", altoJson);
         this.alto = JSON.parse(altoJson);
         this.lines = this.alto.lines;
-        console.log(this.alto)
         this.changes = {};
         this.oldPos = {};
     })
@@ -251,7 +249,6 @@
 
     initOpenseadragon() {
         const imageUrl = document.querySelector(this.opts.tileSourceSelector).value;
-
         this.imageView = new ImageView.Image(imageViewConfig);
         this.zoomControl = new ImageView.Controls.Zoom(this.imageView);
         this.imageView.load(imageUrl)
