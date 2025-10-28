@@ -314,6 +314,10 @@
     		&& rect.y+rect.height>pos.y;
     }
 
+    isDirty() {
+    	return Object.keys(this.changes).length > 0;
+    }
+
     this.on('before-unmount', () => {
     	this.imageView.close();
     })
