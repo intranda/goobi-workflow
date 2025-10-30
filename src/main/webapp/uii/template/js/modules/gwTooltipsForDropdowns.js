@@ -5,7 +5,7 @@
  * @module tooltipsForDropdowns
  */
 
-const defaultSelector = '[data-bs-toggle="tooltip"]:has(.dropdown-toggle)';
+const defaultSelector = '[data-bs-toggle="tooltip"]';
 const config = {
   attributes: true,
   childList: false,
@@ -50,6 +50,8 @@ const handleTooltip = function handleTooltip(element) {
 export const dropdownTooltips = function toggleDropdownTooltips(selector = defaultSelector) {
   const elements = document.querySelectorAll(selector);
   elements.forEach((element) => {
-    handleTooltip(element);
+    if (element.querySelector('.dropdown-toggle')) {
+      handleTooltip(element);
+    }
   })
 };
