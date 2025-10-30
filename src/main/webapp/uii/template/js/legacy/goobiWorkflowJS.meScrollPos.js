@@ -165,8 +165,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         const oldPos = restoredScrollPosAll[key];
 
         // Set new scroll positions
-        contentLeft.scrollTop = restoredScrollPosAll.meLeft;
-        contentCenter.scrollTop = oldPos + this.getErrorMsgHeight();
+        if (contentLeft) {
+          contentLeft.scrollTop = restoredScrollPosAll.meLeft;
+        }
+        if (contentCenter) {
+          contentCenter.scrollTop = oldPos + this.getErrorMsgHeight();
+        }
         if (contentRight) {
           setTimeout(() => {
             contentRight.scrollTop = restoredScrollPosAll.meThumbnails;
