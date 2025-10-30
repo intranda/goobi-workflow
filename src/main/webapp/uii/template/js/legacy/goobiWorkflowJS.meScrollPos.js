@@ -16,7 +16,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          * @param {Object} data -- jsf data obj, available in `<f:ajax>`
          * @param {Object.<string>} [opts] -- options to be passed
          */
-      init: function(data, {view = goobiWorkflowConfig.currentView, saveScrollPos = true} = {}) {
+      init: function(data, {view = 'Paginierung', saveScrollPos = true} = {}) {
         if ( _debug ) console.log( 'Init: goobiWorkflowJS.meScrollPos.init' );
         if ( _debug ) console.log( 'view:', view,'|||', 'saveScrollPos:', saveScrollPos);
         const configElement = document.getElementById('gwConfig');
