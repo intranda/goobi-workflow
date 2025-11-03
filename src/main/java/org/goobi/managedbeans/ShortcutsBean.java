@@ -42,7 +42,7 @@ public class ShortcutsBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Inject
+    @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
     private LoginBean loginBean;
 
     /**
@@ -67,7 +67,7 @@ public class ShortcutsBean implements Serializable {
         if (prefix != null && prefix.contains("+")) {
             return prefix.split("\\+");
         }
-        return new String[]{prefix != null ? prefix : "", ""};
+        return new String[] { prefix != null ? prefix : "", "" };
     }
 
     /**
