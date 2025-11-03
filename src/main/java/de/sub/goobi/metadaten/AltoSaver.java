@@ -40,7 +40,6 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
-import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.xpath.XPathExpression;
@@ -57,14 +56,13 @@ public final class AltoSaver {
         // hide implicit public constructor
     }
 
-    private static SAXBuilder sax = XmlTools.getSAXBuilder();
     private static XPathFactory xFactory = XPathFactory.instance();
 
     public static void saveAltoChanges(Path altoFile, AltoChange[] changes) throws JDOMException, IOException {
         if (changes == null) {
             return;
         }
-        Document doc = sax.build(altoFile.toFile());
+        Document doc = XmlTools.readDocumentFromStream(StorageProvider.getInstance().newInputStream(altoFile));
         Namespace namespace = Namespace.getNamespace("alto", doc.getRootElement().getNamespaceURI());
         boolean writeTags = Arrays.stream(changes).anyMatch(change -> "setNamedEntity".equals(change.getAction()));
         //first remove all tags and tagrefs. Create new Tags element if necessary
