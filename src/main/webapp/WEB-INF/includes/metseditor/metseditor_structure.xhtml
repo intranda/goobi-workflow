@@ -11,10 +11,10 @@
 
     <composite:implementation>
         <div id="disable-interaction-overlay" style="display: none; position: fixed; top:0px; left: 0px; right: 0px; bottom: 0px; z-index: 999; background-color: rgba(230, 230, 230, 0.7);"/>
-        <h:form id="treeform" styleClass="d-flex flex-nowrap">
+        <h:form id="treeform" styleClass="treeform">
             <h:inputText id="hiddenwidth" value="#{Metadaten.treeWidth}" style="display:none;"/>
             <!-- METSEDITOR STRUCTURE -->
-            <ol role="list" id="meStructure" class="p-0 flex-grow-1">
+            <ol role="list" id="meStructure" class="treeform-list">
                 <ui:repeat value="#{Metadaten.strukturBaum3}" var="item">
                     <li class="treeView-item" style="--level: #{item.niveau}">
                         <div class="spacer"/>
@@ -132,100 +132,98 @@
                 </ui:repeat>
             </ol>
             <!-- METSEDITOR STRUCTURE ACTIONS -->
-            <div id="structureActions" class="module module__structure-actions">
-                <ul role="list">
-                    <li>
-                        <button
-                            jsf:id="hiddenwidthbutton"
-                            class="btn"
-                            jsf:action="#{NavigationForm.Reload}"
-                            style="display:none;">
-                            <span class="fa fa-floppy-o"/>
-                        </button>
-                    </li>
-                    <li>
-                        <!-- Verlinkung des Bildes mit dem gewaehlten Strukturelement -->
-                        <button
-                            onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
-                            jsf:id="linkImage"
-                            aria-label="#{msgs.verlinkungDesBildesMitStrukturelement}"
-                            jsf:action="#{Metadaten.BildBlaettern}"
-                            title="#{msgs.verlinkungDesBildesMitStrukturelement}"
-                            class="btn #{Metadaten.bildZuStrukturelement ? '' : 'font-light'}"
-                            jsf:rel="tooltip"
-                            data-renderimage="true"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="right">
-                            <span class="#{Metadaten.bildZuStrukturelement ? 'fa fa-chain' : 'fa fa-chain-broken'}" aria-hidden="true"/>
-                            <f:setPropertyActionListener value="0" property="#{Metadaten.numberOfNavigation}" target="#{Metadaten.numberOfNavigation}"/>
-                            <f:setPropertyActionListener target="#{Metadaten.bildZuStrukturelement}" value="#{not Metadaten.bildZuStrukturelement}"/>
-                            <!--
-                            <f:ajax
-                                execute="@form"
-                                render="@form :openseadragonform" />
-                             -->
-                        </button>
-                    </li>
-                    <li>
-                        <button
-                            jsf:id="showtitle"
-                            aria-label="#{msgs.mets_treeTitle}"
-                            jsf:action="#{NavigationForm.Reload}"
-                            jsf:rel="tooltip"
-                            class="btn #{Metadaten.treeProperties.showtitle ? '' : ' font-light'}"
-                            title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="right">
-                            <span class="fa fa-list" aria-hidden="true"/>
+            <ul role="list" class="treeform-actions">
+                <li>
+                    <button
+                        jsf:id="hiddenwidthbutton"
+                        class="btn"
+                        jsf:action="#{NavigationForm.Reload}"
+                        style="display:none;">
+                        <span class="fa fa-floppy-o"/>
+                    </button>
+                </li>
+                <li>
+                    <!-- Verlinkung des Bildes mit dem gewaehlten Strukturelement -->
+                    <button
+                        onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
+                        jsf:id="linkImage"
+                        aria-label="#{msgs.verlinkungDesBildesMitStrukturelement}"
+                        jsf:action="#{Metadaten.BildBlaettern}"
+                        title="#{msgs.verlinkungDesBildesMitStrukturelement}"
+                        class="btn #{Metadaten.bildZuStrukturelement ? '' : 'font-light'}"
+                        jsf:rel="tooltip"
+                        data-renderimage="true"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right">
+                        <span class="#{Metadaten.bildZuStrukturelement ? 'fa fa-chain' : 'fa fa-chain-broken'}" aria-hidden="true"/>
+                        <f:setPropertyActionListener value="0" property="#{Metadaten.numberOfNavigation}" target="#{Metadaten.numberOfNavigation}"/>
+                        <f:setPropertyActionListener target="#{Metadaten.bildZuStrukturelement}" value="#{not Metadaten.bildZuStrukturelement}"/>
+                        <!--
+                        <f:ajax
+                            execute="@form"
+                            render="@form :openseadragonform" />
+                            -->
+                    </button>
+                </li>
+                <li>
+                    <button
+                        jsf:id="showtitle"
+                        aria-label="#{msgs.mets_treeTitle}"
+                        jsf:action="#{NavigationForm.Reload}"
+                        jsf:rel="tooltip"
+                        class="btn #{Metadaten.treeProperties.showtitle ? '' : ' font-light'}"
+                        title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right">
+                        <span class="fa fa-list" aria-hidden="true"/>
 
-                            <f:setPropertyActionListener value="#{Metadaten.treeProperties.showtitle?false:true}" property="#{Metadaten.treeProperties.showtitle}" target="#{Metadaten.treeProperties.showtitle}"/>
-                            <f:ajax render="@form"/>
-                        </button>
-                    </li>
+                        <f:setPropertyActionListener value="#{Metadaten.treeProperties.showtitle?false:true}" property="#{Metadaten.treeProperties.showtitle}" target="#{Metadaten.treeProperties.showtitle}"/>
+                        <f:ajax render="@form"/>
+                    </button>
+                </li>
+                <li>
+                    <button
+                        jsf:id="showfirstpagenumber"
+                        aria-label="#{msgs.mets_treePageNumber}"
+                        jsf:action="#{NavigationForm.Reload}"
+                        jsf:rel="tooltip"
+                        class="btn #{Metadaten.treeProperties.showfirstpagenumber ? '' : ' font-light'}"
+                        title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right">
+                        <span class="fa fa-exchange" aria-hidden="true"/>
+                        <f:setPropertyActionListener value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}" property="#{Metadaten.treeProperties.showfirstpagenumber}" target="#{Metadaten.treeProperties.showfirstpagenumber}"/>
+                        <f:ajax render="@form"/>
+                    </button>
+                </li>
+                <li>
+                    <button
+                        jsf:id="printpage2"
+                        aria-label="#{msgs.process_generateSimplifiedMetadata}"
+                        class="btn font-light"
+                        jsf:action="#{Metadaten.myProzess.downloadSimplifiedMetadataAsPDF}"
+                        title="#{msgs.process_generateSimplifiedMetadata}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right">
+                        <span class="fa fa-print" aria-hidden="true"/>
+                    </button>
+                </li>
+                <ui:fragment rendered="#{!Metadaten.allImages.isEmpty()}">
                     <li>
-                        <button
-                            jsf:id="showfirstpagenumber"
-                            aria-label="#{msgs.mets_treePageNumber}"
-                            jsf:action="#{NavigationForm.Reload}"
-                            jsf:rel="tooltip"
-                            class="btn #{Metadaten.treeProperties.showfirstpagenumber ? '' : ' font-light'}"
-                            title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="right">
-                            <span class="fa fa-exchange" aria-hidden="true"/>
-                            <f:setPropertyActionListener value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}" property="#{Metadaten.treeProperties.showfirstpagenumber}" target="#{Metadaten.treeProperties.showfirstpagenumber}"/>
-                            <f:ajax render="@form"/>
-                        </button>
+                        <h:commandLink
+                            target="_blank"
+                            id="printpdf"
+                            action="#{Metadaten.downloadCurrentFolderAsPdf}"
+                            styleClass="btn font-light"
+                            aria-label="#{msgs.download_pdf}"
+                            title="#{msgs.download_pdf}">
+                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                            <f:passThroughAttribute name="data-bs-placement" value="right"/>
+                            <span class="fa fa-file-pdf-o" aria-hidden="true"/>
+                        </h:commandLink>
                     </li>
-                    <li>
-                        <button
-                            jsf:id="printpage2"
-                            aria-label="#{msgs.process_generateSimplifiedMetadata}"
-                            class="btn font-light"
-                            jsf:action="#{Metadaten.myProzess.downloadSimplifiedMetadataAsPDF}"
-                            title="#{msgs.process_generateSimplifiedMetadata}"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="right">
-                            <span class="fa fa-print" aria-hidden="true"/>
-                        </button>
-                    </li>
-                    <ui:fragment rendered="#{!Metadaten.allImages.isEmpty()}">
-                        <li>
-                            <h:commandLink
-                                target="_blank"
-                                id="printpdf"
-                                action="#{Metadaten.downloadCurrentFolderAsPdf}"
-                                styleClass="btn font-light"
-                                aria-label="#{msgs.download_pdf}"
-                                title="#{msgs.download_pdf}">
-                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                <f:passThroughAttribute name="data-bs-placement" value="right"/>
-                                <span class="fa fa-file-pdf-o" aria-hidden="true"/>
-                            </h:commandLink>
-                        </li>
-                    </ui:fragment>
-                </ul>
-            </div>
+                </ui:fragment>
+            </ul>
         </h:form>
 
         <h:form id="formWarn" style="display:none">

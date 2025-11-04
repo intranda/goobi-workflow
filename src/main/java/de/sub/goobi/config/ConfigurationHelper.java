@@ -378,6 +378,20 @@ public final class ConfigurationHelper implements Serializable {
         return getLocalString("process.folder." + folder + "." + foldername, "");
     }
 
+    public List<String> getConfiguredProcessFolders() {
+
+        List<String> folders = new ArrayList<>();
+
+        // get all locally configured folder
+        Iterator<String> keyIterator = configLocal.getKeys("process.folder");
+        while (keyIterator.hasNext()) {
+            String key = keyIterator.next();
+            folders.add(key);
+        }
+
+        return folders;
+    }
+
     public String getProcessOcrTxtDirectoryName() {
         return getLocalString("process.folder.ocr.txt", "{processtitle}_txt");
     }

@@ -29,6 +29,7 @@
 @use "components/dropdowns";
 @use "components/footer";
 @use "components/icon";
+@use "components/image";
 @use "components/tables-custom";
 @use "components/feed";
 @use "components/forms-custom";
@@ -46,6 +47,7 @@
 @use "components/tooltip-custom";
 @use "components/file-upload";
 @use "components/thumbnails";
+@use "components/treeform";
 @use "components/treeView";
 
 // PAGES
@@ -67,6 +69,7 @@
 @use "utility/grow";
 @use "utility/icon-text";
 @use "utility/invalid";
+@use "utility/keyboard-key";
 @use "utility/scroll-container";
 @use "utility/scroll-target";
 @use "utility/highlight";

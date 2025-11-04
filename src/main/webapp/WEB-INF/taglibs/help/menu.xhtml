@@ -1,0 +1,80 @@
+<ui:component
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:help="http://goobi.io/help"
+    xmlns:util="http://goobi.io/util"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+>
+    <div
+        class="dropdown"
+        title="#{msgs.showHelpFunctions}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom">
+        <button
+            type="button"
+            class="btn nav-link dropdown-toggle"
+            id="helpMenuButton"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <util:icon icon="man" styleClass="mb-1" />
+            <span class="visually-hidden">#{msgs.showHelpFunctions}</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="helpMenuButton">
+            <li class="nav-item">
+                <button
+                    type="button"
+                    class="btn dropdown-item"
+                    jsf:id="showHelp"
+                    data-show-help="#{NavigationForm.showHelp}">
+                    <util:icon icon="question-mark" />
+                    <span>#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}</span>
+                    <f:setPropertyActionListener
+                        target="#{NavigationForm.showHelp}"
+                        value="#{not NavigationForm.showHelp}" />
+                    <f:ajax
+                        render="@this"
+                        execute="@form" />
+                </button>
+            </li>
+            <li class="nav-item">
+                <!-- toggle contrast mode -->
+                <button
+                    type="button"
+                    class="btn dropdown-item"
+                    jsf:id="toggleContrastMode"
+                    jsf:action="#{NavigationForm.Reload}"
+                    title=""
+                    aria-label="#{msgs.toggleContrastMode}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    data-toggle-accessibility-mode="true">
+                    <util:icon icon="contrast" filled="true" />
+                    <span>
+                        #{msgs.toggleContrastMode}
+                    </span>
+                    <f:ajax
+                        render="@this" />
+                    <f:setPropertyActionListener
+                        target="#{LoginForm.myBenutzer.uiMode}"
+                        value="#{LoginForm.myBenutzer.uiMode == 'regular' ? 'accessibility' : 'regular'}" />
+                </button>
+            </li>
+            <li class="nav-item">
+                <!-- Button to trigger shortcuts modal -->
+                <button
+                    id="shortcutsHelpButton"
+                    type="button"
+                    class="btn dropdown-item d-none"
+                    data-bs-toggle="modal"
+                    data-bs-target="#shortcutsHelpModal">
+                    <util:icon icon="keyboard" />
+                    <span>
+                        #{msgs.shortcuts}
+                    </span>
+                </button>
+            </li>
+        </ul>
+    </div>
+    <!-- shortcuts modal, outside of dropdown because of BS issues -->
+    <help:shortcuts />
+</ui:component>

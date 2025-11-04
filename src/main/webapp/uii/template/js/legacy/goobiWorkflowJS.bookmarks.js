@@ -1,9 +1,9 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
-    
+
     var _debug = false;
     var _defaults = {};
-    
+
     goobiWorkflow.bookmarks = {
         /**
          * @description Method to initialize the menu module.
@@ -13,6 +13,10 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             if ( _debug ) {
                 console.log( 'Initializing: goobiWorkflowJS.bookmarks.init' );
             }
+
+
+            const isMetseditor = document.querySelector('#metseditorMenuForm') !== null;
+            if (!isMetseditor) return; // Only relevant in metseditor
 
             // set dynamic to position of bookmarks
 //            _setTopPosition();
@@ -34,7 +38,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
             // reset all colorboxes
             $.colorbox.remove();
-            
+
             // set colorboxes
             $( '.colorbox-image' ).colorbox( {
                 transition: 'fade',
@@ -53,12 +57,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         if ( _debug ) {
             console.log( 'EXECUTE: _setTopPosition' );
         }
-        
+
         var controlWrapperHeight = $( '#objectControlWrapper' ).outerHeight();
 
         $( '#bookmarks' ).css( 'top', controlWrapperHeight + 90 );
     }
-    
+
     return goobiWorkflow;
-    
+
 } )( goobiWorkflowJS || {}, jQuery );

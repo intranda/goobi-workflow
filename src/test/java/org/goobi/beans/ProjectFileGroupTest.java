@@ -39,6 +39,9 @@ public class ProjectFileGroupTest extends AbstractTest {
         group.setUseOriginalFiles(true);
         group.setIgnoreMimetypes("images/jpeg");
         group.setProject(new Project());
+        group.setExportContent(true);
+        group.setSingleFile(true);
+        group.setUseFileNameFromFolder(true);
 
         ProjectFileGroup clone = new ProjectFileGroup(group);
 
@@ -54,6 +57,9 @@ public class ProjectFileGroupTest extends AbstractTest {
         assertEquals(clone.isUseOriginalFiles(), group.isUseOriginalFiles());
         assertEquals(clone.getIgnoreMimetypes(), group.getIgnoreMimetypes());
 
+        assertEquals(clone.isExportContent(), group.isExportContent());
+        assertEquals(clone.isSingleFile(), group.isSingleFile());
+        assertEquals(clone.isUseFileNameFromFolder(), group.isUseFileNameFromFolder());
         // The project is not set by the clone constructor:
         assertNotEquals(clone.getProject(), group.getProject());
     }

@@ -3,6 +3,7 @@ const _debug = false;
 
 const settings = {
     tileSources: "#tileSource",
+    persistence: "#persistenceId",
     controls: {
         zoomInput: "#zoomSliderLabel input",
         rotateRight: "#rotate-right-x",
@@ -11,7 +12,7 @@ const settings = {
     },
 
     imageView: {
-        element: "#mainImage",
+        element: "#pageContentRight #mainimagearea #mainImage",
         fittingMode: "fixed",
         margins: {bottom:0},
         sequence: {
@@ -25,6 +26,8 @@ const settings = {
 var loadedImage; 
 var zoomControl;
 var rotationControl; 
+var viewPersistence;
+
 var eventListeners = new Map();
 
 export const loadImage = function() {
@@ -34,7 +37,7 @@ export const loadImage = function() {
     }
     
     if(!document.querySelector(settings.imageView.element)) {
-        console.warn("No element to host image found" , settings.imageView.element);
+        return;
     }
 
     if(loadedImage?.element?.isConnected) {
@@ -59,6 +62,7 @@ export const loadImage = function() {
     rotationControl = new ImageView.Controls.Rotation(loadedImage);
     zoomControl = new ImageView.Controls.Zoom(loadedImage);
     zoomControl.setInput(settings.controls.zoomInput);
+    viewPersistence = new ImageView.ViewPersistence(zoomControl, "metadata_image_" + getValue(settings.persistence));
 
     eventListeners.forEach((listener, element) => {
         element?.removeEventListener("click", listener);
@@ -85,7 +89,7 @@ export const loadImage = function() {
     const tileSource = getValue(settings.tileSources);
     if(_debug)console.log("load tilesource ", tileSource);
     loadedImage.load(tileSource).then(() => {
-        zoomControl.goHome();
+        //zoomControl.goHome();
     })
 
     return loadedImage;

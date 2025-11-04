@@ -1,6 +1,6 @@
 <ui:composition
     xmlns:ui="http://java.sun.com/jsf/facelets">
-    <dt class="definition-list-term">
+    <dt class="definition-list-term#{styleClass != null ? ' '.concat(styleClass) : ''}">
         <ui:insert />
     </dt>
 </ui:composition>

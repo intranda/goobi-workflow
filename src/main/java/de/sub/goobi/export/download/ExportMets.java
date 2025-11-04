@@ -342,19 +342,7 @@ public class ExportMets {
          */
         DigitalDocument dd = gdzfile.getDigitalDocument();
 
-        MetadatenImagesHelper mih = new MetadatenImagesHelper(this.myPrefs, dd);
-
-        if (dd.getFileSet() == null || dd.getFileSet().getAllFiles().isEmpty()) {
-            Helper.setMeldung(myProzess.getTitel() + ": digital document does not contain images; adding them for mets file creation");
-            mih.createPagination(myProzess, null);
-            try {
-                myProzess.writeMetadataFile(gdzfile);
-            } catch (UGHException | IOException | SwapException e) {
-                log.error(e);
-            }
-        } else {
-            mih.checkImageNames(myProzess, imageFolder.getFileName().toString());
-        }
+        createPagination(myProzess, gdzfile, imageFolder, dd);
 
         /*
          * get the topstruct element of the digital document depending on anchor property
@@ -369,63 +357,191 @@ public class ExportMets {
             }
         }
 
-        /*
-         * -------------------------------- if the top element does not have any image related, set them all --------------------------------
-         */
-
-        if (config.isExportValidateImages()) {
-
-            String reference = "logical_physical";
-            if (topElement.getAllToReferences(reference) == null || topElement.getAllToReferences(reference).isEmpty()) {
-                if (dd.getPhysicalDocStruct() != null && dd.getPhysicalDocStruct().getAllChildren() != null) {
-                    Helper.setMeldung(myProzess.getTitel()
-                            + ": topstruct element does not have any referenced images yet; temporarily adding them for mets file creation");
-                    for (DocStruct mySeitenDocStruct : dd.getPhysicalDocStruct().getAllChildren()) {
-                        topElement.addReferenceTo(mySeitenDocStruct, reference);
-                    }
-                } else {
-                    Helper.setFehlerMeldung(myProzess.getTitel() + ": could not find any referenced images, export aborted");
-                    return null;
-                }
-            }
-
-            for (ContentFile cf : dd.getFileSet().getAllFiles()) {
-                String location = cf.getLocation();
-                // If the file's location string shoes no sign of any protocol,
-                // use the file protocol.
-                if (!location.contains("://")) {
-                    if (!location.matches("^[A-Z]:.*") && !location.matches("^\\/.*")) {
-                        //is a relative path
-                        Path f = Paths.get(imageFolder.toString(), location);
-                        location = f.toString();
-                    }
-                    location = "file://" + location;
-                }
-                cf.setLocation(location);
-            }
+        if (!validateImages(myProzess, config, imageFolder, dd, topElement)) {
+            return null;
         }
         mm.setDigitalDocument(dd);
 
-        // if configured, extract metadata from files and store them as techMd premis
-        if (config.isExportCreateTechnicalMetadata()) {
-            int counter = 1;
-            for (DocStruct page : dd.getPhysicalDocStruct().getAllChildren()) {
-                Path path = Paths.get(page.getImageName());
-                if (!path.isAbsolute()) {
-                    path = Paths.get(imageFolder.toString(), page.getImageName());
-                }
-                Element techMd = createTechMd(path);
-                if (techMd != null) {
-                    Md md = new Md(techMd, MdType.TECH_MD);
-                    md.setId(String.format("AMD_%04d", counter++));
-                    dd.addTechMd(md);
-                    page.setAdmId(md.getId());
-                }
-            }
-        }
+        createTechMd(config, imageFolder, dd);
         VariableReplacer vp = new VariableReplacer(mm.getDigitalDocument(), this.myPrefs, myProzess, null);
 
         String metadataWarning = "Configured metadata for project name is unknown or not allowed.";
+        exportAdditionalMetadata(myProzess, config, topElement, vp, metadataWarning);
+
+        /*
+         * -------------------------------- wenn Filegroups definiert wurden, werden diese jetzt in die Metsstruktur übernommen
+         * --------------------------------
+         */
+        // Replace all pathes with the given VariableReplacer, also the file
+        // group pathes!
+
+        generateFileGroups(myProzess, mm, dd, vp);
+
+        writeProjectProperties(myProzess, mm, vp);
+
+        if (config.isExportValidateImages()) {
+            try {
+                List<String> images = new MetadatenImagesHelper(this.myPrefs, dd).getDataFiles(myProzess, imageFolderPath);
+
+                int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
+                if (images != null) {
+                    int sizeOfImages = images.size();
+                    if (sizeOfPagination == sizeOfImages) {
+                        dd.overrideContentFiles(images);
+                    } else {
+                        String[] param = { String.valueOf(sizeOfPagination), String.valueOf(sizeOfImages) };
+                        Helper.setFehlerMeldung(Helper.getTranslation("imagePaginationError", param));
+                        return null;
+                    }
+                }
+            } catch (IndexOutOfBoundsException | InvalidImagesException e) {
+                log.error(e);
+                return null;
+            }
+        } else {
+            // create pagination out of virtual file names
+            dd.addAllContentFiles();
+        }
+        return mm;
+    }
+
+    public void writeProjectProperties(Process myProzess, ExportFileformat mm, VariableReplacer vp) {
+        // write <mets:agent>, if an instance name is configured
+        String instance = ConfigurationHelper.getInstance().getGoobiInstanceName();
+        if (StringUtils.isNotBlank(instance)) {
+            mm.setSoftwareName(ConfigurationHelper.getInstance().getApplicationHeaderTitle());
+            mm.setSoftwareVersion(GoobiVersion.getVersion());
+            mm.setInstanceName(instance);
+            // write institution name, if it is not the default institution
+            if (!"goobi".equals(myProzess.getProjekt().getInstitution().getLongName())) {
+                mm.setClientName(myProzess.getProjekt().getInstitution().getLongName());
+            }
+        }
+
+        // Replace rights and digiprov entries.
+        mm.setRightsOwner(vp.replace(myProzess.getProjekt().getMetsRightsOwner()));
+        mm.setRightsOwnerLogo(vp.replace(myProzess.getProjekt().getMetsRightsOwnerLogo()));
+        mm.setRightsOwnerSiteURL(vp.replace(myProzess.getProjekt().getMetsRightsOwnerSite()));
+        mm.setRightsOwnerContact(vp.replace(myProzess.getProjekt().getMetsRightsOwnerMail()));
+        mm.setDigiprovPresentation(vp.replace(myProzess.getProjekt().getMetsDigiprovPresentation()));
+        mm.setDigiprovReference(vp.replace(myProzess.getProjekt().getMetsDigiprovReference()));
+        mm.setDigiprovPresentationAnchor(vp.replace(myProzess.getProjekt().getMetsDigiprovPresentationAnchor()));
+        mm.setDigiprovReferenceAnchor(vp.replace(myProzess.getProjekt().getMetsDigiprovReferenceAnchor()));
+
+        mm.setMetsRightsLicense(vp.replace(myProzess.getProjekt().getMetsRightsLicense()));
+        mm.setMetsRightsSponsor(vp.replace(myProzess.getProjekt().getMetsRightsSponsor()));
+        mm.setMetsRightsSponsorLogo(vp.replace(myProzess.getProjekt().getMetsRightsSponsorLogo()));
+        mm.setMetsRightsSponsorSiteURL(vp.replace(myProzess.getProjekt().getMetsRightsSponsorSiteURL()));
+
+        mm.setPurlUrl(vp.replace(myProzess.getProjekt().getMetsPurl()));
+        mm.setContentIDs(vp.replace(myProzess.getProjekt().getMetsContentIDs()));
+
+        String pointer = myProzess.getProjekt().getMetsPointerPath();
+        pointer = vp.replace(pointer);
+        mm.setMptrUrl(pointer);
+
+        String anchor = myProzess.getProjekt().getMetsPointerPathAnchor();
+        pointer = vp.replace(anchor);
+        mm.setMptrAnchorUrl(pointer);
+
+        mm.setGoobiID(String.valueOf(myProzess.getId()));
+
+        mm.setIIIFUrl(vp.replace(myProzess.getProjekt().getMetsIIIFUrl()));
+        mm.setSruUrl(vp.replace(myProzess.getProjekt().getMetsSruUrl()));
+    }
+
+    public void generateFileGroups(Process myProzess, ExportFileformat mm, DigitalDocument dd, VariableReplacer vp)
+            throws PreferencesException, IOException, SwapException, DAOException {
+        List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
+
+        boolean useOriginalFiles = false;
+        if (myFilegroups != null && !myFilegroups.isEmpty()) {
+            for (ProjectFileGroup pfg : myFilegroups) {
+                if (pfg.isUseOriginalFiles()) {
+                    useOriginalFiles = true;
+                }
+                // check if source files exists
+                if (StringUtils.isNotBlank(pfg.getFolder())) {
+                    String foldername = myProzess.getConfiguredImageFolder(pfg.getFolder());
+                    if (foldername != null) {
+                        Path folder = Paths.get(foldername);
+                        if (folder != null && StorageProvider.getInstance().isFileExists(folder)
+                                && !StorageProvider.getInstance().list(folder.toString()).isEmpty()) {
+                            VirtualFileGroup v = createFilegroup(vp, pfg);
+                            mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
+                            if (pfg.isUseFileNameFromFolder()) {
+                                String filename = null;
+                                List<String> filesInFolder = StorageProvider.getInstance().list(folder.toString());
+                                if (!filesInFolder.isEmpty()) {
+                                    filename = filesInFolder.get(0);
+                                    ContentFile cf = new ContentFile();
+                                    cf.setLocation(filename);
+                                    v.addContentFile(cf);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    VirtualFileGroup v = createFilegroup(vp, pfg);
+                    mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
+                }
+            }
+        }
+
+        if (useOriginalFiles) {
+            // check if media folder contains images
+            List<Path> filesInFolder = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(false));
+            filesInFolder.sort((file1, file2) -> {
+                String name1 = file1.getFileName().toString();
+                String name2 = file2.getFileName().toString();
+                String base1 = FilenameUtils.getBaseName(name1);
+                String base2 = FilenameUtils.getBaseName(name2);
+                String extension1 = FilenameUtils.getExtension(name1);
+                String extension2 = FilenameUtils.getExtension(name2);
+                if (base1.equalsIgnoreCase(base2)) {
+                    if (StringUtils.isBlank(extension1)) {
+                        return 1;
+                    } else if (StringUtils.isBlank(extension2)) {
+                        return -1;
+                    }
+                    return 0;
+                } else {
+                    return name1.compareTo(name2);
+                }
+            });
+            if (!filesInFolder.isEmpty()) {
+                // compare image names with files in mets file
+                List<DocStruct> pages = dd.getPhysicalDocStruct().getAllChildren();
+                if (pages != null && !pages.isEmpty()) {
+                    for (DocStruct page : pages) {
+                        Path completeNameInMets = Paths.get(page.getImageName());
+                        String filenameInMets = completeNameInMets.getFileName().toString();
+                        int dotIndex = filenameInMets.lastIndexOf('.');
+                        if (dotIndex != -1) {
+                            filenameInMets = filenameInMets.substring(0, dotIndex);
+                        }
+                        for (Path imageNameInFolder : filesInFolder) {
+                            String imageName = imageNameInFolder.getFileName().toString();
+                            dotIndex = imageName.lastIndexOf('.');
+                            if (dotIndex != -1) {
+                                imageName = imageName.substring(0, dotIndex);
+                            }
+
+                            if (filenameInMets.equalsIgnoreCase(imageName)) {
+                                // found matching filename
+                                page.setImageName(imageNameInFolder.toString());
+                                break;
+                            }
+                        }
+                    }
+                    // replace filename in mets file
+                }
+            }
+        }
+    }
+
+    public void exportAdditionalMetadata(Process myProzess, ConfigurationHelper config, DocStruct topElement, VariableReplacer vp,
+            String metadataWarning) {
         Map<String, String> additionalMetadataMap = config.getExportWriteAdditionalMetadata();
         if (!additionalMetadataMap.isEmpty()) {
             String projectMetadataName = additionalMetadataMap.get("Project");
@@ -502,158 +618,82 @@ public class ExportMets {
                 }
             }
         }
+    }
 
+    public void createTechMd(ConfigurationHelper config, Path imageFolder, DigitalDocument dd) {
+        // if configured, extract metadata from files and store them as techMd premis
+        if (config.isExportCreateTechnicalMetadata()) {
+            int counter = 1;
+            for (DocStruct page : dd.getPhysicalDocStruct().getAllChildren()) {
+                Path path = Paths.get(page.getImageName());
+                if (!path.isAbsolute()) {
+                    path = Paths.get(imageFolder.toString(), page.getImageName());
+                }
+                Element techMd = createTechMd(path);
+                if (techMd != null) {
+                    Md md = new Md(techMd, MdType.TECH_MD);
+                    md.setId(String.format("AMD_%04d", counter++));
+                    dd.addTechMd(md);
+                    page.setAdmId(md.getId());
+                }
+            }
+        }
+    }
+
+    public boolean validateImages(Process myProzess, ConfigurationHelper config, Path imageFolder, DigitalDocument dd, DocStruct topElement) {
         /*
-         * -------------------------------- wenn Filegroups definiert wurden, werden diese jetzt in die Metsstruktur übernommen
-         * --------------------------------
+         * -------------------------------- if the top element does not have any image related, set them all --------------------------------
          */
-        // Replace all pathes with the given VariableReplacer, also the file
-        // group pathes!
-
-        List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
-
-        boolean useOriginalFiles = false;
-        if (myFilegroups != null && !myFilegroups.isEmpty()) {
-            for (ProjectFileGroup pfg : myFilegroups) {
-                if (pfg.isUseOriginalFiles()) {
-                    useOriginalFiles = true;
-                }
-                // check if source files exists
-                if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {
-                    String foldername = myProzess.getMethodFromName(pfg.getFolder());
-                    if (foldername != null) {
-                        Path folder = Paths.get(myProzess.getMethodFromName(pfg.getFolder()));
-                        if (folder != null && StorageProvider.getInstance().isFileExists(folder)
-                                && !StorageProvider.getInstance().list(folder.toString()).isEmpty()) {
-                            VirtualFileGroup v = createFilegroup(vp, pfg);
-                            mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
-                        }
-                    }
-                } else {
-                    VirtualFileGroup v = createFilegroup(vp, pfg);
-                    mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
-                }
-            }
-        }
-
-        if (useOriginalFiles) {
-            // check if media folder contains images
-            List<Path> filesInFolder = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(false));
-            filesInFolder.sort((file1, file2) -> {
-                String name1 = file1.getFileName().toString();
-                String name2 = file2.getFileName().toString();
-                String base1 = FilenameUtils.getBaseName(name1);
-                String base2 = FilenameUtils.getBaseName(name2);
-                String extension1 = FilenameUtils.getExtension(name1);
-                String extension2 = FilenameUtils.getExtension(name2);
-                if (base1.equalsIgnoreCase(base2)) {
-                    if (StringUtils.isBlank(extension1)) {
-                        return 1;
-                    } else if (StringUtils.isBlank(extension2)) {
-                        return -1;
-                    }
-                    return 0;
-                } else {
-                    return name1.compareTo(name2);
-                }
-            });
-            if (!filesInFolder.isEmpty()) {
-                // compare image names with files in mets file
-                List<DocStruct> pages = dd.getPhysicalDocStruct().getAllChildren();
-                if (pages != null && !pages.isEmpty()) {
-                    for (DocStruct page : pages) {
-                        Path completeNameInMets = Paths.get(page.getImageName());
-                        String filenameInMets = completeNameInMets.getFileName().toString();
-                        int dotIndex = filenameInMets.lastIndexOf('.');
-                        if (dotIndex != -1) {
-                            filenameInMets = filenameInMets.substring(0, dotIndex);
-                        }
-                        for (Path imageNameInFolder : filesInFolder) {
-                            String imageName = imageNameInFolder.getFileName().toString();
-                            dotIndex = imageName.lastIndexOf('.');
-                            if (dotIndex != -1) {
-                                imageName = imageName.substring(0, dotIndex);
-                            }
-
-                            if (filenameInMets.equalsIgnoreCase(imageName)) {
-                                // found matching filename
-                                page.setImageName(imageNameInFolder.toString());
-                                break;
-                            }
-                        }
-                    }
-                    // replace filename in mets file
-                }
-            }
-        }
-
-        // write <mets:agent>, if an instance name is configured
-        String instance = ConfigurationHelper.getInstance().getGoobiInstanceName();
-        if (StringUtils.isNotBlank(instance)) {
-            mm.setSoftwareName(ConfigurationHelper.getInstance().getApplicationHeaderTitle());
-            mm.setSoftwareVersion(GoobiVersion.getVersion());
-            mm.setInstanceName(instance);
-            // write institution name, if it is not the default institution
-            if (!"goobi".equals(myProzess.getProjekt().getInstitution().getLongName())) {
-                mm.setClientName(myProzess.getProjekt().getInstitution().getLongName());
-            }
-        }
-
-        // Replace rights and digiprov entries.
-        mm.setRightsOwner(vp.replace(myProzess.getProjekt().getMetsRightsOwner()));
-        mm.setRightsOwnerLogo(vp.replace(myProzess.getProjekt().getMetsRightsOwnerLogo()));
-        mm.setRightsOwnerSiteURL(vp.replace(myProzess.getProjekt().getMetsRightsOwnerSite()));
-        mm.setRightsOwnerContact(vp.replace(myProzess.getProjekt().getMetsRightsOwnerMail()));
-        mm.setDigiprovPresentation(vp.replace(myProzess.getProjekt().getMetsDigiprovPresentation()));
-        mm.setDigiprovReference(vp.replace(myProzess.getProjekt().getMetsDigiprovReference()));
-        mm.setDigiprovPresentationAnchor(vp.replace(myProzess.getProjekt().getMetsDigiprovPresentationAnchor()));
-        mm.setDigiprovReferenceAnchor(vp.replace(myProzess.getProjekt().getMetsDigiprovReferenceAnchor()));
-
-        mm.setMetsRightsLicense(vp.replace(myProzess.getProjekt().getMetsRightsLicense()));
-        mm.setMetsRightsSponsor(vp.replace(myProzess.getProjekt().getMetsRightsSponsor()));
-        mm.setMetsRightsSponsorLogo(vp.replace(myProzess.getProjekt().getMetsRightsSponsorLogo()));
-        mm.setMetsRightsSponsorSiteURL(vp.replace(myProzess.getProjekt().getMetsRightsSponsorSiteURL()));
-
-        mm.setPurlUrl(vp.replace(myProzess.getProjekt().getMetsPurl()));
-        mm.setContentIDs(vp.replace(myProzess.getProjekt().getMetsContentIDs()));
-
-        String pointer = myProzess.getProjekt().getMetsPointerPath();
-        pointer = vp.replace(pointer);
-        mm.setMptrUrl(pointer);
-
-        String anchor = myProzess.getProjekt().getMetsPointerPathAnchor();
-        pointer = vp.replace(anchor);
-        mm.setMptrAnchorUrl(pointer);
-
-        mm.setGoobiID(String.valueOf(myProzess.getId()));
-
-        mm.setIIIFUrl(vp.replace(myProzess.getProjekt().getMetsIIIFUrl()));
-        mm.setSruUrl(vp.replace(myProzess.getProjekt().getMetsSruUrl()));
 
         if (config.isExportValidateImages()) {
-            try {
-                List<String> images = new MetadatenImagesHelper(this.myPrefs, dd).getDataFiles(myProzess, imageFolderPath);
 
-                int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
-                if (images != null) {
-                    int sizeOfImages = images.size();
-                    if (sizeOfPagination == sizeOfImages) {
-                        dd.overrideContentFiles(images);
-                    } else {
-                        String[] param = { String.valueOf(sizeOfPagination), String.valueOf(sizeOfImages) };
-                        Helper.setFehlerMeldung(Helper.getTranslation("imagePaginationError", param));
-                        return null;
+            String reference = "logical_physical";
+            if (topElement.getAllToReferences(reference) == null || topElement.getAllToReferences(reference).isEmpty()) {
+                if (dd.getPhysicalDocStruct() != null && dd.getPhysicalDocStruct().getAllChildren() != null) {
+                    Helper.setMeldung(myProzess.getTitel()
+                            + ": topstruct element does not have any referenced images yet; temporarily adding them for mets file creation");
+                    for (DocStruct mySeitenDocStruct : dd.getPhysicalDocStruct().getAllChildren()) {
+                        topElement.addReferenceTo(mySeitenDocStruct, reference);
                     }
+                } else {
+                    Helper.setFehlerMeldung(myProzess.getTitel() + ": could not find any referenced images, export aborted");
+                    return false;
                 }
-            } catch (IndexOutOfBoundsException | InvalidImagesException e) {
+            }
+
+            for (ContentFile cf : dd.getFileSet().getAllFiles()) {
+                String location = cf.getLocation();
+                // If the file's location string shoes no sign of any protocol,
+                // use the file protocol.
+                if (!location.contains("://")) {
+                    if (!location.matches("^[A-Z]:.*") && !location.matches("^\\/.*")) {
+                        //is a relative path
+                        Path f = Paths.get(imageFolder.toString(), location);
+                        location = f.toString();
+                    }
+                    location = "file://" + location;
+                }
+                cf.setLocation(location);
+            }
+        }
+        return true;
+    }
+
+    public void createPagination(Process myProzess, Fileformat gdzfile, Path imageFolder, DigitalDocument dd)
+            throws TypeNotAllowedForParentException, IOException, SwapException, DAOException {
+        MetadatenImagesHelper mih = new MetadatenImagesHelper(this.myPrefs, dd);
+
+        if (dd.getFileSet() == null || dd.getFileSet().getAllFiles().isEmpty()) {
+            Helper.setMeldung(myProzess.getTitel() + ": digital document does not contain images; adding them for mets file creation");
+            mih.createPagination(myProzess, null);
+            try {
+                myProzess.writeMetadataFile(gdzfile);
+            } catch (UGHException | IOException | SwapException e) {
                 log.error(e);
-                return null;
             }
         } else {
-            // create pagination out of virtual file names
-            dd.addAllContentFiles();
+            mih.checkImageNames(myProzess, imageFolder.getFileName().toString());
         }
-        return mm;
     }
 
     private void saveFinishedMetadata(Process myProzess, String targetFileName, ConfigurationHelper config, ExportFileformat mm,
@@ -735,6 +775,7 @@ public class ExportMets {
         if ("PRESENTATION".equals(projectFileGroup.getName())) {
             v.setMainGroup(true);
         }
+        v.setSingleFile(projectFileGroup.isSingleFile());
         return v;
     }
 

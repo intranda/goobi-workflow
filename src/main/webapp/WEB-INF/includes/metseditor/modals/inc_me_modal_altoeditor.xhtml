@@ -194,9 +194,6 @@
         </div>
         <script>
         function openAltoEditor(dontShowModal) {
-        	if(!dontShowModal) {
-        		$('#altoEditBox').modal('show');
-        	}
         	var opts = {
         		language: "#{SpracheForm.locale.language}",
         		altoDivSelector: '#jsonAlto',
@@ -223,7 +220,22 @@
         			entities: '#{Metadaten.getAuthorityMetadataJSON()}'
         		}
         	}
-        	riot.mount('alto-editor', opts);
+
+        	if(!dontShowModal) {
+        		// Mount Riot component after modal is shown
+        		const modalElement = document.querySelector('#altoEditBox');
+        		const handleShown = function() {
+        			riot.mount('alto-editor', opts);
+        			modalElement.removeEventListener('shown.bs.modal', handleShown);
+        		};
+        		modalElement.addEventListener('shown.bs.modal', handleShown);
+
+        		const modal = new bootstrap.Modal(modalElement);
+        		modal.show();
+        	} else {
+        		// Re-mount on AJAX updates
+        		riot.mount('alto-editor', opts);
+        	}
         }
         function checkDirtyAndClick(selector) {
         	if(!checkAltoEditorDirty() || confirm("#{msgs.altoEditorDirtyWarning}")) {

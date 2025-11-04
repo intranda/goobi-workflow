@@ -27,6 +27,7 @@
             /WEB-INF/taglibs/description-list.taglib.xml;
             /WEB-INF/taglibs/editor.taglib.xml;
             /WEB-INF/taglibs/form.taglib.xml;
+            /WEB-INF/taglibs/help.taglib.xml;
             /WEB-INF/taglibs/layout.taglib.xml;
             /WEB-INF/taglibs/media.taglib.xml;
             /WEB-INF/taglibs/notification.taglib.xml;
@@ -58,6 +59,14 @@
     <mime-mapping>
         <extension>jsp</extension>
         <mime-type>image/png</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>riot</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>map</extension>
+        <mime-type>application/json</mime-type>
     </mime-mapping>
     <filter>
         <filter-name>UTF8Filter</filter-name>

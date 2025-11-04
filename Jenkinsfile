@@ -202,19 +202,6 @@ pipeline {
         }
       }
     }
-    stage('trigger docker build') {
-      agent any
-      when { 
-        anyOf {
-          branch 'master'
-          branch 'hotfix_release_*'
-          branch 'develop'
-        }
-      }
-      steps {
-        build wait: false, job: 'goobi-workflow/goobi-docker/master', parameters: [[$class: 'StringParameterValue', name: 'UPSTREAM_BRANCH', value: String.valueOf(BRANCH_NAME)]]
-      }
-    }
     stage('build and publish image to Docker registries') {
       agent any
       when {

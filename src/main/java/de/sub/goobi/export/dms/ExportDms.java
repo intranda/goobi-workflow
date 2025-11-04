@@ -260,6 +260,17 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         try {
             if (this.exportWithImages) {
                 imageDownload(myProzess, benutzerHome, atsPpnBand, DIRECTORY_SUFFIX);
+
+                //  export additional folder to destination
+                for (ProjectFileGroup fg : myProzess.getProjekt().getFilegroups()) {
+                    if (fg.isExportContent() && StringUtils.isNotBlank(fg.getFolder())) {
+                        Path source = Paths.get(myProzess.getConfiguredImageFolder(fg.getFolder()));
+                        if (StorageProvider.getInstance().isDirectory(source)) {
+                            Path dest = Paths.get(zielVerzeichnis, source.getFileName().toString());
+                            StorageProvider.getInstance().copyDirectory(source, dest);
+                        }
+                    }
+                }
             }
             if (this.exportFulltext) {
                 fulltextDownload(myProzess, benutzerHome, atsPpnBand, DIRECTORY_SUFFIX);

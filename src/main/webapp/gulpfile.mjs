@@ -117,7 +117,10 @@ function includes() {
 
 function BSCss() {
     return src(sources.bsCss)
-        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(sass({
+            outputStyle: 'compressed',
+            quietDeps: true,
+        }).on('error', sass.logError))
         .pipe(rename((path) => {
             basename: path.basename += '.min'
         }))
@@ -152,7 +155,10 @@ function devCss() {
 function prodCss() {
     return src(`${sources.css}main.scss`)
         .pipe(sourcemaps.init())
-        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(sass({
+            outputStyle: 'compressed',
+            quietDeps: true,
+        }).on('error', sass.logError))
         .pipe(sourcemaps.write())
         .pipe(rename((path) => {
             basename: path.basename += '.min'
@@ -180,7 +186,6 @@ function devJsRollup() {
             ],
         })
         .then(bundle => {
-        	console.log("Write", bundle, " to ", `${customLocation}${targetFolder.js}main.min.js`);
             return bundle.write({
                 file: `${customLocation}${targetFolder.js}main.min.js`,
                 format: 'iife',
@@ -341,4 +346,4 @@ const prod = parallel(
     media,
 );
 
-export { dev, prod, media };
+export { dev, prod };

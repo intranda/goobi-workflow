@@ -29,6 +29,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 window.addEventListener( 'resize', _setResizeEvents );
                 window.addEventListener( 'orientationchange', _setResizeEvents );
 
+                const isMetseditor = document.querySelector('#metseditorMenuForm') !== null;
+                if (!isMetseditor) return; // only metseditor has resizable columns
+
                 // set resizable elements
                 _setResizableElements();
 
@@ -44,8 +47,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 //            }, 500);
             // set flexible row columns
             _setFlexibleRowColumns();
-            // set initial position of toc actions
-            $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
 
             //set tabIndex
             _setTabindex();
@@ -123,11 +124,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             if (_defaults.displayImageArea) {
                         $( '#pageContentCenter' ).outerWidth( $( window ).offsetWidth - $( '#pageContentRight' ).offsetWidth - $( '#pageContentLeft' ).offsetWidth -1);
                         $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).offsetWidth );
-                        $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
             } else {
                 $( '#pageContentCenter' ).outerWidth( $( window ).offsetWidth - $( '#pageContentLeft' ).offsetWidth );
                 $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).offsetWidth );
-                $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
             }
                 goobiWorkflowJS.layout.setObjectViewHeight();
                 _setFlexibleRowColumns();
@@ -178,7 +177,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         $( '#pageContentLeft .ui-resizable-handle' ).attr('tabindex', '-1');
         $( '#pageContentRight .ui-resizable-handle' ).css( 'right', $( '#pageContentRight' ).offsetWidth - 7 );
         $( '#pageContentRight .ui-resizable-handle' ).attr('tabindex', '-1');
-        $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
         _setColumnWidth();
         _getSavedWidths();
     }

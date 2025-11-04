@@ -66,15 +66,6 @@
         height: var(--column-height);
         border: 1px solid #ddd;
     }
-    .line-marker {
-        border: 1px solid red;
-    }
-    .line-marker {
-        border: 2px solid blue;
-    }
-    .word-marker {
-        border: 2px solid red;
-    }
     .rightToLeft {
         direction: rtl;
     }
@@ -96,20 +87,17 @@
             columns: 1,
             columnOffset: 0,
             rowMargin: 0
-        } 
+        }
     }
 
     this.on('before-mount', () => {
     	this.msgs = this.opts.messages;
         this.lines = [];
-        console.log(opts)
         this.alignRtl =this.opts.alignRtl;
         let altoDiv = document.querySelector(opts.altoDivSelector);
         let altoJson = altoDiv.value;
-        console.log("load alto", altoJson);
         this.alto = JSON.parse(altoJson);
         this.lines = this.alto.lines;
-        console.log(this.alto)
         this.changes = {};
         this.oldPos = {};
     })
@@ -142,7 +130,7 @@
     	const lineBox = this.alto.lineMap[e.item.word.lineId];
     	const lineRect = new OpenSeadragon.Rect((lineBox.x)-add, (lineBox.y)-add, (lineBox.width)+add*2, (lineBox.height)+add*2);
         const lineRectViewport = this.imageView.openseadragon.viewport.imageToViewportRectangle(lineRect);
-        
+
         const wordBox = e.item.word
     	const wordRect = new OpenSeadragon.Rect((wordBox.x)-add, (wordBox.y)-add, (wordBox.width)+add*2, (wordBox.height)+add*2);
         const wordRectViewport = this.imageView.openseadragon.viewport.imageToViewportRectangle(wordRect);
@@ -260,7 +248,6 @@
 
     initOpenseadragon() {
         const imageUrl = document.querySelector(this.opts.tileSourceSelector).value;
-    	
         this.imageView = new ImageView.Image(imageViewConfig);
         this.zoomControl = new ImageView.Controls.Zoom(this.imageView);
         this.imageView.load(imageUrl)
@@ -273,7 +260,6 @@
     }
 
     initNamedEntityEditor(element, config) {
-    console.log("init entity editor", this.alto);
         const opts = $.extend(true, {}, config, {
             wordSelector: ".altoword",
             wordContainerSelector: ".alto-edit",
@@ -285,7 +271,6 @@
             changeCallback: (changesList) => {
                 //remove all changes regarding named entities. They will be replaced by the changesList
                 this.changes.namedEntities = changesList;
-                console.log("add named entites changes to ", this.changes, changesList);
             }
         });
         riot.mount(this.refs.namedEntityEditorWrapper, "named-entity-selector", opts);
@@ -310,7 +295,6 @@
         			if(this.posInRect(pos, word)) {
         				let wordElement = document.querySelector('#'+word.id);
         				if(e.type === "click") {
-                            console.log("clicked word", word, wordElement);
         					wordElement.focus();
         				} else {
         					e.item = {word: word}
@@ -328,6 +312,10 @@
     		&& rect.x+rect.width>pos.x
     		&& rect.y<pos.y
     		&& rect.y+rect.height>pos.y;
+    }
+
+    isDirty() {
+    	return Object.keys(this.changes).length > 0;
     }
 
     this.on('before-unmount', () => {

@@ -5,7 +5,9 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:help="http://goobi.io/help"
+    >
 
     <composite:interface/>
 
@@ -66,23 +68,17 @@
                         <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showOcr}"/>
                     </button>
                 </li>
-                <!-- VALIDATION -->
-                <li class="nav-item d-none d-md-block">
-                    <button style="display: none" jsf:id="startValidationButton" jsf:action="#{Metadaten.Validate}">
-                    </button>
 
-                    <button class="nav-link" jsf:id="startValidation" aria-label="#{msgs.validieren}" jsf:action="#{Metadaten.Validate}" title="#{msgs.validieren}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                        <span class="fa fa-check fa-lg" aria-hidden="true"/>
-                        <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render="@form :pageContentCenter @form :treeform"/>
-                    </button>
-
-                    <h:commandButton type="button" id="startValidationButtonAjax" style="display:none" action="#{Metadaten.Validate}" title="#{msgs.validieren}" rel="tooltip">
-                            <f:ajax render="@form"/>
-                    </h:commandButton>
+                <li class="nav-item dropdown d-none d-md-block">
+                    <help:menu />
                 </li>
 
                 <!-- CONFIGURATION -->
-                <li class="nav-item dropdown d-none d-md-block">
+                <li
+                    class="nav-item dropdown d-none d-md-block"
+                    title="#{msgs.mets_configuration}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom">
                     <button id="configDropdown" type="button" class="nav-link dropdown-toggle" aria-label="#{msgs.mets_configuration}" aria-expanded="false" data-bs-toggle="dropdown">
                         <span class="fa fa-cog fa-lg" aria-hidden="true"/>
                     </button>
@@ -192,6 +188,20 @@
                         </ui:repeat>
                     </ul>
                 </li>
+                <!-- VALIDATION -->
+                <li class="nav-item d-none d-md-block">
+                    <button style="display: none" jsf:id="startValidationButton" jsf:action="#{Metadaten.Validate}">
+                    </button>
+
+                    <button class="nav-link" jsf:id="startValidation" aria-label="#{msgs.validieren}" jsf:action="#{Metadaten.Validate}" title="#{msgs.validieren}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <span class="fa fa-check fa-lg" aria-hidden="true"/>
+                        <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render="@form :pageContentCenter @form :treeform"/>
+                    </button>
+
+                    <h:commandButton type="button" id="startValidationButtonAjax" style="display:none" action="#{Metadaten.Validate}" title="#{msgs.validieren}" rel="tooltip">
+                            <f:ajax render="@form"/>
+                    </h:commandButton>
+                </li>
 
                 <!-- SAVE -->
                 <c:if test="#{not Metadaten.nurLesenModus}">
@@ -254,8 +264,12 @@
                     </li>
                 </c:if>
 
-                <li class="nav-item dropdown d-none d-lg-block">
-                    <button id="exit" type="button" class="nav-link dropdown-toggle" aria-expanded="false" aria-label="#{msgs.mets_leaveMetsEditor}" title="#{msgs.mets_leaveMetsEditor}" data-bs-toggle="dropdown">
+                <li
+                    class="nav-item dropdown d-none d-lg-block"
+                    title="#{msgs.mets_leaveMetsEditor}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom">
+                    <button id="exit" type="button" class="nav-link dropdown-toggle" aria-expanded="false" aria-label="#{msgs.mets_leaveMetsEditor}" data-bs-toggle="dropdown">
                         <span class="fa fa-home fa-lg" aria-hidden="true"/>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">

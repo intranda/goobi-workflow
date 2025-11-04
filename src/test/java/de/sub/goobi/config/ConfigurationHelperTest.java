@@ -241,6 +241,12 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
+    public void testGetConfiguredProcessFolders() {
+        List<String> fixture = ConfigurationHelper.getInstance().getConfiguredProcessFolders();
+        assertEquals(0, fixture.size());
+    }
+
+    @Test
     public void testGetProcessOcrTxtDirectoryName() {
         assertEquals("{processtitle}_txt", ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName());
     }

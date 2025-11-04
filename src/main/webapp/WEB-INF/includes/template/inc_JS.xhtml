@@ -43,7 +43,30 @@
             ></script>
         </c:forEach>
     </c:forEach>
+    <script id="gwConfig" type="application/json">
+        {
+            "currentView": "#{Metadaten.modusAnsicht}",
+            "readOnlyMode": "#{Metadaten.nurLesenModus}",
+            "autoSaveInterval": "#{LoginForm.myBenutzer.metsEditorTime}",
+            "baseUrl": "#{HelperForm.servletPathWithHostAsUrl}",
+            "openImageTitleText": "#{msgs.mets_showThisImage}",
+            "setRepresentativeImageText": "#{msgs.mets_setRepresentativeImage}",
+            "displayImageArea": #{Metadaten.bildAnzeigen},
+            "navigationShortcut": "#{LoginForm.myBenutzer.shortcutPrefix}",
+            "metseditor": {
+                "thumbnails": {
+                    "maxParallelRequests": "#{Metadaten.maxParallelThumbnailRequests}"
+                }
+            },
+            "isInitialLoad": "true",
+            "reloadObject": "false"
+        }
+    </script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const configElement = document.getElementById('gwConfig');
+            const goobiWorkflowConfig = configElement ? JSON.parse(configElement.textContent) : {};
+        });
         // wrapping these initializations in an event listener is a workaround as we can't defer inline JS
         window.addEventListener('DOMContentLoaded', () => {
             (() => {
@@ -64,6 +87,11 @@
 	        faces.ajax.addOnEvent((data) => {
 	            const ajaxstatus = data.status;
 	            if (ajaxstatus === 'success') {
+                    const configElement = document.getElementById('gwConfig');
+                    const goobiWorkflowConfig = configElement ? JSON.parse(configElement.textContent) : {};
+                    goobiWorkflowConfig.reloadObject = data?.source?.dataset.renderimage === 'true';
+                    goobiWorkflowConfig.isInitialLoad = false;
+                    goobiWorkflowJS.init( goobiWorkflowConfig );
 	                document.querySelectorAll('.grow-wrap').forEach( (wrap) => {
 	                    // Sync wrap and textarea on load
 	                    const textarea = wrap.querySelector('textarea');

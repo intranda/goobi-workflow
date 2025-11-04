@@ -59,7 +59,7 @@ public final class DatabaseVersion {
         // hide implicit public constructor
     }
 
-    public static final int EXPECTED_VERSION = 59;
+    public static final int EXPECTED_VERSION = 60;
     private static final Gson GSON = new Gson();
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -479,6 +479,11 @@ public final class DatabaseVersion {
                     updateToVersion59();
                     tempVersion++;
                     //fall through
+                case 59: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 60.");
+                    updateToVersion60();
+                    tempVersion++;
+                    //fall through
                 default://NOSONAR, no break on purpose to run through all cases
                         // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -490,6 +495,26 @@ public final class DatabaseVersion {
             log.error(e);
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
+        }
+    }
+
+    private static void updateToVersion60() throws SQLException {
+        Connection connection = null;
+        try {
+            if (!DatabaseVersion.checkIfColumnExists("projectfilegroups", "export_content")) {
+                connection = MySQLHelper.getInstance().getConnection();
+                DatabaseVersion.runSql("alter table projectfilegroups add column export_content tinyint(1) DEFAULT 0;");
+                DatabaseVersion.runSql("alter table projectfilegroups add column single_file_export tinyint(1) DEFAULT 0;");
+                DatabaseVersion.runSql("alter table projectfilegroups add column filename_from_folder tinyint(1) DEFAULT 0;");
+            }
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException exception) {
+                    log.warn(exception);
+                }
+            }
         }
     }
 
