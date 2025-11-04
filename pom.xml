@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.goobi.workflow</groupId>
     <artifactId>workflow-base</artifactId>
-    <version>25.10-SNAPSHOT</version>
+    <version>25.10</version>
     <relativePath/>
   </parent>
   <artifactId>workflow-core</artifactId>
@@ -44,7 +44,7 @@
           <dependency>
             <groupId>io.goobi.workflow</groupId>
             <artifactId>workflow-maven-config</artifactId>
-            <version>25.10-SNAPSHOT</version>
+            <version>25.10</version>
           </dependency>
         </dependencies>
         <!-- TODO: Check where and how to execute checkstyle -->
