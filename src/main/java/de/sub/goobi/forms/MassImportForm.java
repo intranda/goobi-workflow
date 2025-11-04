@@ -449,8 +449,8 @@ public class MassImportForm implements Serializable {
                     for (DisplayProperty prop : configuredProperties) {
                         @SuppressWarnings("deprecation")
                         Processproperty pe = new Processproperty();
-                        pe.setPropertyName(prop.getValue());
-                        pe.setPropertyValue(prop.getName());
+                        pe.setPropertyName(prop.getName());
+                        pe.setPropertyValue(prop.getValue());
                         pe.setContainer(prop.getContainer());
                         io.getProcessProperties().add(pe);
                     }
