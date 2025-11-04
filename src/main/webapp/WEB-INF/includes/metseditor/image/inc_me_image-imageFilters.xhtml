@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	<composite:interface />
+
+	<composite:implementation>
+
+		<div class="imagefilters__filter-list">
+			<div class="imagefilters__filter">
+				<span class="imagefilters__label ">#{msgs.label__image_filters__brightness}</span>
+				<input id="imageFiltersBrightness"
+					class="imagefilters__slider" type="range" orient="horizontal"
+					title="0" min="-255" max="255" step="1" aria-label="#{msgs.label__image_filters__brightness}: 0"/>
+			</div>
+			<div class="imagefilters__filter">
+				<span class="imagefilters__label ">#{msgs.label__image_filters__contrast}</span>
+				<input id="imageFiltersContrast"
+					class="imagefilters__slider" type="range" orient="horizontal"
+					title="1" min="0" max="2" step="0.05" aria-label="#{msgs.label__image_filters__contrast}: 1"/>
+			</div>
+			<div class="imagefilters__filter">
+				<span class="imagefilters__label ">#{msgs.label__image_filters__saturation}</span>
+				<input id="imageFiltersSaturation"
+					class="imagefilters__slider" type="range" orient="horizontal"
+					title="1" min="0" max="5" step="0.1" aria-label="#{msgs.label__image_filters__saturation}: 1"/>
+			</div>
+			<div class="imagefilters__filter">
+				<span class="imagefilters__label ">#{msgs.label__image_filters__hue}</span>
+				<input id="imageFiltersHue"
+					class="imagefilters__slider" type="range" orient="horizontal"
+					title="0" min="-180" max="180" step="1" aria-label="#{msgs.label__image_filters__hue}: 0"/>
+			</div>
+			<div class="imagefilters__filter">
+				<span class="imagefilters__label ">#{msgs.label__image_filters__bitonal}</span>
+				<input id="imageFiltersBitonalSwitch"
+					class="imagefilters__checkbox" type="checkbox" aria-label="Bitonal"/>
+				<input id="imageFiltersBitonalThreshold"
+					class="imagefilters__slider" type="range" orient="horizontal"
+					title="128" min="0" max="255" step="1" aria-label="#{msgs.label__image_filters__bitonal}: 128"/>
+			</div>
+			<div class="imagefilters__filter">
+				<span class="imagefilters__label imagefilters__label-long">#{msgs.label__image_filters__grayscale}</span>
+				<input id="imageFiltersGrayscale"
+					class="imagefilters__checkbox" type="checkbox"
+					aria-label="#{msgs.label__image_filters__grayscale}"/>
+			</div>
+			<div class="imagefilters__filter">
+				<span class="imagefilters__label imagefilters__label-long">#{msgs.label__image_filters__color_inversion}</span>
+				<input class="imagefilters__checkbox" type="checkbox" id="imageFiltersColorInversion"
+					aria-label="#{msgs.label__image_filters__color_inversion}"/>
+			</div>
+			<div class="imagefilters__filter">
+				<span class="imagefilters__label imagefilters__label-long">#{msgs.label__image_filters__sharpening}</span>
+				<input id="imageFiltersSharpening"
+					class="imagefilters__checkbox" type="checkbox"
+					aria-label="#{msgs.label__image_filters__sharpening}"/>
+			</div>
+		</div>
+		<div class="imagefilters__options">
+			<button id="imageFiltersReset" type="button" class="btn btn--full">#{msgs.label__image_filters__reset}</button>
+		</div>
+	</composite:implementation>
+</ui:composition>
