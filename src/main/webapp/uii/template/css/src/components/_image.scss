@@ -1,7 +1,5 @@
 .imageview-overlay {
-    &[id*="TextLine"] {
         --imageview-highlight-color: var(--clr-primary);
-    }
     &[id*="Textword"] {
         --imageview-highlight-color: var(--clr-danger);
     }
