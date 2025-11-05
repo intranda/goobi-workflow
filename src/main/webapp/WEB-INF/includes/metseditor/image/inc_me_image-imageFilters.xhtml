@@ -9,60 +9,100 @@
 	<composite:interface />
 
 	<composite:implementation>
-
-		<div class="imagefilters__filter-list">
-			<div class="imagefilters__filter">
-				<span class="imagefilters__label ">#{msgs.label__image_filters__brightness}</span>
-				<input id="imageFiltersBrightness"
-					class="imagefilters__slider" type="range" orient="horizontal"
-					title="0" min="-255" max="255" step="1" aria-label="#{msgs.label__image_filters__brightness}: 0"/>
+		<div class="imagefilters">
+			<div class="imagefilters_filter-list">
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersBrightness"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_brightness}
+					</label>
+					<input id="imageFiltersBrightness"
+						class="imagefilters_slider" type="range" orient="horizontal"
+						title="0" min="-255" max="255" step="1" aria-label="#{msgs.label__image_filter_brightness}: 0"/>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersContrast"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_contrast}
+					</label>
+					<input id="imageFiltersContrast"
+						class="imagefilters_slider" type="range" orient="horizontal"
+						title="1" min="0" max="2" step="0.05" aria-label="#{msgs.label__image_filter_contrast}: 1"/>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						class="imagefilters_label"
+						for="imageFiltersSaturation">
+						#{msgs.label__image_filter_saturation}
+					</label>
+					<input id="imageFiltersSaturation"
+						class="imagefilters_slider" type="range" orient="horizontal"
+						title="1" min="0" max="5" step="0.1" aria-label="#{msgs.label__image_filter_saturation}: 1"/>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersHue"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_hue}
+					</label>
+					<input id="imageFiltersHue"
+						class="imagefilters_slider" type="range" orient="horizontal"
+						title="0" min="-180" max="180" step="1" aria-label="#{msgs.label__image_filter_hue}: 0"/>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersBitonalSwitch"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_bitonal}
+						<input id="imageFiltersBitonalSwitch"
+							class="imagefilters_checkbox" type="checkbox" aria-label="Bitonal"/>
+					</label>
+					<input id="imageFiltersBitonalThreshold"
+						class="imagefilters_slider" type="range" orient="horizontal"
+						title="128" min="0" max="255" step="1" aria-label="#{msgs.label__image_filter_bitonal}: 128"/>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersGrayscale"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_grayscale}
+						<input id="imageFiltersGrayscale"
+							class="imagefilters_checkbox" type="checkbox"
+							aria-label="#{msgs.label__image_filter_grayscale}"/>
+					</label>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersColorInversion"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_color_inversion}
+						<input class="imagefilters_checkbox" type="checkbox" id="imageFiltersColorInversion"
+							aria-label="#{msgs.label__image_filter_color_inversion}"/>
+					</label>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersSharpening"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_sharpening}
+						<input id="imageFiltersSharpening"
+							class="imagefilters_checkbox" type="checkbox"
+							aria-label="#{msgs.label__image_filter_sharpening}"/>
+					</label>
+				</div>
 			</div>
-			<div class="imagefilters__filter">
-				<span class="imagefilters__label ">#{msgs.label__image_filters__contrast}</span>
-				<input id="imageFiltersContrast"
-					class="imagefilters__slider" type="range" orient="horizontal"
-					title="1" min="0" max="2" step="0.05" aria-label="#{msgs.label__image_filters__contrast}: 1"/>
+			<div class="imagefilters_options">
+				<button
+					id="imageFiltersReset"
+					type="button"
+					class="btn btn-blank">
+					<span>
+						#{msgs.label__image_filter_reset}
+					</span>
+				</button>
 			</div>
-			<div class="imagefilters__filter">
-				<span class="imagefilters__label ">#{msgs.label__image_filters__saturation}</span>
-				<input id="imageFiltersSaturation"
-					class="imagefilters__slider" type="range" orient="horizontal"
-					title="1" min="0" max="5" step="0.1" aria-label="#{msgs.label__image_filters__saturation}: 1"/>
-			</div>
-			<div class="imagefilters__filter">
-				<span class="imagefilters__label ">#{msgs.label__image_filters__hue}</span>
-				<input id="imageFiltersHue"
-					class="imagefilters__slider" type="range" orient="horizontal"
-					title="0" min="-180" max="180" step="1" aria-label="#{msgs.label__image_filters__hue}: 0"/>
-			</div>
-			<div class="imagefilters__filter">
-				<span class="imagefilters__label ">#{msgs.label__image_filters__bitonal}</span>
-				<input id="imageFiltersBitonalSwitch"
-					class="imagefilters__checkbox" type="checkbox" aria-label="Bitonal"/>
-				<input id="imageFiltersBitonalThreshold"
-					class="imagefilters__slider" type="range" orient="horizontal"
-					title="128" min="0" max="255" step="1" aria-label="#{msgs.label__image_filters__bitonal}: 128"/>
-			</div>
-			<div class="imagefilters__filter">
-				<span class="imagefilters__label imagefilters__label-long">#{msgs.label__image_filters__grayscale}</span>
-				<input id="imageFiltersGrayscale"
-					class="imagefilters__checkbox" type="checkbox"
-					aria-label="#{msgs.label__image_filters__grayscale}"/>
-			</div>
-			<div class="imagefilters__filter">
-				<span class="imagefilters__label imagefilters__label-long">#{msgs.label__image_filters__color_inversion}</span>
-				<input class="imagefilters__checkbox" type="checkbox" id="imageFiltersColorInversion"
-					aria-label="#{msgs.label__image_filters__color_inversion}"/>
-			</div>
-			<div class="imagefilters__filter">
-				<span class="imagefilters__label imagefilters__label-long">#{msgs.label__image_filters__sharpening}</span>
-				<input id="imageFiltersSharpening"
-					class="imagefilters__checkbox" type="checkbox"
-					aria-label="#{msgs.label__image_filters__sharpening}"/>
-			</div>
-		</div>
-		<div class="imagefilters__options">
-			<button id="imageFiltersReset" type="button" class="btn btn--full">#{msgs.label__image_filters__reset}</button>
 		</div>
 	</composite:implementation>
 </ui:composition>

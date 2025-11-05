@@ -87,6 +87,24 @@
                         </div>
                     </div>
                 </li>
+                <li
+                    data-bs-toggle="tooltip"
+                    title="#{msgs.label_image_filter_toolkit}">
+                    <button
+                        type="button"
+                        class="btn btn-blank"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside"
+                        aria-expanded="false"
+                        aria-label="#{msgs.mets_imageFilters}">
+                        <span
+                            class="fa fa-angle-up fa-lg"
+                            aria-hidden="true" />
+                    </button>
+                    <div class="dropdown-menu">
+                        <ui:include src="inc_me_image-imageFilters.xhtml" />
+                    </div>
+                </li>
             </ul>
         </div>
     </composite:implementation>

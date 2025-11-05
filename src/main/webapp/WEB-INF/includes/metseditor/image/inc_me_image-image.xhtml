@@ -15,7 +15,7 @@
     <composite:interface />
 
     <composite:implementation>
-        <h:form 
+        <h:form
             prependId="false"
             id="openseadragonform">
             <h:panelGroup id="jsonAltoGroup">
@@ -194,14 +194,13 @@
                                     style="display: none;">
                                     <img src="template/img/goobi/ajaxloader2.gif" />
                                 </div>
-                            </div> 
+                            </div>
                         </ui:fragment>
                     </div>
                     <!-- IMAGE CONTROLS -->
                     <ui:fragment
                         rendered="#{Metadaten.image != null and Metadaten.image.imageName != '' and (Metadaten.image.type == 'image' or Metadaten.image.type == 'pdf')}">
                         <ui:include src="inc_me_image-imageControls.xhtml" />
-<!--                         <ui:include src="inc_me_image-imageFilters.xhtml" /> -->
                     </ui:fragment>
                 </ui:fragment>
 
