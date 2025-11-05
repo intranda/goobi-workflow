@@ -148,9 +148,15 @@ export const initCodemirror = () => {
 
     editorTargets.forEach(target => {
         // Check if this textarea already has a CodeMirror instance
-        if (editorInstances.has(target.id)) {
-            // Instance already exists, skip creation
-            return;
+        const existingInstance = editorInstances.get(target.id);
+        if (existingInstance) {
+            // Verify the existing instance is still valid and attached to the DOM
+            if (document.body.contains(existingInstance.dom)) {
+                return;
+            } else {
+                existingInstance.destroy();
+                editorInstances.delete(target.id);
+            }
         }
 
         // Check if the textarea is still visible (not already replaced)
@@ -173,6 +179,7 @@ export const initCodemirror = () => {
 
 /**
  * Cleans up CodeMirror instances for textareas that no longer exist in the DOM
+ * or have been replaced by new elements with the same ID
  */
 const cleanupDestroyedInstances = () => {
     for (const [textareaId, editorView] of editorInstances.entries()) {
@@ -181,6 +188,13 @@ const cleanupDestroyedInstances = () => {
             // Textarea no longer exists, destroy the editor and remove from tracking
             editorView.destroy();
             editorInstances.delete(textareaId);
+        } else {
+            // Check if the editor's DOM is still in the document
+            // If not, the textarea was replaced by AJAX and we need to clean up
+            if (!document.body.contains(editorView.dom)) {
+                editorView.destroy();
+                editorInstances.delete(textareaId);
+            }
         }
     }
 };
