@@ -185,7 +185,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             _intrandaImages[ canvas.id ].scaleY = ( img.height - _intrandaImages[ canvas.id ].smallHeight ) / _intrandaImages[ canvas.id ].smallHeight;
             var pos = getMousePos( canvas, event );
             // check if mouse is still hovering over canvas
-            if ( $( '#' + canvas.id + ':hover' ).length == 0 ) {
+            if ( document.querySelector( '#' + CSS.escape(canvas.id) + ':hover' ) === null ) {
                 return;
             }
             var scaleX = _intrandaImages[ canvas.id ].scaleX;
