@@ -489,10 +489,12 @@ public class FileManipulation {
 
                 if (useMasterFolder) {
                     // check if current import folder is master folder
+                    Path masterFolder =
+                            Paths.get(VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesMasterDirectoryName(),
+                                    currentProcess));
                     if (subfolder.getFileName()
                             .toString()
-                            .equals(VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName(),
-                                    metadataBean.getMyProzess()))) {
+                            .equals(masterFolder.getFileName().toString().replace(currentProcess.getTitel(), importName))) {
                         try {
                             String masterFolderName = currentProcess.getImagesOrigDirectory(false);
                             Path masterDirectory = Paths.get(masterFolderName);
@@ -507,48 +509,13 @@ public class FileManipulation {
                         } catch (SwapException | DAOException | IOException e) {
                             log.error(e);
                         }
-                    } else if (subfolder.getFileName().toString().contains("_")) {
-                        String folderSuffix =
-                                subfolder.getFileName().toString().substring(subfolder.getFileName().toString().lastIndexOf("_") + 1);
-                        String folderName = currentProcess.getMethodFromName(folderSuffix);
-                        if (folderName != null) {
-                            try {
-                                Path directory = Paths.get(folderName);
-                                List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
-                                for (Path object : objectInFolder) {
-                                    if ((folderName + FileSystems.getDefault().getSeparator())
-                                            .equals(currentProcess.getImagesTifDirectory(false))) {
-                                        importedFilenames.add(object.getFileName().toString());
-                                    }
-                                    Path dest = Paths.get(directory.toString(), object.getFileName().toString());
-                                    StorageProvider.getInstance().copyFile(object, dest);
-                                }
+                    } else {
+                        importFolder(currentProcess, importedFilenames, importName, subfolder);
 
-                            } catch (IOException | SwapException e) {
-                                log.error(e);
-                            }
-
-                        }
                     }
 
-                } else if (subfolder.getFileName().toString().contains("_")) {
-                    String folderSuffix = subfolder.getFileName().toString().substring(subfolder.getFileName().toString().lastIndexOf("_") + 1);
-                    String folderName = currentProcess.getMethodFromName(folderSuffix);
-                    if (folderName != null) {
-                        Path directory = Paths.get(folderName);
-                        List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
-                        for (Path object : objectInFolder) {
-                            try {
-                                if ((folderName + FileSystems.getDefault().getSeparator()).equals(currentProcess.getImagesTifDirectory(false))) {
-                                    importedFilenames.add(object.getFileName().toString());
-                                }
-                                Path dest = Paths.get(directory.toString(), object.getFileName().toString());
-                                StorageProvider.getInstance().copyFile(object, dest);
-                            } catch (IOException | SwapException e) {
-                                log.error(e);
-                            }
-                        }
-                    }
+                } else {
+                    importFolder(currentProcess, importedFilenames, importName, subfolder);
                 }
             }
         }
@@ -568,7 +535,6 @@ public class FileManipulation {
         }
 
         // delete folder
-
         for (String importName : selectedFiles) {
             Path importfolder = Paths.get(tempDirectory + FILE_UPLOAD + FileSystems.getDefault().getSeparator() + importName);
             StorageProvider.getInstance().deleteDir(importfolder);
@@ -578,6 +544,46 @@ public class FileManipulation {
         metadataBean.changeFolder();
         // save current state
         metadataBean.Reload();
+    }
+
+    private void importFolder(Process currentProcess, List<String> importedFilenames, String importName, Path subfolder) {
+        if (subfolder.getFileName().toString().contains("_")) {
+            // find folder by its extension
+            String folderSuffix = subfolder.getFileName().toString().substring(subfolder.getFileName().toString().lastIndexOf("_") + 1);
+            String folderName = currentProcess.getMethodFromName(folderSuffix);
+            if (folderName != null) {
+                Path directory = Paths.get(folderName);
+                List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
+                for (Path object : objectInFolder) {
+                    try {
+                        if ((folderName + FileSystems.getDefault().getSeparator()).equals(currentProcess.getImagesTifDirectory(false))) {
+                            importedFilenames.add(object.getFileName().toString());
+                        }
+                        Path dest = Paths.get(directory.toString(), object.getFileName().toString());
+                        StorageProvider.getInstance().copyFile(object, dest);
+                    } catch (IOException | SwapException e) {
+                        log.error(e);
+                    }
+                }
+            } else {
+                try {
+                    // if the first case was not successful, get folder name based on process name
+                    String foldername = subfolder.getFileName().toString().replace(importName, currentProcess.getTitel());
+                    Path destination = Paths.get(currentProcess.getImagesDirectory(), foldername);
+                    if (!StorageProvider.getInstance().isFileExists(destination)) {
+                        StorageProvider.getInstance().createDirectories(destination);
+                    }
+                    List<Path> objectInFolder = StorageProvider.getInstance().listFiles(subfolder.toString());
+                    for (Path object : objectInFolder) {
+                        Path dest = Paths.get(destination.toString(), object.getFileName().toString());
+                        StorageProvider.getInstance().copyFile(object, dest);
+                    }
+
+                } catch (IOException | SwapException e) {
+                    log.error(e);
+                }
+            }
+        }
     }
 
     private static boolean matchesFileConfiguration(String filename) {
