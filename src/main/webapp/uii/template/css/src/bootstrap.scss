@@ -4,6 +4,9 @@
 // scss-docs-start import-stack
 // Configuration
 @import "../../../../node_modules/bootstrap/scss/functions";
+
+$component-active-bg: #368ee0;
+
 @import "../../../../node_modules/bootstrap/scss/variables";
 @import "../../../../node_modules/bootstrap/scss/variables-dark";
 @import "../../../../node_modules/bootstrap/scss/maps";

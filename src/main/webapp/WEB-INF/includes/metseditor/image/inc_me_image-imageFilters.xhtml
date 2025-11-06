@@ -1,0 +1,108 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	<composite:interface />
+
+	<composite:implementation>
+		<div class="imagefilters">
+			<div class="imagefilters_filter-list">
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersBrightness"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_brightness}
+					</label>
+					<input id="imageFiltersBrightness"
+						class="form-range imagefilters_slider" type="range" orient="horizontal"
+						title="0" min="-255" max="255" step="1" aria-label="#{msgs.label__image_filter_brightness}: 0"/>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersContrast"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_contrast}
+					</label>
+					<input id="imageFiltersContrast"
+						class="form-range imagefilters_slider" type="range" orient="horizontal"
+						title="1" min="0" max="2" step="0.05" aria-label="#{msgs.label__image_filter_contrast}: 1"/>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						class="imagefilters_label"
+						for="imageFiltersSaturation">
+						#{msgs.label__image_filter_saturation}
+					</label>
+					<input id="imageFiltersSaturation"
+						class="form-range imagefilters_slider" type="range" orient="horizontal"
+						title="1" min="0" max="5" step="0.1" value="1" aria-label="#{msgs.label__image_filter_saturation}: 1"/>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersHue"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_hue}
+					</label>
+					<input id="imageFiltersHue"
+						class="form-range imagefilters_slider" type="range" orient="horizontal"
+						title="0" min="-180" max="180" step="1" aria-label="#{msgs.label__image_filter_hue}: 0"/>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersBitonalSwitch"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_bitonal}
+						<input id="imageFiltersBitonalSwitch"
+							class="form-check-input imagefilters_checkbox" type="checkbox" aria-label="Bitonal"/>
+					</label>
+					<input id="imageFiltersBitonalThreshold"
+						class="form-range imagefilters_slider" type="range" orient="horizontal"
+						title="128" min="0" max="255" step="1" aria-label="#{msgs.label__image_filter_bitonal}: 128"/>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersGrayscale"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_grayscale}
+						<input id="imageFiltersGrayscale"
+							class="form-check-input imagefilters_checkbox" type="checkbox"
+							aria-label="#{msgs.label__image_filter_grayscale}"/>
+					</label>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersColorInversion"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_color_inversion}
+						<input class="form-check-input imagefilters_checkbox" type="checkbox" id="imageFiltersColorInversion"
+							aria-label="#{msgs.label__image_filter_color_inversion}"/>
+					</label>
+				</div>
+				<div class="imagefilters_filter">
+					<label
+						for="imageFiltersSharpening"
+						class="imagefilters_label">
+						#{msgs.label__image_filter_sharpening}
+						<input id="imageFiltersSharpening"
+							class="form-check-input imagefilters_checkbox" type="checkbox"
+							aria-label="#{msgs.label__image_filter_sharpening}"/>
+					</label>
+				</div>
+			</div>
+			<div class="imagefilters_options">
+				<button
+					id="imageFiltersReset"
+					type="button"
+					class="btn btn-blank">
+					<span>
+						#{msgs.label__image_filter_reset}
+					</span>
+				</button>
+			</div>
+		</div>
+	</composite:implementation>
+</ui:composition>
