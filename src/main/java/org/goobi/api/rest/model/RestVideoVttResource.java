@@ -78,7 +78,7 @@ public class RestVideoVttResource {
         // get metadata folder
         // processid + folder + filename
         Path file =
-                METADATA_FOLDER.resolve(getFilename(processIdString)).resolve("ocr").resolve(getFilename(folder)).resolve(getFilename(inFileName));
+                METADATA_FOLDER.resolve(getFilename(processIdString)).resolve("misc").resolve(getFilename(folder)).resolve(getFilename(inFileName));
         String content = "";
         if (StorageProvider.getInstance().isFileExists(file)) {
             // read content
