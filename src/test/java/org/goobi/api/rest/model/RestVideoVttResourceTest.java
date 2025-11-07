@@ -94,7 +94,7 @@ public class RestVideoVttResourceTest {
         String process = "999";
         String folder = "notfound";
         String filename = "missing.vtt";
-        Path expectedPath = Paths.get("/tmp/metadata/999/ocr/notfound/missing.vtt");
+        Path expectedPath = Paths.get("/tmp/metadata/999/misc/notfound/missing.vtt");
 
         StorageProviderInterface storageProvider = createMock(StorageProviderInterface.class);
         PowerMock.mockStatic(StorageProvider.class);
