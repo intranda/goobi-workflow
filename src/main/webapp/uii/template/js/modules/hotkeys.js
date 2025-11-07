@@ -11,7 +11,8 @@ export const initHotkeys = () => {
     // This is temporary, as soon as all hotkeys are moved to this module,
     // this can be refactored to a more permanent solution
     const isMetseditor = document.querySelector('#metseditorMenuForm') !== null;
-    const isPaginatorOnPage = document.querySelector('.dataTables__paginator') !== null;
+    const isPaginatorOnPage = document.querySelector('.dataTables__paginator') !== null || document.querySelector('[id$="navnext"]') !== null;
+
     if (isMetseditor) {
         hotkeys.setScope('metseditor');
     } else if (isPaginatorOnPage) {
@@ -82,8 +83,11 @@ const initHotkeysHelper = () => {
         'shortcut_imageLast',
     ];
     const scope = hotkeys.getScope();
-    if (scope === 'global') return;
     const hotkeyHelpButton = document.querySelector('#shortcutsHelpButton');
+    if (scope === 'global' && hotkeyHelpButton) {
+        hotkeyHelpButton.classList.add('d-none');
+        return;
+    }
     if (hotkeyHelpButton) {
         hotkeyHelpButton.classList.remove('d-none');
     }
