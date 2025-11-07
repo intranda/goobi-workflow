@@ -1,0 +1,73 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:image="http://goobi.io/image"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <div class="lightbox">
+        <h:inputHidden id="currentIndex" value="#{images.currentIndex}" />
+        <div
+            jsf:id="lightbox-gallery"
+            class="thumbnails-gallery"
+            style="&#45;&#45;thumb-size: #{thumbnailSize != null ? (thumbnailSize) : 100}px;">
+            <ui:repeat var="image" value="#{images.images}" varStatus="status">
+                <image:lightbox
+                    thumbnail="#{image.thumbnailUrl}"
+                    image="#{image.largeThumbnailUrl}"
+                    caption="#{image.tooltip}"
+                    index="#{status.index}">
+                </image:lightbox>
+            </ui:repeat>
+        </div>
+        <div class="lightbox-viewer#{images.viewerOpen ? '' : ' d-none'}" jsf:id="lightboxViewer">
+            <ui:fragment rendered="#{images.viewerOpen}">
+                <link rel="preload" as="image" href="#{images.previousImage.largeThumbnailUrl}" rendered="#{images.previousImage != null}" />
+                <link rel="preload" as="image" href="#{images.nextImage.largeThumbnailUrl}" rendered="#{images.nextImage != null}" />
+                <f:ajax
+                    render="lightboxViewer">
+                    <div class="lightbox-controls lightbox-controls-start">
+                        <div class="lightbox-control lightbox-zoom">100%</div>
+                        <button
+                            type="button"
+                            class="lightbox-control lightbox-btn lightbox-prev btn#{images.first ? ' disabled' : ''}"
+                            aria-label="#{msgs.previous}"
+                            jsf:action="#{images.previous()}"
+                            jsf:id="navprev">
+                            <span class="fa fa-chevron-left" aria-hidden="true"></span>
+                        </button>
+                        <span class="lightbox-control lightbox-imagename">
+                            #{images.currentImage.imageName}
+                        </span>
+                    </div>
+                    <div class="lightbox-controls lightbox-controls-end">
+                        <button
+                            type="button"
+                            class="lightbox-control lightbox-btn lightbox-close btn"
+                            aria-label="Close"
+                            jsf:action="#{images.close()}"
+                            jsf:id="closeLightbox">
+                            <span class="fa fa-times" aria-hidden="true"></span>
+                        </button>
+                        <button
+                            type="button"
+                            class="lightbox-control lightbox-btn lightbox-next btn#{images.last ? ' disabled' : ''}"
+                            aria-label="#{msgs.next}"
+                            jsf:action="#{images.next()}"
+                            jsf:id="navnext">
+                            <span class="fa fa-chevron-right" aria-hidden="true"></span>
+                        </button>
+                        <span class="lightbox-control lightbox-counter">
+                            #{images.currentIndex + 1} / #{images.totalCount}
+                        </span>
+                    </div>
+                </f:ajax>
+                <div class="lightbox-content">
+                    <h:graphicImage
+                        value="#{images.currentImage.largeThumbnailUrl}" alt="#{images.currentImage.tooltip}"></h:graphicImage>
+                </div>
+            </ui:fragment>
+        </div>
+    </div>
+
+    <h:outputScript name="js/dist/lightbox.min.js" />
+</ui:composition>

@@ -51,9 +51,13 @@ const sources = {
         '!./uii/template/js/legacy/**/*',
         '!./uii/template/js/editor/**/*.js',
         '!./uii/template/js/media/**/*.js',
+        '!./uii/template/js/image/**/*.js',
     ],
     editors: [
         'uii/template/js/editor/**/*.js',
+    ],
+    lightbox: [
+        'uii/template/js/image/lightbox.js',
     ],
     prosemirror: 'uii/template/js/editor/prosemirror.js',
     codemirror: 'uii/template/js/editor/codemirror.js',
@@ -214,6 +218,26 @@ function prodJsRollup() {
         });
 };
 
+function lightbox() {
+    return rollup
+        .rollup({
+            input: './uii/template/js/image/lightbox.js',
+            plugins: [
+                cleanup(),
+            ],
+        })
+        .then(bundle => {
+            return bundle.write({
+                file: `${customLocation}${targetFolder.js}lightbox.min.js`,
+                format: 'iife',
+                sourcemap: true,
+                plugins: [terser({
+                    mangle:true
+                })]
+            });
+        });
+}
+
 function editors() {
     const buildEditor = (inputFile, outputName) => {
         return rollup
@@ -334,6 +358,7 @@ function dev() {
     watch(sources.composites, { ignoreInitial: false }, composites);
     watch(sources.taglibs, { ignoreInitial: false }, taglibs);
     watch(sources.includes, { ignoreInitial: false }, includes);
+    watch(sources.lightbox, { ignoreInitial: false }, lightbox);
 };
 const prod = parallel(
     BsJs,
@@ -344,6 +369,7 @@ const prod = parallel(
     icons,
     editors,
     media,
+    lightbox,
 );
 
 export { dev, prod };
