@@ -4,6 +4,25 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <!-- Load all dependencies with regular script tags for guaranteed load order -->
+    <script src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/static/reactiveX/rxjs.umd.min.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/static/openseadragon/openseadragon.min.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/three.min.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/OBJLoader.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/MTLLoader.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/PLYLoader.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/STLLoader.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/FBXLoader.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/TDSLoader.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/DRACOLoader.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/GLTFLoader.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/controls/OrbitControls.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/dependencies/inflate.min.js"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/x3dom/x3dom.js"></script>
+    <script src="#{request.contextPath}/resources/js/dist/imageView.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/objectView.min.js"></script>
+
     <div class="lightbox">
         <h:inputHidden id="currentIndex" value="#{images.currentIndex}" />
         <div
@@ -26,7 +45,15 @@
                 <f:ajax
                     render="lightboxViewer">
                     <div class="lightbox-controls lightbox-controls-start">
-                        <div class="lightbox-control lightbox-zoom">100%</div>
+                        <div class="lightbox-control lightbox-zoom">
+                            <div
+                                id="zoomSliderLabel"
+                                >
+                                <input style="border: none; background-color: transparent; color: #aaa; width: 2rem; text-align: right;" aria-label="#{msgs.sizeOfImages}" ></input>
+                                <span>%</span>
+                            </div>
+                            <input id="zoomSlider" aria-label="zoomSlider" class="zoom-slider visually-hidden" type="range" min="0" max="1" step="0.01"/>
+                        </div>
                         <button
                             type="button"
                             class="lightbox-control lightbox-btn lightbox-prev btn#{images.first ? ' disabled' : ''}"
@@ -62,12 +89,15 @@
                     </div>
                 </f:ajax>
                 <div class="lightbox-content">
-                    <h:graphicImage
-                        value="#{images.currentImage.largeThumbnailUrl}" alt="#{images.currentImage.tooltip}"></h:graphicImage>
+                    <image:image
+                        image="#{images.currentImage}" />
+                    <!-- <h:graphicImage
+                        value="#{images.currentImage.url}" alt="#{images.currentImage.tooltip}"></h:graphicImage> -->
                 </div>
             </ui:fragment>
         </div>
     </div>
 
     <h:outputScript name="js/dist/lightbox.min.js" />
+    <script src="#{request.contextPath}/resources/js/dist/image.min.js?v=#{HelperForm.buildVersion}"></script>
 </ui:composition>

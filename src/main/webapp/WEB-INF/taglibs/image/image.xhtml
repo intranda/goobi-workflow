@@ -1,0 +1,120 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <div id="mainImage" style="height: 100vh; width: 80vw;" ></div>
+
+    <ul class="visually-hidden">
+
+        <li>
+            <span
+                class="btn btn-blank me-1"
+                title="#{msg.rotateLeft}" id="mainImageRotateLeft"
+                jsf:rendered="#{! AktuelleSchritteForm.myPlugin.allowPersistentRotation}">
+                <i class="fa fa-undo"></i>
+            </span>
+            <button
+                class="btn btn-blank me-1"
+                title="#{msg.rotateLeft}"
+                jsf:rendered="#{AktuelleSchritteForm.myPlugin.allowPersistentRotation}"
+                jsf:action="#{AktuelleSchritteForm.myPlugin.rotateCurrentImageToLeft}">
+                <i class="fa fa-undo"></i>
+            </button>
+        </li>
+        <li>
+            <span
+                class="btn btn-blank me-3"
+                title="#{msg.rotateRight}" id="mainImageRotateRight"
+                jsf:rendered="#{! AktuelleSchritteForm.myPlugin.allowPersistentRotation}">
+                <i class="fa fa-repeat"></i>
+            </span>
+            <button
+                class="btn btn-blank me-3"
+                title="#{msg.rotateRight}"
+                jsf:rendered="#{AktuelleSchritteForm.myPlugin.allowPersistentRotation}"
+                jsf:action="#{AktuelleSchritteForm.myPlugin.rotateCurrentImageToRight}">
+                <i class="fa fa-repeat"></i>
+            </button>
+        </li>
+        <li>
+            <button
+                class="btn btn-blank me-1"
+                title="#{msgs.imageFullscreen}"
+                jsf:action="ImageQAPlugin_Fullscreen"
+                jsf:rendered="#{! AktuelleSchritteForm.myPlugin.useJSFullscreen}">
+                <i class="fa fa-arrows-alt"></i>
+            </button>
+            <button
+                class="btn btn-blank me-1"
+                title="#{msgs.imageFullscreen}"
+                jsf:action="ImageQAPlugin_JSFullscreen"
+                jsf:rendered="#{AktuelleSchritteForm.myPlugin.useJSFullscreen}">
+                <i class="fa fa-arrows-alt"></i>
+            </button>
+        </li>
+        <li>
+            <button
+                class="btn btn-blank me-1"
+                jsf:rendered="#{AktuelleSchritteForm.myPlugin.displayOcrButton}"
+                title="Show OCR-result"
+                jsf:action="#{AktuelleSchritteForm.myPlugin.toggleOCR()}">
+                <i class="fa fa-file-text-o"></i>
+            </button>
+        </li>
+        <li>
+            <span
+                class="btn btn-blank me-1"
+                title="#{msg.resetImage}" id="mainImageResetView">
+                <i class="fa fa-refresh"></i>
+            </span>
+        </li>
+
+        <li>
+
+        </li>
+    </ul>
+
+    <script type="text/javascript">//<![CDATA[
+        (function() {
+            var config = {
+                mediaType: "#{image.type}",
+                tileSource: "#{image.url}",
+                objectUrl: "#{image.objectUrl}",
+                imageView: {
+                    element: "#mainImage",
+                    fittingMode: "fixed",
+                },
+                controls: {
+                    zoomSlider: "#zoomSlider",
+                    zoomSliderHandle: "#zoomSlider .zoom-slider-handle",
+                    zoomSliderLabel: "#zoomSliderLabel input",
+                    rotateLeftButton: "#mainImageRotateLeft",
+                    rotateRightButton: "#mainImageRotateRight",
+                    resetViewButton: "#mainImageResetView"
+                },
+                persistence: {
+                    persistZoom: true,
+                },
+                worldConfig: {
+                    controls: {
+                        xAxis: { rotateLeft: '#rotate-left-x', rotateRight: '#rotate-right-x' },
+                        yAxis: { rotateLeft: '#rotate-left-y', rotateRight: '#rotate-right-y' },
+                        zAxis: { rotateLeft: '#rotate-left-z', rotateRight: '#rotate-right-z' },
+                        position: { reset: '#reset-position' },
+                        zoom: { resetZoom: '#reset#zoom' }
+                    },
+                    container: { id: "mainImage" }
+                }
+            };
+
+            // Check if initialization function exists before calling
+            if (typeof initializeImageViewer === 'function') {
+                initializeImageViewer(config);
+            } else {
+                console.error('initializeImageViewer function not found');
+            }
+        })();
+            //]]>
+    </script>
+</ui:composition>

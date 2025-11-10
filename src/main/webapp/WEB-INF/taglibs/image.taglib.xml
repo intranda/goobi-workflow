@@ -49,4 +49,14 @@
             <type>java.lang.Integer</type>
         </attribute>
     </tag>
+    <tag>
+        <tag-name>image</tag-name>
+        <source>image/image.xhtml</source>
+        <attribute>
+            <description>The image object to display</description>
+            <name>image</name>
+            <required>true</required>
+            <type>de.sub.goobi.metadaten.Image</type>
+        </attribute>
+    </tag>
 </facelet-taglib>
