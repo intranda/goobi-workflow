@@ -17,7 +17,7 @@
         <ui:fragment rendered="#{Metadaten.allPages !=null}">
             <h:panelGroup id="pageallocation" layout="block" styleClass="pb-3">
                 <div id="meStructdataPageAssignmentBox">
-                    <section:section type="outline">
+                    <section:section type="outline" id="pageAssignmentBox" collapsible="true" collapsed="true">
                         <section:header icon="bars" title="#{msgs.seitenzuordnung}">
                             <section:header-actions>
                                 <ul class="tabs" role="list">
@@ -38,284 +38,271 @@
                                         <f:ajax render="pageallocation"/>
                                     </button>
                                 </ul>
-                                <button
-                                    type="button"
-                                    aria-label="#{msgs.minimizeBox}"
-                                    class="btn"
-                                    data-bs-target="#pageAllocationBoxBody"
-                                    data-bs-toggle="collapse"
-                                    aria-expanded="false"
-                                    aria-controls="pageAllocationBoxBody">
-                                    <span class="collapse-caret fa fa-angle-up" aria-hidden="true"/>
-                                    <span class="extend-caret fa fa-angle-down" aria-hidden="true"/>
-                                </button>
                             </section:header-actions>
                         </section:header>
-                        <div id="pageAllocationBoxBody" class="collapse">
-                            <section:body>
-                                <h:panelGroup id="pageAssignmentGroup" layout="block">
-                                    <h:panelGroup id="assignments" layout="block">
-                                        <!-- PAGES OVERVIEW -->
-                                        <h:panelGroup id="metseditorPagesOverview" layout="block" rendered="#{NavigationForm.uiStatus.pageassignment == '' || NavigationForm.uiStatus.pageassignment == null}">
+                        <section:body>
+                            <h:panelGroup id="pageAssignmentGroup" layout="block">
+                                <h:panelGroup id="assignments" layout="block">
+                                    <!-- PAGES OVERVIEW -->
+                                    <h:panelGroup id="metseditorPagesOverview" layout="block" rendered="#{NavigationForm.uiStatus.pageassignment == '' || NavigationForm.uiStatus.pageassignment == null}">
 
-                                            <!-- FIRST PAGE -->
-                                            <div class="form-row structdata__previous-page">
-                                                <div class="form-label">
-                                                    <label for="pagestart2">#{msgs.ersteSeite}:</label>
-                                                </div>
-                                                <div class="form-input">
-                                                    <p:autoComplete scrollHeight="300" id="pagestart2" pt:aria-label="#{msgs.firstPage}" styleClass="flex-grow-1" inputStyleClass="form-control focusableChildCss rounded" forceId="true" value="#{Metadaten.pagesStartCurrentElement}" completeMethod="#{Metadaten.autocomplete}"/>
-                                                    <button
-                                                        jsf:id="takePreviousImage3"
-                                                        aria-label="#{msgs.previousImage}"
-                                                        class="btn font-light"
-                                                        jsf:action="#{Metadaten.startpage}"
-                                                        title="#{msgs.mets_takePreviousImage}"
-                                                        type="button"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="left"
-                                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                                        <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
-                                                        <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:ajax render="pagestart2"/>
-                                                    </button>
-                                                    <button
-                                                        jsf:id="takeCurrentImage3"
-                                                        aria-label="#{msgs.lw_currentImage}"
-                                                        class="btn font-light"
-                                                        jsf:action="#{Metadaten.startpage}"
-                                                        title="#{msgs.mets_takeCurrentImage}"
-                                                        type="button"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="top"
-                                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                                        <span class="fa fa-picture-o" aria-hidden="true"/>
-                                                        <f:setPropertyActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:ajax render="pagestart2"/>
-                                                    </button>
-                                                    <button
-                                                        jsf:id="takeNextImage3"
-                                                        aria-label="#{msgs.nextImage}"
-                                                        class="btn font-light"
-                                                        jsf:action="#{Metadaten.startpage}"
-                                                        title="#{msgs.mets_takeNextImage}"
-                                                        type="button"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="right"
-                                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                                        <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
-                                                        <f:setPropertyActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:ajax render="pagestart2"/>
-                                                    </button>
-                                                </div>
+                                        <!-- FIRST PAGE -->
+                                        <div class="form-row structdata__previous-page">
+                                            <div class="form-label">
+                                                <label for="pagestart2">#{msgs.ersteSeite}:</label>
                                             </div>
-
-                                            <!-- LAST PAGE -->
-                                            <div class="form-row structdata__last-page">
-                                                <div class="form-label">
-                                                    <label for="pageend2">#{msgs.letzteSeite}:</label>
-                                                </div>
-                                                <div class="form-input">
-                                                    <p:autoComplete
-                                                        scrollHeight="300"
-                                                        id="pageend2"
-                                                        pt:aria-label="#{msgs.lastPage}"
-                                                        styleClass="flex-grow-1" inputStyleClass="form-control focusableChildCss rounded" forceId="true" value="#{Metadaten.pagesEndCurrentElement}" completeMethod="#{Metadaten.autocomplete}"/>
-                                                    <button
-                                                        jsf:id="takePreviousImage4"
-                                                        aria-label="#{msgs.previousImage}"
-                                                        class="btn font-light"
-                                                        jsf:action="#{Metadaten.endpage}"
-                                                        title="#{msgs.mets_takePreviousImage}"
-                                                        type="button"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="left"
-                                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                                        <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
-                                                        <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:ajax render="pageend2"/>
-                                                    </button>
-                                                    <button
-                                                        jsf:id="takeCurrentImage4"
-                                                        aria-label="#{msgs.lw_currentImage}"
-                                                        class="btn  font-light"
-                                                        jsf:action="#{Metadaten.endpage}"
-                                                        title="#{msgs.mets_takeCurrentImage}"
-                                                        type="button"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="bottom"
-                                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                                        <span class="fa fa-picture-o" aria-hidden="true"/>
-                                                        <f:setPropertyActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                        <f:ajax render="pageend2"/>
-                                                    </button>
-                                                    <button
-                                                        jsf:id="takeNextImage4"
-                                                        aria-label="#{msgs.nextImage}"
-                                                        class="btn font-light"
-                                                        jsf:action="#{Metadaten.endpage}"
-                                                        title="#{msgs.mets_takeNextImage}"
-                                                        type="button"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="right"
-                                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
-                                                        <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
-                                                        <f:setPropertyActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
-                                                        <f:ajax render="pageend2"/>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <!-- ADD ELEMENT -->
-                                            <div class="structdata__add-element p-3 d-flex justify-content-end">
-                                                <button jsf:id="setPages2" jsf:action="#{Metadaten.setPages}" class="btn btn-blank">
-                                                    <h:outputText value="#{msgs.seitenZuweisen}"/>
-                                                    <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                    <f:ajax render="assignments :treeform" execute="pagestart2 pageend2"/>
+                                            <div class="form-input">
+                                                <p:autoComplete scrollHeight="300" id="pagestart2" pt:aria-label="#{msgs.firstPage}" styleClass="flex-grow-1" inputStyleClass="form-control focusableChildCss rounded" forceId="true" value="#{Metadaten.pagesStartCurrentElement}" completeMethod="#{Metadaten.autocomplete}"/>
+                                                <button
+                                                    jsf:id="takePreviousImage3"
+                                                    aria-label="#{msgs.previousImage}"
+                                                    class="btn font-light"
+                                                    jsf:action="#{Metadaten.startpage}"
+                                                    title="#{msgs.mets_takePreviousImage}"
+                                                    type="button"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="left"
+                                                    jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                                    <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
+                                                    <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
+                                                    <f:ajax render="pagestart2"/>
+                                                </button>
+                                                <button
+                                                    jsf:id="takeCurrentImage3"
+                                                    aria-label="#{msgs.lw_currentImage}"
+                                                    class="btn font-light"
+                                                    jsf:action="#{Metadaten.startpage}"
+                                                    title="#{msgs.mets_takeCurrentImage}"
+                                                    type="button"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                                    <span class="fa fa-picture-o" aria-hidden="true"/>
+                                                    <f:setPropertyActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
+                                                    <f:ajax render="pagestart2"/>
+                                                </button>
+                                                <button
+                                                    jsf:id="takeNextImage3"
+                                                    aria-label="#{msgs.nextImage}"
+                                                    class="btn font-light"
+                                                    jsf:action="#{Metadaten.startpage}"
+                                                    title="#{msgs.mets_takeNextImage}"
+                                                    type="button"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="right"
+                                                    jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                                    <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
+                                                    <f:setPropertyActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
+                                                    <f:ajax render="pagestart2"/>
                                                 </button>
                                             </div>
-                                        </h:panelGroup>
-                                        <h:panelGroup
-                                            id="metseditorPagesAllPages"
-                                            layout="block"
-                                            rendered="#{NavigationForm.uiStatus.pageassignment eq 'tab1'}">
-                                            <!-- PAGES ALL PAGES -->
-                                            <div class="form-group form-group--flex structdata__all-pages">
-                                                <div class="row">
-                                                    <div class="col-5">
-                                                        <h:outputText
-                                                            styleClass="form-group__label"
-                                                            value="#{msgs.alleSeiten}"/>
-                                                        <h:selectManyListbox
-                                                            id="selectPages"
-                                                            pt:aria-label="#{msgs.alleSeiten}"
-                                                            styleClass="form-control select-max-height"
-                                                            value="#{Metadaten.alleSeitenAuswahl}"
-                                                            pt:data-save-scroll-position="true"
-                                                            >
-                                                            <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                            <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
-                                                    </h:selectManyListbox>
-                                                    </div>
-                                                    <div class="col-2 d-flex gap-2 flex-column justify-content-center">
-                                                        <button
-                                                            jsf:id="s1"
-                                                            aria-label="#{msgs.mets_addTheseImages}"
-                                                            jsf:action="#{Metadaten.SeitenHinzu}"
-                                                            class="btn font-light"
-                                                            title="#{msgs.mets_addTheseImages}"
-                                                            data-bs-toggle="tooltip"
-                                                            data-bs-placement="top">
-                                                            <span class="fa fa-chevron-right" aria-hidden="true"/>
-                                                            <f:ajax
-                                                                execute="@form"
-                                                                render="assignments :treeform"
-                                                                onevent="(data) => { goobiWorkflowJS.meScrollPos.init(data, {view: 'Strukturdaten'})}" />
-                                                        </button>
-                                                        <button
-                                                            jsf:id="s2"
-                                                            aria-label="#{msgs.mets_removeTheseImages}"
-                                                            jsf:action="#{Metadaten.SeitenWeg}"
-                                                            class="btn font-light"
-                                                            title="#{msgs.mets_removeTheseImages}"
-                                                            data-bs-toggle="tooltip"
-                                                            data-bs-placement="bottom">
-                                                            <span class="fa fa-chevron-left" aria-hidden="true"/>
-                                                            <f:ajax
-                                                                execute="@form"
-                                                                render="assignments :treeform"
-                                                                onevent="(data) => { goobiWorkflowJS.meScrollPos.init(data, {view: 'Strukturdaten'})}" />
-                                                        </button>
-                                                    </div>
-                                                    <div class="col-5">
-                                                        <h:outputText styleClass="form-group__label" value="#{msgs.zugehoerigeSeiten}"/>
-                                                        <h:selectManyListbox
-                                                            id="selectPages2"
-                                                            pt:aria-label="#{msgs.zugehoerigeSeiten}"
-                                                            styleClass="form-control select-max-height"
-                                                            value="#{Metadaten.structSeitenAuswahl}"
-                                                            >
-                                                            <f:selectItems value="#{Metadaten.structSeiten}"/>
-                                                    </h:selectManyListbox>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </h:panelGroup>
-                                        <h:panelGroup id="metseditorPagesQuickassign" layout="block" rendered="#{NavigationForm.uiStatus.pageassignment eq 'tab2'}">
+                                        </div>
 
-                                            <!-- PAGES QUICKASSIGN -->
-                                            <div class="structdata__quickassign">
-                                                <!-- FIRST PAGE -->
-                                                <form:field
-                                                    label="#{msgs.ersteSeite}">
-                                                    <div class="d-flex w-100 my-auto">
-                                                        <h:selectOneMenu
-                                                            id="pageSelectionFirstPage"
-                                                            pt:aria-label="#{msgs.ersteSeite}"
-                                                            rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
-                                                            value="#{Metadaten.pageSelectionFirstPage}"
-                                                            styleClass="form-select">
-                                                            <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
-                                                        </h:selectOneMenu>
-                                                        <button
-                                                            jsf:id="showFirst"
-                                                            aria-label="#{msgs.mets_showThisImage}"
-                                                            class="btn font-light"
-                                                            jsf:action="#{Metadaten.BildErsteSeiteAnzeigen}"
-                                                            title="#{msgs.mets_showThisImage}"
-                                                            type="button"
-                                                            data-renderimage="true"
-                                                            data-bs-toggle="tooltip">
-                                                            <span class="fa fa-eye" aria-hidden="true"/>
-                                                            <f:ajax
-                                                                execute="@this pageSelectionFirstPage"
-                                                                render=":openseadragonform" />
-                                                        </button>
-                                                    </div>
-                                                </form:field>
-                                                <!-- LAST PAGE -->
-                                                <form:field
-                                                    label="#{msgs.letzteSeite}">
-                                                    <div class="d-flex w-100 my-auto">
-                                                        <h:selectOneMenu
-                                                            id="pageSelectionLastPage"
-                                                            pt:aria-label="#{msgs.letzteSeite}"
-                                                            rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
-                                                            value="#{Metadaten.pageSelectionLastPage}"
-                                                            styleClass="form-select">
-                                                            <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
-                                                        </h:selectOneMenu>
-                                                        <button
-                                                            jsf:id="showLast"
-                                                            aria-label="#{msgs.mets_showThisImage}"
-                                                            class="btn font-light"
-                                                            jsf:action="#{Metadaten.BildLetzteSeiteAnzeigen}"
-                                                            title="#{msgs.mets_showThisImage}"
-                                                            type="button"
-                                                            data-renderimage="true"
-                                                            data-bs-toggle="tooltip">
-                                                            <span class="fa fa-eye" aria-hidden="true"/>
-                                                            <f:ajax execute="@this pageSelectionLastPage" render=":openseadragonform" />
-                                                        </button>
-                                                    </div>
-                                                </form:field>
-                                                <!-- ACTION -->
-                                                <div class="section-footer">
-                                                    <button jsf:id="SeitenStartUndEndeSetzen" class="btn btn-blank" jsf:action="#{Metadaten.SeitenStartUndEndeSetzen}" jsf:rendered="#{Metadaten.treeProperties.showpagesasajax==false}" type="button">
-                                                        <h:outputText value="#{msgs.seitenZuweisen}"/>
-                                                        <f:ajax execute="@form" render="assignments :treeform"/>
+                                        <!-- LAST PAGE -->
+                                        <div class="form-row structdata__last-page">
+                                            <div class="form-label">
+                                                <label for="pageend2">#{msgs.letzteSeite}:</label>
+                                            </div>
+                                            <div class="form-input">
+                                                <p:autoComplete
+                                                    scrollHeight="300"
+                                                    id="pageend2"
+                                                    pt:aria-label="#{msgs.lastPage}"
+                                                    styleClass="flex-grow-1" inputStyleClass="form-control focusableChildCss rounded" forceId="true" value="#{Metadaten.pagesEndCurrentElement}" completeMethod="#{Metadaten.autocomplete}"/>
+                                                <button
+                                                    jsf:id="takePreviousImage4"
+                                                    aria-label="#{msgs.previousImage}"
+                                                    class="btn font-light"
+                                                    jsf:action="#{Metadaten.endpage}"
+                                                    title="#{msgs.mets_takePreviousImage}"
+                                                    type="button"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="left"
+                                                    jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                                    <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
+                                                    <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
+                                                    <f:ajax render="pageend2"/>
+                                                </button>
+                                                <button
+                                                    jsf:id="takeCurrentImage4"
+                                                    aria-label="#{msgs.lw_currentImage}"
+                                                    class="btn  font-light"
+                                                    jsf:action="#{Metadaten.endpage}"
+                                                    title="#{msgs.mets_takeCurrentImage}"
+                                                    type="button"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom"
+                                                    jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                                    <span class="fa fa-picture-o" aria-hidden="true"/>
+                                                    <f:setPropertyActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
+                                                    <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                    <f:ajax render="pageend2"/>
+                                                </button>
+                                                <button
+                                                    jsf:id="takeNextImage4"
+                                                    aria-label="#{msgs.nextImage}"
+                                                    class="btn font-light"
+                                                    jsf:action="#{Metadaten.endpage}"
+                                                    title="#{msgs.mets_takeNextImage}"
+                                                    type="button"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="right"
+                                                    jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                                    <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
+                                                    <f:setPropertyActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
+                                                    <f:ajax render="pageend2"/>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- ADD ELEMENT -->
+                                        <div class="structdata__add-element p-3 d-flex justify-content-end">
+                                            <button jsf:id="setPages2" jsf:action="#{Metadaten.setPages}" class="btn btn-blank">
+                                                <h:outputText value="#{msgs.seitenZuweisen}"/>
+                                                <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                <f:ajax render="assignments :treeform" execute="pagestart2 pageend2"/>
+                                            </button>
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:panelGroup
+                                        id="metseditorPagesAllPages"
+                                        layout="block"
+                                        rendered="#{NavigationForm.uiStatus.pageassignment eq 'tab1'}">
+                                        <!-- PAGES ALL PAGES -->
+                                        <div class="form-group form-group--flex structdata__all-pages">
+                                            <div class="row">
+                                                <div class="col-5">
+                                                    <h:outputText
+                                                        styleClass="form-group__label"
+                                                        value="#{msgs.alleSeiten}"/>
+                                                    <h:selectManyListbox
+                                                        id="selectPages"
+                                                        pt:aria-label="#{msgs.alleSeiten}"
+                                                        styleClass="form-control select-max-height"
+                                                        value="#{Metadaten.alleSeitenAuswahl}"
+                                                        pt:data-save-scroll-position="true"
+                                                        >
+                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                        <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
+                                                </h:selectManyListbox>
+                                                </div>
+                                                <div class="col-2 d-flex gap-2 flex-column justify-content-center">
+                                                    <button
+                                                        jsf:id="s1"
+                                                        aria-label="#{msgs.mets_addTheseImages}"
+                                                        jsf:action="#{Metadaten.SeitenHinzu}"
+                                                        class="btn font-light"
+                                                        title="#{msgs.mets_addTheseImages}"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top">
+                                                        <span class="fa fa-chevron-right" aria-hidden="true"/>
+                                                        <f:ajax
+                                                            execute="@form"
+                                                            render="assignments :treeform"
+                                                            onevent="(data) => { goobiWorkflowJS.meScrollPos.init(data, {view: 'Strukturdaten'})}" />
                                                     </button>
-                                                    <button jsf:id="showpagesasajax" class="btn btn-blank" jsf:action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}" jsf:rendered="#{Metadaten.treeProperties.showpagesasajax==true}" type="button">
-                                                        <h:outputText value="#{msgs.seitenZuweisen}"/>
-                                                        <f:ajax execute="@form" render="assignments :treeform"/>
+                                                    <button
+                                                        jsf:id="s2"
+                                                        aria-label="#{msgs.mets_removeTheseImages}"
+                                                        jsf:action="#{Metadaten.SeitenWeg}"
+                                                        class="btn font-light"
+                                                        title="#{msgs.mets_removeTheseImages}"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="bottom">
+                                                        <span class="fa fa-chevron-left" aria-hidden="true"/>
+                                                        <f:ajax
+                                                            execute="@form"
+                                                            render="assignments :treeform"
+                                                            onevent="(data) => { goobiWorkflowJS.meScrollPos.init(data, {view: 'Strukturdaten'})}" />
                                                     </button>
                                                 </div>
+                                                <div class="col-5">
+                                                    <h:outputText styleClass="form-group__label" value="#{msgs.zugehoerigeSeiten}"/>
+                                                    <h:selectManyListbox
+                                                        id="selectPages2"
+                                                        pt:aria-label="#{msgs.zugehoerigeSeiten}"
+                                                        styleClass="form-control select-max-height"
+                                                        value="#{Metadaten.structSeitenAuswahl}"
+                                                        >
+                                                        <f:selectItems value="#{Metadaten.structSeiten}"/>
+                                                </h:selectManyListbox>
+                                                </div>
                                             </div>
-                                        </h:panelGroup>
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:panelGroup id="metseditorPagesQuickassign" layout="block" rendered="#{NavigationForm.uiStatus.pageassignment eq 'tab2'}">
+
+                                        <!-- PAGES QUICKASSIGN -->
+                                        <div class="structdata__quickassign">
+                                            <!-- FIRST PAGE -->
+                                            <form:field
+                                                label="#{msgs.ersteSeite}">
+                                                <div class="d-flex w-100 my-auto">
+                                                    <h:selectOneMenu
+                                                        id="pageSelectionFirstPage"
+                                                        pt:aria-label="#{msgs.ersteSeite}"
+                                                        rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
+                                                        value="#{Metadaten.pageSelectionFirstPage}"
+                                                        styleClass="form-select">
+                                                        <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
+                                                    </h:selectOneMenu>
+                                                    <button
+                                                        jsf:id="showFirst"
+                                                        aria-label="#{msgs.mets_showThisImage}"
+                                                        class="btn font-light"
+                                                        jsf:action="#{Metadaten.BildErsteSeiteAnzeigen}"
+                                                        title="#{msgs.mets_showThisImage}"
+                                                        type="button"
+                                                        data-renderimage="true"
+                                                        data-bs-toggle="tooltip">
+                                                        <span class="fa fa-eye" aria-hidden="true"/>
+                                                        <f:ajax
+                                                            execute="@this pageSelectionFirstPage"
+                                                            render=":openseadragonform" />
+                                                    </button>
+                                                </div>
+                                            </form:field>
+                                            <!-- LAST PAGE -->
+                                            <form:field
+                                                label="#{msgs.letzteSeite}">
+                                                <div class="d-flex w-100 my-auto">
+                                                    <h:selectOneMenu
+                                                        id="pageSelectionLastPage"
+                                                        pt:aria-label="#{msgs.letzteSeite}"
+                                                        rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
+                                                        value="#{Metadaten.pageSelectionLastPage}"
+                                                        styleClass="form-select">
+                                                        <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
+                                                    </h:selectOneMenu>
+                                                    <button
+                                                        jsf:id="showLast"
+                                                        aria-label="#{msgs.mets_showThisImage}"
+                                                        class="btn font-light"
+                                                        jsf:action="#{Metadaten.BildLetzteSeiteAnzeigen}"
+                                                        title="#{msgs.mets_showThisImage}"
+                                                        type="button"
+                                                        data-renderimage="true"
+                                                        data-bs-toggle="tooltip">
+                                                        <span class="fa fa-eye" aria-hidden="true"/>
+                                                        <f:ajax execute="@this pageSelectionLastPage" render=":openseadragonform" />
+                                                    </button>
+                                                </div>
+                                            </form:field>
+                                            <!-- ACTION -->
+                                            <div class="section-footer">
+                                                <button jsf:id="SeitenStartUndEndeSetzen" class="btn btn-blank" jsf:action="#{Metadaten.SeitenStartUndEndeSetzen}" jsf:rendered="#{Metadaten.treeProperties.showpagesasajax==false}" type="button">
+                                                    <h:outputText value="#{msgs.seitenZuweisen}"/>
+                                                    <f:ajax execute="@form" render="assignments :treeform"/>
+                                                </button>
+                                                <button jsf:id="showpagesasajax" class="btn btn-blank" jsf:action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}" jsf:rendered="#{Metadaten.treeProperties.showpagesasajax==true}" type="button">
+                                                    <h:outputText value="#{msgs.seitenZuweisen}"/>
+                                                    <f:ajax execute="@form" render="assignments :treeform"/>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </h:panelGroup>
                                 </h:panelGroup>
-                            </section:body>
-                        </div>
+                            </h:panelGroup>
+                        </section:body>
                     </section:section>
                 </div>
             </h:panelGroup>

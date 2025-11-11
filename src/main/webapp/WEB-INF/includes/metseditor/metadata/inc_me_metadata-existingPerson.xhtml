@@ -18,27 +18,12 @@
             id="meEditPersonBox"
             rendered="#{!(Metadaten.sizeOfRoles==0 and empty Metadaten.myPersonen)}"
             styleClass="pb-2">
-            <section:section type="#{empty Metadaten.myPersonen ? 'outline' : 'neutral'}">
+            <section:section type="#{empty Metadaten.myPersonen ? 'outline' : 'neutral'}" id="personSection" collapsible="true">
                 <section:header
                     icon="bars"
                     title="#{msgs.personen}">
-                    <button
-                        type="button"
-                        aria-label="#{msgs.minimizeBox}"
-                        class="btn"
-                        data-bs-target="#personMetadataBox"
-                        data-bs-toggle="collapse"
-                        aria-expanded="true"
-                        aria-controls="personMetadataBox">
-                        <span
-                            class="collapse-caret fa fa-angle-up"
-                            aria-hidden="true" />
-                        <span
-                            class="extend-caret fa fa-angle-down"
-                            aria-hidden="true" />
-                    </button>
                 </section:header>
-                <div id="personMetadataBox" class="collapse show">
+                <section:body>
                     <h:panelGroup
                         layout="block"
                         styleClass="p-3 border-bottom"
@@ -72,7 +57,7 @@
                             </button>
                         </div>
                     </ui:fragment>
-                </div>
+                </section:body>
             </section:section>
         </h:panelGroup>
     </composite:implementation>

@@ -17,27 +17,12 @@
             id="meEditMetadataBox"
             rendered="#{!(Metadaten.sizeOfMetadata==0 and empty Metadaten.myMetadaten)}"
             styleClass="pb-2">
-            <section:section type="#{empty Metadaten.myMetadaten ? 'outline' : 'neutral' }">
+            <section:section type="#{empty Metadaten.myMetadaten ? 'outline' : 'neutral' }" id="metadataSection" collapsible="true" >
                 <section:header
                     icon="bars"
                     title="#{msgs.metadaten}">
-                    <button
-                        type="button"
-                        aria-label="#{msgs.minimizeBox}"
-                        class="btn"
-                        data-bs-target="#metadataBoxBody"
-                        data-bs-toggle="collapse"
-                        aria-expanded="true"
-                        aria-controls="metadataBoxBody">
-                        <span
-                            class="collapse-caret fa fa-angle-up"
-                            aria-hidden="true" />
-                        <span
-                            class="extend-caret fa fa-angle-down"
-                            aria-hidden="true" />
-                    </button>
                 </section:header>
-                <div id="metadataBoxBody" class="collapse show">
+                <section:body>
                     <p class="p-3 border-bottom" jsf:rendered="#{empty Metadaten.myMetadaten}">
                         <h:outputText value="#{msgs.mets_no_metadata_assigned}" />
                     </p>
@@ -52,7 +37,7 @@
                     </ui:repeat>
 
                     <ui:fragment rendered="#{Metadaten.sizeOfMetadata!=0}">
-                        <div class="p-3 d-flex justify-content-end gap-2">
+                        <section:footer>
                             <button
                                 type="button"
                                 jsf:id="addMetadata"
@@ -66,9 +51,9 @@
                                     onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data) }"
                                     render=":pageContentCenter" />
                             </button>
-                        </div>
+                        </section:footer>
                     </ui:fragment>
-                </div>
+                </section:body>
             </section:section>
         </h:panelGroup>
     </composite:implementation>

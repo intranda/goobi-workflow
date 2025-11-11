@@ -15,263 +15,246 @@
         <ui:fragment rendered="#{Metadaten.modeAddGroup}">
             <div
                 id="meAddGroupBox">
-                <section:section type="neutral">
+                <section:section type="neutral" id="addMetadataGroupBox" collapsible="true">
                     <section:header
                         icon="bars"
                         title="#{msgs.AddNewGroup}">
-                        <button
-                            type="button"
-                            aria-label="#{msgs.minimizeBox}"
-                            class="btn"
-                            data-bs-target="#addMetadataGroupBoxBody"
-                            data-bs-toggle="collapse"
-                            aria-expanded="true"
-                            aria-controls="addMetadataGroupBoxBody">
-                            <span
-                                class="collapse-caret fa fa-angle-up"
-                                aria-hidden="true" />
-                            <span
-                                class="extend-caret fa fa-angle-down"
-                                aria-hidden="true" />
-                        </button>
                     </section:header>
-                    <div id="addMetadataGroupBoxBody" class="collapse show">
-                        <section:body>
-                            <div class="form-row">
-                                <div class="form-label">
-                                    <label>#{msgs.group}:</label>
-                                </div>
-                                <div class="form-input">
-                                    <h:selectOneMenu
-                                        id="groups"
-                                        styleClass="form-select"
-                                        value="#{Metadaten.tempMetadataGroupType}">
-                                        <f:selectItems value="#{Metadaten.addableMetadataGroupTypes}" />
-                                        <f:ajax
-                                            execute="@form"
-                                            event="valueChange"
-                                            render="@form" />
-                                    </h:selectOneMenu>
-                                    <h:message
-                                        for="groups"
-                                        style="color: red" />
-                                </div>
+                    <section:body>
+                        <div class="form-row">
+                            <div class="form-label">
+                                <label>#{msgs.group}:</label>
                             </div>
-                            <ui:repeat
-                                var="metadata"
-                                value="#{Metadaten.selectedGroup.metadataList}"
-                                varStatus="status"
-                                id="metadataListRepeat">
-                                <ui:fragment rendered="#{status.first == 'true'}">
-                                </ui:fragment>
-                                <div class="form-group form-group--flex">
-                                    <div class="form-row">
-                                        <div class="form-label">
-                                            <label>#{metadata.typ}:</label>
-                                        </div>
-                                        <div class="form-input">
-                                            <h:panelGroup
-                                                rendered="#{(metadata.outputType == 'textarea')}" >
-                                                <form:grow-wrap>
-                                                    <h:inputTextarea
-                                                        id="textarea"
-                                                        styleClass="form-control"
-                                                        value="#{metadata.value}"
-                                                        immediate="true"
-                                                        disabled="#{metadata.disableMetadataField}"
-                                                        readonly="#{Metadaten.nurLesenModus}" />
-                                                </form:grow-wrap>
-                                            </h:panelGroup>
-                                            <h:inputText
-                                                id="text"
-                                                styleClass="form-control"
-                                                value="#{metadata.value}"
-                                                disabled="#{metadata.disableMetadataField}"
-                                                readonly="#{Metadaten.nurLesenModus}"
-                                                rendered="#{metadata.outputType == 'input'}" />
-                                            <h:selectManyListbox
-                                                id="selectMany"
-                                                styleClass="form-control"
-                                                value="#{metadata.selectedItems}"
-                                                disabled="#{metadata.disableMetadataField}"
-                                                rendered="#{metadata.outputType == 'select'}"
-                                                readonly="#{Metadaten.nurLesenModus}">
-                                                <f:selectItems
-                                                    value="#{metadata.items}"
-                                                    itemValue="#{element.label}"
-                                                    var="element"
-                                                    itemLabel="#{element.label}" />
-                                            </h:selectManyListbox>
-                                            <ui:fragment rendered="#{(Metadaten.outputType == 'select1' or
-                                                Metadaten.outputType == 'vocabularyList')}">
-                                                <div class="form-control form-control--select">
-                                                    <h:selectOneMenu
-                                                        id="selectOne"
-                                                        styleClass="focusable"
-                                                        disabled="#{metadata.disableMetadataField}"
-                                                        value="#{metadata.selectedItem}"
-                                                        readonly="#{Metadaten.nurLesenModus}">
-                                                        <f:selectItems
-                                                            value="#{metadata.items}"
-                                                            itemValue="#{element.label}"
-                                                            var="element"
-                                                            itemLabel="#{element.label}" />
-                                                    </h:selectOneMenu>
-                                                </div>
-                                            </ui:fragment>
-                                            <h:outputText
-                                                value="#{metadata.value}"
-                                                rendered="#{(metadata.outputType == 'readonly')}" />
-                                        </div>
+                            <div class="form-input">
+                                <h:selectOneMenu
+                                    id="groups"
+                                    styleClass="form-select"
+                                    value="#{Metadaten.tempMetadataGroupType}">
+                                    <f:selectItems value="#{Metadaten.addableMetadataGroupTypes}" />
+                                    <f:ajax
+                                        execute="@form"
+                                        event="valueChange"
+                                        render="@form" />
+                                </h:selectOneMenu>
+                                <h:message
+                                    for="groups"
+                                    style="color: red" />
+                            </div>
+                        </div>
+                        <ui:repeat
+                            var="metadata"
+                            value="#{Metadaten.selectedGroup.metadataList}"
+                            varStatus="status"
+                            id="metadataListRepeat">
+                            <ui:fragment rendered="#{status.first == 'true'}">
+                            </ui:fragment>
+                            <div class="form-group form-group--flex">
+                                <div class="form-row">
+                                    <div class="form-label">
+                                        <label>#{metadata.typ}:</label>
                                     </div>
-                                </div>
-                            </ui:repeat>
-                            <ui:repeat
-                                var="person"
-                                value="#{Metadaten.selectedGroup.personList}"
-                                varStatus="status"
-                                id="personListRepeat">
-                                <div class="form-group form-group--flex">
-                                    <div class="form-row">
-                                        <div class="form-label">
-                                            <label>#{msgs.vorname}:</label>
-                                        </div>
-                                        <div class="form-input">
-                                            <h:inputText
-                                                id="vornameGroup"
-                                                styleClass="form-control"
-                                                value="#{person.vorname}" />
-                                            <h:message
-                                                for="vornameGroup"
-                                                style="color: red" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group form-group--flex">
-                                    <div class="form-row">
-                                        <div class="form-label">
-                                            <label>#{msgs.nachname}:</label>
-                                        </div>
-                                        <div class="form-input">
-                                            <h:inputText
-                                                id="nachnameGroup"
-                                                styleClass="form-control"
-                                                value="#{person.nachname}" />
-                                            <h:message
-                                                for="nachnameGroup"
-                                                style="color: red" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group form-group--flex">
-                                    <div class="form-row">
-                                        <div class="form-label">
-                                            <label>#{msgs.rolle}:</label>
-                                        </div>
-                                        <div class="form-input">
-                                            <h:outputText
-                                                id="RolleGroup"
-                                                styleClass="form-control"
-                                                value="#{person.rolle}" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </ui:repeat>
-                            <ui:repeat
-                                var="corp"
-                                value="#{Metadaten.selectedGroup.corporateList}"
-                                varStatus="status"
-                                id="corporateListRepeat">
-                                <div class="form-group form-group--flex">
-                                    <div class="form-row">
-                                        <div class="form-label">
-                                            <label>#{msgs.mets_corporate_mainName}:</label>
-                                        </div>
-                                        <div class="form-input">
-                                            <h:inputText
-                                                id="mainNameGrp"
-                                                pt:aria-label="#{msgs.mets_corporate_mainName}"
-                                                styleClass="form-control"
-                                                value="#{corp.mainName}" />
-                                            <h:message
-                                                for="mainNameGrp"
-                                                style="color: red" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <ui:repeat
-                                    var="part"
-                                    value="#{corp.subNames}">
-                                    <div class="form-group form-group--flex">
-                                        <div class="form-row">
-                                            <div class="form-label">
-                                                <label>#{msgs.mets_corporate_subName}:</label>
-                                            </div>
-                                            <div class="form-input">
-                                                <h:inputText
-                                                    id="subNameGrp"
-                                                    pt:aria-label="#{msgs.mets_corporate_subName}"
+                                    <div class="form-input">
+                                        <h:panelGroup
+                                            rendered="#{(metadata.outputType == 'textarea')}" >
+                                            <form:grow-wrap>
+                                                <h:inputTextarea
+                                                    id="textarea"
                                                     styleClass="form-control"
-                                                    value="#{part.value}" />
-                                                <h:message
-                                                    for="subNameGrp"
-                                                    style="color: red" />
+                                                    value="#{metadata.value}"
+                                                    immediate="true"
+                                                    disabled="#{metadata.disableMetadataField}"
+                                                    readonly="#{Metadaten.nurLesenModus}" />
+                                            </form:grow-wrap>
+                                        </h:panelGroup>
+                                        <h:inputText
+                                            id="text"
+                                            styleClass="form-control"
+                                            value="#{metadata.value}"
+                                            disabled="#{metadata.disableMetadataField}"
+                                            readonly="#{Metadaten.nurLesenModus}"
+                                            rendered="#{metadata.outputType == 'input'}" />
+                                        <h:selectManyListbox
+                                            id="selectMany"
+                                            styleClass="form-control"
+                                            value="#{metadata.selectedItems}"
+                                            disabled="#{metadata.disableMetadataField}"
+                                            rendered="#{metadata.outputType == 'select'}"
+                                            readonly="#{Metadaten.nurLesenModus}">
+                                            <f:selectItems
+                                                value="#{metadata.items}"
+                                                itemValue="#{element.label}"
+                                                var="element"
+                                                itemLabel="#{element.label}" />
+                                        </h:selectManyListbox>
+                                        <ui:fragment rendered="#{(Metadaten.outputType == 'select1' or
+                                            Metadaten.outputType == 'vocabularyList')}">
+                                            <div class="form-control form-control--select">
+                                                <h:selectOneMenu
+                                                    id="selectOne"
+                                                    styleClass="focusable"
+                                                    disabled="#{metadata.disableMetadataField}"
+                                                    value="#{metadata.selectedItem}"
+                                                    readonly="#{Metadaten.nurLesenModus}">
+                                                    <f:selectItems
+                                                        value="#{metadata.items}"
+                                                        itemValue="#{element.label}"
+                                                        var="element"
+                                                        itemLabel="#{element.label}" />
+                                                </h:selectOneMenu>
                                             </div>
-                                        </div>
+                                        </ui:fragment>
+                                        <h:outputText
+                                            value="#{metadata.value}"
+                                            rendered="#{(metadata.outputType == 'readonly')}" />
                                     </div>
-                                </ui:repeat>
+                                </div>
+                            </div>
+                        </ui:repeat>
+                        <ui:repeat
+                            var="person"
+                            value="#{Metadaten.selectedGroup.personList}"
+                            varStatus="status"
+                            id="personListRepeat">
+                            <div class="form-group form-group--flex">
+                                <div class="form-row">
+                                    <div class="form-label">
+                                        <label>#{msgs.vorname}:</label>
+                                    </div>
+                                    <div class="form-input">
+                                        <h:inputText
+                                            id="vornameGroup"
+                                            styleClass="form-control"
+                                            value="#{person.vorname}" />
+                                        <h:message
+                                            for="vornameGroup"
+                                            style="color: red" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-group--flex">
+                                <div class="form-row">
+                                    <div class="form-label">
+                                        <label>#{msgs.nachname}:</label>
+                                    </div>
+                                    <div class="form-input">
+                                        <h:inputText
+                                            id="nachnameGroup"
+                                            styleClass="form-control"
+                                            value="#{person.nachname}" />
+                                        <h:message
+                                            for="nachnameGroup"
+                                            style="color: red" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-group--flex">
+                                <div class="form-row">
+                                    <div class="form-label">
+                                        <label>#{msgs.rolle}:</label>
+                                    </div>
+                                    <div class="form-input">
+                                        <h:outputText
+                                            id="RolleGroup"
+                                            styleClass="form-control"
+                                            value="#{person.rolle}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </ui:repeat>
+                        <ui:repeat
+                            var="corp"
+                            value="#{Metadaten.selectedGroup.corporateList}"
+                            varStatus="status"
+                            id="corporateListRepeat">
+                            <div class="form-group form-group--flex">
+                                <div class="form-row">
+                                    <div class="form-label">
+                                        <label>#{msgs.mets_corporate_mainName}:</label>
+                                    </div>
+                                    <div class="form-input">
+                                        <h:inputText
+                                            id="mainNameGrp"
+                                            pt:aria-label="#{msgs.mets_corporate_mainName}"
+                                            styleClass="form-control"
+                                            value="#{corp.mainName}" />
+                                        <h:message
+                                            for="mainNameGrp"
+                                            style="color: red" />
+                                    </div>
+                                </div>
+                            </div>
+                            <ui:repeat
+                                var="part"
+                                value="#{corp.subNames}">
                                 <div class="form-group form-group--flex">
                                     <div class="form-row">
                                         <div class="form-label">
-                                            <label>#{msgs.mets_corporate_partName}:</label>
+                                            <label>#{msgs.mets_corporate_subName}:</label>
                                         </div>
                                         <div class="form-input">
                                             <h:inputText
-                                                id="partNameGrp"
-                                                pt:aria-label="#{msgs.mets_corporate_partName}"
+                                                id="subNameGrp"
+                                                pt:aria-label="#{msgs.mets_corporate_subName}"
                                                 styleClass="form-control"
-                                                value="#{corp.partName}" />
+                                                value="#{part.value}" />
                                             <h:message
-                                                for="partNameGrp"
+                                                for="subNameGrp"
                                                 style="color: red" />
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group form-group--flex">
-                                    <div class="form-row">
-                                        <div class="form-label">
-                                            <label>#{msgs.rolle}:</label>
-                                        </div>
-                                        <div class="form-input">
-                                            <h:outputText
-                                                id="RolleGroup"
-                                                styleClass="form-control"
-                                                value="#{corp.role}" />
-                                        </div>
+                            </ui:repeat>
+                            <div class="form-group form-group--flex">
+                                <div class="form-row">
+                                    <div class="form-label">
+                                        <label>#{msgs.mets_corporate_partName}:</label>
+                                    </div>
+                                    <div class="form-input">
+                                        <h:inputText
+                                            id="partNameGrp"
+                                            pt:aria-label="#{msgs.mets_corporate_partName}"
+                                            styleClass="form-control"
+                                            value="#{corp.partName}" />
+                                        <h:message
+                                            for="partNameGrp"
+                                            style="color: red" />
                                     </div>
                                 </div>
-                            </ui:repeat>
-                            <div class="p-3 d-flex justify-content-end gap-2">
-                                <button
-                                    jsf:id="cancelGroup"
-                                    class="btn btn-blank"
-                                    jsf:action="#{Metadaten.Abbrechen}"
-                                    jsf:immediate="true"
-                                    type="button">
-                                    #{msgs.abbrechen}
-                                    <f:ajax render=":pageContentCenter" />
-                                </button>
-                                <h:commandButton
-                                    id="sqaveGroup"
-                                    styleClass="btn btn-neutral-600"
-                                    type="submit"
-                                    action="#{Metadaten.saveGroup}"
-                                    value="#{msgs.add}"
-                                    role="button">
-                                </h:commandButton>
                             </div>
-                        </section:body>
-                    </div>
+                            <div class="form-group form-group--flex">
+                                <div class="form-row">
+                                    <div class="form-label">
+                                        <label>#{msgs.rolle}:</label>
+                                    </div>
+                                    <div class="form-input">
+                                        <h:outputText
+                                            id="RolleGroup"
+                                            styleClass="form-control"
+                                            value="#{corp.role}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </ui:repeat>
+                        <div class="p-3 d-flex justify-content-end gap-2">
+                            <button
+                                jsf:id="cancelGroup"
+                                class="btn btn-blank"
+                                jsf:action="#{Metadaten.Abbrechen}"
+                                jsf:immediate="true"
+                                type="button">
+                                #{msgs.abbrechen}
+                                <f:ajax render=":pageContentCenter" />
+                            </button>
+                            <h:commandButton
+                                id="sqaveGroup"
+                                styleClass="btn btn-neutral-600"
+                                type="submit"
+                                action="#{Metadaten.saveGroup}"
+                                value="#{msgs.add}"
+                                role="button">
+                            </h:commandButton>
+                        </div>
+                    </section:body>
                 </section:section>
             </div>
         </ui:fragment>
