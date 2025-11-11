@@ -29,9 +29,6 @@ var goobiWorkflowJS = ( function() {
         // init menu
         goobiWorkflowJS.menu.init();
 
-        // init module box --> needs partial ajax reload
-        goobiWorkflowJS.box.init();
-
         // init buttons --> needs ajax reload
         goobiWorkflowJS.buttons.init(_defaults);
 

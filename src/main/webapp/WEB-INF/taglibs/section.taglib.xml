@@ -21,10 +21,16 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description>Provides an optional id if the section should have a clientID</description>
+            <description>Provides an optional id if the section should have a specific id</description>
             <name>id</name>
             <required>false</required>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Determines whether the section is collapsible</description>
+            <name>collapsible</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
         </attribute>
     </tag>
     <tag>

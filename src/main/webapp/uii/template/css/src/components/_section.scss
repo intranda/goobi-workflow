@@ -1,5 +1,17 @@
 .section {
     --section-padding: var(--box-padding);
+    &-header {
+        & h2 .btn{
+            display: flex;
+            font-size: inherit;
+            padding-block: 3px;
+            width: 100%;
+        }
+        & .section-header-collapsible {
+            height: 100%;
+            margin: 0;
+        }
+    }
 }
 
 .section-header-actions {
@@ -17,6 +29,9 @@
 
 .section-body-padded {
     padding: var(--section-padding);
+    & .section-footer {
+        margin: 0;
+    }
 }
 
 .section:has(.collapse:not(.show)):has(.section-body-padded),
