@@ -60,9 +60,7 @@
                                 jsf:immediate="true"
                                 type="button">
                                 #{msgs.abbrechen}
-                                <f:ajax
-                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
-                                    render=":pageContentCenter"
+                                <f:ajax render=":pageContentCenter"
                                 />
                             </button>
                             <h:commandButton
@@ -73,7 +71,6 @@
                                 value="#{msgs.add}"
                                 role="button">
                                 <f:ajax
-                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
                                     execute="@form"
                                     render=":pageContentCenter" />
                             </h:commandButton>

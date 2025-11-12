@@ -50,7 +50,7 @@
                                     </span>
                                     <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}"/>
                                     <f:setPropertyActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" target="#{Metadaten.modusStrukturelementVerschieben}"/>
-                                    <f:ajax onevent="data => goobiWorkflowJS.meScrollPos.init(data)" render=":pageContentCenter"/>
+                                    <f:ajax render=":pageContentCenter"/>
                                 </button>
                             </li>
                             <!-- ELEMENT IMPORT -->
@@ -61,7 +61,7 @@
                                     </span>
                                     <h:outputText value="#{msgs.copyDocstructFromOtherProcess}"/>
                                     <f:setPropertyActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" target="#{Metadaten.modusCopyDocstructFromOtherProcess}"/>
-                                    <f:ajax onevent="data => goobiWorkflowJS.meScrollPos.init(data)" render=":pageContentCenter"/>
+                                    <f:ajax render=":pageContentCenter"/>
                                 </button>
                             </li>
 
@@ -223,14 +223,6 @@
                                                     <button jsf:id="importNode" class="btn btn-blank" jsf:immediate="false" jsf:action="#{Metadaten.AddAdditionalOpacPpns}" title="#{msgs.uebernehmen}" onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                                         <h:outputText value="#{msgs.alsUnterelemente}"/>
                                                         <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-
-                                                        <!--
-                                                        <f:ajax
-                                                            onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
-                                                            execute="@form"
-                                                            render="@form :pageContentCenter @form :treeform"
-                                                        />
-                                                        -->
                                                     </button>
                                                 </section:footer>
                                             </section:section>

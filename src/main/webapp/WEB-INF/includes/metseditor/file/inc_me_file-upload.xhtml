@@ -98,7 +98,6 @@
                                 jsf:action="#{Metadaten.fileManipulation.uploadFile}">
                                 #{msgs.uploadFile}
                                 <f:ajax
-                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data)}"
                                     execute="@form"
                                     render=":pageContentCenter"
                                 />

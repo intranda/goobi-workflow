@@ -22,7 +22,7 @@
                         <h:commandLink styleClass="nav-link" action="#{Metadaten.AnsichtAendern}" id="gotoPagination">
                             #{msgs.paginierung}
                             <f:setPropertyActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" target="#{Metadaten.modusAnsicht}"/>
-                            <f:ajax onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Paginierung'})}" render="@form :pageContentCenter"/>
+                            <f:ajax render="@form :pageContentCenter"/>
                         </h:commandLink>
                     </li>
                 </ui:fragment>
@@ -32,7 +32,7 @@
                         <h:commandLink styleClass="nav-link" action="#{Metadaten.AnsichtAendern}" id="gotoStructure">
                             #{msgs.strukturdaten}
                             <f:setPropertyActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" target="#{Metadaten.modusAnsicht}"/>
-                            <f:ajax onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Strukturdaten'})}" render="@form :pageContentCenter"/>
+                            <f:ajax  render="@form :pageContentCenter"/>
                         </h:commandLink>
                     </li>
                 </ui:fragment>
@@ -42,7 +42,7 @@
                         <h:commandLink styleClass="nav-link" action="#{Metadaten.AnsichtAendern}" id="gotoMetadata">
                             #{msgs.metadaten}
                             <f:setPropertyActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" target="#{Metadaten.modusAnsicht}"/>
-                            <f:ajax onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Metadaten'})}" render="@form :pageContentCenter"/>
+                            <f:ajax render="@form :pageContentCenter"/>
                         </h:commandLink>
                     </li>
                 </ui:fragment>
@@ -52,7 +52,7 @@
                         <h:commandLink styleClass="nav-link" action="#{Metadaten.AnsichtAendern}" id="gotoFile">
                             #{msgs.fileManipulation}
                             <f:setPropertyActionListener value="File" property="#{Metadaten.modusAnsicht}" target="#{Metadaten.modusAnsicht}"/>
-                            <f:ajax onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'File'})}" render="@form :pageContentCenter"/>
+                            <f:ajax render="@form :pageContentCenter"/>
                         </h:commandLink>
                     </li>
                 </ui:fragment>
@@ -62,7 +62,7 @@
                         <h:commandLink
                             id="saveAndExit"
                             action="#{Metadaten.XMLschreiben}"
-                            onclick="goobiWorkflowJS.displayProgressBar(); goobiWorkflowJS.meScrollPos.destroyScrollPos()"
+                            onclick="goobiWorkflowJS.displayProgressBar();"
                             styleClass="nav-link">
                             #{msgs.speichernZurueck}
                         </h:commandLink>
@@ -71,7 +71,6 @@
 
                 <li class="nav-item d-lg-none">
                     <h:commandLink
-                        onclick="goobiWorkflowJS.meScrollPos.destroyScrollPos()"
                         id="exitOnly"
                         action="#{Metadaten.goZurueck}"
                         rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}"

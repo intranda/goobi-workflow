@@ -76,8 +76,7 @@
                                         title="#{msgs.mets_takePreviousImage}"
                                         type="button"
                                         data-bs-toggle="tooltip"
-                                        data-bs-placement="left"
-                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                        data-bs-placement="left">
                                         <span
                                             class="fa fa-angle-left fa-lg"
                                             aria-hidden="true" />
@@ -95,8 +94,7 @@
                                         title="#{msgs.mets_takeCurrentImage}"
                                         type="button"
                                         data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                        data-bs-placement="top">
                                         <span
                                             class="fa fa-picture-o"
                                             aria-hidden="true" />
@@ -114,8 +112,7 @@
                                         title="#{msgs.mets_takeNextImage}"
                                         type="button"
                                         data-bs-toggle="tooltip"
-                                        data-bs-placement="right"
-                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                        data-bs-placement="right">
                                         <span
                                             class="fa fa-angle-right fa-lg"
                                             aria-hidden="true" />
@@ -152,8 +149,7 @@
                                         title="#{msgs.mets_takePreviousImage}"
                                         type="button"
                                         data-bs-toggle="tooltip"
-                                        data-bs-placement="left"
-                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                        data-bs-placement="left">
                                         <span
                                             class="fa fa-angle-left fa-lg"
                                             aria-hidden="true" />
@@ -171,8 +167,7 @@
                                         title="#{msgs.mets_takeCurrentImage}"
                                         type="button"
                                         data-bs-toggle="tooltip"
-                                        data-bs-placement="bottom"
-                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                        data-bs-placement="bottom">
                                         <span
                                             class="fa fa-picture-o"
                                             aria-hidden="true" />
@@ -190,8 +185,7 @@
                                         title="#{msgs.mets_takeNextImage}"
                                         type="button"
                                         data-bs-toggle="tooltip"
-                                        data-bs-placement="right"
-                                        jsf:onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                        data-bs-placement="right">
                                         <span
                                             class="fa fa-angle-right fa-lg"
                                             aria-hidden="true" />
@@ -231,8 +225,7 @@
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="bottom"
                                             data-video-set-timestamp="true"
-                                            data-video-target="videoSectionBegin"
-                                            onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                            data-video-target="videoSectionBegin">
                                             <span
                                                 class="fa fa-clock-o"
                                                 aria-hidden="true" />
@@ -259,8 +252,7 @@
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="bottom"
                                             data-video-set-timestamp="true"
-                                            data-video-target="videoSectionEnd"
-                                            onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()">
+                                            data-video-target="videoSectionEnd">
                                             <span
                                                 class="fa fa-clock-o"
                                                 aria-hidden="true" />
@@ -405,7 +397,6 @@
                                     value="#{not Metadaten.enableFastPagination}"
                                     target="#{Metadaten.enableFastPagination}" />
                                 <f:ajax
-                                    onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)"
                                     render=":pageContentCenter" />
                             </button>
                             <button

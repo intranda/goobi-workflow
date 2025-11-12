@@ -65,7 +65,7 @@
                                 <h:outputText value="#{msgs.abbrechen}"/>
                                 <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                                 <f:setPropertyActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" target="#{Metadaten.modusStrukturelementVerschieben}"/>
-                                <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos:false})" render=":pageContentCenter"/>
+                                <f:ajax render=":pageContentCenter"/>
                             </button>
                         </div>
                     </section:body>

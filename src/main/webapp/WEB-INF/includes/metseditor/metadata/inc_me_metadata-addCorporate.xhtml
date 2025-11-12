@@ -91,7 +91,6 @@
                                 type="button">
                                 #{msgs.abbrechen}
                                 <f:ajax
-                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
                                     render=":pageContentCenter"
                                 />
                             </button>
@@ -103,7 +102,6 @@
                                 value="#{msgs.add}"
                                 role="button">
                                 <f:ajax
-                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
                                     execute="@form"
                                     render=":pageContentCenter"
                                 />

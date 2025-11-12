@@ -77,7 +77,7 @@
                                 jsf:id="importFiles2"
                                 class="btn btn-neutral-600"
                                 jsf:action="#{Metadaten.fileManipulation.importFiles}"
-                                onclick="goobiWorkflowJS.meScrollPos.storeScrollPos(); if (!confirm('#{msgs.wirklichAusfuehren}')) return false" >
+                                onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" >
                                 #{msgs.importFiles}
                             </button>
                         </div>

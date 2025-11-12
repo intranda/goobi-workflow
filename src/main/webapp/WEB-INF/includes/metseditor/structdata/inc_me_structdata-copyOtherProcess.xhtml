@@ -45,7 +45,7 @@
                                     <h:outputText value="#{msgs.abbrechen}"/>
                                     <f:setPropertyActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="false" target="#{Metadaten.modusCopyDocstructFromOtherProcess}"/>
                                     <f:setPropertyActionListener value="false" property="#{Metadaten.displayInsertion}" target="#{Metadaten.displayInsertion}"/>
-                                    <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false})" render=":pageContentCenter"/>
+                                    <f:ajax render=":pageContentCenter"/>
                                 </button>
 
                                 <button jsf:id="filterProcess" class="btn btn-blank" jsf:action="#{Metadaten.filterMyProcess}">

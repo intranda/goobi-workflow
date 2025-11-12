@@ -50,7 +50,7 @@
                                 jsf:id="exportFiles"
                                 class="btn btn-neutral-600"
                                 jsf:action="#{Metadaten.fileManipulation.exportFiles}"
-                                onclick="goobiWorkflowJS.meScrollPos.storeScrollPos(); if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                 #{msgs.exportFiles}
                             </button>
                         </div>
