@@ -6,12 +6,14 @@ import {
     restoreAllScrollPositions,
     saveAllScrollPositions,
 } from './modules/saveScrollPosition';
+import { initAutosave } from './modules/metseditor/autosave';
 
 // Initialize all functions on initial page load
 document.addEventListener('DOMContentLoaded', () => {
     initFunctions();
     initSaveScrollPosition();
     restoreAllScrollPositions();
+    initAutosave();
 });
 
 // Initialize all functions after an ajax call
@@ -32,9 +34,10 @@ if(typeof faces !== "undefined") {
                 initFunctions();
                 initSaveScrollPosition();
                 restoreAllScrollPositions();
+                initAutosave();
                 break;
         }
-        
+
     });
 } else {
     console.warn("No Jakarta faces initialized");

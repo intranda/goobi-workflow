@@ -55,11 +55,6 @@ var goobiWorkflowJS = ( function() {
         // init buttons --> needs ajax reload
         goobiWorkflowJS.buttons.init(_defaults);
 
-        // execute autosave interval
-        if (_defaults.readOnlyMode === 'false') {
-            goobiWorkflowJS.autoSave(_defaults.autoSaveInterval);
-        }
-
         // init structdata module
         goobiWorkflowJS.structdata.init();
 
@@ -177,24 +172,6 @@ var goobiWorkflowJS = ( function() {
 
         document.getElementById( 'progressbutton' ).click();
     }
-
-    /**
-     * @description Method to trigger autosave.
-     * @method autoSave
-     * @param {Number} interval The interval when autosave starts.
-     * */
-    goobiWorkflow.autoSave = function(interval) {
-        var intervalValue = parseInt(interval);
-
-        if (intervalValue > 0) {
-            setInterval( function() {
-                var myButton = document.getElementById("meMenuActionsForm:automaticSave");
-                if (myButton!=null) {
-                    myButton.click();
-                }
-            }, intervalValue * 1000 * 60);
-        }
-    };
 
     /**
      * @description Method to trigger a button on enter.
