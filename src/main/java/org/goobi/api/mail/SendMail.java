@@ -443,6 +443,7 @@ public final class SendMail {
     public void sendMailToUser(String messageSubject, String messageBody, List<String> recipients, boolean blindCopy, Path attachment) {
 
         if (!config.isEnableMail()) {
+        	log.debug("Sending of mail cancelled as it is switched off globally.");
             return;
         }
 
