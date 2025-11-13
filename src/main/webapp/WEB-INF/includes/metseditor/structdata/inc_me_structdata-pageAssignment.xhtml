@@ -20,22 +20,22 @@
                     <section:section type="outline" id="pageAssignmentBox" collapsible="true" collapsed="true">
                         <section:header icon="bars" title="#{msgs.seitenzuordnung}">
                             <section:header-actions>
-                                <ul class="tabs" role="list">
+                                <ul class="tabs" role="list" jsf:id="pageAssignmentTabs">
                                     <button class="tab#{NavigationForm.uiStatus.pageassignment == '' or NavigationForm.uiStatus.pageassignment == null ? ' active' : ''}" jsf:id="metseditor_pages_overview" jsf:action="#{NavigationForm.Reload}">
                                         #{msgs.metseditor_pages_overview}
                                         <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value=""/>
-                                        <f:ajax render="pageallocation"/>
+                                        <f:ajax render="pageAssignmentGroup pageAssignmentTabs"/>
                                     </button>
 
                                     <button class="tab#{NavigationForm.uiStatus.pageassignment == 'tab1' ? ' active' : ''}" jsf:id="metseditor_pages_allPages" jsf:action="#{NavigationForm.Reload}">
                                         #{msgs.metseditor_pages_allPages}
                                         <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab1"/>
-                                        <f:ajax render="pageallocation"/>
+                                        <f:ajax render="pageAssignmentGroup pageAssignmentTabs"/>
                                     </button>
                                     <button class="tab#{NavigationForm.uiStatus.pageassignment == 'tab2' ? ' active' : ''}" jsf:id="metseditor_pages_quickassign" jsf:action="#{NavigationForm.Reload}">
                                         #{msgs.metseditor_pages_quickassign}
                                         <f:setPropertyActionListener target="#{NavigationForm.uiStatus.pageassignment}" value="tab2"/>
-                                        <f:ajax render="pageallocation"/>
+                                        <f:ajax render="pageAssignmentGroup pageAssignmentTabs"/>
                                     </button>
                                 </ul>
                             </section:header-actions>
