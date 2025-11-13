@@ -14,7 +14,7 @@ export const initAutosave = () => {
         setupAutosave();
     }
 
-    if (!readOnlyMode) {
+    if (!readOnlyMode && autosaveInterval > 0) {
         clearInterval(autosaveTimer);
         autosaveTimer = setInterval(() => {
             const saveButton = document.querySelector('[id$="meMenuActionsForm:automaticSave"]');
