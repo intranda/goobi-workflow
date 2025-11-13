@@ -1,4 +1,4 @@
-<ui:composition
+<ui:component
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:image="http://goobi.io/image"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
@@ -23,25 +23,34 @@
     <script src="#{request.contextPath}/resources/js/dist/imageView.min.js?v=#{HelperForm.buildVersion}"></script>
     <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/objectView.min.js"></script>
 
-    <div class="lightbox">
-        <h:inputHidden id="currentIndex" value="#{images.currentIndex}" />
+    <h:panelGroup
+        id="lightbox"
+        layout="block"
+        styleClass="lightbox">
         <div
-            jsf:id="lightbox-gallery"
+            jsf:id="lightboxGallery"
             class="thumbnails-gallery"
             style="&#45;&#45;thumb-size: #{thumbnailSize != null ? (thumbnailSize) : 100}px;">
             <ui:repeat var="image" value="#{images.images}" varStatus="status">
-                <image:lightbox
-                    thumbnail="#{image.thumbnailUrl}"
-                    image="#{image.largeThumbnailUrl}"
-                    caption="#{image.tooltip}"
-                    index="#{status.index}">
-                </image:lightbox>
+                <button
+                    class="thumbnail btn lightbox-toggle"
+                    type="button"
+                    title="#{caption}"
+                    data-bs-toggle="tooltip"
+                    data-index="#{index}"
+                    jsf:id="lightboxBtn">
+                    <f:ajax render="@parent:@parent:lightboxViewer" listener="#{images.setCurrentIndex(status.index)}" />
+                    <image:lightbox
+                        thumbnail="#{image.thumbnailUrl}"
+                        image="#{image.largeThumbnailUrl}"
+                        caption="#{image.tooltip}"
+                        index="#{status.index}">
+                    </image:lightbox>
+                </button>
             </ui:repeat>
         </div>
         <div class="lightbox-viewer#{images.viewerOpen ? '' : ' d-none'}" jsf:id="lightboxViewer">
             <ui:fragment rendered="#{images.viewerOpen}">
-                <link rel="preload" as="image" href="#{images.previousImage.largeThumbnailUrl}" rendered="#{images.previousImage != null}" />
-                <link rel="preload" as="image" href="#{images.nextImage.largeThumbnailUrl}" rendered="#{images.nextImage != null}" />
                 <f:ajax
                     render="lightboxViewer">
                     <div class="lightbox-controls lightbox-controls-start">
@@ -96,8 +105,8 @@
                 </div>
             </ui:fragment>
         </div>
-    </div>
+    </h:panelGroup>
 
     <h:outputScript name="js/dist/lightbox.min.js" />
     <script src="#{request.contextPath}/resources/js/dist/image.min.js?v=#{HelperForm.buildVersion}"></script>
-</ui:composition>
+</ui:component>

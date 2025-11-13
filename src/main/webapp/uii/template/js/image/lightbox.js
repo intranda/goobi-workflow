@@ -8,26 +8,14 @@ const handleEscKey = (event) => {
     }
 };
 
-const openLightboxViewer = (triggerEl) => {
-    container = triggerEl.closest('.lightbox');
-
-    let viewer = container.querySelector('.lightbox-viewer');
-    const index = triggerEl.getAttribute('data-index');
-    const hiddenInput = container.querySelector('[id$="currentIndex"]');
-    hiddenInput.value = index;
+const openLightboxViewer = () => {
     document.body.style.overflow = 'hidden';
     document.querySelector('.scroll-top').style.display = 'none';
-
-    faces.ajax.request(triggerEl, null, {
-        execute: hiddenInput.id,
-        render: viewer.id,
-    });
 
     document.addEventListener('keydown', handleEscKey);
 };
 
 const closeLightboxViewer = () => {
-    console.log('Closing lightbox viewer');
     document.body.style.overflow = '';
     document.querySelector('.scroll-top').style.display = 'block';
 
@@ -36,7 +24,7 @@ const closeLightboxViewer = () => {
 
 document.body.addEventListener('click', (event) => {
     if (event.target.classList.contains('lightbox-toggle')) {
-        openLightboxViewer(event.target);
+        openLightboxViewer();
     }
     if (event.target.classList.contains('lightbox-close')) {
         closeLightboxViewer();
