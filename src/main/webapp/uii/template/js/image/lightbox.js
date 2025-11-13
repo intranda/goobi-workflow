@@ -8,7 +8,9 @@ const handleEscKey = (event) => {
     }
 };
 
-const openLightboxViewer = () => {
+const openLightboxViewer = (triggerEl) => {
+    container = triggerEl.closest('.lightbox');
+
     document.body.style.overflow = 'hidden';
     document.querySelector('.scroll-top').style.display = 'none';
 
@@ -24,7 +26,7 @@ const closeLightboxViewer = () => {
 
 document.body.addEventListener('click', (event) => {
     if (event.target.classList.contains('lightbox-toggle')) {
-        openLightboxViewer();
+        openLightboxViewer(event.target);
     }
     if (event.target.classList.contains('lightbox-close')) {
         closeLightboxViewer();
