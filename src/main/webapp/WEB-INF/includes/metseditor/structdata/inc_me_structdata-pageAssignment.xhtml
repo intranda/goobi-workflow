@@ -162,62 +162,60 @@
                                         layout="block"
                                         rendered="#{NavigationForm.uiStatus.pageassignment eq 'tab1'}">
                                         <!-- PAGES ALL PAGES -->
-                                        <div class="form-group form-group--flex structdata__all-pages">
-                                            <div class="row">
-                                                <div class="col-5">
-                                                    <h:outputText
-                                                        styleClass="form-group__label"
-                                                        value="#{msgs.alleSeiten}"/>
-                                                    <h:selectManyListbox
-                                                        id="selectPages"
-                                                        pt:aria-label="#{msgs.alleSeiten}"
-                                                        styleClass="form-control select-max-height"
-                                                        value="#{Metadaten.alleSeitenAuswahl}"
-                                                        pt:data-save-scroll-position="true"
-                                                        >
-                                                        <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                                        <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
-                                                </h:selectManyListbox>
-                                                </div>
-                                                <div class="col-2 d-flex gap-2 flex-column justify-content-center">
-                                                    <button
-                                                        jsf:id="s1"
-                                                        aria-label="#{msgs.mets_addTheseImages}"
-                                                        jsf:action="#{Metadaten.SeitenHinzu}"
-                                                        class="btn font-light"
-                                                        title="#{msgs.mets_addTheseImages}"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="top">
-                                                        <span class="fa fa-chevron-right" aria-hidden="true"/>
-                                                        <f:ajax
-                                                            execute="@form"
-                                                            render="assignments :treeform" />
-                                                    </button>
-                                                    <button
-                                                        jsf:id="s2"
-                                                        aria-label="#{msgs.mets_removeTheseImages}"
-                                                        jsf:action="#{Metadaten.SeitenWeg}"
-                                                        class="btn font-light"
-                                                        title="#{msgs.mets_removeTheseImages}"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="bottom">
-                                                        <span class="fa fa-chevron-left" aria-hidden="true"/>
-                                                        <f:ajax
-                                                            execute="@form"
-                                                            render="assignments :treeform" />
-                                                    </button>
-                                                </div>
-                                                <div class="col-5">
-                                                    <h:outputText styleClass="form-group__label" value="#{msgs.zugehoerigeSeiten}"/>
-                                                    <h:selectManyListbox
-                                                        id="selectPages2"
-                                                        pt:aria-label="#{msgs.zugehoerigeSeiten}"
-                                                        styleClass="form-control select-max-height"
-                                                        value="#{Metadaten.structSeitenAuswahl}"
-                                                        >
-                                                        <f:selectItems value="#{Metadaten.structSeiten}"/>
-                                                </h:selectManyListbox>
-                                                </div>
+                                        <div class="row m-1 my-2">
+                                            <div class="col-5">
+                                                <h:outputText
+                                                    styleClass="form-group__label"
+                                                    value="#{msgs.alleSeiten}"/>
+                                                <h:selectManyListbox
+                                                    id="selectPages"
+                                                    pt:aria-label="#{msgs.alleSeiten}"
+                                                    styleClass="form-control select-max-height"
+                                                    value="#{Metadaten.alleSeitenAuswahl}"
+                                                    pt:data-save-scroll-position="true"
+                                                    >
+                                                    <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
+                                                    <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}"/>
+                                            </h:selectManyListbox>
+                                            </div>
+                                            <div class="col-2 d-flex gap-2 flex-column justify-content-center">
+                                                <button
+                                                    jsf:id="s1"
+                                                    aria-label="#{msgs.mets_addTheseImages}"
+                                                    jsf:action="#{Metadaten.SeitenHinzu}"
+                                                    class="btn font-light"
+                                                    title="#{msgs.mets_addTheseImages}"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top">
+                                                    <span class="fa fa-chevron-right" aria-hidden="true"/>
+                                                    <f:ajax
+                                                        execute="@form"
+                                                        render="assignments :treeform" />
+                                                </button>
+                                                <button
+                                                    jsf:id="s2"
+                                                    aria-label="#{msgs.mets_removeTheseImages}"
+                                                    jsf:action="#{Metadaten.SeitenWeg}"
+                                                    class="btn font-light"
+                                                    title="#{msgs.mets_removeTheseImages}"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom">
+                                                    <span class="fa fa-chevron-left" aria-hidden="true"/>
+                                                    <f:ajax
+                                                        execute="@form"
+                                                        render="assignments :treeform" />
+                                                </button>
+                                            </div>
+                                            <div class="col-5">
+                                                <h:outputText styleClass="form-group__label" value="#{msgs.zugehoerigeSeiten}"/>
+                                                <h:selectManyListbox
+                                                    id="selectPages2"
+                                                    pt:aria-label="#{msgs.zugehoerigeSeiten}"
+                                                    styleClass="form-control select-max-height"
+                                                    value="#{Metadaten.structSeitenAuswahl}"
+                                                    >
+                                                    <f:selectItems value="#{Metadaten.structSeiten}"/>
+                                            </h:selectManyListbox>
                                             </div>
                                         </div>
                                     </h:panelGroup>
