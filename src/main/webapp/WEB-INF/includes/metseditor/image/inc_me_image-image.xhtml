@@ -10,6 +10,7 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:form="http://goobi.io/form"
     xmlns:media="http://goobi.io/media"
+    xmlns:util="http://goobi.io/util"
     >
 
     <composite:interface />
@@ -73,6 +74,10 @@
                     <div
                         id="objectWrapper"
                         class="image__object-wrapper d-flex flex-column flex-grow-1">
+                        <div
+                            class="position-absolute end-0 top-0 pe-3">
+                            <util:ajax-loader />
+                        </div>
                         <!-- HIDDEN FIELDS FOR OBJECT VIEW -->
                         <input
                             type="hidden"
@@ -106,13 +111,6 @@
                                 id="mainImage"
                                 class="image__main-image"
                                 style="z-index: -1">
-                                <!-- AJAX LOADER -->
-                                <div
-                                    id="imageLoader"
-                                    class="position-absolute end-0"
-                                    style="display: none;">
-                                    <img src="template/img/goobi/ajaxloader2.gif" />
-                                </div>
                             </div>
                             <ui:include src="inc_me_image-objectControls.xhtml" />
                         </ui:fragment>
@@ -188,13 +186,6 @@
                             <div
                                 id="mainImage" style="width:100%; margin-block-end: 2rem; height: 100% !important;"
                                 class="image__main-image above-overlay border">
-                                <!-- AJAX LOADER -->
-                                <div
-                                    id="ajaxloader"
-                                    class="position-absolute end-0 top-0"
-                                    style="display: none;">
-                                    <img src="template/img/goobi/ajaxloader2.gif" />
-                                </div>
                             </div>
                         </ui:fragment>
                     </div>
