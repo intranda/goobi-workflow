@@ -54,24 +54,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             //set image comments height
             this.setImageCommentHeight();
         },
-        /**
-         * @description Method to set the correct height of the object view column.
-         * @method setObjectViewHeight
-         */
-        setObjectViewHeight: function() {
-            if ( _debug ) {
-                console.log( 'EXECUTE: goobiWorkflowJS.layout.setObjectViewHeight' );
-            }
-
-            var pageContentRightHeight = $( '#pageContentRight' ).outerHeight();
-            var controlWrapperHeight = $( '#imageNavigation' ).outerHeight();
-            var imageCommentHeight = $( '#imageCommentArea' ).outerHeight();
-            if (!imageCommentHeight){
-            	imageCommentHeight = 0;
-            }
-
-            $( '#mainImage' ).css( 'height', pageContentRightHeight - controlWrapperHeight - imageCommentHeight - 45 );
-        },
 	    /**
 	     * @description Method to set initial image comment height
 	     * @method setImageCommentHeight
@@ -128,7 +110,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $( '#pageContentCenter' ).outerWidth( $( window ).offsetWidth - $( '#pageContentLeft' ).offsetWidth );
                 $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).offsetWidth );
             }
-                goobiWorkflowJS.layout.setObjectViewHeight();
                 _setFlexibleRowColumns();
                 _setColumnWidth();
             }
@@ -145,7 +126,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 $( '#pageContentCenter' ).outerWidth( $( window ).offsetWidth - $( '#pageContentRight' ).offsetWidth - $( '#pageContentLeft' ).offsetWidth -1);
                 $( '#pageContentRight .ui-resizable-handle' ).css( 'right', $( '#pageContentRight' ).offsetWidth - 7 );
 
-                goobiWorkflowJS.layout.setObjectViewHeight();
                 _setFlexibleRowColumns();
                 _setColumnWidth();
             }
@@ -208,7 +188,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         }
 
         _resetResizableElements();
-        goobiWorkflowJS.layout.setObjectViewHeight();
         _setFlexibleRowColumns();
     }
 

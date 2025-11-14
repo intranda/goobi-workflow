@@ -264,7 +264,7 @@ function onMouseMove( event ) {
         intrandaImages[ canvas.id ].scaleY = ( img.height - $(canvas).outerHeight() ) / $(canvas).outerHeight();
         var pos = getMousePos( canvas, event );
         // check if mouse is still hovering over canvas
-        if ( $( '#' + canvas.id + ':hover' ).length == 0 ) {
+        if ( document.querySelector( '#' + CSS.escape(canvas.id) + ':hover' ) === null ) {
             return;
         }
         var scaleX = intrandaImages[ canvas.id ].scaleX;

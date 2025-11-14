@@ -12,42 +12,25 @@
 
     <composite:implementation>
         <div id="meStructdataShowPersonBox" class="mb-3">
-            <section:section type="outline">
+            <section:section type="outline" id="structdataShowPersonSection" collapsible="true" collapsed="true">
                 <section:header
                     icon="bars"
                     title="#{msgs.mets_personsOfCurrentDocStruct}"
                     >
-                    <button
-                        type="button"
-                        aria-label="#{msgs.minimizeBox}"
-                        class="btn"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#personBoxBody"
-                        aria-expanded="false"
-                        aria-controls="personBoxBody">
-                        <span
-                            class="collapse-caret fa fa-angle-up"
-                            aria-hidden="true" />
-                        <span
-                            class="extend-caret fa fa-angle-down"
-                            aria-hidden="true" />
-                    </button>
                 </section:header>
-                <div id="personBoxBody" class="collapse">
-                    <section:body>
-                        <h:panelGroup id="structPersonEdit" layout="block">
-                            <ui:fragment rendered="#{empty Metadaten.myPersonen}">
-                                <p class="p-3 m-0">
-                                    #{msgs.mets_no_persons_assigned}
-                                </p>
-                            </ui:fragment>
+                <section:body>
+                    <h:panelGroup id="structPersonEdit" layout="block">
+                        <ui:fragment rendered="#{empty Metadaten.myPersonen}">
+                            <p class="p-3 m-0">
+                                #{msgs.mets_no_persons_assigned}
+                            </p>
+                        </ui:fragment>
 
-                            <ui:repeat var="Item" value="#{Metadaten.myPersonen}">
-                                <intranda:formGroupPerson person="#{Item}" />
-                            </ui:repeat>
-                        </h:panelGroup>
-                    </section:body>
-                </div>
+                        <ui:repeat var="Item" value="#{Metadaten.myPersonen}">
+                            <intranda:formGroupPerson person="#{Item}" />
+                        </ui:repeat>
+                    </h:panelGroup>
+                </section:body>
             </section:section>
         </div>
     </composite:implementation>

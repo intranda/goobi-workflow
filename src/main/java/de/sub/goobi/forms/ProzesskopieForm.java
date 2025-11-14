@@ -600,9 +600,9 @@ public class ProzesskopieForm implements Serializable {
                     /* welches Docstruct */
                     DocStruct myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
                     if ("child".equals(field.getDocstruct()) || "firstchild".equals(field.getDocstruct())) { //NOSONAR
-
-                        myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
-
+                        if (myTempStruct.getAllChildren() != null) {
+                            myTempStruct = myTempStruct.getAllChildren().get(0);
+                        }
                     }
                     if ("boundbook".equals(field.getDocstruct())) {
                         myTempStruct = this.myRdf.getDigitalDocument().getPhysicalDocStruct();

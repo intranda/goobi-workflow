@@ -5,19 +5,27 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 >
-    <c:if test="#{id}">
-        <f:subview id="#{id}">
-            <h:panelGroup
-                layout="block"
-                styleClass="box box--#{type} #{styleClass} section">
-                <ui:insert />
-            </h:panelGroup>
-        </f:subview>
-    </c:if>
-    <c:if test="#{!id}">
-        <div
-            class="box box--#{type} #{styleClass} section">
-            <ui:insert />
-        </div>
-    </c:if>
+
+    <c:choose>
+        <c:when test="#{not empty id}">
+            <f:subview id="#{id}">
+                <h:panelGroup
+                    layout="block"
+                    styleClass="box box--#{type} #{styleClass} section"
+                    id="#{id}">
+                    <f:attribute name="collapsed" value="#{empty collapsed ? false : collapsed}" />
+                    <f:attribute name="collapsible" value="#{collapsible}" />
+                    <ui:insert />
+                </h:panelGroup>
+            </f:subview>
+        </c:when>
+        <c:otherwise>
+            <f:subview>
+                <div
+                    class="box box--#{type} #{styleClass} section">
+                    <ui:insert />
+                </div>
+            </f:subview>
+        </c:otherwise>
+    </c:choose>
 </ui:component>

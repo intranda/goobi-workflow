@@ -1,0 +1,11 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <canvas
+        class="thumb-canvas lightbox-toggle"
+        data-image_small="#{thumbnail}"
+        data-image_large="#{image}"
+        jsf:id="thumb-#{index}"
+        data-index="#{index}"></canvas>
+</ui:composition>

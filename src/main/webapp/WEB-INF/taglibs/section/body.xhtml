@@ -1,7 +1,13 @@
 <ui:component
     xmlns:ui="http://java.sun.com/jsf/facelets"
 >
-    <div class="#{padding ? 'section-body-padded' : 'section-body'}#{styleClass != null ? ' ' : ''}#{styleClass != null ? styleClass : ''}">
+    <ui:param name="parentId" value="#{component.parent.id}" />
+    <ui:param name="collapsible" value="#{component.parent.attributes['collapsible']}" />
+    <ui:param name="collapsed" value="#{component.parent.attributes['collapsed']}" />
+
+    <div
+        id="#{parentId}_body"
+        class="#{padding ? 'section-body-padded' : 'section-body'}#{styleClass != null ? ' ' : ''}#{styleClass != null ? styleClass : ''} collapse#{section.isCollapsed(component.parent.clientId, collapsed) ? '' : ' show'}">
         <ui:insert />
     </div>
 </ui:component>

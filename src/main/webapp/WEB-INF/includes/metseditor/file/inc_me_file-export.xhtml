@@ -15,63 +15,46 @@
     <composite:implementation>
         <h:form id="meServersideUploadForm" rendered="#{Metadaten.allPages != null}">
             <div id="meServersideUploadBox">
-                <section:section type="neutral">
+                <section:section type="neutral" id="exportSection" collapsible="true">
                     <section:header
                         icon="bars"
                         title="#{msgs.serversideUpload}">
-                        <button
-                            type="button"
-                            aria-label="#{msgs.minimizeBox}"
-                            class="btn"
-                            data-bs-target="#exportBoxBody"
-                            data-bs-toggle="collapse"
-                            aria-expanded="true"
-                            aria-controls="exportBoxBody">
-                            <span
-                                class="collapse-caret fa fa-angle-up"
-                                aria-hidden="true" />
-                            <span
-                                class="extend-caret fa fa-angle-down"
-                                aria-hidden="true" />
-                        </button>
                     </section:header>
-                    <div id="exportBoxBody" class="collapse show">
-                        <section:body>
-                            <div class="form-row">
-                                <div class="form-label">
-                                    <label>#{msgs.imageSelection}:</label>
-                                </div>
-                                <div class="form-input">
-                                    <h:selectManyListbox
-                                        id="filenames"
-                                        pt:aria-label="#{msgs.files}"
-                                        styleClass="form-control"
-                                        value="#{Metadaten.fileManipulation.selectedFiles}">
-                                        <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
-                                    </h:selectManyListbox>
-                                </div>
+                    <section:body>
+                        <div class="form-row">
+                            <div class="form-label">
+                                <label>#{msgs.imageSelection}:</label>
                             </div>
+                            <div class="form-input">
+                                <h:selectManyListbox
+                                    id="filenames"
+                                    pt:aria-label="#{msgs.files}"
+                                    styleClass="form-control"
+                                    value="#{Metadaten.fileManipulation.selectedFiles}">
+                                    <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
+                                </h:selectManyListbox>
+                            </div>
+                        </div>
 
-                            <div class="form-row">
-                                <div class="form-label">
-                                    <label>#{msgs.deleteAfterMove}:</label>
-                                </div>
-                                <div class="form-input">
-                                    <h:selectBooleanCheckbox id="deleteAfter" pt:aria-label="#{msgs.deleteAfterMove}" styleClass="form-check-input"
-                                        value="#{Metadaten.fileManipulation.deleteFilesAfterMove}" />
-                                </div>
+                        <div class="form-row">
+                            <div class="form-label">
+                                <label>#{msgs.deleteAfterMove}:</label>
                             </div>
-                            <div class="p-3 d-flex justify-content-end gap-2">
-                                <button
-                                    jsf:id="exportFiles"
-                                    class="btn btn-neutral-600"
-                                    jsf:action="#{Metadaten.fileManipulation.exportFiles}"
-                                    onclick="goobiWorkflowJS.meScrollPos.storeScrollPos(); if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-                                    #{msgs.exportFiles}
-                                </button>
+                            <div class="form-input">
+                                <h:selectBooleanCheckbox id="deleteAfter" pt:aria-label="#{msgs.deleteAfterMove}" styleClass="form-check-input"
+                                    value="#{Metadaten.fileManipulation.deleteFilesAfterMove}" />
                             </div>
-                        </section:body>
-                    </div>
+                        </div>
+                        <div class="p-3 d-flex justify-content-end gap-2">
+                            <button
+                                jsf:id="exportFiles"
+                                class="btn btn-neutral-600"
+                                jsf:action="#{Metadaten.fileManipulation.exportFiles}"
+                                onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
+                                #{msgs.exportFiles}
+                            </button>
+                        </div>
+                    </section:body>
                 </section:section>
             </div>
         </h:form>

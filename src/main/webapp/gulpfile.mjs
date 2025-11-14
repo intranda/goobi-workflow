@@ -51,9 +51,13 @@ const sources = {
         '!./uii/template/js/legacy/**/*',
         '!./uii/template/js/editor/**/*.js',
         '!./uii/template/js/media/**/*.js',
+        '!./uii/template/js/image/**/*.js',
     ],
     editors: [
         'uii/template/js/editor/**/*.js',
+    ],
+    image: [
+        'uii/template/js/image/**/*.js',
     ],
     prosemirror: 'uii/template/js/editor/prosemirror.js',
     codemirror: 'uii/template/js/editor/codemirror.js',
@@ -214,6 +218,33 @@ function prodJsRollup() {
         });
 };
 
+function image() {
+    const buildImageView = (filename) => {
+    return rollup
+        .rollup({
+            input: `./uii/template/js/image/${filename}.js`,
+            plugins: [
+                cleanup(),
+            ],
+        })
+        .then(bundle => {
+            return bundle.write({
+                file: `${customLocation}${targetFolder.js}${filename}.min.js`,
+                format: 'iife',
+                sourcemap: true,
+                plugins: [terser({
+                    mangle:true
+                })]
+            });
+        });
+    };
+
+    return Promise.all([
+        buildImageView('image'),
+        buildImageView('lightbox'),
+    ]);
+}
+
 function editors() {
     const buildEditor = (inputFile, outputName) => {
         return rollup
@@ -334,6 +365,7 @@ function dev() {
     watch(sources.composites, { ignoreInitial: false }, composites);
     watch(sources.taglibs, { ignoreInitial: false }, taglibs);
     watch(sources.includes, { ignoreInitial: false }, includes);
+    watch(sources.image, { ignoreInitial: false }, image);
 };
 const prod = parallel(
     BsJs,
@@ -344,6 +376,7 @@ const prod = parallel(
     icons,
     editors,
     media,
+    image,
 );
 
 export { dev, prod };

@@ -1,0 +1,22 @@
+.imagefilters {
+    padding: 0.5rem 0.75rem;
+
+    &_filter-list {
+        margin-block-end: 1em;
+    }
+
+    &_label {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+    }
+
+    &_slider {
+        width: 100%;
+    }
+
+    &_options {
+        display: flex;
+        justify-content: flex-end;
+    }
+}

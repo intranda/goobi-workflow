@@ -41,31 +41,32 @@
                     <li class="nav-item d-none d-md-block #{Metadaten.treeProperties.showOcr eq 'true' ? 'active' :''}">
                         <button jsf:id="ocrButton" aria-label="#{msgs.mets_showOcrForCurrentImage}" class="nav-link" jsf:action="#{NavigationForm.Reload}" title="#{msgs.mets_showOcrForCurrentImage}" role="button" data-bs-toggle="tooltip" data-bs-placement="bottom">
                             <span class="fa fa-file-text-o fa-lg" aria-hidden="true"/>
+                            <f:ajax render=":mainimagearea @form"/>
                             <f:setPropertyActionListener value="true" target="#{Metadaten.treeProperties.showOcr}"/>
-                            <f:setPropertyActionListener value="" property="#{Metadaten.treeProperties.showThumbnails}" target="#{Metadaten.treeProperties.showThumbnails}"/>
+                            <f:setPropertyActionListener value="false" property="#{Metadaten.treeProperties.showThumbnails}" target="#{Metadaten.treeProperties.showThumbnails}"/>
                         </button>
                     </li>
                 </ui:fragment>
                 <!-- TOGGLE IMAGE VIEW -->
                 <li class="nav-item d-none d-md-block #{Metadaten.treeProperties.showOcr ne 'true' and Metadaten.treeProperties.showThumbnails ne 'true' ? 'active' :''}">
-                    <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" class="nav-link" jsf:id="showSinglePage" aria-label="#{msgs.mets_showImagesOne}" jsf:action="#{Metadaten.toggleImageView}" title="#{msgs.mets_showImagesOne}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                    <button class="nav-link" jsf:id="showSinglePage" aria-label="#{msgs.mets_showImagesOne}" jsf:action="#{Metadaten.toggleImageView}" title="#{msgs.mets_showImagesOne}" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
-                        <f:ajax render=":openseadragonform :thumbnailsForm"/>
+                        <f:ajax render=":mainimagearea @form"/>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
-                        <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showThumbnails}"/>
-                        <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showOcr}"/>
+                        <f:setPropertyActionListener value="false" target="#{Metadaten.treeProperties.showThumbnails}"/>
+                        <f:setPropertyActionListener value="false" target="#{Metadaten.treeProperties.showOcr}"/>
                     </button>
                 </li>
 
                 <!-- TOGGLE IMAGE VIEW -->
-                <li class="nav-item d-none d-md-block #{Metadaten.treeProperties.showThumbnails ne '' ? 'active' :''}">
-                    <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" class="nav-link" jsf:id="showThumbnails" aria-label="#{msgs.mets_showImagesThumbs}" jsf:action="#{Metadaten.toggleImageView}" title="#{msgs.mets_showImagesThumbs}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                <li class="nav-item d-none d-md-block #{Metadaten.treeProperties.showThumbnails ne 'false' ? 'active' :''}">
+                    <button class="nav-link" jsf:id="showThumbnails" aria-label="#{msgs.mets_showImagesThumbs}" jsf:action="#{Metadaten.toggleImageView}" title="#{msgs.mets_showImagesThumbs}" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
                         <span class="fa fa-picture-o fa-lg" aria-hidden="true"/>
-                        <f:ajax render=":openseadragonform :thumbnailsForm"/>
+                        <f:ajax render=":mainimagearea @form"/>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
                         <f:setPropertyActionListener value="true" property="#{Metadaten.treeProperties.showThumbnails}" target="#{Metadaten.treeProperties.showThumbnails}"/>
-                        <f:setPropertyActionListener value="" target="#{Metadaten.treeProperties.showOcr}"/>
+                        <f:setPropertyActionListener value="false" target="#{Metadaten.treeProperties.showOcr}"/>
                     </button>
                 </li>
 
@@ -195,7 +196,7 @@
 
                     <button class="nav-link" jsf:id="startValidation" aria-label="#{msgs.validieren}" jsf:action="#{Metadaten.Validate}" title="#{msgs.validieren}" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <span class="fa fa-check fa-lg" aria-hidden="true"/>
-                        <f:ajax onevent="data =&gt; goobiWorkflowJS.meScrollPos.init(data)" render="@form :pageContentCenter @form :treeform"/>
+                        <f:ajax render="@form :pageContentCenter @form :treeform"/>
                     </button>
 
                     <h:commandButton type="button" id="startValidationButtonAjax" style="display:none" action="#{Metadaten.Validate}" title="#{msgs.validieren}" rel="tooltip">
@@ -238,14 +239,7 @@
                         <!-- This button may not be removed or merged into the
                         button above. It is called AFTER the javascript of the
                         button above has terminated. -->
-                        <button onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()" style="display: none" jsf:id="saveMetsFileButton" jsf:action="#{Metadaten.Reload}">
-                            <!--
-                            <f:ajax
-                                onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
-                                execute="@form"
-                                render="@form :pageContentCenter @form :treeform"
-                            />
-                            -->
+                        <button style="display: none" jsf:id="saveMetsFileButton" jsf:action="#{Metadaten.Reload}">
                         </button>
 
                         <h:panelGroup style="display:none" styleClass="navigationitem" id="saveMetsFileImage">
@@ -278,7 +272,7 @@
                                 <h:commandLink
                                     id="saveAndExit"
                                     action="#{Metadaten.XMLschreiben}"
-                                    onclick="goobiWorkflowJS.displayProgressBar(); goobiWorkflowJS.meScrollPos.destroyScrollPos()"
+                                    onclick="goobiWorkflowJS.displayProgressBar();"
                                     styleClass="dropdown-item">
                                     <span class="fa fa-floppy-o" aria-hidden="true"/>
                                     #{msgs.speichernZurueck}
@@ -288,7 +282,6 @@
 
                         <li>
                             <h:commandLink
-                                onclick="goobiWorkflowJS.meScrollPos.destroyScrollPos()"
                                 id="exitOnly"
                                 action="#{Metadaten.goZurueck}"
                                 rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}"

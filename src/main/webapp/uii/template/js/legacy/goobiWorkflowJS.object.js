@@ -110,7 +110,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
             _mediaType = $( '#mediaType' ).val();
 
-            if ( _mediaType == 'image' || _mediaType == 'pdf' ) { 
+            if ( _mediaType == 'image' || _mediaType == 'pdf' ) {
             	// goobiWorkflowJS.object.freeJSResources();
                 // let imageZoomPersistenzeId = $( '#persistenceId' ).val();
                 // if(imageZoomPersistenzeId && imageZoomPersistenzeId.length > 0) {
@@ -126,7 +126,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 // _configViewer.image.tileSource = tileSource;
                 // _viewImage = new ImageView.Image(_configViewer);
                 // _viewImage.load().then( function () {
-                //     goobiWorkflowJS.layout.setObjectViewHeight();
                 //     goobiWorkflow.object.initControls();
                 //     goobiWorkflow.object.initAreas();
                 //     _viewImage.controls.goHome();
@@ -163,7 +162,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
             else if ( _mediaType == 'object' ) {
                 $( '#imageLoader' ).show();
-                goobiWorkflowJS.layout.setObjectViewHeight();
                 _world = WorldGenerator.create(_worldConfig);
                 _world.loadObject( {
                     url: $( '#objectUrl' ).val(),

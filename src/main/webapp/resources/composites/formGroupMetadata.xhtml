@@ -49,8 +49,7 @@
                         <span class="fa fa-lock" />
                         <f:ajax
                             execute="restrictBtn"
-                            render="restrictBtn"
-                            onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Metadaten'})}" />
+                            render="restrictBtn" />
                         <f:setPropertyActionListener
                             value="#{not cc.attrs.metadata.restricted}"
                             target="#{cc.attrs.metadata.restricted}" />

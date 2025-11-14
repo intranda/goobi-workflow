@@ -14,7 +14,7 @@
         <h:form id="treeform" styleClass="treeform">
             <h:inputText id="hiddenwidth" value="#{Metadaten.treeWidth}" style="display:none;"/>
             <!-- METSEDITOR STRUCTURE -->
-            <ol role="list" id="meStructure" class="treeform-list">
+            <ol role="list" id="meStructure" class="treeform-list" data-save-scroll-position="true">
                 <ui:repeat value="#{Metadaten.strukturBaum3}" var="item">
                     <li class="treeView-item" style="--level: #{item.niveau}">
                         <div class="spacer"/>
@@ -145,7 +145,6 @@
                 <li>
                     <!-- Verlinkung des Bildes mit dem gewaehlten Strukturelement -->
                     <button
-                        onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
                         jsf:id="linkImage"
                         aria-label="#{msgs.verlinkungDesBildesMitStrukturelement}"
                         jsf:action="#{Metadaten.BildBlaettern}"

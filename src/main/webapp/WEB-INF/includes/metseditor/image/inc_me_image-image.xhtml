@@ -15,9 +15,10 @@
     <composite:interface />
 
     <composite:implementation>
-        <h:form 
+        <h:form
             prependId="false"
-            id="openseadragonform">
+            id="openseadragonform"
+            styleClass="#{!Metadaten.treeProperties.showThumbnails ? 'h-100 ' : ''}d-flex flex-column">
             <h:panelGroup id="jsonAltoGroup">
                 <h:inputText
                     class="d-none"
@@ -31,7 +32,7 @@
             <div
                 jsf:rendered="#{!Metadaten.treeProperties.showThumbnails}"
                 id="objectControlWrapper"
-                class="image__object-control-wrapper">
+                class="image__object-control-wrapper d-flex flex-column flex-grow-1">
                 <!-- IMAGE NAVIGATION -->
                 <ui:fragment rendered="#{Metadaten.image != null and Metadaten.bildNummer != '-1'}">
                     <ui:include src="inc_me_image-imageNavigation.xhtml" />
@@ -71,7 +72,7 @@
                 <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''  and Metadaten.treeProperties.showOcr ne 'true'}">
                     <div
                         id="objectWrapper"
-                        class="image__object-wrapper">
+                        class="image__object-wrapper d-flex flex-column flex-grow-1">
                         <!-- HIDDEN FIELDS FOR OBJECT VIEW -->
                         <input
                             type="hidden"
@@ -185,7 +186,7 @@
                         <ui:fragment rendered="#{Metadaten.image.type == 'image' or Metadaten.image.type == 'pdf'}">
                             <!-- MAIN IMAGE CONTAINER -->
                             <div
-                                id="mainImage" style="width:100%; height:80vh;"
+                                id="mainImage" style="width:100%; margin-block-end: 2rem; height: 100% !important;"
                                 class="image__main-image above-overlay border">
                                 <!-- AJAX LOADER -->
                                 <div
@@ -194,7 +195,7 @@
                                     style="display: none;">
                                     <img src="template/img/goobi/ajaxloader2.gif" />
                                 </div>
-                            </div> 
+                            </div>
                         </ui:fragment>
                     </div>
                     <!-- IMAGE CONTROLS -->

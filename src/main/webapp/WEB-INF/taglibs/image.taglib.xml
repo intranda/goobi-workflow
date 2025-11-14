@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib
+    version="2.2"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd">
+    <namespace>http://goobi.io/image</namespace>
+    <tag>
+        <tag-name>lightbox</tag-name>
+        <source>image/lightbox.xhtml</source>
+        <attribute>
+            <description>Provides an id to the lightbox</description>
+            <name>id</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Provides a thumbnail image for the lightbox</description>
+            <name>thumbnail</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Provides a large image for the lightbox</description>
+            <name>image</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Provides an optional caption for the lightbox</description>
+            <name>caption</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>lightbox-gallery</tag-name>
+        <source>image/lightbox-gallery.xhtml</source>
+        <attribute>
+            <description>Provides a collection of images for the lightbox gallery. Must be a list of Image objects.</description>
+            <name>images</name>
+            <required>true</required>
+            <type>java.util.List</type>
+        </attribute>
+        <attribute>
+            <description>Optional thumbnail size in pixels</description>
+            <name>thumbnailSize</name>
+            <required>false</required>
+            <type>java.lang.Integer</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>image</tag-name>
+        <source>image/image.xhtml</source>
+        <attribute>
+            <description>The image object to display</description>
+            <name>image</name>
+            <required>true</required>
+            <type>de.sub.goobi.metadaten.Image</type>
+        </attribute>
+    </tag>
+</facelet-taglib>

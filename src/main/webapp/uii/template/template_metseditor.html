@@ -95,7 +95,7 @@
                         <!-- CONTENT CENTER -->
                         <h:panelGroup
                             id="pageContentCenter"
-                            styleClass="flex-grow-1 p-2 overflow-y-auto overflow-x-hidden border-end h-100 d-flex flex-column #{Metadaten.bildAnzeigen ? 'mx-2' : 'ms-2'}"
+                            styleClass="flex-grow-1 p-2 h-100 d-flex flex-column #{Metadaten.bildAnzeigen ? 'mx-2' : 'ms-2'}"
                             layout="block">
                             <!-- METSEDITOR CONTENT -->
                             <ui:insert name="metseditorContent" />
@@ -156,14 +156,12 @@
                     goobiWorkflowConfig.reloadObject = data?.source?.dataset.renderimage === 'true';
                     goobiWorkflowConfig.isInitialLoad = false;
                     goobiWorkflowJS.init( goobiWorkflowConfig );
-                    goobiWorkflowJS.meScrollPos.restoreScrollPos();
                 }
             });
             document.addEventListener('DOMContentLoaded', function() {
                 const configElement = document.getElementById('gwConfig');
                 const goobiWorkflowConfig = configElement ? JSON.parse(configElement.textContent) : {};
                 goobiWorkflowJS.init( goobiWorkflowConfig );
-                goobiWorkflowJS.meScrollPos.restoreScrollPos();
                 goobiWorkflowJS.navigation.init(goobiWorkflowConfig);
             });
         </script>
