@@ -511,6 +511,7 @@ public final class DatabaseVersion {
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_user_project ON projektbenutzer (BenutzerID, ProjekteID);");
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_status_process ON schritte (Bearbeitungsstatus, ProzesseID);");
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_project_template ON prozesse (ProjekteID, IstTemplate);");
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_sort ON schritte (Prioritaet, SchritteID);");
         } catch (SQLException e) {
             log.error(e);
         }
