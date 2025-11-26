@@ -69,9 +69,9 @@ public final class FilterHelper {
         User aktuellerNutzer = Helper.getCurrentUser();
 
         if (aktuellerNutzer != null && !Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
-            sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
+            sb.append("JOIN projektbenutzer pb ON pb.ProjekteID = projekte.ProjekteID AND pb.BenutzerID = ");
             sb.append(aktuellerNutzer.getId());
-            sb.append(")");
+
         }
         return sb.toString();
     }
@@ -100,12 +100,6 @@ public final class FilterHelper {
             answer.append(" (Bearbeitungsstatus = 1 OR  Bearbeitungsstatus = 2 OR  Bearbeitungsstatus = 4) ");
 
         }
-
-        /* only assigned projects */
-
-        answer.append(
-                " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
-                        + userId + ") ");
 
         /*
          * only steps assigned to the user groups the current user is member of
@@ -681,7 +675,7 @@ public final class FilterHelper {
     }
 
     private static StringBuilder checkStringBuilder(StringBuilder filter, boolean conjunction) {
-        if (filter.toString().endsWith("(")) {
+        if (filter.toString().endsWith("(") || filter.toString().endsWith(" WHERE ")) {
             return filter;
         }
 
@@ -725,14 +719,34 @@ public final class FilterHelper {
         boolean flagSteps = false;
         boolean flagProcesses = false;
 
+        filter.append(limitToUserAccessRights());
+        filter.append(" WHERE ");
+        // this is needed if we filter processes
         if (isProcess) {
             flagProcesses = true;
+
+            if (isTemplate != null) {
+
+                if (!isTemplate) {
+                    filter = checkStringBuilder(filter, true);
+                    filter.append(" prozesse.istTemplate = false ");
+                } else {
+                    filter = checkStringBuilder(filter, true);
+                    filter.append(" prozesse.istTemplate = true ");
+                }
+            }
         }
 
+        // this is needed if we filter steps
         if (isStep) {
             flagSteps = true;
+
+            filter = checkStringBuilder(filter, true);
+            filter.append(limitToUserAssignedSteps(stepOpenOnly, userAssignedStepsOnly, hideStepsFromOtherUsers));
+
             filter = checkStringBuilder(filter, true);
             filter.append(" prozesse.istTemplate = false ");
+
         }
 
         // preparation to filter for step dates
@@ -802,30 +816,6 @@ public final class FilterHelper {
         StringTokenizer tokenizer = new StringTokenizer(inFilter, ' ', '\"');
 
         // conjunctions collecting conditions
-
-        // this is needed if we filter processes
-        if (flagProcesses) {
-            filter = checkStringBuilder(filter, true);
-            filter.append(limitToUserAccessRights());
-
-            if (isTemplate != null) {
-
-                if (!isTemplate) {
-                    filter = checkStringBuilder(filter, true);
-                    filter.append(" prozesse.istTemplate = false ");
-                } else {
-                    filter = checkStringBuilder(filter, true);
-                    filter.append(" prozesse.istTemplate = true ");
-                }
-            }
-
-        }
-
-        // this is needed if we filter steps
-        if (flagSteps) {
-            filter = checkStringBuilder(filter, true);
-            filter.append(limitToUserAssignedSteps(stepOpenOnly, userAssignedStepsOnly, hideStepsFromOtherUsers));
-        }
 
         if (!inFilter.isEmpty()) {
             filter = checkStringBuilder(filter, true);
