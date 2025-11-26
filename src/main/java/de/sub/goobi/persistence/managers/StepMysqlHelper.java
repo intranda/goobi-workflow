@@ -96,6 +96,33 @@ public final class StepMysqlHelper implements Serializable {
         }
     }
 
+    /* TODO
+    SELECT
+    COUNT(DISTINCT s.SchritteID)
+    FROM
+    schritte s
+        JOIN
+    prozesse p ON s.ProzesseID = p.ProzesseID
+        JOIN
+    projekte pr ON p.ProjekteID = pr.ProjekteID
+        JOIN
+    projektbenutzer pb ON pb.ProjekteID = p.ProjekteID
+        AND pb.BenutzerID = 8
+        LEFT JOIN
+    schritteberechtigtegruppen sbg ON sbg.SchritteID = s.SchritteID
+        LEFT JOIN
+    benutzergruppenmitgliedschaft bgm ON bgm.BenutzerGruppenID = sbg.BenutzerGruppenID
+        AND bgm.BenutzerID = 8
+        LEFT JOIN
+    schritteberechtigtebenutzer sbb ON sbb.SchritteID = s.SchritteID
+        AND sbb.BenutzerID = 8
+    WHERE
+    p.IstTemplate = 0
+        AND s.Bearbeitungsstatus IN (1 , 2, 4)
+        AND pr.projectIsArchived = 0
+        AND (bgm.BenutzerID IS NOT NULL
+        OR sbb.BenutzerID IS NOT NULL);
+    */
     public static int getStepCount(String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -113,7 +140,7 @@ public final class StepMysqlHelper implements Serializable {
         }
 
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(filter);
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append(" WHERE schritte.SchritteID > 0 ");
         }
@@ -132,6 +159,25 @@ public final class StepMysqlHelper implements Serializable {
             }
         }
     }
+
+    /*
+    
+    SELECT DISTINCT s.*
+    FROM  schritte s
+    JOIN prozesse p ON s.ProzesseID = p.ProzesseID
+    JOIN projekte pr ON p.ProjekteID = pr.ProjekteID
+    JOIN projektbenutzer pb ON pb.ProjekteID = p.ProjekteID AND pb.BenutzerID = 8
+    LEFT JOIN schritteberechtigtegruppen sbg ON sbg.SchritteID = s.SchritteID
+    LEFT JOIN benutzergruppenmitgliedschaft bgm ON bgm.BenutzerGruppenID = sbg.BenutzerGruppenID AND bgm.BenutzerID = 8
+    LEFT JOIN schritteberechtigtebenutzer sbb ON sbb.SchritteID = s.SchritteID AND sbb.BenutzerID = 8
+    WHERE p.IstTemplate = 0
+    AND s.Bearbeitungsstatus IN (1,2,4)
+    AND pr.projectIsArchived = 0
+    AND (bgm.BenutzerID IS NOT NULL OR sbb.BenutzerID IS NOT NULL)
+    #ORDER BY s.SchritteID DESC
+    LIMIT 0, 1000;
+    
+     */
 
     public static List<Step> getSteps(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         Connection connection = null;
@@ -152,7 +198,7 @@ public final class StepMysqlHelper implements Serializable {
         String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(filter);
         }
         if (StringUtils.isNotBlank(sortfield)) {
             sql.append(" ORDER BY " + sortfield);

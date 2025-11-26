@@ -250,7 +250,7 @@ final class ProcessMysqlHelper implements Serializable {
         }
 
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(filter);
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append("WHERE ProzesseID > 0 ");
         }
@@ -281,7 +281,7 @@ final class ProcessMysqlHelper implements Serializable {
         String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(filter);
         }
         if (StringUtils.isNotBlank(sortfield)) {
             sql.append(" ORDER BY " + sortfield);
@@ -490,7 +490,7 @@ final class ProcessMysqlHelper implements Serializable {
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
 
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(filter);
         }
         if (order.isPresent()) {
             String sortfield = MySQLHelper.prepareSortField(order.get(), sql);
@@ -518,7 +518,7 @@ final class ProcessMysqlHelper implements Serializable {
     public static int countProcesses(String filter) throws SQLException {
         StringBuilder sql = new StringBuilder("select count(1) from prozesse ");
         if (filter != null && filter.length() > 0) {
-            sql.append(" WHERE ").append(filter);
+            sql.append(filter);
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append(" WHERE ProzesseID > 0");
         }
