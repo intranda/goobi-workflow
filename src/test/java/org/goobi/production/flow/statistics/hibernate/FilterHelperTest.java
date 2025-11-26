@@ -78,12 +78,6 @@ public class FilterHelperTest extends AbstractTest {
     }
 
     @Test
-    public void testLimitToUserAssignedSteps() {
-        String result = FilterHelper.limitToUserAssignedSteps(true, false, false);
-        assertEquals("", result);
-    }
-
-    @Test
     public void testGetStepStartWithValidParameter() {
         String parameter = "10-20";
         Integer result = FilterHelper.getStepStart(parameter);
@@ -221,7 +215,7 @@ public class FilterHelperTest extends AbstractTest {
         boolean negate = false;
         List<String> dateFilter = new ArrayList<>();
 
-        String result = FilterHelper.filterStepName(parameters, status, negate, dateFilter);
+        String result = FilterHelper.filterStepName(parameters, status, negate, dateFilter, true);
 
         // Assert that the generated SQL query matches the expected query without negation
         assertTrue(result.contains("schritte.Titel like '%StepName%'"));
@@ -235,10 +229,9 @@ public class FilterHelperTest extends AbstractTest {
         boolean negate = true;
         List<String> dateFilter = new ArrayList<>();
 
-        String result = FilterHelper.filterStepName(parameters, status, negate, dateFilter);
+        String result = FilterHelper.filterStepName(parameters, status, negate, dateFilter, true);
         // Assert that the generated SQL query matches the expected query with negation
-        assertTrue(result.contains("not in (select ProzesseID from schritte"));
-        assertTrue(result.contains("schritte.Titel like '%StepName%'"));
+        assertTrue(result.contains("schritte.Titel not like '%StepName%'"));
         assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
     }
 

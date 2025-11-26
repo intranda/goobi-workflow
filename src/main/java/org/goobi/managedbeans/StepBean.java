@@ -360,15 +360,17 @@ public class StepBean extends BasicBean implements Serializable {
         List<Step> currentStepsOfBatch;
         if (batchNumber != null) {
             // only steps with same title
-            StringBuilder builder = new StringBuilder();
-            builder.append("schritte.titel = '");
-            builder.append(steptitle);
-            builder.append("' AND batchStep = true AND prozesse.batchID = ");
-            builder.append(batchNumber);
-            builder.append(" AND ");
-            builder.append(FilterHelper.limitToUserAssignedSteps(true, false, true));
+            StringBuilder join = new StringBuilder();
+            StringBuilder where = new StringBuilder();
 
-            currentStepsOfBatch = StepManager.getSteps(null, builder.toString(), 0, Integer.MAX_VALUE, institution);
+            where.append("schritte.titel = '");
+            where.append(steptitle);
+            where.append("' AND batchStep = true AND prozesse.batchID = ");
+            where.append(batchNumber);
+            where.append(" AND ");
+            FilterHelper.limitToUserAssignedSteps(true, false, true, join, where);
+
+            currentStepsOfBatch = StepManager.getSteps(null, join.toString() + " WHERE " + where.toString(), 0, Integer.MAX_VALUE, institution);
 
         } else {
             return SchrittDurchBenutzerUebernehmen();
@@ -448,15 +450,17 @@ public class StepBean extends BasicBean implements Serializable {
         List<Step> currentStepsOfBatch;
         if (batchNumber != null) {
             // only steps with same title
-            StringBuilder builder = new StringBuilder();
-            builder.append("schritte.titel = '");
-            builder.append(steptitle);
-            builder.append("' and prozesse.batchID = ");
-            builder.append(batchNumber);
-            builder.append(" AND ");
-            builder.append(FilterHelper.limitToUserAssignedSteps(false, true, true));
+            StringBuilder join = new StringBuilder();
+            StringBuilder where = new StringBuilder();
 
-            currentStepsOfBatch = StepManager.getSteps(null, builder.toString(), 0, Integer.MAX_VALUE, institution);
+            where.append("schritte.titel = '");
+            where.append(steptitle);
+            where.append("' AND batchStep = true AND prozesse.batchID = ");
+            where.append(batchNumber);
+            where.append(" AND ");
+            FilterHelper.limitToUserAssignedSteps(true, false, true, join, where);
+
+            currentStepsOfBatch = StepManager.getSteps(null, join.toString() + " WHERE " + where.toString(), 0, Integer.MAX_VALUE, institution);
 
         } else {
             return RETURN_PAGE_EDIT;

@@ -140,7 +140,7 @@ public class StatisticsBean implements Serializable {
     }
 
     private int getAnzahlAktuelleSchritte(boolean inOffen, boolean inBearbeitet, boolean inHideStepsFromOtherUsers) {
-        String filter = FilterHelper.limitToUserAssignedSteps(inOffen, inBearbeitet, inHideStepsFromOtherUsers);
+        String filter = FilterHelper.criteriaBuilder("", false, inOffen, inBearbeitet, inHideStepsFromOtherUsers, false, true);
         Institution institution = null;
         User user = Helper.getCurrentUser();
         if (user != null && !user.isSuperAdmin()) {
