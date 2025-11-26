@@ -369,7 +369,7 @@ public class FilterHelperTest extends AbstractTest {
     @Test
     public void testFilterProjectWithoutNegate() {
         String tok = "project:ProjectName";
-        String expectedQuery = " prozesse.ProjekteID in (select ProjekteID from projekte where titel like '%ProjectName%')";
+        String expectedQuery = " projekte.titel like '%ProjectName%'";
 
         String result = FilterHelper.filterProject(tok, false);
 
@@ -380,7 +380,7 @@ public class FilterHelperTest extends AbstractTest {
     @Test
     public void testFilterProjectWithNegate() {
         String tok = "project:ProjectName";
-        String expectedQuery = " prozesse.ProjekteID in (select ProjekteID from projekte where titel not like '%ProjectName%')";
+        String expectedQuery = " projekte.titel  not like '%ProjectName%'";
 
         String result = FilterHelper.filterProject(tok, true);
 
