@@ -392,9 +392,9 @@ public class FilterHelperTest extends AbstractTest {
     public void testFilterStepPropertyWithoutNegate() {
         String tok = "stepproperty:Title:Value";
         String expectedQuery =
-                " JOIN properties pr0 ON pr0.object_id = prozesse.ProzesseID  AND pr0.object_type = 'error' AND  MATCH(pr0.property_name, pr0.property_value) AGAINST ('Title Value' IN BOOLEAN MODE) ";
+                " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select object_id from properties where object_type = 'error' AND property_value like ''%Value%'  AND property_name like '%Title%' ))";
 
-        String result = FilterHelper.filterStepProperty(tok, false, 0);
+        String result = FilterHelper.filterStepProperty(tok, false);
 
         // Assert that the generated SQL query matches the expected query without negation
         assertEquals(expectedQuery, result);
@@ -404,9 +404,9 @@ public class FilterHelperTest extends AbstractTest {
     public void testFilterStepPropertyWithNegate() {
         String tok = "stepproperty:Title:Value";
         String expectedQuery =
-                " JOIN properties pr0 ON pr0.object_id = prozesse.ProzesseID  AND pr0.object_type = 'error' AND pr0.property_name LIKE '%Title%' AND pr0.property_value NOT LIKE '%Value%'";
+                " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select object_id from properties where object_type = 'error' AND property_value like '%Value%'  AND property_name like '%Title%' ))";
 
-        String result = FilterHelper.filterStepProperty(tok, true, 0);
+        String result = FilterHelper.filterStepProperty(tok, true);
 
         // Assert that the generated SQL query matches the expected query with negation
         assertEquals(expectedQuery, result);
@@ -442,8 +442,8 @@ public class FilterHelperTest extends AbstractTest {
     public void testFilterProcessPropertyWithoutNegate() {
         String tok = "processproperty:Title:Value";
         String expectedQuery =
-                " JOIN properties pr0 ON pr0.object_id = prozesse.ProzesseID  AND pr0.object_type = 'process' AND  MATCH(pr0.property_name, pr0.property_value) AGAINST ('Title Value' IN BOOLEAN MODE) ";
-        String result = FilterHelper.filterProcessProperty(tok, false, 0);
+                " prozesse.prozesseID in (select object_id from properties where object_type = 'process' AND property_value like '%Value%'  AND property_name like '%Title%' )";
+        String result = FilterHelper.filterProcessProperty(tok, false);
 
         // Assert that the generated SQL query matches the expected query without negation
         assertEquals(expectedQuery, result);
@@ -453,9 +453,9 @@ public class FilterHelperTest extends AbstractTest {
     public void testFilterProcessPropertyWithNegate() {
         String tok = "processproperty:Title:Value";
         String expectedQuery =
-                " JOIN properties pr0 ON pr0.object_id = prozesse.ProzesseID  AND pr0.object_type = 'process' AND pr0.property_name LIKE '%Title%' AND pr0.property_value NOT LIKE '%Value%'";
+                " prozesse.prozesseID in (select object_id from properties where object_type = 'process' AND property_value like '%Value%'  AND property_name like '%Title%' )";
 
-        String result = FilterHelper.filterProcessProperty(tok, true, 0);
+        String result = FilterHelper.filterProcessProperty(tok, true);
 
         // Assert that the generated SQL query matches the expected query with negation
         assertEquals(expectedQuery, result);
