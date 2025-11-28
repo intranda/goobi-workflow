@@ -532,23 +532,22 @@ public final class FilterHelper {
                 if (ts.length > 1) {
                     sb.append("property_name LIKE  '");
                     sb.append(leftTruncationCharacter);
-                    sb.append(MySQLHelper.escapeSql(ts[1]));
+                    sb.append(MySQLHelper.escapeSql(ts[0]));
                     sb.append(rightTruncationCharacter);
-                    sb.append("' AND ");
-                }
-                sb.append("MATCH (property_name) AGAINST ('");
-                if ("BOOLEAN MODE".equals(ConfigurationHelper.getInstance().getFulltextSearchMode())) {
-                    String[] words = ts[0].split(" ");
-                    for (String w : words) {
-                        sb.append("+" + w + "* ");
+                    sb.append("' AND MATCH (property_value) AGAINST ('");
+                    if ("BOOLEAN MODE".equals(ConfigurationHelper.getInstance().getFulltextSearchMode())) {
+                        String[] words = ts[1].split(" ");
+                        for (String w : words) {
+                            sb.append("+" + w + "* ");
+                        }
+                    } else {
+                        sb.append(ts[0]);
                     }
-                } else {
-                    sb.append(ts[0]);
+                    sb.append("' IN ");
+                    sb.append(ConfigurationHelper.getInstance().getFulltextSearchMode());
+                    sb.append("))");
+                    return sb.toString();
                 }
-                sb.append("' IN ");
-                sb.append(ConfigurationHelper.getInstance().getFulltextSearchMode());
-                sb.append("))");
-                return sb.toString();
             }
 
             if (ts.length > 1) {

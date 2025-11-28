@@ -512,6 +512,8 @@ public final class DatabaseVersion {
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_status_process ON schritte (Bearbeitungsstatus, ProzesseID);");
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_project_template ON prozesse (ProjekteID, IstTemplate);");
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_sort ON schritte (Prioritaet, SchritteID);");
+            DatabaseVersion.runSql("ALTER TABLE properties ADD FULLTEXT ft_value (property_value);");
+            DatabaseVersion.runSql("ALTER TABLE metadata ADD FULLTEXT ft_meta (value);");
         } catch (SQLException e) {
             log.error(e);
         }
