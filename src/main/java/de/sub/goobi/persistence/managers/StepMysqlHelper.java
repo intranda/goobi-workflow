@@ -99,7 +99,7 @@ public final class StepMysqlHelper implements Serializable {
     public static int getStepCount(String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(1) FROM schritte ");
+        sql.append("SELECT COUNT(DISTINCT schritte.SchritteID) FROM schritte ");
         if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname()) && filter.contains("Bearbeitungsstatus")) {
             sql.append("use index (" + ConfigurationHelper.getInstance().getSqlTasksIndexname() + ") ");
         }
@@ -113,11 +113,10 @@ public final class StepMysqlHelper implements Serializable {
         }
 
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(filter);
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append(" WHERE schritte.SchritteID > 0 ");
         }
-
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
@@ -136,7 +135,7 @@ public final class StepMysqlHelper implements Serializable {
     public static List<Step> getSteps(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT schritte.* ");
+        sql.append("SELECT DISTINCT schritte.* ");
         sql.append(" FROM schritte ");
         if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname()) && filter.contains("Bearbeitungsstatus")) {
             sql.append("use index (" + ConfigurationHelper.getInstance().getSqlTasksIndexname() + ") ");
@@ -152,7 +151,7 @@ public final class StepMysqlHelper implements Serializable {
         String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(filter);
         }
         if (StringUtils.isNotBlank(sortfield)) {
             sql.append(" ORDER BY " + sortfield);
@@ -160,7 +159,6 @@ public final class StepMysqlHelper implements Serializable {
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);
         }
-
         try {
 
             connection = MySQLHelper.getInstance().getConnection();

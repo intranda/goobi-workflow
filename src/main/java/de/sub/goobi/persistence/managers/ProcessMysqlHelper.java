@@ -250,11 +250,12 @@ final class ProcessMysqlHelper implements Serializable {
         }
 
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(filter);
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append("WHERE ProzesseID > 0 ");
         }
-
+        long startTime = System.currentTimeMillis();
+        System.out.println(sql.toString());
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
@@ -262,6 +263,7 @@ final class ProcessMysqlHelper implements Serializable {
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
+            System.out.println("Count time: " + (System.currentTimeMillis() - startTime));
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
@@ -281,7 +283,7 @@ final class ProcessMysqlHelper implements Serializable {
         String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(filter);
         }
         if (StringUtils.isNotBlank(sortfield)) {
             sql.append(" ORDER BY " + sortfield);
@@ -289,15 +291,16 @@ final class ProcessMysqlHelper implements Serializable {
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);
         }
+        long startTime = System.currentTimeMillis();
+        System.out.println(sql.toString());
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Process> ret = null;
-            ret = new QueryRunner().query(connection, sql.toString(), ProcessManager.resultSetToProcessListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), ProcessManager.resultSetToProcessListHandler);
         } finally {
+            System.out.println("getProcesses time: " + (System.currentTimeMillis() - startTime));
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
@@ -319,6 +322,8 @@ final class ProcessMysqlHelper implements Serializable {
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);
         }
+        long startTime = System.currentTimeMillis();
+        System.out.println(sql.toString());
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
@@ -328,6 +333,7 @@ final class ProcessMysqlHelper implements Serializable {
             ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
             return ret;
         } finally {
+            System.out.println("getProcessIdList time: " + (System.currentTimeMillis() - startTime));
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
@@ -490,7 +496,7 @@ final class ProcessMysqlHelper implements Serializable {
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
 
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(filter);
         }
         if (order.isPresent()) {
             String sortfield = MySQLHelper.prepareSortField(order.get(), sql);
@@ -518,7 +524,7 @@ final class ProcessMysqlHelper implements Serializable {
     public static int countProcesses(String filter) throws SQLException {
         StringBuilder sql = new StringBuilder("select count(1) from prozesse ");
         if (filter != null && filter.length() > 0) {
-            sql.append(" WHERE ").append(filter);
+            sql.append(filter);
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append(" WHERE ProzesseID > 0");
         }
