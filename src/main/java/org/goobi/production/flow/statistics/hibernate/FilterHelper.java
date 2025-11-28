@@ -521,30 +521,81 @@ public final class FilterHelper {
         return dateField + value;
     }
 
-    protected static String filterProcessProperty(String tok, boolean negate) {
-        /* Filtering by signature */
-        /* Filtering by signature */
+    private static String filterProperty(String tok, boolean negate, String propertyType) {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
+        StringBuilder sb = new StringBuilder();
         if (!negate) {
-            if (ts.length > 1) {
-                return "prozesse.ProzesseID in (select object_id from properties where object_type = 'process' AND properties.property_name like '"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter
-                        + "' AND properties.property_value like '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1])
-                        + rightTruncationCharacter + "' )";
+            // use performant fulltext search
+            if (ConfigurationHelper.getInstance().isUseFulltextSearch()) {
+                sb.append("prozesse.ProzesseID IN ");
+                sb.append("(select object_id from properties where object_type = '").append(propertyType).append("' AND ");
+                if (ts.length > 1) {
+                    sb.append("property_name LIKE  '");
+                    sb.append(leftTruncationCharacter);
+                    sb.append(MySQLHelper.escapeSql(ts[1]));
+                    sb.append(rightTruncationCharacter);
+                    sb.append("' AND ");
+                }
+                sb.append("MATCH (property_name) AGAINST ('");
+                if ("BOOLEAN MODE".equals(ConfigurationHelper.getInstance().getFulltextSearchMode())) {
+                    String[] words = ts[0].split(" ");
+                    for (String w : words) {
+                        sb.append("+" + w + "* ");
+                    }
+                } else {
+                    sb.append(ts[0]);
+                }
+                sb.append("' IN ");
+                sb.append(ConfigurationHelper.getInstance().getFulltextSearchMode());
+                sb.append("))");
+                return sb.toString();
+            }
 
+            if (ts.length > 1) {
+                sb.append(" prozesse.prozesseID in ");
+                sb.append("(select object_id from properties where object_type = '").append(propertyType).append("' AND property_value like '");
+                sb.append(leftTruncationCharacter);
+                sb.append(MySQLHelper.escapeSql(ts[1]));
+                sb.append(rightTruncationCharacter);
+                sb.append("'  AND property_name like '");
+                sb.append(leftTruncationCharacter);
+                sb.append(MySQLHelper.escapeSql(ts[0]));
+                sb.append(rightTruncationCharacter);
+                sb.append("' )");
             } else {
-                return "prozesse.ProzesseID in (select object_id from properties where object_type = 'process' AND properties.property_value like '"
-                        + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
+                sb.append(" prozesse.prozesseID in ");
+                sb.append(" (select object_id from properties where object_type = '").append(propertyType).append("' AND property_value like '");
+                sb.append(leftTruncationCharacter);
+                sb.append(MySQLHelper.escapeSql(ts[0]));
+                sb.append(rightTruncationCharacter);
+                sb.append("')");
+
             }
         } else if (ts.length > 1) {
-            return "prozesse.ProzesseID not in (select object_id from properties where object_type = 'process' AND properties.property_name like  '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter
-                    + "' AND properties.property_value like '" + leftTruncationCharacter + MySQLHelper.escapeSql(ts[1])
-                    + rightTruncationCharacter + "' )";
+            sb.append(" prozesse.prozesseID in ");
+            sb.append("(select object_id from properties where object_type = '").append(propertyType).append("' AND property_value like '");
+            sb.append(leftTruncationCharacter);
+            sb.append(MySQLHelper.escapeSql(ts[1]));
+            sb.append(rightTruncationCharacter);
+            sb.append("'  AND property_name like '");
+            sb.append(leftTruncationCharacter);
+            sb.append(MySQLHelper.escapeSql(ts[0]));
+            sb.append(rightTruncationCharacter);
+            sb.append("' )");
         } else {
-            return "prozesse.ProzesseID not in (select object_id from properties where object_type = 'process' AND properties.property_value like '"
-                    + leftTruncationCharacter + MySQLHelper.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
+            sb.append(" prozesse.prozesseID in ");
+            sb.append("(select object_id from properties where object_type = '").append(propertyType).append("' AND property_value like '");
+            sb.append(leftTruncationCharacter);
+            sb.append(MySQLHelper.escapeSql(ts[0]));
+            sb.append(rightTruncationCharacter);
+            sb.append("')");
         }
+
+        return sb.toString();
+    }
+
+    protected static String filterProcessProperty(String tok, boolean negate) {
+        return filterProperty(tok, negate, "process");
     }
 
     protected static String filterMetadataValue(String tok, boolean negate) {
@@ -833,7 +884,6 @@ public final class FilterHelper {
         // expressions
 
         StringTokenizer tokenizer = new StringTokenizer(inFilter, ' ', '\"');
-
         // conjunctions collecting conditions
 
         if (!inFilter.isEmpty()) {
