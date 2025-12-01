@@ -254,8 +254,6 @@ final class ProcessMysqlHelper implements Serializable {
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append("WHERE ProzesseID > 0 ");
         }
-        long startTime = System.currentTimeMillis();
-        System.out.println(sql.toString());
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
@@ -263,7 +261,6 @@ final class ProcessMysqlHelper implements Serializable {
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
-            System.out.println("Count time: " + (System.currentTimeMillis() - startTime));
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
@@ -291,8 +288,6 @@ final class ProcessMysqlHelper implements Serializable {
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);
         }
-        long startTime = System.currentTimeMillis();
-        System.out.println(sql.toString());
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
@@ -300,7 +295,6 @@ final class ProcessMysqlHelper implements Serializable {
             }
             return new QueryRunner().query(connection, sql.toString(), ProcessManager.resultSetToProcessListHandler);
         } finally {
-            System.out.println("getProcesses time: " + (System.currentTimeMillis() - startTime));
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
