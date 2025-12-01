@@ -104,9 +104,9 @@ public class BatchBean extends BasicBean implements Serializable {
         Batch batch = inBatch;
         String filter = "";
         if (batch != null) {
-            filter = " batchID = " + batch.getBatchId() + " AND istTemplate = false ";
+            filter = "WHERE batchID = " + batch.getBatchId() + " AND istTemplate = false ";
         } else {
-            filter = " batchID is NULL AND istTemplate = false ";
+            filter = "WHERE batchID is NULL AND istTemplate = false ";
         }
 
         String msg1 = Helper.getTranslation("batch");
