@@ -58,7 +58,7 @@ public abstract class AbstractGenericPlugin implements IGenericPlugin {
         UIComponent parent = FacesContext.getCurrentInstance().getApplication().createComponent(HtmlPanelGroup.COMPONENT_TYPE);
         parent.setId("pluginModal" + getId());
 
-        Resource componentResource = context.getApplication().getResourceHandler().createResource("barcodeModal.xhtml", "plugins");
+        Resource componentResource = context.getApplication().getResourceHandler().createResource(this.getModalFileName(), "plugins");
         UIComponent composite = application.createComponent(context, componentResource);
         composite.setId("pluginModal" + getId());
 
@@ -88,7 +88,7 @@ public abstract class AbstractGenericPlugin implements IGenericPlugin {
     }
 
     public synchronized UIComponent getModal() {
-        if (this.modal == null && this.getModalPath() != null) {
+        if (this.modal == null && this.getModalFileName() != null) {
             this.modal = generateModalComponent();
         }
         return this.modal;
