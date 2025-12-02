@@ -688,6 +688,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         if ("vorlagen".equals(this.modusAnzeige)) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
+            } else {
+                sql = " WHERE ";
             }
             sql = sql + " prozesse.istTemplate = true ";
         } else {
