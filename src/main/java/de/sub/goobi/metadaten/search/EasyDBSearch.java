@@ -200,6 +200,7 @@ public class EasyDBSearch {
 
             searchResponse = easydbRoot.path(searchRquestPath)
                     .queryParam("token", token.getAccess_token())
+                    .queryParam("access_token", token.getAccess_token())
                     //                .queryParam("pretty", 1)
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .post(Entity.json(request), EasydbSearchResponse.class);
