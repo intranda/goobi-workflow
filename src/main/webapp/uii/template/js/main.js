@@ -7,6 +7,10 @@ import {
     saveAllScrollPositions,
 } from './modules/saveScrollPosition';
 import { initAutosave } from './modules/metseditor/autosave';
+import { AjaxButtonManager } from './modules/ajax/buttonManager';
+
+// Initialize AjaxButtonManager
+const ajaxButtonManager = new AjaxButtonManager();
 
 // Initialize all functions on initial page load
 document.addEventListener('DOMContentLoaded', () => {
