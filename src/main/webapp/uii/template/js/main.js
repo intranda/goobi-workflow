@@ -1,6 +1,6 @@
 // custom JS
 import { initFunctions } from './modules/inits';
-import { toggleLoaders } from './modules/gwAjaxLoader';
+import { toggleLoaders } from './modules/ajax/displayLoader';
 import {
     initSaveScrollPosition,
     restoreAllScrollPositions,
