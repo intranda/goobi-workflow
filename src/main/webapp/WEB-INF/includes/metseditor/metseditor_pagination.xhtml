@@ -212,7 +212,13 @@
                                         <ul role="list" class="p-0 m-0">
                                             <li class="pb-2">
                                                 <div class="btn-group w-100">
-                                                    <button jsf:id="moveUp1" class="btn btn-blank" jsf:action="#{Metadaten.moveSelectedPages('up', 1)}" type="button">
+                                                    <button
+                                                        jsf:id="moveUp1"
+                                                        class="btn btn-blank"
+                                                        jsf:action="#{Metadaten.moveSelectedPages('up', 1)}"
+                                                        type="button"
+                                                        data-disable-on-ajax="group"
+                                                        data-ajax-group="pageMoveButtons">
                                                         <util:icon-text
                                                             icon="chevron-up"
                                                             text="#{msgs.moveSeltectedPagesUp}"
@@ -224,25 +230,45 @@
                                                     </button>
                                                     <ol class="dropdown-menu">
                                                         <li>
-                                                            <button class="dropdown-item" jsf:id="moveUp10" jsf:action="#{Metadaten.moveSelectedPages('up', 10)}">
+                                                            <button
+                                                                class="dropdown-item"
+                                                                jsf:id="moveUp10"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('up', 10)}"
+                                                                data-disable-on-ajax="group"
+                                                                data-ajax-group="pageMoveButtons">
                                                                 10
                                                                 <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
                                                             </button>
                                                         </li>
                                                         <li>
-                                                            <button class="dropdown-item" jsf:id="moveUp50" jsf:action="#{Metadaten.moveSelectedPages('up', 50)}">
+                                                            <button
+                                                                class="dropdown-item"
+                                                                jsf:id="moveUp50"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('up', 50)}"
+                                                                data-disable-on-ajax="group"
+                                                                data-ajax-group="pageMoveButtons">
                                                                 50
                                                                 <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
                                                             </button>
                                                         </li>
                                                         <li>
-                                                            <button class="dropdown-item" jsf:id="moveUp100" jsf:action="#{Metadaten.moveSelectedPages('up', 100)}">
+                                                            <button
+                                                                class="dropdown-item"
+                                                                jsf:id="moveUp100"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('up', 100)}"
+                                                                data-disable-on-ajax="group"
+                                                                data-ajax-group="pageMoveButtons">
                                                                 100
                                                                 <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
                                                             </button>
                                                         </li>
                                                         <li>
-                                                            <button class="dropdown-item" jsf:id="moveUp1000" jsf:action="#{Metadaten.moveSelectedPages('up', 1000)}">
+                                                            <button
+                                                                class="dropdown-item"
+                                                                jsf:id="moveUp1000"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('up', 1000)}"
+                                                                data-disable-on-ajax="group"
+                                                                data-ajax-group="pageMoveButtons">
                                                                 1000
                                                                 <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
                                                             </button>
@@ -254,7 +280,13 @@
 
                                             <li class="pb-2">
                                                 <div class="btn-group w-100">
-                                                    <button jsf:id="moveDown1" class="btn btn-blank" jsf:action="#{Metadaten.moveSelectedPages('down', 1)}" type="button">
+                                                    <button
+                                                        jsf:id="moveDown1"
+                                                        class="btn btn-blank"
+                                                        jsf:action="#{Metadaten.moveSelectedPages('down', 1)}"
+                                                        type="button"
+                                                        data-disable-on-ajax="group"
+                                                        data-ajax-group="pageMoveButtons">
                                                         <util:icon-text
                                                             icon="chevron-down"
                                                             text="#{msgs.moveSeltectedPagesDown}"
@@ -267,25 +299,45 @@
 
                                                     <ol class="dropdown-menu">
                                                         <li>
-                                                            <button class="btn btn-outline" jsf:id="moveDown10" jsf:action="#{Metadaten.moveSelectedPages('down', 10)}">
+                                                            <button
+                                                                class="btn btn-outline"
+                                                                jsf:id="moveDown10"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('down', 10)}"
+                                                                data-disable-on-ajax="group"
+                                                                data-ajax-group="pageMoveButtons">
                                                                 10
                                                                 <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
                                                             </button>
                                                         </li>
                                                         <li>
-                                                            <button class="btn btn-outline" jsf:id="moveDown50" jsf:action="#{Metadaten.moveSelectedPages('down', 50)}">
+                                                            <button
+                                                                class="btn btn-outline"
+                                                                jsf:id="moveDown50"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('down', 50)}"
+                                                                data-disable-on-ajax="group"
+                                                                data-ajax-group="pageMoveButtons">
                                                                 50
                                                                 <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
                                                             </button>
                                                         </li>
                                                         <li>
-                                                            <button class="btn btn-outline" jsf:id="moveDown100" jsf:action="#{Metadaten.moveSelectedPages('down', 100)}">
+                                                            <button
+                                                                class="btn btn-outline"
+                                                                jsf:id="moveDown100"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('down', 100)}"
+                                                                data-disable-on-ajax="group"
+                                                                data-ajax-group="pageMoveButtons">
                                                                 100
                                                                 <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
                                                             </button>
                                                         </li>
                                                         <li>
-                                                            <button class="btn btn-outline" jsf:id="moveDown1000" jsf:action="#{Metadaten.moveSelectedPages('down', 1000)}">
+                                                            <button
+                                                                class="btn btn-outline"
+                                                                jsf:id="moveDown1000"
+                                                                jsf:action="#{Metadaten.moveSelectedPages('down', 1000)}"
+                                                                data-disable-on-ajax="group"
+                                                                data-ajax-group="pageMoveButtons">
                                                                 1000
                                                                 <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
                                                             </button>
@@ -294,7 +346,14 @@
                                                 </div>
                                             </li>
                                             <li class="pb-2">
-                                                <button jsf:id="deletePages" class="btn btn-blank w-100 d-flex justify-content-start" jsf:action="#{Metadaten.deleteSeltectedPages}" jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" type="button">
+                                                <button
+                                                    jsf:id="deletePages"
+                                                    class="btn btn-blank w-100 d-flex justify-content-start"
+                                                    jsf:action="#{Metadaten.deleteSeltectedPages}"
+                                                    jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
+                                                    type="button"
+                                                    data-disable-on-ajax="group"
+                                                    data-ajax-group="pageMoveButtons">
                                                     <util:icon-text
                                                         icon="trash-o"
                                                         text="#{msgs.deleteSeltectedPages}" />
@@ -303,7 +362,14 @@
                                                 </button>
                                             </li>
                                             <li>
-                                                <button jsf:id="reOrder" class="btn btn-blank w-100 d-flex justify-content-start" jsf:action="#{Metadaten.reOrderPagination}" jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()" type="button">
+                                                <button
+                                                    jsf:id="reOrder"
+                                                    class="btn btn-blank w-100 d-flex justify-content-start"
+                                                    jsf:action="#{Metadaten.reOrderPagination}"
+                                                    jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()"
+                                                    type="button"
+                                                    data-disable-on-ajax="group"
+                                                    data-ajax-group="pageMoveButtons">
                                                     <util:icon-text
                                                         icon="refresh"
                                                         text="#{msgs.reOrder}" />
