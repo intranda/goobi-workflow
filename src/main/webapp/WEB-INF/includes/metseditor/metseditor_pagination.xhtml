@@ -221,8 +221,7 @@
                                                         data-ajax-group="pageMoveButtons">
                                                         <util:icon-text
                                                             icon="chevron-up"
-                                                            text="#{msgs.moveSeltectedPagesUp}"
-                                                            styleClass="d-flex justify-content-start align-items-baseline" />
+                                                            text="#{msgs.moveSeltectedPagesUp}" />
                                                         <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
                                                     </button>
                                                     <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split flex-grow-0" data-bs-toggle="dropdown" aria-expanded="false">
@@ -289,8 +288,7 @@
                                                         data-ajax-group="pageMoveButtons">
                                                         <util:icon-text
                                                             icon="chevron-down"
-                                                            text="#{msgs.moveSeltectedPagesDown}"
-                                                            styleClass="d-flex justify-content-start align-items-baseline" />
+                                                            text="#{msgs.moveSeltectedPagesDown}" />
                                                         <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
                                                     </button>
                                                     <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split flex-grow-0" data-bs-toggle="dropdown" aria-expanded="false">
@@ -355,7 +353,7 @@
                                                     data-disable-on-ajax="group"
                                                     data-ajax-group="pageMoveButtons">
                                                     <util:icon-text
-                                                        icon="trash-o"
+                                                        icon="trash"
                                                         text="#{msgs.deleteSeltectedPages}" />
                                                     <f:ajax execute="@form" render="@form :thumbnailsForm :openseadragonform :pageareas"/>
                                                     <f:passThroughAttribute name="data-renderimage" value="true"/>
