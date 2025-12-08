@@ -98,7 +98,7 @@ public class Batch implements IPropertyHolder, Serializable {
     @Override
     public List<GoobiProperty> getProperties() {
         if ((properties.isEmpty()) && batchId != null) {
-            properties = PropertyManager.getPropertiesForObject(batchId, PropertyOwnerType.PROJECT);
+            properties = PropertyManager.getPropertiesForObject(batchId, PropertyOwnerType.BATCH);
         }
         return properties;
     }
