@@ -6,6 +6,7 @@
 		xmlns:f="http://xmlns.jcp.org/jsf/core"
 		xmlns:c="http://java.sun.com/jsp/jstl/core"
 		xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+        xmlns:util="http://goobi.io/util"
 >
 
     <composite:interface/>
@@ -90,7 +91,7 @@
                                         action="process_search"
                                         filter="#{ProzessverwaltungForm.filter}"
                                         rendered="#{LoginForm.hasRole('Workflow_General_Search')}"
-                                        icon="fa fa-search"/>
+                                        icon="search"/>
 
                                 <!-- Prozessuebersicht -->
                                 <intranda:menuItem
@@ -101,7 +102,7 @@
                                         filter="#{ProzessverwaltungForm.filter}"
                                         display="#{ProzessverwaltungForm.modusAnzeige}"
                                         rendered="#{LoginForm.hasRole('Workflow_Processes')}"
-                                        icon="fa fa-tasks"/>
+                                        icon="list"/>
 
                                 <!-- batches -->
                                 <intranda:menuItem
@@ -111,7 +112,7 @@
                                         action="#{BatchForm.FilterAlleStart}"
                                         display="#{BatchForm.modusBearbeiten}"
                                         rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
-                                        icon="fa fa-archive"/>
+                                        icon="archive"/>
 
                                 <!-- Prozessvorlagen -->
                                 <intranda:menuItem
@@ -121,7 +122,7 @@
                                         action="#{ProzessverwaltungForm.FilterVorlagen}"
                                         filter="#{ProzessverwaltungForm.filter}"
                                         rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates')}"
-                                        icon="fa fa-files-o"/>
+                                        icon="list-details"/>
 
                                 <!-- Workflow-Plugins -->
                                 <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Plugins')}">
@@ -133,14 +134,13 @@
                                                 rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isWorkflowPluginAllowed(plugin)}">
                                             <li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.parentMenu == 'menu_workflow' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
                                                 <h:commandLink
-                                                        action="#{NavigationForm.setPlugin(plugin)}"
-                                                        id="plugin"
-                                                        styleClass="dropdown-item"
+                                                    action="#{NavigationForm.setPlugin(plugin)}"
+                                                    id="plugin"
+                                                    styleClass="dropdown-item"
                                                 >
-													<span>
-														<span class="fa fa-plug"/>
-														<span>#{msgs[plugin]}</span>
-													</span>
+                                                    <util:icon-text
+                                                        icon="plug"
+                                                        text="#{msgs[plugin]}" />
                                                     <f:setPropertyActionListener
                                                             target="#{NavigationForm.aktuell}"
                                                             value="a28"/>
@@ -169,7 +169,7 @@
                                         label="#{msgs.benutzer}"
                                         action="#{BenutzerverwaltungForm.FilterKein}"
                                         rendered="#{LoginForm.hasRole('Admin_Users')}"
-                                        icon="fa fa-user"/>
+                                        icon="user"/>
 
                                 <!-- Benutzergruppen -->
                                 <intranda:menuItem
@@ -178,7 +178,7 @@
                                         label="#{msgs.benutzergruppen}"
                                         action="#{BenutzergruppenForm.FilterKein}"
                                         rendered="#{LoginForm.hasRole('Admin_Usergroups')}"
-                                        icon="fa fa-users"/>
+                                        icon="users"/>
 
                                 <!-- Projekte -->
                                 <intranda:menuItem
@@ -187,8 +187,7 @@
                                         label="#{msgs.projekte}"
                                         action="#{ProjekteForm.FilterKein}"
                                         rendered="#{LoginForm.hasRole('Admin_Projects')}"
-                                        icon="fa fa-compass box-icon-fix-menu"
-                                        fontclass="margin-left-10"/>
+                                        icon="compass"/>
 
                                 <!-- Institution -->
                                 <intranda:menuItem
@@ -197,7 +196,7 @@
                                         label="#{msgs.institutions}"
                                         action="#{institutionBean.FilterKein}"
                                         rendered="#{LoginForm.myBenutzer.superAdmin}"
-                                        icon="fa fa-building"/>
+                                        icon="building"/>
 
                                 <!-- Regelsaetze -->
                                 <intranda:menuItem
@@ -206,7 +205,7 @@
                                         label="#{msgs.regelsaetze}"
                                         action="#{RegelsaetzeForm.FilterKein}"
                                         rendered="#{LoginForm.hasRole('Admin_Rulesets')}"
-                                        icon="fa fa-wrench"/>
+                                        icon="gavel"/>
 
                                 <!-- Laufzettel -->
                                 <intranda:menuItem
@@ -215,7 +214,7 @@
                                         label="#{msgs.dockets}"
                                         action="#{DocketForm.FilterKein}"
                                         rendered="#{LoginForm.hasRole('Admin_Dockets')}"
-                                        icon="fa fa-print"/>
+                                        icon="printer"/>
                                 <!-- GoobiScript templates -->
                                 <intranda:menuItem
                                         id="a34a"
@@ -223,7 +222,7 @@
                                         label="#{msgs.goobiScriptTemplates}"
                                         action="#{goobiScriptTemplateBean.FilterKein}"
                                         rendered="#{LoginForm.hasRole('Admin_Templates')}"
-                                        icon="fa fa-clone"/>
+                                        icon="script"/>
                                 <!-- Ldapgruppen -->
                                 <intranda:menuItem
                                         id="a35"
@@ -231,7 +230,7 @@
                                         label="#{msgs.authentication_configuration}"
                                         action="#{LdapGruppenForm.FilterKein}"
                                         rendered="#{LoginForm.hasRole('Admin_Ldap')}"
-                                        icon="fa fa-key"/>
+                                        icon="key"/>
 
                                 <!-- Message Queue -->
                                 <intranda:menuItem
@@ -240,7 +239,7 @@
                                         label="#{msgs.menu_administration_currentQueue}"
                                         action="queue"
                                         rendered="#{LoginForm.hasRole('Admin_Queue')}"
-                                        icon="fa fa-spinner"/>
+                                        icon="percentage-66"/>
                                 <!-- Jobtypes -->
                                 <intranda:menuItem
                                         id="a37b"
@@ -248,7 +247,7 @@
                                         label="#{msgs.automaticTasks}"
                                         action="admin_jobtypes_all"
                                         rendered="#{LoginForm.hasRole('Admin_Jobtypes')}"
-                                        icon="fa fa-gears"/>
+                                        icon="robot"/>
 
                                 <!-- Quartz -->
                                 <intranda:menuItem
@@ -257,7 +256,7 @@
                                         label="#{msgs.jobs_quartzJobs}"
                                         action="quartz"
                                         rendered="#{LoginForm.hasRole('Admin_Quartz')}"
-                                        icon="fa fa-spinner"/>
+                                        icon="calendar-event"/>
                                 <!-- Harvester -->
                                 <intranda:menuItem
                                         id="a37d"
@@ -265,14 +264,14 @@
                                         label="#{msgs.intranda_administration_harvester}"
                                         action="#{harvesterBean.filter}"
                                         rendered="#{LoginForm.hasRole('Admin_Harvester')}"
-                                        icon="fa fa-cloud-download"/>
+                                        icon="cloud-download"/>
                                 <!-- Plugins overview -->
                                 <intranda:menuItem
                                         id="a42"
                                         parentMenu="menu_administration"
                                         label="#{msgs.plugins}"
                                         action="plugins"
-                                        icon="fa fa-stethoscope"/>
+                                        icon="stethoscope"/>
 
                                 <!-- Vokabulare -->
                                 <intranda:menuItem
@@ -281,7 +280,7 @@
                                         label="#{msgs.intranda_administration_vocabularies}"
                                         action="#{vocabularyBean.load}"
                                         rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
-                                        icon="fa fa-database"/>
+                                        icon="database"/>
 
                                 <!-- config editor -->
                                 <intranda:menuItem
@@ -290,7 +289,7 @@
                                         label="#{msgs.intranda_administration_config_file_editor}"
                                         action="config_file_editor.xhtml"
                                         rendered="#{LoginForm.hasRole('Admin_config_file_editor') and NavigationForm.showConfigEditor}"
-                                        icon="fa fa-key"/>
+                                        icon="file-pencil"/>
                                 <!-- ruleset editor -->
                                 <intranda:menuItem
                                         id="aRulesetEditor"
@@ -298,7 +297,7 @@
                                         label="#{msgs.intranda_administration_ruleset_editor}"
                                         action="ruleset_editor.xhtml"
                                         rendered="#{LoginForm.hasRole('Admin_ruleset_editor') and NavigationForm.showConfigEditor}"
-                                        icon="fa fa-key"/>
+                                        icon="file-pencil"/>
 
                                 <!-- SWAGGER-API -->
                                 <intranda:menuItem
@@ -306,7 +305,7 @@
                                         parentMenu="menu_administration"
                                         label="#{msgs.apiDescription}"
                                         action="restApi.xhtml"
-                                        icon="fa fa-terminal"/>
+                                        icon="terminal"/>
 
                                 <!-- Superadmin -->
                                 <intranda:menuItem
@@ -315,7 +314,7 @@
                                         label="#{msgs.administrationsaufgaben}"
                                         action="admin"
                                         rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
-                                        icon="fa fa-bullhorn"/>
+                                        icon="speakerphone"/>
 
                                 <!-- Admin-Plugins -->
                                 <h:panelGroup rendered="#{LoginForm.hasRole('Admin_Plugins')}">
@@ -327,13 +326,12 @@
                                                 rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isAdministrationPluginAllowed(plugin)}">
                                             <li class="#{NavigationForm.aktuell == 'a38' and NavigationForm.parentMenu == 'menu_administration' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
                                                 <h:commandLink
-                                                        action="#{AdministrationForm.setPlugin(plugin)}"
-                                                        id="plugin"
-                                                        styleClass="dropdown-item">
-													<span>
-														<span class="fa fa-plug box-icon-fix-menu"/>
-														<span>#{msgs[plugin]}</span>
-													</span>
+                                                    action="#{AdministrationForm.setPlugin(plugin)}"
+                                                    id="plugin"
+                                                    styleClass="dropdown-item">
+                                                    <util:icon-text
+                                                        icon="plug"
+                                                        text="#{msgs[plugin]}" />
                                                     <f:setPropertyActionListener
                                                             target="#{NavigationForm.aktuell}"
                                                             value="a38"/>
@@ -361,7 +359,7 @@
                                         label="#{msgs.general}"
                                         action="statistics"
                                         rendered="#{LoginForm.hasRole('Statistics_General')}"
-                                        icon="fa fa-bar-chart"/>
+                                        icon="chart-area-line"/>
 
                                 <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Plugins')}">
                                     <ui:repeat
@@ -376,10 +374,9 @@
                                                         id="statistics"
                                                         styleClass="dropdown-item"
                                                 >
-													<span>
-														<span class="fa fa-pie-chart"/>
-														<span class="margin-left-10">#{msgs[statistics]}</span>
-													</span>
+                                                    <util:icon-text
+                                                        icon="plug"
+                                                        text="#{msgs[statistics]}"  />
                                                     <f:setPropertyActionListener
                                                             target="#{NavigationForm.aktuell}"
                                                             value="a41"/>
