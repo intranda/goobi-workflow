@@ -68,20 +68,21 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
         }
 
         List<Step> stepList = null;
-        String filterString = null;
-        if (filter == null || filter.length() == 0) {
-            filterString = " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2)  ";
+
+        if (filter.isBlank()) {
+            filter = " WHERE ";
         } else {
-            filterString = " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND schritte.ProzesseID in (select ProzesseID from prozesse where "
-                    + filter + ")";
+            filter = filter + " AND ";
         }
+        StringBuilder filterString = new StringBuilder().append(filter).append(" (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) ");
+
         if (!showClosedProcesses) {
-            filterString = filterString + " AND  prozesse.sortHelperStatus <> '100000000' ";
+            filterString.append(" AND  prozesse.sortHelperStatus <> '100000000' ");
         }
         if (!showArchivedProjects) {
-            filterString = filterString + " AND projekte.projectIsArchived = false ";
+            filterString.append(" AND projekte.projectIsArchived = false ");
         }
-        stepList = StepManager.getSteps(null, filterString, institution);
+        stepList = StepManager.getSteps(null, filterString.toString(), institution);
         StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
 
         DataTable dtbl = new DataTable(title.toString());

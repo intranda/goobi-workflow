@@ -308,7 +308,7 @@ final class ProcessMysqlHelper implements Serializable {
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         String sortfield = MySQLHelper.prepareSortField(order, sql);
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" AND " + filter);
+            sql.append(filter);
         }
         if (StringUtils.isNotBlank(sortfield)) {
             sql.append(" ORDER BY " + sortfield);
@@ -316,8 +316,6 @@ final class ProcessMysqlHelper implements Serializable {
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);
         }
-        long startTime = System.currentTimeMillis();
-        System.out.println(sql.toString());
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
@@ -327,7 +325,6 @@ final class ProcessMysqlHelper implements Serializable {
             ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
             return ret;
         } finally {
-            System.out.println("getProcessIdList time: " + (System.currentTimeMillis() - startTime));
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }

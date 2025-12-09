@@ -63,16 +63,20 @@ public class StatQuestVolumeStatus implements IStatisticalQuestion {
         if (user != null && !user.isSuperAdmin()) {
             institution = user.getInstitution();
         }
-        String filterString = " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND prozesse.ProzesseID in (select ProzesseID from prozesse where "
-                + filter + ")";
+        if (filter.isBlank()) {
+            filter = " WHERE ";
+        } else {
+            filter = filter + " AND ";
+        }
+        StringBuilder filterString = new StringBuilder().append(filter).append(" (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) ");
         if (!showClosedProcesses) {
-            filterString = filterString + " AND  prozesse.sortHelperStatus <> '100000000' ";
+            filterString.append(" AND  prozesse.sortHelperStatus <> '100000000' ");
         }
         if (!showArchivedProjects) {
-            filterString = filterString + " AND projekte.projectIsArchived = false ";
+            filterString.append(" AND projekte.projectIsArchived = false ");
         }
 
-        List<Step> stepList = StepManager.getSteps(null, filterString, institution);
+        List<Step> stepList = StepManager.getSteps(null, filterString.toString(), institution);
 
         StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
 
