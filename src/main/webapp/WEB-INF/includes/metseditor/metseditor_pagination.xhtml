@@ -59,7 +59,7 @@
                                                 <button class="btn btn-outline star" title="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" aria-label="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" jsf:action="#{Metadaten.updateRepresentativePage}" data-bs-toggle="tooltip" data-bs-placement="right" data-boundary="window">
                                                     <f:setPropertyActionListener value="#{page.physicalPageNo}" target="#{Metadaten.currentRepresentativePage}"/>
                                                     <f:setPropertyActionListener value="#{page.representative}" target="#{Metadaten.resetRepresentative}"/>
-                                                    <f:ajax execute="@this" render=":pagePaginationList"/>
+                                                    <f:ajax execute="@this" render="meSelectPagesBox:pagePaginationList"/>
                                                     <span class="fa fa-star#{page.representative?' text-primary':'-o font-light'}" aria-hidden="true"/>
                                                 </button>
                                             </h:panelGroup>
