@@ -260,8 +260,9 @@ public class StepBean extends BasicBean implements Serializable {
         }
 
         String sql = FilterHelper.criteriaBuilder(searchValue, false, nurOffeneSchritte, nurEigeneSchritte, hideStepsFromOtherUsers, false, true);
+
         if (!showAutomaticTasks) {
-            sql = "typAutomatisch = false AND " + sql;
+            sql = sql + " AND typAutomatisch = false ";
         }
         if (hideCorrectionTasks) {
             sql = sql + " AND Prioritaet != 10 ";
