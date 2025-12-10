@@ -373,7 +373,6 @@ public class SearchResultHelper {
             }
             sql = sql + " projekte.projectIsArchived = false ";
         }
-        sb.append(" WHERE ");
         sb.append(sql);
 
         if (order != null && !order.isEmpty()) {
