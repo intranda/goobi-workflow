@@ -519,7 +519,7 @@ public class FilterHelperTest extends AbstractTest {
         boolean negate = false;
         String expectedQuery =
                 "prozesse.ProjekteID in (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '%"
-                        + MySQLHelper.escapeSql("ShortName") + "%')";
+                        + MySQLHelper.escapeSql("ShortName") + "%') ";
 
         String result = FilterHelper.filterInstitution(tok, negate);
 
@@ -533,7 +533,7 @@ public class FilterHelperTest extends AbstractTest {
         boolean negate = true;
         String expectedQuery =
                 "prozesse.ProjekteID not sin (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '%"
-                        + MySQLHelper.escapeSql("ShortName") + "%')";
+                        + MySQLHelper.escapeSql("ShortName") + "%') ";
 
         String result = FilterHelper.filterInstitution(tok, negate);
 

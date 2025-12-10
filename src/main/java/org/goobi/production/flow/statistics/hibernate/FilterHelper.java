@@ -69,7 +69,7 @@ public final class FilterHelper {
         User aktuellerNutzer = Helper.getCurrentUser();
 
         if (aktuellerNutzer != null && !Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
-            sb.append("JOIN projektbenutzer pb ON pb.ProjekteID = projekte.ProjekteID AND pb.BenutzerID = ");
+            sb.append(" JOIN projektbenutzer pb ON pb.ProjekteID = projekte.ProjekteID AND pb.BenutzerID = ");
             sb.append(aktuellerNutzer.getId());
 
         }
@@ -87,7 +87,7 @@ public final class FilterHelper {
         int userId = user.getId();
         checkStringBuilder(whereClause, true);
 
-        joinClause.append("JOIN projektbenutzer pb ON pb.ProjekteID = projekte.ProjekteID AND pb.BenutzerID = ");
+        joinClause.append(" JOIN projektbenutzer pb ON pb.ProjekteID = projekte.ProjekteID AND pb.BenutzerID = ");
         joinClause.append(userId);
 
         /*
@@ -682,14 +682,14 @@ public final class FilterHelper {
             query.append(leftTruncationCharacter);
             query.append(MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)));
             query.append(rightTruncationCharacter);
-            query.append("')");
+            query.append("') ");
         } else {
             query.append("prozesse.ProjekteID not sin (select ProjekteID from projekte left join ");
             query.append("institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '");
             query.append(leftTruncationCharacter);
             query.append(MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)));
             query.append(rightTruncationCharacter);
-            query.append("')");
+            query.append("') ");
         }
 
         return query.toString();

@@ -252,7 +252,7 @@ final class ProcessMysqlHelper implements Serializable {
         if (filter != null && !filter.isEmpty()) {
             sql.append(filter);
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
-            sql.append("WHERE ProzesseID > 0 ");
+            sql.append(" WHERE ProzesseID > 0 ");
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
