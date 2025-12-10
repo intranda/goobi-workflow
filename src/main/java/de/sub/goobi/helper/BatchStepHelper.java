@@ -555,8 +555,11 @@ public class BatchStepHelper implements Serializable {
                  */
 
                 List<Step> alleSchritteDazwischen =
-                        StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + currentStep.getProzess().getId() + " AND Reihenfolge <= "
-                                + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE, null);
+                        StepManager
+                                .getSteps("Reihenfolge desc",
+                                        " WHERE schritte.prozesseID = " + currentStep.getProzess().getId() + " AND Reihenfolge <= "
+                                                + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(),
+                                        0, Integer.MAX_VALUE, null);
 
                 for (Step step : alleSchritteDazwischen) {
                     if (!StepStatus.DEACTIVATED.equals(step.getBearbeitungsstatusEnum())) {
@@ -586,7 +589,8 @@ public class BatchStepHelper implements Serializable {
     public List<SelectItem> getPreviousStepsForProblemReporting() {
         List<SelectItem> answer = new ArrayList<>();
         List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc",
-                " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge < " + this.currentStep.getReihenfolge(), 0,
+                " WHERE schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge < " + this.currentStep.getReihenfolge(),
+                0,
                 Integer.MAX_VALUE, null);
 
         for (Step s : alleVorherigenSchritte) {
@@ -601,8 +605,9 @@ public class BatchStepHelper implements Serializable {
 
     public List<SelectItem> getNextStepsForProblemSolution() {
         List<SelectItem> answer = new ArrayList<>();
-        List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId()
-                + " AND Reihenfolge > " + this.currentStep.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE, null);
+        List<Step> alleNachfolgendenSchritte =
+                StepManager.getSteps("Reihenfolge", " WHERE schritte.prozesseID = " + this.currentStep.getProzess().getId()
+                        + " AND Reihenfolge > " + this.currentStep.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE, null);
 
         for (Step s : alleNachfolgendenSchritte) {
             answer.add(new SelectItem(s.getTitel(), s.getTitelMitBenutzername()));
@@ -666,8 +671,10 @@ public class BatchStepHelper implements Serializable {
                  * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
                  */
                 List<Step> alleSchritteDazwischen =
-                        StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge >= "
-                                + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE, null);
+                        StepManager.getSteps("Reihenfolge",
+                                " WHERE schritte.prozesseID = " + this.currentStep.getProzess().getId() + " AND Reihenfolge >= "
+                                        + this.currentStep.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(),
+                                0, Integer.MAX_VALUE, null);
 
                 for (Step step : alleSchritteDazwischen) {
                     if (!StepStatus.DEACTIVATED.equals(step.getBearbeitungsstatusEnum())) {

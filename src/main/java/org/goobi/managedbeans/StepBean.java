@@ -368,7 +368,6 @@ public class StepBean extends BasicBean implements Serializable {
             where.append(steptitle);
             where.append("' AND batchStep = true AND prozesse.batchID = ");
             where.append(batchNumber);
-            where.append(" AND ");
             FilterHelper.limitToUserAssignedSteps(true, false, true, join, where);
 
             currentStepsOfBatch = StepManager.getSteps(null, join.toString() + " WHERE " + where.toString(), 0, Integer.MAX_VALUE, institution);
@@ -458,7 +457,6 @@ public class StepBean extends BasicBean implements Serializable {
             where.append(steptitle);
             where.append("' AND batchStep = true AND prozesse.batchID = ");
             where.append(batchNumber);
-            where.append(" AND ");
             FilterHelper.limitToUserAssignedSteps(true, false, true, join, where);
 
             currentStepsOfBatch = StepManager.getSteps(null, join.toString() + " WHERE " + where.toString(), 0, Integer.MAX_VALUE, institution);

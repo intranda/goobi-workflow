@@ -66,7 +66,7 @@ import lombok.extern.log4j.Log4j2;
 public class DelayJob extends AbstractGoobiJob {
 
     private List<Step> getListOfStepsWithDelay() {
-        String filter = " delayStep = true AND stepPlugin is not NULL AND Bearbeitungsstatus = 2";
+        String filter = " WHERE delayStep = true AND stepPlugin is not NULL AND Bearbeitungsstatus = 2";
         return StepManager.getSteps(null, filter, null);
     }
 
