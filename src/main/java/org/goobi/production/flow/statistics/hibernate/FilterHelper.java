@@ -98,8 +98,8 @@ public final class FilterHelper {
         } else if (Boolean.TRUE.equals(userAssignedStepsOnly)) {
             whereClause.append("  BearbeitungsBenutzerID = " + userId + " AND  Bearbeitungsstatus = 2 ");
         } else if (Boolean.TRUE.equals(hideStepsFromOtherUsers)) {
-            whereClause.append(" BearbeitungsBenutzerID = " + userId
-                    + " AND  Bearbeitungsstatus = 2 OR Bearbeitungsstatus IN (1, 4) ");
+            whereClause.append(" (BearbeitungsBenutzerID = " + userId
+                    + " AND  Bearbeitungsstatus = 2 OR Bearbeitungsstatus IN (1, 4)) ");
         } else {
             whereClause.append(" schritte.Bearbeitungsstatus IN (1,2, 4) ");
 

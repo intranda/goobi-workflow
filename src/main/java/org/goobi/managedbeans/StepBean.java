@@ -580,7 +580,7 @@ public class StepBean extends BasicBean implements Serializable {
 
     public List<Step> getPreviousStepsForProblemReporting() {
         return StepManager.getSteps("Reihenfolge desc",
-                " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < " + this.mySchritt.getReihenfolge(), 0,
+                " WHERE schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < " + this.mySchritt.getReihenfolge(), 0,
                 Integer.MAX_VALUE, null);
     }
 
@@ -673,8 +673,11 @@ public class StepBean extends BasicBean implements Serializable {
              */
 
             List<Step> alleSchritteDazwischen =
-                    StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge <= "
-                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE, null);
+                    StepManager
+                            .getSteps("Reihenfolge desc",
+                                    " WHERE schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge <= "
+                                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(),
+                                    0, Integer.MAX_VALUE, null);
 
             for (Step step : alleSchritteDazwischen) {
 
@@ -717,7 +720,7 @@ public class StepBean extends BasicBean implements Serializable {
 
     public List<Step> getNextStepsForProblemSolution() {
 
-        return StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
+        return StepManager.getSteps("Reihenfolge", " WHERE schritte.prozesseID = " + this.mySchritt.getProzess().getId()
                 + " AND Reihenfolge > " + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE, null);
     }
 
@@ -761,7 +764,7 @@ public class StepBean extends BasicBean implements Serializable {
              * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
              */
             List<Step> alleSchritteDazwischen =
-                    StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge >= "
+                    StepManager.getSteps("Reihenfolge", " WHERE schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge >= "
                             + this.mySchritt.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE, null);
 
             for (Step step : alleSchritteDazwischen) {
