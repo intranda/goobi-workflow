@@ -76,8 +76,11 @@ public final class ConfigurationHelper implements Serializable {
             log.info("Default configuration file loaded: " + config.getFile().getAbsolutePath());
             Path fileLocal = Paths.get(getConfigLocalPath(), configFileName);
             if (Files.exists(fileLocal)) {
-                configLocal = new PropertiesConfiguration(fileLocal.toFile());
+                configLocal = new PropertiesConfiguration();
+                configLocal.setEncoding("UTF-8");
                 configLocal.setReloadingStrategy(new FileChangedReloadingStrategy());
+                configLocal.setFile(fileLocal.toFile());
+                configLocal.load();
                 log.info("Local configuration file '" + fileLocal.toString() + "' loaded.");
             } else {
                 configLocal = new PropertiesConfiguration();
