@@ -164,7 +164,7 @@ public class DisplayProperty implements IProperty, Serializable {
      */
     @Override
     public boolean isValid() {
-        if (this.validation != null && this.validation.length() > 0) {
+        if (this.validation != null && !this.validation.isEmpty() && this.value != null) {
             Pattern pattern = Pattern.compile(this.validation);
             Matcher matcher = pattern.matcher(this.value);
             return matcher.matches();
