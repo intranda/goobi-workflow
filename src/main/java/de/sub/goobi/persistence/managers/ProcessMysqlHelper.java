@@ -719,9 +719,13 @@ final class ProcessMysqlHelper implements Serializable {
     }
 
     public static long getSumOfFieldValue(String columnname, String filter) throws SQLException {
-        StringBuilder sql = new StringBuilder("select sum(prozesse.").append(columnname).append(") from prozesse ");
+
+        StringBuilder sql = new StringBuilder("select sum(prozesse.").append(columnname)
+                .append(") FROM prozesse left join batches on prozesse.batchID = batches.id ");
+        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+
         if (filter != null && filter.length() > 0) {
-            sql.append(" WHERE ").append(filter);
+            sql.append(filter);
         }
         Connection connection = null;
         try {
@@ -735,9 +739,12 @@ final class ProcessMysqlHelper implements Serializable {
     }
 
     public static long getCountOfFieldValue(String columnname, String filter) throws SQLException {
-        StringBuilder sql = new StringBuilder("select count(prozesse.").append(columnname).append(") from prozesse ");
+        StringBuilder sql = new StringBuilder("select count(prozesse.").append(columnname)
+                .append(") FROM prozesse left join batches on prozesse.batchID = batches.id ");
+        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+
         if (filter != null && filter.length() > 0) {
-            sql.append(" WHERE ").append(filter);
+            sql.append(filter);
         }
         Connection connection = null;
         try {

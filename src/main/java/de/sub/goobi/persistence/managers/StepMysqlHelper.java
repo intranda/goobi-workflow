@@ -1144,9 +1144,17 @@ public final class StepMysqlHelper implements Serializable {
 
     public static long getSumOfFieldValue(String columnname, String filter, String order, String group) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("select sum(" + columnname + ") from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID  ");
+
+        sql.append("SELECT sum(" + columnname + ") FROM schritte ");
+        if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname()) && filter.contains("Bearbeitungsstatus")) {
+            sql.append("use index (" + ConfigurationHelper.getInstance().getSqlTasksIndexname() + ") ");
+        }
+        sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
+        sql.append("LEFT JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+
         if (filter != null && filter.length() > 0) {
-            sql.append(" AND " + filter);
+            sql.append(filter);
         }
 
         if (group != null && !group.isEmpty()) {
@@ -1170,9 +1178,16 @@ public final class StepMysqlHelper implements Serializable {
 
     public static long getCountOfFieldValue(String columnname, String filter, String order, String group) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("select count(" + columnname + ") from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID  ");
+        sql.append("SELECT count(" + columnname + ") FROM schritte ");
+        if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname()) && filter.contains("Bearbeitungsstatus")) {
+            sql.append("use index (" + ConfigurationHelper.getInstance().getSqlTasksIndexname() + ") ");
+        }
+        sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
+        sql.append("LEFT JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+
         if (filter != null && filter.length() > 0) {
-            sql.append(" AND " + filter);
+            sql.append(filter);
         }
 
         if (group != null && !group.isEmpty()) {
@@ -1196,9 +1211,17 @@ public final class StepMysqlHelper implements Serializable {
 
     public static double getAverageOfFieldValue(String columnname, String filter, String order, String group) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("select avg(" + columnname + ") from schritte, prozesse WHERE schritte.ProzesseID = prozesse.ProzesseID ");
+
+        sql.append("SELECT avg(" + columnname + ") FROM schritte ");
+        if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname()) && filter.contains("Bearbeitungsstatus")) {
+            sql.append("use index (" + ConfigurationHelper.getInstance().getSqlTasksIndexname() + ") ");
+        }
+        sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
+        sql.append("LEFT JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+
         if (filter != null && filter.length() > 0) {
-            sql.append(" AND " + filter);
+            sql.append(filter);
         }
 
         if (group != null && !group.isEmpty()) {
