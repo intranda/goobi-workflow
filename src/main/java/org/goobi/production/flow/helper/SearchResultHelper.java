@@ -91,6 +91,9 @@ public class SearchResultHelper {
         String processId = TABLE_PROCESSES + "ProzesseID";
         possibleColumns.add(new SelectItem(processId, Helper.getTranslation(processId)));
 
+        String batchId = TABLE_PROCESSES + "batchID";
+        possibleColumns.add(new SelectItem(processTitle, Helper.getTranslation(batchId)));
+
         String processCreationDate = TABLE_PROCESSES + "erstellungsdatum";
         possibleColumns.add(new SelectItem(processCreationDate, Helper.getTranslation(processCreationDate)));
 
