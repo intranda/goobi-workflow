@@ -338,6 +338,7 @@ function processSvg(srcDir, destDir) {
             // remove width and height attributes for easier styling
             $('svg').attr('width', ``);
             $('svg').attr('height', ``);
+            $('svg').attr('stroke-width', ``);
 
             file.contents = Buffer.from($.html());
 
