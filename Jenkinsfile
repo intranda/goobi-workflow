@@ -163,37 +163,7 @@ pipeline {
       }
       steps {
         unstash 'target'
-
-        script {
-          // Version aus dem POM lesen
-          def version = sh(
-            script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout",
-            returnStdout: true
-          ).trim()
-
-          // Ziel-Repository bestimmen
-          def nexusUrl
-          if (version.endsWith('-SNAPSHOT')) {
-            nexusUrl = 'https://nexus.intranda.com/repository/maven-snapshots'
-          } else {
-            nexusUrl = 'https://nexus.intranda.com/repository/maven-releases'
-          }
-
-          echo "Deploying version ${version} to ${nexusUrl}"
-
-          // Deploy NUR des classes.jar
-          sh """
-            mvn deploy:deploy-file -U \
-              -Dfile=target/*-classes.jar \
-              -Dclassifier=classes \
-              -Dpackaging=jar \
-              -DrepositoryId=public \
-              -Durl=${nexusUrl} \
-              -DgroupId=\$(mvn help:evaluate -Dexpression=project.groupId -q -DforceStdout) \
-              -DartifactId=\$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout) \
-              -Dversion=${version}
-          """
-        }
+        sh 'mvn deploy -U'
       }
     }
     stage('tag release') {
