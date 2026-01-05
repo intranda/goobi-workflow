@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Initialize all functions after an ajax call
 if(typeof faces !== "undefined") {
     faces.ajax.addOnEvent((data) => {
-        if(data.source.dataset.ajaxBehaviour === "ignore") {
+        if(data.source?.dataset?.ajaxBehaviour === "ignore") {
                 return;
             }
         switch (data.status) {
