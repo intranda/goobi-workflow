@@ -173,13 +173,18 @@ pipeline {
 
           // Ziel-Repository bestimmen
           def nexusUrl
+          def repositoryId
           if (version.endsWith('-SNAPSHOT')) {
+            repositoryId = 'intranda-snapshots'
             nexusUrl = 'https://nexus.intranda.com/repository/maven-snapshots'
           } else {
+            repositoryId = 'intranda-releases'
             nexusUrl = 'https://nexus.intranda.com/repository/maven-releases'
           }
 
           echo "Deploying version ${version} to ${nexusUrl}"
+
+          ls -l target/
 
           // Deploy NUR des classes.jar
           sh """
@@ -187,7 +192,7 @@ pipeline {
               -Dfile=target/*-classes.jar \
               -Dclassifier=classes \
               -Dpackaging=jar \
-              -DrepositoryId=public \
+              -DrepositoryId=${repositoryId} \
               -Durl=${nexusUrl} \
               -DgroupId=\$(mvn help:evaluate -Dexpression=project.groupId -q -DforceStdout) \
               -DartifactId=\$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout) \
