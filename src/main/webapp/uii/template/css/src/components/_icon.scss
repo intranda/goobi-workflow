@@ -1,4 +1,7 @@
 .icon-wrapper {
+    --icon-size: 1.125em;
+    --icon-stroke: 2;
+
     align-items: center;
     display: inline-flex;
     height: 1lh;
@@ -9,9 +12,51 @@
     & svg {
         color: currentColor;
         display: inline-flex;
-        height: 1.275em;
+        height: var(--icon-size);
         line-height: 0;
-        width: 1.275em;
-        stroke-width: 2;
+        width: var(--icon-size);
+        stroke-width: var(--icon-stroke);
     }
 }
+
+.icon-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+
+    .icon-wrapper {
+        height: auto;
+        vertical-align: baseline;
+    }
+}
+
+.btn .icon-wrapper {
+    position: relative;
+    top: -0.1em;
+}
+
+/* Size Modifiers */
+.icon-wrapper.icon--xs { --icon-size: 0.75em; }
+.icon-wrapper.icon--sm { --icon-size: 0.875em; }
+.icon-wrapper.icon--md { --icon-size: 1.125em; }
+.icon-wrapper.icon--lg { --icon-size: 1.25em; }
+.icon-wrapper.icon--xl { --icon-size: 1.5em; }
+.icon-wrapper.icon--xxl { --icon-size: 2em; }
+
+/* Spacing Modifiers */
+.icon-wrapper.icon--compact { margin-inline: -0.125em; }
+
+/* Stroke Modifiers */
+.icon-wrapper.icon--thin { --icon-stroke: 1.5; }
+.icon-wrapper.icon--bold { --icon-stroke: 2.5; }
+.icon-wrapper.icon--extra-bold { --icon-stroke: 5; }
+
+/* Color Modifiers */
+.icon-wrapper.icon--light { color: #bbb; }
+.icon-wrapper.icon--muted { color: var(--clr-neutral-400); }
+.icon-wrapper.icon--primary { color: var(--clr-primary-400); }
+.icon-wrapper.icon--success { color: #339933; }
+.icon-wrapper.icon--warning { color: #e8860c; }
+.icon-wrapper.icon--danger { color: #e51400; }
+.icon-wrapper.icon--inwork { color: #ffbf21; }
+.icon-wrapper.icon--deactivated { color: #ccc; }
