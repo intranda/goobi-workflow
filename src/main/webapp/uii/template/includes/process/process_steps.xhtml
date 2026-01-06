@@ -4,7 +4,7 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-
+	xmlns:util="http://goobi.io/util"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
@@ -131,7 +131,7 @@
 											aria-label="#{msgs.process_countTaskOrderNumberDown}"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
 											class="btn ms-3 p-0 mb-1">
-											<span class="fa fa-minus-circle font-light" />
+											<util:icon icon="circle-minus" styleClass="icon--light" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -148,7 +148,7 @@
 											aria-label="#{msgs.process_countTaskOrderNumberUp}"
 											class="btn p-0 mb-1"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-											<span class="fa fa-plus-circle font-light" />
+											<util:icon icon="circle-plus" styleClass="icon--light" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -165,7 +165,7 @@
 											aria-label="#{msgs.process_moveTaskUp}"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
 											class="btn ms-3 p-0 mb-1">
-											<span class="fa fa-chevron-up font-light" />
+											<util:icon icon="chevron-up" styleClass="icon--light icon--extra-bold" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -182,7 +182,7 @@
 											aria-label="#{msgs.process_moveTaskDown}"
 											class="btn p-0 mb-1"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-											<span class="fa fa-chevron-down font-light" />
+											<util:icon icon="chevron-down" styleClass="icon--light icon--extra-bold" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -207,32 +207,20 @@
 											jsf:id="expandbutton1"
 											class="btn text-start">
 											<h:panelGroup rendered="#{!item.panelAusgeklappt}">
-												<i
-													class="fa fa-angle-right #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+												<util:icon icon="chevron-right" styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED' ? 'icon--light' : ''}" />
 											</h:panelGroup>
 											<h:panelGroup rendered="#{item.panelAusgeklappt}">
-												<i
-													class="fa fa-angle-down #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+												<util:icon icon="chevron-down" styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED' ? 'icon--light' : ''}" />
 											</h:panelGroup>
 											<f:setPropertyActionListener
 												value="#{item.panelAusgeklappt?false:true}"
 												target="#{item.panelAusgeklappt}" />
 											<f:ajax render="possibleActions1" />
 											<h:panelGroup rendered="#{item.typAutomatisch}">
-												<span
-													aria-hidden="true"
-													class="fa fa-cogs font-light mx-1"
-													title="#{msgs.automatischerSchritt}"
-													data-toggle="tooltip"
-													style="width:1lh;" />
+												<util:icon icon="settings-cog" styleClass="icon--light me-1" title="#{msgs.automatischerSchritt}" />
 											</h:panelGroup>
 											<h:panelGroup rendered="#{not item.typAutomatisch}">
-												<span
-													aria-hidden="true"
-													class="fa fa-user-o font-light mx-1"
-													title="#{msgs.normalerSchritt}"
-													data-toggle="tooltip"
-													style="width:1lh;" />
+												<util:icon icon="user" styleClass="icon--light me-1" title="#{msgs.normalerSchritt}" />
 											</h:panelGroup>
 											<h:outputText
 												value="#{item.titelLokalisiert}"
@@ -266,30 +254,26 @@
 
 														<h:panelGroup rendered="#{item.prioritaet == 1}">
 															<span class="badge badge-intranda-orange">
-																<span class="fa fa-lightbulb-o" />
-																#{msgs.badgePriority1}
+																<util:icon-text icon="bulb" text="#{msgs.badgePriority1}" />
 															</span>
 														</h:panelGroup>
 
 														<h:panelGroup rendered="#{item.prioritaet == 2}">
 															<span class="badge badge-intranda-orange">
-																<span class="fa fa-lightbulb-o" />
-																#{msgs.badgePriority2}
+																<util:icon-text icon="bulb" text="#{msgs.badgePriority2}" />
 															</span>
 														</h:panelGroup>
 
 														<h:panelGroup
 															rendered="#{item.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
 															<span class="badge badge-intranda-orange">
-																<span class="fa fa-lightbulb-o" />
-																#{msgs.badgePriority3}
+																<util:icon-text icon="bulb" text="#{msgs.badgePriority3}" />
 															</span>
 														</h:panelGroup>
 
 														<h:panelGroup rendered="#{item.prioritaet gt 9}">
 															<span class="badge badge-intranda-red">
-																<span class="fa fa-bullhorn" />
-																#{msgs.badgeCorrection}
+																<util:icon-text icon="speakerphone" text="#{msgs.badgeCorrection}" />
 															</span>
 														</h:panelGroup>
 													</h:panelGroup>
@@ -570,7 +554,7 @@
 									<!-- Bearbeitungsstatus hoch und runter -->
 									<button
 										type="button"
-										class="btn ms-1 pe-1 me-0"
+										class="btn pe-1"
 										jsf:id="statusDown"
 										jsf:action="#{ProzessverwaltungForm.stepStatusDown}"
 										jsf:rel="tooltip"
@@ -578,7 +562,7 @@
 										data-bs-toggle="tooltip"
 										aria-label="#{msgs.statusRunterSetzen}"
 										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-										<span class="fa fa-chevron-left font-light" />
+										<util:icon icon="chevron-left" styleClass="icon--xl icon--bold icon--light" />
 										<f:setPropertyActionListener
 											target="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
@@ -591,7 +575,7 @@
 									<!-- Bearbeitungsstatus hoch und runter -->
 									<button
 										type="button"
-										class="btn ps-1"
+										class="btn p-0"
 										jsf:id="statusUp"
 										jsf:action="#{ProzessverwaltungForm.stepStatusUp}"
 										jsf:rel="tooltip"
@@ -599,7 +583,7 @@
 										data-bs-toggle="tooltip"
 										aria-label="#{msgs.statusHoeherSetzen}"
 										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-										<span class="fa fa-chevron-right font-light" />
+										<util:icon icon="chevron-right" styleClass="icon--xl icon--bold icon--light" />
 										<f:setPropertyActionListener
 											target="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
@@ -624,7 +608,7 @@
 										jsf:action="process_edit_step"
 										title="#{msgs.detailsDesSchritts}"
 										class="btn btn-blank me-2">
-										<span class="fa fa-pencil" />
+										<util:icon icon="pencil" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -644,7 +628,7 @@
 										jsf:action="#{ProzessverwaltungForm.startPlugin}"
 										onclick="preventDoubleSubmit(this);"
 										class="btn btn-blank me-2">
-										<span class="fa fa-puzzle-piece" />
+										<util:icon icon="puzzle" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -667,7 +651,7 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<span class="fa fa-cog" />
+										<util:icon icon="settings-cog" />
 									</button>
 
 									<button
@@ -680,7 +664,7 @@
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
-										<span class="fa fa-cog" />
+										<util:icon icon="settings-cog" />
 									</button>
 
 
@@ -698,7 +682,7 @@
 										<f:setPropertyActionListener
 											target="#{ProzessverwaltungForm.mySchritt}"
 											value="#{item}" />
-										<span class="fa fa-globe" />
+										<util:icon icon="world" />
 									</button>
 
 								</h:column>
