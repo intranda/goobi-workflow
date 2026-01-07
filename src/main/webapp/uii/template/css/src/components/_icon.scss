@@ -2,18 +2,14 @@
     --icon-size: 1.125em;
     --icon-stroke: 2;
 
-    align-items: center;
     display: inline-flex;
-    height: 1lh;
+    align-items: center;
     justify-content: center;
-    line-height: 1;
-    vertical-align: middle;
 
-    & svg {
+    svg {
         color: currentColor;
-        display: inline-flex;
+        display: block;
         height: var(--icon-size);
-        line-height: 0;
         width: var(--icon-size);
         stroke-width: var(--icon-stroke);
     }
@@ -23,22 +19,6 @@
     display: inline-flex;
     align-items: center;
     gap: 0.25em;
-
-    .icon-wrapper {
-        height: auto;
-        vertical-align: baseline;
-    }
-}
-
-/* Offset to align SVG icons with text baseline in buttons */
-.btn .icon-wrapper {
-    position: relative;
-    top: -0.1em;
-}
-
-/* Reset offset for flex-centered title-action buttons */
-.btn--title-action .icon-wrapper {
-    top: 0;
 }
 
 /* Size Modifiers */
