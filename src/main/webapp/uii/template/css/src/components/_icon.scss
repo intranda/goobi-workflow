@@ -30,9 +30,15 @@
     }
 }
 
+/* Offset to align SVG icons with text baseline in buttons */
 .btn .icon-wrapper {
     position: relative;
     top: -0.1em;
+}
+
+/* Reset offset for flex-centered title-action buttons */
+.btn--title-action .icon-wrapper {
+    top: 0;
 }
 
 /* Size Modifiers */
@@ -43,13 +49,13 @@
 .icon-wrapper.icon--xl { --icon-size: 1.5em; }
 .icon-wrapper.icon--xxl { --icon-size: 2em; }
 
-/* Spacing Modifiers */
-.icon-wrapper.icon--compact { margin-inline: -0.125em; }
-
 /* Stroke Modifiers */
-.icon-wrapper.icon--thin { --icon-stroke: 1.5; }
-.icon-wrapper.icon--bold { --icon-stroke: 2.5; }
-.icon-wrapper.icon--extra-bold { --icon-stroke: 5; }
+.icon-wrapper.icon--b1 { --icon-stroke: 1; }
+.icon-wrapper.icon--b2 { --icon-stroke: 1.5; }
+.icon-wrapper.icon--b3 { --icon-stroke: 2; }
+.icon-wrapper.icon--b4 { --icon-stroke: 2.5; }
+.icon-wrapper.icon--b5 { --icon-stroke: 3; }
+.icon-wrapper.icon--b6 { --icon-stroke: 4; }
 
 /* Color Modifiers */
 .icon-wrapper.icon--light { color: #bbb; }
