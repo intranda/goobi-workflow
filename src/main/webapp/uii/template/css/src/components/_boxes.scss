@@ -44,7 +44,8 @@
     border: 0.0625rem solid #fff;
 
     i,
-    .fa {
+    .fa,
+    .icon-wrapper {
       color: currentColor;
     }
 
@@ -54,10 +55,16 @@
 
     &:hover {
       background-color: #fff;
+      color: var(--bs-body-color);
       i,
-      .fa {
+      .fa,
+      .icon-wrapper {
         color: var(--bs-body-color);
       }
+    }
+
+    &.dropdown-toggle:hover::after {
+      border-top-color: var(--bs-body-color);
     }
   }
 
@@ -257,7 +264,8 @@
     &:hover {
       background-color: var(--clr-neutral-600);
       i,
-      .fa {
+      .fa,
+      .icon-wrapper {
         color: #fff;
       }
     }
@@ -307,7 +315,8 @@
     border: 0.0625rem solid var(--clr-neutral-300);
 
     i,
-    .fa {
+    .fa,
+    .icon-wrapper {
       color: currentColor;
     }
 
