@@ -4,10 +4,13 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface>
 		<composite:attribute name="icon" default="undefined" />
+		<composite:attribute name="tablerIcon" default="undefined" />
+		<composite:attribute name="tablerIconClass" default="me-2" />
 		<composite:attribute name="title" />
 	</composite:interface>
 
@@ -15,9 +18,12 @@
 
 		<div class="box__title">
 			<h2>
-				<!-- Do not render icon if cc.attrs.icon is undefined -->
+				<!-- FA icon (legacy) -->
 				<span aria-hidden="true" class="fa #{cc.attrs.icon} "
-					jsf:rendered="#{cc.attrs.icon !='undefined'}" />
+					jsf:rendered="#{cc.attrs.icon != 'undefined' and cc.attrs.tablerIcon == 'undefined'}" />
+				<!-- Tabler icon -->
+				<util:icon icon="#{cc.attrs.tablerIcon}" styleClass="#{cc.attrs.tablerIconClass}"
+					rendered="#{cc.attrs.tablerIcon != 'undefined'}" />
 				<h:outputText value="#{cc.attrs.title}" />
 			</h2>
 			<composite:insertChildren />
