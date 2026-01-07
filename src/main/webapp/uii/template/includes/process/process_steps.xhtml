@@ -555,7 +555,7 @@
 									<!-- Bearbeitungsstatus hoch und runter -->
 									<button
 										type="button"
-										class="btn pe-1"
+										class="btn btn-icon pe-1"
 										jsf:id="statusDown"
 										jsf:action="#{ProzessverwaltungForm.stepStatusDown}"
 										jsf:rel="tooltip"
@@ -608,7 +608,7 @@
 										aria-label="#{msgs.detailsDesSchritts}"
 										jsf:action="process_edit_step"
 										title="#{msgs.detailsDesSchritts}"
-										class="btn btn-blank me-2">
+										class="btn btn-icon btn-blank me-2">
 										<util:icon icon="pencil" />
 										<f:passThroughAttribute
 											name="data-toggle"
@@ -628,7 +628,7 @@
 										jsf:rendered="#{item.stepPlugin != '' and item.stepPlugin != null  and !item.typExportDMS}"
 										jsf:action="#{ProzessverwaltungForm.startPlugin}"
 										onclick="preventDoubleSubmit(this);"
-										class="btn btn-blank me-2">
+										class="btn btn-icon btn-blank me-2">
 										<util:icon icon="puzzle" />
 										<f:passThroughAttribute
 											name="data-toggle"
@@ -648,7 +648,7 @@
 										jsf:rendered="#{item.typScriptStep and item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
 										jsf:action="#{HelperForm.executeScriptsForStep(item.id)}"
 										onclick="preventDoubleSubmit(this);"
-										class="btn btn-blank me-2">
+										class="btn btn-icon btn-blank me-2">
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -661,7 +661,7 @@
 										jsf:rendered="#{item.httpStep}"
 										jsf:action="#{HelperForm.executeHttpCallForStep(item.id)}"
 										onclick="preventDoubleSubmit(this);"
-										class="btn btn-blank me-2">
+										class="btn btn-icon btn-blank me-2">
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -676,7 +676,7 @@
 										jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.typExportDMS}"
 										jsf:action="#{ProzessverwaltungForm.exportStep}"
 										onclick="preventDoubleSubmit(this);"
-										class="btn btn-blank me-2">
+										class="btn btn-icon btn-blank me-2">
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
