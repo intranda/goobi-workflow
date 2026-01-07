@@ -347,8 +347,12 @@
 	width: 100%;
 }
 
-th {
+th,
+td {
   vertical-align: middle;
+}
+
+th {
   --col-s: 50px;
   --col-m: 80px;
   --col-l: 110px;
