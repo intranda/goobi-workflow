@@ -4,7 +4,7 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	
+	xmlns:util="http://goobi.io/util"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -38,8 +38,7 @@
 				id="save"
 				type="submit"
 				jsf:action="#{cc.attrs.form.Speichern}">
-				<span class="fa fa-save" />
-				<span>#{msgs.speichern}</span>
+				<util:icon-text icon="device-floppy" text="#{msgs.speichern}" />
 			</button>
 
 			<!-- DELETE -->
@@ -56,10 +55,7 @@
 							type="button"
 							class="btn btn-hot"
 							jsf:disabled="#{true}">
-							<span class="fa fa-trash-o" />
-							<span>
-								<h:outputText value="#{msgs.loeschen}" />
-							</span>
+							<util:icon-text icon="trash" text="#{msgs.loeschen}" />
 						</button>
 					</div>
 				</h:panelGroup>
@@ -72,10 +68,7 @@
 						type="button"
 						data-bs-toggle="modal"
 						data-bs-target="#deleteModal">
-						<span class="fa fa-trash-o" />
-						<span>
-							<h:outputText value="#{msgs.loeschen}" />
-						</span>
+						<util:icon-text icon="trash" text="#{msgs.loeschen}" />
 					</button>
 
 					<div
@@ -108,10 +101,7 @@
 										jsf:id="confirmDelete"
 										class="btn btn-hot"
 										jsf:action="#{cc.attrs.form.Loeschen}">
-										<span class="fa fa-trash-o" />
-										<span>
-											<h:outputText value="#{msgs.loeschen}" />
-										</span>
+										<util:icon-text icon="trash" text="#{msgs.loeschen}" />
 									</button>
 								</div>
 							</div>
