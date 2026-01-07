@@ -41,7 +41,8 @@
 
 					<intranda:boxTitle
 						title="#{msgs.arbeitsschritte}"
-						icon="fa-list">
+						tablerIcon="list"
+						tablerIconClass="me-2 icon--xl icon--b4">
 
 						<div class="actions d-flex">
 							<!-- NEW STEP -->
@@ -51,7 +52,7 @@
 								jsf:action="#{ProzessverwaltungForm.SchrittNeu}"
 								title="#{msgs.schrittHinzufuegen}"
 								jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and (ProzessverwaltungForm.myProzess.titel != '')}">
-								<span class="fa fa-plus" />
+								<util:icon icon="plus" styleClass="icon--xl icon--b4" />
 							</button>
 							<!-- // NEW STEP -->
 
@@ -70,7 +71,7 @@
 										type="button"
 										class="btn d-flex align-items-center btn--title-action dropdown-toggle"
 										data-bs-toggle="dropdown">
-										<span class="fa fa-exchange btn-dropDownInBoxHeader" />
+										<util:icon icon="arrows-exchange" styleClass="icon--xl icon--b4 btn-dropDownInBoxHeader" />
 									</button>
 									<ul class="dropdown-menu">
 									<ui:repeat
@@ -165,7 +166,7 @@
 											aria-label="#{msgs.process_moveTaskUp}"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
 											class="btn ms-3 p-0 mb-1">
-											<util:icon icon="chevron-up" styleClass="icon--light icon--extra-bold" />
+											<util:icon icon="chevron-up" styleClass="icon--light icon--b6" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -182,7 +183,7 @@
 											aria-label="#{msgs.process_moveTaskDown}"
 											class="btn p-0 mb-1"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-											<util:icon icon="chevron-down" styleClass="icon--light icon--extra-bold" />
+											<util:icon icon="chevron-down" styleClass="icon--light icon--b6" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -562,7 +563,7 @@
 										data-bs-toggle="tooltip"
 										aria-label="#{msgs.statusRunterSetzen}"
 										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-										<util:icon icon="chevron-left" styleClass="icon--xl icon--bold icon--light" />
+										<util:icon icon="chevron-left" styleClass="icon--xl icon--b4 icon--light" />
 										<f:setPropertyActionListener
 											target="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
@@ -583,7 +584,7 @@
 										data-bs-toggle="tooltip"
 										aria-label="#{msgs.statusHoeherSetzen}"
 										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-										<util:icon icon="chevron-right" styleClass="icon--xl icon--bold icon--light" />
+										<util:icon icon="chevron-right" styleClass="icon--xl icon--b4 icon--light" />
 										<f:setPropertyActionListener
 											target="#{ProzessverwaltungForm.mySchrittReload}"
 											value="#{item}" />
