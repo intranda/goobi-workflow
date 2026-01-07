@@ -5,6 +5,13 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    vertical-align: baseline;
+    color: inherit;
+
+    &::before {
+        content: '\200b';
+        line-height: 0;
+    }
 
     svg {
         color: currentColor;
@@ -18,7 +25,8 @@
 .icon-text {
     display: inline-flex;
     align-items: center;
-    gap: 0.25em;
+    gap: 0.5em;
+    color: inherit;
 }
 
 /* Size Modifiers */
@@ -46,3 +54,23 @@
 .icon-wrapper.icon--danger { color: #e51400; }
 .icon-wrapper.icon--inwork { color: #ffbf21; }
 .icon-wrapper.icon--deactivated { color: #ccc; }
+
+/* Animation Modifiers */
+.icon-wrapper.spin {
+    animation: icon-spin 1s linear infinite;
+}
+
+@keyframes icon-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.breadcrumb-item .icon-wrapper {
+    vertical-align: -0.125em;
+}
+
+.badge:has(.icon-wrapper) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+}
