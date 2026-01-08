@@ -799,6 +799,8 @@ public class VariableReplacer {
             return result;
 
         } else {
+            log.warn("No METS-Document available for replacement of variable: " + metadata);
+            // TODO: It would be even better if this would be handled with an exception instead an empty value
             return "";
         }
     }
