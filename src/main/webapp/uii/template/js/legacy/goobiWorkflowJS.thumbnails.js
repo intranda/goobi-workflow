@@ -51,7 +51,13 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     return rxjs.forkJoin(groupObservables);
                 })
         	)
-         	rxjs.forkJoin(thumbnailLoadObservables).subscribe();
+         	rxjs.forkJoin(thumbnailLoadObservables).subscribe({
+                complete: () => {
+                    // Fire event when all thumbnails are loaded
+                    const thumbnailsLoaded = new CustomEvent('thumbnailsLoaded');
+                    document.dispatchEvent(thumbnailsLoaded);
+                }
+            });
 
             var rightContent = document.querySelector( '#pageContentRight' );
             if(rightContent.querySelector( '#thumbnails' )) {

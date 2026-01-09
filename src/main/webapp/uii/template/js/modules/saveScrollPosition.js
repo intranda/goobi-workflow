@@ -64,7 +64,14 @@ export const restoreScrollPosition = (element) => {
 
     const scrollPositions = getScrollPositions();
     if (scrollPositions[id] !== undefined) {
-        element.scrollTop = scrollPositions[id];
+        // Delay scrolling for thumbnails
+        if (element.querySelector('canvas')) {
+            document.addEventListener('thumbnailsLoaded', () => {
+                element.scrollTo({ top: scrollPositions[id], behavior: 'smooth' });
+            });
+        } else {
+            element.scrollTo({ top: scrollPositions[id], behavior: 'smooth' });
+        }
     }
 };
 
