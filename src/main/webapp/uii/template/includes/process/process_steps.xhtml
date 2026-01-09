@@ -123,7 +123,7 @@
 									<div class="pt-1">
 										<h:outputText
 											value="#{item.reihenfolge}"
-											styleClass="alig-middle #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+											styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
 										<!-- Button: count order number 1 down -->
 										<button
 											jsf:id="down"
@@ -236,7 +236,7 @@
 												boxType="neutral"
 												boxSmall="true"
 												boxPadding="false"
-												icon="fa-table"
+												tablerIcon="table"
 												title="#{msgs.eigenschaften}">
 
 												<h:panelGrid

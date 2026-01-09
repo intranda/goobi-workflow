@@ -9,7 +9,8 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
 
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util">
 
     <ui:param name="myPageTitle" value="#{msgs.automaticTasks}" />
 
@@ -27,7 +28,7 @@
 
         <intranda:box
             boxType="primary"
-            icon="fa-gears"
+            tablerIcon="settings"
             title="#{msgs.jobTypes}"
             boxPadding="true">
 
@@ -66,20 +67,20 @@
                                 <f:passThroughAttribute name="id" value="auswahl" />
                             </f:facet>
                             <div class="gw-table-fixed__actions__btns">
-                                <button class="btn btn-blank"
+                                <button class="btn btn-icon btn-blank"
                                     title="#{msgs.bearbeiten}"
                                     jsf:rel="tooltip"
                                     jsf:action="#{JobTypesBean.editJobType(jobType)}">
-                                    <span class="fa fa-pencil" />
+                                    <util:icon icon="pencil" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
                                 </button>
-                                <button class="btn btn-blank"
+                                <button class="btn btn-icon btn-blank"
                                     title="#{jobType.paused ? msgs.unPauseJobType : msgs.pauseJobType}"
                                     jsf:rel="tooltip"
                                     data-bs-toggle="tooltip"
                                     jsf:action="#{JobTypesBean.toggleJobType(jobType)}">
-                                    <span class="fa #{jobType.paused ? 'fa-play' : 'fa-pause'}" />
+                                    <util:icon icon="#{jobType.paused ? 'player-play' : 'player-pause'}" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:passThroughAttribute name="aria-label" value="#{jobType.paused ? msgs.unPauseJobType : msgs.pauseJobType}" />
                                 </button>
@@ -91,7 +92,7 @@
             </div>
             <div class="box__actions">
                 <button class="btn btn-primary me-auto" jsf:action="#{JobTypesBean.addNewJobType}">
-                    <span class="fa fa-plus" />
+                    <util:icon icon="plus" styleClass="me-1 icon--lg icon--b5" />
                     <span>#{msgs.createNewJobType}</span>
                 </button>
             </div>

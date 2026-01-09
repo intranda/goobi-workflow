@@ -49,7 +49,7 @@
 						<intranda:box
 							id="processAllProcessesBox"
 							boxType="primary"
-							icon="fa-tasks"
+							tablerIcon="list-check"
 							title="#{myPageTitle}">
 
 							<div class="gw-table">
@@ -63,7 +63,7 @@
 												jsf:action="#{ProzessverwaltungForm.generateFilterWithIdentfiers}"
 												data-bs-toggle="tooltip"
 												title="#{msgs.process_generateFilterQueryForHits}">
-												<span class="fa fa-filter" />
+												<util:icon icon="filter"/>
 												<span>
 													<h:outputText
 														value="#{msgs.treffer}: #{ProzessverwaltungForm.paginator.totalResults}" />
@@ -117,15 +117,15 @@
 																jsf:action="#{ProzessverwaltungForm.selectionAll}"
 																jsf:id="selectall"
 																title="#{msgs.alleAuswaehlen}"
-																class="btn p-2">
-																<span class="fa fa-check-square-o font-black" />
+																class="btn btn-icon p-2">
+																<util:icon icon="square-check" />
 															</button>
 															<button
 																jsf:action="#{ProzessverwaltungForm.selectionNone}"
 																jsf:id="selectnone"
 																title="#{msgs.auswahlEntfernen}"
-																class="btn p-2">
-																<span class="fa fa-square-o font-black" />
+																class="btn btn-icon p-2">
+																<util:icon icon="square" />
 															</button>
 
 														</div>
@@ -335,9 +335,8 @@
 															<button
 																jsf:id="selected"
 																aria-label="#{msgs.auswahl2}"
-																class="btn btn-blank">
-																<i
-																	class="#{item.selected?'fa fa-check-square-o':'fa fa-square-o'}" />
+																class="btn btn-icon btn-blank">
+																<util:icon icon="#{item.selected?'square-check':'square'}" />
 																<f:setPropertyActionListener
 																	target="#{item.selected}"
 																	value="#{item.selected?false:true}" />
@@ -429,7 +428,7 @@
 																boxType="primary"
 																boxSmall="true"
 																boxPadding="false"
-																icon="fa-list"
+																tablerIcon="list"
 																title="#{msgs.details}">
 
 																<div class="gw-table">
@@ -456,20 +455,20 @@
 																						value="#{msgs.titel}"
 																						style="white-space: normal;" />
 																				</f:facet>
-																				<div>
+																				<div class="d-flex align-items-center">
 																					<h:panelGroup rendered="#{step.typAutomatisch}">
-																						<span
-																							class="fa fa-cogs font-light me-1"
+																						<util:icon
+																							icon="settings-cog"
+																							styleClass="icon--light me-1"
 																							title="#{msgs.automatischerSchritt}"
-																							data-bs-toggle="tooltip"
-																							style="width:1lh;" />
+																							data-bs-toggle="tooltip" />
 																					</h:panelGroup>
 																					<h:panelGroup rendered="#{not step.typAutomatisch}">
-																						<span
-																							class="fa fa-user-o font-light me-1 #{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"
+																						<util:icon
+																							icon="user"
+																							styleClass="icon--light me-1 #{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'icon--deactivated':''}"
 																							title="#{msgs.normalerSchritt}"
-																							data-bs-toggle="tooltip"
-																							style="width:1lh;" />
+																							data-bs-toggle="tooltip" />
 																					</h:panelGroup>
 																					<h:outputText
 																						value="#{step.titelLokalisiert}"
@@ -803,8 +802,7 @@
 													<td
 														data-label="#{msgs.ausgelagert}"
 														jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}">
-														<i
-															class="fa #{item.swappedOutGui?'fa-check-square-o':'fa-square-o'}" />
+														<util:icon icon="#{item.swappedOutGui?'square-check':'square'}" />
 													</td>
 
 													<!-- NUMBER OF IMAGES -->
@@ -832,7 +830,7 @@
 																onclick="preventDoubleSubmit(this);"
 																title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}"
 																data-bs-toggle="tooltip"
-																class="btn btn-blank">
+																class="btn btn-icon btn-blank">
 																<util:icon icon="pencil" />
 																<f:setPropertyActionListener
 																	target="#{ProzessverwaltungForm.myProzess}"
@@ -844,7 +842,7 @@
 
 															<!-- CLONE PROCESS TEMPLATE -->
 															<button
-																class="btn btn-blank"
+																class="btn btn-icon btn-blank"
 																aria-label="#{msgs.duplicate}"
 																jsf:action="#{ProzessverwaltungForm.cloneProcess}"
 																jsf:rel="tooltip"
@@ -852,7 +850,7 @@
 																data-bs-toggle="tooltip"
 																title="#{msgs.duplicate}"
 																onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-																<span class="fa fa-clipboard" />
+																<util:icon icon="clipboard" />
 																<f:setPropertyActionListener
 																	target="#{ProzessverwaltungForm.myProzess}"
 																	value="#{item}" />
@@ -860,7 +858,7 @@
 
 															<!-- METADATA EDITOR - READ ONLY -->
 															<h:commandLink
-																styleClass="btn btn-blank"
+																styleClass="btn btn-icon btn-blank"
 																action="#{Metadaten.XMLlesen}"
 																id="action14"
 																rel="tooltip"
@@ -868,7 +866,7 @@
 																pt:data-bs-toggle="tooltip"
 																onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');"
 																rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and item.benutzerGesperrt == null and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
-																<span class="fa fa-book" />
+																<util:icon icon="book" />
 																<f:param
 																	name="nurLesen"
 																	value="true" />
@@ -885,7 +883,7 @@
 
 															<!-- METADATA EDITOR - INCL. WRITE -->
 															<h:commandLink
-																styleClass="btn btn-blank"
+																styleClass="btn btn-icon btn-blank"
 																action="#{Metadaten.XMLlesen}"
 																id="action15"
 																rel="tooltip"
@@ -946,11 +944,11 @@
                                                             <button
                                                                 jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and item.temporaryMetadataFiles}"
                                                                 type="button"
-                                                                class="btn btn-blank"
+                                                                class="btn btn-icon btn-blank"
                                                                 title="#{msgs.metadatenBearbeiten}"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#myModal-#{item.id}">
-                                                              <span class="fa fa-book " />
+                                                              <util:icon icon="book" />
                                                             </button>
 
                                                             <!-- MODAL TO BE SHOWN EVENTUALLY -->
@@ -999,7 +997,7 @@
 																				title="#{msgs.discard}"
 																				rel="tooltip"
 																				styleClass="btn btn-hot">
-																				<span class="fa fa-trash-o" />
+																				<util:icon icon="trash" styleClass="me-1" />
 																				<span>
                                                                                     <h:outputText value="#{msgs.discard}" />
                                                                                 </span>
@@ -1040,7 +1038,7 @@
 																				data-bs-toggle="tooltip"
 																				rel="tooltip"
 																				styleClass="btn btn-success">
-																				<span class="fa fa-floppy-o" />
+																				<util:icon icon="device-floppy" styleClass="me-1" />
 																				<span>
                                                                                     <h:outputText value="#{msgs.overwrite}" />
                                                                                 </span>
@@ -1089,10 +1087,10 @@
 																	onclick="preventDoubleSubmit(this);"
 																	title="#{msgs.importDms}"
 																	data-bs-toggle="tooltip"
-																	class="btn btn-blank"
+																	class="btn btn-icon btn-blank"
 																	jsf:disabled="#{!item.containsExportStep}"
 																	jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
-																	<util:icon icon="globe" />
+																	<util:icon icon="world" />
 																	<f:setPropertyActionListener
 																		target="#{ProzessverwaltungForm.myProzess}"
 																		value="#{item}" />
@@ -1112,8 +1110,8 @@
 																	title="#{msgs.importDms}"
 																	data-bs-toggle="tooltip"
 																	jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}"
-																	class="btn btn-blank">
-																	<i class="font-light fa fa-globe" />
+																	class="btn btn-icon btn-blank">
+																	<util:icon icon="world" styleClass="icon--light" />
 																	<f:setPropertyActionListener
 																		target="#{ProzessverwaltungForm.myProzess}"
 																		value="#{item}" />
@@ -1135,7 +1133,7 @@
 					                                              }"
 																jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and
                                                                 ProzesskopieForm.availableProjects.size() eq 1 and ProzesskopieForm.availableProjects.get(0).getTitel() == item.projekt.titel}">
-																<span class="fa fa-file-o" />
+																<util:icon icon="file" />
 																<f:setPropertyActionListener
 																	target="#{ProzesskopieForm.prozessVorlage}"
 																	value="#{item}" />
@@ -1156,12 +1154,12 @@
 																	<div class="btn-group position-static">
 																		<button
 																			jsf:id="copyProcessTempalte"
-																			class="btn #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
+																			class="btn btn-icon #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
 																			aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
 																			data-bs-toggle="tooltip"
 																			jsf:action="#{ProzesskopieForm.prepare}"
 																			jsf:rel="tooltip">
-																			<span class="fa fa-file-o" />
+																			<util:icon icon="file" />
 																			<f:setPropertyActionListener
 																				target="#{ProzesskopieForm.prozessVorlage}"
 																				value="#{item}" />
@@ -1214,7 +1212,7 @@
 																onclick="preventDoubleSubmit(this);"
 																jsf:rendered="#{(ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and
                                                                 ProzesskopieForm.availableProjects.size() eq 1 and ProzesskopieForm.availableProjects.get(0).getTitel() == item.projekt.titel)}">
-																<span class="fa fa-files-o" />
+																<util:icon icon="files" />
 																<f:setPropertyActionListener
 																	target="#{MassImportForm.template}"
 																	value="#{item}" />
@@ -1236,11 +1234,12 @@
 																	<div class="btn-group position-static">
 																		<button
 																			jsf:id="massImportPrepare"
-																			class="btn fa fa-files-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
+																			class="btn btn-icon #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-hot':'btn-primary-400'}"
 																			aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
 																			data-bs-toggle="tooltip"
 																			jsf:action="#{MassImportForm.prepare}"
 																			jsf:rel="tooltip">
+																			<util:icon icon="files" />
 																			<f:setPropertyActionListener
 																				target="#{MassImportForm.template}"
 																				value="#{item}" />
@@ -1303,7 +1302,7 @@
 											class="btn btn-primary-400 me-auto"
 											jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and LoginForm.hasRole('Workflow_ProcessTemplates_Create') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}"
 											jsf:id="new2">
-											<span class="fa fa-plus" />
+											<util:icon icon="plus" styleClass="me-1" />
 											<span>
 												<h:outputText value="#{msgs.eineNeueProzessvorlageAnlegen}" />
 											</span>

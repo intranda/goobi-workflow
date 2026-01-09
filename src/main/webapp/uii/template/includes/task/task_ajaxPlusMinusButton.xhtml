@@ -1,6 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
-	 xmlns:jsf="http://xmlns.jcp.org/jsf">
+	 xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface>
 	</composite:interface>
@@ -17,12 +18,12 @@
 			aria-expanded="false"
 			data-goobi="handle-tooltip"
 		>
-			<span class="fa fa-angle-right" />
+			<util:icon icon="chevron-right" />
 			<h:panelGroup rendered="#{item.typAutomatisch}">
-				<i class="fa fa-cogs" title="#{msgs.automatischerSchritt}" />
+				<util:icon icon="settings" title="#{msgs.automatischerSchritt}" />
 			</h:panelGroup>
 			<h:panelGroup rendered="#{not item.typAutomatisch}">
-				<i class="fa fa-user-o" title="#{msgs.normalerSchritt}" />
+				<util:icon icon="user" title="#{msgs.normalerSchritt}" />
 			</h:panelGroup>
 			<span>
 				<h:outputText value="#{item.titelLokalisiert}" />
@@ -43,13 +44,12 @@
 			aria-expanded="true"
 			data-goobi="handle-tooltip"
 		>
-			<span class="fa fa-angle-down" />
-
+			<util:icon icon="chevron-down" />
 			<h:panelGroup rendered="#{item.typAutomatisch}">
-        <i class="fa fa-cogs" title="#{msgs.automatischerSchritt}"/>
-      </h:panelGroup>
+				<util:icon icon="settings" title="#{msgs.automatischerSchritt}" />
+			</h:panelGroup>
 			<h:panelGroup rendered="#{not item.typAutomatisch}">
-				<i class="fa fa-user-o" title="#{msgs.normalerSchritt}"/>
+				<util:icon icon="user" title="#{msgs.normalerSchritt}" />
 			</h:panelGroup>
 			<span>
 				<h:outputText value="#{item.titel}" />

@@ -7,10 +7,13 @@
     justify-content: center;
     vertical-align: baseline;
     color: inherit;
+    position: relative;
 
+    /* Zero-width space for baseline alignment - positioned absolutely to not affect width */
     &::before {
         content: '\200b';
-        line-height: 0;
+        position: absolute;
+        width: 0;
     }
 
     svg {
@@ -36,6 +39,8 @@
 .icon-wrapper.icon--lg { --icon-size: 1.25em; }
 .icon-wrapper.icon--xl { --icon-size: 1.5em; }
 .icon-wrapper.icon--xxl { --icon-size: 2em; }
+.icon-wrapper.icon--xxxl { --icon-size: 2.5em; }
+.icon-wrapper.icon--xxxxl { --icon-size: 3em; }
 
 /* Stroke Modifiers */
 .icon-wrapper.icon--b1 { --icon-stroke: 1; }

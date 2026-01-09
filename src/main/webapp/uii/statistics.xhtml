@@ -51,7 +51,7 @@
                     boxType="neutral"
                     boxScope="stats-box"
                     title="#{msgs.projekt}"
-                    icon="fa-compass"
+                    tablerIcon="compass"
                   >
 
                   <div class="row">
@@ -152,7 +152,7 @@
                     boxType="neutral"
                     boxScope="stats-box"
                     title="#{msgs.vorgaben}"
-                    icon="fa-calculator"
+                    tablerIcon="calculator"
                   >
 
 
@@ -315,7 +315,7 @@
                 <div class="col-12">
                   <section:section type="neutral">
                     <section:header
-                      icon="bar-chart"
+                      icon="chart-bar"
                       title="#{msgs.statistik}">
                       <section:header-actions>
                         <!-- TABS -->
@@ -398,10 +398,7 @@
                               class="btn btn--title-action"
                               title="#{msgs.reload}"
                               jsf:rel="tooltip">
-                              <i
-                                class="fa fa-refresh"
-                                title="#{msgs.reload}"
-                                jsf:rel="tooltip" />
+                              <util:icon icon="refresh" styleClass="icon--b5" />
                               <f:passThroughAttribute
                                 name="data-toggle"
                                 value="tooltip" />
@@ -550,7 +547,7 @@
                                           jsf:id="pcid20"
                                           class="btn btn-neutral-600 ms-auto"
                                           jsf:action="#{ProjekteForm.filegroupEdit}">
-                                          <span class="fa fa-cog" />
+                                          <util:icon icon="settings" styleClass="me-1" />
                                           <span>
                                               <h:outputText value="#{msgs.rerender}" />
                                           </span>

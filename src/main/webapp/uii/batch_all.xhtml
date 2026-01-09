@@ -10,7 +10,8 @@
 
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
 <ui:param
     name="myPageTitle"
@@ -44,7 +45,7 @@
 
                 <intranda:box
                     boxType="primary"
-                    icon="fa-archive"
+                    tablerIcon="archive"
                     title="#{msgs.batches}"
                     boxPadding="true">
 
@@ -68,10 +69,7 @@
                                 jsf:action="#{BatchForm.filterBatches}"
                                 class="btn btn-primary-400 submitOnEnter"
                                 title="#{msgs.filter}">
-                                <span class="fa fa-search" />
-                                <span>
-                                    <h:outputText value="#{msgs.filter}" />
-                                </span>
+                                <util:icon-text icon="search" text="#{msgs.filter}" />
                             </button>
                         </div>
                     </div>
@@ -132,7 +130,7 @@
 
                 <intranda:box
                     boxType="primary"
-                    icon="fa-tasks"
+                    tablerIcon="list-check"
                     title="#{msgs.prozesse}"
                     boxPadding="true">
 
@@ -156,10 +154,7 @@
                                 jsf:action="#{BatchForm.filterProcesses}"
                                 class="btn btn-primary filterProcesses"
                                 title="#{msgs.filter}">
-                                <span class="fa fa-search" />
-                                <span>
-                                    <h:outputText value="#{msgs.filter}" />
-                                </span>
+                                <util:icon-text icon="search" text="#{msgs.filter}" />
                             </button>
                         </div>
                     </div>

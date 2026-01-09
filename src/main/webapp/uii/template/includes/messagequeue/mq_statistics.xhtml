@@ -7,6 +7,7 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:p="http://primefaces.org/ui"
+    xmlns:util="http://goobi.io/util"
     >
 
     <h3 class="mt-4">#{msgs.statistischeAuswertung}</h3>
@@ -99,7 +100,7 @@
                 title="#{msgs.calculateStatistics}"
                 jsf:action="#{messageQueueBean.calculateStatistics}"
                 class="btn btn-primary">
-                <span class="fa fa-cog" />
+                <util:icon icon="settings" styleClass="me-1" />
                 <span>
                     <h:outputText value="#{msgs.calculateStatistics}" />
                 </span>

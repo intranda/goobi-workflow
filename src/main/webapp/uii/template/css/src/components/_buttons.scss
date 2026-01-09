@@ -49,7 +49,10 @@
 }
 
 .btn-icon {
-  padding: var(--bs-btn-padding-y);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6.5px;
 }
 
 button,

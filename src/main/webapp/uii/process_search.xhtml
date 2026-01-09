@@ -42,7 +42,7 @@
 							boxForm="true"
 							boxType="primary"
 							boxPadding="false"
-							icon="fa-search"
+							tablerIcon="search"
 							title="#{msgs.nachEinemBandSuchen}">
 
 
@@ -318,8 +318,8 @@
 											title="#{msgs.conditionAdd}"
 											aria-label="#{msgs.conditionAdd}"
 											jsf:id="addCondition"
-											class="btn btn-primary">
-											<span class="fa fa-plus" aria-hidden="true" />
+											class="btn btn-icon btn-primary">
+											<util:icon icon="plus" styleClass="icon--lg icon--b5" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -330,8 +330,8 @@
 											aria-label="#{msgs.conditionRemove}"
 											jsf:rendered="#{SearchForm.sizeOfRowList > 1}"
 											jsf:id="removeCondition"
-											class="btn btn-primary">
-											<span class="fa fa-minus" aria-hidden="true" />
+											class="btn btn-icon btn-primary">
+											<util:icon icon="minus" styleClass="icon--lg icon--b5" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -386,10 +386,7 @@
 									jsf:id="absenden"
 									type="submit"
 									jsf:action="#{SearchForm.createFilter}">
-									<span class="fa fa-search" />
-									<span>
-										<h:outputText value="#{msgs.search}" />
-									</span>
+									<util:icon-text icon="search" text="#{msgs.search}" />
 								</button>
 							</div>
 							<!-- // BUTTONS -->
