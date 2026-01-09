@@ -25,12 +25,7 @@
 
 package org.goobi.api.display.helper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -283,7 +278,8 @@ public final class ConfigDisplayRules {
 
     public List<Item> getElementsForMetadata(String projectTitle, DisplayType displayType, String elementName) {
         List<Item> values = new ArrayList<>();
-        Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(projectTitle);
+        Map<String, Map<String, List<Item>>> itemsByType = Optional.ofNullable(this.allValues.get(projectTitle))
+                .orElse(Collections.emptyMap());
         if (itemsByType.isEmpty()) {
             if ("*".equals(projectTitle)) {
                 values.add(new Item(projectTitle));
