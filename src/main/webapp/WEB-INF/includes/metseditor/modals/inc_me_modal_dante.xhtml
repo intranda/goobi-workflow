@@ -33,7 +33,7 @@
                             class="btn text-white"
                             title="#{msgs.cancel}"
                             data-bs-dismiss="modal">
-                            <span class="fa fa-times" />
+                            <util:icon icon="x" />
                         </button>
                     </div>
 
@@ -54,9 +54,7 @@
                                 jsf:id="danteSearch"
                                 class="btn btn-primary"
                                 jsf:action="#{Metadaten.search}">
-                                <span
-                                    class="fa fa-search"
-                                    aria-hidden="true" />
+                                <util:icon icon="search" />
                                 <span>
                                     #{msgs.search}
                                 </span>
@@ -160,9 +158,7 @@
                                                 <f:setPropertyActionListener
                                                     value=""
                                                     target="#{Metadaten.gndSearchValue}" />
-                                                <i
-                                                    class="fa fa-check"
-                                                    aria-hidden="true"></i>
+                                                <util:icon icon="check" />
                                             </button>
                                         </div>
                                     </div>

@@ -7,7 +7,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface>
     </composite:interface>
@@ -72,7 +73,7 @@
                             class="btn text-white"
                             title="#{msgs.cancel}"
                             data-bs-dismiss="modal">
-                            <span class="fa fa-times" />
+                            <util:icon icon="x" />
                         </button>
                     </div>
                     <div class="modal-body">
@@ -88,7 +89,7 @@
                                 type="button"
                                 >
                                 <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
-                                <span class="fa fa-angle-double-left" aria-hidden="true" />
+                                <util:icon icon="chevrons-left" />
                             </button>
                             <button
                                 jsf:action="#{Metadaten.imageLeft2}"
@@ -98,7 +99,7 @@
                                 title="#{msgs.mets_navigateTwoImagesLeft}"
                                 data-renderimage="true"
                                 type="button">
-                                <span class="fa fa-angle-left" aria-hidden="true" />
+                                <util:icon icon="chevron-left" />
                                 <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
                             </button>
                             <button
@@ -108,7 +109,7 @@
                                 class="btn btn-primary"
                                 data-renderimage="true">
                                 <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
-                                <span class="fa fa-angle-left" aria-hidden="true" />
+                                <util:icon icon="chevron-left" />
                                 #{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}
                             </button>
                             <h:panelGroup id="altoEditAutocomplete">
@@ -135,7 +136,7 @@
                                 data-renderimage="true">
                                 #{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}
                                 <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
-                                <span class="fa fa-angle-right" aria-hidden="true" />
+                                <util:icon icon="chevron-right" />
                             </button>
                             <button
                                 jsf:action="#{Metadaten.imageRight2}"
@@ -146,7 +147,7 @@
                                 data-renderimage="true"
                                 type="button">
                                 <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
-                                <span class="fa fa-angle-right" aria-hidden="true" />
+                                <util:icon icon="chevron-right" />
                             </button>
 
                         <!-- IMAGE LAST -->
@@ -160,7 +161,7 @@
                                 data-renderimage="true"
                                 type="button">
                                 <f:ajax execute=":openseadragonform :pageareas" render=":openseadragonform :pageareas :altoEditAutocomplete"/>
-                                <span class="fa fa-angle-double-right" aria-hidden="true" />
+                                <util:icon icon="chevrons-right" />
                             </button>
                         </div>
                     </div>
@@ -179,7 +180,7 @@
                                 for="altoChanges" />
                         </h:panelGroup>
                         <button type="button" class="btn btn-success" onclick="saveAltoResults()">
-                            <span class="fa fa-floppy-o" />
+                            <util:icon icon="device-floppy" />
                             <span>
                                 #{msgs.save}
                             </span>

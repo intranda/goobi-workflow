@@ -10,7 +10,8 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:section="http://goobi.io/section"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:form="http://goobi.io/form">
+    xmlns:form="http://goobi.io/form"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface />
 
@@ -20,7 +21,7 @@
             class="pb-3">
             <section:section type="neutral" id="newElementBox" collapsible="true">
                 <section:header
-                    icon="bars"
+                    icon="menu-2"
                     title="#{msgs.neuesStrukturelement}">
                 </section:header>
                 <section:body>
@@ -77,9 +78,7 @@
                                         type="button"
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="left">
-                                        <span
-                                            class="fa fa-angle-left fa-lg"
-                                            aria-hidden="true" />
+                                        <util:icon icon="chevron-left" styleClass="icon--lg" />
                                         <f:setPropertyActionListener
                                             value="#{Metadaten.imageIndex}"
                                             property="#{Metadaten.pageNumber}"
@@ -95,9 +94,7 @@
                                         type="button"
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="top">
-                                        <span
-                                            class="fa fa-picture-o"
-                                            aria-hidden="true" />
+                                        <util:icon icon="photo" />
                                         <f:setPropertyActionListener
                                             value="#{Metadaten.imageIndex+1}"
                                             property="#{Metadaten.pageNumber}"
@@ -113,9 +110,7 @@
                                         type="button"
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="right">
-                                        <span
-                                            class="fa fa-angle-right fa-lg"
-                                            aria-hidden="true" />
+                                        <util:icon icon="chevron-right" styleClass="icon--lg" />
                                         <f:setPropertyActionListener
                                             value="#{Metadaten.imageIndex+2}"
                                             property="#{Metadaten.pageNumber}"
@@ -150,9 +145,7 @@
                                         type="button"
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="left">
-                                        <span
-                                            class="fa fa-angle-left fa-lg"
-                                            aria-hidden="true" />
+                                        <util:icon icon="chevron-left" styleClass="icon--lg" />
                                         <f:setPropertyActionListener
                                             value="#{Metadaten.imageIndex}"
                                             property="#{Metadaten.pageNumber}"
@@ -168,9 +161,7 @@
                                         type="button"
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="bottom">
-                                        <span
-                                            class="fa fa-picture-o"
-                                            aria-hidden="true" />
+                                        <util:icon icon="photo" />
                                         <f:setPropertyActionListener
                                             value="#{Metadaten.imageIndex +1}"
                                             property="#{Metadaten.pageNumber}"
@@ -186,9 +177,7 @@
                                         type="button"
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="right">
-                                        <span
-                                            class="fa fa-angle-right fa-lg"
-                                            aria-hidden="true" />
+                                        <util:icon icon="chevron-right" styleClass="icon--lg" />
                                         <f:setPropertyActionListener
                                             value="#{Metadaten.imageIndex +2}"
                                             property="#{Metadaten.pageNumber}"
@@ -226,9 +215,7 @@
                                             data-bs-placement="bottom"
                                             data-video-set-timestamp="true"
                                             data-video-target="videoSectionBegin">
-                                            <span
-                                                class="fa fa-clock-o"
-                                                aria-hidden="true" />
+                                            <util:icon icon="clock" />
                                         </button>
                                     </form:field>
                                     <form:field
@@ -253,9 +240,7 @@
                                             data-bs-placement="bottom"
                                             data-video-set-timestamp="true"
                                             data-video-target="videoSectionEnd">
-                                            <span
-                                                class="fa fa-clock-o"
-                                                aria-hidden="true" />
+                                            <util:icon icon="clock" />
                                         </button>
                                     </form:field>
                                 </form:fieldset>
@@ -285,9 +270,7 @@
                                             aria-label="#{msgs.mets_createPageArea}"
                                             data-bs-toggle="tooltip"
                                             data-placement="left">
-                                            <span
-                                                class="fa fa-crop"
-                                                aria-hidden="true" />
+                                            <util:icon icon="crop" />
                                         </button>
                                         <button
                                             class="btn btn--icon-red cancel-area-edition above-overlay"
@@ -298,9 +281,7 @@
                                             aria-label="#{msgs.mets_cancelPageArea}"
                                             data-bs-toggle="tooltip"
                                             data-placement="right">
-                                            <span
-                                                class="fa fa-ban"
-                                                aria-hidden="true" />
+                                            <util:icon icon="ban" />
                                         </button>
                                     </ui:fragment>
                                 </form:field>
@@ -387,9 +368,7 @@
                                 jsf:id="fastPagination"
                                 class="btn btn-outline me-auto ps-0"
                                 type="button">
-                                <span
-                                    class="fa #{Metadaten.enableFastPagination == false?'fa fa-square-o':'fa fa-check-square-o'}"
-                                    aria-hidden="true" />
+                                <util:icon icon="#{Metadaten.enableFastPagination == false ? 'square' : 'square-check'}" />
                                 <h:outputText
                                     value="#{msgs.mets_easyPagination}"
                                     styleClass="structdata__easyPagination" />

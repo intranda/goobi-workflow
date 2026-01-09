@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface/>
 
@@ -23,10 +24,10 @@
                                 jsf:id="expand"
                                 aria-label="#{msgs.expand}"
                                 jsf:action="#{NavigationForm.Reload}"
-                                class="btn btn--icon p-0 d-flex flex-column justify-content-start mt-1 #{item.node.expanded ? 'expand' : 'expanded'}"
+                                class="btn btn--icon p-0 #{item.node.expanded ? 'expand' : 'expanded'}"
                                 style="--level: #{item.niveau}"
                                 jsf:rendered="#{item.node.hasChildren}">
-                                <span class="#{item.node.expanded ? 'fa fa-caret-down fa-lg' : 'fa fa-caret-right fa-lg'}"/>
+                                <util:icon icon="#{item.node.expanded ? 'caret-down' : 'caret-right'}" styleClass="icon--lg" />
                                 <f:setPropertyActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" target="#{item.node.expanded}"/>
                                 <f:ajax execute="treeform" render="treeform"/>
                             </button>
@@ -38,7 +39,7 @@
                                         jsf:id="link"
                                         aria-label="#{msgs.seite}"
                                         jsf:immediate="true"
-                                        class="btn btn--icon p-0 d-flex align-items-baseline #{item.node.selected ? 'table__structure-link-active fw-700' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}"
+                                        class="btn btn--icon p-0 icon-text #{item.node.selected ? 'table__structure-link-active fw-700' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}"
                                         style="--level: #{item.niveau}"
                                         jsf:action="#{Metadaten.loadRightFrame}"
                                         data-bs-trigger="hover"
@@ -47,8 +48,10 @@
                                         data-bs-placement="right"
                                         data-bs-html="true"
                                         data-bs-content="#{item.node.metadataPopup}">
-                                        <span class="fa fa-file-o" aria-hidden="true"/>
-                                        <span jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle text-danger" style="margin-left: 5px" aria-hidden="true"/>
+                                        <util:icon icon="file" />
+                                        <h:panelGroup rendered="#{item.node.validationErrorPresent}" styleClass="ms-1">
+                                            <util:icon icon="exclamation-circle" styleClass="text-danger" />
+                                        </h:panelGroup>
                                         <span class="text-start">
                                             <h:outputText styleClass="item-niveau" value="#{item.niveau} " rendered="#{Metadaten.treeProperties.showtreelevel}"/>
                                             <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}"/>
@@ -75,11 +78,13 @@
                                         jsf:id="link1"
                                         aria-label="#{msgs.seite}"
                                         jsf:immediate="true"
-                                        class="btn btn--icon p-0 d-flex align-items-baseline #{item.node.selected ? 'table__structure-link-active fw-700' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}"
+                                        class="btn btn--icon p-0 icon-text #{item.node.selected ? 'table__structure-link-active fw-700' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}"
                                         style="--level: #{item.niveau}"
                                         jsf:action="#{Metadaten.loadRightFrame}">
-                                        <span class="fa fa-file-o" aria-hidden="true"/>
-                                        <span jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle text-danger" style="margin-left: 5px" aria-hidden="true"/>
+                                        <util:icon icon="file" />
+                                        <h:panelGroup rendered="#{item.node.validationErrorPresent}" styleClass="ms-1">
+                                            <util:icon icon="exclamation-circle" styleClass="text-danger" />
+                                        </h:panelGroup>
                                         <span class="text-start">
                                             <h:outputText styleClass="item-niveau" value="#{item.niveau} " rendered="#{Metadaten.treeProperties.showtreelevel}"/>
                                             <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}"/>
@@ -104,8 +109,8 @@
                             </ui:fragment>
 
                             <ui:fragment rendered="#{!Metadaten.treeProperties.showMetadataPopup}">
-                                <button jsf:id="link2" jsf:immediate="true" class="btn btn--icon p-0 #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}" style="--level: #{item.niveau}" jsf:action="#{Metadaten.loadRightFrame}">
-                                    <span class="fa fa-file-o" aria-hidden="true"/>
+                                <button jsf:id="link2" jsf:immediate="true" class="btn btn--icon p-0 icon-text #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}" style="--level: #{item.niveau}" jsf:action="#{Metadaten.loadRightFrame}">
+                                    <util:icon icon="file" />
                                     <span>
                                         <h:outputText styleClass="item-niveau" value="#{item.niveau} " rendered="#{Metadaten.treeProperties.showtreelevel}"/>
                                         <h:outputText value="#{item.node.description}" rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}"/>
@@ -139,7 +144,6 @@
                         class="btn"
                         jsf:action="#{NavigationForm.Reload}"
                         style="display:none;">
-                        <span class="fa fa-floppy-o"/>
                     </button>
                 </li>
                 <li>
@@ -154,7 +158,7 @@
                         data-renderimage="true"
                         data-bs-toggle="tooltip"
                         data-bs-placement="right">
-                        <span class="#{Metadaten.bildZuStrukturelement ? 'fa fa-chain' : 'fa fa-chain-broken'}" aria-hidden="true"/>
+                        <util:icon icon="#{Metadaten.bildZuStrukturelement ? 'link' : 'link-off'}" />
                         <f:setPropertyActionListener value="0" property="#{Metadaten.numberOfNavigation}" target="#{Metadaten.numberOfNavigation}"/>
                         <f:setPropertyActionListener target="#{Metadaten.bildZuStrukturelement}" value="#{not Metadaten.bildZuStrukturelement}"/>
                         <!--
@@ -174,7 +178,7 @@
                         title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="right">
-                        <span class="fa fa-list" aria-hidden="true"/>
+                        <util:icon icon="list" />
 
                         <f:setPropertyActionListener value="#{Metadaten.treeProperties.showtitle?false:true}" property="#{Metadaten.treeProperties.showtitle}" target="#{Metadaten.treeProperties.showtitle}"/>
                         <f:ajax render="@form"/>
@@ -190,7 +194,7 @@
                         title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="right">
-                        <span class="fa fa-exchange" aria-hidden="true"/>
+                        <util:icon icon="arrows-exchange" />
                         <f:setPropertyActionListener value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}" property="#{Metadaten.treeProperties.showfirstpagenumber}" target="#{Metadaten.treeProperties.showfirstpagenumber}"/>
                         <f:ajax render="@form"/>
                     </button>
@@ -204,7 +208,7 @@
                         title="#{msgs.process_generateSimplifiedMetadata}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="right">
-                        <span class="fa fa-print" aria-hidden="true"/>
+                        <util:icon icon="printer" />
                     </button>
                 </li>
                 <ui:fragment rendered="#{!Metadaten.allImages.isEmpty()}">
@@ -218,7 +222,7 @@
                             title="#{msgs.download_pdf}">
                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                             <f:passThroughAttribute name="data-bs-placement" value="right"/>
-                            <span class="fa fa-file-pdf-o" aria-hidden="true"/>
+                            <util:icon icon="file-type-pdf" />
                         </h:commandLink>
                     </li>
                 </ui:fragment>

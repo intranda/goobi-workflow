@@ -5,7 +5,8 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface/>
 
@@ -19,7 +20,7 @@
                 <li>
                     <button jsf:id="thumbFirst" aria-label="#{msgs.firstImage}" class="btn btn-blank" jsf:action="#{Metadaten.cmdMoveFirst}" type="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
-                        <span class="fa fa-angle-double-left" aria-hidden="true"/>
+                        <util:icon icon="chevrons-left" />
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
                         <f:ajax execute="@form" render="thumbnailsForm"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
@@ -29,7 +30,7 @@
                 <li>
                     <button jsf:id="thumbPrev" class="btn btn-primary" jsf:action="#{Metadaten.cmdMovePrevious}" type="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
-                        <span class="fa fa-angle-left" aria-hidden="true"/>
+                        <util:icon icon="chevron-left" />
                         <span>#{Metadaten.pagesRTL?msgs.pageNext:msgs.pagePrevious}</span>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
                         <f:ajax execute="@form" render="thumbnailsForm"/>
@@ -46,7 +47,7 @@
                     <button jsf:id="thumbNext" class="btn btn-primary" jsf:action="#{Metadaten.cmdMoveNext}" type="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
                         <span>#{Metadaten.pagesRTL?msgs.pagePrevious:msgs.pageNext}</span>
-                        <span class="fa fa-angle-right" aria-hidden="true"/>
+                        <util:icon icon="chevron-right" />
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
                         <f:ajax execute="@form" render="thumbnailsForm"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
@@ -56,7 +57,7 @@
                 <li>
                     <button jsf:id="thumbLast" aria-label="#{msgs.lastImage}" class="btn btn-blank" jsf:action="#{Metadaten.cmdMoveLast}" type="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
-                        <span class="fa fa-angle-double-right" aria-hidden="true"/>
+                        <util:icon icon="chevrons-right" />
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
                         <f:ajax execute="@form" render="thumbnailsForm"/>
                         <f:passThroughAttribute name="data-renderimage" value="true"/>

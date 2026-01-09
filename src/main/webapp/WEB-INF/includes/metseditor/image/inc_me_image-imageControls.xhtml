@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface />
 
@@ -36,9 +37,7 @@
                         title="#{msgs.mets_rotateImageLeft}"
                         data-toggle="tooltip"
                         data-placement="top">
-                        <span
-                            class="fa fa-undo fa-lg"
-                            aria-hidden="true" />
+                        <util:icon icon="rotate" styleClass="icon--lg" />
                     </button>
                 </li>
                 <!-- ROTATE RIGHT -->
@@ -51,9 +50,7 @@
                         title="#{msgs.mets_rotateImageRight}"
                         data-toggle="tooltip"
                         data-placement="top">
-                        <span
-                            class="fa fa-repeat fa-lg"
-                            aria-hidden="true" />
+                        <util:icon icon="rotate-clockwise" styleClass="icon--lg" />
                     </button>
                 </li>
 
@@ -67,9 +64,7 @@
                         title="#{msgs.mets_resetImageRotation}"
                         data-toggle="tooltip"
                         data-placement="top">
-                        <span
-                            class="fa fa-times-circle-o fa-lg"
-                            aria-hidden="true" />
+                        <util:icon icon="circle-x" styleClass="icon--lg" />
                     </button>
                 </li>
                 <li class="image__controls-zoom">
@@ -97,9 +92,7 @@
                         data-bs-auto-close="outside"
                         aria-expanded="false"
                         aria-label="#{msgs.mets_imageFilters}">
-                        <span
-                            class="fa fa-angle-up fa-lg"
-                            aria-hidden="true" />
+                        <util:icon icon="chevron-up" styleClass="icon--lg" />
                     </button>
                     <div class="dropdown-menu">
                         <ui:include src="inc_me_image-imageFilters.xhtml" />

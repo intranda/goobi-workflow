@@ -8,13 +8,14 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:section="http://goobi.io/section"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:form="http://goobi.io/form">
+	xmlns:form="http://goobi.io/form"
+    xmlns:util="http://goobi.io/util">
     <composite:interface/>
     <composite:implementation>
         <ui:fragment rendered="#{Metadaten.modusHinzufuegen}">
             <div id="meAddMetadataBox">
                 <section:section type="neutral" id="addMetadataSection" collapsible="true">
-                    <section:header icon="bars" title="#{msgs.neuesMetadatumAnlegen}">
+                    <section:header icon="menu-2" title="#{msgs.neuesMetadatumAnlegen}">
                     </section:header>
                     <section:body>
                         <div class="form-row">
@@ -95,7 +96,7 @@
                                     </ui:fragment>
                                     <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'process'}">
                                         <button type="button" jsf:id="openProcessSearchModal" class="btn processIndexTrigger" title="#{msgs.search}" onclick="$('#processModalContent').modal('show');">
-                                            <i class="fa fa-search" style="margin-left: 3px"/>
+                                            <util:icon icon="search" />
                                             <f:setPropertyActionListener value="#{Metadaten.metadatum}" target="#{Metadaten.currentMetadataToPerformSearch}"/>
                                             <f:ajax execute="@this" render=":processModalContent"/>
                                         </button>

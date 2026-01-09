@@ -37,7 +37,7 @@
                                 class="btn text-white"
                                 title="#{msgs.cancel}"
                                 data-bs-dismiss="modal">
-                                <span class="fa fa-times" />
+                                <util:icon icon="x" />
                             </button>
                     </div>
                     <div class="modal-body">
@@ -64,9 +64,7 @@
                                 jsf:id="easyDbSearch"
                                 class="btn btn-primary"
                                 jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}">
-                                <span
-                                    class="fa fa-search"
-                                    aria-hidden="true" />
+                                <util:icon icon="search" />
                                 <span>
                                     #{msgs.search}
                                 </span>
@@ -123,9 +121,7 @@
                                                     jsf:id="easyDbbutton3"
                                                     class="btn btn--icon-green btn__bottom greenCheckButton"
                                                     jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
-                                                    <i
-                                                        class="fa fa-check"
-                                                        aria-hidden="true"></i>
+                                                    <util:icon icon="check" />
                                                     <f:setPropertyActionListener
                                                         value="#{easydb}"
                                                         target="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.selectedRecord}" />
@@ -150,7 +146,7 @@
                                                     <h:commandLink
                                                         styleClass="btn btn--icon btn--icon-blue"
                                                         action="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.previous}">
-                                                        <span class="fa fa-angle-left" />
+                                                        <util:icon icon="chevron-left" />
                                                         <f:ajax render="easydbList" />
                                                     </h:commandLink>
                                                 </li>
@@ -164,7 +160,7 @@
                                                         styleClass="btn btn--icon btn--icon-blue"
                                                         id="navigate_right"
                                                         action="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.next}">
-                                                        <span class="fa fa-angle-right" />
+                                                        <util:icon icon="chevron-right" />
                                                         <f:ajax render="easydbList" />
                                                     </h:commandLink>
                                                 </li>

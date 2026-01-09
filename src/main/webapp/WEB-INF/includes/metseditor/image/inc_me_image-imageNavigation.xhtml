@@ -5,7 +5,8 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface/>
 
@@ -24,7 +25,7 @@
                         type="button"
                         data-bs-toggle="tooltip"
                         data-bs-placement="bottom">
-                        <span class="fa fa-angle-double-left" aria-hidden="true"/>
+                        <util:icon icon="chevrons-left" />
                         <f:ajax
                             execute="@form :pageareas"
                             render="@form :pageareas structureform:addNewPageArea :altoEditAutocomplete" />
@@ -43,7 +44,7 @@
                         type="button"
                         data-bs-toggle="tooltip"
                         data-bs-placement="bottom">
-                        <span class="fa fa-angle-left" aria-hidden="true"/>
+                        <util:icon icon="chevron-left" />
                         <f:ajax
                             execute="@form :pageareas"
                             render="@form :pageareas :altoEditAutocomplete structureform:addNewPageArea"/>
@@ -53,7 +54,7 @@
                 <!-- PREV IMAGE -->
                 <li>
                     <button jsf:action="#{Metadaten.imageLeft}" jsf:id="prevImage" class="btn btn-primary" type="button">
-                        <span class="fa fa-angle-left" aria-hidden="true"/>
+                        <util:icon icon="chevron-left" />
                         <span>#{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}</span>
                         <f:ajax
                             execute="@form :pageareas"
@@ -92,7 +93,7 @@
                 <li>
                     <button jsf:action="#{Metadaten.imageRight}" jsf:id="nextImage" class="btn btn-primary" type="button">
                         <span>#{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}</span>
-                        <span class="fa fa-angle-right" aria-hidden="true"/>
+                        <util:icon icon="chevron-right" />
                         <f:ajax
                             execute="@form :pageareas"
                             render="@form :pageareas :altoEditAutocomplete structureform:addNewPageArea"/>
@@ -110,7 +111,7 @@
                         type="button"
                         data-bs-toggle="tooltip"
                         data-bs-placement="bottom">
-                        <span class="fa fa-angle-right" aria-hidden="true"/>
+                        <util:icon icon="chevron-right" />
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                         <f:ajax
                             execute="@form :pageareas"
@@ -129,7 +130,7 @@
                         type="button"
                         data-bs-toggle="tooltip"
                         data-bs-placement="bottom">
-                        <span class="fa fa-angle-double-right" aria-hidden="true"/>
+                        <util:icon icon="chevrons-right" />
                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                         <f:ajax
                             execute="@form :pageareas"
