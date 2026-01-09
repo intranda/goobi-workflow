@@ -70,12 +70,7 @@ import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import ugh.dl.DigitalDocument;
-import ugh.dl.DocStruct;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
-import ugh.dl.Person;
-import ugh.dl.Prefs;
+import ugh.dl.*;
 
 @Log4j2
 public class VariableReplacer {
@@ -816,10 +811,11 @@ public class VariableReplacer {
         List<? extends Metadata> mds = inDocstruct.getAllMetadataByType(mdt);
         if (!mds.isEmpty()) {
             Metadata m = mds.get(0);
-            // if it is a person, get the complete name, otherwise the value only
             if (m.getType().getIsPerson()) {
                 Person p = (Person) m;
                 return p.getLastname() + ", " + p.getFirstname();
+            } else if (m.getType().isCorporate()) {
+                return ((Corporate) m).getMainName();
             } else {
                 return m.getValue();
             }
