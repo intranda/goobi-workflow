@@ -4,6 +4,9 @@
 @use "base/typography-custom";
 @use "base/utilities-custom";
 
+// FUNCTIONS
+@use "functions/resource-url";
+
 // LIBS
 @use "lib/font-awesome";
 @use "lib/codemirror";
@@ -37,6 +40,7 @@
 @use "components/forms-custom";
 @use "components/metadata-search-row";
 @use "components/notification-area";
+@use "components/process-grid";
 @use "components/progressbar";
 @use "components/progress-custom";
 @use "components/switcher";

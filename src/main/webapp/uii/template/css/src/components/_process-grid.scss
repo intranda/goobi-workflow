@@ -1,0 +1,58 @@
+@use 'functions/resource-url' as fn;
+
+.process-grid {
+    --column-min-width: 500px;
+    display: grid;
+    gap: 1em;
+    grid-template-columns: repeat(auto-fill, minmax(var(--column-min-width), 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(400px, 1fr));
+
+    .process-grid-item {
+        border: 1px solid var(--clr-neutral-300);
+        max-height: 450px;
+        overflow: hidden;
+    }
+    .process-grid-process {
+        height: 100%;
+        position: relative;
+        &::after {
+            bottom: 0;
+            content: '';
+            background-image: fn.resourceUrl('img/decoration/thumbnail-gradientBackground.png');
+            height: 45px;
+            left: 0;
+            position: absolute;
+            width: 100%;
+        }
+    }
+
+    .progress {
+        border-radius: 0;
+        border: 0;
+        height: 7px;
+    }
+
+    .process-grid-overview {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .process-grid-canvas {
+        flex-basis: 50%;
+        height: fit-content;
+        padding: 0.5em;
+        padding-block-end: 45px;
+    }
+
+    .thumb-canvas {
+        width: 200px;
+    }
+
+    .process-grid-table {
+        flex-basis: 50%;
+    }
+
+    @supports (width: min(400px, 100%)) {
+        grid-template-columns: repeat(auto-fill, minmax(min(var(--column-min-width), 100%), 1fr));
+    }
+}
