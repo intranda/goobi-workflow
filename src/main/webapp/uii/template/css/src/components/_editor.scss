@@ -6,6 +6,10 @@
     min-height: 8lh;
     width: 100%;
 
+    &[data-editor="prosemirror"] {
+        flex-direction: column;
+    }
+
     .codemirror {
         max-height: 75vh;
     }
@@ -52,6 +56,7 @@
 
     // ProseMirror specific styles
     .ProseMirror {
+        flex-grow: 1;
         padding: 0.5rem;
     }
 
