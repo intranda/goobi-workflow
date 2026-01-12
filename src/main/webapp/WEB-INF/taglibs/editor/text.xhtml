@@ -10,7 +10,7 @@
 		</h:panelGroup>
 		<h:inputTextarea
 			style="display: none;"
-			id="textareaHtml"
+			id="#{id ? id : 'textareaHtml'}"
 			value="#{content}" />
 		<ui:insert />
 		<h:panelGroup id="editor" layout="block" pt:data-editor="prosemirror" styleClass="editor">

@@ -18,7 +18,7 @@ const createEditor = () => {
     targets.forEach((target) => {
         const baseId = target.id.replace('editor', '');
         const source = document.getElementById(`${baseId}editorSource`);
-        const input = document.getElementById(`${baseId}textareaHtml`);
+        const input = source.nextElementSibling;
         if (!source) {
             return;
         }
