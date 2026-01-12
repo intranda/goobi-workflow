@@ -8,7 +8,8 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-	xmlns:form="http://goobi.io/form">
+	xmlns:form="http://goobi.io/form"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface>
 	</composite:interface>
@@ -33,7 +34,7 @@
 
 				<intranda:boxTitle
 					title="#{msgs.moeglicheAktionen}"
-					icon="fa-cog">
+					tablerIcon="settings">
 					<ul class="tabs">
 						<li
 							class="tab #{NavigationForm.uiStatus.taskActionBox_view ne 'tab2' and NavigationForm.uiStatus.taskActionBox_view ne 'tab3'?'active':''}">
@@ -135,7 +136,7 @@
 								onclick="preventDoubleSubmit(this);">
 								<!-- <h:graphicImage value="/uii/plugins/step/#{AktuelleSchritteForm.myPlugin.title}/icon.gif" style="margin-right:3px;vertical-align:middle" /> -->
 								<span class="btn btn-blank">
-									<span class="fa fa-puzzle-piece" />
+									<util:icon icon="puzzle" />
 								</span>
 								<span>
 									<h:outputText
@@ -154,7 +155,7 @@
 								class="btn btn-link "
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-blank">
-									<span class="fa fa-puzzle-piece" />
+									<util:icon icon="puzzle" />
 								</span>
 								<span>
 									<h:outputText
@@ -171,7 +172,7 @@
 								title="#{msgs.modulStarten} (#{currentStep.typModulName})"
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-blank">
-									<span class="fa fa-cog" />
+									<util:icon icon="settings" />
 								</span>
 								<span>
 									<h:outputText
@@ -191,7 +192,7 @@
 									target="#{AktuelleSchritteForm.scriptPath}"
 									value="#{currentStep.typAutomatischScriptpfad}" />
 								<span class="btn btn-blank">
-									<span class="fa fa-wrench" />
+									<util:icon icon="tool" />
 								</span>
 								<span>
 									<h:outputText
@@ -212,7 +213,7 @@
 									target="#{AktuelleSchritteForm.scriptPath}"
 									value="#{currentStep.typAutomatischScriptpfad2}" />
 								<span class="btn btn-blank">
-									<span class="fa fa-wrench" />
+									<util:icon icon="tool" />
 								</span>
 								<span>
 									<h:outputText
@@ -233,7 +234,7 @@
 									target="#{AktuelleSchritteForm.scriptPath}"
 									value="#{currentStep.typAutomatischScriptpfad3}" />
 								<span class="btn btn-blank">
-									<span class="fa fa-wrench" />
+									<util:icon icon="tool" />
 								</span>
 								<span>
 									<h:outputText
@@ -254,7 +255,7 @@
 									target="#{AktuelleSchritteForm.scriptPath}"
 									value="#{currentStep.typAutomatischScriptpfad4}" />
 								<span class="btn btn-blank">
-									<span class="fa fa-wrench" />
+									<util:icon icon="tool" />
 								</span>
 								<span>
 									<h:outputText
@@ -274,7 +275,7 @@
 									target="#{AktuelleSchritteForm.scriptPath}"
 									value="#{currentStep.typAutomatischScriptpfad5}" />
 								<span class="btn btn-blank">
-									<span class="fa fa-wrench" />
+									<util:icon icon="tool" />
 								</span>
 								<span>
 									<h:outputText
@@ -297,7 +298,7 @@
 									title="#{msgs.importDms}"
 									onclick="preventDoubleSubmit(this);">
 									<span class="btn btn-blank">
-										<span class="fa fa-upload" />
+										<util:icon icon="upload" />
 									</span>
 									<span>
 										<h:outputText value="#{msgs.importDms}" />
@@ -319,7 +320,7 @@
 									onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');"
 									styleClass="btn btn-link ">
 									<span class="btn btn-blank">
-										<span class="fa fa-book" />
+										<util:icon icon="book" />
 									</span>
 									<span>
 										<h:outputText value="#{msgs.metadatenBearbeiten}" />
@@ -382,7 +383,7 @@
 										data-bs-toggle="modal"
 										data-bs-target="#myModal">
 										<span class="btn btn-blank">
-											<span class="fa fa-book" />
+											<util:icon icon="book" />
 										</span>
 										<span>
 											<h:outputText value="#{msgs.metadatenBearbeiten}" />
@@ -406,7 +407,7 @@
 												</h4>
 												<button type="button" class="btn text-white"
 													title="#{msgs.cancel}" data-bs-dismiss="modal">
-													<span class="fa fa-times" />
+													<util:icon icon="x" />
 												</button>
 											</div>
 											<div class="modal-body">
@@ -421,7 +422,7 @@
 													title="#{msgs.discard}"
 													rel="tooltip"
 													styleClass="btn btn-hot">
-													<span class="fa fa-trash-o" />
+													<util:icon icon="trash" />
 													<span>
 														<h:outputText value="#{msgs.discard}" />
 													</span>
@@ -465,7 +466,7 @@
 													title="#{msgs.overwrite}"
 													rel="tooltip"
 													styleClass="btn btn-success">
-													<span class="fa fa-floppy-o" />
+													<util:icon icon="device-floppy" />
 													<span>
 														<h:outputText value="#{msgs.overwrite}" />
 													</span>
@@ -516,7 +517,7 @@
 								title="#{msgs.laufzettelDrucken}"
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-blank">
-									<span class="fa fa-print" />
+									<util:icon icon="printer" />
 								</span>
 								<span>
 									<h:outputText value="#{msgs.process_generateDocket}" />
@@ -532,7 +533,7 @@
                                 title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
                                 onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-hot">
-									<span class="fa fa-reply" />
+									<util:icon icon="arrow-back-up" />
 								</span>
                                 <span>
                                     <h:outputText value="#{msgs.bearbeitungDiesesSchrittesAbgeben}" />
@@ -548,7 +549,7 @@
 								title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-hot">
-									<span class="fa fa-reply" />
+									<util:icon icon="arrow-back-up" />
 								</span>
 								<span>
 									<h:outputText value="#{msgs.cancelBatchEdition}" />
@@ -564,7 +565,7 @@
                                 title="#{msgs.diesenSchrittAbschliessen}"
                                 onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-success">
-									<span class="fa fa-check" />
+									<util:icon icon="check" />
 								</span>
                                 <span>
                                     <h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
@@ -580,7 +581,7 @@
 								title="#{msgs.diesenSchrittAbschliessen}"
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-success">
-									<span class="fa fa-check" />
+									<util:icon icon="check" />
 								</span>
 								<span>
 									<h:outputText value="#{msgs.finishBatchEdition}" />

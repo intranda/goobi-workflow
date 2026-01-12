@@ -7,6 +7,7 @@
     xmlns:properties="http://goobi.io/properties"
     xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:util="http://goobi.io/util"
 >
     <c:set var="scope" value="#{
         fn:contains(bean, 'StepBean') ? 'step'
@@ -36,12 +37,10 @@
                                 LoginForm.hasRole('Workflow_General_Details_Edit')
                                 and add and scope != 'batch'}"
                             title="#{msgs.eigenschaftHinzufuegen}"
-                            class="btn d-flex align-items-center btn--title-action"
+                            class="btn d-flex align-items-center btn--title-action-neutral"
                             data-bs-toggle="modal"
                             data-bs-target="#EditModal#{groupId}">
-                            <span
-                                aria-hidden="true"
-                                class="fa fa-plus" />
+                            <util:icon icon="plus" styleClass="icon--lg icon--b4" />
                             <f:setPropertyActionListener
                                 target="#{bean.container}"
                                 value="0" />
@@ -56,15 +55,13 @@
                             <button
                                 type="button"
                                 jsf:id="EditModalButton#{groupId}"
-                                class="btn d-flex align-items-center btn--title-action"
+                                class="btn d-flex align-items-center btn--title-action-neutral"
                                 data-bs-toggle="modal"
                                 data-bs-target="#EditModal#{groupId}">
                                 <f:ajax
                                     execute="@this"
                                     render="propertyEditArea#{groupId}" />
-                                <span
-                                    aria-hidden="true"
-                                    class="fa fa-pencil" />
+                                <util:icon icon="pencil" styleClass="icon--lg icon--b4" />
                                 <c:if test="#{scope == 'step'}">
                                     <f:setPropertyActionListener
                                         target="#{bean.container}"
@@ -99,16 +96,14 @@
                                 execute="@this"
                                 render="propertyWrapper propertyForm#{groupId}">
                                 <button
-                                    class="btn d-flex align-items-center btn--title-action"
+                                    class="btn d-flex align-items-center btn--title-action-neutral"
                                     data-bs-toggle="tooltip"
                                     jsf:id="duplicateProperty2"
                                     aria-label="#{msgs.duplicate}"
                                     jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and bean.containers[container].propertyList[0].type.name != 'metadata'}"
                                     jsf:action="#{bean.duplicateContainer}"
                                     title="#{msgs.duplicate}">
-                                    <span
-                                        aria-hidden="true"
-                                        class="fa fa-clipboard" />
+                                    <util:icon icon="clipboard" styleClass="icon--lg icon--b4" />
                                     <f:setPropertyActionListener
                                         target="#{bean.container}"
                                         value="#{container}" />

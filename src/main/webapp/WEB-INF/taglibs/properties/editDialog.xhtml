@@ -10,6 +10,7 @@
     xmlns:properties="http://goobi.io/properties"
     xmlns:section="http://goobi.io/section"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
 	xmlns:form="http://goobi.io/form"
 >
     <c:set var="scope" value="#{
@@ -38,9 +39,7 @@
                         class="btn text-white"
                         data-bs-dismiss="modal"
                         aria-label="#{msgs.schliessen}">
-                        <span
-                            aria-hidden="true"
-                            class="fa fa-times" />
+                        <util:icon icon="x" />
                     </button>
                 </div>
                 <h:panelGroup
@@ -296,7 +295,7 @@
                                             <f:setPropertyActionListener
                                                 target="#{bean.modusBearbeiten}"
                                                 value="" />
-                                            <span class="fa fa-trash-o" />
+                                            <util:icon icon="trash" styleClass="icon--sm" />
                                             <span>
                                                 <h:outputText value="#{msgs.loeschen}" />
                                             </span>
@@ -328,7 +327,7 @@
                                             jsf:id="saveAll"
                                             class="btn btn-success"
                                             jsf:action="#{bean.saveCurrentPropertyForAll}">
-                                            <span class="fa fa-save" />
+                                            <util:icon icon="device-floppy" styleClass="icon--sm" />
                                             <span>
                                                 <h:outputText value="#{msgs.applyToAllProcesses}" />
                                             </span>
@@ -342,7 +341,7 @@
                                         class="btn btn-success"
                                         jsf:action="#{bean.saveCurrentProperty}"
                                         data-bs-dismiss="modal">
-                                        <span class="fa fa-save" />
+                                        <util:icon icon="device-floppy" styleClass="icon--sm" />
                                         <span>
                                             <h:outputText value="#{scope == 'batch'? msgs.applyToThisProcess : msgs.speichern}" />
                                         </span>
