@@ -4,6 +4,16 @@
   padding-top: 0;
   padding-bottom: 0;
 
+  .page-menu__actions .nav-link {
+    min-width: 2.75rem;
+    justify-content: center;
+
+    .icon-wrapper {
+      --icon-size: 1.5em;
+      --icon-stroke: 2;
+    }
+  }
+
   .container-fluid {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
@@ -103,6 +113,11 @@
     }
     .dropdown-item {
       padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: left;
+
       &:hover,
       &:focus {
         background-color: var(--clr-primary-400);

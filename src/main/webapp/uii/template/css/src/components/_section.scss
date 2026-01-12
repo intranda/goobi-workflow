@@ -3,6 +3,8 @@
     &-header {
         & h2 .btn{
             display: flex;
+            justify-content: flex-start;
+            text-align: left;
             font-size: inherit;
             padding-block: 3px;
             width: 100%;

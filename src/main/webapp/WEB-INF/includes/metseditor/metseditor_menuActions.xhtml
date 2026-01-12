@@ -85,8 +85,8 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                            <button jsf:id="showtreelevel" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
-                                <util:icon icon="list-numbers" styleClass="me-2" />
+                            <button jsf:id="showtreelevel" jsf:action="#{NavigationForm.Reload}" class="dropdown-item icon-text">
+                                <util:icon icon="list-numbers" />
                                 #{Metadaten.treeProperties.showtreelevel ? msgs.mets_treelevel_hide : msgs.mets_treelevel}
                                 <f:setPropertyActionListener value="#{Metadaten.treeProperties.showtreelevel?false:true}" property="#{Metadaten.treeProperties.showtreelevel}" target="#{Metadaten.treeProperties.showtreelevel}"/>
 
@@ -95,8 +95,8 @@
                         </li>
 
                         <li>
-                            <button jsf:id="showtitle" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
-                                <util:icon icon="list" styleClass="me-2" />
+                            <button jsf:id="showtitle" jsf:action="#{NavigationForm.Reload}" class="dropdown-item icon-text">
+                                <util:icon icon="list" />
                                 #{Metadaten.treeProperties.showtitle ? msgs.mets_treeTitle_hide : msgs.mets_treeTitle}
                                 <f:setPropertyActionListener value="#{Metadaten.treeProperties.showtitle?false:true}" property="#{Metadaten.treeProperties.showtitle}" target="#{Metadaten.treeProperties.showtitle}"/>
                                 <f:ajax render="@form :treeform"/>
@@ -104,8 +104,8 @@
                         </li>
 
                         <li>
-                            <button jsf:id="showfirstpagenumber" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
-                                <util:icon icon="arrows-exchange" styleClass="me-2" />
+                            <button jsf:id="showfirstpagenumber" jsf:action="#{NavigationForm.Reload}" class="dropdown-item icon-text">
+                                <util:icon icon="arrows-exchange" />
                                 #{Metadaten.treeProperties.showfirstpagenumber ? msgs.mets_treePageNumber_hide : msgs.mets_treePageNumber}
                                 <f:setPropertyActionListener value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}" property="#{Metadaten.treeProperties.showfirstpagenumber}" target="#{Metadaten.treeProperties.showfirstpagenumber}"/>
 
@@ -115,8 +115,8 @@
                         </li>
 
                         <li>
-                            <button jsf:id="fullexpanded" jsf:action="#{Metadaten.TreeExpand}" class="dropdown-item">
-                                <util:icon icon="indent-increase" styleClass="me-2" />
+                            <button jsf:id="fullexpanded" jsf:action="#{Metadaten.TreeExpand}" class="dropdown-item icon-text">
+                                <util:icon icon="indent-increase" />
                                 #{not Metadaten.treeProperties.fullexpanded ? msgs.mets_treeExpand : msgs.mets_treeCompress}
                                 <f:setPropertyActionListener value="#{Metadaten.treeProperties.fullexpanded?false:true}" property="#{Metadaten.treeProperties.fullexpanded}" target="#{Metadaten.treeProperties.fullexpanded}"/>
 
@@ -125,48 +125,48 @@
                         </li>
 
                         <li>
-                            <button jsf:id="displayImage" jsf:action="#{Metadaten.BildAnzeigen}" class="dropdown-item">
-                                <util:icon icon="photo" styleClass="me-2" />
+                            <button jsf:id="displayImage" jsf:action="#{Metadaten.BildAnzeigen}" class="dropdown-item icon-text">
+                                <util:icon icon="photo" />
                                 #{Metadaten.bildAnzeigen == true ? msgs.metadatenBildAusblenden : msgs.metadatenBildAnzeigen}
                             </button>
                         </li>
 
                         <c:if test="#{not Metadaten.nurLesenModus and LoginForm.hasRole('Task_Mets_Pagination')}">
                             <li>
-                                <button jsf:id="resetPagination" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#resetPaginationModal" type="button">
-                                    <util:icon icon="refresh" styleClass="me-2 icon--b5" />
+                                <button jsf:id="resetPagination" class="dropdown-item icon-text" data-bs-toggle="modal" data-bs-target="#resetPaginationModal" type="button">
+                                    <util:icon icon="refresh" styleClass="icon--b5" />
                                     #{msgs.mets_resetPagination}
                                 </button>
                             </li>
                         </c:if>
 
                         <li>
-                            <button jsf:id="toggleTopstruct" jsf:action="#{Metadaten.changeTopstruct}" class="dropdown-item">
-                                <util:icon icon="sitemap" styleClass="me-2" />
+                            <button jsf:id="toggleTopstruct" jsf:action="#{Metadaten.changeTopstruct}" class="dropdown-item icon-text">
+                                <util:icon icon="sitemap" />
                                 #{Metadaten.physicalTopstruct?msgs.showLogicalTree:msgs.showPhysicalTree}
                                 <f:ajax render="@form :treeform"/>
                             </button>
                         </li>
 
                         <li>
-                            <button jsf:id="toggleThumbLabel" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
-                                <util:icon icon="file" styleClass="me-2" />
+                            <button jsf:id="toggleThumbLabel" jsf:action="#{NavigationForm.Reload}" class="dropdown-item icon-text">
+                                <util:icon icon="file" />
                                 #{NavigationForm.uiStatus.mets_thumbFilename?msgs.mets_showThumbFileNames:msgs.mets_showThumbPagination}
                                 <f:setPropertyActionListener value="#{NavigationForm.uiStatus.mets_thumbFilename?false:true}" property="#{NavigationForm.uiStatus.mets_thumbFilename}" target="#{NavigationForm.uiStatus.mets_thumbFilename}"/>
                             </button>
                         </li>
 
                         <li>
-                            <button jsf:id="toggleHiddenFields" jsf:action="#{Metadaten.reloadMetadataList}" class="dropdown-item">
-                                <util:icon icon="eye" styleClass="me-2" />
+                            <button jsf:id="toggleHiddenFields" jsf:action="#{Metadaten.reloadMetadataList}" class="dropdown-item icon-text">
+                                <util:icon icon="eye" />
                                 #{Metadaten.displayHiddenMetadata?msgs.mets_hideHiddenFields:msgs.mets_showHiddenFields}
                                 <f:setPropertyActionListener value="#{!Metadaten.displayHiddenMetadata}" property="#{Metadaten.displayHiddenMetadata}" target="#{Metadaten.displayHiddenMetadata}"/>
                             </button>
                         </li>
                         <ui:fragment rendered="#{Metadaten.checkForReadingDirection}">
                              <li>
-                                <button jsf:id="toggleRTL" jsf:action="#{Metadaten.Reload}" class="dropdown-item">
-                                    <util:icon icon="arrows-exchange" styleClass="me-2" />
+                                <button jsf:id="toggleRTL" jsf:action="#{Metadaten.Reload}" class="dropdown-item icon-text">
+                                    <util:icon icon="arrows-exchange" />
                                     #{Metadaten.pagesRTL?msgs.mets_toggleLTR:msgs.mets_toggleRTL}
                                     <f:setPropertyActionListener value="#{!Metadaten.pagesRTL}" property="#{Metadaten.pagesRTL}" target="#{Metadaten.pagesRTL}"/>
                                 </button>
@@ -177,8 +177,8 @@
                         <!-- DIRECTORIES -->
                         <ui:repeat var="directory" value="#{Metadaten.allTifFolders}">
                             <li class="#{Metadaten.currentTifFolder == directory ? 'active':''}">
-                                <button jsf:id="changeFolder" class="dropdown-item" jsf:action="#{Metadaten.changeFolder}">
-                                    <util:icon icon="folder" styleClass="me-2" />
+                                <button jsf:id="changeFolder" class="dropdown-item icon-text" jsf:action="#{Metadaten.changeFolder}">
+                                    <util:icon icon="folder" text="" />
                                     #{directory}
 									<f:setPropertyActionListener value="0" property="#{Metadaten.numberOfNavigation}" target="#{Metadaten.numberOfNavigation}"/>
                                     <f:setPropertyActionListener value="#{directory}" property="#{Metadaten.currentTifFolder}" target="#{Metadaten.currentTifFolder}"/>
@@ -271,8 +271,8 @@
                                     id="saveAndExit"
                                     action="#{Metadaten.XMLschreiben}"
                                     onclick="goobiWorkflowJS.displayProgressBar();"
-                                    styleClass="dropdown-item">
-                                    <util:icon icon="device-floppy" styleClass="me-2" />
+                                    styleClass="dropdown-item icon-text">
+                                    <util:icon icon="device-floppy" />
                                     #{msgs.speichernZurueck}
                                 </h:commandLink>
                             </li>
@@ -283,13 +283,13 @@
                                 id="exitOnly"
                                 action="#{Metadaten.goZurueck}"
                                 rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}"
-                                styleClass="dropdown-item">
-                                <util:icon icon="trash" styleClass="me-2" />
+                                styleClass="dropdown-item icon-text">
+                                <util:icon icon="trash" />
                                 #{msgs.goBack}
                             </h:commandLink>
                             <h:panelGroup rendered="#{Metadaten.checkForNewerTemporaryMetadataFiles}">
-                                <button type="button" class="dropdown-item" title="#{msgs.goBack}" data-bs-toggle="modal" data-bs-target="#unsavedChanges">
-                                    <util:icon icon="trash" styleClass="me-2" />
+                                <button type="button" class="dropdown-item icon-text" title="#{msgs.goBack}" data-bs-toggle="modal" data-bs-target="#unsavedChanges">
+                                    <util:icon icon="trash" />
                                     #{msgs.goBack}
                                 </button>
                             </h:panelGroup>

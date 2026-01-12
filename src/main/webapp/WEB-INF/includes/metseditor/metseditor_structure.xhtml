@@ -139,26 +139,18 @@
             <!-- METSEDITOR STRUCTURE ACTIONS -->
             <ul role="list" class="treeform-actions">
                 <li>
-                    <button
-                        jsf:id="hiddenwidthbutton"
-                        class="btn"
-                        jsf:action="#{NavigationForm.Reload}"
-                        style="display:none;">
-                    </button>
-                </li>
-                <li>
                     <!-- Verlinkung des Bildes mit dem gewaehlten Strukturelement -->
                     <button
                         jsf:id="linkImage"
                         aria-label="#{msgs.verlinkungDesBildesMitStrukturelement}"
                         jsf:action="#{Metadaten.BildBlaettern}"
                         title="#{msgs.verlinkungDesBildesMitStrukturelement}"
-                        class="btn #{Metadaten.bildZuStrukturelement ? '' : 'font-light'}"
+                        class="btn btn--icon #{Metadaten.bildZuStrukturelement ? '' : 'font-light'}"
                         jsf:rel="tooltip"
                         data-renderimage="true"
                         data-bs-toggle="tooltip"
                         data-bs-placement="right">
-                        <util:icon icon="#{Metadaten.bildZuStrukturelement ? 'link' : 'link-off'}" />
+                        <util:icon icon="#{Metadaten.bildZuStrukturelement ? 'link' : 'link-off'}" styleClass="icon--lg" />
                         <f:setPropertyActionListener value="0" property="#{Metadaten.numberOfNavigation}" target="#{Metadaten.numberOfNavigation}"/>
                         <f:setPropertyActionListener target="#{Metadaten.bildZuStrukturelement}" value="#{not Metadaten.bildZuStrukturelement}"/>
                         <!--
@@ -174,11 +166,11 @@
                         aria-label="#{msgs.mets_treeTitle}"
                         jsf:action="#{NavigationForm.Reload}"
                         jsf:rel="tooltip"
-                        class="btn #{Metadaten.treeProperties.showtitle ? '' : ' font-light'}"
+                        class="btn btn--icon #{Metadaten.treeProperties.showtitle ? '' : 'font-light'}"
                         title="#{Metadaten.treeProperties.showtitle?msgs.mets_treeTitle_hide:msgs.mets_treeTitle}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="right">
-                        <util:icon icon="list" />
+                        <util:icon icon="list" styleClass="icon--lg" />
 
                         <f:setPropertyActionListener value="#{Metadaten.treeProperties.showtitle?false:true}" property="#{Metadaten.treeProperties.showtitle}" target="#{Metadaten.treeProperties.showtitle}"/>
                         <f:ajax render="@form"/>
@@ -190,11 +182,11 @@
                         aria-label="#{msgs.mets_treePageNumber}"
                         jsf:action="#{NavigationForm.Reload}"
                         jsf:rel="tooltip"
-                        class="btn #{Metadaten.treeProperties.showfirstpagenumber ? '' : ' font-light'}"
+                        class="btn btn--icon #{Metadaten.treeProperties.showfirstpagenumber ? '' : 'font-light'}"
                         title="#{Metadaten.treeProperties.showfirstpagenumber?msgs.mets_treePageNumber_hide:msgs.mets_treePageNumber}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="right">
-                        <util:icon icon="arrows-exchange" />
+                        <util:icon icon="arrows-exchange" styleClass="icon--lg" />
                         <f:setPropertyActionListener value="#{Metadaten.treeProperties.showfirstpagenumber?false:true}" property="#{Metadaten.treeProperties.showfirstpagenumber}" target="#{Metadaten.treeProperties.showfirstpagenumber}"/>
                         <f:ajax render="@form"/>
                     </button>
@@ -203,12 +195,12 @@
                     <button
                         jsf:id="printpage2"
                         aria-label="#{msgs.process_generateSimplifiedMetadata}"
-                        class="btn font-light"
+                        class="btn btn--icon font-light"
                         jsf:action="#{Metadaten.myProzess.downloadSimplifiedMetadataAsPDF}"
                         title="#{msgs.process_generateSimplifiedMetadata}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="right">
-                        <util:icon icon="printer" />
+                        <util:icon icon="printer" styleClass="icon--lg" />
                     </button>
                 </li>
                 <ui:fragment rendered="#{!Metadaten.allImages.isEmpty()}">
@@ -217,12 +209,12 @@
                             target="_blank"
                             id="printpdf"
                             action="#{Metadaten.downloadCurrentFolderAsPdf}"
-                            styleClass="btn font-light"
+                            styleClass="btn btn--icon font-light"
                             aria-label="#{msgs.download_pdf}"
                             title="#{msgs.download_pdf}">
                             <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                             <f:passThroughAttribute name="data-bs-placement" value="right"/>
-                            <util:icon icon="file-type-pdf" />
+                            <util:icon icon="file-type-pdf" styleClass="icon--lg" />
                         </h:commandLink>
                     </li>
                 </ui:fragment>

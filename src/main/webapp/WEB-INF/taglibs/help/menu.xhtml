@@ -26,8 +26,7 @@
                     class="btn dropdown-item"
                     jsf:id="showHelp"
                     data-show-help="#{NavigationForm.showHelp}">
-                    <util:icon icon="question-mark" />
-                    <span>#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}</span>
+                    <util:icon-text icon="question-mark" text="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}" />
                     <f:setPropertyActionListener
                         target="#{NavigationForm.showHelp}"
                         value="#{not NavigationForm.showHelp}" />
@@ -48,10 +47,7 @@
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
                     data-toggle-accessibility-mode="true">
-                    <util:icon icon="contrast" filled="true" />
-                    <span>
-                        #{msgs.toggleContrastMode}
-                    </span>
+                    <util:icon-text icon="contrast" text="#{msgs.toggleContrastMode}" />
                     <f:ajax
                         render="@this" />
                     <f:setPropertyActionListener
@@ -67,10 +63,7 @@
                     class="btn dropdown-item d-none"
                     data-bs-toggle="modal"
                     data-bs-target="#shortcutsHelpModal">
-                    <util:icon icon="keyboard" />
-                    <span>
-                        #{msgs.shortcuts}
-                    </span>
+                    <util:icon-text icon="keyboard" text="#{msgs.shortcuts}" />
                 </button>
             </li>
         </ul>
