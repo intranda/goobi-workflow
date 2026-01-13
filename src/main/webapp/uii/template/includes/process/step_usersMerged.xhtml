@@ -7,7 +7,8 @@
 
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface>
 	</composite:interface>
@@ -26,7 +27,7 @@
 					boxType="action"
 					boxPadding="false"
 					title="#{msgs.benutzergruppen}"
-					icon="fa-users">
+					tablerIcon="users-group">
 
 					<div class="gw-table gw-table-fixed">
 						<div class="gw-table__wrapper">
@@ -40,12 +41,12 @@
 								<h:column>
 									<button
 										jsf:id="use"
-										class="btn btn-action me-3 ms-2"
+										class="btn btn-icon btn-action me-3 ms-2"
 										aria-label="#{msgs.uebernehmen}"
 										title="#{msgs.uebernehmen}"
 										jsf:rel="tooltip"
 										jsf:action="#{ProzessverwaltungForm.BenutzergruppeHinzufuegen}">
-										<span class="fa fa-plus" />
+										<util:icon icon="plus" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -96,7 +97,7 @@
 					boxType="action"
 					boxPadding="false"
 					title="#{msgs.benutzer}"
-					icon="fa-user">
+					tablerIcon="user">
 
 					<div class="gw-table gw-table-fixed">
 						<div class="gw-table__wrapper">
@@ -109,13 +110,13 @@
 
 								<h:column>
 									<button
-										class="btn btn-action me-3 ms-2"
+										class="btn btn-icon btn-action me-3 ms-2"
 										aria-label="#{msgs.uebernehmen}"
 										title="#{msgs.uebernehmen}"
 										jsf:rel="tooltip"
 										jsf:action="#{ProzessverwaltungForm.BenutzerHinzufuegen}"
 										jsf:id="addUser">
-										<span class="fa fa-plus" />
+										<util:icon icon="plus" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -163,7 +164,7 @@
 					boxType="neutral"
 					boxPadding="false"
 					title="#{msgs.assignedPersons}"
-					icon="fa-table">
+					tablerIcon="table">
 
 					<div class="gw-table gw-table-fixed">
 						<div class="gw-table__wrapper">
@@ -180,19 +181,19 @@
 									<tr role="row">
 										<td>
 											<span class="badge badge-light-blue ms-3 me-3 gw-width3">
-												<span class="fa fa-users" />
+												<util:icon icon="users-group" />
 											</span>
 											<h:outputText value="#{item.titel}" />
 										</td>
 										<td class="gw-width5">
 											<button
 												jsf:id="deleteUserGroup"
-												class="btn btn-hot"
+												class="btn btn-icon btn-hot"
 												title="#{msgs.berechtigungLoeschen}"
 												aria-label="#{msgs.berechtigungLoeschen}"
 												jsf:rel="tooltip"
 												jsf:action="#{ProzessverwaltungForm.BenutzergruppeLoeschen}">
-												<span class="fa fa-trash-o" />
+												<util:icon icon="trash" />
 												<f:passThroughAttribute
 													name="data-toggle"
 													value="tooltip" />
@@ -214,7 +215,7 @@
 									<tr role="row">
 										<td>
 											<span class="badge badge-light-blue ms-3 me-3 gw-width3">
-												<span class="fa fa-user" />
+												<util:icon icon="user" />
 											</span>
 											<h:outputText value="#{item.nachname}, #{item.vorname}" />
 										</td>
@@ -225,7 +226,7 @@
 												title="#{msgs.berechtigungLoeschen}"
 												jsf:rel="tooltip"
 												jsf:action="#{ProzessverwaltungForm.BenutzerLoeschen}">
-												<span class="fa fa-trash-o" />
+												<util:icon icon="trash" />
 												<f:passThroughAttribute
 													name="data-toggle"
 													value="tooltip" />
@@ -253,7 +254,7 @@
 								jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
 								jsf:immediate="true"
 								jsf:rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
-								<span class="fa fa-users" />
+								<util:icon icon="users-group" />
 								<span>
 									<h:outputText value="#{msgs.benutzergruppenHinzufuegen}" />
 								</span>
@@ -269,7 +270,7 @@
 								jsf:action="#{BenutzerverwaltungForm.FilterKeinMitZurueck}"
 								jsf:immediate="true"
 								jsf:rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
-								<span class="fa fa-user" />
+								<util:icon icon="user" />
 								<span>
 									<h:outputText value="#{msgs.benutzerHinzufuegen}" />
 								</span>

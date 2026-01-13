@@ -37,7 +37,7 @@
                                 LoginForm.hasRole('Workflow_General_Details_Edit')
                                 and add and scope != 'batch'}"
                             title="#{msgs.eigenschaftHinzufuegen}"
-                            class="btn d-flex align-items-center btn--title-action-neutral"
+                            class="btn d-flex align-items-center btn--title-action"
                             data-bs-toggle="modal"
                             data-bs-target="#EditModal#{groupId}">
                             <util:icon icon="plus" styleClass="icon--lg icon--b4" />
@@ -55,7 +55,7 @@
                             <button
                                 type="button"
                                 jsf:id="EditModalButton#{groupId}"
-                                class="btn d-flex align-items-center btn--title-action-neutral"
+                                class="btn d-flex align-items-center btn--title-action"
                                 data-bs-toggle="modal"
                                 data-bs-target="#EditModal#{groupId}">
                                 <f:ajax
@@ -96,7 +96,7 @@
                                 execute="@this"
                                 render="propertyWrapper propertyForm#{groupId}">
                                 <button
-                                    class="btn d-flex align-items-center btn--title-action-neutral"
+                                    class="btn d-flex align-items-center btn--title-action"
                                     data-bs-toggle="tooltip"
                                     jsf:id="duplicateProperty2"
                                     aria-label="#{msgs.duplicate}"

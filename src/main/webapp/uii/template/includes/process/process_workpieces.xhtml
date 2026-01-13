@@ -7,7 +7,8 @@
 
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface>
 	</composite:interface>
@@ -30,7 +31,7 @@
 
 						<intranda:boxTitle
 							title="#{msgs.werkstuecke}"
-							icon="fa-list">
+							tablerIcon="list">
 
 							<div class="actions d-flex">
 								<button
@@ -38,10 +39,10 @@
 									jsf:action="process_edit_workpiece"
 									jsf:id="editMasterpiece"
 									aria-label="#{msgs.werkstueckBearbeiten}"
-									class="btn d-flex align-items-center btn--title-action-neutral"
+									class="btn d-flex align-items-center btn--title-action"
 									jsf:rel="tooltip"
 									jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-									<span class="fa fa-pencil" />
+									<util:icon icon="pencil" />
 									<f:passThroughAttribute
 										name="data-toggle"
 										value="tooltip" />
@@ -52,10 +53,10 @@
 								<button
 									jsf:action="#{ProzessverwaltungForm.WerkstueckNeu}"
 									jsf:id="newMasterpiece"
-									class="btn d-flex align-items-center btn--title-action-neutral"
+									class="btn d-flex align-items-center btn--title-action"
 									jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
 									title="#{msgs.werkstueckHinzufuegen}">
-									<span class="fa fa-plus margin-right-5" />
+									<util:icon icon="plus" />
 									<f:passThroughAttribute
 										name="data-toggle"
 										value="tooltip" />

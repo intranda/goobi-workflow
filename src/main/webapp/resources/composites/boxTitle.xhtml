@@ -22,8 +22,9 @@
 				<span aria-hidden="true" class="fa #{cc.attrs.icon} "
 					jsf:rendered="#{cc.attrs.icon != 'undefined' and cc.attrs.tablerIcon == 'undefined'}" />
 				<!-- Tabler icon -->
-				<util:icon icon="#{cc.attrs.tablerIcon}" styleClass="#{cc.attrs.tablerIconClass}"
-					rendered="#{cc.attrs.tablerIcon != 'undefined'}" />
+				<ui:fragment rendered="#{cc.attrs.tablerIcon != 'undefined'}">
+					<util:icon icon="#{cc.attrs.tablerIcon}" styleClass="#{cc.attrs.tablerIconClass}" />
+				</ui:fragment>
 				<h:outputText value="#{cc.attrs.title}" />
 			</h2>
 			<composite:insertChildren />

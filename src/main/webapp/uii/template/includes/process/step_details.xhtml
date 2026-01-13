@@ -10,6 +10,7 @@
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:editor="http://goobi.io/editor"
+	xmlns:util="http://goobi.io/util"
 	>
 
 	<composite:interface>
@@ -30,7 +31,7 @@
 				<!-- BOX HEAD -->
 				<intranda:boxTitle
 					title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.schrittDetails.concat(' -').concat(ProzessverwaltungForm.myProzess.titel) : msgs.schrittDetails}"
-					icon="fa-list">
+					tablerIcon="list">
 					<div class="actions d-flex">
 						<button
 							jsf:id="reloadStep"
@@ -39,7 +40,7 @@
 							class="btn d-flex align-items-center btn--title-action"
 							title="#{msgs.reload}"
 							jsf:rel="tooltip">
-							<span class="fa fa-refresh" />
+							<util:icon icon="refresh" />
 							<f:passThroughAttribute
 								name="data-toggle"
 								value="tooltip" />
@@ -52,7 +53,7 @@
 							jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
 							class="btn d-flex align-items-center btn--title-action"
 							jsf:rel="tooltip">
-							<span class="fa fa-pencil" />
+							<util:icon icon="pencil" />
 							<f:passThroughAttribute
 								name="data-toggle"
 								value="tooltip" />
@@ -100,7 +101,7 @@
 						<h:panelGroup
 							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 1}">
 							<span class="badge badge-intranda-orange">
-								<span class="fa fa-lightbulb-o" />
+								<util:icon icon="bulb" />
 								#{msgs.badgePriority1}
 							</span>
 						</h:panelGroup>
@@ -108,7 +109,7 @@
 						<h:panelGroup
 							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 2}">
 							<span class="badge badge-intranda-orange">
-								<span class="fa fa-lightbulb-o" />
+								<util:icon icon="bulb" />
 								#{msgs.badgePriority2}
 							</span>
 						</h:panelGroup>
@@ -116,7 +117,7 @@
 						<h:panelGroup
 							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 2 and ProzessverwaltungForm.mySchritt.prioritaet lt 10}">
 							<span class="badge badge-intranda-orange">
-								<span class="fa fa-lightbulb-o" />
+								<util:icon icon="bulb" />
 								#{msgs.badgePriority3}
 							</span>
 						</h:panelGroup>
@@ -124,7 +125,7 @@
 						<h:panelGroup
 							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 9}">
 							<span class="badge badge-intranda-red">
-								<span class="fa fa-bullhorn" />
+								<util:icon icon="speakerphone" />
 								#{msgs.badgeCorrection}
 							</span>
 						</h:panelGroup>
@@ -315,7 +316,7 @@
 				boxForm="true"
 				boxPadding="false"
 				title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.details.concat(' - ').concat(ProzessverwaltungForm.myProzess.titel) : msgs.details}"
-				icon="fa-edit">
+				tablerIcon="edit">
 
 				<!-- TITLE -->
 				<intranda:formInputText
@@ -796,7 +797,7 @@
 						jsf:id="save"
 						type="submit"
 						jsf:action="#{ProzessverwaltungForm.SchrittUebernehmen}">
-						<span class="fa fa-save" />
+						<util:icon icon="device-floppy" />
 						<span>
 							<h:outputText value="#{msgs.speichern}" />
 						</span>
@@ -813,7 +814,7 @@
 						onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
 						jsf:action="#{ProzessverwaltungForm.SchrittLoeschen}"
 						jsf:rendered="#{ProzessverwaltungForm.mySchritt.id != null}">
-						<span class="fa fa-trash-o" />
+						<util:icon icon="trash" />
 						<span>
 							<h:outputText value="#{msgs.loeschen}" />
 						</span>

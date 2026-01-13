@@ -1,7 +1,8 @@
 <ui:composition
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <div id="mainImage" style="height: 100vh; width: 80vw;" ></div>
 
@@ -12,14 +13,14 @@
                 class="btn btn-blank me-1"
                 title="#{msg.rotateLeft}" id="mainImageRotateLeft"
                 jsf:rendered="#{! AktuelleSchritteForm.myPlugin.allowPersistentRotation}">
-                <i class="fa fa-undo"></i>
+                <util:icon icon="rotate" />
             </span>
             <button
                 class="btn btn-blank me-1"
                 title="#{msg.rotateLeft}"
                 jsf:rendered="#{AktuelleSchritteForm.myPlugin.allowPersistentRotation}"
                 jsf:action="#{AktuelleSchritteForm.myPlugin.rotateCurrentImageToLeft}">
-                <i class="fa fa-undo"></i>
+                <util:icon icon="rotate" />
             </button>
         </li>
         <li>
@@ -27,14 +28,14 @@
                 class="btn btn-blank me-3"
                 title="#{msg.rotateRight}" id="mainImageRotateRight"
                 jsf:rendered="#{! AktuelleSchritteForm.myPlugin.allowPersistentRotation}">
-                <i class="fa fa-repeat"></i>
+                <util:icon icon="rotate-clockwise" />
             </span>
             <button
                 class="btn btn-blank me-3"
                 title="#{msg.rotateRight}"
                 jsf:rendered="#{AktuelleSchritteForm.myPlugin.allowPersistentRotation}"
                 jsf:action="#{AktuelleSchritteForm.myPlugin.rotateCurrentImageToRight}">
-                <i class="fa fa-repeat"></i>
+                <util:icon icon="rotate-clockwise" />
             </button>
         </li>
         <li>
@@ -43,14 +44,14 @@
                 title="#{msgs.imageFullscreen}"
                 jsf:action="ImageQAPlugin_Fullscreen"
                 jsf:rendered="#{! AktuelleSchritteForm.myPlugin.useJSFullscreen}">
-                <i class="fa fa-arrows-alt"></i>
+                <util:icon icon="arrows-maximize" />
             </button>
             <button
                 class="btn btn-blank me-1"
                 title="#{msgs.imageFullscreen}"
                 jsf:action="ImageQAPlugin_JSFullscreen"
                 jsf:rendered="#{AktuelleSchritteForm.myPlugin.useJSFullscreen}">
-                <i class="fa fa-arrows-alt"></i>
+                <util:icon icon="arrows-maximize" />
             </button>
         </li>
         <li>
@@ -59,14 +60,14 @@
                 jsf:rendered="#{AktuelleSchritteForm.myPlugin.displayOcrButton}"
                 title="Show OCR-result"
                 jsf:action="#{AktuelleSchritteForm.myPlugin.toggleOCR()}">
-                <i class="fa fa-file-text-o"></i>
+                <util:icon icon="file-text" />
             </button>
         </li>
         <li>
             <span
                 class="btn btn-blank me-1"
                 title="#{msg.resetImage}" id="mainImageResetView">
-                <i class="fa fa-refresh"></i>
+                <util:icon icon="refresh" />
             </span>
         </li>
 
