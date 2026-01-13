@@ -4,6 +4,7 @@
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         template="/uii/template/template.html"
         xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+        xmlns:util="http://goobi.io/util"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
 >
 
@@ -49,7 +50,7 @@
                         boxForm="true"
                         boxPadding="false"
                         title="#{msgs.vocabularyManager_editRecord}"
-                        icon="fa-file-o">
+                        tablerIcon="file">
                         <intranda:vocabularyRecordEditor
                             record="#{vocabularyRecordsBean.currentRecord}"
                         />

@@ -6,8 +6,8 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
-
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
     xmlns:p="http://primefaces.org/ui"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
@@ -58,7 +58,7 @@
                             boxForm="true"
                             boxPadding="false"
                             title="#{msgs.batch}"
-                            icon="fa-table">
+                            tablerIcon="table">
 
                             <intranda:formInputText
                                 id="batchId"
@@ -132,7 +132,7 @@
 
                             <intranda:boxTitle
                                 title="#{msgs.batch}"
-                                icon="fa-table">
+                                tablerIcon="table">
 
                                 <div class="actions">
                                     <button
@@ -189,7 +189,7 @@
                     <intranda:box
                         boxType="primary"
                         title="#{msgs.processesInThisBatch}"
-                        icon="fa-tasks">
+                        tablerIcon="list-check">
 
 
                         <h:form

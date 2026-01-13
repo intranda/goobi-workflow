@@ -7,7 +7,8 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:form="http://goobi.io/form">
+    xmlns:form="http://goobi.io/form"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface>
         <composite:attribute name="metadata" />
@@ -44,9 +45,14 @@
                         jsf:id="toggle-restrictions"
                         title="#{cc.attrs.metadata.restricted == false ? msgs.mets_notRestricted : msgs.mets_restricted }"
                         data-bs-toggle="tooltip">
-                        <span class="fa fa-unlock" />
-                        <span class="fa #{cc.attrs.metadata.restricted == false ? 'fa fa-toggle-off' : 'fa fa-toggle-on toggle-on'} px-1" />
-                        <span class="fa fa-lock" />
+                        <util:icon icon="lock-open" />
+                        <ui:fragment rendered="#{cc.attrs.metadata.restricted == false}">
+                            <util:icon icon="toggle-left" styleClass="px-1" />
+                        </ui:fragment>
+                        <ui:fragment rendered="#{cc.attrs.metadata.restricted == true}">
+                            <util:icon icon="toggle-right" styleClass="px-1 toggle-on" />
+                        </ui:fragment>
+                        <util:icon icon="lock" />
                         <f:ajax
                             execute="restrictBtn"
                             render="restrictBtn" />
@@ -273,8 +279,7 @@
                                     jsf:action="#{Metadaten.convertDate('JULIAN')}"
                                     title="#{msgs.convertJulianToGregorianDate}"
                                     jsf:rendered="#{(cc.attrs.metadata.outputType == 'convertibleDate')}">
-                                <span class="fa fa-lg fa-calendar"
-                                    aria-hidden="true" />
+                                <util:icon icon="calendar" styleClass="icon--lg" />
                                 <f:setPropertyActionListener
                                     target="#{Metadaten.curMetadatum}"
                                     value="#{cc.attrs.metadata}" />
@@ -301,8 +306,7 @@
                                     jsf:action="#{Metadaten.convertDate('BRITISH')}"
                                     title="#{msgs.convertBritishToGregorianDate}"
                                     jsf:rendered="#{(cc.attrs.metadata.outputType == 'convertibleDate')}">
-                                <span class="fa fa-lg fa-calendar-o"
-                                    aria-hidden="true" />
+                                <util:icon icon="calendar-event" styleClass="icon--lg" />
                                 <f:setPropertyActionListener
                                     target="#{Metadaten.curMetadatum}"
                                     value="#{cc.attrs.metadata}" />
@@ -331,9 +335,7 @@
                                     jsf:action="#{cc.attrs.metadata.generateValue}"
                                     title="#{msgs.generieren}"
                                     type="button">
-                                    <span
-                                        class="fa fa-lg fa-calculator"
-                                        aria-hidden="true" />
+                                    <util:icon icon="calculator" styleClass="icon--lg" />
 
                                     <f:passThroughAttribute
                                         name="data-bs-toggle"
@@ -413,9 +415,7 @@
                                     aria-label="#{msgs.NORM_processesSearch}"
                                     jsf:onclick="$('#processesSearchBox').modal('show');"
                                     type="button">
-                                    <span
-                                        class="fa fa-search"
-                                        style="margin-left: 3px" />
+                                    <util:icon icon="search" styleClass="ms-1" />
                                     <f:setPropertyActionListener
                                         value="#{cc.attrs.metadata}"
                                         target="#{Metadaten.currentMetadataToPerformSearch}" />
@@ -582,8 +582,7 @@
                                 title="#{msgs.metadatenKopieren}"
                                 type="button"
                                 jsf:rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly' and Metadaten.isAddableMetadata(cc.attrs.metadata.md)}">
-                                <span class="fa fa-lg fa-copy"
-                                    aria-hidden="true" />
+                                <util:icon icon="copy" styleClass="icon--lg" />
                                 <f:setPropertyActionListener
                                     target="#{Metadaten.currentMetadata}"
                                     value="#{cc.attrs.metadata.md}" />
@@ -610,8 +609,7 @@
                                 title="#{msgs.metadatenLoeschen}"
                                 jsf:rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}"
                                 type="button">
-                                <span class="fa fa-lg fa-trash-o"
-                                    aria-hidden="true" />
+                                <util:icon icon="trash" styleClass="icon--lg" />
                                 <f:setPropertyActionListener
                                     target="#{Metadaten.curMetadatum}"
                                     value="#{cc.attrs.metadata}" />

@@ -6,8 +6,8 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
-
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
@@ -43,7 +43,7 @@
                     <intranda:box
                         boxType="primary"
                         boxPadding="true"
-                        icon="fa-spinner"
+                        tablerIcon="loader"
                         title="#{msgs.jobs_quartzJobs}">
 
                         <!-- TABLE WRAPPER -->
@@ -223,7 +223,7 @@
                     <intranda:box
                         boxType="neutral"
                         boxPadding="true"
-                        icon="fa-history"
+                        tablerIcon="history"
                         title="#{msgs.jobs_quartzHistory}">
 
                         <!-- TABLE WRAPPER -->

@@ -8,6 +8,7 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
     xmlns:dl="http://goobi.io/dl"
     xmlns:button="http://goobi.io/button">
 
@@ -540,7 +541,7 @@
                                             boxType="action"
                                             boxSmall="true"
                                             title="#{msgs.metsfilegroups}"
-                                            icon="fa-table"
+                                            tablerIcon="table"
                                             boxForm="true"
                                             boxPadding="false"
                                             id="filegroupbox">
@@ -678,7 +679,7 @@
                                             boxSmall="true"
                                             boxPadding="true"
                                             title="#{msgs.metsfilegroups}"
-                                            icon="fa-table">
+                                            tablerIcon="table">
 
                                             <h:dataTable
                                                 id="fileformats"

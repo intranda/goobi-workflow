@@ -7,8 +7,8 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
-
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
@@ -54,7 +54,7 @@
                     <intranda:box
                         boxType="outline"
                         boxPadding="false"
-                        icon="fa-list"
+                        tablerIcon="list"
                         title="#{ProzessverwaltungForm.myProzess.titel}">
                         <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
                             <div class="row text-center d-flex align-items-center font-light">
@@ -70,7 +70,7 @@
                     <intranda:box
                         boxType="outline"
                         boxPadding="false"
-                        icon="fa-comment"
+                        tablerIcon="message"
                         title="#{msgs.processLog}">
                         <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
                             <div class="row text-center d-flex align-items-center font-light">
@@ -96,7 +96,7 @@
                     <intranda:box
                         boxType="outline"
                         boxPadding="false"
-                        icon="fa-cog"
+                        tablerIcon="settings"
                         title="#{msgs.moeglicheAktionen}">
                         <div class="container-fluid d-flex justify-content-center align-items-center" style="height:300px;background: var(--clr-neutral-200)">
                             <div class="row text-center d-flex align-items-center font-light">

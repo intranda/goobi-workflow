@@ -9,7 +9,8 @@
 
     xmlns:p="http://primefaces.org/ui"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-	xmlns:form="http://goobi.io/form">
+	xmlns:form="http://goobi.io/form"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface>
     </composite:interface>
@@ -20,12 +21,13 @@
 
         <h:form
             rendered="#{bean.modusBearbeiten!='eigenschaft' and (propertyOwner.propertyListSize>0 or propertyOwner.sizeOfDisplayableMetadata>0)}"
-            id="propertyform">
+            id="propertyform"
+            styleClass="mt-3 mb-3">
 
             <intranda:box
-                boxType="primary"
+                boxType="outline"
                 boxPadding="false"
-                icon="fa-edit"
+                tablerIcon="edit"
                 title="#{msgs.eigenschaften}">
 
                 <table class="table table-hover table-bordered">
@@ -72,12 +74,12 @@
                                             rendered="#{proc.type.name == 'link'}">
                                             <h:outputText value="#{proc.readValue}" />
                                         </h:outputLink>
-                                        <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
+                                        <h:panelGroup rendered="#{proc.type.name == 'boolean'}" styleClass="d-flex align-items-center" style="min-height: 1.5em;">
                                             <h:panelGroup rendered="#{proc.readValue eq 'true'}">
-                                                <span class="fa fa-check-square-o fa-lg" />
+                                                <util:icon icon="checkbox" styleClass="icon--lg" />
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{proc.readValue ne 'true'}">
-                                                <span class="fa fa-square-o fa-lg" />
+                                                <util:icon icon="square" styleClass="icon--lg" />
                                             </h:panelGroup>
                                         </h:panelGroup>
                                     </td>
@@ -91,7 +93,7 @@
                                             title="#{msgs.bearbeiten}"
                                             class="btn btn-blank"
                                             jsf:rendered="#{!isBatchStep and currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
-                                            <span class="fa fa-pencil" />
+                                            <util:icon icon="pencil" />
                                             <f:setPropertyActionListener
                                                 target="#{propertyOwner.processProperty}"
                                                 value="#{proc}" />
@@ -110,7 +112,7 @@
                                             title="#{msgs.bearbeiten}"
                                             class="btn btn-blank"
                                             jsf:rendered="#{isBatchStep and currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
-                                            <span class="fa fa-pencil" />
+                                            <util:icon icon="pencil" />
                                             <f:setPropertyActionListener
                                                 target="#{propertyOwner.processProperty}"
                                                 value="#{proc}" />
@@ -129,7 +131,7 @@
                                             title="#{msgs.duplicate}"
                                             class="btn btn-blank ms-2"
                                             jsf:rendered="#{proc.duplicationAllowed and currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
-                                            <span class="fa fa-plus" />
+                                            <util:icon icon="plus" />
                                             <f:setPropertyActionListener
                                                 target="#{propertyOwner.processProperty}"
                                                 value="#{proc}" />
@@ -193,12 +195,12 @@
                                             rendered="#{process_item.type.name == 'link'}">
                                             <h:outputText value="#{process_item.readValue}" />
                                         </h:outputLink>
-                                        <h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
+                                        <h:panelGroup rendered="#{process_item.type.name == 'boolean'}" styleClass="d-flex align-items-center" style="min-height: 1.5em;">
                                             <h:panelGroup rendered="#{process_item.readValue eq 'true'}">
-                                                <span class="fa fa-check-square-o fa-lg" />
+                                                <util:icon icon="checkbox" styleClass="icon--lg" />
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{process_item.readValue ne 'true'}">
-                                                <span class="fa fa-square-o fa-lg" />
+                                                <util:icon icon="square" styleClass="icon--lg" />
                                             </h:panelGroup>
                                         </h:panelGroup>
                                     </td>
@@ -213,7 +215,7 @@
                                                     title="#{msgs.bearbeiten}"
                                                     class="btn btn-blank"
                                                     jsf:rendered="#{!isBatchStep and propertyOwner.containerAccess[container] and process_item.type.name != 'metadata'}">
-                                                    <span class="fa fa-pencil" />
+                                                    <util:icon icon="pencil" />
                                                     <f:setPropertyActionListener
                                                         target="#{propertyOwner.container}"
                                                         value="#{container}" />
@@ -229,7 +231,7 @@
                                                     title="#{msgs.bearbeiten}"
                                                     class="btn btn-blank"
                                                     jsf:rendered="#{isBatchStep and propertyOwner.containerAccess[container] and process_item.type.name != 'metadata'}">
-                                                    <span class="fa fa-pencil" />
+                                                    <util:icon icon="pencil" />
                                                     <f:setPropertyActionListener
                                                         target="#{propertyOwner.container}"
                                                         value="#{container}" />
@@ -245,7 +247,7 @@
                                                     title="#{msgs.duplicate}"
                                                     jsf:rendered="#{process_item.duplicationAllowed and process_item.type.name != 'metadata'}"
                                                     class="btn btn-blank ms-2">
-                                                    <span class="fa fa-plus" />
+                                                    <util:icon icon="plus" />
                                                     <f:setPropertyActionListener
                                                         target="#{propertyOwner.container}"
                                                         value="#{container}" />
@@ -306,7 +308,7 @@
                         boxForm="true"
                         boxPadding="false"
                         title="#{msgs.eigenschaft}"
-                        icon="fa-edit">
+                        tablerIcon="edit">
 
                         <!-- PROPERTY TO EDIT -->
                         <ui:repeat
@@ -581,7 +583,7 @@
                                 jsf:rendered="#{!isBatchStep}"
                                 class="btn btn-success submitOnEnter"
                                 jsf:action="#{propertyOwner.saveCurrentProperty}">
-                                <span class="fa fa-save" />
+                                <util:icon icon="device-floppy" />
                                 <span>
                                     <h:outputText value="#{msgs.speichern}" />
                                 </span>
@@ -596,7 +598,7 @@
                                 jsf:rendered="#{isBatchStep}"
                                 class="btn btn-success submitOnEnter"
                                 jsf:action="#{propertyOwner.saveCurrentPropertyForAll}">
-                                <span class="fa fa-save" />
+                                <util:icon icon="device-floppy" />
                                 <span>
                                     <h:outputText value="#{msgs.applyToAllProcesses}" />
                                 </span>
@@ -611,7 +613,7 @@
                                 jsf:rendered="#{isBatchStep}"
                                 class="btn btn-success submitOnEnter"
                                 jsf:action="#{propertyOwner.saveCurrentProperty}">
-                                <span class="fa fa-save" />
+                                <util:icon icon="device-floppy" />
                                 <span>
                                     <h:outputText value="#{msgs.applyToThisProcess}" />
                                 </span>

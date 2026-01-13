@@ -6,6 +6,7 @@
         template="/uii/template/template.html"
         xmlns:composite="http://xmlns.jcp.org/jsf/composite"
         xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+        xmlns:util="http://goobi.io/util"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
         xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
         xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -27,7 +28,7 @@
             boxTitle="false">
             <intranda:boxTitle
                     title="#{cc.attrs.vocabulary.name}"
-                    icon="fa-database">
+                    tablerIcon="database">
                 <div class="actions d-flex">
                     <!-- import -->
                     <div

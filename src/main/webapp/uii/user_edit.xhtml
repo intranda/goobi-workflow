@@ -6,8 +6,8 @@
     template="/uii/template/template.html"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -60,7 +60,7 @@
                         <!-- TITLE BAR -->
                         <intranda:boxTitle
                             title="#{myPageTitle}"
-                            icon="fa-edit">
+                            tablerIcon="edit">
                             <ul class="tabs #{BenutzerverwaltungForm.myClass.id == null ? 'd-none': ''}">
                                 <li class="tab tab--1 #{BenutzerverwaltungForm.displayMode eq ''?'active':''}"><h:commandLink
                                         id="tab1"
@@ -315,7 +315,7 @@
                                                 boxSmall="true"
                                                 boxScope="view-users__box--usergroup-1"
                                                 title="#{msgs.benutzergruppen}"
-                                                icon="fa-table"
+                                                tablerIcon="table"
                                                 boxPadding="false">
 
                                                 <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
@@ -400,7 +400,7 @@
                                                 boxSmall="true"
                                                 boxScope="view-users__box--usergroup-2"
                                                 title="#{msgs.benutzergruppen}"
-                                                icon="fa-table"
+                                                tablerIcon="table"
                                                 boxPadding="false">
 
                                                 <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
@@ -512,7 +512,7 @@
                                                 boxType="action"
                                                 boxSmall="true"
                                                 title="#{msgs.projekte}"
-                                                icon="fa-table"
+                                                tablerIcon="table"
                                                 boxPadding="false">
 
                                                 <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
@@ -587,7 +587,7 @@
                                                 boxSmall="true"
                                                 boxScope="view-users__box--project-2"
                                                 title="#{msgs.projekte}"
-                                                icon="fa-table"
+                                                tablerIcon="table"
                                                 boxPadding="false">
 
                                                 <div class="gw-table gw-table-fixed gw-table-fixed-no-th">

@@ -6,9 +6,9 @@
 	template="/uii/template/template.html"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
-
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util">
 
 	<ui:param
 		name="myPageTitle"
@@ -59,7 +59,7 @@
 
 					<intranda:boxTitle
 						title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.werkstueckDetails.concat(' -').concat(ProzessverwaltungForm.myProzess.titel) : msgs.werkstueckDetails}"
-						icon="fa-list">
+						tablerIcon="list">
 
 						<div class="actions d-flex">
 							<button
@@ -113,7 +113,7 @@
 
 					<intranda:boxTitle
 						title="#{msgs.eigenschaften}"
-						icon="fa-table">
+						tablerIcon="table">
 
 						<div class="actions d-flex">
 							<button
@@ -207,7 +207,7 @@
 					boxForm="true"
 					boxPadding="false"
 					title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.eigenschaftBearbeiten.concat(' - ').concat(ProzessverwaltungForm.myProzess.titel) : msgs.eigenschaftBearbeiten}"
-					icon="fa-edit">
+					tablerIcon="edit">
 
 					<intranda:formInputText
 						id="title"
