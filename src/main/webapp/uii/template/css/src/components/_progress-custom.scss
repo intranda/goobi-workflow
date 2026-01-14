@@ -6,6 +6,7 @@
   --color-progress-success: #5cb85c;
   --color-progress-warning: #f0ad4e;
   --color-progress-danger: #d9534f;
+  --color-progress-neutral: var(--clr-neutral-300, #ccc);
 }
 
 .progress {
@@ -29,6 +30,10 @@
 
 .progress-bar-danger {
   background-color: var(--color-progress-danger, #d9534f);
+}
+
+.progress-bar-neutral {
+  background-color: var(--color-progress-neutral, #ccc);
 }
 
 .progress-bar-error {
