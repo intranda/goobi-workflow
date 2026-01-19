@@ -1,0 +1,4 @@
+// Function to create valid JSF resource references
+@function resourceUrl($path) {
+  @return url + "(\"../../../../resources/" + $path + "\")";
+}

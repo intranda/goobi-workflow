@@ -280,7 +280,7 @@ final class ProcessMysqlHelper implements Serializable {
         String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (StringUtils.isNotBlank(filter)) {
-            if (!filter.trim().toLowerCase().startsWith("where")) {
+            if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
                 sql.append(" WHERE ");
             }
 

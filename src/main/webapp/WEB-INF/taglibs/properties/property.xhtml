@@ -27,10 +27,13 @@
                     styleClass="badge badge-no-radius badge-light-grey" />
             </c:forEach>
         </h:panelGroup>
-        <h:outputText
-            value="#{property.readValue}"
-            rendered="#{property.type.name == 'html'}"
-            escape="false" />
+        <h:panelGroup rendered="#{property.type.name == 'html'}" layout="block">
+            <section>
+                <h:outputText
+                    value="#{property.readValue}"
+                    escape="false" />
+            </section>
+        </h:panelGroup>
         <h:outputText
             value="#{property.readValue}"
             rendered="#{(property.type.name != 'link') and (property.type.name != 'boolean') and (property.type.name != 'html') and (property.type.name != 'listmultiselect') and (property.type.name != 'vocabularyreference') and (property.type.name != 'vocabularymultireference')}" />

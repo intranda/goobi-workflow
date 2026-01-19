@@ -9,14 +9,20 @@
     }
 
     &-controls {
+        height: 100vh;
+        position: absolute;
         z-index: 2;
+        &-end {
+            right: 0;
+        }
     }
 
     &-content {
-        height: 100%;
-        display: flex;
-        justify-content: center;
         align-items: center;
+        display: flex;
+        height: 100%;
+        justify-content: center;
+        position: relative;
         z-index: 1;
     }
 
@@ -28,6 +34,7 @@
         font-size: 0.625rem;
         padding: 1em;
         position: absolute;
+        white-space: nowrap;
     }
 
     &-btn {

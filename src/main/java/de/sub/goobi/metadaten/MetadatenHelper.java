@@ -782,7 +782,8 @@ public class MetadatenHelper {
                 }
             } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException | NoSuchMethodException
                     | PreferencesException | SecurityException e) {
-                log.error(e);
+                log.error("error getting file format by name \"{}\"", name, e);
+                // TODO: Improve error handling by rethrowing exception
             }
 
         }

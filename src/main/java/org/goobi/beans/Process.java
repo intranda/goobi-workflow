@@ -1619,26 +1619,31 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     public String getReplacedVariable(String inVariable) {
         // if replaced value is not stored already then do it now
         if (!tempVariableMap.containsKey(inVariable)) {
-            DigitalDocument dd = null;
-            Prefs myPrefs = null;
-            // just load the mets file if needed
-            if (inVariable.startsWith("{meta")) {
-                myPrefs = getRegelsatz().getPreferences();
-                try {
-                    Fileformat gdzfile = readMetadataFile();
-                    dd = gdzfile.getDigitalDocument();
-                } catch (UGHException | IOException | SwapException e) {
-                    log.error("error reading METS file for process " + id, e);
+            try {
+                DigitalDocument dd = null;
+                Prefs myPrefs = null;
+                // just load the mets file if needed
+                if (inVariable.startsWith("{meta")) {
+                    myPrefs = getRegelsatz().getPreferences();
+                    try {
+                        Fileformat gdzfile = readMetadataFile();
+                        dd = gdzfile.getDigitalDocument();
+                    } catch (UGHException | IOException | SwapException e) {
+                        log.error("error reading METS file for process " + id, e);
+                    }
                 }
+                VariableReplacer replacer = new VariableReplacer(dd, myPrefs, this, null);
+                // put replaced value into temporary store
+                String replacedValue = replacer.replace(inVariable);
+                //  return empty string, if value could not be found
+                if (replacedValue.equals(inVariable)) {
+                    replacedValue = "";
+                }
+                tempVariableMap.put(inVariable, replacedValue);
+            } catch (NullPointerException e) {
+                // TODO: Improve this by catching a more specific exception, if it is rethrown
+                return "ERROR: " + e.getMessage();
             }
-            VariableReplacer replacer = new VariableReplacer(dd, myPrefs, this, null);
-            // put replaced value into temporary store
-            String replacedValue = replacer.replace(inVariable);
-            //  return empty string, if value could not be found
-            if (replacedValue.equals(inVariable)) {
-                replacedValue = "";
-            }
-            tempVariableMap.put(inVariable, replacedValue);
         }
 
         return tempVariableMap.get(inVariable);

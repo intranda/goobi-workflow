@@ -12,6 +12,7 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:util="http://goobi.io/util"
 	xmlns:form="http://goobi.io/form"
+    xmlns:editor="http://goobi.io/editor"
 >
     <c:set var="scope" value="#{
         fn:contains(bean, 'StepBean') ? 'step'
@@ -264,12 +265,19 @@
                                                 value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
                                         </div>
                                         <div class="form-input">
-                                            <h:inputTextarea
-                                                id="valueArea"
-                                                forceId="true"
-                                                styleClass="form-control"
-                                                value="#{myprocess_item.value}"
-                                                disabled="#{scope == 'step' ? myprocess_item.currentStepAccessCondition == 'READ' : myprocess_item.showProcessGroupAccessCondition == 'READ'}" />
+                                            <c:if test="#{scope == 'step' ? myprocess_item.currentStepAccessCondition == 'WRITE' : myprocess_item.showProcessGroupAccessCondition == 'WRITE'}">
+                                                <editor:text
+                                                    id="valueArea"
+                                                    content="#{myprocess_item.value}"
+                                                    styleClass="form-control" />
+                                            </c:if>
+                                            <c:if test="#{scope == 'step' ? myprocess_item.currentStepAccessCondition == 'READ' : myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                <h:outputText
+                                                    id="valueArea"
+                                                    value="#{myprocess_item.value}"
+                                                    escape="false"
+                                                    styleClass="form-control" />
+                                            </c:if>
                                             <h:message
                                                 for="valueArea"
                                                 showDetail="true"
