@@ -340,7 +340,7 @@
                                                                         title="#{msgs.uebernehmen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.ZuGruppeHinzufuegen}">
-                                                                        <span class="fa fa-plus" />
+                                                                        <util:icon icon="plus" />
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
@@ -433,7 +433,7 @@
                                                                         title="#{msgs.ausGruppeLoeschen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.AusGruppeLoeschen}">
-                                                                        <span class="fa fa-trash-o" />
+                                                                        <util:icon icon="trash" />
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
@@ -459,7 +459,7 @@
                                                         class="btn btn-neutral-600 me-auto"
                                                         jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
                                                         jsf:immediate="true">
-                                                        <span class="fa fa-plus" /> <span> <h:outputText
+                                                        <util:icon icon="plus" /> <span> <h:outputText
                                                                 value="#{msgs.benutzergruppenHinzufuegen}" />
                                                         </span>
                                                         <f:setPropertyActionListener
@@ -535,7 +535,7 @@
                                                                         title="#{msgs.uebernehmen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.ZuProjektHinzufuegen}">
-                                                                        <span class="fa fa-plus" />
+                                                                        <util:icon icon="plus" />
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
@@ -622,7 +622,7 @@
                                                                         title="#{msgs.ausProjektLoeschen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.AusProjektLoeschen}">
-                                                                        <span class="fa fa-trash-o" />
+                                                                        <util:icon icon="trash" />
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
@@ -646,7 +646,7 @@
                                                         class="btn btn-neutral-600 me-auto"
                                                         jsf:action="#{ProjekteForm.FilterKeinMitZurueck}"
                                                         jsf:immediate="true">
-                                                        <span class="fa fa-plus me-auto" /> <span> <h:outputText
+                                                        <util:icon icon="plus" styleClass="me-auto" /> <span> <h:outputText
                                                                 value="#{msgs.projektHinzufuegen}" />
                                                         </span>
                                                         <f:setPropertyActionListener
@@ -691,7 +691,7 @@
                                         jsf:id="absenden2"
                                         type="submit"
                                         jsf:action="#{BenutzerverwaltungForm.createUser}">
-                                        <span class="fa fa-save margin-right-5" /> <span> <h:outputText
+                                        <util:icon icon="device-floppy" styleClass="me-1" /> <span> <h:outputText
                                                 value="#{msgs.speichern}" />
                                         </span>
                                     </button>
@@ -716,7 +716,7 @@
                                         jsf:id="absenden"
                                         type="submit"
                                         jsf:action="#{BenutzerverwaltungForm.Speichern}">
-                                        <span class="fa fa-save" /> <span> <h:outputText value="#{msgs.speichern}" />
+                                        <util:icon icon="device-floppy" /> <span> <h:outputText value="#{msgs.speichern}" />
                                         </span>
                                     </button>
 
@@ -726,7 +726,7 @@
                                         class="btn btn-hot trigger-delete"
                                         onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
                                         jsf:action="#{BenutzerverwaltungForm.Loeschen}">
-                                        <span class="fa fa-trash-o" /> <span> <h:outputText
+                                        <util:icon icon="trash" /> <span> <h:outputText
                                                 value="#{msgs.loeschen}" />
                                         </span>
                                     </button>

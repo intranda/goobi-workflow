@@ -157,7 +157,7 @@
 									title="#{msgs.calculateStatistics}"
 									jsf:action="#{ProzessverwaltungForm.statisticsManager.calculate}"
 									class="btn btn-primary">
-									<span class="fa fa-cog" />
+									<util:icon icon="calculator" />
 									<span>
 										<h:outputText value="#{msgs.calculateStatistics}" />
 									</span>
@@ -211,7 +211,7 @@
 									<button jsf:id="createExcel"
 										jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
 										title="#{msgs.download_excel}" class="btn btn-blank">
-										<span class="fa fa-floppy-o" />
+										<util:icon icon="device-floppy" />
 										<span>
 											<h:outputText value="#{msgs.download_excel}" />
 										</span>
@@ -223,7 +223,7 @@
 									<button jsf:id="createCsv"
 										jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
 										title="#{msgs.download_csv}" class="btn btn-blank">
-										<span class="fa fa-floppy-o" />
+										<util:icon icon="device-floppy" />
 										<span>
 											<h:outputText value="#{msgs.download_csv}" />
 										</span>
@@ -263,7 +263,7 @@
 											title="#{msgs.download_excel}"
 											jsf:rendered="#{element.dataTable.showableInTable}"
 											class="btn btn-blank">
-											<span class="fa fa-floppy-o" />
+											<util:icon icon="device-floppy" />
 											<span>
 												<h:outputText value="#{msgs.download_excel}" />
 											</span>
@@ -276,7 +276,7 @@
 											jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
 											title="#{msgs.download_csv}"
 											jsf:rendered="#{element.dataTable.showableInTable}">
-											<span class="fa fa-floppy-o" />
+											<util:icon icon="device-floppy" />
 											<span>
 												<h:outputText value="#{msgs.download_csv}" />
 											</span>

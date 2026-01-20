@@ -110,13 +110,16 @@
                     <fieldSet class="field-set">
                         <legend class="field-set-legend">
                             <h:outputText value="#{field.definition.name}"/>
-                            <span
-                                class="ms-2 text-primary fa fa-asterisk"
-                                aria-hidden="true"
-                                title="#{msgs.requiredField}"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="right"
-                                jsf:rendered="#{field.definition.required}" />
+                            <ui:fragment rendered="#{field.definition.required}">
+                                <span
+                                    class="ms-2 text-primary"
+                                    aria-hidden="true"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="right"
+                                    title="#{msgs.requiredField}">
+                                    <util:icon icon="asterisk" styleClass="icon--xs icon--b5" />
+                                </span>
+                            </ui:fragment>
                         </legend>
                         <div class="field-set-content">
                             <ui:repeat var="translation" value="#{value.extendedTranslations}">

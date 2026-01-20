@@ -101,11 +101,11 @@
 					&lt;td&gt;
 							&lt;div class=&quot;gw-table__actions__container&quot;&gt;
 
-								&lt;button jsf:id=&quot;edit&quot; class=&quot;btn btn-blank&quot;
+								&lt;button jsf:id=&quot;edit&quot; class=&quot;btn btn-icon btn-blank&quot;
 									disabled=&quot;true&quot;
 									jsf:rel=&quot;tooltip&quot; jsf:action=&quot;user_edit&quot;
 									title=&quot;#{msgs.benutzerBearbeiten}&quot;&gt;
-									&lt;i class=&quot;fa fa-pencil&quot;&gt;&lt;/i&gt;
+									&lt;util:icon icon="pencil" /&gt;
 									&lt;f:passThroughAttribute name=&quot;data-toggle&quot;
 										value=&quot;tooltip&quot; /&gt;
 									&lt;f:passThroughAttribute name=&quot;aria-label&quot;
@@ -115,10 +115,10 @@
 								&lt;button jsf:id=&quot;switch&quot;
 									disabled=&quot;true&quot;
 									jsf:rendered=&quot;#{true}&quot;
-									class=&quot;btn btn-blank&quot;
+									class=&quot;btn btn-icon btn-blank&quot;
 									jsf:action=&quot;&quot;
 									title=&quot;#{msgs.benutzerprofilLaden}&quot;&gt;
-									&lt;i class=&quot;fa fa-user-secret&quot;&gt;&lt;/i&gt;
+									&lt;util:icon icon="spy" /&gt;
 									&lt;f:passThroughAttribute name=&quot;aria-label&quot;
 										value=&quot;#{msgs.benutzerprofilLaden}&quot; /&gt;
 									&lt;f:passThroughAttribute name=&quot;data-toggle&quot;
@@ -129,12 +129,12 @@
 
 								&lt;button jsf:id=&quot;createNewRandomPassword&quot;
 									disabled=&quot;true&quot;
-									class=&quot;btn btn-blank&quot; jsf:rel=&quot;tooltip&quot;
+									class=&quot;btn btn-icon btn-blank&quot; jsf:rel=&quot;tooltip&quot;
 									title=&quot;#{msgs.createNewRandomPassword}&quot;
 									jsf:rendered=&quot;#{true}&quot;
 									jsf:onclick=&quot;if (!confirm(&#039;#{msgs.confirmUserPasswordReset}&#039;)) return false&quot;
 									jsf:action=&quot;&quot;&gt;
-									&lt;i class=&quot;fa fa-key&quot;&gt;&lt;/i&gt;
+									&lt;util:icon icon="key" /&gt;
 									&lt;f:passThroughAttribute name=&quot;data-toggle&quot;
 										value=&quot;tooltip&quot; /&gt;
 									&lt;f:passThroughAttribute name=&quot;aria-label&quot;
