@@ -60,7 +60,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                                 // init object view
                                 goobiWorkflowJS.object.imageLoadHandler();
                                 // init thumbnails
-                                goobiWorkflowJS.thumbnails.init();
+                                goobiWorkflowJS.thumbnails.init({
+                                    scrollToActive: !!data?.source?.dataset.resetScrollPositions
+                                });
                             }
                             // reload alto-editor
                             if(data?.source?.id != "saveAltoChanges" && data?.source?.id != "altoEditorAutocompleteScript") {

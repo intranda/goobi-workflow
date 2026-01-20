@@ -3,6 +3,7 @@ import { initFunctions } from './modules/inits';
 import { toggleLoaders } from './modules/ajax/displayLoader';
 import {
     initSaveScrollPosition,
+    handleScrollPositionReset,
     restoreAllScrollPositions,
     saveAllScrollPositions,
 } from './modules/saveScrollPosition';
@@ -26,6 +27,7 @@ if(typeof faces !== "undefined") {
         if(data.source?.dataset?.ajaxBehaviour === "ignore") {
                 return;
             }
+
         switch (data.status) {
             case 'begin':
                 toggleLoaders(true);
@@ -37,6 +39,7 @@ if(typeof faces !== "undefined") {
                 toggleLoaders(false)
                 initFunctions();
                 initSaveScrollPosition();
+                handleScrollPositionReset(data.source?.getAttribute('data-reset-scroll-positions'));
                 restoreAllScrollPositions();
                 initAutosave();
                 break;

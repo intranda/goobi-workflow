@@ -12,50 +12,45 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          * @description Method to initialize the thumbnail rendering.
          * @method init
          */
-    	init: function(config) {
+    	init: function(options = {}) {
             const configElement = document.getElementById('gwConfig');
             let goobiWorkflowConfig = configElement ? JSON.parse(configElement.textContent) : {};
 			if(goobiWorkflowConfig) {
 				this.config = $.extend( true, {}, _defaults, goobiWorkflowConfig );
 			}
             if ( _debug ) {
-                console.log( 'Initializing: goobiWorkflowJS.thumbnails.init', this.config);
+                console.log( 'Initializing: goobiWorkflowJS.thumbnails.init', this.config, options);
             }
             // Only relevant in metseditor
             const isMetseditor = document.querySelector('#metseditorMenuForm') !== null;
             if (!isMetseditor) return;
 
-			var promises = [];
 			var elements = [];
-			var activeAdded = false;
             $( '.thumbnails__thumb-canvas' ).each( function( index, el ) {
 				elements.push(el);
 			});
 
 			let elementGroups = groupArray(elements, this.config.maxParallelRequests);
-			let activeObservable = new rxjs.Subject();
 			let thumbnailLoadObservables = rxjs.from(elementGroups)
 			.pipe(
                 rxjs.operators.concatMap(thumbGroup => {
                     let groupObservables = rxjs.from(thumbGroup)
                     .pipe(
-	                	rxjs.operators.mergeMap(ele => {
-							let promise = drawOnCanvas( ele );
-							activeObservable.next(promise);
-							if(this.isActiveElement(ele)) {
-								activeObservable.complete();
-							}
-							return promise;
-						})
+	                	rxjs.operators.mergeMap(ele => drawOnCanvas(ele))
 	                );
                     return rxjs.forkJoin(groupObservables);
                 })
         	)
+        	const self = this;
          	rxjs.forkJoin(thumbnailLoadObservables).subscribe({
                 complete: () => {
                     // Fire event when all thumbnails are loaded
                     const thumbnailsLoaded = new CustomEvent('thumbnailsLoaded');
                     document.dispatchEvent(thumbnailsLoaded);
+                    // Scroll to active thumbnail if requested
+                    if (options.scrollToActive) {
+                        self.scrollToActiveThumbnail();
+                    }
                 }
             });
 
@@ -63,22 +58,23 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             if(rightContent.querySelector( '#thumbnails' )) {
             	rightContent.scrollTo(0,0);
             }
-        	var activeThumbnail = document.querySelector('.thumbnails__thumb.active');
-        	if(activeThumbnail) {
-				let promises = [];
-				activeObservable.subscribe({
-					next: p => promises.push(p),
-					error: p => promises.push(p),
-					complete: () => {
-			            Promise.all(promises).then( () => {
-		            		activeThumbnail.scrollIntoView({block: "center"});
-	           			});
-					}
-				});
-        	}
         },
-        isActiveElement: function(el) {
-			return el.parentElement.parentElement.parentElement.classList.contains("active");
+		/**
+		 * Scrolls the active thumbnail to the top of the thumbnailsContainer.
+		 */
+		scrollToActiveThumbnail: function() {
+			const container = document.getElementById('thumbnailsContainer');
+			const activeThumb = document.querySelector('.thumbnails__thumb.active');
+
+			if (!container || !activeThumb) {
+				return;
+			}
+
+			const containerRect = container.getBoundingClientRect();
+			const thumbRect = activeThumb.getBoundingClientRect();
+			const scrollTarget = thumbRect.top - containerRect.top + container.scrollTop - 10;
+
+			container.scrollTop = Math.max(0, scrollTarget);
 		},
     };
 

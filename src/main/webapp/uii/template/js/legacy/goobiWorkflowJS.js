@@ -62,7 +62,10 @@ var goobiWorkflowJS = ( function() {
         goobiWorkflowJS.modals.init();
 
         // init thumbnails --> needs ajax reload
-        goobiWorkflowJS.thumbnails.init(_defaults.metseditor.thumbnails);
+        goobiWorkflowJS.thumbnails.init({
+            ..._defaults.metseditor.thumbnails,
+            scrollToActive: _defaults.scrollToActiveThumbnail
+        });
 
         $(".focusable").attr("tabindex", "0");
     	$(".focusableChild input").attr("tabindex", "0")	//tabindex 0 not working??

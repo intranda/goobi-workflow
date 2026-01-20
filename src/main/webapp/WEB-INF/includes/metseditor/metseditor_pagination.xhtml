@@ -46,7 +46,7 @@
                                         </label>
                                         <div class="d-flex flex-nowrap">
                                             <h:panelGroup rendered="#{page.type == 'div'}">
-                                                <button class="btn btn-outline font-light" title="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" aria-label="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" jsf:action="#{Metadaten.loadImageInThumbnailList}" data-renderimage="true" data-bs-toggle="tooltip" data-bs-placement="left" data-boundary="window">
+                                                <button class="btn btn-outline font-light" title="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" aria-label="#{msgs.mets_showThisImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" jsf:action="#{Metadaten.loadImageInThumbnailList}" data-renderimage="true" data-reset-scroll-positions="thumbnailsContainer,meSelectPagesBox:pagePaginationList" data-bs-toggle="tooltip" data-bs-placement="left" data-boundary="window">
                                                     <f:setPropertyActionListener value="#{page.physicalPageNo}" target="#{Metadaten.bildNummerGeheZuCompleteString}"/>
                                                     <ui:fragment rendered="#{page.doublePage}">
                                                         <span class="fa fa-picture-o" style="float: right;" aria-hidden="true"/>
@@ -54,7 +54,7 @@
                                                     <span class="fa fa-picture-o" aria-hidden="true"/>
                                                     <f:ajax
                                                         execute="@this"
-                                                        render="mainimagearea"/>
+                                                        render="mainimagearea :thumbnailsForm"/>
                                                 </button>
                                                 <button class="btn btn-outline star" title="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" aria-label="#{msgs.mets_setRepresentativeImage} (#{page.physicalPageNo}:#{page.logicalPageNo})" jsf:action="#{Metadaten.updateRepresentativePage}" data-bs-toggle="tooltip" data-bs-placement="right" data-boundary="window">
                                                     <f:setPropertyActionListener value="#{page.physicalPageNo}" target="#{Metadaten.currentRepresentativePage}"/>
