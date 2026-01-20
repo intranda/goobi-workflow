@@ -49,12 +49,6 @@ var goobiWorkflowJS = ( function() {
         // init scroll positions
         goobiWorkflowJS.scrollPositions.init();
 
-        // init progressbar
-        // goobiWorkflowJS..init();
-
-        // init buttons --> needs ajax reload
-        goobiWorkflowJS.buttons.init(_defaults);
-
         // init structdata module
         goobiWorkflowJS.structdata.init();
 

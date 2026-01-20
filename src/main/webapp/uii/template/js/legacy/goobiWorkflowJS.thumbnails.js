@@ -53,11 +53,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     }
                 }
             });
-
-            var rightContent = document.querySelector( '#pageContentRight' );
-            if(rightContent.querySelector( '#thumbnails' )) {
-            	rightContent.scrollTo(0,0);
-            }
         },
 		/**
 		 * Scrolls the active thumbnail to the top of the thumbnailsContainer.
@@ -105,13 +100,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 	            var ctx = canvas.getContext( '2d' );
 	            var d = canvas.dataset;
 
-	            if ( !d ) {
-	                // fix for ie not supporting element.dataset
-	                d = {};
-	                d.image_small = canvas.getAttribute( 'data-image_small' );
-	                d.image_large = canvas.getAttribute( 'data-image_large' );
-	            }
-
 	            var img = new Image();
 	            img.onload = function() {
 	                var scale = ( canvas.width * 2 ) / this.width;
@@ -154,21 +142,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             x: event.clientX - rect.left - 5,
             y: event.clientY - rect.top - 5
         };
-    }
-    /**
-     * @description Method to prevent to submit a form twice.
-     * @method preventDoubleSubmit
-     * @param {Object} event The click event which triggers submit.
-     */
-    function preventDoubleSubmit(event) {
-        var prevent = function(event) {
-           event.preventDefault();
-        }
-        var oldOnclick = event.onclick;
-        event.onclick = prevent;
-        setTimeout(function() {
-            event.onclick = oldOnclick;
-        }, 700);
     }
 
     /**
