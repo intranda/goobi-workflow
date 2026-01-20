@@ -19,7 +19,7 @@
                     <button jsf:id="thumbFirst" aria-label="#{msgs.firstImage}" class="btn btn-blank" jsf:action="#{Metadaten.cmdMoveFirst}" type="button" data-renderimage="true" data-reset-scroll-positions="thumbnailsContainer">
                         <span class="fa fa-angle-double-left" aria-hidden="true"/>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
-                        <f:ajax execute="@form" render="thumbnailsForm"/>
+                        <f:ajax execute="@this" render="thumbnailsForm"/>
                     </button>
                 </li>
                 <!-- PREV THUMB -->
@@ -28,7 +28,7 @@
                         <span class="fa fa-angle-left" aria-hidden="true"/>
                         <span>#{Metadaten.pagesRTL?msgs.pageNext:msgs.pagePrevious}</span>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
-                        <f:ajax execute="@form" render="thumbnailsForm"/>
+                        <f:ajax execute="@this" render="thumbnailsForm"/>
                     </button>
                 </li>
                 <!-- JUMP TO PAGE -->
@@ -42,7 +42,7 @@
                         <span>#{Metadaten.pagesRTL?msgs.pagePrevious:msgs.pageNext}</span>
                         <span class="fa fa-angle-right" aria-hidden="true"/>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
-                        <f:ajax execute="@form" render="thumbnailsForm"/>
+                        <f:ajax execute="@this" render="thumbnailsForm"/>
                     </button>
                 </li>
                 <!-- LAST THUMB -->
@@ -50,7 +50,7 @@
                     <button jsf:id="thumbLast" aria-label="#{msgs.lastImage}" class="btn btn-blank" jsf:action="#{Metadaten.cmdMoveLast}" type="button" data-renderimage="true" data-reset-scroll-positions="thumbnailsContainer">
                         <span class="fa fa-angle-double-right" aria-hidden="true"/>
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
-                        <f:ajax execute="@form" render="thumbnailsForm"/>
+                        <f:ajax execute="@this" render="thumbnailsForm"/>
                     </button>
                 </li>
                 <!-- THUMBS COUNT -->
