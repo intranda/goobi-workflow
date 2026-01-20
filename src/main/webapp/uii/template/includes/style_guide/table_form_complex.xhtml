@@ -52,8 +52,12 @@
 								class="btn gw-table__filters__option"
 								jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
 								jsf:immediate="true">
-								<i
-									class="fa #{BenutzerverwaltungForm.hideInactiveUsers?'fa-check-square-o':'fa-square-o'}"></i>
+								<ui:fragment rendered="#{BenutzerverwaltungForm.hideInactiveUsers}">
+								<util:icon icon="checkbox" />
+							</ui:fragment>
+							<ui:fragment rendered="#{not BenutzerverwaltungForm.hideInactiveUsers}">
+								<util:icon icon="square" />
+							</ui:fragment>
 								<h:outputText
 									styleClass="font-size-s"
 									value="#{msgs.nurAktiveNutzerZeigen}" />
@@ -73,7 +77,7 @@
 								<!-- FILTER INPUT -->
 								<div class="input-group">
 									<span class="input-group-text">
-										<span class="fa fa-search" />
+										<util:icon icon="search" />
 									</span>
 									<h:inputText
 										id="searchfield"
@@ -175,11 +179,11 @@
 											<div class="gw-table__actions__container">
 												<button
 													jsf:id="edit"
-													class="btn btn-blank"
+													class="btn btn-icon btn-blank"
 													jsf:rel="tooltip"
 													jsf:action="user_edit"
 													title="#{msgs.benutzerBearbeiten}">
-													<span class="fa fa-pencil" />
+													<util:icon icon="pencil" />
 												</button>
 											</div>
 										</td>
@@ -201,7 +205,7 @@
 							class="btn btn-primary-400 me-auto"
 							jsf:action="#{BenutzerverwaltungForm.Neu}"
 							jsf:immediate="true">
-							<span class="fa fa-plus" />
+							<util:icon icon="plus" />
 							<span>#{msgs.neuenBenutzerAnlegen}</span>
 						</button>
 						<!-- // BUTTON NEW -->
@@ -211,13 +215,13 @@
 
 							<button
 								type="button"
-								class="btn btn-blank">
-								<span class="fa fa-angle-double-left" />
+								class="btn btn-icon btn-blank">
+								<util:icon icon="chevrons-left" />
 							</button>
 							<button
 								type="button"
 								class="btn btn-primary-400">
-								<span class="fa fa-angle-left" />
+								<util:icon icon="chevron-left" />
 								<h:outputText value=" #{msgs.pagePrevious}" />
 							</button>
 
@@ -248,14 +252,14 @@
 								class="btn btn-primary-400"
 								jsf:id="navnext">
 								<h:outputText value="#{msgs.pageNext} " />
-								<span class="fa fa-angle-right" />
+								<util:icon icon="chevron-right" />
 							</button>
 							<button
 								type="button"
-								class="btn btn-blank"
+								class="btn btn-icon btn-blank"
 								aria-label="#{msgs.lastPage}"
 								jsf:id="#{idPref}navlast">
-								<span class="fa fa-angle-double-right" />
+								<util:icon icon="chevrons-right" />
 							</button>
 						</div>
 						<!-- // PAGINATOR -->
@@ -343,7 +347,7 @@
 						&lt;!-- FILTER INPUT --&gt;
 						&lt;div class=&quot;input-group&quot;&gt;
 							&lt;span class=&quot;input-group-text&quot;&gt;
-								&lt;i class=&quot;fa fa-search&quot;&gt;&lt;/i&gt;
+								&lt;util:icon icon="search" /&gt;
 							&lt;/span&gt;
 							&lt;h:inputText
 								id=&quot;searchfield&quot;
@@ -442,11 +446,11 @@
 									&lt;div class=&quot;gw-table__actions__container&quot;&gt;
 										&lt;button
 											jsf:id=&quot;edit&quot;
-											class=&quot;btn btn-blank&quot;
+											class=&quot;btn btn-icon btn-blank&quot;
 											jsf:rel=&quot;tooltip&quot;
 											jsf:action=&quot;user_edit&quot;
 											title=&quot;#{msgs.benutzerBearbeiten}&quot;&gt;
-											&lt;i class=&quot;fa fa-pencil&quot;&gt;&lt;/i&gt;
+											&lt;util:icon icon="pencil" /&gt;
 										&lt;/button&gt;
 									&lt;/div&gt;
 								&lt;/td&gt;
@@ -468,7 +472,7 @@
 					class=&quot;btn btn-primary-400 me-auto&quot;
 					jsf:action=&quot;{BenutzerverwaltungForm.Neu}&quot;
 					jsf:immediate=&quot;true&quot;&gt;
-					&lt;i class=&quot;fa fa-plus&quot;&gt;&lt;/i&gt;
+					&lt;util:icon icon="plus" /&gt;
 					&lt;span&gt;#{msgs.neuenBenutzerAnlegen}&lt;/span&gt;
 				&lt;/button&gt;
 				&lt;!-- // BUTTON NEW --&gt;
@@ -478,13 +482,13 @@
 
 					&lt;button
 						type=&quot;button&quot;
-						class=&quot;btn btn-blank&quot;&gt;
-						&lt;i class=&quot;fa fa-angle-double-left&quot;&gt;&lt;/i&gt;
+						class=&quot;btn btn-icon btn-blank&quot;&gt;
+						&lt;util:icon icon="chevrons-left" /&gt;
 					&lt;/button&gt;
 					&lt;button
 						type=&quot;button&quot;
 						class=&quot;btn btn-primary-400&quot;&gt;
-						&lt;i class=&quot;fa fa-angle-left&quot;&gt;&lt;/i&gt;
+						&lt;util:icon icon="chevron-left" /&gt;
 						&lt;h:outputText value=&quot; #{msgs.pagePrevious}&quot; /&gt;
 					&lt;/button&gt;
 
@@ -515,14 +519,14 @@
 						class=&quot;btn btn-primary-400&quot;
 						jsf:id=&quot;navnext&quot;&gt;
 						&lt;h:outputText value=&quot;#{msgs.pageNext} &quot; /&gt;
-						&lt;i class=&quot;fa fa-angle-right&quot;&gt;&lt;/i&gt;
+						&lt;util:icon icon="chevron-right" /&gt;
 					&lt;/button&gt;
 					&lt;button
 						type=&quot;button&quot;
-						class=&quot;btn btn-blank&quot;
+						class=&quot;btn btn-icon btn-blank&quot;
 						aria-label=&quot;#{msgs.lastPage}&quot;
 						jsf:id=&quot;#{idPref}navlast&quot;&gt;
-						&lt;i class=&quot;fa fa-angle-double-right&quot;&gt;&lt;/i&gt;
+						&lt;util:icon icon="chevrons-right" /&gt;
 					&lt;/button&gt;
 				&lt;/div&gt;
 				&lt;!-- // PAGINATOR --&gt;

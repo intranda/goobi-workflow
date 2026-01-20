@@ -9,7 +9,8 @@
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface />
 
@@ -22,7 +23,7 @@
             class="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#myStyleModal">
-            <span class="fa fa-eye" />
+            <util:icon icon="eye" />
             <span>
                 <h:outputText value="#{msgs.details}" />
             </span>
@@ -44,9 +45,9 @@
                         <h4 class="modal-title" id="myModalLabel">
                             <h:outputText value="#{msgs.details}" />
                         </h4>
-                        <button type="button" class="btn text-white"
+                        <button type="button" class="btn btn-icon text-white"
                             title="#{msgs.cancel}" data-bs-dismiss="modal">
-                            <span class="fa fa-times" />
+                            <util:icon icon="x" />
                         </button>
                     </div>
                     <div class="modal-body">
@@ -61,7 +62,7 @@
                             jsf:id="confirmModal"
                             class="btn btn-success"
                             jsf:action="#{NavigationForm.Reload}">
-                            <span class="fa fa-table" />
+                            <util:icon icon="table" />
                             <span>
                                 <h:outputText value="#{msgs.schliessen}" />
                             </span>
@@ -102,7 +103,7 @@
     class=&quot;btn btn-primary&quot;
     data-bs-toggle=&quot;modal&quot;
     data-bs-target=&quot;#myStyleModal&quot;&gt;
-    &lt;i class=&quot;fa fa-eye&quot; /&gt;
+    &lt;util:icon icon="eye" /&gt;
     &lt;span&gt;
         &lt;h:outputText value=&quot;#{msgs.details}&quot; /&gt;
     &lt;/span&gt;
@@ -124,9 +125,9 @@
                 &lt;h4 class=&quot;modal-title&quot; id=&quot;myModalLabel&quot;&gt;
                     &lt;h:outputText value=&quot;#{msgs.details}&quot; /&gt;
                 &lt;/h4&gt;
-                &lt;button type=&quot;button&quot; class=&quot;btn text-white&quot;
+                &lt;button type=&quot;button&quot; class=&quot;btn btn-icon text-white&quot;
                     title=&quot;#{msgs.cancel}&quot; data-bs-dismiss=&quot;modal&quot;&gt;
-                    &lt;i class=&quot;fa fa-times&quot;&gt;&lt;/i&gt;
+                    &lt;util:icon icon="x" /&gt;
                 &lt;/button&gt;
             &lt;/div&gt;
             &lt;div class=&quot;modal-body&quot;&gt;
@@ -141,7 +142,7 @@
                     jsf:id=&quot;confirmModal&quot;
                     class=&quot;btn btn-success&quot;
                     jsf:action=&quot;{NavigationForm.Reload}&quot;&gt;
-                    &lt;i class=&quot;fa fa-table&quot; /&gt;
+                    &lt;util:icon icon="table" /&gt;
                     &lt;span&gt;
                         &lt;h:outputText value=&quot;#{msgs.schliessen}&quot; /&gt;
                     &lt;/span&gt;
