@@ -195,7 +195,7 @@
 								type="submit"
 								jsf:action="#{MassImportForm.convertData}"
 								onclick="goobiWorkflowJS.progress.displayProgressBar()">
-								<span class="fa fa-save" />
+								<util:icon icon="device-floppy" />
 								<span>#{msgs.speichern}</span>
 							</button>
 
@@ -206,7 +206,7 @@
 								type="submit"
 								jsf:immediate="true"
 								jsf:action="process_import_1">
-								<span class="fa fa-arrow-circle-o-left" />
+								<util:icon icon="circle-arrow-left" />
 								<span>#{msgs.zurueck}</span>
 							</button>
 

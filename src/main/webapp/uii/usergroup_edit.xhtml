@@ -96,7 +96,7 @@
 														<span>
 														<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}" />
 														</span>
-														<span class="fa fa-trash" />
+														<util:icon icon="trash" />
 														<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 														<f:ajax render="@form" />
 											</button>
@@ -129,7 +129,7 @@
 												<span>
 													<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}" />
 												</span>
-												<span class="fa fa-plus" />
+												<util:icon icon="plus" />
 												<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 												<f:ajax render="@form" />
 												</button>
@@ -155,7 +155,7 @@
 															tabindex="-1"
 															title="#{msgs.usergroup_addRole}"
 															jsf:action="#{BenutzergruppenForm.addRole}">
-															<span class="fa fa-plus" />
+															<util:icon icon="plus" />
 														</button>
 													</div>
 												</div>

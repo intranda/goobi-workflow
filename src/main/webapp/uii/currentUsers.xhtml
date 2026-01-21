@@ -33,7 +33,7 @@
 							<div class="gw-table__search">
 		                    	<div class="gw-table__search__length">
 		                        	<h:panelGroup rendered="#{SessionForm.sessionListErrorTime != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
-										<span class="fa fa-exclamation-triangle margin-right-10" />
+										<util:icon icon="alert-triangle" css="margin-right-10" />
 										<h:outputText value="#{msgs.sessionListError}" />
 										<h:outputText value="#{SessionForm.sessionListErrorTime}"></h:outputText>
 									</h:panelGroup>

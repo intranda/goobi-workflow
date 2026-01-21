@@ -24,7 +24,7 @@
                     class="btn btn-neutral-200 text-black dropdown-toggle"
                     data-bs-toggle="dropdown"
                     aria-expanded="false">
-                    <span class="fa fa-sort" aria-hidden="true" />
+                    <util:icon icon="arrows-sort" />
                 </button>
                 <ul class="dropdown-menu">
                     <!-- ID -->
@@ -33,9 +33,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.id}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'prozesse.ProzesseID asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'prozesse.ProzesseID desc' ? 'fa-sort-desc' : 'fa-sort'}" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'prozesse.ProzesseID asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'prozesse.ProzesseID desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'prozesse.ProzesseID asc' ? 'prozesse.ProzesseID desc' : 'prozesse.ProzesseID asc'}" />
@@ -47,9 +45,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.batch}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'prozesse.batchID asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'prozesse.batchID desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'prozesse.batchID asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'prozesse.batchID desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'prozesse.batchID asc' ? 'prozesse.batchID desc' : 'prozesse.batchID asc'}" />
@@ -61,9 +57,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'prozesse.titel asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'prozesse.titel desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'prozesse.titel asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'prozesse.titel desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'prozesse.titel asc' ? 'prozesse.titel desc' : 'prozesse.titel asc'}" />
@@ -79,9 +73,7 @@
                                 jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                                 class="dropdown-item d-flex justify-content-between">
                                 <h:outputText value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}" />
-                                <span
-                                    aria-hidden="true"
-                                    class="fa #{ProzessverwaltungForm.sortField == fn:join(fn:split(var, ' '), ' ') += ' asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == fn:join(fn:split(var, ' '), ' ') += ' desc' ? 'fa-sort-desc' : 'fa-sort'}" />
+                                <util:icon icon="#{ProzessverwaltungForm.sortField == fn:join(fn:split(var, ' '), ' ') += ' asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == fn:join(fn:split(var, ' '), ' ') += ' desc' ? 'sort-descending' : 'arrows-sort'}" />
                                 <f:setPropertyActionListener
                                     target="#{ProzessverwaltungForm.sortField}"
                                     value="#{ProzessverwaltungForm.sortField == fn:join(fn:split(var, ' '), ' ') += ' asc' ? fn:join(fn:split(var, ' '), ' ') += ' desc' : fn:join(fn:split(var, ' '), ' ') += ' asc'}" />
@@ -94,9 +86,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.vorgangsdatum}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'prozesse.erstellungsdatum asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'prozesse.erstellungsdatum desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'prozesse.erstellungsdatum asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'prozesse.erstellungsdatum desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'prozesse.erstellungsdatum asc' ? 'prozesse.erstellungsdatum desc' : 'prozesse.erstellungsdatum asc'}" />
@@ -108,9 +98,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.status}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'prozesse.sortHelperStatus asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'prozesse.sortHelperStatus desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'prozesse.sortHelperStatus asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'prozesse.sortHelperStatus desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'prozesse.sortHelperStatus asc' ? 'prozesse.sortHelperStatus desc' : 'prozesse.sortHelperStatus asc'}" />
@@ -122,9 +110,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.projekt}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'projekte.titel asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'projekte.titel desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'projekte.titel asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'projekte.titel desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'projekte.titel asc' ? 'projekte.titel desc' : 'projekte.titel asc'}" />
@@ -136,9 +122,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.institution}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'institution.shortName asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'institution.shortName desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'institution.shortName asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'institution.shortName desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'institution.shortName asc' ? 'institution.shortName desc' : 'institution.shortName asc'}" />
@@ -150,9 +134,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.lastStatusUpdate}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'sorthelper_last_close_date asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'sorthelper_last_close_date desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'sorthelper_last_close_date asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'sorthelper_last_close_date desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'sorthelper_last_close_date asc' ? 'sorthelper_last_close_date desc' : 'sorthelper_last_close_date asc'}" />

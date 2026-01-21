@@ -81,9 +81,7 @@
 						class="btn btn-hot"
 						onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
 						jsf:rendered="#{vocabularyEditBean.vocabulary != null}">
-						<span
-							aria-hidden="true"
-							class="fa fa-trash-o"/>
+						<util:icon icon="trash" />
 						<span>
 							<h:outputText value="#{msgs.loeschen}"/>
 						</span>
@@ -106,9 +104,7 @@
 						jsf:id="absenden"
 						type="submit"
 						jsf:action="#{vocabularyEditBean.saveVocabulary}">
-						<span
-							aria-hidden="true"
-							class="fa fa-save"/>
+						<util:icon icon="device-floppy" />
 						<span>
 							<h:outputText value="#{msgs.speichern}"/>
 						</span>

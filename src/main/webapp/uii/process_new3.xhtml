@@ -55,7 +55,7 @@
 							jsf:action="#{ProzesskopieForm.prozessKopie.downloadDocket}"
 							class="btn btn-link d-block mb-2">
 							<span class="btn btn-blank">
-								<span class="fa fa-print" />
+								<util:icon icon="printer" />
 							</span>
 							<span>
 								<h:outputText value="#{msgs.process_generateDocket}" />
@@ -68,7 +68,7 @@
 							jsf:action="#{ProzesskopieForm.prepare}"
 							class="btn btn-link d-block mb-2">
 							<span class="btn btn-blank">
-								<span class="fa fa-file-o" />
+								<util:icon icon="file" />
 							</span>
 							<span>
 								<h:outputText value="#{msgs.weiterenVorgangAnlegen}" />
@@ -82,7 +82,7 @@
 							class="btn btn-link d-block mb-2"
 							jsf:rendered="#{LoginForm.hasRole('Workflow_Processes')}">
 							<span class="btn btn-blank">
-								<span class="fa fa-pencil" />
+								<util:icon icon="pencil" />
 							</span>
 							<span>
 								<h:outputText value="#{msgs.denErzeugtenBandOeffnen}" />

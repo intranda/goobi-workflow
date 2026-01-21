@@ -470,7 +470,7 @@
                                 jsf:rendered="#{!MassImportForm.hasNextPage}"
                                 jsf:action="#{MassImportForm.convertData}"
                                 jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()">
-                                <span class="fa fa-save" />
+                                <util:icon icon="device-floppy" />
                                 <span>#{msgs.speichern}</span>
                                 <f:ajax
                                     execute="@form"
@@ -484,7 +484,7 @@
                                 type="submit"
                                 jsf:rendered="#{MassImportForm.hasNextPage}"
                                 jsf:action="#{MassImportForm.nextPage}">
-                                <span class="fa fa-arrow-circle-o-right" />
+                                <util:icon icon="circle-arrow-right" />
                                 <span>#{msgs.weiter}</span>
                             </button>
 

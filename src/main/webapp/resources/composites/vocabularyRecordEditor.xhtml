@@ -10,6 +10,7 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:form="http://goobi.io/form"
+    xmlns:util="http://goobi.io/util"
 >
 
     <composite:interface>
@@ -216,9 +217,7 @@
                                 data-bs-toggle="tooltip"
                                 jsf:action="#{field.addFieldValue()}"
                                 title="Add value">
-                            <span
-                                aria-hidden="true"
-                                class="fa fa-plus-circle"/>
+                            <util:icon icon="circle-plus" />
                             <f:ajax
                                 render="@form"
                                 execute="@form" />
@@ -280,9 +279,7 @@
                                         class="btn btn-blank font-light fs-500"
                                         data-bs-toggle="tooltip"
                                         title="Delete value">
-                                        <span
-                                            aria-hidden="true"
-                                            class="fa fa-trash"/>
+                                        <util:icon icon="trash" />
                                         <f:ajax
                                             render="@form"
                                             execute="@form" />

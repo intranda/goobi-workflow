@@ -684,7 +684,7 @@
                                                 <f:setPropertyActionListener
                                                     target="#{LoginForm.myBenutzer.token}"
                                                     value="#{token}" />
-                                                <span class="fa fa-trash-o" />
+                                                <util:icon icon="trash" />
                                             </button>
                                         </div>
 
@@ -735,7 +735,7 @@
                                                 <f:setPropertyActionListener
                                                     target="#{LoginForm.myBenutzer.token}"
                                                     value="#{LoginForm.myBenutzer.token}" />
-                                                <span class="fa fa-trash-o" />
+                                                <util:icon icon="trash" />
                                             </button>
                                         </div>
 
@@ -773,7 +773,7 @@
                                         class="btn btn-primary-400 me-auto"
                                         jsf:action="#{LoginForm.myBenutzer.createNewToken}"
                                         jsf:immediate="true">
-                                        <span class="fa fa-plus" />
+                                        <util:icon icon="plus" />
                                         <span>#{msgs.user_config_newApiToken}</span>
 
                                     </button>

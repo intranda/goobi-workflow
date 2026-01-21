@@ -42,9 +42,7 @@
                             type="button"
                             data-bs-toggle="modal"
                             data-bs-target="#uploadModal">
-                            <span
-                                aria-hidden="true"
-                                class="fa fa-upload"/>
+                            <util:icon icon="upload" />
                         </button>
                     </div>
                     <div
@@ -56,9 +54,7 @@
                             class="btn dropdown-toggle"
                             data-bs-toggle="dropdown"
                             type="button">
-                            <span
-                                aria-hidden="true"
-                                class="fa fa-download"/>
+                            <util:icon icon="download" />
                         </button>
                         <ul class="dropdown-menu">
                             <!-- export -->
@@ -68,9 +64,7 @@
                                 title="#{msgs.vocabularyManager_downloadRecordsAsJson}"
                                 target="_blank"
                             >
-                                <span
-                                    aria-hidden="true"
-                                    class="fa fa-download"/>
+                                <util:icon icon="download" />
                                 <span>
                                     JSON
                                 </span>
@@ -81,7 +75,7 @@
                                     title="#{msgs.vocabularyManager_downloadRecordsAsExcel}"
                                     target="_blank"
                             >
-                                <span aria-hidden="true" class="fa fa-download"/>
+                                <util:icon icon="download" />
                                 <span>
                                     Excel
                                 </span>
@@ -92,7 +86,7 @@
                                     title="#{msgs.vocabularyManager_downloadRecordsAsCsv}"
                                     target="_blank"
                             >
-                                <span aria-hidden="true" class="fa fa-download"/>
+                                <util:icon icon="download" />
                                 <span>
                                     CSV
                                 </span>
@@ -105,7 +99,7 @@
                                         title="#{msgs.vocabularyManager_downloadRecordsAsRdfXml}"
                                         target="_blank"
                                 >
-                                    <span aria-hidden="true" class="fa fa-download"/>
+                                    <util:icon icon="download" />
                                     <span>
                                         RDF/XML
                                     </span>
@@ -116,7 +110,7 @@
                                         title="#{msgs.vocabularyManager_downloadRecordsAsRdfTurtle}"
                                         target="_blank"
                                 >
-                                    <span aria-hidden="true" class="fa fa-download"/>
+                                    <util:icon icon="download" />
                                     <span>
                                         RDF/Turtle
                                     </span>
@@ -150,7 +144,7 @@
                                     <span
                                         aria-hidden="true"
                                         class="input-group-text">
-                                        <span  class="fa fa-search"/>
+                                        <util:icon icon="search" />
                                     </span>
                                     <h:inputText
                                             id="searchField"
@@ -198,11 +192,9 @@
                                                         jsf:action="#{vocabularyRecordsBean.reload()}">
                                                     <h:outputText
                                                             value="#{definition.name}"/>
-                                                    <!--                                            value="#{definition.name} #{definition.language != '' ? msgs[definition.language] : ''}"/>-->
-
-                                                    <span
-                                                        aria-hidden="true"
-                                                        class="table-sort-icon fa #{vocabularyRecordsBean.paginator.sortField==definition.id.toString().concat(',ASC')?'fa-sort-asc':vocabularyRecordsBean.paginator.sortField==definition.id.toString().concat(',DESC')?'fa-sort-desc':'fa-sort'}"/>
+                                                    <span class="table-sort-icon">
+                                                        <util:icon icon="#{vocabularyRecordsBean.paginator.sortField==definition.id.toString().concat(',ASC') ? 'sort-ascending' : (vocabularyRecordsBean.paginator.sortField==definition.id.toString().concat(',DESC') ? 'sort-descending' : 'arrows-sort')}" />
+                                                    </span>
                                                     <f:setPropertyActionListener
                                                             target="#{vocabularyRecordsBean.paginator.sortField}"
                                                             value="#{vocabularyRecordsBean.paginator.sortField==definition.id.toString().concat(',ASC')?definition.id.toString().concat(',DESC'):definition.id.toString().concat(',ASC')}"/>
@@ -243,7 +235,7 @@
                             <button jsf:id="new_record" jsf:action="#{vocabularyRecordsBean.createEmpty(null)}"
                                     class="btn btn-primary"
                                     title="#{msgs.vocabularyManager_addRecord}">
-                                <span aria-hidden="true" class="fa fa-plus"/>
+                                <util:icon icon="plus" />
                                 <span>
                                     <h:outputText value="#{msgs.vocabularyManager_addRecord}"/>
                                 </span>

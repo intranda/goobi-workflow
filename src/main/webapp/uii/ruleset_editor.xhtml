@@ -96,8 +96,7 @@
 												title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}"
 												jsf:rel="tooltip"
 												jsf:action="#{rulesetEditorBean.editRuleset(item)}">
-												<span
-													class="fa #{rulesetEditorBean.isRulesetWritable(item) ? 'fa-pencil' : 'fa-eye'}" />
+												<util:icon icon="#{rulesetEditorBean.isRulesetWritable(item) ? 'pencil' : 'eye'}" />
 											</button>
 										</h:panelGroup>
 										<h:panelGroup
@@ -107,8 +106,7 @@
 												class="btn #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
 												jsf:action="#{rulesetEditorBean.editRuleset(item)}"
 												title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}">
-												<span
-													class="fa #{rulesetEditorBean.isRulesetWritable(item) ? 'fa-pencil' : 'fa-eye'}" />
+												<util:icon icon="#{rulesetEditorBean.isRulesetWritable(item) ? 'pencil' : 'eye'}" />
 											</button>
 										</h:panelGroup>
 									</h:column>
@@ -139,9 +137,7 @@
 											jsf:rel="tooltip"
 											jsf:action="#{rulesetEditorBean.toggleShowMore}"
 											title="#{rulesetEditorBean.showMore ? msgs.ruleset_validation_show_more : msgs.ruleset_validation_show_less}">
-											<span
-												aria-hidden="true"
-												class="fa #{rulesetEditorBean.showMore ? 'fa-angle-up' : 'fa-angle-down'}" />
+											<util:icon icon="#{rulesetEditorBean.showMore ? 'chevron-up' : 'chevron-down'}" />
 											<f:ajax render="validationResults" />
 										</button>
 									</div>
@@ -350,9 +346,7 @@
 									<button jsf:id="validate" class="btn btn-primary float-end"
 										jsf:action="#{rulesetEditorBean.validate}"
 										title="#{msgs.validieren}">
-										<span
-											aria-hidden="true"
-											class="fa fa-check" />
+										<util:icon icon="check" />
 										<span>
 											#{msgs.validieren}
 										</span>
@@ -361,9 +355,7 @@
 									<button jsf:id="save" class="btn btn-success float-end"
 										jsf:action="#{rulesetEditorBean.save}"
 										title="#{msgs.uebernehmen}">
-										<span
-											aria-hidden="true"
-											class="fa fa-save" />
+										<util:icon icon="device-floppy" />
 										<span>
 											#{msgs.save}
 										</span>
@@ -434,11 +426,11 @@
 							<div class="modal-footer">
 								<button class="btn btn-hot" jsf:id="ignoreChangedFile"
 									jsf:action="#{rulesetEditorBean.editRulesetIgnore}">
-									<i class="fa fa-trash-o"></i> <span> #{msgs.discard} </span>
+									<util:icon icon="trash" /> <span> #{msgs.discard} </span>
 								</button>
 								<button class="btn btn-success" jsf:id="saveWhenChangedFile"
 									jsf:action="#{rulesetEditorBean.save}">
-									<i class="fa fa-save"></i> <span> #{msgs.save} </span>
+									<util:icon icon="device-floppy" /> <span> #{msgs.save} </span>
 								</button>
 							</div>
 							<!-- // MODAL FOOTER -->

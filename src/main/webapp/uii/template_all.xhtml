@@ -74,7 +74,7 @@
     							jsf:rel="tooltip"
     							jsf:action="template_edit"
     							title="#{msgs.bearbeiten}">
-    							<span class="fa fa-pencil" />
+    							<util:icon icon="pencil" />
     							<f:passThroughAttribute name="data-toggle" value="tooltip" />
     							<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
     							<f:setPropertyActionListener target="#{goobiScriptTemplateBean.template}" value="#{item}" />
@@ -90,7 +90,7 @@
 			<div class="box__actions">
 				<!-- Neu-Schaltknopf -->
 				<button jsf:id="new" class="btn btn-primary-400 me-auto" jsf:action="#{goobiScriptTemplateBean.Neu}" jsf:immediate="true">
-					<span class="fa fa-plus" />
+					<util:icon icon="plus" />
 					<span>
 					   <h:outputText value="#{msgs.createNewTemplate}" />
 					</span>

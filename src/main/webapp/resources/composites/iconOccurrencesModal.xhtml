@@ -2,7 +2,8 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html">
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface>
         <composite:attribute name="modalId" required="true" />
@@ -18,8 +19,8 @@
                         <h4 class="modal-title" id="#{cc.attrs.modalId}-label">
                             <span class="#{cc.attrs.iconClass} me-2" /> #{cc.attrs.iconName}
                         </h4>
-                        <button type="button" class="btn text-white" data-bs-dismiss="modal">
-                            <span class="fa fa-times" />
+                        <button type="button" class="btn btn-icon text-white" data-bs-dismiss="modal">
+                            <util:icon icon="x" />
                         </button>
                     </div>
                     <div class="modal-body p-0">

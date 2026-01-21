@@ -65,7 +65,7 @@
                                     title="#{msgs.filterProcessLog}"
                                     id="filterLogDropdown"
                                     type="button"
-                                    class="btn d-flex align-items-center btn--title-action-neutral dropdown-toggle"
+                                    class="btn btn-icon d-flex align-items-center btn--title-action-neutral dropdown-toggle"
                                     aria-label="#{msgs.filterProcessLog}"
                                     aria-haspopup="true"
                                     aria-expanded="false"
@@ -196,7 +196,7 @@
                         data-toggle="tooltip"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
-                        class="btn d-flex align-items-center btn--title-action-neutral">
+                        class="btn btn-icon d-flex align-items-center btn--title-action-neutral">
                         <util:icon icon="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'list-numbers' : 'message'}" styleClass="icon--lg icon--b4" />
                         <f:setPropertyActionListener
                             value="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal']=='fileUpload' ? 'imageComments' : '' }"
@@ -214,7 +214,7 @@
                         }"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
-                        class="btn d-flex align-items-center btn--title-action-neutral">
+                        class="btn btn-icon d-flex align-items-center btn--title-action-neutral">
                         <util:icon icon="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? 'list-numbers' : 'folder-open'}" styleClass="icon--lg icon--b4" />
                         <f:setPropertyActionListener
                             value="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal']=='imageComments' ? 'fileUpload' : '' }"
@@ -424,7 +424,7 @@
                                         <button
                                             jsf:id="deleteFile2"
                                             jsf:rendered="#{cc.attrs.bean.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
-                                            class="btn btn-blank"
+                                            class="btn btn-blank btn-icon"
                                             style="color: #333;"
                                             jsf:action="#{cc.attrs.bean.deleteFile(entry)}"
                                             title="#{msgs.deleteFile}">
@@ -433,7 +433,7 @@
                                         <!-- download button -->
                                         <button
                                             jsf:id="downloadFile"
-                                            class="btn btn-blank"
+                                            class="btn btn-blank btn-icon"
                                             style="color: #333;"
                                             jsf:action="#{cc.attrs.bean.downloadFile(entry)}"
                                             title="#{msgs.downloadFile}">

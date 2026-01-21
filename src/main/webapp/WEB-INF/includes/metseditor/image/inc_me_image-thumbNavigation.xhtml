@@ -18,7 +18,7 @@
                 role="list">
                 <!-- FIRST THUMB -->
                 <li>
-                    <button jsf:id="thumbFirst" aria-label="#{msgs.firstImage}" class="btn btn-blank" jsf:action="#{Metadaten.cmdMoveFirst}" type="button">
+                    <button jsf:id="thumbFirst" aria-label="#{msgs.firstImage}" class="btn btn-blank btn-icon" jsf:action="#{Metadaten.cmdMoveFirst}" type="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
                         <util:icon icon="chevrons-left" />
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
@@ -55,7 +55,7 @@
                 </li>
                 <!-- LAST THUMB -->
                 <li>
-                    <button jsf:id="thumbLast" aria-label="#{msgs.lastImage}" class="btn btn-blank" jsf:action="#{Metadaten.cmdMoveLast}" type="button">
+                    <button jsf:id="thumbLast" aria-label="#{msgs.lastImage}" class="btn btn-blank btn-icon" jsf:action="#{Metadaten.cmdMoveLast}" type="button">
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
                         <util:icon icon="chevrons-right" />
                         <f:setPropertyActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>

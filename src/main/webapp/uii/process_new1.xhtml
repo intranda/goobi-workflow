@@ -92,7 +92,7 @@
                             class="btn text-white"
                             title="#{msgs.close}"
                             data-bs-dismiss="modal">
-                            <span class="fa fa-times" />
+                            <util:icon icon="x" />
                         </button>
                     </div>
                     <!-- // MODAL HEADER -->
@@ -141,12 +141,12 @@
                                         value="#{ProzesskopieForm.existingProcess.exportValidator.label != null ? ProzesskopieForm.existingProcess.exportValidator.label : msgs.noValidation}" />
 
                                     <h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
-                                    <span class="fa #{ProzesskopieForm.existingProcess.inAuswahllisteAnzeigen?'fa-check-square-o':'fa-square-o'}" />
+                                    <util:icon icon="#{ProzesskopieForm.existingProcess.inAuswahllisteAnzeigen?'square-check':'square'}" />
 
                                     <h:outputText value="#{msgs.istTemplate}:" />
-                                    <span class="fa #{ProzesskopieForm.existingProcess.istTemplate?'fa-check-square-o':'fa-square-o'}" />
+                                    <util:icon icon="#{ProzesskopieForm.existingProcess.istTemplate?'square-check':'square'}" />
                                     <h:outputText value="#{msgs.pauseAutomaticExecution}:" />
-                                    <span class="fa #{ProzesskopieForm.existingProcess.pauseAutomaticExecution?'fa-check-square-o':'fa-square-o'}" />
+                                    <util:icon icon="#{ProzesskopieForm.existingProcess.pauseAutomaticExecution?'square-check':'square'}" />
 
                                     <h:outputText
                                         value="#{msgs.id}:"
@@ -338,8 +338,7 @@
                                                                     class="log_file ms-2"
                                                                     jsf:action="#{ProzesskopieForm.existingProcess.downloadFile(entry)}"
                                                                     title="#{msgs.downloadFile}">
-                                                                    <span
-                                                                        class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
+                                                                    <util:icon icon="#{entry.externalFile ? 'world' : 'paperclip'}" styleClass="me-1" />
                                                                     <span>
                                                                         <h:outputText value="#{entry.basename}" />
                                                                     </span>
@@ -406,7 +405,7 @@
                                     title="#{msgs.expandImportMetadata}"
                                     class="btn d-flex align-items-center btn--title-action"
                                     jsf:action="#{NavigationForm.Reload}">
-                                    <span class="fa #{NavigationForm.uiStatus.new_process_box1 eq 'full'?'fa-compress':'fa-expand'}" />
+                                    <util:icon icon="#{NavigationForm.uiStatus.new_process_box1 eq 'full'?'arrows-diagonal-minimize-2':'arrows-diagonal'}" />
                                     <f:setPropertyActionListener
                                         target="#{NavigationForm.uiStatus.new_process_box1}"
                                         value="#{NavigationForm.uiStatus.new_process_box1 eq 'full'?'part':'full'}" />
@@ -752,7 +751,7 @@
                                     title="#{msgs.expandProcessDetails}"
                                     class="btn d-flex align-items-center btn--title-action"
                                     jsf:action="#{NavigationForm.Reload}">
-                                    <i class="fa #{NavigationForm.uiStatus.new_process_box2 eq 'full'?'fa-compress':'fa-expand'}" />
+                                    <util:icon icon="#{NavigationForm.uiStatus.new_process_box2 eq 'full'?'arrows-diagonal-minimize-2':'arrows-diagonal'}" />
                                     <f:setPropertyActionListener
                                         target="#{NavigationForm.uiStatus.new_process_box2}"
                                         value="#{NavigationForm.uiStatus.new_process_box2 eq 'full'?'part':'full'}" />
@@ -904,7 +903,7 @@
                                 <span>
                                     <h:outputText value="#{msgs.weiter}" />
                                 </span>
-                                <span class="fa fa-arrow-circle-o-right margin-left-5" />
+                                <util:icon icon="circle-arrow-right" cssClass="margin-left-5" />
                             </h:commandLink>
 
                             <button
@@ -912,7 +911,7 @@
                                 jsf:id="absenden"
                                 jsf:action="#{ProzesskopieForm.createNewProcess}"
                                 jsf:rendered="#{!ProzesskopieForm.enableFileUpload}">
-                                <span class="fa fa-save margin-right-5" />
+                                <util:icon icon="device-floppy" cssClass="margin-right-5" />
                                 <span>
                                     <h:outputText value="#{msgs.speichern}" />
                                 </span>

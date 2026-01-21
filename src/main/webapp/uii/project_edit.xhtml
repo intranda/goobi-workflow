@@ -651,7 +651,7 @@
                                                     class="btn btn-success"
                                                     jsf:action="#{ProjekteForm.filegroupSave}"
                                                     title="#{msgs.uebernehmen}">
-                                                    <span class="fa fa-save" />
+                                                    <util:icon icon="device-floppy" />
                                                     <span>
                                                         <h:outputText value="#{msgs.save}" />
                                                     </span>
@@ -701,7 +701,7 @@
                                                                 title="#{msgs.filegroupBearbeiten}"
                                                                 jsf:rel="tooltip"
                                                                 jsf:action="#{ProjekteForm.filegroupEdit}">
-                                                                <span class="fa fa-edit" />
+                                                                <util:icon icon="pencil" />
                                                                 <f:setPropertyActionListener
                                                                     target="#{ProjekteForm.myFilegroup}"
                                                                     value="#{item}" />
@@ -718,7 +718,7 @@
                                                                 title="#{msgs.filegroupLoeschen}"
                                                                 jsf:rel="tooltip"
                                                                 jsf:action="#{ProjekteForm.filegroupDelete}">
-                                                                <span class="fa fa-trash-o" />
+                                                                <util:icon icon="trash" />
                                                                 <f:setPropertyActionListener
                                                                     target="#{ProjekteForm.myFilegroup}"
                                                                     value="#{item}" />
@@ -742,7 +742,7 @@
                                                     class="me-auto btn btn-neutral-600"
                                                     jsf:action="#{ProjekteForm.filegroupAdd}"
                                                     jsf:immediate="true">
-                                                    <span class="fa fa-plus" />
+                                                    <util:icon icon="plus" />
                                                     <span>
                                                         <h:outputText value="#{msgs.filegroupHinzufuegen}" />
                                                     </span>
@@ -780,7 +780,7 @@
                                                         title="#{msgs.bearbeiten}"
                                                         data-bs-toggle="tooltip"
                                                         jsf:action="#{NavigationForm.Reload}">
-                                                        <span class="fa fa-pencil" />
+                                                        <util:icon icon="pencil" />
                                                         <f:setPropertyActionListener
                                                             target="#{ProjekteForm.currentProperty}"
                                                             value="#{item}" />
@@ -797,7 +797,7 @@
                                             jsf:action="#{ProjekteForm.newProperty}"
                                             jsf:id="newProperty"
                                             class="btn btn-action">
-                                            <span class="fa fa-plus" />
+                                            <util:icon icon="plus" />
                                             <span>#{msgs.eigenschaftHinzufuegen}</span>
                                             <f:passThroughAttribute
                                                 name="data-toggle"
@@ -843,7 +843,7 @@
                                             jsf:id="saveProperty"
                                             type="submit"
                                             jsf:action="#{ProjekteForm.saveProperty}">
-                                            <span class="fa fa-save" />
+                                            <util:icon icon="device-floppy" />
                                             <span>
                                                 <h:outputText value="#{msgs.propertySave}" />
                                             </span>
@@ -859,7 +859,7 @@
                                             onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
                                             jsf:action="#{ProjekteForm.deleteProperty}"
                                             jsf:rendered="#{ProjekteForm.currentProperty.id != null}">
-                                            <span class="fa fa-trash-o" />
+                                            <util:icon icon="trash" />
                                             <span>
                                                 <h:outputText value="#{msgs.propertyDelete}" />
                                             </span>

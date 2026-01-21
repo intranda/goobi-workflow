@@ -148,7 +148,7 @@
 						title="#{msgs.download_excel}"
 						jsf:rendered="#{element.dataTable.showableInTable and (cc.attrs.Manager.targetResultOutput== 'table' or cc.attrs.Manager.targetResultOutput=='chartAndTable')}"
 						>
-						<span class="fa fa-floppy-o" />
+						<util:icon icon="device-floppy" />
 						<span>
 							<h:outputText value="#{msgs.download_excel}" />
 						</span>
@@ -162,7 +162,7 @@
 						title="#{msgs.download_csv}"
 						jsf:rendered="#{element.dataTable.showableInTable and (cc.attrs.Manager.targetResultOutput== 'table' or cc.attrs.Manager.targetResultOutput=='chartAndTable')}"
 						>
-						<span class="fa fa-floppy-o" />
+						<util:icon icon="device-floppy" />
 						<span>
 							<h:outputText value="#{msgs.download_csv}" />
 						</span>

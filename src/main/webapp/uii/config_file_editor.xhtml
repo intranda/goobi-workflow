@@ -124,7 +124,7 @@
                                                 title="#{configFileEditorBean.isWritable(item) ? msgs.administration_config_file_editor_edit_file : msgs.administration_config_file_editor_show_file}"
                                                 jsf:rel="tooltip"
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}">
-                                                <i class="fa #{configFileEditorBean.isWritable(item) ? 'fa-pencil' : 'fa-eye'}"></i>
+                                                <util:icon icon="#{configFileEditorBean.isWritable(item) ? 'pencil' : 'eye'}" />
                                                 <f:ajax
                                                     render="@form" />
                                             </button>
@@ -136,7 +136,7 @@
                                                 type="button"
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}"
                                                 title="#{configFileEditorBean.isWritable(item) ? msgs.administration_config_file_editor_edit_file : msgs.administration_config_file_editor_show_file}">
-                                                <i class="fa #{configFileEditorBean.isWritable(item) ? 'fa-pencil' : 'fa-eye'}"></i>
+                                                <util:icon icon="#{configFileEditorBean.isWritable(item) ? 'pencil' : 'eye'}" />
                                                 <f:ajax
                                                     render="@form"
                                                     execute="@form" />
@@ -272,7 +272,7 @@
                                         class="btn btn-success float-end"
                                         jsf:action="#{configFileEditorBean.save}"
                                         title="#{msgs.uebernehmen}">
-                                        <i class="fa fa-save margin-right-5"></i>
+                                        <util:icon icon="device-floppy" css="margin-right-5" />
                                         <span>
                                             <h:outputText value="#{msgs.save}" />
                                         </span>
@@ -357,14 +357,14 @@
                                     class="btn btn-hot"
                                     jsf:id="ignoreChangedFile"
                                     jsf:action="#{configFileEditorBean.editConfigFileIgnore}">
-                                    <i class="fa fa-trash-o"></i>
+                                    <util:icon icon="trash" />
                                     <span> #{msgs.discard} </span>
                                 </button>
                                 <button
                                     class="btn btn-success"
                                     jsf:id="saveWhenChangedFile"
                                     jsf:action="#{configFileEditorBean.save}">
-                                    <i class="fa fa-save"></i>
+                                    <util:icon icon="device-floppy" />
                                     <span> #{msgs.save} </span>
                                 </button>
                             </div>

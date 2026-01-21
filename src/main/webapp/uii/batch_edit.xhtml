@@ -110,7 +110,7 @@
                                     class="btn btn-success"
                                     jsf:id="absenden"
                                     jsf:action="#{BatchForm.batchHelper.saveBatchDetails}">
-                                    <span class="fa fa-save" />
+                                    <util:icon icon="device-floppy" />
                                     <span>
                                         <h:outputText value="#{msgs.speichern}" />
                                     </span>
@@ -141,9 +141,7 @@
                                         jsf:action="#{NavigationForm.Reload}"
                                         class="btn btn--title-action"
                                         jsf:rel="tooltip">
-                                        <i
-                                            class="fa fa-pencil"
-                                            title="#{msgs.eigenschaftBearbeiten}"></i>
+                                        <util:icon icon="pencil" title="#{msgs.eigenschaftBearbeiten}" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
