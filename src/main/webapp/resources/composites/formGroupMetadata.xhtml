@@ -64,7 +64,7 @@
             </div>
             <!-- INPUT -->
             <div class="form-input">
-                <div class="d-flex w-100 my-auto #{cc.attrs.metadata.outputType == 'dante'
+                <div class="d-flex w-100 align-items-start #{cc.attrs.metadata.outputType == 'dante'
                         or cc.attrs.metadata.outputType == 'kulturnav'
                         or cc.attrs.metadata.outputType == 'viaf'
                         or cc.attrs.metadata.outputType == 'easydb'
@@ -574,7 +574,7 @@
 
                             <!-- COPY -->
                             <button
-                                class="btn font-light metadataButton mb-auto"
+                                class="btn font-light metadataButton pt-0"
                                 jsf:id="actionCopy"
                                 aria-label="#{msgs.metadatenKopieren}"
                                 tabindex="0"
@@ -601,7 +601,7 @@
                             </button>
                             <!-- DELETE -->
                             <button
-                                class="btn font-light metadataButton mb-auto"
+                                class="btn font-light metadataButton pt-0"
                                 jsf:id="actionDelete"
                                 aria-label="#{msgs.DELETE_CURRENT_METADATA}"
                                 tabindex="0"
