@@ -91,6 +91,7 @@
                     const goobiWorkflowConfig = configElement ? JSON.parse(configElement.textContent) : {};
                     goobiWorkflowConfig.reloadObject = data?.source?.dataset.renderimage === 'true';
                     goobiWorkflowConfig.isInitialLoad = false;
+                    goobiWorkflowConfig.scrollToActiveThumbnail = !!data?.source?.dataset.resetScrollPositions;
                     goobiWorkflowJS.init( goobiWorkflowConfig );
 	                document.querySelectorAll('.grow-wrap').forEach( (wrap) => {
 	                    // Sync wrap and textarea on load

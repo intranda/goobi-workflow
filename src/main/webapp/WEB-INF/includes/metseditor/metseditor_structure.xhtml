@@ -46,7 +46,8 @@
                                         data-bs-toggle="popover"
                                         data-bs-placement="right"
                                         data-bs-html="true"
-                                        data-bs-content="#{item.node.metadataPopup}">
+                                        data-bs-content="#{item.node.metadataPopup}"
+                                        data-reset-scroll-positions="#{Metadaten.bildZuStrukturelement ? 'thumbnailsContainer,meSelectPagesBox:pagePaginationList' : ''}">
                                         <span class="fa fa-file-o" aria-hidden="true"/>
                                         <span jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle text-danger" style="margin-left: 5px" aria-hidden="true"/>
                                         <span class="text-start">
@@ -77,7 +78,8 @@
                                         jsf:immediate="true"
                                         class="btn btn--icon p-0 d-flex align-items-baseline #{item.node.selected ? 'table__structure-link-active fw-700' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}"
                                         style="--level: #{item.niveau}"
-                                        jsf:action="#{Metadaten.loadRightFrame}">
+                                        jsf:action="#{Metadaten.loadRightFrame}"
+                                        data-reset-scroll-positions="#{Metadaten.bildZuStrukturelement ? 'thumbnailsContainer,meSelectPagesBox:pagePaginationList' : ''}">
                                         <span class="fa fa-file-o" aria-hidden="true"/>
                                         <span jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle text-danger" style="margin-left: 5px" aria-hidden="true"/>
                                         <span class="text-start">
@@ -104,7 +106,13 @@
                             </ui:fragment>
 
                             <ui:fragment rendered="#{!Metadaten.treeProperties.showMetadataPopup}">
-                                <button jsf:id="link2" jsf:immediate="true" class="btn btn--icon p-0 #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}" style="--level: #{item.niveau}" jsf:action="#{Metadaten.loadRightFrame}">
+                                <button
+                                    jsf:id="link2"
+                                    jsf:immediate="true"
+                                    class="btn btn--icon p-0 #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}"
+                                    style="--level: #{item.niveau}"
+                                    jsf:action="#{Metadaten.loadRightFrame}"
+                                    data-reset-scroll-positions="#{Metadaten.bildZuStrukturelement ? 'thumbnailsContainer,meSelectPagesBox:pagePaginationList' : ''}">
                                     <span class="fa fa-file-o" aria-hidden="true"/>
                                     <span>
                                         <h:outputText styleClass="item-niveau" value="#{item.niveau} " rendered="#{Metadaten.treeProperties.showtreelevel}"/>

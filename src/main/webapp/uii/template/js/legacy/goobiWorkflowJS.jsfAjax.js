@@ -59,8 +59,6 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             if (data?.source?.dataset.renderimage==='true'){
                                 // init object view
                                 goobiWorkflowJS.object.imageLoadHandler();
-                                // init thumbnails
-                                goobiWorkflowJS.thumbnails.init();
                             }
                             // reload alto-editor
                             if(data?.source?.id != "saveAltoChanges" && data?.source?.id != "altoEditorAutocompleteScript") {
