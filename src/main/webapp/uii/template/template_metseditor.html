@@ -144,20 +144,6 @@
         <script src="template/js/riot/named-entity-selector.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
         <script src="template/js/riot/autocomplete.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
         <script>
-            faces.ajax.addOnEvent((data) => {
-                const ajaxstatus = data.status;
-                const ajaxBehaviour = data.source.dataset.ajaxBehaviour;
-                if(ajaxBehaviour === "ignore") {
-                	return;
-                }
-                if (ajaxstatus === 'success') {
-                    const configElement = document.getElementById('gwConfig');
-                    const goobiWorkflowConfig = configElement ? JSON.parse(configElement.textContent) : {};
-                    goobiWorkflowConfig.reloadObject = data?.source?.dataset.renderimage === 'true';
-                    goobiWorkflowConfig.isInitialLoad = false;
-                    goobiWorkflowJS.init( goobiWorkflowConfig );
-                }
-            });
             document.addEventListener('DOMContentLoaded', function() {
                 const configElement = document.getElementById('gwConfig');
                 const goobiWorkflowConfig = configElement ? JSON.parse(configElement.textContent) : {};

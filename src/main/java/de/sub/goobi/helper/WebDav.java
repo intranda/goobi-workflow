@@ -36,6 +36,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.User;
 import org.goobi.io.WebDavFilter;
@@ -228,7 +229,7 @@ public class WebDav implements Serializable {
         }
 
         String command = ConfigurationHelper.getInstance().getScriptCreateSymLink() + " ";
-        if (!command.isEmpty() && !ConfigurationHelper.getInstance().useS3()) {
+        if (StringUtils.isNotBlank(command) && !ConfigurationHelper.getInstance().useS3()) {
             command += imagePfad + " " + benutzerHome + " ";
             if (inNurLesen) {
                 command += ConfigurationHelper.getInstance().getUserForImageReading();
