@@ -120,7 +120,7 @@
                                         <h:panelGroup rendered="#{configFileEditorBean.currentConfigFile == null}">
                                             <button
                                                 jsf:id="edit"
-                                                class="btn #{configFileEditorBean.isActiveConfigFile(item) ? 'btn-primary' : 'btn-blank'}"
+                                                class="btn btn-icon #{configFileEditorBean.isActiveConfigFile(item) ? 'btn-primary' : 'btn-blank'}"
                                                 title="#{configFileEditorBean.isWritable(item) ? msgs.administration_config_file_editor_edit_file : msgs.administration_config_file_editor_show_file}"
                                                 jsf:rel="tooltip"
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}">
@@ -132,7 +132,7 @@
                                         <h:panelGroup rendered="#{configFileEditorBean.currentConfigFile != null}">
                                             <button
                                                 jsf:id="edit2"
-                                                class="btn #{configFileEditorBean.isActiveConfigFile(item) ? 'btn-primary disabled' : 'btn-blank'}"
+                                                class="btn btn-icon #{configFileEditorBean.isActiveConfigFile(item) ? 'btn-primary disabled' : 'btn-blank'}"
                                                 type="button"
                                                 jsf:action="#{configFileEditorBean.editConfigFile(item)}"
                                                 title="#{configFileEditorBean.isWritable(item) ? msgs.administration_config_file_editor_edit_file : msgs.administration_config_file_editor_show_file}">

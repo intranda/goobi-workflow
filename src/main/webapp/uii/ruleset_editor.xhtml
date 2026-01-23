@@ -92,7 +92,7 @@
 											rendered="#{rulesetEditorBean.currentRuleset == null}">
 											<button
 												jsf:id="edit"
-												class="btn #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
+												class="btn btn-icon #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
 												title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}"
 												jsf:rel="tooltip"
 												jsf:action="#{rulesetEditorBean.editRuleset(item)}">
@@ -103,7 +103,7 @@
 											rendered="#{rulesetEditorBean.currentRuleset != null}">
 											<button
 												jsf:id="edit2"
-												class="btn #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
+												class="btn btn-icon #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
 												jsf:action="#{rulesetEditorBean.editRuleset(item)}"
 												title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}">
 												<util:icon icon="#{rulesetEditorBean.isRulesetWritable(item) ? 'pencil' : 'eye'}" />
