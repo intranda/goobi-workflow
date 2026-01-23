@@ -3,6 +3,7 @@ package io.goobi.workflow.api.vocabulary;
 import static io.goobi.workflow.api.vocabulary.VocabularyAPIManager.setupBearerTokenAuthenticationIfPresent;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -119,9 +120,9 @@ public class RESTAPI {
         }
     }
 
-    public Response put(String endpoint, Part part, Object... parameters) {
+    public Response put(String endpoint, InputStream stream, Object... parameters) {
         try {
-            StreamDataBodyPart body = new StreamDataBodyPart("file", part.getInputStream());
+            StreamDataBodyPart body = new StreamDataBodyPart("file", stream);
             try (MultiPart multiPart = new FormDataMultiPart()) {
                 multiPart.bodyPart(body);
                 Invocation.Builder builder = client
@@ -143,9 +144,9 @@ public class RESTAPI {
         }
     }
 
-    public Response post(String endpoint, Part part, Object... parameters) {
+    public Response post(String endpoint, InputStream stream, Object... parameters) {
         try {
-            StreamDataBodyPart body = new StreamDataBodyPart("file", part.getInputStream());
+            StreamDataBodyPart body = new StreamDataBodyPart("file", stream);
             try (MultiPart multiPart = new FormDataMultiPart()) {
                 multiPart.bodyPart(body);
                 Invocation.Builder builder = client
