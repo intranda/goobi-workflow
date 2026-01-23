@@ -6,7 +6,7 @@
     version="2.0">
     <namespace>http://goobi.io/form</namespace>
     <tag>
-´        <tag-name>fieldset</tag-name>
+        <tag-name>fieldset</tag-name>
         <source>form/fieldSet.xhtml</source>
         <attribute>
             <description>A passthrough attribute for additional HTML classes</description>
@@ -39,8 +39,20 @@
         <tag-name>field</tag-name>
         <source>form/field.xhtml</source>
         <attribute>
-            <description>A passthrough attribute for additional HTML classes</description>
+            <description>A passthrough attribute for additional HTML classes to the whole field</description>
             <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes for the label/legend</description>
+            <name>labelClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>A passthrough attribute for additional HTML classes for the input wrapper</description>
+            <name>inputClass</name>
             <required>false</required>
             <type>java.lang.String</type>
         </attribute>
