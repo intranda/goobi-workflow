@@ -164,14 +164,24 @@ fieldSet:disabled .badge > a {
 // re-implementation of forms in non-combinatory classes
 // TODO: stacked form-rows need styling similar to fieldsets on small screens
 .form-row {
-  border-block-end: 1px solid var(--clr-neutral-300);
+  border-block: 1px solid var(--clr-neutral-300);
+  margin-block-start: 1.5rem;
   display: flex;
   flex-wrap: wrap;
   width: 100%;
+
+  // Nested form-rows have no border/padding
   > .form-row {
     border: 0;
     padding: 0;
   }
+}
+
+// No top border/margin when first child in box or consecutive form-rows
+.box__body > .form-row:first-of-type,
+.form-row + .form-row {
+  border-block-start: 0;
+  margin-block-start: 0;
 }
 
 .form-input,
