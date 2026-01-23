@@ -3,12 +3,12 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:form="http://goobi.io/form">
     <c:if test="#{group != null}">
-        <fieldset class="form-row">
-            <form:label required="#{required}" group="#{true}">
+        <fieldset class="form-row #{styleClass}">
+            <form:label required="#{required}" group="#{true}" styleClass="#{labelClass}">
                 #{label}
             </form:label>
             <span class="form-input">
-                <span class="#{join == false ? 'input-group-distinct' : 'input-group ' }#{styleClass}">
+                <span class="#{join == false ? 'input-group-distinct' : 'input-group ' } #{inputClass}">
                     <ui:insert />
                     <form:help>
                         #{help}
@@ -18,11 +18,11 @@
         </fieldset>
     </c:if>
     <c:if test="#{group == null}">
-        <label class="form-row">
-            <form:label required="#{required}" group="#{false}">
+        <label class="form-row #{styleClass}">
+            <form:label required="#{required}" group="#{false}" styleClass="#{labelClass}">
                 #{label}
             </form:label>
-            <span class="form-input #{styleClass}">
+            <span class="form-input #{inputClass}">
                 <ui:insert />
 				<form:help>
 					#{help}

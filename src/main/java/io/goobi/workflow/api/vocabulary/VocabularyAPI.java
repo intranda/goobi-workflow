@@ -1,5 +1,7 @@
 package io.goobi.workflow.api.vocabulary;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import io.goobi.vocabulary.exchange.Vocabulary;
@@ -51,19 +53,19 @@ public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
         return this.singleNameLookupCache.getCached(name);
     }
 
-    public void cleanImportCsv(long id, Part uploadedFile) {
-        restApi.put(IMPORT_CSV_ENDPOINT, uploadedFile, id);
+    public void cleanImportCsv(long id, InputStream inputStream) {
+        restApi.put(IMPORT_CSV_ENDPOINT, inputStream, id);
     }
 
-    public void importCsv(long id, Part uploadedFile) {
-        restApi.post(IMPORT_CSV_ENDPOINT, uploadedFile, id);
+    public void importCsv(long id, InputStream inputStream) {
+        restApi.post(IMPORT_CSV_ENDPOINT, inputStream, id);
     }
 
-    public void cleanImportExcel(long id, Part uploadedFile) {
-        restApi.put(IMPORT_EXCEL_ENDPOINT, uploadedFile, id);
+    public void cleanImportExcel(long id, InputStream inputStream) {
+        restApi.put(IMPORT_EXCEL_ENDPOINT, inputStream, id);
     }
 
-    public void importExcel(long id, Part uploadedFile) {
-        restApi.post(IMPORT_EXCEL_ENDPOINT, uploadedFile, id);
+    public void importExcel(long id, InputStream inputStream) {
+        restApi.post(IMPORT_EXCEL_ENDPOINT, inputStream, id);
     }
 }
