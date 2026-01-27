@@ -36,7 +36,7 @@
 
 		<!-- Without permission -->
 		<ui:fragment rendered="#{!LoginForm.hasRole('Admin_ruleset_editor')}">
-			<intranda:box boxType="neutral" boxPadding="true" tablerIcon="plug"
+			<intranda:box boxType="neutral" boxPadding="true" icon="plug"
 				title="#{msgs[rulesetEditorBean.title]}">
 
 				<div class="alert alert-danger alert-dismissable">
@@ -55,7 +55,7 @@
 
 					<!-- BOX WITH FILES -->
 					<intranda:box boxType="primary" boxPadding="false"
-						tablerIcon="files"
+						icon="files"
 						title="#{msgs.plugin_administration_ruleset_editor_ruleset_selection}">
 
 						<!-- TABLE WITH FILE LIST -->
@@ -130,7 +130,7 @@
 
 								<intranda:boxTitle
 									title="#{msgs.plugin_administration_ruleset_editor_validation_result}"
-									tablerIcon="circle-check">
+									icon="circle-check">
 									<div class="actions d-flex">
 										<button jsf:id="buttonShowMore"
 											class="btn d-flex align-items-center btn--title-action-neutral"
@@ -327,7 +327,7 @@
 					<h:panelGroup
 						rendered="#{rulesetEditorBean.currentRuleset != null}">
 						<intranda:box id="contentbox" boxType="action" boxPadding="true"
-							tablerIcon="tool" title="#{rulesetEditorBean.currentEditorTitle}">
+							icon="tool" title="#{rulesetEditorBean.currentEditorTitle}">
 
 
 							<div id="boxUntilBottom">
@@ -389,7 +389,7 @@
 						rendered="#{rulesetEditorBean.currentRuleset == null}">
 
 						<intranda:box boxType="outline" boxPadding="false"
-							tablerIcon="tool" title="#{msgs.noFileSelected}">
+							icon="tool" title="#{msgs.noFileSelected}">
 
 							<div style="background-color: #eee; height: 250px;" />
 						</intranda:box>

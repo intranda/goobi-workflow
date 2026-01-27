@@ -9,8 +9,7 @@
 
 	<composite:interface>
 		<composite:attribute name="icon" default="undefined" />
-		<composite:attribute name="tablerIcon" default="undefined" />
-		<composite:attribute name="tablerIconClass" default="icon--lg icon--b4" />
+		<composite:attribute name="iconClass" default="icon--lg icon--b4" />
 		<composite:attribute name="title" />
 	</composite:interface>
 
@@ -18,12 +17,8 @@
 
 		<div class="box__title">
 			<h2>
-				<!-- FA icon (legacy) -->
-				<span aria-hidden="true" class="fa #{cc.attrs.icon} "
-					jsf:rendered="#{cc.attrs.icon != 'undefined' and cc.attrs.tablerIcon == 'undefined'}" />
-				<!-- Tabler icon -->
-				<ui:fragment rendered="#{cc.attrs.tablerIcon != 'undefined'}">
-					<util:icon icon="#{cc.attrs.tablerIcon}" styleClass="#{cc.attrs.tablerIconClass}" />
+				<ui:fragment rendered="#{cc.attrs.icon != 'undefined'}">
+					<util:icon icon="#{cc.attrs.icon}" styleClass="#{cc.attrs.iconClass}" />
 				</ui:fragment>
 				<h:outputText value="#{cc.attrs.title}" />
 			</h2>

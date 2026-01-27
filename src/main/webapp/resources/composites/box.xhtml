@@ -19,7 +19,6 @@
         <composite:attribute name="id" default="box"/>
 		<composite:attribute name="boxScope" />
 		<composite:attribute name="icon" />
-		<composite:attribute name="tablerIcon" />
 		<composite:attribute name="title" />
         <composite:attribute name="boxClass"/>
 		<composite:attribute name="compactForm" default="false" />
@@ -46,8 +45,7 @@
 				<intranda:boxTitle
 					rendered="#{cc.attrs.boxTitle}"
 					title="#{cc.attrs.title}"
-					icon="#{cc.attrs.icon}"
-					tablerIcon="#{cc.attrs.tablerIcon}"/>
+					icon="#{cc.attrs.icon}"/>
 
 				<div class="#{cc.attrs.boxTitle ? 'box__body' : 'box__content-inner'} #{cc.attrs.compactForm ? 'boxform--compact' : ''}">
 					<composite:insertChildren />
