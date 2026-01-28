@@ -1511,7 +1511,7 @@ case "$ACTION" in
 			if [ "${tiffiles}" != "0" ] ; then
 				for i in *.tif; do
 					tiffdump "${i}" | grep -q '^Compression (259).*<6>' && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping tiffwriter."; continue; }
-					tiffset -u 37724 "${i}" 2>&1 >> /dev/null;
+					tiffdump "${i}" | grep -F '(0x935c)' -q && tiffset -u 37724 "${i}" 2>&1 || true >> /dev/null;
 					if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in write_tiffheader. Aborting!" >&2; exit 1; fi
 					tiffset -s ImageDescription "$(grep ImageDescription ../tiffwriter.conf | sed 's/ImageDescription=//g')" "${i}" 2>&1 >> /dev/null;
 					if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in write_tiffheader. Aborting!" >&2; exit 1; fi
