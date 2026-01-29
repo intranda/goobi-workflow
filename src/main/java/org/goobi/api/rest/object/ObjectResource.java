@@ -241,9 +241,10 @@ public class ObjectResource {
     @Path("/{processId}/{foldername}/{filename}")
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
     public StreamingOutput getObject(@Context HttpServletRequest request, @Context HttpServletResponse response,
-            @PathParam("processId") int processId, @PathParam("foldername") String inFoldername, @PathParam("filename") final String filename)
+            @PathParam("processId") int processId, @PathParam("foldername") String inFoldername, @PathParam("filename") final String inFilename)
             throws IOException, InterruptedException, SwapException, DAOException {
 
+        String filename = Paths.get(inFilename).getFileName().toString();
         String foldername = Paths.get(inFoldername).getFileName().toString();
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath =
