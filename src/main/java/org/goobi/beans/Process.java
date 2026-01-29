@@ -1922,7 +1922,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             folderPath = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(folderName), this);
         }
         if (StringUtils.isNotBlank(folderPath)) {
-            return folder + folderPath;
+            return folder + folderPath + FileSystems.getDefault().getSeparator();
         }
         // TODO: fix this NPE
         return null;
