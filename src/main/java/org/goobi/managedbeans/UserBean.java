@@ -684,7 +684,7 @@ public class UserBean extends BasicBean implements Serializable {
      * @return The generated password
      */
     public static String createRandomPassword(int length) {
-        SecureRandom r = new SecureRandom();
+        SecureRandom r = new SecureRandom(); // NOSONAR: global variable to re-use is not needed as this method isn't called often
         StringBuilder password = new StringBuilder();
         while (password.length() < length) {
             // ASCII interval: [97 + 0, 97 + 25] => [97, 122] => [a, z]

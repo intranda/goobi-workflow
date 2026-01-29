@@ -905,19 +905,19 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         for (Step step : getSchritte()) {
             switch (step.getBearbeitungsstatusEnum()) {
                 case DONE:
-                    done++;
+                    done = done + 1;
                     break;
                 case LOCKED:
-                    open++;
+                    open = open + 1;
                     break;
                 case ERROR:
-                    error++;
+                    error = error + 1;
                     break;
                 case DEACTIVATED:
                     // nothing
                     break;
                 default:
-                    inWork++;
+                    inWork = inWork + 1;
             }
         }
         double sum = open + inWork + error + done;
