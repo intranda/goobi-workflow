@@ -8,8 +8,12 @@
  * 1. add the attribute `data-save-scroll-position` to the element you want to track
  * 2. make sure the element has a unique id
  *
- * Usage for buttons:
+ * Usage for buttons that should save scroll positions:
  * 1. add the attribute `data-save-scroll-positions` to the button
+ *
+ * Usage for buttons that should reset scroll positions:
+ * 1. add the attribute `data-reset-scroll-positions` to the button
+ * 2. value can be: "all" or "true" to reset all, or comma-separated element IDs (e.g. "metadataform,structureform")
  *
  * @module saveScrollPosition
  */
@@ -64,7 +68,15 @@ export const restoreScrollPosition = (element) => {
 
     const scrollPositions = getScrollPositions();
     if (scrollPositions[id] !== undefined) {
-        element.scrollTop = scrollPositions[id];
+        const scrollTop = scrollPositions[id];
+        // Delay scrolling for thumbnails
+        if (element.querySelector('canvas')) {
+            document.addEventListener('thumbnailsLoaded', () => {
+                element.scrollTo({ top: scrollTop, behavior: 'smooth' });
+            }, { once: true });
+        } else {
+            element.scrollTo({ top: scrollTop, behavior: 'smooth' });
+        }
     }
 };
 
@@ -102,3 +114,36 @@ export const initSaveScrollPosition = () => {
         });
     });
 };
+
+/**
+ * Resets the scroll position for a specific element.
+ * @param {string} elementId
+ */
+export const resetScrollPosition = (elementId) => {
+    const scrollPositions = getScrollPositions();
+    if (scrollPositions[elementId] !== undefined) {
+        delete scrollPositions[elementId];
+        persistScrollPositions();
+    }
+};
+
+/**
+ * Resets all saved scroll positions.
+ */
+export const resetAllScrollPositions = () => {
+    cachedScrollPositions = {};
+    sessionStorage.removeItem('gwScrollPositions');
+};
+
+/**
+ * Handles scroll position reset based on a button's data attribute.
+ * @param {string|null} resetAttr - "all" or "true" to reset all, or comma-separated element IDs
+ */
+export const handleScrollPositionReset = (resetAttr) => {
+    if (!resetAttr) return;
+
+    ['all', 'true'].includes(resetAttr)
+        ? resetAllScrollPositions()
+        : resetAttr.split(',').forEach(id => resetScrollPosition(id.trim()));
+};
+

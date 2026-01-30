@@ -404,7 +404,7 @@ public final class PropertyParser {
                 // pattern
                 pp.setPattern(config.getString(property + "/pattern", "dd.MM.yyyy"));
                 // (default) value
-                String defaultValue = config.getString(property + "/defaultvalue");
+                String defaultValue = config.getString(property + "/defaultvalue", "");
                 if (Type.METADATA.equals(pp.getType())) {
                     String metadata = MetadataManager.getMetadataValue(process.getId(), defaultValue);
                     pp.setValue(metadata);
@@ -418,7 +418,7 @@ public final class PropertyParser {
                     // possible values
                     count = config.getMaxIndex(property + "/value");
                     if (count > 0 && pp.getPossibleValues().isEmpty() && !Type.LISTMULTISELECT.equals(pp.getType())) {
-                        pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+                        pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen"), Helper.getTranslation("bitteAuswaehlen"), true));
                     }
                     for (int j = 0; j <= count; j++) {
                         String value = config.getString(property + "/value[" + (j + 1) + "]");

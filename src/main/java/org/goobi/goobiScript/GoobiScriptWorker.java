@@ -45,19 +45,26 @@ public class GoobiScriptWorker implements Runnable {
         while (!shouldStop && !Thread.interrupted()) {
             Optional<GoobiScriptResult> next = gsm.getNextScript();
             next.ifPresent(gsr -> {
-                if (gsr.getCustomGoobiScriptImpl() != null) {
-                    gsr.getCustomGoobiScriptImpl().execute(gsr);
-                } else {
-                    Optional<IGoobiScript> goobiScript = gsm.getGoobiScriptForAction(gsr.getParameters().get("action"));
-                    if (goobiScript.isPresent()) {
-                        IGoobiScript gs = goobiScript.get();
-                        gs.execute(gsr);
+                try {
+
+                    if (gsr.getCustomGoobiScriptImpl() != null) {
+                        gsr.getCustomGoobiScriptImpl().execute(gsr);
                     } else {
-                        gsr.setResultMessage(String.format("Can't find GoobiScript for action %s", gsr.getParameters().get("action")));
-                        gsr.setResultType(GoobiScriptResultType.ERROR);
+                        Optional<IGoobiScript> goobiScript = gsm.getGoobiScriptForAction(gsr.getParameters().get("action"));
+                        if (goobiScript.isPresent()) {
+                            IGoobiScript gs = goobiScript.get();
+                            gs.execute(gsr);
+                        } else {
+                            gsr.setResultMessage(String.format("Can't find GoobiScript for action %s", gsr.getParameters().get("action")));
+                            gsr.setResultType(GoobiScriptResultType.ERROR);
+                        }
                     }
+                } catch (Exception e) {
+                    gsr.setResultMessage("An Exception occurred: " + e.getMessage());
+                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                } finally {
+                    gsm.pushUpdateToUsers(false);
                 }
-                gsm.pushUpdateToUsers(false);
             });
             if (!next.isPresent()) {
                 //we stop this thread - the GoobiScriptManager will start a new one.

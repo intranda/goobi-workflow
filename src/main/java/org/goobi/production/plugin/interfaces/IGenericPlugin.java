@@ -53,7 +53,7 @@ public interface IGenericPlugin extends IPlugin {
         // Nothing to do per default
     }
 
-    default String getModalPath() {
+    default String getModalFileName() {
         return null;
     }
 }

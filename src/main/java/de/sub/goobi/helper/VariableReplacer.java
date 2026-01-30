@@ -36,15 +36,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.naming.ConfigurationException;
@@ -70,12 +66,7 @@ import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import ugh.dl.DigitalDocument;
-import ugh.dl.DocStruct;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
-import ugh.dl.Person;
-import ugh.dl.Prefs;
+import ugh.dl.*;
 
 @Log4j2
 public class VariableReplacer {
@@ -750,14 +741,14 @@ public class VariableReplacer {
             String resultFirst = null;
             String resultTop = null;
             if (multiValue) {
-                resultTop = getAllMetadataValues(topstruct, mdt);
+                resultTop = getAllMetadataValues(topstruct, mdt).collect(Collectors.joining(separator));
                 if (firstchildstruct != null) {
-                    resultFirst = getAllMetadataValues(firstchildstruct, mdt);
+                    resultFirst = getAllMetadataValues(firstchildstruct, mdt).collect(Collectors.joining(separator));
                 }
             } else {
-                resultTop = getMetadataValue(topstruct, mdt);
+                resultTop = getAllMetadataValues(topstruct, mdt).findFirst().orElse(null);
                 if (firstchildstruct != null) {
-                    resultFirst = getMetadataValue(firstchildstruct, mdt);
+                    resultFirst = getAllMetadataValues(firstchildstruct, mdt).findAny().orElse(null);
                 }
             }
 
@@ -799,63 +790,37 @@ public class VariableReplacer {
             return result;
 
         } else {
+            log.warn("No METS-Document available for replacement of variable: " + metadata);
+            // TODO: It would be even better if this would be handled with an exception instead an empty value
             return "";
         }
     }
 
     /**
-     * get one single metadata from given docstruct
+     * get Stream of metadata from given docstruct
      * 
-     * @param inDocstruct
+     * @param ds
      * @param mdt
      * @return
      */
-    private String getMetadataValue(DocStruct inDocstruct, MetadataType mdt) {
-        List<? extends Metadata> mds = inDocstruct.getAllMetadataByType(mdt);
-        if (!mds.isEmpty()) {
-            Metadata m = mds.get(0);
-            // if it is a person, get the complete name, otherwise the value only
-            if (m.getType().getIsPerson()) {
-                Person p = (Person) m;
-                return p.getLastname() + ", " + p.getFirstname();
-            } else {
-                return m.getValue();
-            }
-        } else {
-            return null;
-        }
+    private Stream<String> getAllMetadataValues(DocStruct ds, MetadataType mdt) {
+        return Optional.ofNullable(ds.getAllMetadataByType(mdt))
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(this::convertMetadataToValue)
+                .filter(Objects::nonNull)
+                .filter(StringUtils::isNotBlank);
     }
 
-    /**
-     * get multiple metadata from given docstruct, separated with semicolon
-     * 
-     * @param inDocstruct
-     * @param mdt
-     * @return
-     */
-    private String getAllMetadataValues(DocStruct ds, MetadataType mdt) {
-        StringBuilder bld = new StringBuilder();
-        List<? extends Metadata> metadataList = ds.getAllMetadataByType(mdt);
-        if (metadataList != null) {
-            for (Metadata md : metadataList) {
-                if (bld.length() != 0) {
-                    bld.append(separator);
-                }
-                // if it is a person, get the complete name, otherwise the value only
-                if (md.getType().getIsPerson()) {
-                    Person p = (Person) md;
-                    String value = p.getLastname() + ", " + p.getFirstname();
-                    bld.append(value);
-                } else {
-                    String value = md.getValue();
-                    if (value != null && !value.isEmpty()) {
-                        bld.append(value);
-                    }
-                }
-
-            }
+    private String convertMetadataToValue(Metadata metadata) {
+        if (metadata.getType().getIsPerson()) {
+            Person p = (Person) metadata;
+            return p.getLastname() + ", " + p.getFirstname();
         }
-        return bld.toString();
+        if (metadata.getType().isCorporate()) {
+            return ((Corporate) metadata).getMainName();
+        }
+        return metadata.getValue();
     }
 
     /**

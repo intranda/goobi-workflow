@@ -260,8 +260,9 @@ public class StepBean extends BasicBean implements Serializable {
         }
 
         String sql = FilterHelper.criteriaBuilder(searchValue, false, nurOffeneSchritte, nurEigeneSchritte, hideStepsFromOtherUsers, false, true);
+
         if (!showAutomaticTasks) {
-            sql = "typAutomatisch = false AND " + sql;
+            sql = sql + " AND typAutomatisch = false ";
         }
         if (hideCorrectionTasks) {
             sql = sql + " AND Prioritaet != 10 ";
@@ -360,15 +361,16 @@ public class StepBean extends BasicBean implements Serializable {
         List<Step> currentStepsOfBatch;
         if (batchNumber != null) {
             // only steps with same title
-            StringBuilder builder = new StringBuilder();
-            builder.append("schritte.titel = '");
-            builder.append(steptitle);
-            builder.append("' AND batchStep = true AND prozesse.batchID = ");
-            builder.append(batchNumber);
-            builder.append(" AND ");
-            builder.append(FilterHelper.limitToUserAssignedSteps(true, false, true));
+            StringBuilder join = new StringBuilder();
+            StringBuilder where = new StringBuilder();
 
-            currentStepsOfBatch = StepManager.getSteps(null, builder.toString(), 0, Integer.MAX_VALUE, institution);
+            where.append("schritte.titel = '");
+            where.append(steptitle);
+            where.append("' AND batchStep = true AND prozesse.batchID = ");
+            where.append(batchNumber);
+            FilterHelper.limitToUserAssignedSteps(true, false, true, join, where);
+
+            currentStepsOfBatch = StepManager.getSteps(null, join.toString() + " WHERE " + where.toString(), 0, Integer.MAX_VALUE, institution);
 
         } else {
             return SchrittDurchBenutzerUebernehmen();
@@ -448,15 +450,16 @@ public class StepBean extends BasicBean implements Serializable {
         List<Step> currentStepsOfBatch;
         if (batchNumber != null) {
             // only steps with same title
-            StringBuilder builder = new StringBuilder();
-            builder.append("schritte.titel = '");
-            builder.append(steptitle);
-            builder.append("' and prozesse.batchID = ");
-            builder.append(batchNumber);
-            builder.append(" AND ");
-            builder.append(FilterHelper.limitToUserAssignedSteps(false, true, true));
+            StringBuilder join = new StringBuilder();
+            StringBuilder where = new StringBuilder();
 
-            currentStepsOfBatch = StepManager.getSteps(null, builder.toString(), 0, Integer.MAX_VALUE, institution);
+            where.append("schritte.titel = '");
+            where.append(steptitle);
+            where.append("' AND batchStep = true AND prozesse.batchID = ");
+            where.append(batchNumber);
+            FilterHelper.limitToUserAssignedSteps(true, false, true, join, where);
+
+            currentStepsOfBatch = StepManager.getSteps(null, join.toString() + " WHERE " + where.toString(), 0, Integer.MAX_VALUE, institution);
 
         } else {
             return RETURN_PAGE_EDIT;
@@ -575,7 +578,7 @@ public class StepBean extends BasicBean implements Serializable {
 
     public List<Step> getPreviousStepsForProblemReporting() {
         return StepManager.getSteps("Reihenfolge desc",
-                " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < " + this.mySchritt.getReihenfolge(), 0,
+                " WHERE schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < " + this.mySchritt.getReihenfolge(), 0,
                 Integer.MAX_VALUE, null);
     }
 
@@ -668,8 +671,11 @@ public class StepBean extends BasicBean implements Serializable {
              */
 
             List<Step> alleSchritteDazwischen =
-                    StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge <= "
-                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE, null);
+                    StepManager
+                            .getSteps("Reihenfolge desc",
+                                    " WHERE schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge <= "
+                                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(),
+                                    0, Integer.MAX_VALUE, null);
 
             for (Step step : alleSchritteDazwischen) {
 
@@ -712,7 +718,7 @@ public class StepBean extends BasicBean implements Serializable {
 
     public List<Step> getNextStepsForProblemSolution() {
 
-        return StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
+        return StepManager.getSteps("Reihenfolge", " WHERE schritte.prozesseID = " + this.mySchritt.getProzess().getId()
                 + " AND Reihenfolge > " + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE, null);
     }
 
@@ -756,7 +762,7 @@ public class StepBean extends BasicBean implements Serializable {
              * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
              */
             List<Step> alleSchritteDazwischen =
-                    StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge >= "
+                    StepManager.getSteps("Reihenfolge", " WHERE schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge >= "
                             + this.mySchritt.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE, null);
 
             for (Step step : alleSchritteDazwischen) {

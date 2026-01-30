@@ -11,6 +11,7 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:notification="http://goobi.io/notification"
     xmlns:help="http://goobi.io/help"
+    xmlns:util="http://goobi.io/util"
     >
 
     <composite:interface />
@@ -39,9 +40,7 @@
                                 data-bs-target="#pluginModal#{plugin.id}"
                                 data-bs-placement="bottom"
                             >
-                                <span
-                                    aria-hidden="true"
-                                    class="fa #{plugin.icon} fa-2x"/>
+                                <util:icon icon="#{plugin.icon}" />
                             </button>
                         </li>
                     </ui:fragment>
@@ -66,7 +65,7 @@
                         aria-haspopup="true"
                         aria-expanded="false"
                         data-focus-on-click="#headerSearch">
-                        <span class="fa fa-search" />
+                        <util:icon icon="search" />
                     </button>
                     <div
                         class="dropdown-menu #{LoginForm.hasRole('Task_Menu') and LoginForm.hasRole('Workflow_General_Search') ? 'search-dropdown-wide' : 'search-dropdown-narrow'}"
@@ -149,15 +148,11 @@
                         role="button"
                         data-bs-toggle="dropdown"
                         aria-expanded="false">
-
-                        <!-- Language icon -->
-                        <ui:include src="inc_language_icon.xhtml">
-                            <ui:param
-                                name="iconClass"
-                                value="language-select__icon" />
-                        </ui:include>
-
-                        <span class="language-select__locale">#{SpracheForm.locale}</span>
+                        <util:icon-text
+                            icon="world"
+                            text="#{SpracheForm.locale}"
+                            textClass="language-select__locale"
+                            />
                     </a>
                     <ul class="dropdown-menu">
                         <ui:repeat
@@ -223,7 +218,7 @@
                             label="#{msgs.settings}"
                             action="#{LoginForm.openUserSettings}"
                             display="#{NavigationForm.uiStatus.user_config}"
-                            icon="fa fa-user-circle-o box-icon-fix-menu" />
+                            icon="user-cog" />
 
                         <!-- Change password -->
                         <h:panelGroup rendered="#{HelperForm.passwordIsChangable}">
@@ -233,7 +228,7 @@
                                 parentMenu="menu_account"
                                 label="#{msgs.passwortAendern}"
                                 action="user_password"
-                                icon="fa fa-key box-icon-fix-menu" />
+                                icon="key" />
                         </h:panelGroup>
 
                         <!-- Logout -->
@@ -244,7 +239,7 @@
                                 parentMenu="menu_account"
                                 label="#{msgs.logout}"
                                 action="#{LoginForm.Ausloggen}"
-                                icon="fa fa-power-off box-icon-fix-menu" />
+                                icon="logout" />
                         </ui:fragment>
                         <ui:fragment rendered="#{LoginForm.showSSOLogoutPage}">
                             <intranda:menuItem
@@ -253,7 +248,7 @@
                                 parentMenu="menu_account"
                                 label="#{msgs.logout}"
                                 action="#{LoginForm.logoutOpenId}"
-                                icon="fa fa-power-off box-icon-fix-menu" />
+                                icon="logout" />
                         </ui:fragment>
 
                     </ul>

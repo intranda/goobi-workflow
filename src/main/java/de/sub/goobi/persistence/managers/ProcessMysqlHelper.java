@@ -250,11 +250,10 @@ final class ProcessMysqlHelper implements Serializable {
         }
 
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(filter);
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
-            sql.append("WHERE ProzesseID > 0 ");
+            sql.append(" WHERE ProzesseID > 0 ");
         }
-
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
@@ -280,8 +279,12 @@ final class ProcessMysqlHelper implements Serializable {
 
         String sortfield = MySQLHelper.prepareSortField(order, sql);
 
-        if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+        if (StringUtils.isNotBlank(filter)) {
+            if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
+                sql.append(" WHERE ");
+            }
+
+            sql.append(filter);
         }
         if (StringUtils.isNotBlank(sortfield)) {
             sql.append(" ORDER BY " + sortfield);
@@ -294,9 +297,7 @@ final class ProcessMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Process> ret = null;
-            ret = new QueryRunner().query(connection, sql.toString(), ProcessManager.resultSetToProcessListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), ProcessManager.resultSetToProcessListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -311,7 +312,7 @@ final class ProcessMysqlHelper implements Serializable {
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         String sortfield = MySQLHelper.prepareSortField(order, sql);
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" AND " + filter);
+            sql.append(filter);
         }
         if (StringUtils.isNotBlank(sortfield)) {
             sql.append(" ORDER BY " + sortfield);
@@ -490,7 +491,7 @@ final class ProcessMysqlHelper implements Serializable {
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
 
         if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+            sql.append(filter);
         }
         if (order.isPresent()) {
             String sortfield = MySQLHelper.prepareSortField(order.get(), sql);
@@ -518,7 +519,7 @@ final class ProcessMysqlHelper implements Serializable {
     public static int countProcesses(String filter) throws SQLException {
         StringBuilder sql = new StringBuilder("select count(1) from prozesse ");
         if (filter != null && filter.length() > 0) {
-            sql.append(" WHERE ").append(filter);
+            sql.append(filter);
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append(" WHERE ProzesseID > 0");
         }
@@ -722,9 +723,13 @@ final class ProcessMysqlHelper implements Serializable {
     }
 
     public static long getSumOfFieldValue(String columnname, String filter) throws SQLException {
-        StringBuilder sql = new StringBuilder("select sum(prozesse.").append(columnname).append(") from prozesse ");
+
+        StringBuilder sql = new StringBuilder("select sum(prozesse.").append(columnname)
+                .append(") FROM prozesse left join batches on prozesse.batchID = batches.id ");
+        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+
         if (filter != null && filter.length() > 0) {
-            sql.append(" WHERE ").append(filter);
+            sql.append(filter);
         }
         Connection connection = null;
         try {
@@ -738,9 +743,12 @@ final class ProcessMysqlHelper implements Serializable {
     }
 
     public static long getCountOfFieldValue(String columnname, String filter) throws SQLException {
-        StringBuilder sql = new StringBuilder("select count(prozesse.").append(columnname).append(") from prozesse ");
+        StringBuilder sql = new StringBuilder("select count(prozesse.").append(columnname)
+                .append(") FROM prozesse left join batches on prozesse.batchID = batches.id ");
+        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+
         if (filter != null && filter.length() > 0) {
-            sql.append(" WHERE ").append(filter);
+            sql.append(filter);
         }
         Connection connection = null;
         try {

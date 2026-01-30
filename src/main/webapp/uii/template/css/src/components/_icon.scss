@@ -1,9 +1,17 @@
 .icon-wrapper {
-    display: inline-block;
+    align-items: center;
+    display: inline-flex;
     height: 1lh;
-}
+    justify-content: center;
+    line-height: 1;
+    vertical-align: middle;
 
-.icon-wrapper svg {
-    height: 14px;
-    width: 14px;
+    & svg {
+        color: currentColor;
+        display: inline-flex;
+        height: 1.275em;
+        line-height: 0;
+        width: 1.275em;
+        stroke-width: 2;
+    }
 }

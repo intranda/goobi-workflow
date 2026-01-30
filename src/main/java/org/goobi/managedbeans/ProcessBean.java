@@ -688,23 +688,31 @@ public class ProcessBean extends BasicBean implements Serializable {
         if ("vorlagen".equals(this.modusAnzeige)) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
+            } else {
+                sql = " WHERE ";
             }
-            sql = sql + " prozesse.istTemplate = true ";
+            sql = sql + "prozesse.istTemplate = true ";
         } else {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
+            } else {
+                sql = " WHERE ";
             }
-            sql = sql + " prozesse.istTemplate = false ";
+            sql = sql + "prozesse.istTemplate = false ";
         }
         if (!this.showClosedProcesses && !"vorlagen".equals(this.modusAnzeige)) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
+            } else {
+                sql = " WHERE ";
             }
             sql = sql + " prozesse.sortHelperStatus <> '100000000' ";
         }
         if (!this.showArchivedProjects) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
+            } else {
+                sql = " WHERE ";
             }
             sql = sql + " projekte.projectIsArchived = false ";
         }

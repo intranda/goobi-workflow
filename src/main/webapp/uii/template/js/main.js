@@ -1,12 +1,17 @@
 // custom JS
 import { initFunctions } from './modules/inits';
-import { toggleLoaders } from './modules/gwAjaxLoader';
+import { toggleLoaders } from './modules/ajax/displayLoader';
 import {
     initSaveScrollPosition,
+    handleScrollPositionReset,
     restoreAllScrollPositions,
     saveAllScrollPositions,
 } from './modules/saveScrollPosition';
 import { initAutosave } from './modules/metseditor/autosave';
+import { AjaxButtonManager } from './modules/ajax/buttonManager';
+
+// Initialize AjaxButtonManager
+const ajaxButtonManager = new AjaxButtonManager();
 
 // Initialize all functions on initial page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,9 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
 // Initialize all functions after an ajax call
 if(typeof faces !== "undefined") {
     faces.ajax.addOnEvent((data) => {
-        if(data.source.dataset.ajaxBehaviour === "ignore") {
+        if(data.source?.dataset?.ajaxBehaviour === "ignore") {
                 return;
             }
+
         switch (data.status) {
             case 'begin':
                 toggleLoaders(true);
@@ -33,6 +39,7 @@ if(typeof faces !== "undefined") {
                 toggleLoaders(false)
                 initFunctions();
                 initSaveScrollPosition();
+                handleScrollPositionReset(data.source?.getAttribute('data-reset-scroll-positions'));
                 restoreAllScrollPositions();
                 initAutosave();
                 break;

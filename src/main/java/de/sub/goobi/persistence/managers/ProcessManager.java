@@ -165,7 +165,7 @@ public class ProcessManager implements IManager, Serializable {
 
     public static int countProcessTitle(String title, Institution institution) {
         try {
-            return ProcessMysqlHelper.getProcessCount("prozesse.titel = '" + MySQLHelper.escapeSql(title) + "'", institution);
+            return ProcessMysqlHelper.getProcessCount(" WHERE prozesse.titel = '" + MySQLHelper.escapeSql(title) + "'", institution);
         } catch (SQLException e) {
             log.error(e);
         }

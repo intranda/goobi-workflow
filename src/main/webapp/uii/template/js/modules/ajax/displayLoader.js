@@ -1,6 +1,6 @@
 /**
  * Show and hide goobi's ajaxLoader (∞).
- * @module gwAjaxLoader
+ * @module displayLoader
  */
 export const toggleLoaders = function toggleLoaders(show) {
     const loaders = document.querySelectorAll('.ajax-loader');

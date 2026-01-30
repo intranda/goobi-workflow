@@ -164,13 +164,26 @@ fieldSet:disabled .badge > a {
 // re-implementation of forms in non-combinatory classes
 // TODO: stacked form-rows need styling similar to fieldsets on small screens
 .form-row {
-  border-block-end: 1px solid var(--clr-neutral-300);
+  border-block: 1px solid var(--clr-neutral-300);
   display: flex;
   flex-wrap: wrap;
   width: 100%;
   > .form-row {
     border: 0;
     padding: 0;
+  }
+}
+
+.form-row, .row {
+  & + .form-row {
+    border-block-start: 0;
+  }
+}
+.box__body,
+.tab-content,
+.section-body {
+  & > .form-row {
+    border-block-start: 0;
   }
 }
 

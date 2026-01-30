@@ -10,15 +10,24 @@ import { gapCursor } from "prosemirror-gapcursor";
 import { schema } from "./prosemirror/schema";
 import { createMenu } from "./prosemirror/menu";
 
-const createEditor = () => {
-    const targets = document.querySelectorAll('[data-editor="prosemirror"]');
+/**
+ * Creates ProseMirror instances in the specified context
+ * Set explicit context for initialisation in modals or other JS-aware contexts where initialization needs to
+ * wait for other resources
+ * @param {HTMLDocument | HTMLElement} context Document or element to create the editor in, defaults to document
+ * @returns
+ */
+const createEditor = (context = document) => {
+    const targets = context.querySelectorAll('[data-editor="prosemirror"]');
     if (!targets) {
         return;
     }
     targets.forEach((target) => {
+        const isInModal = target.closest('.modal');
+        if (!context.classList?.contains('modal') && isInModal) return;
         const baseId = target.id.replace('editor', '');
         const source = document.getElementById(`${baseId}editorSource`);
-        const input = document.getElementById(`${baseId}textareaHtml`);
+        const input = source.nextElementSibling;
         if (!source) {
             return;
         }
@@ -70,6 +79,10 @@ const createEditor = () => {
 
 document.addEventListener("DOMContentLoaded", () => {
     createEditor();
+});
+
+document.addEventListener('shown.bs.modal', (event) => {
+    createEditor(event.target);
 });
 
 faces.ajax.addOnEvent((data) => {

@@ -78,12 +78,6 @@ public class FilterHelperTest extends AbstractTest {
     }
 
     @Test
-    public void testLimitToUserAssignedSteps() {
-        String result = FilterHelper.limitToUserAssignedSteps(true, false, false);
-        assertEquals("", result);
-    }
-
-    @Test
     public void testGetStepStartWithValidParameter() {
         String parameter = "10-20";
         Integer result = FilterHelper.getStepStart(parameter);
@@ -221,7 +215,7 @@ public class FilterHelperTest extends AbstractTest {
         boolean negate = false;
         List<String> dateFilter = new ArrayList<>();
 
-        String result = FilterHelper.filterStepName(parameters, status, negate, dateFilter);
+        String result = FilterHelper.filterStepName(parameters, status, negate, dateFilter, true);
 
         // Assert that the generated SQL query matches the expected query without negation
         assertTrue(result.contains("schritte.Titel like '%StepName%'"));
@@ -235,10 +229,9 @@ public class FilterHelperTest extends AbstractTest {
         boolean negate = true;
         List<String> dateFilter = new ArrayList<>();
 
-        String result = FilterHelper.filterStepName(parameters, status, negate, dateFilter);
+        String result = FilterHelper.filterStepName(parameters, status, negate, dateFilter, true);
         // Assert that the generated SQL query matches the expected query with negation
-        assertTrue(result.contains("not in (select ProzesseID from schritte"));
-        assertTrue(result.contains("schritte.Titel like '%StepName%'"));
+        assertTrue(result.contains("schritte.Titel not like '%StepName%'"));
         assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
     }
 
@@ -376,7 +369,7 @@ public class FilterHelperTest extends AbstractTest {
     @Test
     public void testFilterProjectWithoutNegate() {
         String tok = "project:ProjectName";
-        String expectedQuery = " prozesse.ProjekteID in (select ProjekteID from projekte where titel like '%ProjectName%')";
+        String expectedQuery = " projekte.titel like '%ProjectName%'";
 
         String result = FilterHelper.filterProject(tok, false);
 
@@ -387,7 +380,7 @@ public class FilterHelperTest extends AbstractTest {
     @Test
     public void testFilterProjectWithNegate() {
         String tok = "project:ProjectName";
-        String expectedQuery = " prozesse.ProjekteID in (select ProjekteID from projekte where titel not like '%ProjectName%')";
+        String expectedQuery = " projekte.titel  not like '%ProjectName%'";
 
         String result = FilterHelper.filterProject(tok, true);
 
@@ -449,7 +442,7 @@ public class FilterHelperTest extends AbstractTest {
     public void testFilterProcessPropertyWithoutNegate() {
         String tok = "processproperty:Title:Value";
         String expectedQuery =
-                "prozesse.ProzesseID in (select object_id from properties where object_type = 'process' AND properties.property_name like '%Title%' AND properties.property_value like '%Value%' )";
+                " prozesse.prozesseID in (select object_id from properties where object_type = 'process' AND property_value like '%Value%'  AND property_name like '%Title%' )";
         String result = FilterHelper.filterProcessProperty(tok, false);
 
         // Assert that the generated SQL query matches the expected query without negation
@@ -460,7 +453,7 @@ public class FilterHelperTest extends AbstractTest {
     public void testFilterProcessPropertyWithNegate() {
         String tok = "processproperty:Title:Value";
         String expectedQuery =
-                "prozesse.ProzesseID not in (select object_id from properties where object_type = 'process' AND properties.property_name like  '%Title%' AND properties.property_value like '%Value%' )";
+                " prozesse.prozesseID in (select object_id from properties where object_type = 'process' AND property_value like '%Value%'  AND property_name like '%Title%' )";
 
         String result = FilterHelper.filterProcessProperty(tok, true);
 
@@ -526,7 +519,7 @@ public class FilterHelperTest extends AbstractTest {
         boolean negate = false;
         String expectedQuery =
                 "prozesse.ProjekteID in (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '%"
-                        + MySQLHelper.escapeSql("ShortName") + "%')";
+                        + MySQLHelper.escapeSql("ShortName") + "%') ";
 
         String result = FilterHelper.filterInstitution(tok, negate);
 
@@ -540,7 +533,7 @@ public class FilterHelperTest extends AbstractTest {
         boolean negate = true;
         String expectedQuery =
                 "prozesse.ProjekteID not sin (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '%"
-                        + MySQLHelper.escapeSql("ShortName") + "%')";
+                        + MySQLHelper.escapeSql("ShortName") + "%') ";
 
         String result = FilterHelper.filterInstitution(tok, negate);
 

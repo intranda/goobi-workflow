@@ -59,7 +59,7 @@ public final class DatabaseVersion {
         // hide implicit public constructor
     }
 
-    public static final int EXPECTED_VERSION = 60;
+    public static final int EXPECTED_VERSION = 61;
     private static final Gson GSON = new Gson();
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -484,6 +484,11 @@ public final class DatabaseVersion {
                     updateToVersion60();
                     tempVersion++;
                     //fall through
+                case 60: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 61.");
+                    updateToVersion61();
+                    tempVersion++;
+                    //fall through
                 default://NOSONAR, no break on purpose to run through all cases
                         // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -496,6 +501,23 @@ public final class DatabaseVersion {
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
         }
+    }
+
+    private static void updateToVersion61() {
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_step_user ON schritteberechtigtegruppen(SchritteID, BenutzerGruppenID);");
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_user_grp ON benutzergruppenmitgliedschaft (BenutzerID, BenutzerGruppenID);");
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_user_step ON schritteberechtigtebenutzer (BenutzerID, SchritteID);");
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_user_project ON projektbenutzer (BenutzerID, ProjekteID);");
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_status_process ON schritte (Bearbeitungsstatus, ProzesseID);");
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_project_template ON prozesse (ProjekteID, IstTemplate);");
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_sort ON schritte (Prioritaet, SchritteID);");
+            DatabaseVersion.runSql("ALTER TABLE properties ADD FULLTEXT ft_value (property_value);");
+            DatabaseVersion.runSql("ALTER TABLE metadata ADD FULLTEXT ft_meta (value);");
+        } catch (SQLException e) {
+            log.error(e);
+        }
+
     }
 
     private static void updateToVersion60() throws SQLException {

@@ -190,16 +190,16 @@ public class VocabularyRecordsBean implements Serializable {
             switch (fileExtension) {
                 case ".csv":
                     if (clearBeforeImport) {
-                        API.vocabularies().cleanImportCsv(this.vocabulary.getId(), uploadedFile);
+                        API.vocabularies().cleanImportCsv(this.vocabulary.getId(), uploadedFile.getInputStream());
                     } else {
-                        API.vocabularies().importCsv(this.vocabulary.getId(), uploadedFile);
+                        API.vocabularies().importCsv(this.vocabulary.getId(), uploadedFile.getInputStream());
                     }
                     break;
                 case ".xlsx":
                     if (clearBeforeImport) {
-                        API.vocabularies().cleanImportExcel(this.vocabulary.getId(), uploadedFile);
+                        API.vocabularies().cleanImportExcel(this.vocabulary.getId(), uploadedFile.getInputStream());
                     } else {
-                        API.vocabularies().importExcel(this.vocabulary.getId(), uploadedFile);
+                        API.vocabularies().importExcel(this.vocabulary.getId(), uploadedFile.getInputStream());
                     }
                     break;
                 default:
@@ -210,6 +210,10 @@ public class VocabularyRecordsBean implements Serializable {
         } catch (APIException e) {
             APIExceptionExtractor extractor = new APIExceptionExtractor(e);
             Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
+        } catch (IOException e) {
+            String message = "Failed to import vocabulary records";
+            log.error(message, e);
+            Helper.setFehlerMeldung(message, e.getMessage());
         }
 
         return "";

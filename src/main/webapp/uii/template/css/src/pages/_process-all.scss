@@ -53,6 +53,12 @@
   }
 }
 
+@media screen and (min-width: 769px) {
+  .table-compact-sort {
+    display: none;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .processTable {
     .progress__container {

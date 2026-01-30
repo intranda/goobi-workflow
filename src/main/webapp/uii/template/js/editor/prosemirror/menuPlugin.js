@@ -252,7 +252,9 @@ export const listButton = (listType, label) => {
       dom.classList.toggle("active", active);
     },
   };
-};export const linkButton = (markType, label) => {
+};
+
+export const linkButton = (markType, label) => {
   const dom = icon(label, markType.name);
 
   const linkCommand = (state, dispatch) => {
@@ -306,8 +308,6 @@ export const listButton = (listType, label) => {
     }
   };
 }
-
-
 
 export const menuGroup = (items, className = "editor-menu-group") => {
   const container = document.createElement("div");

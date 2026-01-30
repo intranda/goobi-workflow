@@ -6,7 +6,7 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 >
-    <div class="box__title section-header">
+    <div class="box__title section-header#{compact ? ' section-header-compact' : ''}">
         <h2 class="#{collapsible ? 'section-header-collapsible' : ''}">
             <!-- Do not render icon if cc.attrs.icon is undefined -->
             <c:if test="#{icon != null}">

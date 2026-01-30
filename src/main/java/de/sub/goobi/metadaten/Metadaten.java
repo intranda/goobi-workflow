@@ -4427,7 +4427,7 @@ public class Metadaten implements Serializable {
 
             String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
 
-            currentImageNo++;
+            currentImageNo = currentImageNo + 1;
 
             // check all folder
             for (Map.Entry<Path, List<Path>> entry : allFolderAndAllFiles.entrySet()) {
@@ -4454,7 +4454,7 @@ public class Metadaten implements Serializable {
         System.gc(); //NOSONAR, its needed to unlock the files on windows environments
         int counter = 1;
         for (String imagename : oldfilenames) {
-            currentImageNo++;
+            currentImageNo = currentImageNo + 1;
             String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
             String newFilenamePrefix = generateFileName(counter);
             String originalExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));

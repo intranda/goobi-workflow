@@ -110,7 +110,22 @@ body .ui-messages>div {
   align-self: baseline;
   flex: 1;
   border: 2px dashed silver;
-  padding: 40px 8px 0 8px;
+
+  .ui-fileupload {
+    padding: 50px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .ui-fileupload-content {
+      display: none;
+
+      &:has(.ui-fileupload-row) {
+        display: block;
+      }
+    }
+  }
 }
 
 .ui-icon-plusthick {

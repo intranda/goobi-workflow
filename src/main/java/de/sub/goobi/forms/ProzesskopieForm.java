@@ -537,7 +537,7 @@ public class ProzesskopieForm implements Serializable {
             inst = aktuellerNutzer.getInstitution();
         }
 
-        List<Process> selectList = ProcessManager.getProcesses("prozesse.titel", filter.toString(), inst);
+        List<Process> selectList = ProcessManager.getProcesses(" prozesse.titel", filter.toString(), inst);
         for (Process proz : selectList) {
             myProcessTemplates.add(new SelectItem(proz.getId(), proz.getTitel(), null));
         }

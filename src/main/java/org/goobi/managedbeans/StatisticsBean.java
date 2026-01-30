@@ -26,7 +26,6 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
-import java.security.SecureRandom;
 
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
@@ -118,15 +117,6 @@ public class StatisticsBean implements Serializable {
         return (long) StepManager.countAllSteps();
     }
 
-    /**
-     * @return Dummy-Rückgabe
-     * @throws DAOException
-     */
-    public int getDummy() {
-        this.n++;
-        return new SecureRandom().nextInt(this.n);
-    }
-
     public int getAnzahlAktuelleSchritte() {
         return getAnzahlAktuelleSchritte(false, false, false);
     }
@@ -140,7 +130,7 @@ public class StatisticsBean implements Serializable {
     }
 
     private int getAnzahlAktuelleSchritte(boolean inOffen, boolean inBearbeitet, boolean inHideStepsFromOtherUsers) {
-        String filter = FilterHelper.limitToUserAssignedSteps(inOffen, inBearbeitet, inHideStepsFromOtherUsers);
+        String filter = FilterHelper.criteriaBuilder("", false, inOffen, inBearbeitet, inHideStepsFromOtherUsers, false, true);
         Institution institution = null;
         User user = Helper.getCurrentUser();
         if (user != null && !user.isSuperAdmin()) {
