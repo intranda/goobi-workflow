@@ -1,0 +1,155 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:section="http://goobi.io/section"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface />
+
+	<composite:implementation>
+
+		<section:section type="primary">
+			<section:header
+				icon="search"
+				title="#{msgs.search}" />
+			<section:body padding="true">
+				Section with type primary
+			</section:body>
+		</section:section>
+
+		<section:section type="action">
+			<section:header
+				icon="search"
+				title="#{msgs.search}" />
+			<section:body padding="true">
+				Section with type action
+			</section:body>
+		</section:section>
+
+		<section:section type="success">
+			<section:header
+				icon="search"
+				title="#{msgs.search}" />
+			<section:body padding="true">
+				Section with type success
+			</section:body>
+		</section:section>
+
+		<section:section type="hot">
+			<section:header
+				icon="search"
+				title="#{msgs.search}" />
+			<section:body padding="true">
+				Section with type hot
+			</section:body>
+		</section:section>
+
+		<section:section type="neutral">
+			<section:header
+				icon="search"
+				title="#{msgs.search}" />
+			<section:body padding="true">
+				Section with type neutral
+			</section:body>
+		</section:section>
+
+		<section:section type="outline">
+			<section:header
+				icon="search"
+				title="#{msgs.search}" />
+			<section:body padding="true">
+				Section with type outline
+			</section:body>
+		</section:section>
+
+		<!-- CODE -->
+		<div class="accordion-item mt-3">
+			<h2 class="accordion-header">
+				<button
+					data-bs-target="#codeSectionSimple"
+					class="accordion-button btn btn-primary-400 collapsed"
+					type="button"
+					data-bs-toggle="collapse"
+					aria-expanded="false"
+					aria-controls="collapseOne">Code Snippet</button>
+			</h2>
+			<div
+				id="codeSectionSimple"
+				class="accordion-collapse collapse"
+				data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+
+					<pre
+						class="code--form-actions bg-neutral-500 text-white px-4"
+						style="border-radius: var(- -border-radius)">
+						<code class="microlight">
+&lt;section:section type=&quot;primary&quot;&gt;
+	&lt;section:header
+		icon=&quot;search&quot;
+		title=&quot;#{msgs.search}&quot; /&gt;
+	&lt;section:body padding=&quot;true&quot;&gt;
+		Section with type primary
+	&lt;/section:body&gt;
+&lt;/section:section&gt;
+
+&lt;section:section type=&quot;action&quot;&gt;
+	&lt;section:header
+		icon=&quot;search&quot;
+		title=&quot;#{msgs.search}&quot; /&gt;
+	&lt;section:body padding=&quot;true&quot;&gt;
+		Section with type action
+	&lt;/section:body&gt;
+&lt;/section:section&gt;
+
+&lt;section:section type=&quot;success&quot;&gt;
+	&lt;section:header
+		icon=&quot;search&quot;
+		title=&quot;#{msgs.search}&quot; /&gt;
+	&lt;section:body padding=&quot;true&quot;&gt;
+		Section with type success
+	&lt;/section:body&gt;
+&lt;/section:section&gt;
+
+&lt;section:section type=&quot;hot&quot;&gt;
+	&lt;section:header
+		icon=&quot;search&quot;
+		title=&quot;#{msgs.search}&quot; /&gt;
+	&lt;section:body padding=&quot;true&quot;&gt;
+		Section with type hot
+	&lt;/section:body&gt;
+&lt;/section:section&gt;
+
+&lt;section:section type=&quot;neutral&quot;&gt;
+	&lt;section:header
+		icon=&quot;search&quot;
+		title=&quot;#{msgs.search}&quot; /&gt;
+	&lt;section:body padding=&quot;true&quot;&gt;
+		Section with type neutral
+	&lt;/section:body&gt;
+&lt;/section:section&gt;
+
+&lt;section:section type=&quot;outline&quot;&gt;
+	&lt;section:header
+		icon=&quot;search&quot;
+		title=&quot;#{msgs.search}&quot; /&gt;
+	&lt;section:body padding=&quot;true&quot;&gt;
+		Section with type outline
+	&lt;/section:body&gt;
+&lt;/section:section&gt;
+						</code>
+					</pre>
+
+				</div>
+			</div>
+		</div>
+		<!-- // CODE -->
+
+	</composite:implementation>
+</ui:composition>

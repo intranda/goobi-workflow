@@ -2611,7 +2611,7 @@ public class Metadaten implements Serializable {
             }
             PhysicalObject pi = new PhysicalObject();
             pi.setDocStruct(pageStruct);
-            if ("div".equals(pageStruct.getDocstructType())) {
+            if ("div".equals(pageStruct.getDocstructType()) || pageStruct.getDocstructType() == null) {
                 lastLogPageNo = logPageNo;
                 lastPhysPageNo = physPageNo;
                 logicalPageNumForPages[counter] = new MetadatumImpl(logPageNoMd, counter, myPrefs, myProzess, this);
@@ -2837,7 +2837,7 @@ public class Metadaten implements Serializable {
             return;
         }
         String pageIdentifier = null;
-        if ("div".equals(inStrukturelement.getDocstructType())) {
+        if ("div".equals(inStrukturelement.getDocstructType()) || inStrukturelement.getDocstructType() == null) {
             pageIdentifier = getMetadataValues(inStrukturelement, "physPageNumber");
         } else {
             pageIdentifier = this.pageAreaManager.createPhysicalPageNumberForArea(inStrukturelement, inStrukturelement.getParent());
@@ -2845,7 +2845,10 @@ public class Metadaten implements Serializable {
         for (Metadata meineSeite : listMetadaten) {
             this.structSeitenNeu[inZaehler] = new MetadatumImpl(meineSeite, inZaehler, this.myPrefs, this.myProzess, this);
             DocStruct ds = (DocStruct) meineSeite.getParent();
-            if ("div".equals(inStrukturelement.getDocstructType())) {
+            if (ds == null) {
+                ds = inStrukturelement;
+            }
+            if ("div".equals(inStrukturelement.getDocstructType()) || inStrukturelement.getDocstructType() == null) {
                 this.structSeiten[inZaehler] =
                         new SelectItem(pageIdentifier, getMetadataValues(ds, "physPageNumber").trim() + ": " + meineSeite.getValue());
             } else {
@@ -4427,7 +4430,7 @@ public class Metadaten implements Serializable {
 
             String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
 
-            currentImageNo++;
+            currentImageNo = currentImageNo + 1;
 
             // check all folder
             for (Map.Entry<Path, List<Path>> entry : allFolderAndAllFiles.entrySet()) {
@@ -4454,7 +4457,7 @@ public class Metadaten implements Serializable {
         System.gc(); //NOSONAR, its needed to unlock the files on windows environments
         int counter = 1;
         for (String imagename : oldfilenames) {
-            currentImageNo++;
+            currentImageNo = currentImageNo + 1;
             String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
             String newFilenamePrefix = generateFileName(counter);
             String originalExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));

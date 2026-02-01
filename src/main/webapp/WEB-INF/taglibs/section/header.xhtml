@@ -7,7 +7,7 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:util="http://goobi.io/util"
 >
-    <div class="box__title section-header">
+    <div class="box__title section-header#{compact ? ' section-header-compact' : ''}">
         <h2 class="#{collapsible ? 'section-header-collapsible' : ''}">
             <!-- Do not render icon if cc.attrs.icon is undefined -->
             <c:if test="#{icon != null}">

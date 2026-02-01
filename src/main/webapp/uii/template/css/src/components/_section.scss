@@ -1,6 +1,8 @@
 .section {
     --section-padding: var(--box-padding);
+    --section-header-padding: var(--box-padding-title);
     &-header {
+        padding: var(--section-header-padding);
         & h2 .btn{
             display: flex;
             justify-content: flex-start;
@@ -12,6 +14,9 @@
         & .section-header-collapsible {
             height: 100%;
             margin: 0;
+        }
+        &-compact {
+            --section-header-padding: 0 10px;
         }
     }
 }

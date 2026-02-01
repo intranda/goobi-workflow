@@ -26,7 +26,6 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
-import java.security.SecureRandom;
 
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
@@ -116,15 +115,6 @@ public class StatisticsBean implements Serializable {
      */
     public Long getAnzahlSchritte() {
         return (long) StepManager.countAllSteps();
-    }
-
-    /**
-     * @return Dummy-Rückgabe
-     * @throws DAOException
-     */
-    public int getDummy() {
-        this.n++;
-        return new SecureRandom().nextInt(this.n);
     }
 
     public int getAnzahlAktuelleSchritte() {
