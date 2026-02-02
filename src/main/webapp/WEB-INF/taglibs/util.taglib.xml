@@ -66,19 +66,47 @@
         <source>util/ajax-loader.xhtml</source>
     </tag>
     <tag>
-        <tag-name>missing-rights</tag-name>
-        <source>util/missing-rights.xhtml</source>
+        <tag-name>alert</tag-name>
+        <source>util/alert.xhtml</source>
         <attribute>
-            <description>The condition under which the missing rights alert should be displayed</description>
-            <name>condition</name>
+            <description>The alert type (success, danger, warning, info)</description>
+            <name>type</name>
             <required>true</required>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description>The message to display when the user lacks the necessary rights</description>
+            <description>The message to display</description>
             <name>message</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Whether the alert can be dismissed</description>
+            <name>dismissible</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>Additional CSS classes</description>
+            <name>styleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>missing-rights</tag-name>
+        <source>util/missing-rights.xhtml</source>
+        <attribute>
+            <description>The required rights/permission to display</description>
+            <name>rights</name>
             <required>true</required>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Whether the alert should be rendered</description>
+            <name>rendered</name>
+            <required>true</required>
+            <type>java.lang.Boolean</type>
         </attribute>
     </tag>
 </facelet-taglib>
