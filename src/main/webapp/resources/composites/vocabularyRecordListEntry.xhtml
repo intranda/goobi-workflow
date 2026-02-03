@@ -4,6 +4,7 @@
         xmlns:composite="http://xmlns.jcp.org/jsf/composite"
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
+        xmlns:util="http://goobi.io/util"
 >
 
     <composite:interface>
@@ -24,7 +25,7 @@
                             jsf:action="#{vocabularyRecordsBean.expandRecord(cc.attrs.record)}">
                         <div class="spacer"/>
                         <div class="toggle">
-                            <span class="fa fa-caret-right"/>
+                            <util:icon icon="chevron-right" />
                         </div>
                         <div class="content">
                             <h:outputText value="#{cc.attrs.record.titleValues[0]}"/>
@@ -37,7 +38,7 @@
                             jsf:action="#{vocabularyRecordsBean.collapseRecord(cc.attrs.record)}">
                         <div class="spacer"/>
                         <div class="toggle">
-                            <span class="fa fa-caret-down"/>
+                            <util:icon icon="chevron-down" />
                         </div>
                         <div class="content">
                             <h:outputText value="#{cc.attrs.record.titleValues[0]}"/>
@@ -72,7 +73,7 @@
                                 class="btn #{vocabularyRecordsBean.currentRecord != cc.attrs.record ? 'btn-blank' : 'btn-primary'}"
                                 jsf:action="#{vocabularyRecordsBean.edit(cc.attrs.record)}"
                                 data-bs-toggle="tooltip">
-                            <span class="fa fa-pencil"/>
+                            <util:icon icon="pencil" />
                             <!--                    <f:ajax execute="@this" render="@form"/>-->
                             <!--                    <f:passThroughAttribute name="aria-label" value="#{cc.attrs.record.id}"/>-->
                         </button>
@@ -83,7 +84,7 @@
                                     class="btn btn-blank"
                                     title="#{msgs.vocabularyManager_addRecord}"
                                     data-bs-toggle="tooltip">
-                                <span aria-hidden="true" class="fa fa-plus"/>
+                                <util:icon icon="plus" />
                             </button>
                         </ui:fragment>
                     </div>

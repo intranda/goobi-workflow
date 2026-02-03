@@ -4,6 +4,7 @@
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         template="/uii/template/template.html"
         xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+        xmlns:util="http://goobi.io/util"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
 >
 
@@ -49,7 +50,7 @@
                         boxForm="true"
                         boxPadding="false"
                         title="#{msgs.vocabularyManager_editRecord}"
-                        icon="fa-file-o">
+                        icon="file">
                         <intranda:vocabularyRecordEditor
                             record="#{vocabularyRecordsBean.currentRecord}"
                         />
@@ -63,9 +64,7 @@
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteModal"
                                         title="#{msgs.vocabularyManager_deleteRecord}">
-                                        <span
-                                            aria-hidden="true"
-                                            class="fa fa-trash-o" />
+                                        <util:icon icon="trash" />
                                         <span>
                                         <h:outputText value="#{msgs.loeschen}"/>
                                         </span>
@@ -107,9 +106,7 @@
                                                         jsf:action="#{vocabularyRecordsBean.deleteRecord(vocabularyRecordsBean.currentRecord)}"
                                                     >
                                                         <span>
-                                                            <span
-                                                                aria-hidden="true"
-                                                                class="fa fa-trash-o"/>
+                                                            <util:icon icon="trash" />
                                                             <span>
                                                                 <h:outputText value="#{msgs.vocabularyManager_deleteRecord}"/>
                                                             </span>
@@ -127,7 +124,7 @@
                                         jsf:id="absenden"
                                         type="submit"
                                         jsf:action="#{vocabularyRecordsBean.saveRecord(vocabularyRecordsBean.currentRecord)}">
-                                        <span class="fa fa-save"/>
+                                        <util:icon icon="device-floppy" />
                                         <span>
                                         <h:outputText value="#{msgs.speichern}"/>
                                     </span>
@@ -144,13 +141,13 @@
               <div class="modal-content">
                 <div class="modal-header bg-primary-400 text-white">
                   <h5 class="modal-title h6">
-                    <span class="fa fa-database me-2" />
+                    <util:icon icon="database" css="me-2" />
                     <span>
                         #{myPageTitle}
                     </span>
                   </h5>
                   <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true" class="fa fa-times text-white"></span>
+                    <util:icon icon="x" css="text-white" />
                   </button>
                 </div>
                 <h:form id="uploadform" prependId="false" enctype="multipart/form-data">
@@ -185,7 +182,7 @@
                                 type="submit"
                                 jsf:action="#{vocabularyRecordsBean.importRecords}"
                         >
-                            <span class="fa fa-save"/>
+                            <util:icon icon="device-floppy" />
                             <span>
                                 <h:outputText value="#{msgs.vocabularyManager_excelImport_importRecords}"/>
                             </span>

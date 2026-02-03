@@ -46,3 +46,25 @@
         display: none;
     }
 }
+
+.pagination__left {
+    .overflow-y-scroll > div {
+        min-height: 1.75rem;
+    }
+}
+
+.image__controls {
+    .btn {
+        aspect-ratio: 1;
+        padding: 0;
+        width: 31px;
+        height: 31px;
+    }
+}
+
+#imageNavigation .btn--icon {
+    aspect-ratio: 1;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+}

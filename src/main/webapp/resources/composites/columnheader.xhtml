@@ -5,7 +5,8 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface>
 		<composite:attribute name="name" />
@@ -38,8 +39,7 @@
 				jsf:action="#{cc.attrs.sortMethod}"
 				aria-label="#{msgs.defaultSortField} #{cc.attrs.value} #{cc.attrs.form.sortField== descendingLabel ? msgs.defaultSortFieldDesc : cc.attrs.form.sortField== ascendingLabel ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
 				<h:outputText value="#{cc.attrs.value}" />
-				<span
-					class="pull-right table-sort-icon fa #{cc.attrs.form.sortField== descendingLabel ?'fa-sort-desc':cc.attrs.form.sortField== ascendingLabel ?'fa-sort-asc':'fa-sort'}"></span>
+				<util:icon icon="#{cc.attrs.form.sortField== descendingLabel ?'sort-descending':cc.attrs.form.sortField== ascendingLabel ?'sort-ascending':'arrows-sort'}" styleClass="pull-right table-sort-icon" />
 					<f:setPropertyActionListener
 					rendered="#{cc.attrs.formSortField}"
 					target="#{cc.attrs.formSortField}"

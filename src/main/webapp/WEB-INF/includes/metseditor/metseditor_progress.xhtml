@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface />
 
@@ -30,7 +31,7 @@
                             class="btn text-white"
                             data-bs-dismiss="modal"
                             aria-label="Close">
-                            <span class="fa fa-times" aria-hidden="true" />
+                            <util:icon icon="x" />
                         </button>
                         </div>
                         <div class="modal-body">
@@ -44,7 +45,7 @@
                                 jsf:action="#{Metadaten.discard}"
                                 title="#{msgs.discard}"
                                 data-bs-toggle="tooltip">
-                                <span class="fa fa-trash-o" aria-hidden="true" />
+                                <util:icon icon="trash" />
                                 <span>
                                     <h:outputText value="#{msgs.discard}" />
                                 </span>
@@ -57,7 +58,7 @@
                                 onclick="goobiWorkflowJS.progress.displayProgressBar()"
                                 title="#{msgs.overwrite}"
                                 data-bs-toggle="tooltip">
-                                <span class="fa fa-floppy-o" aria-hidden="true" />
+                                <util:icon icon="device-floppy" />
                                 <span>
                                     <h:outputText value="#{msgs.overwrite}" />
                                 </span>

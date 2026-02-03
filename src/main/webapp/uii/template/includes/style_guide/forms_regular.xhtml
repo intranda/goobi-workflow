@@ -4,13 +4,13 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:form="http://goobi.io/form">
+    xmlns:form="http://goobi.io/form"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface />
 
@@ -22,7 +22,7 @@
 			boxForm="true"
 			boxPadding="false"
 			title="#{myPageTitle}"
-			icon="fa-edit">
+			icon="edit">
 
 			<form:field
 				label="#{msgs.nachname}"
@@ -225,7 +225,7 @@
 					jsf:id="absenden"
 					type="submit"
 					jsf:action="#{BenutzerverwaltungForm.Speichern}">
-					<span class="fa fa-save" />
+					<util:icon icon="device-floppy" />
 					<span>
 						<h:outputText value="#{msgs.speichern}" />
 					</span>
@@ -237,7 +237,7 @@
 					class="btn btn-hot trigger-delete"
 					onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
 					jsf:action="#{BenutzerverwaltungForm.Loeschen}">
-					<span class="fa fa-trash-o" />
+					<util:icon icon="trash" />
 					<span>
 						<h:outputText value="#{msgs.loeschen}" />
 					</span>
@@ -494,7 +494,7 @@
 			jsf:id=&quot;absenden&quot;
 			type=&quot;submit&quot;
 			jsf:action=&quot;{BenutzerverwaltungForm.Speichern}&quot;&gt;
-			&lt;i class=&quot;fa fa-save&quot;&gt;&lt;/i&gt;
+			&lt;util:icon icon="device-floppy" /&gt;
 			&lt;span&gt;
 				&lt;h:outputText value=&quot;#{msgs.speichern}&quot; /&gt;
 			&lt;/span&gt;
@@ -506,7 +506,7 @@
 			class=&quot;btn btn-hot trigger-delete&quot;
 			onclick=&quot;if (!confirm(&#39;#{msgs.sollDieserEintragWirklichGeloeschtWerden}&#39;)) return false&quot;
 			jsf:action=&quot;{BenutzerverwaltungForm.Loeschen}&quot;&gt;
-			&lt;i class=&quot;fa fa-trash-o&quot;&gt;&lt;/i&gt;
+			&lt;util:icon icon="trash" /&gt;
 			&lt;span&gt;
 				&lt;h:outputText value=&quot;#{msgs.loeschen}&quot; /&gt;
 			&lt;/span&gt;

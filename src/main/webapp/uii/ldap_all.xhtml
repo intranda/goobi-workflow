@@ -8,7 +8,8 @@
 	template="/uii/template/template.html"
 
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 <ui:param name="myPageTitle" value="#{msgs.authentication_configuration}" />
 
@@ -29,7 +30,7 @@
 					<intranda:box
 						boxType="primary"
 						title="#{myPageTitle}"
-						icon="fa-key"
+						icon="key"
 					>
 
 
@@ -87,11 +88,11 @@
 										<!-- Bearbeiten-Schaltknopf -->
 										<button
 											jsf:id="edit"
-											class="btn btn-blank"
+											class="btn btn-icon btn-blank"
 											jsf:rel="tooltip"
 											jsf:action="ldap_edit"
 											title="#{msgs.bearbeiten}">
-											<span class="fa fa-pencil" />
+											<util:icon icon="pencil" />
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 											<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
 											<f:setPropertyActionListener target="#{LdapGruppenForm.myLdapGruppe}" value="#{item}" />
@@ -106,7 +107,7 @@
 									<!-- Neu-Schaltknopf -->
 									<button jsf:id="new" class="btn btn-primary-400 me-auto" jsf:action="#{LdapGruppenForm.Neu}"
 										jsf:immediate="true">
-										<span class="fa fa-plus" />
+										<util:icon icon="plus" styleClass="me-1 icon--lg icon--b5" />
 										<span>
 											<h:outputText value="#{msgs.authentication_createNew}" />
 										</span>

@@ -5,7 +5,7 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-
+    xmlns:util="http://goobi.io/util"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
@@ -87,8 +87,7 @@
                                             jsf:rel="tooltip"
                                             title="#{msgs.process_grid_details}"
                                             class="btn btn-blank">
-                                            <i
-                                                class="fa #{item.panelAusgeklappt?'fa-chevron-down':'fa-chevron-right'}" />
+                                            <util:icon icon="#{item.panelAusgeklappt?'chevron-down':'chevron-right'}" />
                                             <f:setPropertyActionListener
                                                 target="#{item.panelAusgeklappt}"
                                                 value="#{not item.panelAusgeklappt}" />
@@ -125,16 +124,10 @@
 
                                     <h:column>
                                         <h:panelGroup rendered="#{step.typAutomatisch}">
-                                            <i
-                                                class="fa fa-cogs font-light me-3"
-                                                title="#{msgs.automatischerSchritt}"
-                                                data-toggle="tooltip"></i>
+                                            <util:icon icon="settings" styleClass="font-light me-3" title="#{msgs.automatischerSchritt}" attr="data-toggle='tooltip'" />
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{not step.typAutomatisch}">
-                                            <i
-                                                class="fa fa-user-o font-light me-3"
-                                                title="#{msgs.normalerSchritt}"
-                                                data-toggle="tooltip"></i>
+                                            <util:icon icon="user" styleClass="font-light me-3" title="#{msgs.normalerSchritt}" attr="data-toggle='tooltip'" />
                                         </h:panelGroup>
                                         <h:outputText
                                             value="#{step.titel}"

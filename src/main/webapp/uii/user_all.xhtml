@@ -7,7 +7,8 @@
 
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<ui:param name="myPageTitle" value="#{msgs.benutzer}" />
 	<ui:define name="breadcrumb">
@@ -28,7 +29,7 @@
 					<intranda:box
 						id="allUsers"
 						boxType="primary"
-						icon="fa-user"
+						icon="user"
 						title="#{myPageTitle}"
 						boxPadding="true"
 						>
@@ -52,8 +53,7 @@
 											class="btn gw-table__filters__option"
 											jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
 											jsf:immediate="true">
-											<i
-												class="fa #{BenutzerverwaltungForm.hideInactiveUsers?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+											<util:icon icon="#{BenutzerverwaltungForm.hideInactiveUsers?'square-check':'square'}" styleClass="margin-right-5" />
 											<h:outputText styleClass="font-size-s"
 												value="#{msgs.nurAktiveNutzerZeigen}" />
 											<f:setPropertyActionListener
@@ -68,8 +68,8 @@
 										<div class="gw-table__filters__search-bar">
 										<h:form id="searchform" styleClass="search-form">
 											<div class="input-group">
-												<span class="input-group-text"> <i
-													class="fa fa-search"></i>
+												<span class="input-group-text">
+													<util:icon icon="search" />
 												</span>
 												<h:inputText id="searchfield"
 													styleClass="form-control searchfield"
@@ -209,10 +209,10 @@
 												<td>
 														<div class="gw-table__actions__container">
 															<!-- Bearbeiten-Schaltknopf -->
-															<button jsf:id="edit" class="btn btn-blank"
+															<button jsf:id="edit" class="btn btn-icon btn-blank"
 																jsf:rel="tooltip" jsf:action="user_edit"
 																title="#{msgs.bearbeiten}">
-																<span class="fa fa-pencil" />
+																<util:icon icon="pencil" />
 																<f:passThroughAttribute name="data-toggle"
 																	value="tooltip" />
 																<f:passThroughAttribute name="aria-label"
@@ -229,10 +229,10 @@
 															<!-- Benutzerprofil laden-Schaltknopf -->
 															<button jsf:id="switch"
 																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch') and (LoginForm.myBenutzer.superAdmin or not item.superAdmin)}"
-																class="btn btn-blank"
+																class="btn btn-icon btn-blank"
 																jsf:action="#{LoginForm.EinloggenAls}"
 																title="#{msgs.benutzerprofilLaden}">
-																<span class="fa fa-user-secret" />
+																<util:icon icon="spy" />
 																<f:passThroughAttribute name="aria-label"
 																	value="#{msgs.benutzerprofilLaden}" />
 																<f:passThroughAttribute name="data-toggle"
@@ -243,12 +243,12 @@
 
 															<!-- Create new random password for user -->
 															<button jsf:id="createNewRandomPassword"
-																class="btn btn-blank" jsf:rel="tooltip"
+																class="btn btn-icon btn-blank" jsf:rel="tooltip"
 																title="#{msgs.createNewRandomPassword}"
 																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
 																jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
 																jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
-																<span class="fa fa-key" />
+																<util:icon icon="key" />
 																<f:passThroughAttribute name="data-toggle"
 																	value="tooltip" />
 																<f:setPropertyActionListener
@@ -270,7 +270,7 @@
 									<button jsf:id="newUser" class="btn btn-primary-400 me-auto"
 										jsf:action="#{BenutzerverwaltungForm.Neu}"
 										jsf:immediate="true">
-										<span class="fa fa-plus" />
+										<util:icon icon="plus" styleClass="me-1 icon--lg icon--b5" />
 										<span>#{msgs.neuenBenutzerAnlegen}</span>
 										<f:setPropertyActionListener
 											target="#{BenutzerverwaltungForm.displayMode}" value="" />

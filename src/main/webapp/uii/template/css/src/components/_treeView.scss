@@ -5,6 +5,7 @@
     display: grid;
     grid-template-areas: "spacer toggle content";
     grid-template-columns: var(--spacer-width) var(--toggle-width) auto;
+    align-items: start;
     padding-inline-start: 0 !important;
     .spacer {
         grid-area: spacer;
@@ -13,6 +14,7 @@
         display: flex;
         grid-area: toggle;
         justify-content: center;
+        margin-top: 0.15em;
     }
     .content {
         grid-area: content;

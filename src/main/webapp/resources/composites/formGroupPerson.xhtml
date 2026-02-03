@@ -6,7 +6,8 @@
         xmlns:f="http://xmlns.jcp.org/jsf/core"
         xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
         xmlns:jsf="http://xmlns.jcp.org/jsf"
-        xmlns:form="http://goobi.io/form">
+        xmlns:form="http://goobi.io/form"
+        xmlns:util="http://goobi.io/util">
 
     <composite:interface>
         <composite:attribute name="metadata" />
@@ -39,9 +40,9 @@
                             jsf:id="toggle-restrictions"
                             title="#{cc.attrs.person.restricted == false ? msgs.mets_notRestricted : msgs.mets_restricted }"
                             data-bs-toggle="tooltip">
-                            <span class="fa fa-unlock" />
-                            <span class="fa #{cc.attrs.person.restricted == false ? 'fa fa-toggle-off' : 'fa fa-toggle-on toggle-on'} px-1" />
-                            <span class="fa fa-lock" />
+                            <util:icon icon="lock-open" />
+                            <span class="px-1 #{cc.attrs.person.restricted == false ? '' : 'toggle-on'}"><util:icon icon="#{cc.attrs.person.restricted == false ? 'toggle-left' : 'toggle-right'}" /></span>
+                            <util:icon icon="lock" />
                             <f:ajax
                                 execute="restrictBtn"
                                 render="restrictBtn" />
@@ -167,9 +168,7 @@
                             aria-label="#{msgs.personendatenKopieren}"
                             jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.person.p.type)}"
                             type="button">
-                            <span
-                                class="fa fa-lg fa-copy"
-                                aria-hidden="true" />
+                            <util:icon icon="copy" styleClass="icon--lg" />
                             <f:setPropertyActionListener
                                 target="#{Metadaten.currentPerson}"
                                 value="#{cc.attrs.person.p}"/>
@@ -196,9 +195,7 @@
                             title="#{msgs.personendatenLoeschen}"
                             jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
                             type="button">
-                            <span
-                                class="fa fa-lg fa-trash-o"
-                                aria-hidden="true" />
+                            <util:icon icon="trash" styleClass="icon--lg" />
                             <f:setPropertyActionListener
                                 target="#{Metadaten.curPerson}"
                                 value="#{cc.attrs.person}"/>

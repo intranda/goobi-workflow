@@ -16,7 +16,7 @@
         <ui:fragment rendered="#{Metadaten.modusCopyDocstructFromOtherProcess}">
             <div id="meStructdataCopyOtherProcessBox" class="structdata__copy-other-process pb-3">
                 <section:section type="outline" collapsible="true" id="importStructureBox" collapsed="true">
-                    <section:header icon="bars" title="#{msgs.copyDocstructFromOtherProcess}">
+                    <section:header icon="menu-2" title="#{msgs.copyDocstructFromOtherProcess}">
                     </section:header>
                     <section:body>
                         <ui:fragment rendered="#{!Metadaten.displayInsertion}">
@@ -49,7 +49,7 @@
                                 </button>
 
                                 <button jsf:id="filterProcess" class="btn btn-blank" jsf:action="#{Metadaten.filterMyProcess}">
-                                    <span class="fa fa-search" aria-hidden="true"/>
+                                    <util:icon icon="search" />
                                     <span>
                                         <h:outputText value="#{msgs.findProcess}"/>
                                     </span>

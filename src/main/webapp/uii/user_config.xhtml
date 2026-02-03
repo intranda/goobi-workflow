@@ -8,6 +8,7 @@
     xmlns:of="http://omnifaces.org/functions"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:form="http://goobi.io/form">
@@ -46,7 +47,7 @@
 
                         <intranda:boxTitle
                             title="#{myPageTitle}"
-                            icon="fa-cog">
+                            icon="settings">
                             <ul class="tabs">
                                 <li class="tab #{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6' and NavigationForm.uiStatus.user_config ne 'tab7'?'active':''}">
                                     <h:commandLink
@@ -683,7 +684,7 @@
                                                 <f:setPropertyActionListener
                                                     target="#{LoginForm.myBenutzer.token}"
                                                     value="#{token}" />
-                                                <span class="fa fa-trash-o" />
+                                                <util:icon icon="trash" />
                                             </button>
                                         </div>
 
@@ -734,7 +735,7 @@
                                                 <f:setPropertyActionListener
                                                     target="#{LoginForm.myBenutzer.token}"
                                                     value="#{LoginForm.myBenutzer.token}" />
-                                                <span class="fa fa-trash-o" />
+                                                <util:icon icon="trash" />
                                             </button>
                                         </div>
 
@@ -772,7 +773,7 @@
                                         class="btn btn-primary-400 me-auto"
                                         jsf:action="#{LoginForm.myBenutzer.createNewToken}"
                                         jsf:immediate="true">
-                                        <span class="fa fa-plus" />
+                                        <util:icon icon="plus" />
                                         <span>#{msgs.user_config_newApiToken}</span>
 
                                     </button>
@@ -793,7 +794,7 @@
                                 class="btn btn-success submitOnEnter pull-right margin-bottom-most font-size-s"
                                 jsf:id="absenden"
                                 jsf:action="#{LoginForm.BenutzerkonfigurationSpeichern}">
-                                <span class="fa fa-save" />
+                                <util:icon icon="device-floppy" />
                                 <span>
                                     <h:outputText value="#{msgs.speichern}" />
                                 </span>

@@ -34,7 +34,7 @@
                             class="btn text-white"
                             title="#{msgs.cancel}"
                             data-bs-dismiss="modal">
-                            <span class="fa fa-times" />
+                            <util:icon icon="x" />
                         </button>
                     </div>
                     <div class="modal-body">
@@ -58,7 +58,7 @@
                                             	jsf:id="close"
                                                 class="btn align-self-start"
                                                 jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.deleteSearchGroup(globStatus.index)}">
-                                                <span class="fa fa-times" aria-hidden="true" />
+                                                <util:icon icon="x" />
                                                 <f:ajax
                                                     execute=":normdataForm:processes_search"
                                                     render=":normdataForm:processes_search" />
@@ -86,7 +86,7 @@
                                                         jsf:id="delete"
                                                         jsf:action="#{group.deleteFilter(status.index)}"
                                                         class="btn btn-blank">
-                                                        <span class="fa fa-trash" />
+                                                        <util:icon icon="trash" />
                                                         <f:ajax
                                                             execute=":normdataForm:processes_search"
                                                             render=":normdataForm:processes_search" />
@@ -170,7 +170,7 @@
                             			jsf:id="processSearch"
                                         class="btn btn-primary"
                                         jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}">
-                                        <span class="fa fa-search" aria-hidden="true" />
+                                        <util:icon icon="search" />
                                         <span>
                                             #{msgs.search}
                                         </span>
@@ -231,8 +231,9 @@
                                             </f:facet>
                                             <button
                                             	jsf:id="process"
-                                                class="btn btn-primary fa fa-check"
+                                                class="btn btn-primary"
                                                 jsf:action="#{Metadaten.currentMetadataToPerformSearch.linkProcess(process)}">
+                                                <util:icon icon="check" />
                                             </button>
                                         </h:column>
                                     </h:dataTable>

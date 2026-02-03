@@ -7,8 +7,8 @@
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/template/template.html"
-
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:p="http://primefaces.org/ui">
 
@@ -104,7 +104,7 @@
 						boxType="action"
 						boxForm="true"
 						boxPadding="false"
-						icon="fa-cloud-download"
+						icon="cloud-download"
 						title="#{msgs.MassImport}">
 
 
@@ -195,7 +195,7 @@
 								type="submit"
 								jsf:action="#{MassImportForm.convertData}"
 								onclick="goobiWorkflowJS.progress.displayProgressBar()">
-								<span class="fa fa-save" />
+								<util:icon icon="device-floppy" />
 								<span>#{msgs.speichern}</span>
 							</button>
 
@@ -206,7 +206,7 @@
 								type="submit"
 								jsf:immediate="true"
 								jsf:action="process_import_1">
-								<span class="fa fa-arrow-circle-o-left" />
+								<util:icon icon="circle-arrow-left" />
 								<span>#{msgs.zurueck}</span>
 							</button>
 

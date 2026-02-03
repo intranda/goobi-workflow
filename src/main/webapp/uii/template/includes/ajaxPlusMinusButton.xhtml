@@ -1,6 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
-	 xmlns:jsf="http://xmlns.jcp.org/jsf">
+	 xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface>
 	</composite:interface>
@@ -16,7 +17,7 @@
 			data-bs-toggle="tooltip"
 			aria-haspopup="true"
 			aria-expanded="false">
-			<span class="fa fa-angle-right" />
+			<util:icon icon="chevron-right" />
 			<span>
 				<h:outputText value="#{item.titel}" />
 			</span>
@@ -34,7 +35,7 @@
 			aria-expanded="true"
 			title="#{msgs.showBoxDetailsOff}"
 			data-bs-toggle="tooltip">
-			<span class="fa fa-angle-down" />
+			<util:icon icon="chevron-down" />
 			<span>
 				<h:outputText value="#{item.titel}" />
 			</span>

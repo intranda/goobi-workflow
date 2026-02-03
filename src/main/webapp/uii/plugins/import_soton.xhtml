@@ -5,6 +5,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:util="http://goobi.io/util"
 	>
 
 	<composite:interface>
@@ -67,14 +68,14 @@
 						<button
 							jsf:action="#{MassImportForm.plugin.addDocstruct}"
 							class="btn">
-							<span class=" fa fa-plus" />
+							<util:icon icon="plus" />
 						</button>
 
 						<button
 							jsf:action="#{MassImportForm.plugin.deleteDocstruct}"
 							class="btn"
 							jsf:rendered="#{MassImportForm.docstructssize > 1}">
-							<span class=" fa fa-minus" />
+							<util:icon icon="minus" />
 							<f:setPropertyActionListener
 								target="#{MassImportForm.plugin.docstruct}"
 								value="#{docstruct}" />

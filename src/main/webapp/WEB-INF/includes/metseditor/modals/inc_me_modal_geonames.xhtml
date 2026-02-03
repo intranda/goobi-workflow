@@ -35,7 +35,7 @@
                             class="btn text-white"
                             title="#{msgs.cancel}"
                             data-bs-dismiss="modal">
-                            <span class="fa fa-times" />
+                            <util:icon icon="x" />
                         </button>
                     </div>
                     <div class="modal-body">
@@ -60,9 +60,7 @@
                                 jsf:id="geonamesSearchButton"
                                 class="btn btn-blank"
                                 jsf:action="#{Metadaten.search}">
-                                <span
-                                    class="fa fa-search"
-                                    aria-hidden="true" />
+                                <util:icon icon="search" />
                                 <span>
                                     #{msgs.search}
                                 </span>
@@ -181,9 +179,7 @@
                                                     <f:setPropertyActionListener
                                                         value=""
                                                         target="#{Metadaten.geonamesSearchValue}" />
-                                                    <span
-                                                        class="fa fa-check"
-                                                        aria-hidden="true" />
+                                                    <util:icon icon="check" />
                                                 </button>
                                             </div>
                                         </div>

@@ -7,6 +7,7 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:p="http://primefaces.org/ui"
     xmlns:button="http://goobi.io/button"
+    xmlns:util="http://goobi.io/util"
 >
     <c:set var="scope" value="#{
         fn:contains(bean, 'StepBean') ? 'step'
@@ -87,30 +88,24 @@
         </c:if>
         <h:panelGroup rendered="#{property.type.name == 'boolean'}">
             <h:panelGroup rendered="#{property.readValue eq 'true'}">
-                <span
-                    aria-hidden="true"
-                    class="fa fa-check-square-o fa-lg" />
+                <util:icon icon="square-check" styleClass="icon--lg" />
             </h:panelGroup>
             <h:panelGroup rendered="#{property.readValue ne 'true'}">
-                <span
-                    aria-hidden="true"
-                    class="fa fa-square-o fa-lg" />
+                <util:icon icon="square" styleClass="icon--lg" />
             </h:panelGroup>
         </h:panelGroup>
         <c:if test="#{editable}">
-            <button:row styleClass="ms-auto my-auto ps-2">
+            <button:row rowStyleClass="ms-auto my-auto ps-2">
                 <button
                     type="button"
                     jsf:id="EditButton#{id}"
-                    class="btn btn-blank"
+                    class="btn btn-icon btn-blank"
                     data-bs-toggle="modal"
                     data-bs-target="#EditModal#{groupId}">
                     <f:ajax
                         execute="@this"
                         render="propertyEditArea#{groupId}" />
-                    <span
-                        aria-hidden="true"
-                        class="fa fa-pencil" />
+                    <util:icon icon="pencil" />
                     <c:if test="#{scope == 'batch'}">
                         <f:setPropertyActionListener
                             target="#{bean.processProperty}"
@@ -148,14 +143,12 @@
                     <button
                         type="button"
                         jsf:action="#{bean.duplicateProperty}"
-                        class="btn btn-blank"
+                        class="btn btn-icon btn-blank"
                         title="#{msgs.duplicate}"
                         jsf:id="duplicateProperty#{id}"
                         jsf:rendered="#{proc.type.name != 'metadata' and scope == 'process' and LoginForm.hasRole('Workflow_General_Details_Edit')}"
                         data-bs-toggle="tooltip">
-                        <span
-                            aria-hidden="true"
-                            class="fa fa-clipboard" />
+                        <util:icon icon="clipboard" />
                         <f:setPropertyActionListener
                             target="#{bean.processProperty}"
                             value="#{property}" />

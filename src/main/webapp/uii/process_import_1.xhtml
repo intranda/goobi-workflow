@@ -8,6 +8,7 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:p="http://primefaces.org/ui">
 
@@ -119,7 +120,7 @@
                         <!-- TABS -->
                         <intranda:boxTitle
                             title="#{msgs.MassImport}"
-                            icon="fa-cloud-download">
+                            icon="cloud-download">
                             <ul class="tabs">
                                 <!-- TAB 1 -->
                                 <ui:fragment rendered="#{MassImportForm.hasUsablePluginsForRecords}">
@@ -469,7 +470,7 @@
                                 jsf:rendered="#{!MassImportForm.hasNextPage}"
                                 jsf:action="#{MassImportForm.convertData}"
                                 jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()">
-                                <span class="fa fa-save" />
+                                <util:icon icon="device-floppy" />
                                 <span>#{msgs.speichern}</span>
                                 <f:ajax
                                     execute="@form"
@@ -483,7 +484,7 @@
                                 type="submit"
                                 jsf:rendered="#{MassImportForm.hasNextPage}"
                                 jsf:action="#{MassImportForm.nextPage}">
-                                <span class="fa fa-arrow-circle-o-right" />
+                                <util:icon icon="circle-arrow-right" />
                                 <span>#{msgs.weiter}</span>
                             </button>
 

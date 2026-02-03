@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface>
         <composite:attribute name="name" />
@@ -108,9 +109,7 @@
                             <f:setPropertyActionListener
                                 value="1"
                                 target="#{cc.attrs.field}" />
-                            <i
-                                class="fa fa-star #{cc.attrs.field > 0 ? 'active' : ''}"
-                                aria-hidden="true"></i>
+                            <util:icon icon="star" styleClass="#{cc.attrs.field > 0 ? 'active' : ''}" />
                         </button>
                     </li>
                     <li class="rating-star">
@@ -125,9 +124,7 @@
                             <f:setPropertyActionListener
                                 value="2"
                                 target="#{cc.attrs.field}" />
-                            <i
-                                class="fa fa-star #{cc.attrs.field > 1 ? 'active' : ''}"
-                                aria-hidden="true"></i>
+                            <util:icon icon="star" styleClass="#{cc.attrs.field > 1 ? 'active' : ''}" />
 
                         </button>
                     </li>
@@ -144,9 +141,7 @@
                             <f:setPropertyActionListener
                                 value="3"
                                 target="#{cc.attrs.field}" />
-                            <i
-                                class="fa fa-star #{cc.attrs.field > 2 ? 'active' : ''}"
-                                aria-hidden="true"></i>
+                            <util:icon icon="star" styleClass="#{cc.attrs.field > 2 ? 'active' : ''}" />
                         </button>
                     </li>
                     <li class="rating-star">
@@ -162,9 +157,7 @@
                             <f:setPropertyActionListener
                                 value="4"
                                 target="#{cc.attrs.field}" />
-                            <i
-                                class="fa fa-star #{cc.attrs.field > 3 ? 'active' : ''}"
-                                aria-hidden="true"></i>
+                            <util:icon icon="star" styleClass="#{cc.attrs.field > 3 ? 'active' : ''}" />
                         </button>
                     </li>
                     <li class="rating-star">
@@ -179,9 +172,7 @@
                             <f:setPropertyActionListener
                                 value="5"
                                 target="#{cc.attrs.field}" />
-                            <i
-                                class="fa fa-star #{cc.attrs.field == 5 ? 'active' : ''}"
-                                aria-hidden="true"></i>
+                            <util:icon icon="star" styleClass="#{cc.attrs.field == 5 ? 'active' : ''}" />
                         </button>
                     </li>
                 </ul>

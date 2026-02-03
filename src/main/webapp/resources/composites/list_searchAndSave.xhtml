@@ -5,7 +5,8 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface>
         <composite:attribute name="bean" />
@@ -20,11 +21,11 @@
 			jsf:id="deleteFilter"
 			data-bs-toggle="tooltip"
 			aria-label="#{msgs.loeschen}"
-			class="btn gw-table__filters__option"
+			class="btn btn-icon gw-table__filters__option"
 			jsf:action="#{cc.attrs.bean.removeFilterFromUser}"
 			title="#{msgs.removeFilter}"
 		>
-			<span class="fa fa-trash-o" />
+			<util:icon icon="trash" />
 		</button>
 
 		<!--Filter zur User-Liste hinzufuegen -->
@@ -32,11 +33,11 @@
 			jsf:id="saveFilter"
 			data-toggle="tooltip"
 			aria-label="#{msgs.save}"
-			class="btn gw-table__filters__option"
+			class="btn btn-icon gw-table__filters__option"
 			jsf:action="#{cc.attrs.bean.addFilterToUser}"
 			title="#{msgs.addFilter}"
 		>
-			<span class="fa fa-save" />
+			<util:icon icon="device-floppy" />
 		</button>
 
 		<h:panelGroup rendered="#{cc.attrs.bean.user.filters.size() gt 0}">
@@ -44,14 +45,14 @@
 			<span data-bs-toggle="tooltip" title="#{msgs.filter}">
 				<div class="dropdown">
 					<button
-						class="btn gw-table__filters__option dropdown-toggle"
+						class="btn btn-icon gw-table__filters__option dropdown-toggle"
 						aria-label="#{msgs.dropdownMenu}"
 						data-bs-toggle="dropdown"
 						id="filterDropdown"
 						aria-haspopup="true"
 						aria-expanded="false"
 					>
-						<span class="fa fa-filter" />
+						<util:icon icon="filter" />
 						<span class="caret"></span>
 					</button>
 					<!-- Filter Liste -->
@@ -90,7 +91,7 @@
 		<div class="gw-table__filters__search-bar">
 			<div class="input-group">
 				<span class="input-group-text">
-					<span class="fa fa-search" />
+					<util:icon icon="search" />
 				</span>
 				<h:inputText
 					id="searchField"

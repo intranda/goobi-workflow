@@ -8,6 +8,7 @@
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
   	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util"
 >
 
     <composite:interface>
@@ -102,7 +103,7 @@
 					title="#{msgs.calculateStatistics}"
 					class="btn btn-neutral-600"
 					jsf:action="#{cc.attrs.Manager.calculate}" >
-					<span class="fa fa-cog" />
+					<util:icon icon="settings" styleClass="me-1" />
 					<span>
 						<h:outputText value="#{msgs.calculateStatistics}" />
 					</span>
@@ -147,7 +148,7 @@
 						title="#{msgs.download_excel}"
 						jsf:rendered="#{element.dataTable.showableInTable and (cc.attrs.Manager.targetResultOutput== 'table' or cc.attrs.Manager.targetResultOutput=='chartAndTable')}"
 						>
-						<span class="fa fa-floppy-o" />
+						<util:icon icon="device-floppy" />
 						<span>
 							<h:outputText value="#{msgs.download_excel}" />
 						</span>
@@ -161,7 +162,7 @@
 						title="#{msgs.download_csv}"
 						jsf:rendered="#{element.dataTable.showableInTable and (cc.attrs.Manager.targetResultOutput== 'table' or cc.attrs.Manager.targetResultOutput=='chartAndTable')}"
 						>
-						<span class="fa fa-floppy-o" />
+						<util:icon icon="device-floppy" />
 						<span>
 							<h:outputText value="#{msgs.download_csv}" />
 						</span>

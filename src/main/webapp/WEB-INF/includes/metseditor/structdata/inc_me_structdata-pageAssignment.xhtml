@@ -18,7 +18,7 @@
             <h:panelGroup id="pageallocation" layout="block" styleClass="pb-3">
                 <div id="meStructdataPageAssignmentBox">
                     <section:section type="outline" id="pageAssignmentBox" collapsible="true" collapsed="true">
-                        <section:header icon="bars" title="#{msgs.seitenzuordnung}">
+                        <section:header icon="menu-2" title="#{msgs.seitenzuordnung}">
                             <section:header-actions>
                                 <ul class="tabs" role="list" jsf:id="pageAssignmentTabs">
                                     <button class="tab#{NavigationForm.uiStatus.pageassignment == '' or NavigationForm.uiStatus.pageassignment == null ? ' active' : ''}" jsf:id="metseditor_pages_overview" jsf:action="#{NavigationForm.Reload}">
@@ -62,7 +62,7 @@
                                                     type="button"
                                                     data-bs-toggle="tooltip"
                                                     data-bs-placement="left">
-                                                    <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
+                                                    <util:icon icon="chevron-left" styleClass="icon--lg" />
                                                     <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                                     <f:ajax render="pagestart2"/>
                                                 </button>
@@ -75,7 +75,7 @@
                                                     type="button"
                                                     data-bs-toggle="tooltip"
                                                     data-bs-placement="top">
-                                                    <span class="fa fa-picture-o" aria-hidden="true"/>
+                                                    <util:icon icon="photo" />
                                                     <f:setPropertyActionListener value="#{Metadaten.imageIndex+1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                                     <f:ajax render="pagestart2"/>
                                                 </button>
@@ -88,7 +88,7 @@
                                                     type="button"
                                                     data-bs-toggle="tooltip"
                                                     data-bs-placement="right">
-                                                    <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
+                                                    <util:icon icon="chevron-right" styleClass="icon--lg" />
                                                     <f:setPropertyActionListener value="#{Metadaten.imageIndex+2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                                     <f:ajax render="pagestart2"/>
                                                 </button>
@@ -115,7 +115,7 @@
                                                     type="button"
                                                     data-bs-toggle="tooltip"
                                                     data-bs-placement="left">
-                                                    <span class="fa fa-angle-left fa-lg" aria-hidden="true"/>
+                                                    <util:icon icon="chevron-left" styleClass="icon--lg" />
                                                     <f:setPropertyActionListener value="#{Metadaten.imageIndex}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                                     <f:ajax render="pageend2"/>
                                                 </button>
@@ -128,7 +128,7 @@
                                                     type="button"
                                                     data-bs-toggle="tooltip"
                                                     data-bs-placement="bottom">
-                                                    <span class="fa fa-picture-o" aria-hidden="true"/>
+                                                    <util:icon icon="photo" />
                                                     <f:setPropertyActionListener value="#{Metadaten.imageIndex +1}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                                     <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
                                                     <f:ajax render="pageend2"/>
@@ -142,7 +142,7 @@
                                                     type="button"
                                                     data-bs-toggle="tooltip"
                                                     data-bs-placement="right">
-                                                    <span class="fa fa-angle-right fa-lg" aria-hidden="true"/>
+                                                    <util:icon icon="chevron-right" styleClass="icon--lg" />
                                                     <f:setPropertyActionListener value="#{Metadaten.imageIndex +2}" property="#{Metadaten.pageNumber}" target="#{Metadaten.pageNumber}"/>
                                                     <f:ajax render="pageend2"/>
                                                 </button>
@@ -187,7 +187,7 @@
                                                     title="#{msgs.mets_addTheseImages}"
                                                     data-bs-toggle="tooltip"
                                                     data-bs-placement="top">
-                                                    <span class="fa fa-chevron-right" aria-hidden="true"/>
+                                                    <util:icon icon="chevron-right" />
                                                     <f:ajax
                                                         execute="@form"
                                                         render="assignments :treeform" />
@@ -200,7 +200,7 @@
                                                     title="#{msgs.mets_removeTheseImages}"
                                                     data-bs-toggle="tooltip"
                                                     data-bs-placement="bottom">
-                                                    <span class="fa fa-chevron-left" aria-hidden="true"/>
+                                                    <util:icon icon="chevron-left" />
                                                     <f:ajax
                                                         execute="@form"
                                                         render="assignments :treeform" />
@@ -244,7 +244,7 @@
                                                         type="button"
                                                         data-renderimage="true"
                                                         data-bs-toggle="tooltip">
-                                                        <span class="fa fa-eye" aria-hidden="true"/>
+                                                        <util:icon icon="eye" />
                                                         <f:ajax
                                                             execute="@this pageSelectionFirstPage"
                                                             render=":openseadragonform" />
@@ -272,7 +272,7 @@
                                                         type="button"
                                                         data-renderimage="true"
                                                         data-bs-toggle="tooltip">
-                                                        <span class="fa fa-eye" aria-hidden="true"/>
+                                                        <util:icon icon="eye" />
                                                         <f:ajax execute="@this pageSelectionLastPage" render=":openseadragonform" />
                                                     </button>
                                                 </div>

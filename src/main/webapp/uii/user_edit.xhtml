@@ -6,8 +6,8 @@
     template="/uii/template/template.html"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -60,7 +60,7 @@
                         <!-- TITLE BAR -->
                         <intranda:boxTitle
                             title="#{myPageTitle}"
-                            icon="fa-edit">
+                            icon="edit">
                             <ul class="tabs #{BenutzerverwaltungForm.myClass.id == null ? 'd-none': ''}">
                                 <li class="tab tab--1 #{BenutzerverwaltungForm.displayMode eq ''?'active':''}"><h:commandLink
                                         id="tab1"
@@ -315,7 +315,7 @@
                                                 boxSmall="true"
                                                 boxScope="view-users__box--usergroup-1"
                                                 title="#{msgs.benutzergruppen}"
-                                                icon="fa-table"
+                                                icon="table"
                                                 boxPadding="false">
 
                                                 <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
@@ -340,7 +340,7 @@
                                                                         title="#{msgs.uebernehmen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.ZuGruppeHinzufuegen}">
-                                                                        <span class="fa fa-plus" />
+                                                                        <util:icon icon="plus" />
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
@@ -400,7 +400,7 @@
                                                 boxSmall="true"
                                                 boxScope="view-users__box--usergroup-2"
                                                 title="#{msgs.benutzergruppen}"
-                                                icon="fa-table"
+                                                icon="table"
                                                 boxPadding="false">
 
                                                 <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
@@ -433,7 +433,7 @@
                                                                         title="#{msgs.ausGruppeLoeschen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.AusGruppeLoeschen}">
-                                                                        <span class="fa fa-trash-o" />
+                                                                        <util:icon icon="trash" />
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
@@ -459,7 +459,7 @@
                                                         class="btn btn-neutral-600 me-auto"
                                                         jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
                                                         jsf:immediate="true">
-                                                        <span class="fa fa-plus" /> <span> <h:outputText
+                                                        <util:icon icon="plus" /> <span> <h:outputText
                                                                 value="#{msgs.benutzergruppenHinzufuegen}" />
                                                         </span>
                                                         <f:setPropertyActionListener
@@ -512,7 +512,7 @@
                                                 boxType="action"
                                                 boxSmall="true"
                                                 title="#{msgs.projekte}"
-                                                icon="fa-table"
+                                                icon="table"
                                                 boxPadding="false">
 
                                                 <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
@@ -535,7 +535,7 @@
                                                                         title="#{msgs.uebernehmen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.ZuProjektHinzufuegen}">
-                                                                        <span class="fa fa-plus" />
+                                                                        <util:icon icon="plus" />
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
@@ -587,7 +587,7 @@
                                                 boxSmall="true"
                                                 boxScope="view-users__box--project-2"
                                                 title="#{msgs.projekte}"
-                                                icon="fa-table"
+                                                icon="table"
                                                 boxPadding="false">
 
                                                 <div class="gw-table gw-table-fixed gw-table-fixed-no-th">
@@ -622,7 +622,7 @@
                                                                         title="#{msgs.ausProjektLoeschen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.AusProjektLoeschen}">
-                                                                        <span class="fa fa-trash-o" />
+                                                                        <util:icon icon="trash" />
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
@@ -646,7 +646,7 @@
                                                         class="btn btn-neutral-600 me-auto"
                                                         jsf:action="#{ProjekteForm.FilterKeinMitZurueck}"
                                                         jsf:immediate="true">
-                                                        <span class="fa fa-plus me-auto" /> <span> <h:outputText
+                                                        <util:icon icon="plus" styleClass="me-auto" /> <span> <h:outputText
                                                                 value="#{msgs.projektHinzufuegen}" />
                                                         </span>
                                                         <f:setPropertyActionListener
@@ -691,7 +691,7 @@
                                         jsf:id="absenden2"
                                         type="submit"
                                         jsf:action="#{BenutzerverwaltungForm.createUser}">
-                                        <span class="fa fa-save margin-right-5" /> <span> <h:outputText
+                                        <util:icon icon="device-floppy" styleClass="me-1" /> <span> <h:outputText
                                                 value="#{msgs.speichern}" />
                                         </span>
                                     </button>
@@ -716,7 +716,7 @@
                                         jsf:id="absenden"
                                         type="submit"
                                         jsf:action="#{BenutzerverwaltungForm.Speichern}">
-                                        <span class="fa fa-save" /> <span> <h:outputText value="#{msgs.speichern}" />
+                                        <util:icon icon="device-floppy" /> <span> <h:outputText value="#{msgs.speichern}" />
                                         </span>
                                     </button>
 
@@ -726,7 +726,7 @@
                                         class="btn btn-hot trigger-delete"
                                         onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
                                         jsf:action="#{BenutzerverwaltungForm.Loeschen}">
-                                        <span class="fa fa-trash-o" /> <span> <h:outputText
+                                        <util:icon icon="trash" /> <span> <h:outputText
                                                 value="#{msgs.loeschen}" />
                                         </span>
                                     </button>

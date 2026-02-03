@@ -9,6 +9,14 @@
         max-height: 100%;
         overflow-y: auto;
         padding: 0 0.75rem 0 0;
+
+        .icon-text {
+            align-items: flex-start;
+
+            .icon-wrapper {
+                margin-top: 0.2em;
+            }
+        }
     }
 
     .treeform-actions {

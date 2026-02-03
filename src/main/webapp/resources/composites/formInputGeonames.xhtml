@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface>
         <composite:attribute name="name" />
@@ -127,7 +128,7 @@
                             class="btn text-white"
                             title="#{msgs.abbrechen}"
                             data-bs-dismiss="modal">
-                            <span class="fa fa-times" />
+                            <util:icon icon="x" />
                         </button>
                     </div>
                     <div class="modal-body">
@@ -154,9 +155,7 @@
                                     jsf:id="gndSearchButton"
                                     class="btn btn-blank"
                                     jsf:action="#{cc.attrs.field.searchGeonames}">
-                                    <i
-                                        class="fa fa-search"
-                                        aria-hidden="true"></i>
+                                    <util:icon icon="search" />
                                     <span>
                                         <h:outputText value="#{msgs.search}" />
                                     </span>
@@ -274,7 +273,7 @@
                                                     <f:setPropertyActionListener
                                                         value=""
                                                         target="#{cc.attrs.field.searchValue}" />
-                                                    <span class="fa fa-check" />
+                                                    <util:icon icon="check" />
 
                                                 </button>
                                             </div>
