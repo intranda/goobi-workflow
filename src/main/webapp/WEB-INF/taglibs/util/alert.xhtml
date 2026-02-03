@@ -1,0 +1,19 @@
+<ui:component
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:util="http://goobi.io/util">
+
+    <c:set var="alertIcon" value="#{type == 'success' ? 'circle-check' :
+                                    (type == 'danger' ? 'alert-circle' :
+                                    (type == 'warning' ? 'alert-triangle' : 'info-circle'))}" />
+
+    <div class="alert alert-#{type}#{dismissible ? ' alert-dismissible' : ''} #{styleClass != null ? styleClass : 'mb-3'}" role="alert">
+        <util:icon icon="#{alertIcon}" styleClass="alert__icon" />
+        <span class="alert__message">#{message}<ui:insert /></span>
+        <c:if test="#{dismissible}">
+            <button type="button" class="btn btn-blank btn-icon" data-bs-dismiss="alert" aria-label="Close">
+                <util:icon icon="x" />
+            </button>
+        </c:if>
+    </div>
+</ui:component>
