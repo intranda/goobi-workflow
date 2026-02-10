@@ -11,48 +11,6 @@ RUN echo $build; if [ "$build" = "true" ]; then mvn clean package; elif [ -f "/w
 FROM tomcat:10-jre21 AS assemble
 LABEL maintainer="Matthias Geerdsen <matthias.geerdsen@intranda.com>"
 
-ENV DB_SERVER workflow-db
-ENV DB_PORT 3306
-ENV DB_NAME goobi
-ENV DB_USER goobi
-ENV DB_PASSWORD goobi
-
-RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
-RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ && mkdir -p /usr/local/tomcat/webapps/workflow
-
-# Prepare template configuration for Goobi workflow
-ENV CONFIGSOURCE folder
-ENV CONFIG_FOLDER /workflow-template
-RUN mkdir /workflow-template
-COPY install/config/ /workflow-template/config
-COPY install/rulesets/ /workflow-template/rulesets
-COPY install/scripts/ /workflow-template/scripts
-COPY install/xslt/ /workflow-template/xslt
-# Script adjustments
-COPY install/docker/dummy.sh /workflow-template/scripts/
-RUN sed -i 's/^script_createSymLink=script_createSymLink.sh/script_createSymLink=dummy.sh/' /workflow-template/config/goobi_config.properties
-RUN sed -i 's/^script_deleteSymLink=script_deleteSymLink.sh/script_deleteSymLink=dummy.sh/' /workflow-template/config/goobi_config.properties
-RUN sed -i 's/TOMCATUSER=tomcat/TOMCATUSER=root/' /workflow-template/scripts/iii.sh
-
-# General configurations
-COPY install/docker/goobi.xml.template /usr/local/tomcat/conf/workflow.xml.template
-COPY install/docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
-COPY install/docker/server.xml /usr/local/tomcat/conf/server.xml
-COPY install/docker/run.sh /run.sh
-COPY install/docker/log4j.xml /opt/digiverso/log4j.xml
-COPY install/docker/log4j2.xml /opt/digiverso/log4j2.xml
-
-RUN rm -rf ${CATALINA_HOME}/webapps/*
-# redirect / to /workflow/
-RUN mkdir ${CATALINA_HOME}/webapps/ROOT && \
-    echo '<% response.sendRedirect("/workflow/"); %>' > ${CATALINA_HOME}/webapps/ROOT/index.jsp
-COPY --from=build  /workflow/target/*.war /
-RUN apt-get update && apt-get -y install unzip
-RUN unzip /*.war -d /usr/local/tomcat/webapps/workflow && rm /*.war
-# Manually patch this until 'workflow' is used everywhere
-RUN sed -i 's/goobi\.xml/workflow\.xml/g' /run.sh
-RUN sed -i 's/\/goobi\/jvmtemp/\/workflow\/jvmtemp/g' /run.sh
-
 ##### SYSTEM PACKAGE INSTALLATION AND UPDATES
 RUN apt-get update && \
     apt-get -y install rsync \
@@ -69,9 +27,104 @@ RUN apt-get update && \
         git \
         fontconfig \
         poppler-utils \
-        pdftk && \
+        pdftk \
+        unzip \
+        python3 \
+        mysql-client && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
+RUN ["/bin/bash","-c", "mkdir -p /workflow-template/default-plugins/{config,lib,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
+RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ && mkdir -p /usr/local/tomcat/webapps/workflow
+
+# Install default plugins
+RUN set -eu; \
+    \
+    # OPAC plugins
+    for plugin in pica marc; do \
+      curl -fL \
+        "https://github.com/intranda/goobi-plugin-opac-${plugin}/releases/latest/download/plugin-opac-${plugin}-base.jar" \
+        -o "/workflow-template/default-plugins/plugins/opac/plugin-opac-${plugin}-base.jar"; \
+    done; \
+    \
+    # Step plugins: GUI + base JARs
+    for plugin in file-upload imageqa; do \
+      curl -fL \
+        "https://github.com/intranda/goobi-plugin-step-${plugin}/releases/latest/download/plugin-step-${plugin}-gui.jar" \
+        -o "/workflow-template/default-plugins/plugins/GUI/plugin-step-${plugin}-gui.jar"; \
+      curl -fL \
+        "https://github.com/intranda/goobi-plugin-step-${plugin}/releases/latest/download/plugin-step-${plugin}-base.jar" \
+        -o "/workflow-template/default-plugins/plugins/step/plugin-step-${plugin}-base.jar"; \
+    done; \
+    \
+    # Step plugin configs
+    curl -fL \
+      https://github.com/intranda/goobi-plugin-step-file-upload/releases/latest/download/plugin_intranda_step_fileUpload.xml \
+      -o /workflow-template/default-plugins/config/plugin_intranda_step_fileUpload.xml; \
+    curl -fL \
+      https://github.com/intranda/goobi-plugin-step-imageqa/releases/latest/download/plugin_intranda_step_imageQA.xml \
+      -o /workflow-template/default-plugins/config/plugin_intranda_step_imageQA.xml; \
+    \
+    # Dashboard: Extended
+    base=https://github.com/intranda/goobi-plugin-dashboard-extended/releases/latest/download; \
+    curl -fL "$base/plugin-dashboard-extended-gui.jar" \
+      -o /workflow-template/default-plugins/plugins/GUI/plugin-dashboard-extended-gui.jar; \
+    curl -fL "$base/plugin-dashboard-extended-base.jar" \
+      -o /workflow-template/default-plugins/plugins/dashboard/plugin-dashboard-extended-base.jar; \
+    curl -fL "$base/plugin_intranda_dashboard_extended.xml" \
+      -o /workflow-template/default-plugins/config/plugin_intranda_dashboard_extended.xml; \
+    \
+    # REST: intranda REST
+    curl -fL \
+      https://github.com/intranda/goobi-plugin-rest-intranda/releases/latest/download/plugin-rest-intranda-api.jar \
+      -o /workflow-template/default-plugins/lib/plugin-rest-intranda-api.jar; \
+    \
+    # Controlling: intranda statistics
+    base=https://github.com/intranda/goobi-plugin-statistics-intranda/releases/latest/download; \
+    for file in \
+      plugin-statistics-intranda-gui.jar \
+      plugin-statistics-intranda-base.jar \
+      statistics_template.pdf \
+      statistics_template.xlsx; \
+    do \
+      curl -fL "$base/$file" \
+        -o "/workflow-template/default-plugins/plugins/statistics/$file"; \
+    done
+
+# Prepare template configuration for Goobi workflow
+ENV CONFIGSOURCE=folder
+ENV CONFIG_FOLDER=/workflow-template
+COPY install/config/ /workflow-template/config
+COPY install/rulesets/ /workflow-template/rulesets
+COPY install/scripts/ /workflow-template/scripts
+COPY install/xslt/ /workflow-template/xslt
+RUN mv /workflow-template/config/goobi_config.properties /workflow-template/config/goobi_config.user.properties
+# Script adjustments
+COPY install/docker/dummy.sh /workflow-template/scripts/
+RUN sed -i 's/^script_createSymLink=script_createSymLink.sh/script_createSymLink=dummy.sh/' /workflow-template/config/goobi_config.user.properties
+RUN sed -i 's/^script_deleteSymLink=script_deleteSymLink.sh/script_deleteSymLink=dummy.sh/' /workflow-template/config/goobi_config.user.properties
+RUN sed -i 's/TOMCATUSER=tomcat/TOMCATUSER=root/' /workflow-template/scripts/iii.sh
+
+# General configurations
+COPY install/docker/goobi.xml.template /usr/local/tomcat/conf/workflow.xml.template
+COPY install/docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
+COPY install/docker/server.xml /usr/local/tomcat/conf/server.xml
+COPY install/docker/run.sh /run.sh
+COPY install/docker/config.py /config.py
+COPY install/docker/log4j.xml /opt/digiverso/log4j.xml
+COPY install/docker/log4j2.xml /opt/digiverso/log4j2.xml
+
+RUN rm -rf ${CATALINA_HOME}/webapps/*
+# redirect / to /workflow/
+RUN mkdir ${CATALINA_HOME}/webapps/ROOT && \
+    echo '<% response.sendRedirect("/workflow/"); %>' > ${CATALINA_HOME}/webapps/ROOT/index.jsp
+COPY --from=build  /workflow/target/*.war /
+RUN unzip /*.war -d /usr/local/tomcat/webapps/workflow && rm /*.war
+# Manually patch this until 'workflow' is used everywhere
+RUN sed -i 's/goobi\.xml/workflow\.xml/g' /run.sh
+RUN sed -i 's/\/goobi\/jvmtemp/\/workflow\/jvmtemp/g' /run.sh
+
 
 EXPOSE 8080
 CMD ["/run.sh"]

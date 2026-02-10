@@ -6,8 +6,31 @@ set -e
 
 set -u
 
+echo "Generating config file /opt/digiverso/goobi/config/goobi_config.properties"
+/usr/bin/python3 /config.py
+
 echo "Setting database configuration from environment..."
-envsubst '\$DB_SERVER \$DB_PORT \$DB_NAME \$DB_USER \$DB_PASSWORD' </usr/local/tomcat/conf/goobi.xml.template > /usr/local/tomcat/conf/Catalina/localhost/goobi.xml
+envsubst '\$DB_HOST \$DB_PORT \$DB_NAME \$DB_USER \$DB_PASSWORD' </usr/local/tomcat/conf/goobi.xml.template > /usr/local/tomcat/conf/Catalina/localhost/goobi.xml
+
+set +u
+
+if [[ -v PW_GOOBITESTUSER ]]; then
+  while ! mysqladmin ping -h "${DB_HOST}" -u "${DB_USER}" --password="${DB_PASSWORD}" --silent; do
+      sleep 2
+  done
+  echo "Setting password for test users"
+  SALT=$(head -c 16 /dev/urandom | base64)
+  export SALT
+  ENCRYPTED_PW=$(python3 -c "import hashlib,base64,os;d=hashlib.sha256(os.getenv('SALT').encode()+os.getenv('PW_GOOBITESTUSER').encode()).digest();[d:=hashlib.sha256(d).digest() for _ in range(1,10000)];print(base64.b64encode(d).decode())")
+  mysql -h "${DB_HOST}" -u "${DB_USER}" --password="${DB_PASSWORD}" -e "USE goobi;UPDATE benutzer SET salt='$SALT', encryptedPassword='$ENCRYPTED_PW' WHERE login IN ('testadmin','testmetadata','testbookmanager','testscanning','testqc','testprojectmanagement','goobi');"
+fi
+
+set -u
+
+echo "Checking if default plugins are present"
+cp -rn /workflow-template/default-plugins/plugins/ /opt/digiverso/goobi/plugins/
+cp -rn /workflow-template/default-plugins/config/ /opt/digiverso/goobi/config/
+cp -rn /workflow-template/default-plugins/lib/ /opt/digiverso/goobi/lib/
 
 if [ -n "${WORKING_STORAGE:-}" ]
 then
@@ -54,7 +77,7 @@ case $CONFIGSOURCE in
     ;;
 esac
 
-#cat /usr/local/tomcat/conf/Catalina/localhost/goobi.xml
+
 
 echo "Starting application server..."
 exec catalina.sh run

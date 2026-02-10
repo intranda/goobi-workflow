@@ -1,45 +1,52 @@
-version: "3.7"
+---
 services:
-  goobi:
-    image: intranda/goobi-workflow:default-plugins
-    # build:
-    #   context: .
-    #   dockerfile: Goobi/Dockerfile
+  workflow:
+    image: intranda/goobi-workflow:latest
+    depends_on:
+      - workflow-db
+    restart: unless-stopped
     ports:
-      - "8080:8080"
-    volumes:
-      - type: volume
-        source: goobi_metadata
-        target: /opt/digiverso/goobi/metadata
-      - type: volume
-        source: goobi_exportfolder
-        target: /opt/digiverso/viewer/hotfolder
-      # - type: bind
-      #   source: /local/path/to/my/goobi/plugins
-      #   target: /opt/digiverso/goobi/plugins
-      # - type: bind
-      #   source: /local/path/to/my/goobi/config
-      #   target: /opt/digiverso/goobi/config
-    depends_on: 
-      - goobi-db
-
-  goobi-db:
-    image: mariadb:10.1
+      - 8080:8080
     environment:
-      MYSQL_ROOT_PASSWORD: goobi
-      MYSQL_DATABASE: goobi
-      MYSQL_USER: goobi
-      MYSQL_PASSWORD: goobi
+      DB_HOST: workflow-db
+      DB_NAME: goobi
+      DB_USER: goobi
+      DB_PORT: 3306
+      DB_PASSWORD: CHANGEME
+      PW_GOOBITESTUSER: CHANGEME
+      # Configure the goobi_config.properties using the schema GOOBI_<var_name>
+      # All possible variables can be found here https://docs.goobi.io/de/workflow/manual/admin/config_files/goobi_config.properties
+      GOOBI_ApplicationHeaderTitle: "Goobi workflow"
     volumes:
       - type: bind
-        source: ./install/db/goobi_blank.sql
-        target: /docker-entrypoint-initdb.d/goobi_blank.sql
-      - type: volume
-        source: goobi_dbdata
-        target: /var/lib/mysqldata
+        source: ./goobi/config
+        target: /opt/digiverso/goobi/config
+      - type: bind
+        source: ./goobi/plugins
+        target: /opt/digiverso/goobi/plugins
+      - type: bind
+        source: .ge/tomcat/logs
+        target: /usr/local/tomcat/logs
 
-
-volumes:
-  goobi_metadata:
-  goobi_dbdata:
-  goobi_exportfolder:
+  workflow-db:
+    image: mariadb:lts
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    environment:
+      MYSQL_ROOT_PASSWORD: CHANGEME
+      MYSQL_DATABASE: goobi
+      MYSQL_USER: goobi
+      MYSQL_PASSWORD: CHANGEME
+      TZ: "Europe/Berlin"
+    volumes:
+      - type: bind
+        source: ./db/setup
+        target: /docker-entrypoint-initdb.d
+      - type: bind
+        source: ./db/mysql
+        target: /var/lib/mysql
