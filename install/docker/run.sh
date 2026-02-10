@@ -10,12 +10,13 @@ echo "Generating config file /opt/digiverso/goobi/config/goobi_config.properties
 /usr/bin/python3 /config.py
 
 echo "Setting database configuration from environment..."
-envsubst '\$DB_HOST \$DB_PORT \$DB_NAME \$DB_USER \$DB_PASSWORD' </usr/local/tomcat/conf/goobi.xml.template > /usr/local/tomcat/conf/Catalina/localhost/goobi.xml
+envsubst '\$DB_HOST \$DB_PORT \$DB_NAME \$DB_USER \$DB_PASSWORD' </usr/local/tomcat/conf/workflow.xml.template > /usr/local/tomcat/conf/Catalina/localhost/workflow.xml
 
 set +u
 
 if [[ -v PW_GOOBITESTUSER ]]; then
   while ! mysqladmin ping -h "${DB_HOST}" -u "${DB_USER}" --password="${DB_PASSWORD}" --silent; do
+      echo "Waiting for database to boot..."
       sleep 2
   done
   echo "Setting password for test users"
@@ -25,16 +26,19 @@ if [[ -v PW_GOOBITESTUSER ]]; then
   mysql -h "${DB_HOST}" -u "${DB_USER}" --password="${DB_PASSWORD}" -e "USE goobi;UPDATE benutzer SET salt='$SALT', encryptedPassword='$ENCRYPTED_PW' WHERE login IN ('testadmin','testmetadata','testbookmanager','testscanning','testqc','testprojectmanagement','goobi');"
 fi
 
-set -u
 
-echo "Checking if default plugins are present"
-cp -rn /workflow-template/default-plugins/plugins/ /opt/digiverso/goobi/plugins/
-cp -rn /workflow-template/default-plugins/config/ /opt/digiverso/goobi/config/
-cp -rn /workflow-template/default-plugins/lib/ /opt/digiverso/goobi/lib/
+if [[ ${LOAD_DEFAULT_PLUGINS,,} == true ]]; then
+  echo "Checking if default plugins are present"
+  cp -r --update=none /workflow-template/default-plugins/plugins/ /opt/digiverso/goobi/plugins/
+  cp -r --update=none /workflow-template/default-plugins/config/ /opt/digiverso/goobi/config/
+  cp -r --update=none /workflow-template/default-plugins/lib/ /opt/digiverso/goobi/lib/
+fi
+
+set -u
 
 if [ -n "${WORKING_STORAGE:-}" ]
 then
-  CATALINA_TMPDIR="${WORKING_STORAGE}/goobi/jvmtemp"
+  CATALINA_TMPDIR="${WORKING_STORAGE}/workflow/jvmtemp"
   mkdir -p "${CATALINA_TMPDIR}"
   echo >> /usr/local/tomcat/bin/setenv.sh
   echo "CATALINA_TMPDIR=${CATALINA_TMPDIR}" >> /usr/local/tomcat/bin/setenv.sh
@@ -66,10 +70,10 @@ case $CONFIGSOURCE in
     fi
     
     echo "Copying configuration from local folder"
-    [ -d "$CONFIG_FOLDER"/config ] && cp -arnv "$CONFIG_FOLDER"/config/* /opt/digiverso/goobi/config/
-    [ -d "$CONFIG_FOLDER"/rulesets ] && cp -arnv "$CONFIG_FOLDER"/rulesets/* /opt/digiverso/goobi/rulesets/
-    [ -d "$CONFIG_FOLDER"/scripts ] && cp -arnv "$CONFIG_FOLDER"/scripts/* /opt/digiverso/goobi/scripts/
-    [ -d "$CONFIG_FOLDER"/xslt ] && cp -arnv "$CONFIG_FOLDER"/xslt/* /opt/digiverso/goobi/xslt/
+    [ -d "$CONFIG_FOLDER"/config ] && cp -arv --update=none "$CONFIG_FOLDER"/config/* /opt/digiverso/goobi/config/
+    [ -d "$CONFIG_FOLDER"/rulesets ] && cp -arv --update=none "$CONFIG_FOLDER"/rulesets/* /opt/digiverso/goobi/rulesets/
+    [ -d "$CONFIG_FOLDER"/scripts ] && cp -arv --update=none "$CONFIG_FOLDER"/scripts/* /opt/digiverso/goobi/scripts/
+    [ -d "$CONFIG_FOLDER"/xslt ] && cp -arv --update=none "$CONFIG_FOLDER"/xslt/* /opt/digiverso/goobi/xslt/
     ;;
 
   *)

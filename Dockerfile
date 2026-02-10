@@ -34,6 +34,13 @@ RUN apt-get update && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN rm -rf ${CATALINA_HOME}/webapps/*
+# redirect / to /workflow/
+RUN mkdir ${CATALINA_HOME}/webapps/ROOT && \
+    echo '<% response.sendRedirect("/workflow/"); %>' > ${CATALINA_HOME}/webapps/ROOT/index.jsp
+COPY --from=build  /workflow/target/*.war /
+RUN unzip /*.war -d /usr/local/tomcat/webapps/workflow && rm /*.war
+
 RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
 RUN ["/bin/bash","-c", "mkdir -p /workflow-template/default-plugins/{config,lib,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
 RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ && mkdir -p /usr/local/tomcat/webapps/workflow
@@ -110,20 +117,10 @@ RUN sed -i 's/TOMCATUSER=tomcat/TOMCATUSER=root/' /workflow-template/scripts/iii
 COPY install/docker/goobi.xml.template /usr/local/tomcat/conf/workflow.xml.template
 COPY install/docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
 COPY install/docker/server.xml /usr/local/tomcat/conf/server.xml
-COPY install/docker/run.sh /run.sh
 COPY install/docker/config.py /config.py
 COPY install/docker/log4j.xml /opt/digiverso/log4j.xml
 COPY install/docker/log4j2.xml /opt/digiverso/log4j2.xml
-
-RUN rm -rf ${CATALINA_HOME}/webapps/*
-# redirect / to /workflow/
-RUN mkdir ${CATALINA_HOME}/webapps/ROOT && \
-    echo '<% response.sendRedirect("/workflow/"); %>' > ${CATALINA_HOME}/webapps/ROOT/index.jsp
-COPY --from=build  /workflow/target/*.war /
-RUN unzip /*.war -d /usr/local/tomcat/webapps/workflow && rm /*.war
-# Manually patch this until 'workflow' is used everywhere
-RUN sed -i 's/goobi\.xml/workflow\.xml/g' /run.sh
-RUN sed -i 's/\/goobi\/jvmtemp/\/workflow\/jvmtemp/g' /run.sh
+COPY install/docker/run.sh /run.sh
 
 
 EXPOSE 8080
