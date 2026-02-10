@@ -6,6 +6,9 @@ set -e
 
 set -u
 
+# Create directories if not present
+mkdir -p /opt/digiverso/goobi/plugins/{administration,command,dashboard,export,generic,GUI,import,opac,statistics,step,theme,validation,workflow}
+
 echo "Generating config file /opt/digiverso/goobi/config/goobi_config.properties"
 /usr/bin/python3 /config.py
 
