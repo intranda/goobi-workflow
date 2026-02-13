@@ -14,7 +14,6 @@ LABEL maintainer="Matthias Geerdsen <matthias.geerdsen@intranda.com>"
 ##### SYSTEM PACKAGE INSTALLATION AND UPDATES
 RUN apt-get update && \
     apt-get -y install rsync \
-        sudo \
         imagemagick \
         libtiff-tools \
         graphicsmagick \
@@ -41,6 +40,7 @@ RUN mkdir ${CATALINA_HOME}/webapps/ROOT && \
 COPY --from=build  /workflow/target/*.war /
 RUN unzip /*.war -d /usr/local/tomcat/webapps/workflow && rm /*.war
 
+# Structure is also created again in the run.sh in case of a run bind mount to not crash the container
 RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
 RUN ["/bin/bash","-c", "mkdir -p /workflow-template/default-plugins/{config,lib,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
 RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ && mkdir -p /usr/local/tomcat/webapps/workflow
@@ -48,14 +48,14 @@ RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ && mkdir -p /usr/local/t
 # Install default plugins
 RUN set -eu; \
     \
-    # OPAC plugins
+    # OPAC plugins \
     for plugin in pica marc; do \
       curl -fL \
         "https://github.com/intranda/goobi-plugin-opac-${plugin}/releases/latest/download/plugin-opac-${plugin}-base.jar" \
         -o "/workflow-template/default-plugins/plugins/opac/plugin-opac-${plugin}-base.jar"; \
     done; \
     \
-    # Step plugins: GUI + base JARs
+    # Step plugins: GUI + base JARs \
     for plugin in file-upload imageqa; do \
       curl -fL \
         "https://github.com/intranda/goobi-plugin-step-${plugin}/releases/latest/download/plugin-step-${plugin}-gui.jar" \
@@ -65,7 +65,7 @@ RUN set -eu; \
         -o "/workflow-template/default-plugins/plugins/step/plugin-step-${plugin}-base.jar"; \
     done; \
     \
-    # Step plugin configs
+    # Step plugin configs \
     curl -fL \
       https://github.com/intranda/goobi-plugin-step-file-upload/releases/latest/download/plugin_intranda_step_fileUpload.xml \
       -o /workflow-template/default-plugins/config/plugin_intranda_step_fileUpload.xml; \
@@ -73,7 +73,7 @@ RUN set -eu; \
       https://github.com/intranda/goobi-plugin-step-imageqa/releases/latest/download/plugin_intranda_step_imageQA.xml \
       -o /workflow-template/default-plugins/config/plugin_intranda_step_imageQA.xml; \
     \
-    # Dashboard: Extended
+    # Dashboard: Extended \
     base=https://github.com/intranda/goobi-plugin-dashboard-extended/releases/latest/download; \
     curl -fL "$base/plugin-dashboard-extended-gui.jar" \
       -o /workflow-template/default-plugins/plugins/GUI/plugin-dashboard-extended-gui.jar; \
@@ -82,12 +82,12 @@ RUN set -eu; \
     curl -fL "$base/plugin_intranda_dashboard_extended.xml" \
       -o /workflow-template/default-plugins/config/plugin_intranda_dashboard_extended.xml; \
     \
-    # REST: intranda REST
+    # REST: intranda REST \
     curl -fL \
       https://github.com/intranda/goobi-plugin-rest-intranda/releases/latest/download/plugin-rest-intranda-api.jar \
       -o /workflow-template/default-plugins/lib/plugin-rest-intranda-api.jar; \
     \
-    # Controlling: intranda statistics
+    # Controlling: intranda statistics \
     base=https://github.com/intranda/goobi-plugin-statistics-intranda/releases/latest/download; \
     for file in \
       plugin-statistics-intranda-gui.jar \
