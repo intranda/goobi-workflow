@@ -2,46 +2,19 @@ package de.sub.goobi.persistence.managers;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
- * Visit the websites for more information.
- *          - https://goobi.io
- *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi-workflow
- * 
+ *
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi-workflow
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  */
-import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.lang3.StringUtils;
-import org.goobi.api.mq.QueueType;
-import org.goobi.beans.ErrorProperty;
-import org.goobi.beans.GoobiProperty;
-import org.goobi.beans.GoobiProperty.PropertyOwnerType;
-import org.goobi.beans.Institution;
-import org.goobi.beans.Step;
-import org.goobi.beans.User;
-import org.goobi.beans.Usergroup;
-import org.goobi.production.cli.helper.StringPair;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.PropertyType;
@@ -49,6 +22,20 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang3.StringUtils;
+import org.goobi.api.mq.QueueType;
+import org.goobi.beans.*;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
+import org.goobi.production.cli.helper.StringPair;
+
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.*;
 
 @Log4j2
 public final class StepMysqlHelper implements Serializable {
@@ -151,6 +138,9 @@ public final class StepMysqlHelper implements Serializable {
         String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (filter != null && !filter.isEmpty()) {
+            if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
+                sql.append(" WHERE ");
+            }
             sql.append(filter);
         }
         if (StringUtils.isNotBlank(sortfield)) {
@@ -1300,7 +1290,7 @@ public final class StepMysqlHelper implements Serializable {
 
     /**
      * Delete a list of steps in a single statement.
-     * 
+     *
      * @param steps
      * @throws SQLException
      */
