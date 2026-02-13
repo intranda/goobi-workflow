@@ -6,7 +6,7 @@ services:
       - workflow-db
     restart: unless-stopped
     ports:
-      - 8080:8080
+      - "8080:8080"
     environment:
       DB_HOST: workflow-db
       DB_NAME: goobi
