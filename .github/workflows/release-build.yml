@@ -39,14 +39,12 @@ jobs:
            
            mkdir -p ${WORKDIR}/goobi/{config,plugins/{administration,command,dashboard,export,generic,GUI,import,opac,statistics,step,theme,validation,workflow}} \
                     ${WORKDIR}/tomcat \
-                    ${WORKDIR}/db/{setup,mysql}
+                    ${WORKDIR}/db/mysql
            
            cp -r ./install/config/* ${WORKDIR}/goobi/config
            mv ${WORKDIR}/goobi/config/goobi_config.properties \
               ${WORKDIR}/goobi/config/goobi_config.user.properties
-           
-           cp ./install/db/goobi_blank.sql ${WORKDIR}/db/setup/000_dump.sql
-           
+                      
            cp docker-compose.yml ${WORKDIR}/
            sed -i "s/goobi-workflow:latest/goobi-workflow:${TAG}/g" \
              ${WORKDIR}/docker-compose.yml

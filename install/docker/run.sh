@@ -13,28 +13,41 @@ echo "Generating config file /opt/digiverso/goobi/config/goobi_config.properties
 /usr/bin/python3 /config.py
 
 echo "Setting database configuration from environment..."
-envsubst '\$DB_HOST \$DB_PORT \$DB_NAME \$DB_USER \$DB_PASSWORD' </usr/local/tomcat/conf/workflow.xml.template > /usr/local/tomcat/conf/Catalina/localhost/workflow.xml
+envsubst "\$DB_HOST \$DB_PORT \$DB_NAME \$DB_USER \$DB_PASSWORD" </usr/local/tomcat/conf/workflow.xml.template > /usr/local/tomcat/conf/Catalina/localhost/workflow.xml
 
 set +u
 
+export MYSQL_PWD="${DB_PASSWORD}"
+
+while ! mysqladmin ping -h "${DB_HOST}" -u "${DB_USER}" -P "${DB_PORT}" --silent; do
+    echo "Waiting for database to boot..."
+    sleep 2
+done
+
+TABLE_COUNT=$(mysql -h "${DB_HOST}" -u "${DB_USER}" -P "${DB_PORT}" -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE TABLE_SCHEMA = '${DB_NAME}';")
+
+if [[ "${TABLE_COUNT}" -eq 0 ]]; then
+  echo "Initializing database..."
+  mysql -h "${DB_HOST}" -u "${DB_USER}" -P "${DB_PORT}" "${DB_NAME}" < /workflow-template/db/goobi_blank.sql
+  echo "Done"
+else
+  echo "Database already initialized. Skipping"
+fi
+
 if [[ -v PW_GOOBITESTUSER ]]; then
-  while ! mysqladmin ping -h "${DB_HOST}" -u "${DB_USER}" --password="${DB_PASSWORD}" --silent; do
-      echo "Waiting for database to boot..."
-      sleep 2
-  done
   echo "Setting password for test users"
   SALT=$(head -c 16 /dev/urandom | base64)
   export SALT
   ENCRYPTED_PW=$(python3 -c "import hashlib,base64,os;d=hashlib.sha256(os.getenv('SALT').encode()+os.getenv('PW_GOOBITESTUSER').encode()).digest();[d:=hashlib.sha256(d).digest() for _ in range(1,10000)];print(base64.b64encode(d).decode())")
-  mysql -h "${DB_HOST}" -u "${DB_USER}" --password="${DB_PASSWORD}" -e "USE goobi;UPDATE benutzer SET salt='$SALT', encryptedPassword='$ENCRYPTED_PW' WHERE login IN ('testadmin','testmetadata','testbookmanager','testscanning','testqc','testprojectmanagement','goobi');"
+  mysql -h "${DB_HOST}" -u "${DB_USER}" -e "USE goobi;UPDATE benutzer SET salt='$SALT', encryptedPassword='$ENCRYPTED_PW' WHERE login IN ('testadmin','testmetadata','testbookmanager','testscanning','testqc','testprojectmanagement','goobi');"
 fi
 
 
 if [[ ${LOAD_DEFAULT_PLUGINS,,} == true ]]; then
   echo "Checking if default plugins are present"
-  cp -r --update=none /workflow-template/default-plugins/plugins/ /opt/digiverso/goobi/plugins/
-  cp -r --update=none /workflow-template/default-plugins/config/ /opt/digiverso/goobi/config/
-  cp -r --update=none /workflow-template/default-plugins/lib/ /opt/digiverso/goobi/lib/
+  cp -r --update=none /workflow-template/default-plugins/plugins/* /opt/digiverso/goobi/plugins/
+  cp -r --update=none /workflow-template/default-plugins/config/* /opt/digiverso/goobi/config/
+  cp -r --update=none /workflow-template/default-plugins/lib/* /opt/digiverso/goobi/lib/
 fi
 
 set -u

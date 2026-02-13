@@ -4,6 +4,8 @@ import os
 
 def load_properties() -> dict[str, str]:
     props = {}
+    if not os.path.isfile("/opt/digiverso/goobi/config/goobi_config.user.properties"):
+        return props
 
     with open("/opt/digiverso/goobi/config/goobi_config.user.properties") as f:
         for line in f:

@@ -52,8 +52,5 @@ services:
       TZ: "Europe/Berlin"
     volumes:
       - type: bind
-        source: ./db/setup
-        target: /docker-entrypoint-initdb.d
-      - type: bind
         source: ./db/mysql
         target: /var/lib/mysql

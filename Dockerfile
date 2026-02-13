@@ -106,12 +106,17 @@ COPY install/config/ /workflow-template/config
 COPY install/rulesets/ /workflow-template/rulesets
 COPY install/scripts/ /workflow-template/scripts
 COPY install/xslt/ /workflow-template/xslt
+COPY install/db/goobi_blank.sql /workflow-template/db/goobi_blank.sql
 RUN mv /workflow-template/config/goobi_config.properties /workflow-template/config/goobi_config.user.properties
 # Script adjustments
 COPY install/docker/dummy.sh /workflow-template/scripts/
-RUN sed -i 's/^script_createSymLink=script_createSymLink.sh/script_createSymLink=dummy.sh/' /workflow-template/config/goobi_config.user.properties
-RUN sed -i 's/^script_deleteSymLink=script_deleteSymLink.sh/script_deleteSymLink=dummy.sh/' /workflow-template/config/goobi_config.user.properties
-RUN sed -i 's/TOMCATUSER=tomcat/TOMCATUSER=root/' /workflow-template/scripts/iii.sh
+RUN echo -e '#!/bin/bash\nplaceholder="$1"\nVerzeichnis="$2"\n/bin/mkdir "$Verzeichnis"' > /workflow-template/scripts/script_createDirUserHome.sh && \
+    rm /workflow-template/scripts/*SymLink.sh && \
+    cp /workflow-template/scripts/dummy.sh /workflow-template/scripts/script_createSymLink.sh && \
+    cp /workflow-template/scripts/dummy.sh /workflow-template/scripts/script_deleteSymLink.sh
+RUN sed -i '\|/usr/bin/sudo /bin/chown|d' /workflow-template/scripts/iii.sh && \
+    sed -i 's/sudo //g' /workflow-template/scripts/script_mountImageDir.sh && \
+    sed -i 's/sudo //g' /workflow-template/scripts/script_umountImageDir.sh
 
 # General configurations
 COPY install/docker/goobi.xml.template /usr/local/tomcat/conf/workflow.xml.template
