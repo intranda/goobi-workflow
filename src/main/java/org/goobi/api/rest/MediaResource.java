@@ -96,6 +96,14 @@ public class MediaResource {
                 case "thumbnails_small":
                     return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesDirectory(), "layoutWizzard-temp",
                             "thumbnails_small");
+                case "ocr_txt":
+                    return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getOcrTxtDirectory());
+                case "ocr_alto":
+                    return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getOcrAltoDirectory());
+                case "ocr_xml":
+                    return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getOcrXmlDirectory());
+                case "ocr_pdf":
+                    return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getOcrPdfDirectory());
                 default:
                     if (!folder.contains("_")) {
                         return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesDirectory(), folder);
