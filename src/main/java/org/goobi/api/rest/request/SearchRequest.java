@@ -127,6 +127,9 @@ public class SearchRequest {
         if (this.stepName != null && !this.stepName.isEmpty()) {
             b.append("LEFT JOIN schritte ON prozesse.prozesseID = schritte.ProzesseID ");
         }
+        if ((this.propName != null && !this.propName.isEmpty())) {
+            b.append("LEFT JOIN properties ON prozesse.prozesseID = properties.object_id AND properties.object_type = 'process' ");
+        }
     }
 
     private void createWhere(StringBuilder b) {
@@ -137,14 +140,16 @@ public class SearchRequest {
         firstWhere = addFilters(b, firstWhere);
 
         if (metadataFilters != null && !metadataFilters.isEmpty()) {
-            if (!firstWhere) {
-                b.append("AND ");
-            }
-            for (int i = 0; i < metadataFilters.size(); i++) {
-                SearchGroup sg = metadataFilters.get(i);
-                sg.createSqlClause(b);
-                if (i + 1 < metadataFilters.size()) {
-                    b.append(conj);
+            if (metadataFilters.get(0).getFilters().get(0).getField() != null) {
+                if (!firstWhere) {
+                    b.append("AND ");
+                }
+                for (int i = 0; i < metadataFilters.size(); i++) {
+                    SearchGroup sg = metadataFilters.get(i);
+                    sg.createSqlClause(b);
+                    if (i + 1 < metadataFilters.size()) {
+                        b.append(conj);
+                    }
                 }
             }
         }
@@ -239,7 +244,9 @@ public class SearchRequest {
             params.add(this.stepStatus);
         }
         for (SearchGroup sg : metadataFilters) {
-            sg.addParams(params);
+            if (sg.getFilters().get(0).getField() != null) {
+                sg.addParams(params);
+            }
         }
     }
 
