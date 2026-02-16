@@ -4,12 +4,12 @@
     xmlns:util="http://goobi.io/util"
 >
     <span class="#{styleClass} icon-text">
-        <util:icon
-            icon="#{icon}"
-            styleClass="#{iconClass}" />
-        <span
-            class="#{textClass}">
-            #{text}
-        </span>
+        <ui:fragment rendered="#{iconPosition != 'right'}">
+            <util:icon icon="#{icon}" styleClass="#{iconClass}" />
+        </ui:fragment>
+        <span class="#{textClass}">#{text}</span>
+        <ui:fragment rendered="#{iconPosition == 'right'}">
+            <util:icon icon="#{icon}" styleClass="#{iconClass}" />
+        </ui:fragment>
     </span>
 </ui:component>
