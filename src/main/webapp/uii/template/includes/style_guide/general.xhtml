@@ -25,10 +25,10 @@
 			xmlns:o="http://omnifaces.org/ui"
 			xmlns:of="http://omnifaces.org/functions"
 			template="/uii/template/template.html"
-
 			xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 			xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:util="http://goobi.io/util">
+			xmlns:section="http://goobi.io/section"
+			xmlns:util="http://goobi.io/util">
 
 			<ui:param
 				name="myPageTitle"
@@ -50,21 +50,15 @@
 			<ui:define name="content">
 				<h:form id="myform">
 
-					<main class="row">
-						<div class="col-12">
+					<section:section type="primary">
+						<section:header
+							icon="search"
+							title="Suchen" />
+						<section:body padding="true">
+							Section with type primary
+						</section:body>
+					</section:section>
 
-							<intranda:box
-								boxType="primary"
-								boxPadding="true"
-								icon="search"
-								title="#{msgs.search}">
-
-								<h:outputText value="Box with boxType primary" />
-							</intranda:box>
-
-						</div>
-
-					</main>
 				</h:form>
 			</ui:define>
 
@@ -103,7 +97,9 @@
 	xmlns:of=&quot;http://omnifaces.org/functions&quot;
 	template=&quot;/uii/template/template.html&quot;
 	xmlns:intranda=&quot;http://xmlns.jcp.org/jsf/composite/composites&quot;
-	xmlns:jsf=&quot;http://xmlns.jcp.org/jsf&quot;&gt;
+	xmlns:jsf=&quot;http://xmlns.jcp.org/jsf&quot;
+	xmlns:section=&quot;http://goobi.io/section&quot;
+	xmlns:util=&quot;http://goobi.io/util&quot;&gt;
 
 	&lt;ui:param
 		name=&quot;myPageTitle&quot;
@@ -125,21 +121,15 @@
 	&lt;ui:define name=&quot;content&quot;&gt;
 		&lt;h:form id=&quot;myform&quot;&gt;
 
-			&lt;main class=&quot;row&quot;&gt;
-				&lt;div class=&quot;col-12&quot;&gt;
+			&lt;section:section type=&quot;primary&quot;&gt;
+				&lt;section:header
+					icon=&quot;search&quot;
+					title=&quot;Suchen&quot; /&gt;
+				&lt;section:body padding=&quot;true&quot;&gt;
+					Section with type primary
+				&lt;/section:body&gt;
+			&lt;/section:section&gt;
 
-					&lt;intranda:box
-						boxType=&quot;primary&quot;
-						boxPadding=&quot;true&quot;
-						icon=&quot;fa-search&quot;
-						title=&quot;#{msgs.search}&quot;&gt;
-
-						&lt;h:outputText value=&quot;Box with boxType primary&quot; /&gt;
-					&lt;/intranda:box&gt;
-
-				&lt;/div&gt;
-
-			&lt;/main&gt;
 		&lt;/h:form&gt;
 	&lt;/ui:define&gt;
 
