@@ -4,13 +4,13 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:util="http://goobi.io/util">
+	xmlns:util="http://goobi.io/util"
+	xmlns:table="http://goobi.io/table">
 
 	<composite:interface />
 
@@ -23,73 +23,66 @@
 			  ['Mickey Mouse', 'mickey', 'Geismar']
 			  ]}" />
 
-		<div class="gw-table gw-table-fixed">
+		<table:wrapper>
+			<table:table fixed="true">
 
-			<div class="gw-table__wrapper">
-				<table
-					role="grid"
-					id="baseTableExample"
-					class="table table-bordered table-fixed table-hover table-resizable">
+				<!-- COLUMNHEADER -->
+				<thead>
+					<tr role="row">
+						<intranda:columnheader
+							name="name"
+							form="#{BenutzerverwaltungForm}"
+							value="#{msgs.benutzer}"
+							ajaxRender="allUsers:myform"
+							sortField="benutzer.nachname, benutzer.vorname" />
+						<intranda:columnheader
+							name="login"
+							form="#{BenutzerverwaltungForm}"
+							value="#{msgs.login}"
+							ajaxRender="allUsers:myform"
+							sortField="benutzer.login" />
+						<intranda:columnheader
+							name="location"
+							form="#{BenutzerverwaltungForm}"
+							value="#{msgs.standort}"
+							ajaxRender="allUsers:myform"
+							sortField="benutzer.standort" />
+						<intranda:columnheader
+							value="#{msgs.auswahl}"
+							sortable="false"
+							addClass="gw-table-fixed__actions" />
+					</tr>
+				</thead>
+				<!-- // COLUMNHEADER -->
 
-					<!-- COLUMNHEADER -->
-					<thead>
-						<tr role="row">
-							<intranda:columnheader
-								name="name"
-								form="#{BenutzerverwaltungForm}"
-								value="#{msgs.benutzer}"
-								ajaxRender="allUsers:myform"
-                                sortField="benutzer.nachname, benutzer.vorname" />
-							<intranda:columnheader
-								name="login"
-								form="#{BenutzerverwaltungForm}"
-								value="#{msgs.login}"
-								ajaxRender="allUsers:myform"
-                                sortField="benutzer.login" />
-							<intranda:columnheader
-								name="location"
-								form="#{BenutzerverwaltungForm}"
-								value="#{msgs.standort}"
-								ajaxRender="allUsers:myform"
-                                sortField="benutzer.standort" />
-							<intranda:columnheader
-								value="#{msgs.auswahl}"
-								sortable="false"
-								addClass="gw-table-fixed__actions" />
-						</tr>
-					</thead>
-					<!-- // COLUMNHEADER -->
-
-					<!-- CONTENT ROWS -->
-					<ui:repeat
-						var="item"
-						value="#{users}"
-						varStatus="status">
-						<tr role="row">
-							<td><h:outputText
-									value="#{item[0]}"
-									title="#{item[1]}" /></td>
-							<td><h:outputText value="#{item[1]}" /></td>
-							<td><h:outputText value="#{item[2]}" /></td>
-							<td>
-								<div class="gw-table__actions__container">
-									<button
-										jsf:id="edit"
-										class="btn btn-icon btn-blank"
-										jsf:rel="tooltip"
-										jsf:action="user_edit"
-										title="#{msgs.benutzerBearbeiten}">
-										<util:icon icon="pencil" />
-									</button>
-								</div>
-							</td>
-						</tr>
-					</ui:repeat>
-					<!-- // CONTENT ROWS -->
-
-				</table>
-			</div>
-		</div>
+				<!-- CONTENT ROWS -->
+				<ui:repeat
+					var="item"
+					value="#{users}"
+					varStatus="status">
+					<tr role="row">
+						<td><h:outputText
+								value="#{item[0]}"
+								title="#{item[1]}" /></td>
+						<td><h:outputText value="#{item[1]}" /></td>
+						<td><h:outputText value="#{item[2]}" /></td>
+						<td>
+							<div class="gw-table__actions__container">
+								<button
+									jsf:id="edit"
+									class="btn btn-icon btn-blank"
+									jsf:rel="tooltip"
+									jsf:action="user_edit"
+									title="#{msgs.benutzerBearbeiten}">
+									<util:icon icon="pencil" />
+								</button>
+							</div>
+						</td>
+					</tr>
+				</ui:repeat>
+				<!-- // CONTENT ROWS -->
+			</table:table>
+		</table:wrapper>
 
 		<!-- CODE -->
 		<div class="accordion-item mt-3">
@@ -112,13 +105,9 @@
 						class="code--form-actions bg-neutral-500 text-white px-4"
 						style="border-radius: var(- -border-radius)">
 						<code class="microlight">
-&lt;div class=&quot;gw-table gw-table-fixed&quot;&gt;
+&lt;table:wrapper&gt;
 
-	&lt;div class=&quot;gw-table__wrapper&quot;&gt;
-		&lt;table
-			role=&quot;grid&quot;
-			id=&quot;baseTableExample&quot;
-			class=&quot;table table-bordered table-fixed table-hover table-resizable&quot;&gt;
+	&lt;table:table&gt;
 
 			&lt;!-- COLUMNHEADER --&gt;
 			&lt;thead&gt;
@@ -173,9 +162,8 @@
 			&lt;/ui:repeat&gt;
 			&lt;!-- // CONTENT ROWS --&gt;
 
-		&lt;/table&gt;
-	&lt;/div&gt;
-&lt;/div&gt;
+	&lt;/table:table&gt;
+&lt;/table:wrapper&gt;
 						</code>
 					</pre>
 
