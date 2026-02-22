@@ -42,8 +42,6 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -550,12 +548,7 @@ public class Helper implements Serializable, ServletContextListener {
 
                     try {
                         final URL resourceURL = file.toUri().toURL();
-                        URLClassLoader urlLoader = AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
-                            @Override
-                            public URLClassLoader run() {
-                                return new URLClassLoader(new URL[] { resourceURL });
-                            }
-                        });
+                        URLClassLoader urlLoader = new URLClassLoader(new URL[] { resourceURL });
                         ResourceBundle localBundle = ResourceBundle.getBundle(MESSAGES, language, urlLoader);
                         if (localBundle != null) {
                             localMessages.put(language, localBundle);
@@ -569,8 +562,8 @@ public class Helper implements Serializable, ServletContextListener {
         } else {
             String data = System.getenv("junitdata");
             if (data == null || data.isEmpty()) {
-                Locale defaullLocale = new Locale("EN");
-                commonMessages.put(defaullLocale, ResourceBundle.getBundle(MESSAGES, defaullLocale));
+                Locale defaultLocale = Locale.forLanguageTag("en");
+                commonMessages.put(defaultLocale, ResourceBundle.getBundle(MESSAGES, defaultLocale));
             }
         }
     }
@@ -613,7 +606,7 @@ public class Helper implements Serializable, ServletContextListener {
             // If this exception occurs, desiredLanguage is null and is checked in the following if block
         }
         if (desiredLanguage != null) {
-            return getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
+            return getString(Locale.forLanguageTag(desiredLanguage.getLanguage()), dbTitel);
         } else {
             return getString(Locale.ENGLISH, dbTitel);
         }
@@ -641,7 +634,7 @@ public class Helper implements Serializable, ServletContextListener {
             // If this exception occurs, desiredLanguage is null and is checked in the following if block
         }
         if (desiredLanguage != null) {
-            value = getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
+            value = getString(Locale.forLanguageTag(desiredLanguage.getLanguage()), dbTitel);
         } else {
             value = getString(Locale.ENGLISH, dbTitel); // value will never be null, since the method getString(...) always returns something
         }
