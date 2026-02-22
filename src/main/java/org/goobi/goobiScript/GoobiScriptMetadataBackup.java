@@ -39,7 +39,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-public class GoobiScriptMetadataBackup extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptMetadataBackup extends AbstractIGoobiScript {
 
     private static final String META_FILE = "meta.xml";
     private static final String META_ANCHOR_FILE = "meta_anchor.xml";

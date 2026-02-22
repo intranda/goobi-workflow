@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.persistence.managers;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +38,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class MQResultManager implements IManager, Serializable {
+public class MQResultManager implements IManager {
 
     private static final long serialVersionUID = 3898081063234221115L;
 

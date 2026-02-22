@@ -25,8 +25,6 @@ package org.goobi.beans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.Serializable;
-
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,7 +33,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
 
 @Log4j2
-public class Ruleset implements Serializable, DatabaseObject {
+public class Ruleset implements DatabaseObject {
     private static final long serialVersionUID = -6663371963274685060L;
     @Getter
     @Setter

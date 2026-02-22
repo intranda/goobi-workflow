@@ -1,6 +1,5 @@
 package io.goobi.workflow.api.vocabulary;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.workflow.api.vocabulary.hateoas.VocabularyPageResult;
 import io.goobi.workflow.api.vocabulary.helper.CachedLookup;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
-import jakarta.servlet.http.Part;
 
 public class VocabularyAPI extends CRUDAPI<Vocabulary, VocabularyPageResult> {
     private static final String COMMON_ENDPOINT = "/api/v1/vocabularies";

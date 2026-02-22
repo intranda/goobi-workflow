@@ -17,7 +17,6 @@
  */
 package de.sub.goobi.persistence.managers;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -35,7 +34,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class BackgroundJobManager implements IManager, Serializable {
+public class BackgroundJobManager implements IManager {
 
     private static final long serialVersionUID = -2193872225938495842L;
 

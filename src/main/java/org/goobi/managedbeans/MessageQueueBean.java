@@ -25,7 +25,6 @@
  */
 package org.goobi.managedbeans;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,7 +79,7 @@ import lombok.extern.log4j.Log4j2;
 @Named
 @WindowScoped
 @Log4j2
-public class MessageQueueBean extends BasicBean implements Serializable {
+public class MessageQueueBean extends BasicBean {
 
     private static final long serialVersionUID = 9201515793444130154L;
 

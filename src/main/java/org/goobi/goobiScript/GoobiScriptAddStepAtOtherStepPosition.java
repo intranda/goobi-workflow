@@ -39,7 +39,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript {
 
     private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STRATEGY = "insertionstrategy";

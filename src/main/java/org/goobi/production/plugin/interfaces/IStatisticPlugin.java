@@ -25,10 +25,9 @@
  */
 package org.goobi.production.plugin.interfaces;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public interface IStatisticPlugin extends IPlugin, Serializable {
+public interface IStatisticPlugin extends IPlugin {
 
     String getData();
 

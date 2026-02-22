@@ -29,7 +29,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -82,7 +81,7 @@ import lombok.extern.log4j.Log4j2;
 @Named("BenutzerverwaltungForm")
 @WindowScoped
 @Log4j2
-public class UserBean extends BasicBean implements Serializable {
+public class UserBean extends BasicBean {
 
     private static final long serialVersionUID = -3635859455444639614L;
 

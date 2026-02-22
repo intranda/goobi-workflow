@@ -39,7 +39,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
-public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptPropertySet extends AbstractIGoobiScript {
 
     private static final String NAME = "name";
     private static final String VALUE = "value";

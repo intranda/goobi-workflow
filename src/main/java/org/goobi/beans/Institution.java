@@ -24,7 +24,6 @@
  */
 package org.goobi.beans;
 
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ import de.sub.goobi.persistence.managers.InstitutionManager;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Institution extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Institution> {
+public class Institution extends AbstractJournal implements DatabaseObject, Comparable<Institution> {
 
     private static final long serialVersionUID = -2608701994741239302L;
 

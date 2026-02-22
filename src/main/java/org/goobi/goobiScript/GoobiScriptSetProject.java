@@ -40,7 +40,7 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptSetProject extends AbstractIGoobiScript {
 
     private static final String FIELD_PROJECT = "project";
 
