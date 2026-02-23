@@ -7,8 +7,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VocabularySchemaPageResult extends BasePageResult<VocabularySchema> {
     @Data

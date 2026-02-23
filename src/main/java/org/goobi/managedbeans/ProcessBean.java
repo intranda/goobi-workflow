@@ -2666,14 +2666,10 @@ public class ProcessBean extends BasicBean {
             Integer currentId = it.next();
             if (currentId.equals(myProzess.getId())) {
                 newProcessId = it.hasNext() ? it.next() : null;
+                myProzess = ProcessManager.getProcessById(newProcessId);
                 break;
             }
         }
-        if (newProcessId != null) {
-            myProzess = ProcessManager.getProcessById(newProcessId);
-            myNewProcessTitle = myProzess.getTitel();
-        }
-
     }
 
     /**

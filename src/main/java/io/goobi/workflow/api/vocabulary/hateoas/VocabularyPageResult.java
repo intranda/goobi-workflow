@@ -9,8 +9,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VocabularyPageResult extends BasePageResult<ExtendedVocabulary> {
     @Data
