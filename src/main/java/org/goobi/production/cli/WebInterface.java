@@ -39,6 +39,9 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.ICommandPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 
+import com.github.jgonian.ipmath.Ipv4;
+import com.github.jgonian.ipmath.Ipv6;
+
 import de.sub.goobi.config.ConfigurationHelper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -63,6 +66,15 @@ public class WebInterface extends HttpServlet {
                     if (ip == null) {
                         ip = "127.0.0.1";
                     }
+                }
+                try {
+                    if (ip.contains(".")) {
+                        Ipv4.parse(ip);
+                    } else {
+                        Ipv6.parse(ip);
+                    }
+                } catch (IllegalArgumentException e) {
+                    generateAnswer(resp, 401, "No valid ip address", "No valid ip address");
                 }
 
                 Map<String, String[]> map = req.getParameterMap();
