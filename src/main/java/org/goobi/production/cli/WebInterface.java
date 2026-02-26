@@ -75,6 +75,7 @@ public class WebInterface extends HttpServlet {
                     }
                 } catch (IllegalArgumentException e) {
                     generateAnswer(resp, 401, "No valid ip address", "No valid ip address");
+                    return;
                 }
 
                 Map<String, String[]> map = req.getParameterMap();
