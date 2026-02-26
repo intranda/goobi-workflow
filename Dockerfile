@@ -43,7 +43,10 @@ RUN unzip /*.war -d /usr/local/tomcat/webapps/workflow && rm /*.war
 # Structure is also created again in the run.sh in case of a run bind mount to not crash the container
 RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
 RUN ["/bin/bash","-c", "mkdir -p /workflow-template/default-plugins/{config,lib,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
-RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ && mkdir -p /usr/local/tomcat/webapps/workflow
+RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ /usr/local/tomcat/webapps/workflow
+
+# To change the plugin version when rebuilding older dockerfiles, use --build-arg plugin_version="tag/<release-version>" because github urls work like that
+ARG plugin_version="latest"
 
 # Install default plugins
 RUN set -eu; \
@@ -51,44 +54,48 @@ RUN set -eu; \
     # OPAC plugins \
     for plugin in pica marc; do \
       curl -fL \
-        "https://github.com/intranda/goobi-plugin-opac-${plugin}/releases/latest/download/plugin-opac-${plugin}-base.jar" \
+        "https://github.com/intranda/goobi-plugin-opac-${plugin}/releases/$plugin_version/download/plugin-opac-${plugin}-base.jar" \
         -o "/workflow-template/default-plugins/plugins/opac/plugin-opac-${plugin}-base.jar"; \
     done; \
     \
     # Step plugins: GUI + base JARs \
     for plugin in file-upload imageqa; do \
       curl -fL \
-        "https://github.com/intranda/goobi-plugin-step-${plugin}/releases/latest/download/plugin-step-${plugin}-gui.jar" \
+        "https://github.com/intranda/goobi-plugin-step-${plugin}/releases/$plugin_version/download/plugin-step-${plugin}-gui.jar" \
         -o "/workflow-template/default-plugins/plugins/GUI/plugin-step-${plugin}-gui.jar"; \
       curl -fL \
-        "https://github.com/intranda/goobi-plugin-step-${plugin}/releases/latest/download/plugin-step-${plugin}-base.jar" \
+        "https://github.com/intranda/goobi-plugin-step-${plugin}/releases/$plugin_version/download/plugin-step-${plugin}-base.jar" \
         -o "/workflow-template/default-plugins/plugins/step/plugin-step-${plugin}-base.jar"; \
     done; \
     \
     # Step plugin configs \
     curl -fL \
-      https://github.com/intranda/goobi-plugin-step-file-upload/releases/latest/download/plugin_intranda_step_fileUpload.xml \
+      https://github.com/intranda/goobi-plugin-step-file-upload/releases/$plugin_version/download/plugin_intranda_step_fileUpload.xml \
       -o /workflow-template/default-plugins/config/plugin_intranda_step_fileUpload.xml; \
     curl -fL \
-      https://github.com/intranda/goobi-plugin-step-imageqa/releases/latest/download/plugin_intranda_step_imageQA.xml \
+      https://github.com/intranda/goobi-plugin-step-imageqa/releases/$plugin_version/download/plugin_intranda_step_imageQA.xml \
       -o /workflow-template/default-plugins/config/plugin_intranda_step_imageQA.xml; \
     \
     # Dashboard: Extended \
-    base=https://github.com/intranda/goobi-plugin-dashboard-extended/releases/latest/download; \
+    base=https://github.com/intranda/goobi-plugin-dashboard-extended/releases/$plugin_version/download; \
     curl -fL "$base/plugin-dashboard-extended-gui.jar" \
       -o /workflow-template/default-plugins/plugins/GUI/plugin-dashboard-extended-gui.jar; \
     curl -fL "$base/plugin-dashboard-extended-base.jar" \
       -o /workflow-template/default-plugins/plugins/dashboard/plugin-dashboard-extended-base.jar; \
+    curl -fL "$base/plugin-dashboard-extended-api.jar" \
+      -o /workflow-template/default-plugins/lib/plugin-dashboard-extended-api.jar; \
+    curl -fL "$base/plugin-dashboard-extended-lib.jar" \
+      -o /workflow-template/default-plugins/lib/plugin-dashboard-extended-lib.jar; \
     curl -fL "$base/plugin_intranda_dashboard_extended.xml" \
       -o /workflow-template/default-plugins/config/plugin_intranda_dashboard_extended.xml; \
     \
     # REST: intranda REST \
     curl -fL \
-      https://github.com/intranda/goobi-plugin-rest-intranda/releases/latest/download/plugin-rest-intranda-api.jar \
+      https://github.com/intranda/goobi-plugin-rest-intranda/releases/$plugin_version/download/plugin-rest-intranda-api.jar \
       -o /workflow-template/default-plugins/lib/plugin-rest-intranda-api.jar; \
     \
     # Controlling: intranda statistics \
-    base=https://github.com/intranda/goobi-plugin-statistics-intranda/releases/latest/download; \
+    base=https://github.com/intranda/goobi-plugin-statistics-intranda/releases/$plugin_version/download; \
     for file in \
       plugin-statistics-intranda-gui.jar \
       plugin-statistics-intranda-base.jar \
@@ -104,19 +111,18 @@ ENV CONFIGSOURCE=folder
 ENV CONFIG_FOLDER=/workflow-template
 COPY install/config/ /workflow-template/config
 COPY install/rulesets/ /workflow-template/rulesets
-COPY install/scripts/ /workflow-template/scripts
+COPY install/scripts/copyfiles.sh install/scripts/iii.sh install/scripts/script_createDirMeta.sh /workflow-template/scripts/
 COPY install/xslt/ /workflow-template/xslt
 COPY install/db/goobi_blank.sql /workflow-template/db/goobi_blank.sql
 RUN mv /workflow-template/config/goobi_config.properties /workflow-template/config/goobi_config.user.properties
 # Script adjustments
 COPY install/docker/dummy.sh /workflow-template/scripts/
 RUN echo -e '#!/bin/bash\nplaceholder="$1"\nVerzeichnis="$2"\n/bin/mkdir "$Verzeichnis"' > /workflow-template/scripts/script_createDirUserHome.sh && \
-    rm /workflow-template/scripts/*SymLink.sh && \
     cp /workflow-template/scripts/dummy.sh /workflow-template/scripts/script_createSymLink.sh && \
-    cp /workflow-template/scripts/dummy.sh /workflow-template/scripts/script_deleteSymLink.sh
-RUN sed -i '\|/usr/bin/sudo /bin/chown|d' /workflow-template/scripts/iii.sh && \
-    sed -i 's/sudo //g' /workflow-template/scripts/script_mountImageDir.sh && \
-    sed -i 's/sudo //g' /workflow-template/scripts/script_umountImageDir.sh
+    cp /workflow-template/scripts/dummy.sh /workflow-template/scripts/script_deleteSymLink.sh && \
+    cp /workflow-template/scripts/dummy.sh /workflow-template/scripts/script_mountImageDir.sh && \
+    cp /workflow-template/scripts/dummy.sh /workflow-template/scripts/script_umountImageDir.sh
+RUN sed -i '\|/usr/bin/sudo /bin/chown|d' /workflow-template/scripts/iii.sh
 
 # General configurations
 COPY install/docker/goobi.xml.template /usr/local/tomcat/conf/workflow.xml.template
