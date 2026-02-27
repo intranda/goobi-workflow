@@ -1,5 +1,30 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang3.StringUtils;
+import org.goobi.api.mq.QueueType;
+import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
+import org.goobi.beans.Institution;
+import org.goobi.beans.Step;
+import org.goobi.beans.User;
+import org.goobi.beans.Usergroup;
+import org.goobi.production.cli.helper.StringPair;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  *
@@ -22,20 +47,6 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.lang3.StringUtils;
-import org.goobi.api.mq.QueueType;
-import org.goobi.beans.*;
-import org.goobi.beans.GoobiProperty.PropertyOwnerType;
-import org.goobi.production.cli.helper.StringPair;
-
-import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.*;
 
 @Log4j2
 public final class StepMysqlHelper implements Serializable {
@@ -100,6 +111,9 @@ public final class StepMysqlHelper implements Serializable {
         }
 
         if (filter != null && !filter.isEmpty()) {
+            if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
+                sql.append(" WHERE ");
+            }
             sql.append(filter);
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append(" WHERE schritte.SchritteID > 0 ");
