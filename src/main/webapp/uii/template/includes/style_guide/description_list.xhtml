@@ -1,0 +1,133 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util"
+	xmlns:section="http://goobi.io/section"
+	xmlns:dl="http://goobi.io/dl">
+
+	<composite:interface />
+
+	<composite:implementation>
+
+		<p>For simple name-value groups, use description lists instead of tables, as per the <a href="https://html.spec.whatwg.org/multipage/grouping-content.html#the-dl-element" target="_blank">HTML specification</a>.</p>
+
+		<section:section type="outline">
+			<section:header icon="info-circle" title="Description List" />
+			<section:body>
+				<dl:list>
+					<dl:term>Term 1</dl:term>
+					<dl:description>Description for term 1</dl:description>
+					<dl:term>Term 2</dl:term>
+					<dl:description>Description for term 2</dl:description>
+				</dl:list>
+			</section:body>
+		</section:section>
+
+		<section:section type="outline">
+			<section:header icon="info-circle" title="Description List Without Borders" />
+			<section:body>
+				<dl:list bordered="false">
+					<dl:term>Term 1</dl:term>
+					<dl:description>Description for term 1</dl:description>
+					<dl:term>Term 2</dl:term>
+					<dl:description>Description for term 2</dl:description>
+				</dl:list>
+			</section:body>
+		</section:section>
+
+		<section:section type="outline">
+			<section:header icon="info-circle" title="Floating Description List" />
+			<section:body padding="true">
+				<dl:list floating="true">
+					<dl:term>Term 1</dl:term>
+					<dl:description>Description for term 1</dl:description>
+					<dl:term>Term 2</dl:term>
+					<dl:description>Description for term 2</dl:description>
+				</dl:list>
+			</section:body>
+		</section:section>
+
+		<div style="max-width: 400px;" class="mx-auto">
+			<section:section type="outline">
+				<section:header icon="info-circle" title="Description Lists Are Responsive" />
+				<section:body>
+					<dl:list>
+						<dl:term>Term 1</dl:term>
+						<dl:description>Description for term 1</dl:description>
+						<dl:term>Term 2</dl:term>
+						<dl:description>Description for term 2</dl:description>
+					</dl:list>
+				</section:body>
+			</section:section>
+		</div>
+
+        <div class="accordion-item mt-3">
+			<h2 class="accordion-header">
+				<button
+					data-bs-target="#codeGeneral"
+					class="accordion-button btn btn-primary-400 collapsed"
+					type="button"
+					data-bs-toggle="collapse"
+					aria-expanded="false"
+					aria-controls="collapseOne">Code Snippet</button>
+			</h2>
+			<div
+				id="codeGeneral"
+				class="accordion-collapse collapse"
+				data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+
+					<pre
+						class="code--form-actions bg-neutral-500 text-white px-4"
+						style="border-radius: var(- -border-radius)">
+						<code class="microlight">
+&lt;section:section type=&quot;outline&quot;&gt;
+	&lt;section:header icon=&quot;info-circle&quot; title=&quot;Description List&quot; /&gt;
+	&lt;section:body&gt;
+		&lt;dl:list&gt;
+			&lt;dl:term&gt;Term 1&lt;/dl:term&gt;
+			&lt;dl:description&gt;Description for term 1&lt;/dl:description&gt;
+			&lt;dl:term&gt;Term 2&lt;/dl:term&gt;
+			&lt;dl:description&gt;Description for term 2&lt;/dl:description&gt;
+		&lt;/dl:list&gt;
+	&lt;/section:body&gt;
+&lt;/section:section&gt;
+
+&lt;section:section type=&quot;outline&quot;&gt;
+	&lt;section:header icon=&quot;info-circle&quot; title=&quot;Description List Without Borders&quot; /&gt;
+	&lt;section:body&gt;
+		&lt;dl:list bordered=&quot;false&quot;&gt;
+			&lt;dl:term&gt;Term 1&lt;/dl:term&gt;
+			&lt;dl:description&gt;Description for term 1&lt;/dl:description&gt;
+			&lt;dl:term&gt;Term 2&lt;/dl:term&gt;
+			&lt;dl:description&gt;Description for term 2&lt;/dl:description&gt;
+		&lt;/dl:list&gt;
+	&lt;/section:body&gt;
+&lt;/section:section&gt;
+
+&lt;section:section type=&quot;outline&quot;&gt;
+	&lt;section:header icon=&quot;info-circle&quot; title=&quot;Floating Description List&quot; /&gt;
+	&lt;section:body padding=&quot;true&quot;&gt;
+		&lt;dl:list floating=&quot;true&quot;&gt;
+			&lt;dl:term&gt;Term 1&lt;/dl:term&gt;
+			&lt;dl:description&gt;Description for term 1&lt;/dl:description&gt;
+			&lt;dl:term&gt;Term 2&lt;/dl:term&gt;
+			&lt;dl:description&gt;Description for term 2&lt;/dl:description&gt;
+		&lt;/dl:list&gt;
+	&lt;/section:body&gt;
+&lt;/section:section&gt;
+                        </code>
+                    </pre>
+                </div>
+            </div>
+            </div>
+    </composite:implementation>
+</ui:composition>

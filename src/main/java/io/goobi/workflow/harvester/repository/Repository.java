@@ -20,7 +20,6 @@ package io.goobi.workflow.harvester.repository;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
@@ -84,7 +83,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @Getter
 @Setter
-public class Repository implements Serializable, DatabaseObject {
+public class Repository implements DatabaseObject {
 
     private static final long serialVersionUID = -2519150202057677342L;
 

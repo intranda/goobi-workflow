@@ -52,7 +52,7 @@ import ugh.dl.DocStruct;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript {
 
     @Override
     public String getAction() {

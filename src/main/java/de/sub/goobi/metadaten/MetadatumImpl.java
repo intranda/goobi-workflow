@@ -700,7 +700,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 } else {
                     val = searchValue + " and BBG=" + searchOption;
                 }
-
+                val = val.replace(".", "");
                 if (ConfigurationHelper.getInstance().isUseProxy()) {
                     dataList =
                             NormDataImporter.getGndRecords("http://services.dnb.de/sru/authorities", val,

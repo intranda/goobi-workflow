@@ -25,7 +25,6 @@
  */
 package org.goobi.managedbeans;
 
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -41,7 +40,7 @@ import lombok.Setter;
 
 @Named
 @WindowScoped
-public class InstitutionBean extends BasicBean implements Serializable {
+public class InstitutionBean extends BasicBean {
 
     private static final long serialVersionUID = 8888874759901347827L;
 

@@ -40,7 +40,7 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptSetRuleset extends AbstractIGoobiScript {
 
     private static final String FIELD_RULESET = "ruleset";
 

@@ -19,7 +19,6 @@
 package io.goobi.workflow.harvester.beans;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +41,7 @@ import lombok.extern.log4j.Log4j2;
 @Getter
 @Setter
 @Log4j2
-public class Job implements Serializable, DatabaseObject {
+public class Job implements DatabaseObject {
 
     private static final long serialVersionUID = 6402861322926991487L;
 

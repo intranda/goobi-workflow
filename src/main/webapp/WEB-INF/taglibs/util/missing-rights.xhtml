@@ -3,7 +3,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:util="http://goobi.io/util">
 
-    <c:if test="#{rendered}">
-        <util:alert type="danger" message="#{msgs.plugin_administration_missingPermission} #{rights}" />
+    <c:if test="#{!LoginForm.hasRole(rights)}">
+        <util:alert type="danger" message="#{msgs.noAccessAllowed} #{rights}" />
     </c:if>
 </ui:component>

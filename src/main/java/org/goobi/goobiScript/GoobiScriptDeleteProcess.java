@@ -44,7 +44,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptDeleteProcess extends AbstractIGoobiScript {
 
     private static final String CONTENT_ONLY = "contentOnly";
     private static final String REMOVE_UNKNOWN_FILES = "removeUnknownFiles";

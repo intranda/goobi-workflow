@@ -18,7 +18,6 @@ package de.sub.goobi.persistence.managers;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class RulesetManager implements IManager, Serializable {
+public class RulesetManager implements IManager {
     private static final long serialVersionUID = -7947612330017761755L;
 
     public static Ruleset getRulesetById(int id) throws DAOException {

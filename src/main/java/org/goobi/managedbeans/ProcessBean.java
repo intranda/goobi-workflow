@@ -176,7 +176,7 @@ import ugh.exceptions.WriteException;
 @Named("ProzessverwaltungForm")
 @WindowScoped
 @Log4j2
-public class ProcessBean extends BasicBean implements Serializable {
+public class ProcessBean extends BasicBean {
     private static final long serialVersionUID = 2838270843176821134L;
 
     private static final String MODUS_ANZEIGE_AKTUELL = "aktuell";
@@ -2666,14 +2666,10 @@ public class ProcessBean extends BasicBean implements Serializable {
             Integer currentId = it.next();
             if (currentId.equals(myProzess.getId())) {
                 newProcessId = it.hasNext() ? it.next() : null;
+                myProzess = ProcessManager.getProcessById(newProcessId);
                 break;
             }
         }
-        if (newProcessId != null) {
-            myProzess = ProcessManager.getProcessById(newProcessId);
-            myNewProcessTitle = myProzess.getTitel();
-        }
-
     }
 
     /**

@@ -49,7 +49,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript {
     // action:metadataChangValue field:DocLanguage prefix:start_ suffix:_end position:top condition:Deutsch
     // action:metadataChangeValue field:DocLanguage prefix:start_ suffix:_end position:child
 

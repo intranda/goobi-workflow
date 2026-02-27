@@ -26,7 +26,6 @@
 package org.goobi.production.flow.jobs;
 
 import org.goobi.production.flow.jobs.BackgroundJob.JobStatus;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -40,7 +39,7 @@ import lombok.extern.log4j.Log4j2;
  * @version 21.10.2009
  */
 @Log4j2
-public abstract class AbstractGoobiJob implements Job, IGoobiJob {
+public abstract class AbstractGoobiJob implements IGoobiJob {
 
     private static boolean running = false;
 

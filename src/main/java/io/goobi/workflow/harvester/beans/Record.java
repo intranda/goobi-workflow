@@ -17,7 +17,6 @@
  */
 package io.goobi.workflow.harvester.beans;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,7 +36,7 @@ import lombok.extern.log4j.Log4j2;
 @Getter
 @Setter
 @Log4j2
-public class Record implements Serializable, DatabaseObject {
+public class Record implements DatabaseObject {
 
     private static final long serialVersionUID = 8459493710194133861L;
 

@@ -46,7 +46,7 @@ import ugh.dl.MetadataType;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript {
     public static final String DIRECTORY_SUFFIX = "_tif";
 
     @Override

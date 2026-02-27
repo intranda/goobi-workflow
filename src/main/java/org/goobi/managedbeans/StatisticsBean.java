@@ -51,8 +51,6 @@ public class StatisticsBean implements Serializable {
 
     private static final String DATABASE_ERROR = "fehlerBeimEinlesen";
 
-    private int n = 200;
-
     /**
      * Returns the number of literature objects. WARNING: Currently, this method is not implemented and returns 0.
      *

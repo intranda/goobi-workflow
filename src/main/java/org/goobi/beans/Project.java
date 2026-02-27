@@ -25,7 +25,6 @@ package org.goobi.beans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class Project extends AbstractJournal implements IPropertyHolder, Serializable, DatabaseObject, Comparable<Project> {
+public class Project extends AbstractJournal implements IPropertyHolder, DatabaseObject, Comparable<Project> {
     private static final long serialVersionUID = -8543713331407761617L;
     @Getter
     @Setter

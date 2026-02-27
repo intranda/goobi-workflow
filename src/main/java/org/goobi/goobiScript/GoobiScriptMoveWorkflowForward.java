@@ -42,7 +42,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptMoveWorkflowForward extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptMoveWorkflowForward extends AbstractIGoobiScript {
 
     @Override
     public String getAction() {

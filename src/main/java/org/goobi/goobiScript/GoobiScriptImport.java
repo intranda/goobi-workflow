@@ -47,7 +47,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Setter;
 
-public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptImport extends AbstractIGoobiScript {
 
     private static final String PLUGIN = "plugin";
     private static final String IDENTIFIERS = "identifiers";

@@ -47,7 +47,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript {
     // action:metadataTypeChange position:work oldType:singleDigCollection newType:DDC
 
     private static final String OLD_TYPE = "oldType";

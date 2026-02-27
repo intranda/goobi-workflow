@@ -18,7 +18,6 @@ package de.sub.goobi.persistence.managers;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -40,7 +39,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class ProcessManager implements IManager, Serializable {
+public class ProcessManager implements IManager {
     private static final long serialVersionUID = 3898081063234221110L;
 
     @Override
