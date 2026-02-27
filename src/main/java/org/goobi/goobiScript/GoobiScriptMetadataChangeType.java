@@ -50,7 +50,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript {
     // action:metadataTypeChange position:work oldType:singleDigCollection newType:DDC
 
     private static final String OLD_TYPE = "oldType";

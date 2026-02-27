@@ -18,8 +18,6 @@
 
 package org.goobi.managedbeans;
 
-import java.io.Serializable;
-
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.goobiScript.GoobiScriptTemplate;
 
@@ -32,7 +30,7 @@ import lombok.Setter;
 
 @Named
 @WindowScoped
-public class GoobiScriptTemplateBean extends BasicBean implements Serializable {
+public class GoobiScriptTemplateBean extends BasicBean {
 
     private static final long serialVersionUID = -7675038257191897566L;
 

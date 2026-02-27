@@ -7,7 +7,8 @@
 
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface>
     </composite:interface>
@@ -24,7 +25,7 @@
 
                 <intranda:boxTitle
                     title="#{currentStep.prozess.titel}"
-                    icon="fa-list">
+                    icon="list">
 
                     <!-- TOGGLE VIEW BUTTON -->
                     <div class="actions d-flex">
@@ -33,8 +34,7 @@
                             aria-label="#{msgs.expandProcessDetails}"
                             class="btn d-flex align-items-center btn--title-action-neutral"
                             jsf:action="#{NavigationForm.Reload}">
-                            <i
-                                class="fa #{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'fa-compress':'fa-expand'}" />
+                            <util:icon icon="#{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'arrows-diagonal-minimize-2':'arrows-diagonal'}" styleClass="icon--lg icon--b4" />
                             <f:setPropertyActionListener
                                 target="#{NavigationForm.uiStatus.task_viewWorkflow}"
                                 value="#{NavigationForm.uiStatus.task_viewWorkflow eq 'full'?'part':'full'}" />
@@ -60,11 +60,9 @@
 
                         <!-- STEP TITLE -->
                         <h:outputText value="#{msgs.arbeitsschritt}:" />
-                        <h:panelGroup>
-                            <i
-                                class="fa #{currentStep.typAutomatisch ? 'fa-cogs' : 'fa-user-o'} font-light me-3"
-                                title="#{currentStep.typAutomatisch ? msgs.automatischerSchritt : msgs.normalerSchritt}" />
-                            <h:outputText value="#{currentStep.titel}" />
+                        <h:panelGroup styleClass="icon-text">
+                            <util:icon icon="#{currentStep.typAutomatisch ? 'settings-automation' : 'user'}" title="#{currentStep.typAutomatisch ? msgs.automatischerSchritt : msgs.normalerSchritt}" />
+                            <span><h:outputText value="#{currentStep.titel}" /></span>
                         </h:panelGroup>
                         <!-- // STEP TITLE -->
 
@@ -77,25 +75,25 @@
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{currentStep.prioritaet == 1}">
-                                <span class="badge badge-intranda-orange"> <span class="fa fa-lightbulb-o" />
+                                <span class="badge badge-intranda-orange"> <util:icon icon="bulb" />
                                     #{msgs.badgePriority1}
                                 </span>
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{currentStep.prioritaet == 2}">
-                                <span class="badge badge-intranda-orange"> <span class="fa fa-lightbulb-o" />
+                                <span class="badge badge-intranda-orange"> <util:icon icon="bulb" />
                                     #{msgs.badgePriority2}
                                 </span>
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{currentStep.prioritaet gt 2 and currentStep.prioritaet lt 10}">
-                                <span class="badge badge-intranda-orange"> <span class="fa fa-lightbulb-o" />
+                                <span class="badge badge-intranda-orange"> <util:icon icon="bulb" />
                                     #{msgs.badgePriority3}
                                 </span>
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{currentStep.prioritaet gt 9}">
-                                <span class="badge badge-intranda-red"> <span class="fa fa-bullhorn" />
+                                <span class="badge badge-intranda-red"> <util:icon icon="speakerphone" />
                                     #{msgs.badgeCorrection}
                                 </span>
                             </h:panelGroup>
@@ -164,15 +162,13 @@
                                         class="d-inline-block align-middle statusRectangle #{step.bearbeitungsstatusEnum.color}" />
                                     <!-- // STATUS -->
 
-                                    <!-- TYPE -->
-                                    <i class="fa #{step.typAutomatisch ? 'fa-cogs' : 'fa-user-o'} font-light ms-3 me-3"
-                                        title="#{step.typAutomatisch ? msgs.automatischerSchritt : msgs.normalerSchritt}" />
-                                    <!-- // TYPE -->
-
-                                    <!-- TITLE -->
-                                    <h:outputText
-                                        value="#{step.titel}"
-                                        styleClass="#{step.bearbeitungsstatusEnum == 'INWORK'?'':'font-light'}" />
+                                    <!-- TYPE + TITLE -->
+                                    <span class="icon-text ms-3 align-middle">
+                                        <util:icon icon="#{step.typAutomatisch ? 'settings-automation' : 'user'}" styleClass="#{step.bearbeitungsstatusEnum == 'INWORK'?'':'icon--muted'}" title="#{step.typAutomatisch ? msgs.automatischerSchritt : msgs.normalerSchritt}" />
+                                        <h:outputText
+                                            value="#{step.titel}"
+                                            styleClass="#{step.bearbeitungsstatusEnum == 'INWORK'?'':'font-light'}" />
+                                    </span>
                                     <!-- TITLE -->
 
                                     <div
@@ -196,27 +192,23 @@
                                                     </h:panelGroup>
 
                                                     <h:panelGroup rendered="#{currentStep.prioritaet == 1}">
-                                                        <span class="badge badge-intranda-orange"> <i
-                                                            class="fa fa-lightbulb-o"></i> #{msgs.badgePriority1}
+                                                        <span class="badge badge-intranda-orange"> <util:icon icon="bulb" /> #{msgs.badgePriority1}
                                                         </span>
                                                     </h:panelGroup>
 
                                                     <h:panelGroup rendered="#{currentStep.prioritaet == 2}">
-                                                        <span class="badge badge-intranda-orange"> <i
-                                                            class="fa fa-lightbulb-o" /> #{msgs.badgePriority2}
+                                                        <span class="badge badge-intranda-orange"> <util:icon icon="bulb" /> #{msgs.badgePriority2}
                                                         </span>
                                                     </h:panelGroup>
 
                                                     <h:panelGroup
                                                         rendered="#{currentStep.prioritaet gt 2 and currentStep.prioritaet lt 10}">
-                                                        <span class="badge badge-intranda-orange"> <i
-                                                            class="fa fa-lightbulb-o"></i> #{msgs.badgePriority3}
+                                                        <span class="badge badge-intranda-orange"> <util:icon icon="bulb" /> #{msgs.badgePriority3}
                                                         </span>
                                                     </h:panelGroup>
 
                                                     <h:panelGroup rendered="#{currentStep.prioritaet gt 9}">
-                                                        <span class="badge badge-intranda-red"> <i
-                                                            class="fa fa-bullhorn"></i> #{msgs.badgeCorrection}
+                                                        <span class="badge badge-intranda-red"> <util:icon icon="speakerphone" /> #{msgs.badgeCorrection}
                                                         </span>
                                                     </h:panelGroup>
                                                 </h:panelGroup>

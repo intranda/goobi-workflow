@@ -7,6 +7,7 @@
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/template/template.html"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:p="http://primefaces.org/ui"
@@ -62,7 +63,7 @@
 						boxType="action"
 						boxPadding="false"
 						boxForm="true"
-						icon="fa-tasks"
+						icon="list-check"
 						title="#{msgs.zusaetzlicheDetails}">
 
 
@@ -189,7 +190,7 @@
 												class="btn btn-blank ms-2 mb-1"
 												jsf:action="#{ProzesskopieForm.uploadedFiles.remove(image)}"
 												title="#{msgs.damageDocDeleteFile}">
-												<span class="fa fa-trash " />
+												<util:icon icon="trash" />
 												<f:passThroughAttribute
 													name="data-toggle"
 													value="tooltip" />
@@ -235,7 +236,7 @@
 								jsf:id="absenden"
 								type="submit"
 								jsf:action="#{ProzesskopieForm.createNewProcess}">
-								<span class="fa fa-save" />
+								<util:icon icon="device-floppy" />
 								<span>
 									<h:outputText value="#{msgs.speichern}" />
 								</span>
@@ -246,7 +247,7 @@
 								jsf:id="deleteUser"
 								class="btn btn-blank trigger-delete"
 								jsf:action="#{ProzesskopieForm.openFirstPage}">
-								<span class="fa fa-arrow-circle-o-left" />
+								<util:icon icon="circle-arrow-left" />
 								<span>
 									<h:outputText value="#{msgs.zurueck}" />
 								</span>

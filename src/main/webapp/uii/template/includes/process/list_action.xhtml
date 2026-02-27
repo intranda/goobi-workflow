@@ -8,7 +8,7 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:editor="http://goobi.io/editor"
-    >
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface>
     </composite:interface>
@@ -22,7 +22,7 @@
                     <intranda:box
                         id="boxProcessesAllActions"
                         boxType="action"
-                        icon="fa-wrench"
+                        icon="tool"
                         title="#{msgs.moeglicheAktionen}">
                         <h:form
                             id="actionForm"
@@ -40,8 +40,8 @@
                                         class="btn btn-link d-block mb-2"
                                         title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}"
                                         onclick="if (!confirm('#{msgs.upload}')) return false">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-cloud-upload" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="cloud-upload" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}" />
@@ -64,8 +64,8 @@
                                         data-bs-target="#possibleActions1"
                                         aria-expanded="false"
                                         aria-controls="possibleActions1">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-cloud-download" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="cloud-download" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.downloadInMeinHomeverzeichnis}" />
@@ -85,8 +85,8 @@
                                             jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
                                             title="#{msgs.auswahl2}"
                                             onclick="if (!confirm('#{msgs.download}')) return false">
-                                            <span class="btn btn-blank">
-                                                <span class="fa fa-angle-right" />
+                                            <span class="btn btn-icon btn-blank">
+                                                <util:icon icon="chevron-right" />
                                             </span>
                                             <span>
                                                 <h:outputText value="#{msgs.auswahl2}" />
@@ -99,8 +99,8 @@
                                             title="#{msgs.trefferDieserSeite}"
                                             onclick="if (!confirm('#{msgs.download}')) return false"
                                             jsf:id="downloadToHomePage">
-                                            <span class="btn btn-blank">
-                                                <span class="fa fa-angle-right" />
+                                            <span class="btn btn-icon btn-blank">
+                                                <util:icon icon="chevron-right" />
                                             </span>
                                             <span>
                                                 <h:outputText value="#{msgs.trefferDieserSeite}" />
@@ -113,8 +113,8 @@
                                             title="#{msgs.gesamtesTrefferset}"
                                             onclick="if (!confirm('#{msgs.download}')) return false"
                                             jsf:id="downloadToHomeAll">
-                                            <span class="btn btn-blank">
-                                                <span class="fa fa-angle-right" />
+                                            <span class="btn btn-icon btn-blank">
+                                                <util:icon icon="chevron-right" />
                                             </span>
                                             <span>
                                                 <h:outputText value="#{msgs.gesamtesTrefferset}" />
@@ -140,8 +140,8 @@
                                     data-bs-target="#possibleActions2"
                                     aria-expanded="false"
                                     aria-controls="possibleActions2">
-                                    <span class="btn btn-blank btn-link">
-                                        <span class="fa fa-globe" />
+                                    <span class="btn btn-icon btn-blank">
+                                        <util:icon icon="world" />
                                     </span>
                                     <span>
                                         <h:outputText value="#{msgs.metadatenFuerDMSExportieren}" />
@@ -162,8 +162,8 @@
                                         jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
                                         title="#{msgs.auswahl2}"
                                         onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.auswahl2}" />
@@ -176,8 +176,8 @@
                                         title="#{msgs.trefferDieserSeite}"
                                         jsf:id="action7"
                                         onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.trefferDieserSeite}" />
@@ -190,8 +190,8 @@
                                         title="#{msgs.gesamtesTrefferset}"
                                         jsf:id="action8"
                                         onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.gesamtesTrefferset}" />
@@ -236,8 +236,8 @@
                                     data-bs-target="#possibleActions5"
                                     aria-expanded="false"
                                     aria-controls="possibleActions5">
-                                    <span class="btn btn-blank">
-                                        <span class="fa fa-cogs" />
+                                    <span class="btn btn-icon btn-blank">
+                                        <util:icon icon="settings" />
                                     </span>
                                     <span>
                                         <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
@@ -317,8 +317,8 @@
                                                 render="goobiScriptModalWrapper boxProcessesAllActions:goobiScriptMessages"
                                                 execute="goobiScriptfield"
                                                 onevent="(data) => showGoobiScriptModal({data, modalID: 'boxProcessesAllActions\:goobiScriptModal'})" />
-                                            <span class="btn btn-blank">
-                                                <span class="fa fa-angle-right" />
+                                            <span class="btn btn-icon btn-blank">
+                                                <util:icon icon="chevron-right" />
                                             </span>
                                             <span>
                                                 <h:outputText value="#{msgs.auswahl2}" />
@@ -336,8 +336,8 @@
                                             render="goobiScriptModalWrapper boxProcessesAllActions:goobiScriptMessages"
                                             execute="goobiScriptfield"
                                             onevent="(data) => showGoobiScriptModal({data, modalID: 'boxProcessesAllActions\:goobiScriptModal'})" />
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.trefferDieserSeite}" />
@@ -354,8 +354,8 @@
                                             render="goobiScriptModalWrapper boxProcessesAllActions:goobiScriptMessages"
                                             execute="goobiScriptfield"
                                             onevent="(data) => showGoobiScriptModal({data, modalID: 'boxProcessesAllActions\:goobiScriptModal'})" />
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.gesamtesTrefferset}" />
@@ -375,8 +375,8 @@
                                     type="button"
                                     jsf:id="expandbutton10"
                                     class="btn btn-link">
-                                    <span class="btn btn-blank">
-                                        <span class="fa fa-floppy-o" />
+                                    <span class="btn btn-icon btn-blank">
+                                        <util:icon icon="device-floppy" />
                                     </span>
                                     <span>
                                         <h:outputText value="#{msgs.saveSearchResult}" />
@@ -415,21 +415,21 @@
                                         <h:column>
                                             <button
                                                 jsf:id="addFilter"
-                                                class="btn btn-blank ms-2 me-2"
+                                                class="btn btn-icon btn-blank ms-2 me-2"
                                                 aria-label="#{msgs.addFilter}"
                                                 jsf:action="#{ProzessverwaltungForm.addField}">
-                                                <span class="fa fa-plus" />
+                                                <util:icon icon="plus" />
                                                 <f:ajax
                                                     render="@form"
                                                     execute="@form" />
                                             </button>
                                             <button
                                                 jsf:id="removeFilter"
-                                                class="btn btn-blank"
+                                                class="btn btn-icon btn-blank"
                                                 aria-label="#{msgs.removeFilter}"
                                                 jsf:action="#{ProzessverwaltungForm.deleteField}"
                                                 jsf:rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
-                                                <span class="fa fa-minus" />
+                                                <util:icon icon="minus" />
                                                 <f:setPropertyActionListener
                                                     target="#{ProzessverwaltungForm.currentField}"
                                                     value="#{field}" />
@@ -444,8 +444,8 @@
                                         jsf:action="#{ProzessverwaltungForm.generateResultXls}"
                                         title="#{msgs.createExcel}"
                                         jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.createExcel}" />
@@ -456,8 +456,8 @@
                                         jsf:action="#{ProzessverwaltungForm.generateResultDoc}"
                                         title="#{msgs.createDoc}"
                                         jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.createDoc}" />
@@ -468,8 +468,8 @@
                                         jsf:action="#{ProzessverwaltungForm.generateResultRtf}"
                                         title="#{msgs.createRtf}"
                                         jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.createRtf}" />
@@ -480,8 +480,8 @@
                                         jsf:action="#{ProzessverwaltungForm.generateResultAsPdf}"
                                         title="#{msgs.createPdf}"
                                         jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.createPdf}" />
@@ -503,8 +503,8 @@
                                     class="btn btn-link"
                                     data-bs-toggle="collapse"
                                     data-bs-target="#possibleActions6">
-                                    <span class="btn btn-blank">
-                                        <span class="fa fa-table" />
+                                    <span class="btn btn-icon btn-blank">
+                                        <util:icon icon="table" />
                                     </span>
                                     <span>
                                         <h:outputText value="#{msgs.anzahlMetadatenUndImagesErmitteln}" />
@@ -520,8 +520,8 @@
                                         jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesSelection}"
                                         jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
                                         title="#{msgs.auswahl2}">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.auswahl2}" />
@@ -533,8 +533,8 @@
                                         jsf:id="action21"
                                         jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesPage}"
                                         title="#{msgs.trefferDieserSeite}">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.trefferDieserSeite}" />
@@ -547,8 +547,8 @@
                                         jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesHits}"
                                         title="#{msgs.gesamtesTrefferset}"
                                         onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.gesamtesTrefferset}" />
@@ -566,8 +566,8 @@
                                     class="btn btn-link"
                                     data-bs-toggle="collapse"
                                     data-bs-target="#possibleActions7">
-                                    <span class="btn btn-blank">
-                                        <span class="fa fa-bar-chart-o" />
+                                    <span class="btn btn-icon btn-blank">
+                                        <util:icon icon="chart-bar" />
                                     </span>
                                     <span>
                                         <h:outputText value="#{msgs.statistischeAuswertung}" />
@@ -583,8 +583,8 @@
                                         jsf:rendered="#{!HelperForm.anonymized}"
                                         jsf:action="#{ProzessverwaltungForm.statisticsStatusVolumes}"
                                         title="#{msgs.statusOfVolumes}">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.statusOfVolumes}" />
@@ -600,8 +600,8 @@
                                         jsf:rendered="#{!HelperForm.anonymized}"
                                         jsf:action="#{ProzessverwaltungForm.statisticsUsergroups}"
                                         title="#{msgs.statusForUsers}">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.statusForUsers}" />
@@ -617,8 +617,8 @@
                                         jsf:rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}"
                                         jsf:action="#{ProzessverwaltungForm.statisticsRuntimeSteps}"
                                         title="#{msgs.runtimeOfSteps}">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.runtimeOfSteps}" />
@@ -634,8 +634,8 @@
                                         jsf:rendered="#{!HelperForm.anonymized}"
                                         jsf:action="#{ProzessverwaltungForm.statisticsProduction}"
                                         title="#{msgs.productionStatistics}">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.productionStatistics}" />
@@ -651,8 +651,8 @@
                                         jsf:rendered="#{!HelperForm.anonymized}"
                                         jsf:action="#{ProzessverwaltungForm.statisticsTroughput}"
                                         title="#{msgs.productionThroughput}">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.productionThroughput}" />
@@ -667,8 +667,8 @@
                                         jsf:id="action35"
                                         jsf:action="#{ProzessverwaltungForm.statisticsStorage}"
                                         title="#{msgs.storageCalculator}">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.storageCalculator}" />
@@ -684,8 +684,8 @@
                                         jsf:rendered="#{!HelperForm.anonymized}"
                                         jsf:action="#{ProzessverwaltungForm.statisticsCorrection}"
                                         title="#{msgs.errorTracking}">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.errorTracking}" />
@@ -700,8 +700,8 @@
                                         jsf:id="action37"
                                         jsf:action="#{ProzessverwaltungForm.statisticsProject}"
                                         title="#{msgs.projectAssociation}">
-                                        <span class="btn btn-blank">
-                                            <span class="fa fa-angle-right" />
+                                        <span class="btn btn-icon btn-blank">
+                                            <util:icon icon="chevron-right" />
                                         </span>
                                         <span>
                                             <h:outputText value="#{msgs.projectAssociation}" />
@@ -743,7 +743,7 @@
                                                     class="btn text-white ms-auto"
                                                     title="#{msgs.cancel}"
                                                     data-bs-dismiss="modal">
-                                                    <span class="fa fa-times" />
+                                                    <util:icon icon="x" />
                                                 </button>
                                             </div>
                                             <div class="modal-body">
@@ -784,7 +784,7 @@
                                                     jsf:rel="tooltip"
                                                     class="btn btn-hot"
                                                     onclick="preventDoubleSubmit(this);">
-                                                    <span class="fa fa-cogs" />
+                                                    <util:icon icon="settings" />
                                                     <span>
                                                         <h:outputText value="#{msgs.goobiScriptAusfuehren} " />
                                                     </span>

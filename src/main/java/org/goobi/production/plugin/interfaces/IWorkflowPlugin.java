@@ -25,11 +25,9 @@
  */
 package org.goobi.production.plugin.interfaces;
 
-import java.io.Serializable;
-
 import org.goobi.production.enums.PluginGuiType;
 
-public interface IWorkflowPlugin extends IPlugin, Serializable {
+public interface IWorkflowPlugin extends IPlugin {
 
     String getGui();
 

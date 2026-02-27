@@ -84,6 +84,24 @@
 			</section>
 			<!-- // TYPOGRAPHY -->
 
+			<!-- Alerts -->
+			<section class="colors">
+				<h2>Alerts</h2>
+				<article
+					class="flow"
+					style="grid-column: 1/-1">
+					<h3 class="description">Alerts</h3>
+					<ui:include src="template/includes/style_guide/alerts_general.xhtml" />
+				</article>
+				<article
+					class="flow"
+					style="grid-column: 1/-1">
+					<h3 class="description">Missing Rights</h3>
+					<ui:include src="template/includes/style_guide/alerts_missing_rights.xhtml" />
+				</article>
+			</section>
+			<!-- // Alerts -->
+
 			<!-- INTERACTIVE -->
 			<section class="colors">
 				<h2>Interactive elements</h2>
@@ -117,7 +135,6 @@
 				<article
 					class="flow"
 					style="grid-column: 1/-1">
-					<h3 class="description">Icon Semantics</h3>
 					<ui:include src="template/includes/style_guide/icons.xhtml" />
 				</article>
 			</section>
@@ -178,15 +195,22 @@
 			</section>
 			<!-- // Sections -->
 
+			<!-- Description lists -->
+			<section class="dls">
+				<h2>Description Lists</h2>
+
+				<article
+					class="flow"
+					style="grid-column: 1/-1">
+					<h3 class="description">Description Lists</h3>
+					<ui:include src="template/includes/style_guide/description_list.xhtml" />
+				</article>
+			</section>
+			<!-- // Description lists -->
+
 			<!-- TABLES -->
 			<section class="forms">
 				<h2>Tables</h2>
-
-				<p style="grid-column: 1/-1">
-					For tables to be resizable, make sure that they have a unique id.
-					Column widths are stored and retrieved from localstorage by the id of the table.
-					Any column needs an id as well for the resizing to be persistent.
-				</p>
 
 				<article
 					class="flow"
@@ -194,6 +218,12 @@
 					<h3 class="description">Just a table</h3>
 					<ui:include src="template/includes/style_guide/table.xhtml" />
 				</article>
+
+				<p style="grid-column: 1/-1">
+					For tables to be resizable, make sure that they have a unique id.
+					Column widths are stored and retrieved from localstorage by the id of the table.
+					Any column needs an id as well for the resizing to be persistent, as seen in the examples below.
+				</p>
 
 				<article
 					class="flow"

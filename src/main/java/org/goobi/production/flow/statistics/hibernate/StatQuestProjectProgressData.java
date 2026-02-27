@@ -26,7 +26,6 @@ package org.goobi.production.flow.statistics.hibernate;
  * exception statement from your version.
  */
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +53,7 @@ import lombok.extern.log4j.Log4j2;
  * average throughput. The average throughput is based on the duration and volume of a project.
  ****************************************************************************/
 @Log4j2
-public class StatQuestProjectProgressData implements IStatisticalQuestionLimitedTimeframe, Serializable {
+public class StatQuestProjectProgressData implements IStatisticalQuestionLimitedTimeframe {
 
     private static final long serialVersionUID = 5488469945490611200L;
     private Date timeFilterFrom;

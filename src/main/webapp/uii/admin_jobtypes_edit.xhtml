@@ -9,8 +9,8 @@
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/template/template.html"
-
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util">
 
 	<ui:param name="myPageTitle" value="#{JobTypesBean.currentJobType.name == null?msgs.createNewJobType:msgs.editJobType}" />
 
@@ -30,7 +30,7 @@
 
 				<intranda:box
 					boxType="action"
-					icon="fa-gears"
+					icon="settings"
 					title="#{myPageTitle}"
 					boxScope="form-box"
 					boxPadding="false">
@@ -62,7 +62,7 @@
 											   jsf:action="#{JobTypesBean.removeStepFromCurrentJobType(stepTitle)}">
 											   <f:ajax render="@form" execute="@form"/>
 												 <span>#{stepTitle}</span>
-											   <span class="fa fa-minus margin-left-5" />
+											   <util:icon icon="minus" css="margin-left-5" />
 										   </button>
 									</ui:repeat>
 								</div>
@@ -73,7 +73,7 @@
 											   jsf:action="#{JobTypesBean.addStepToCurrentJobType(stepTitle)}">
 											   <f:ajax render="@form" execute="@form"/>
 												 <span>#{stepTitle}</span>
-											   <span class="fa fa-plus margin-left-5" />
+											   <util:icon icon="plus" css="margin-left-5" />
 										   </button>
 									</ui:repeat>
 								</div>
@@ -89,7 +89,7 @@
 					    	<span>#{msgs.cancel}</span>
 					    </button>
 					    <button class="btn btn-success" jsf:action="#{JobTypesBean.saveCurrentJobType}">
-					    	<span class="fa fa-save" />
+					    	<util:icon icon="device-floppy" />
 					    	<span>#{msgs.save}</span>
 					    </button>
 							<button
@@ -97,7 +97,7 @@
 								onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
 								jsf:action="#{JobTypesBean.deleteCurrentJobType}"
 								jsf:rendered="#{not JobTypesBean.currentJobTypeNew}">
-								<span class="fa fa-trash" />
+								<util:icon icon="trash" />
 								<span>#{msgs.loeschen}</span>
 							</button>
 				    </div>

@@ -7,6 +7,7 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
@@ -54,7 +55,7 @@
 
                         <intranda:boxTitle
                             title="#{myPageTitle}"
-                            icon="fa-building">
+                            icon="building">
 
                             <ul class="tabs">
                                 <li class="tab #{institutionBean.displayMode eq ''?'active':''}">
@@ -348,7 +349,7 @@
                                 jsf:id="absenden"
                                 type="submit"
                                 jsf:action="#{institutionBean.Speichern}">
-                                <span class="fa fa-save" />
+                                <util:icon icon="device-floppy" />
                                 <span>
                                     <h:outputText value="#{msgs.speichern}" />
                                 </span>
@@ -361,7 +362,7 @@
                                     class="btn btn-hot trigger-delete"
                                     data-bs-toggle="modal"
                                     data-bs-target="#deleteModal">
-                                    <span class="fa fa-trash-o" />
+                                    <util:icon icon="trash" />
                                     <span>
                                         <h:outputText value="#{msgs.loeschen}" />
                                     </span>
@@ -389,7 +390,7 @@
                                                     class="btn text-white"
                                                     title="#{msgs.cancel}"
                                                     data-bs-dismiss="modal">
-                                                    <span class="fa fa-times" />
+                                                    <util:icon icon="x" />
                                                 </button>
                                             </div>
                                             <div class="modal-body">
@@ -404,7 +405,7 @@
                                                     jsf:id="confirmDelete"
                                                     class="btn btn-danger"
                                                     jsf:action="#{institutionBean.Loeschen}">
-                                                    <span class="fa fa-trash-o margin-right-5" />
+                                                    <util:icon icon="trash" styleClass="me-2" />
                                                     <span>
                                                         <h:outputText value="#{msgs.loeschen}" />
                                                     </span>

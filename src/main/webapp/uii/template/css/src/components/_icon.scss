@@ -1,17 +1,81 @@
 .icon-wrapper {
-    align-items: center;
-    display: inline-flex;
-    height: 1lh;
-    justify-content: center;
-    line-height: 1;
-    vertical-align: middle;
+    --icon-size: 1.275em;
+    --icon-stroke: 2;
 
-    & svg {
-        color: currentColor;
-        display: inline-flex;
-        height: 1.275em;
-        line-height: 0;
-        width: 1.275em;
-        stroke-width: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: baseline;
+    color: inherit;
+    position: relative;
+
+    /* Zero-width space for baseline alignment - positioned absolutely to not affect width */
+    &::before {
+        content: '\200b';
+        position: absolute;
+        width: 0;
     }
+
+    svg {
+        color: currentColor;
+        display: block;
+        height: var(--icon-size);
+        width: var(--icon-size);
+        stroke-width: var(--icon-stroke);
+    }
+}
+
+.icon-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    color: inherit;
+}
+
+/* Size Modifiers */
+.icon-wrapper.icon--xs { --icon-size: 0.75em; }
+.icon-wrapper.icon--sm { --icon-size: 0.875em; }
+.icon-wrapper.icon--md { --icon-size: 1.125em; }
+.icon-wrapper.icon--lg { --icon-size: 1.25em; }
+.icon-wrapper.icon--xl { --icon-size: 1.5em; }
+.icon-wrapper.icon--xxl { --icon-size: 2em; }
+.icon-wrapper.icon--xxxl { --icon-size: 2.5em; }
+.icon-wrapper.icon--xxxxl { --icon-size: 3em; }
+
+/* Stroke Modifiers */
+.icon-wrapper.icon--b1 { --icon-stroke: 1; }
+.icon-wrapper.icon--b2 { --icon-stroke: 1.5; }
+.icon-wrapper.icon--b3 { --icon-stroke: 2; }
+.icon-wrapper.icon--b4 { --icon-stroke: 2.5; }
+.icon-wrapper.icon--b5 { --icon-stroke: 3; }
+.icon-wrapper.icon--b6 { --icon-stroke: 4; }
+
+/* Color Modifiers */
+.icon-wrapper.icon--light { color: #bbb; }
+.icon-wrapper.icon--muted { color: var(--clr-neutral-400); }
+.icon-wrapper.icon--primary { color: var(--clr-primary-400); }
+.icon-wrapper.icon--success { color: #339933; }
+.icon-wrapper.icon--warning { color: #e8860c; }
+.icon-wrapper.icon--danger { color: #e51400; }
+.icon-wrapper.icon--inwork { color: #ffbf21; }
+.icon-wrapper.icon--deactivated { color: #ccc; }
+
+/* Animation Modifiers */
+.icon-wrapper.spin {
+    animation: icon-spin 1s linear infinite;
+}
+
+@keyframes icon-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.breadcrumb-item .icon-wrapper {
+    vertical-align: -0.125em;
+}
+
+.badge:has(.icon-wrapper) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
 }

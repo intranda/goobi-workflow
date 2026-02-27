@@ -6,9 +6,9 @@
 	template="/uii/template/template.html"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
-
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util">
 
 	<ui:param
 		name="myPageTitle"
@@ -59,7 +59,7 @@
 
 					<intranda:boxTitle
 						title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.werkstueckDetails.concat(' -').concat(ProzessverwaltungForm.myProzess.titel) : msgs.werkstueckDetails}"
-						icon="fa-list">
+						icon="list">
 
 						<div class="actions d-flex">
 							<button
@@ -68,7 +68,7 @@
 								class="btn d-flex align-items-center btn--title-action"
 								title="#{msgs.reload}"
 								jsf:rel="tooltip">
-								<span class="fa fa-refresh" />
+								<util:icon icon="refresh" />
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
@@ -80,7 +80,7 @@
 								class="btn d-flex align-items-center btn--title-action"
 								jsf:action="#{ProzessverwaltungForm.WerkstueckLoeschen}"
 								jsf:rel="tooltip">
-								<span class="fa fa-trash-o" />
+								<util:icon icon="trash" />
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
@@ -113,7 +113,7 @@
 
 					<intranda:boxTitle
 						title="#{msgs.eigenschaften}"
-						icon="fa-table">
+						icon="table">
 
 						<div class="actions d-flex">
 							<button
@@ -122,7 +122,7 @@
 								jsf:rel="tooltip"
 								jsf:action="#{ProzessverwaltungForm.WerkstueckEigenschaftNeu}"
 								title="#{msgs.eigenschaftHinzufuegen}">
-								<span class="fa fa-plus" />
+								<util:icon icon="plus" />
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
@@ -175,7 +175,7 @@
 													jsf:rel="tooltip"
 													jsf:action="process_edit_workpiece"
 													title="#{msgs.bearbeiten}">
-													<span class="fa fa-pencil" />
+													<util:icon icon="pencil" />
 													<f:setPropertyActionListener
 														target="#{ProzessverwaltungForm.myWerkstueckEigenschaft}"
 														value="#{item}" />
@@ -207,7 +207,7 @@
 					boxForm="true"
 					boxPadding="false"
 					title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.eigenschaftBearbeiten.concat(' - ').concat(ProzessverwaltungForm.myProzess.titel) : msgs.eigenschaftBearbeiten}"
-					icon="fa-edit">
+					icon="edit">
 
 					<intranda:formInputText
 						id="title"
@@ -244,7 +244,7 @@
 							jsf:id="saveProperty"
 							type="submit"
 							jsf:action="#{ProzessverwaltungForm.WerkstueckEigenschaftUebernehmen}">
-							<span class="fa fa-save" />
+							<util:icon icon="device-floppy" />
 							<span>
 								<h:outputText value="#{msgs.speichern}" />
 							</span>
@@ -260,7 +260,7 @@
 							onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
 							jsf:action="#{ProzessverwaltungForm.WerkstueckEigenschaftLoeschen}"
 							jsf:rendered="#{ProzessverwaltungForm.myWerkstueckEigenschaft.id != null}">
-							<span class="fa fa-trash-o" />
+							<util:icon icon="trash" />
 							<span>
 								<h:outputText value="#{msgs.loeschen}" />
 							</span>

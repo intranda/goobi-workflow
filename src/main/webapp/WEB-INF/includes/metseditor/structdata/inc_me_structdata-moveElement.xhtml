@@ -6,7 +6,8 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:p="http://primefaces.org/ui"
     xmlns:section="http://goobi.io/section"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface/>
 
@@ -16,7 +17,7 @@
         <ui:fragment rendered="#{Metadaten.modusStrukturelementVerschieben}">
             <div class="structdata__change">
                 <section:section type="neutral" id="moveElementSection" collapsible="true">
-                    <section:header icon="bars" title="#{msgs.docstructAnAndereStelleSchieben}">
+                    <section:header icon="menu-2" title="#{msgs.docstructAnAndereStelleSchieben}">
                     </section:header>
                     <section:body>
                         <p class="p-3 m-0 border-bottom">
@@ -29,7 +30,7 @@
                                     <div class="toggle"/>
                                     <div class="content">
                                         <button jsf:id="moveNode" class="btn document" jsf:action="#{Metadaten.KnotenVerschieben}" jsf:rendered="#{item.node.einfuegenErlaubt and not item.node.selected}">
-                                            <span class="fa fa-file-o" aria-hidden="true"/>
+                                            <util:icon icon="file" />
                                             <span>
                                                 <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '') ? item.node.description : item.node.mainTitle}"/>
                                             </span>
@@ -44,7 +45,7 @@
                                             <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}"/>
                                         </button>
                                         <h:panelGroup rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">
-                                            <span class="fa fa-file-o" aria-hidden="true"/>
+                                            <util:icon icon="file" />
                                             <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}" styleClass="#{item.node.selected ? 'fw-700' : 'unselected'} ps-2">
 
                                                 <f:passThroughAttribute name="data-trigger" value="hover"/>

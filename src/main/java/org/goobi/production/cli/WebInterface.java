@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.ICommandPlugin;
@@ -63,6 +64,11 @@ public class WebInterface extends HttpServlet {
                     if (ip == null) {
                         ip = "127.0.0.1";
                     }
+                }
+                // check, if header contained a valid ip address
+                if (!ip.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
+                    generateAnswer(resp, 401, "No valid ip address", "No valid ip address");
+                    return;
                 }
 
                 Map<String, String[]> map = req.getParameterMap();
@@ -101,8 +107,9 @@ public class WebInterface extends HttpServlet {
             List<String> allowedCommandos = WebInterfaceConfig.getCredencials(ip, password);
             if (!allowedCommandos.contains(command)) {
                 // error, no command found
-                generateAnswer(resp, 401, "command not allowed", "command " + command + " is not allowed for your IP (" + ip
-                        + ") and credentials. You are allowed to use the following commands:" + allowedCommandos);
+                generateAnswer(resp, 401, "command not allowed",
+                        "command " + StringEscapeUtils.escapeHtml4(command) + " is not allowed for your IP (" + StringEscapeUtils.escapeHtml4(ip)
+                                + ") and credentials. You are allowed to use the following commands:" + allowedCommandos);
                 return;
             }
 

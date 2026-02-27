@@ -3,10 +3,10 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui" xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:p="http://primefaces.org/ui" xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface>
 	</composite:interface>
@@ -21,7 +21,7 @@
 				<div class="col-12">
 
 					<intranda:box id="statistics" boxType="neutral" boxPadding="true"
-						icon="fa-bar-chart-o"
+						icon="chart-bar"
 						title="#{msgs.statistischeAuswertung}: #{ProzessverwaltungForm.statisticsManager.statisticMode.title}">
 
 
@@ -157,7 +157,7 @@
 									title="#{msgs.calculateStatistics}"
 									jsf:action="#{ProzessverwaltungForm.statisticsManager.calculate}"
 									class="btn btn-primary">
-									<span class="fa fa-cog" />
+									<util:icon icon="calculator" />
 									<span>
 										<h:outputText value="#{msgs.calculateStatistics}" />
 									</span>
@@ -211,7 +211,7 @@
 									<button jsf:id="createExcel"
 										jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
 										title="#{msgs.download_excel}" class="btn btn-blank">
-										<span class="fa fa-floppy-o" />
+										<util:icon icon="device-floppy" />
 										<span>
 											<h:outputText value="#{msgs.download_excel}" />
 										</span>
@@ -223,7 +223,7 @@
 									<button jsf:id="createCsv"
 										jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
 										title="#{msgs.download_csv}" class="btn btn-blank">
-										<span class="fa fa-floppy-o" />
+										<util:icon icon="device-floppy" />
 										<span>
 											<h:outputText value="#{msgs.download_csv}" />
 										</span>
@@ -263,7 +263,7 @@
 											title="#{msgs.download_excel}"
 											jsf:rendered="#{element.dataTable.showableInTable}"
 											class="btn btn-blank">
-											<span class="fa fa-floppy-o" />
+											<util:icon icon="device-floppy" />
 											<span>
 												<h:outputText value="#{msgs.download_excel}" />
 											</span>
@@ -276,7 +276,7 @@
 											jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
 											title="#{msgs.download_csv}"
 											jsf:rendered="#{element.dataTable.showableInTable}">
-											<span class="fa fa-floppy-o" />
+											<util:icon icon="device-floppy" />
 											<span>
 												<h:outputText value="#{msgs.download_csv}" />
 											</span>

@@ -359,7 +359,7 @@
                                         label="#{msgs.general}"
                                         action="statistics"
                                         rendered="#{LoginForm.hasRole('Statistics_General')}"
-                                        icon="chart-area-line"/>
+                                        icon="chart-bar"/>
 
                                 <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Plugins')}">
                                     <ui:repeat
@@ -375,7 +375,7 @@
                                                         styleClass="dropdown-item"
                                                 >
                                                     <util:icon-text
-                                                        icon="plug"
+                                                        icon="chart-pie"
                                                         text="#{msgs[statistics]}"  />
                                                     <f:setPropertyActionListener
                                                             target="#{NavigationForm.aktuell}"

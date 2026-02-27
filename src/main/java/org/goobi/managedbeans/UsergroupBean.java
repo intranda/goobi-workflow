@@ -25,7 +25,6 @@
  */
 package org.goobi.managedbeans;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +47,7 @@ import lombok.Setter;
 @WindowScoped
 @Getter
 @Setter
-public class UsergroupBean extends BasicBean implements Serializable {
+public class UsergroupBean extends BasicBean {
 
     private static final long serialVersionUID = 8051160917458068675L;
 

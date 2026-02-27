@@ -7,7 +7,8 @@
 
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface>
          <composite:attribute name="name" />
@@ -165,7 +166,7 @@
                             class="btn text-white"
                             title="#{msgs.abbrechen}"
                             data-bs-dismiss="modal">
-                            <span class="fa fa-times" />
+                            <util:icon icon="x" />
                         </button>
                     </div>
                     <div class="modal-body">
@@ -188,9 +189,7 @@
                                         aria-label="#{msgs.removeGroup}"
                                         class="btn searchgroup__container-close"
                                         jsf:action="#{cc.attrs.field.viafSearch.viafSearchRequest.deleteGroup(globStatus.index)}">
-                                        <span
-                                            class="fa fa-times"
-                                            aria-hidden="true" />
+                                        <util:icon icon="x" />
                                         <f:ajax
                                             execute="@this viaf_search"
                                             render=":#{cc.clientId}:viaf_search" />
@@ -259,9 +258,7 @@
                                                     aria-label="#{msgs.removeFilter}"
                                                     class="btn btn-blank"
                                                     jsf:action="#{group.deleteFilter(status.index)}">
-                                                    <span
-                                                        class="fa fa-trash"
-                                                        aria-hidden="true" />
+                                                    <util:icon icon="trash" />
                                                     <f:ajax
                                                         execute="@this viaf_search"
                                                         render=":#{cc.clientId}:viaf_search" />
@@ -360,9 +357,7 @@
                                     jsf:id="viafSearch"
                                     class="btn btn-blank"
                                     jsf:action="#{cc.attrs.field.searchViaf}">
-                                    <span
-                                        class="fa fa-search"
-                                        aria-hidden="true"/>
+                                    <util:icon icon="search" />
                                     <span>
                                         <h:outputText value="#{msgs.search}" />
                                     </span>
@@ -443,7 +438,7 @@
                                                             <f:setPropertyActionListener
                                                                 value="#{record.getFieldValues('024','7',' ','a').get(0)}"
                                                                 target="#{cc.attrs.field.viafSearch.currentCluster}" />
-                                                            <span class="fa fa-check" />
+                                                            <util:icon icon="check" />
                                                             <f:ajax
                                                                 execute="@this"
                                                                 render="#{cc.attrs.render}" />

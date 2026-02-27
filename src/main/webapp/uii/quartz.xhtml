@@ -6,8 +6,8 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
-
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
@@ -43,7 +43,7 @@
                     <intranda:box
                         boxType="primary"
                         boxPadding="true"
-                        icon="fa-spinner"
+                        icon="loader"
                         title="#{msgs.jobs_quartzJobs}">
 
                         <!-- TABLE WRAPPER -->
@@ -108,7 +108,7 @@
                                                                     jsf:rel="tooltip"
                                                                     title="#{msgs.jobs_run_once_now}"
                                                                     class="btn btn-blank float-end">
-                                                                    <span class="fa fa-step-forward" />
+                                                                    <util:icon icon="player-skip-forward" />
                                                                     <f:passThroughAttribute
                                                                         name="data-toggle"
                                                                         value="tooltip" />
@@ -125,7 +125,7 @@
                                                                     jsf:rel="tooltip"
                                                                     class="btn btn-blank me-2 float-end"
                                                                     title="#{msgs.jobs_pause_job}">
-                                                                    <span class="fa fa-pause" />
+                                                                    <util:icon icon="player-pause" />
                                                                     <f:passThroughAttribute
                                                                         name="data-toggle"
                                                                         value="tooltip" />
@@ -142,7 +142,7 @@
                                                                     jsf:rel="tooltip"
                                                                     class="btn btn-blank me-2 float-end"
                                                                     title="#{msgs.jobs_run_job}">
-                                                                    <span class="fa fa-play" />
+                                                                    <util:icon icon="player-play" />
                                                                     <f:passThroughAttribute
                                                                         name="data-toggle"
                                                                         value="tooltip" />
@@ -190,7 +190,7 @@
                                         jsf:action="#{jobBean.pauseAllJobs}"
                                         jsf:rendered="#{!jobBean.paused}"
                                         class="btn btn-blank float-end">
-                                        <span class="fa fa-pause" />
+                                        <util:icon icon="player-pause" />
                                         <span>#{msgs.jobs_pause_all}</span>
                                     </button>
                                     <!-- // BUTTON PAUSE -->
@@ -201,7 +201,7 @@
                                         jsf:action="#{jobBean.resumeAllJobs}"
                                         jsf:rendered="#{jobBean.paused}"
                                         class="btn btn-primary-400 float-end">
-                                        <span class="fa fa-play" />
+                                        <util:icon icon="player-play" />
                                         <span>#{msgs.jobs_resume_all}</span>
                                     </button>
                                     <!-- // BUTTON RESUME -->
@@ -223,7 +223,7 @@
                     <intranda:box
                         boxType="neutral"
                         boxPadding="true"
-                        icon="fa-history"
+                        icon="history"
                         title="#{msgs.jobs_quartzHistory}">
 
                         <!-- TABLE WRAPPER -->
@@ -250,7 +250,7 @@
                                             <!-- FILTER INPUT -->
                                             <div class="input-group">
                                                 <span class="input-group-text">
-                                                    <span class="fa fa-search" />
+                                                    <util:icon icon="search" />
                                                 </span>
                                                 <h:inputText
                                                     id="searchfield"

@@ -26,7 +26,6 @@
 
 package org.goobi.managedbeans;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @WindowScoped
 @Named
-public class JobBean extends BasicBean implements Serializable {
+public class JobBean extends BasicBean {
 
     private static final long serialVersionUID = 7490719476585282366L;
 

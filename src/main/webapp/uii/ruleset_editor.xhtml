@@ -36,7 +36,7 @@
 
 		<!-- Without permission -->
 		<ui:fragment rendered="#{!LoginForm.hasRole('Admin_ruleset_editor')}">
-			<intranda:box boxType="neutral" boxPadding="true" icon="fa-plug"
+			<intranda:box boxType="neutral" boxPadding="true" icon="plug"
 				title="#{msgs[rulesetEditorBean.title]}">
 
 				<div class="alert alert-danger alert-dismissable">
@@ -55,7 +55,7 @@
 
 					<!-- BOX WITH FILES -->
 					<intranda:box boxType="primary" boxPadding="false"
-						icon="fa-files-o"
+						icon="files"
 						title="#{msgs.plugin_administration_ruleset_editor_ruleset_selection}">
 
 						<!-- TABLE WITH FILE LIST -->
@@ -92,23 +92,21 @@
 											rendered="#{rulesetEditorBean.currentRuleset == null}">
 											<button
 												jsf:id="edit"
-												class="btn #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
+												class="btn btn-icon #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
 												title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}"
 												jsf:rel="tooltip"
 												jsf:action="#{rulesetEditorBean.editRuleset(item)}">
-												<span
-													class="fa #{rulesetEditorBean.isRulesetWritable(item) ? 'fa-pencil' : 'fa-eye'}" />
+												<util:icon icon="#{rulesetEditorBean.isRulesetWritable(item) ? 'pencil' : 'eye'}" />
 											</button>
 										</h:panelGroup>
 										<h:panelGroup
 											rendered="#{rulesetEditorBean.currentRuleset != null}">
 											<button
 												jsf:id="edit2"
-												class="btn #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
+												class="btn btn-icon #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
 												jsf:action="#{rulesetEditorBean.editRuleset(item)}"
 												title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}">
-												<span
-													class="fa #{rulesetEditorBean.isRulesetWritable(item) ? 'fa-pencil' : 'fa-eye'}" />
+												<util:icon icon="#{rulesetEditorBean.isRulesetWritable(item) ? 'pencil' : 'eye'}" />
 											</button>
 										</h:panelGroup>
 									</h:column>
@@ -132,16 +130,14 @@
 
 								<intranda:boxTitle
 									title="#{msgs.plugin_administration_ruleset_editor_validation_result}"
-									icon="fa-check-circle-o">
+									icon="circle-check">
 									<div class="actions d-flex">
 										<button jsf:id="buttonShowMore"
 											class="btn d-flex align-items-center btn--title-action-neutral"
 											jsf:rel="tooltip"
 											jsf:action="#{rulesetEditorBean.toggleShowMore}"
 											title="#{rulesetEditorBean.showMore ? msgs.ruleset_validation_show_more : msgs.ruleset_validation_show_less}">
-											<span
-												aria-hidden="true"
-												class="fa #{rulesetEditorBean.showMore ? 'fa-angle-up' : 'fa-angle-down'}" />
+											<util:icon icon="#{rulesetEditorBean.showMore ? 'chevron-up' : 'chevron-down'}" />
 											<f:ajax render="validationResults" />
 										</button>
 									</div>
@@ -331,7 +327,7 @@
 					<h:panelGroup
 						rendered="#{rulesetEditorBean.currentRuleset != null}">
 						<intranda:box id="contentbox" boxType="action" boxPadding="true"
-							icon="fa-wrench" title="#{rulesetEditorBean.currentEditorTitle}">
+							icon="tool" title="#{rulesetEditorBean.currentEditorTitle}">
 
 
 							<div id="boxUntilBottom">
@@ -350,9 +346,7 @@
 									<button jsf:id="validate" class="btn btn-primary float-end"
 										jsf:action="#{rulesetEditorBean.validate}"
 										title="#{msgs.validieren}">
-										<span
-											aria-hidden="true"
-											class="fa fa-check" />
+										<util:icon icon="check" />
 										<span>
 											#{msgs.validieren}
 										</span>
@@ -361,9 +355,7 @@
 									<button jsf:id="save" class="btn btn-success float-end"
 										jsf:action="#{rulesetEditorBean.save}"
 										title="#{msgs.uebernehmen}">
-										<span
-											aria-hidden="true"
-											class="fa fa-save" />
+										<util:icon icon="device-floppy" />
 										<span>
 											#{msgs.save}
 										</span>
@@ -397,7 +389,7 @@
 						rendered="#{rulesetEditorBean.currentRuleset == null}">
 
 						<intranda:box boxType="outline" boxPadding="false"
-							icon="fa-wrench" title="#{msgs.noFileSelected}">
+							icon="tool" title="#{msgs.noFileSelected}">
 
 							<div style="background-color: #eee; height: 250px;" />
 						</intranda:box>
@@ -434,11 +426,11 @@
 							<div class="modal-footer">
 								<button class="btn btn-hot" jsf:id="ignoreChangedFile"
 									jsf:action="#{rulesetEditorBean.editRulesetIgnore}">
-									<i class="fa fa-trash-o"></i> <span> #{msgs.discard} </span>
+									<util:icon icon="trash" /> <span> #{msgs.discard} </span>
 								</button>
 								<button class="btn btn-success" jsf:id="saveWhenChangedFile"
 									jsf:action="#{rulesetEditorBean.save}">
-									<i class="fa fa-save"></i> <span> #{msgs.save} </span>
+									<util:icon icon="device-floppy" /> <span> #{msgs.save} </span>
 								</button>
 							</div>
 							<!-- // MODAL FOOTER -->

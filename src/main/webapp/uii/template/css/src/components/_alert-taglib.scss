@@ -1,0 +1,40 @@
+// Styles for <util:alert> taglib
+// Overrides FontAwesome icon when .alert__icon is present
+
+.alert:has(.alert__icon) {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+
+  // Hide the FA icon when a real icon is present (colored bar remains)
+  &::before {
+    content: "";
+  }
+}
+
+.alert .alert__icon {
+  flex-shrink: 0;
+  position: absolute;
+  left: calc(var(--before-width) / 2);
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  color: white;
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.5;
+  }
+}
+
+.alert__message {
+  flex: 1;
+}
+
+.alert.alert-dismissible:has(.alert__icon) > .btn {
+  align-self: center;
+  padding: 0;
+  background: none;
+  border: none;
+  line-height: 1;
+}

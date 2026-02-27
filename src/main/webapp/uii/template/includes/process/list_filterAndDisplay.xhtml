@@ -4,10 +4,10 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <composite:interface>
     </composite:interface>
@@ -24,7 +24,7 @@
                     class="btn btn-neutral-200 text-black dropdown-toggle"
                     data-bs-toggle="dropdown"
                     aria-expanded="false">
-                    <span class="fa fa-sort" aria-hidden="true" />
+                    <util:icon icon="arrows-sort" />
                 </button>
                 <ul class="dropdown-menu">
                     <!-- ID -->
@@ -33,9 +33,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.id}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'prozesse.ProzesseID asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'prozesse.ProzesseID desc' ? 'fa-sort-desc' : 'fa-sort'}" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'prozesse.ProzesseID asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'prozesse.ProzesseID desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'prozesse.ProzesseID asc' ? 'prozesse.ProzesseID desc' : 'prozesse.ProzesseID asc'}" />
@@ -47,9 +45,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.batch}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'prozesse.batchID asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'prozesse.batchID desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'prozesse.batchID asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'prozesse.batchID desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'prozesse.batchID asc' ? 'prozesse.batchID desc' : 'prozesse.batchID asc'}" />
@@ -61,9 +57,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'prozesse.titel asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'prozesse.titel desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'prozesse.titel asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'prozesse.titel desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'prozesse.titel asc' ? 'prozesse.titel desc' : 'prozesse.titel asc'}" />
@@ -79,9 +73,7 @@
                                 jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                                 class="dropdown-item d-flex justify-content-between">
                                 <h:outputText value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}" />
-                                <span
-                                    aria-hidden="true"
-                                    class="fa #{ProzessverwaltungForm.sortField == fn:join(fn:split(var, ' '), ' ') += ' asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == fn:join(fn:split(var, ' '), ' ') += ' desc' ? 'fa-sort-desc' : 'fa-sort'}" />
+                                <util:icon icon="#{ProzessverwaltungForm.sortField == fn:join(fn:split(var, ' '), ' ') += ' asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == fn:join(fn:split(var, ' '), ' ') += ' desc' ? 'sort-descending' : 'arrows-sort'}" />
                                 <f:setPropertyActionListener
                                     target="#{ProzessverwaltungForm.sortField}"
                                     value="#{ProzessverwaltungForm.sortField == fn:join(fn:split(var, ' '), ' ') += ' asc' ? fn:join(fn:split(var, ' '), ' ') += ' desc' : fn:join(fn:split(var, ' '), ' ') += ' asc'}" />
@@ -94,9 +86,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.vorgangsdatum}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'prozesse.erstellungsdatum asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'prozesse.erstellungsdatum desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'prozesse.erstellungsdatum asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'prozesse.erstellungsdatum desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'prozesse.erstellungsdatum asc' ? 'prozesse.erstellungsdatum desc' : 'prozesse.erstellungsdatum asc'}" />
@@ -108,9 +98,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.status}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'prozesse.sortHelperStatus asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'prozesse.sortHelperStatus desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'prozesse.sortHelperStatus asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'prozesse.sortHelperStatus desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'prozesse.sortHelperStatus asc' ? 'prozesse.sortHelperStatus desc' : 'prozesse.sortHelperStatus asc'}" />
@@ -122,9 +110,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.projekt}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'projekte.titel asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'projekte.titel desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'projekte.titel asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'projekte.titel desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'projekte.titel asc' ? 'projekte.titel desc' : 'projekte.titel asc'}" />
@@ -136,9 +122,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.institution}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'institution.shortName asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'institution.shortName desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'institution.shortName asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'institution.shortName desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'institution.shortName asc' ? 'institution.shortName desc' : 'institution.shortName asc'}" />
@@ -150,9 +134,7 @@
                             jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                             class="dropdown-item d-flex justify-content-between">
                             <h:outputText value="#{msgs.lastStatusUpdate}" />
-                            <span
-                                aria-hidden="true"
-                                class="fa #{ProzessverwaltungForm.sortField == 'sorthelper_last_close_date asc' ? 'fa-sort-asc' : ProzessverwaltungForm.sortField == 'sorthelper_last_close_date desc' ? 'fa-sort-desc' : 'fa-sort'} pull-right" />
+                            <util:icon icon="#{ProzessverwaltungForm.sortField == 'sorthelper_last_close_date asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == 'sorthelper_last_close_date desc' ? 'sort-descending' : 'arrows-sort'}" />
                             <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.sortField}"
                                 value="#{ProzessverwaltungForm.sortField == 'sorthelper_last_close_date asc' ? 'sorthelper_last_close_date desc' : 'sorthelper_last_close_date asc'}" />
@@ -163,12 +145,12 @@
         </div>
 
         <button
-          class="btn gw-table__filters__option"
+          class="btn btn-icon gw-table__filters__option"
           jsf:action="#{NavigationForm.Reload}"
           title="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']?msgs.process_displayAsTable:msgs.process_displayAsGrid}"
           pt:aria-label="#{msgs.process_displayAsGrid}"
           jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell'}">
-          <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['gridview']?'fa-align-justify':'fa-th-large'}" />
+          <util:icon icon="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']?'list':'layout-grid'}" />
           <f:setPropertyActionListener
             target="#{ProzessverwaltungForm.anzeigeAnpassen['gridview']}"
             value="#{not ProzessverwaltungForm.anzeigeAnpassen['gridview']}" />
@@ -188,11 +170,11 @@
               type="button"
               aria-label="#{msgs.selectTableColumns}"
               id="selectDisplay"
-              class="btn gw-table__filters__option dropdown-toggle"
+              class="btn btn-icon gw-table__filters__option dropdown-toggle"
               data-bs-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false">
-              <span class="fa fa-columns" />
+              <util:icon icon="layout-columns" />
               <span class="caret"></span>
             </button>
 
@@ -203,11 +185,7 @@
                   jsf:action="#{NavigationForm.Reload}"
                   jsf:id="showSelectionBoxes"
                   class="dropdown-item">
-                  <i
-                    class="fa #{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
-                  <span>
-                    <h:outputText value="#{msgs.auswahlboxen}" />
-                  </span>
+                  <util:icon-text icon="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']?'square-check':'square'}" text="#{msgs.auswahlboxen}" />
                   <f:setPropertyActionListener
                     target="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}" />
@@ -219,10 +197,7 @@
                   jsf:action="#{NavigationForm.Reload}"
                   jsf:id="showProcessId"
                   class="dropdown-item">
-                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
-                  <span>
-                    <h:outputText value="#{msgs.id}" />
-                  </span>
+                  <util:icon-text icon="#{ProzessverwaltungForm.anzeigeAnpassen['processId']?'square-check':'square'}" text="#{msgs.id}" />
                   <f:setPropertyActionListener
                     target="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processId']}" />
@@ -234,10 +209,7 @@
                   jsf:action="#{NavigationForm.Reload}"
                   jsf:id="showProcessThumbnail"
                   class="dropdown-item">
-                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
-                  <span>
-                    <h:outputText value="#{msgs.thumbnail}" />
-                  </span>
+                  <util:icon-text icon="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']?'square-check':'square'}" text="#{msgs.thumbnail}" />
                   <f:setPropertyActionListener
                     target="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}" />
@@ -249,11 +221,7 @@
                   jsf:action="#{NavigationForm.Reload}"
                   jsf:id="showProcessMetadataDetails"
                   class="dropdown-item">
-                  <i
-                    class="fa #{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
-                  <span>
-                    <h:outputText value="#{msgs.metadatadetails}" />
-                  </span>
+                  <util:icon-text icon="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']?'square-check':'square'}" text="#{msgs.metadatadetails}" />
                   <f:setPropertyActionListener
                     target="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}" />
@@ -265,11 +233,7 @@
                   jsf:action="#{NavigationForm.Reload}"
                   jsf:id="showProcessRuleset"
                   class="dropdown-item">
-                  <i
-                    class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
-                  <span>
-                    <h:outputText value="#{msgs.regelsatz}" />
-                  </span>
+                  <util:icon-text icon="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']?'square-check':'square'}" text="#{msgs.regelsatz}" />
                   <f:setPropertyActionListener
                     target="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}" />
@@ -281,10 +245,7 @@
                   jsf:action="#{NavigationForm.Reload}"
                   jsf:id="showBatch"
                   class="dropdown-item">
-                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
-                  <span>
-                    <h:outputText value="#{msgs.batch}" />
-                  </span>
+                  <util:icon-text icon="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']?'square-check':'square'}" text="#{msgs.batch}" />
                   <f:setPropertyActionListener
                     target="#{ProzessverwaltungForm.anzeigeAnpassen['batchId']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['batchId']}" />
@@ -296,10 +257,7 @@
                   jsf:action="#{NavigationForm.Reload}"
                   jsf:id="showProcessDate"
                   class="dropdown-item">
-                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
-                  <span>
-                    <h:outputText value="#{msgs.vorgangsdatum}" />
-                  </span>
+                  <util:icon-text icon="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']?'square-check':'square'}" text="#{msgs.vorgangsdatum}" />
                   <f:setPropertyActionListener
                     target="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processDate']}" />
@@ -311,10 +269,7 @@
                   jsf:action="#{NavigationForm.Reload}"
                   jsf:id="showProcessLockings"
                   class="dropdown-item">
-                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
-                  <span>
-                    <h:outputText value="#{msgs.sperrungen}" />
-                  </span>
+                  <util:icon-text icon="#{ProzessverwaltungForm.anzeigeAnpassen['lockings']?'square-check':'square'}" text="#{msgs.sperrungen}" />
                   <f:setPropertyActionListener
                     target="#{ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['lockings']}" />
@@ -326,10 +281,7 @@
                   jsf:action="#{NavigationForm.Reload}"
                   jsf:id="showSwapping"
                   class="dropdown-item">
-                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
-                  <span>
-                    <h:outputText value="#{msgs.ausgelagerung}" />
-                  </span>
+                  <util:icon-text icon="#{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']?'square-check':'square'}" text="#{msgs.ausgelagerung}" />
                   <f:setPropertyActionListener
                     target="#{ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}" />
@@ -342,10 +294,7 @@
                   jsf:action="#{NavigationForm.Reload}"
                   jsf:id="showNumberOfImages"
                   class="dropdown-item">
-                  <span class="fa #{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5" />
-                  <span>
-                    <h:outputText value="#{msgs.NumberOfImages}" />
-                  </span>
+                  <util:icon-text icon="#{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']?'square-check':'square'}" text="#{msgs.NumberOfImages}" />
                   <f:setPropertyActionListener
                     target="#{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}" />
@@ -367,12 +316,12 @@
                     	id="modifyDisplay"
                       type="button"
                       aria-label="#{msgs.anzeigeAnpassen}"
-                      class="btn gw-table__filters__option dropdown-toggle"
+                      class="btn btn-icon gw-table__filters__option dropdown-toggle"
                       data-bs-toggle="dropdown"
                       aria-haspopup="true"
                       aria-expanded="false"
                       >
-                      <span class="fa fa-wrench margin-right-5" />
+                      <util:icon icon="tool" styleClass="margin-right-5" />
                       <span class="caret"></span>
                     </button>
 
@@ -385,10 +334,7 @@
                                 jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                                 jsf:id="showCorrectionTasks"
                                 class="dropdown-item">
-                                <span class="fa #{ProzessverwaltungForm.showClosedProcesses?'fa-check-square-o':'fa-square-o'} margin-right-5" />
-                                <span>
-                                  <h:outputText value="#{msgs.showClosedProcesses}" />
-                                </span>
+                                <util:icon-text icon="#{ProzessverwaltungForm.showClosedProcesses?'square-check':'square'}" text="#{msgs.showClosedProcesses}" />
                                 <f:setPropertyActionListener
                                   target="#{ProzessverwaltungForm.showClosedProcesses}"
                                   value="#{not ProzessverwaltungForm.showClosedProcesses}" />
@@ -402,10 +348,7 @@
                               jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                               jsf:id="showAutomaticTasks"
                               class="dropdown-item">
-                              <span class="fa #{ProzessverwaltungForm.showArchivedProjects?'fa-check-square-o':'fa-square-o'}" />
-                              <span>
-                                <h:outputText value="#{msgs.showArchivedProjects}" />
-                              </span>
+                              <util:icon-text icon="#{ProzessverwaltungForm.showArchivedProjects?'square-check':'square'}" text="#{msgs.showArchivedProjects}" />
                               <f:setPropertyActionListener
                                 target="#{ProzessverwaltungForm.showArchivedProjects}"
                                 value="#{not ProzessverwaltungForm.showArchivedProjects}" />

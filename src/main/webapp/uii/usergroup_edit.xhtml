@@ -4,8 +4,8 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	template="/uii/template/template.html"
 	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
-
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -37,7 +37,7 @@
 						boxScope="form-box"
 						boxType="action"
 						title="#{myPageTitle}"
-						icon="fa-users"
+						icon="users"
 						boxPadding="false">
 
 
@@ -96,7 +96,7 @@
 														<span>
 														<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}" />
 														</span>
-														<span class="fa fa-trash" />
+														<util:icon icon="trash" />
 														<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 														<f:ajax render="@form" />
 											</button>
@@ -129,7 +129,7 @@
 												<span>
 													<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}" />
 												</span>
-												<span class="fa fa-plus" />
+												<util:icon icon="plus" />
 												<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 												<f:ajax render="@form" />
 												</button>
@@ -149,15 +149,13 @@
 												<h3 tabindex="0" class="heading-3">#{msgs.usergroup_individualRoles}</h3>
 												<div class="input-group">
 													<h:inputText id="userRoles" value="#{BenutzergruppenForm.tempRole}" styleClass="form-control"/>
-													<div class="input-group-addon">
-														<button
-															class="btn btn-action"
-															tabindex="-1"
-															title="#{msgs.usergroup_addRole}"
-															jsf:action="#{BenutzergruppenForm.addRole}">
-															<span class="fa fa-plus" />
-														</button>
-													</div>
+													<button
+														class="btn btn-action"
+														tabindex="-1"
+														title="#{msgs.usergroup_addRole}"
+														jsf:action="#{BenutzergruppenForm.addRole}">
+														<util:icon icon="plus" styleClass="icon--lg icon--b5" />
+													</button>
 												</div>
 											</div>
 

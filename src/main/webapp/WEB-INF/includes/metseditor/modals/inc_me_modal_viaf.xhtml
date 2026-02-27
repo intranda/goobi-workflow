@@ -33,7 +33,7 @@
                             class="btn text-white"
                             title="#{msgs.cancel}"
                             data-bs-dismiss="modal">
-                            <span class="fa fa-times" aria-hidden="true" />
+                            <util:icon icon="x" />
                         </button>
                     </div>
                     <div class="modal-body flow">
@@ -56,7 +56,7 @@
                                             aria-label="#{msgs.removeGroup}"
                                             class="btn btn-blank"
                                             jsf:action="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.deleteGroup(globStatus.index)}">
-                                            <span class="fa fa-times" aria-hidden="true" />
+                                            <util:icon icon="x" />
                                             <f:ajax
                                                 execute=":normdataForm:viaf_search"
                                                 render=":normdataForm:viaf_search" />
@@ -109,7 +109,7 @@
                                                         aria-label="#{msgs.removeFilter}"
                                                         class="btn btn-blank input-group-text"
                                                         jsf:action="#{group.deleteFilter(status.index)}">
-                                                        <span class="fa fa-trash" aria-hidden="true" />
+                                                        <util:icon icon="trash" />
                                                         <f:ajax
                                                             execute=":normdataForm:viaf_search"
                                                             render=":normdataForm:viaf_search" />
@@ -261,7 +261,7 @@
                                                         <f:setPropertyActionListener
                                                             value="#{record.getFieldValues('024','7',' ','a').get(0)}"
                                                             target="#{Metadaten.currentMetadataToPerformSearch.viafSearch.currentCluster}" />
-                                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                                        <util:icon icon="check" />
                                                     </button>
 
                                                     <a class="btn-right viaf-flag margin-right-regular"

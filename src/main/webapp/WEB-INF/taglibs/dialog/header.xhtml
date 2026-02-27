@@ -3,17 +3,16 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:section="http://goobi.io/section"
+    xmlns:util="http://goobi.io/util"
 >
         <section:header icon="#{icon}" title="#{title}">
             <ui:insert />
             <form method="dialog">
                 <button
-                    class="btn button-modal-close"
+                    class="btn btn-icon button-modal-close"
                     aria-label="#{msgs.abbrechen}"
                 >
-                    <span
-                        aria-hidden="true"
-                        class="fa fa-times" />
+                    <util:icon icon="x" />
                 </button>
             </form>
         </section:header>

@@ -14,13 +14,37 @@
             <required>false</required>
             <type>java.lang.Boolean</type>
         </attribute>
+        <attribute>
+            <description>Whether the list is floating in its current context, i.e. needs to be bordered.</description>
+            <name>floating</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>One or more HTML classes to pass through to the component</description>
+            <name>styleClass</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>term</tag-name>
         <source>description-list/term.xhtml</source>
+        <attribute>
+            <description>One or more HTML classes to pass through to the component</description>
+            <name>styleClass</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>description</tag-name>
         <source>description-list/description.xhtml</source>
+        <attribute>
+            <description>One or more HTML classes to pass through to the component</description>
+            <name>styleClass</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
 </facelet-taglib>

@@ -6,10 +6,10 @@
 	template="/uii/template/template.html"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
-
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util">
 
 	<ui:param
 		name="myPageTitle"
@@ -62,7 +62,7 @@
 
 					<intranda:boxTitle
 						title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.vorlageDetails.concat(' -').concat(ProzessverwaltungForm.myProzess.titel) : msgs.vorlageDetails}"
-						icon="fa-list">
+						icon="list">
 
 						<div class="actions d-flex">
 							<button
@@ -71,7 +71,7 @@
 								jsf:rel="tooltip"
 								jsf:action="#{ProzessverwaltungForm.reload}"
 								title="#{msgs.reload}">
-								<span class="fa fa-refresh" />
+								<util:icon icon="refresh" />
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
@@ -82,7 +82,7 @@
 								jsf:rel="tooltip"
 								jsf:action="#{NavigationForm.Reload}"
 								title="#{msgs.bearbeiten}">
-								<span class="fa fa-pencil" />
+								<util:icon icon="pencil" />
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
@@ -96,7 +96,7 @@
 								jsf:rel="tooltip"
 								jsf:action="#{ProzessverwaltungForm.VorlageLoeschen}"
 								title="#{msgs.loeschen}">
-								<span class="fa fa-trash-o" />
+								<util:icon icon="trash" />
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
@@ -128,7 +128,7 @@
 					boxForm="true"
 					boxPadding="false"
 					title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.vorlageDetails.concat(' -').concat(ProzessverwaltungForm.myProzess.titel) : msgs.vorlageDetails}"
-					icon="fa-pencil">
+					icon="pencil">
 
 					<intranda:formInputText
 						id="origin"
@@ -159,7 +159,7 @@
 							jsf:id="saveTemplateDetails"
 							type="submit"
 							jsf:action="#{ProzessverwaltungForm.VorlageUebernehmen}">
-							<span class="fa fa-save" />
+							<util:icon icon="device-floppy" />
 							<span>
 								<h:outputText value="#{msgs.speichern}" />
 							</span>
@@ -188,7 +188,7 @@
 
 					<intranda:boxTitle
 						title="#{msgs.eigenschaften}"
-						icon="fa-table">
+						icon="table">
 
 						<div class="actions d-flex">
 							<button
@@ -197,7 +197,7 @@
 								jsf:rel="tooltip"
 								jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftNeu}"
 								title="#{msgs.eigenschaftHinzufuegen}">
-								<span class="fa fa-plus" />
+								<util:icon icon="plus" />
 								<f:passThroughAttribute
 									name="data-toggle"
 									value="tooltip" />
@@ -250,7 +250,7 @@
 													jsf:rel="tooltip"
 													jsf:action="process_edit_template"
 													title="#{msgs.bearbeiten}">
-													<span class="fa fa-pencil" />
+													<util:icon icon="pencil" />
 													<f:setPropertyActionListener
 														target="#{ProzessverwaltungForm.myVorlageEigenschaft}"
 														value="#{item}" />
@@ -283,7 +283,7 @@
 					boxForm="true"
 					boxPadding="false"
 					title="#{ProzessverwaltungForm.myProzess.id != null ? msgs.eigenschaftBearbeiten.concat(' - ').concat(ProzessverwaltungForm.myProzess.titel) : msgs.eigenschaftBearbeiten}"
-					icon="fa-edit">
+					icon="edit">
 
 					<intranda:formInputText
 						id="title"
@@ -320,7 +320,7 @@
 							jsf:id="saveProperty"
 							type="submit"
 							jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftUebernehmen}">
-							<span class="fa fa-save" />
+							<util:icon icon="device-floppy" />
 							<span>
 								<h:outputText value="#{msgs.speichern}" />
 							</span>
@@ -336,7 +336,7 @@
 							onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
 							jsf:action="#{ProzessverwaltungForm.VorlageEigenschaftLoeschen}"
 							jsf:rendered="#{ProzessverwaltungForm.myVorlageEigenschaft.id != null}">
-							<span class="fa fa-trash-o" />
+							<util:icon icon="trash" />
 							<span>
 								<h:outputText value="#{msgs.loeschen}" />
 							</span>

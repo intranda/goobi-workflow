@@ -9,7 +9,6 @@
 
 // LIBS
 @use "lib/font-awesome";
-@use "lib/codemirror";
 @use "lib/swagger-ui";
 
 // COMPOSITION
@@ -24,6 +23,7 @@
 @use "components/nav-custom";
 @use "components/header";
 @use "components/alerts-custom";
+@use "components/alert-taglib";
 @use "components/badges";
 @use "components/breadcrumbs";
 @use "components/boxes";

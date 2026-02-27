@@ -40,7 +40,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptProcessRename extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptProcessRename extends AbstractIGoobiScript {
     // action:renameProcess search:415121809 replace:1659235871 type:contains|full
 
     private static final String SEARCH = "search";

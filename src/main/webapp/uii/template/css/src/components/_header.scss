@@ -60,6 +60,11 @@
     .fa {
       font-size: 1rem;
     }
+    .icon-wrapper {
+      --icon-size: 1.75rem;
+      width: var(--icon-size);
+      height: var(--icon-size);
+    }
     @media screen and (min-width: 800px) {
       .stats-content {
         gap: calc(var(--stats-gap) * 2);

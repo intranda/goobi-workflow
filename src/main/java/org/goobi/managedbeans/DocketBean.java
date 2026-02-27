@@ -25,7 +25,6 @@
  */
 package org.goobi.managedbeans;
 
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -44,7 +43,7 @@ import lombok.Setter;
 
 @Named("DocketForm")
 @WindowScoped
-public class DocketBean extends BasicBean implements Serializable {
+public class DocketBean extends BasicBean {
 
     private static final long serialVersionUID = 3006854499230483171L;
 

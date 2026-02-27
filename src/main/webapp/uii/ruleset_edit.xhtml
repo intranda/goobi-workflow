@@ -4,8 +4,8 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
 	template="/uii/template/template.html"
-
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util">
 
 	<ui:param name="myPageTitle"
 		value="#{RegelsaetzeForm.myRegelsatz.id == null?msgs.neuenRegelsatzAnlegen:msgs.regelsatzBearbeiten}" />
@@ -36,7 +36,7 @@
 						boxForm="true"
 						boxPadding="false"
 						title="#{myPageTitle}"
-						icon="fa-wrench"
+						icon="tool"
 					>
 
 

@@ -6,8 +6,8 @@
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/template/template.html"
-
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 <ui:param name="myPageTitle" value="#{msgs.goobiScriptTemplates}" />
@@ -29,7 +29,7 @@
 		<intranda:box
 			boxType="primary"
 			title="#{myPageTitle}"
-			icon="fa-clone">
+			icon="copy">
 
 		<div class="gw-table">
 			<div class="gw-table__search">
@@ -70,11 +70,11 @@
     					<div class="gw-table-fixed__actions__btns">
     						<button
     							jsf:id="edit"
-    							class="btn btn-blank"
+    							class="btn btn-icon btn-blank"
     							jsf:rel="tooltip"
     							jsf:action="template_edit"
     							title="#{msgs.bearbeiten}">
-    							<span class="fa fa-pencil" />
+    							<util:icon icon="pencil" />
     							<f:passThroughAttribute name="data-toggle" value="tooltip" />
     							<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
     							<f:setPropertyActionListener target="#{goobiScriptTemplateBean.template}" value="#{item}" />
@@ -90,7 +90,7 @@
 			<div class="box__actions">
 				<!-- Neu-Schaltknopf -->
 				<button jsf:id="new" class="btn btn-primary-400 me-auto" jsf:action="#{goobiScriptTemplateBean.Neu}" jsf:immediate="true">
-					<span class="fa fa-plus" />
+					<util:icon icon="plus" />
 					<span>
 					   <h:outputText value="#{msgs.createNewTemplate}" />
 					</span>

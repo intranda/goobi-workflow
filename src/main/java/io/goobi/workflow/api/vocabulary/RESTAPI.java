@@ -18,7 +18,6 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
 import io.goobi.vocabulary.exception.VocabularyException;
-import jakarta.servlet.http.Part;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;

@@ -9,7 +9,8 @@
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface />
 
@@ -22,7 +23,7 @@
 			title="#{msgs.eineKopieDieserProzessvorlageAnlegen}">
 			<button
 				jsf:id="splitButton"
-				class="btn fa fa-file-o btn-primary-400"
+				class="btn btn-icon btn-primary-400"
 				aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
 				jsf:action="#{ProzesskopieForm.prepare}"
 				jsf:rel="tooltip">
@@ -32,6 +33,7 @@
 				<f:setPropertyActionListener
 					target="#{ProzesskopieForm.prozessVorlage}"
 					value="#{item}" />
+				<util:icon icon="download" />
 			</button>
 
 			<button
@@ -79,9 +81,9 @@
 				aria-expanded="false"
 				onclick="switchExpanded(this.id)"
 				type="button"
-				class="btn btn-hot dropdown-toggle"
+				class="btn btn-icon btn-hot dropdown-toggle"
 				data-bs-toggle="dropdown">
-				<span class="fa fa-download" />
+				<util:icon icon="download" />
 			</button>
 
 			<ul class="dropdown-menu">
@@ -92,7 +94,7 @@
 						jsf:action="style"
 						onclick="preventDoubleSubmit(this);"
 						class="dropdown-item">
-						<span class="fa fa-file-code-o" />
+						<util:icon icon="file-code" />
 						<span>
 							<h:outputText value="#{msgs.downloadLogFile}" />
 						</span>
@@ -105,7 +107,7 @@
 						jsf:action="style"
 						onclick="preventDoubleSubmit(this);"
 						class="dropdown-item">
-						<span class="fa fa-print" />
+						<util:icon icon="printer" />
 						<span>
 							<h:outputText value="#{msgs.process_generateDocket}" />
 						</span>
@@ -119,7 +121,7 @@
 						jsf:id="action25"
 						onclick="preventDoubleSubmit(this);"
 						class="dropdown-item">
-						<span class="fa fa-floppy-o" />
+						<util:icon icon="device-floppy" />
 						<span>
 							<h:outputText value="#{msgs.downloadMets}" />
 						</span>
@@ -160,7 +162,7 @@
 	title=&quot;#{msgs.eineKopieDieserProzessvorlageAnlegen}&quot;&gt;
 	&lt;button
 		jsf:id=&quot;splitButton&quot;
-		class=&quot;btn fa fa-file-o btn-primary-400&quot;
+		class=&quot;btn btn-icon btn-primary-400&quot;
 		aria-label=&quot;#{msgs.eineKopieDieserProzessvorlageAnlegen}&quot;
 		jsf:action=&quot;style&quot;
 		jsf:rel=&quot;tooltip&quot;&gt;
@@ -170,6 +172,7 @@
 		&lt;f:setPropertyActionListener
 			target=&quot;CHANGE_ME&quot;
 			value=&quot;CHANGE_ME&quot; /&gt;
+		&lt;util:icon icon="download" /&gt;
 	&lt;/button&gt;
 
 	&lt;button
@@ -217,9 +220,9 @@
 		aria-expanded=&quot;false&quot;
 		onclick=&quot;switchExpanded(this.id)&quot;
 		type=&quot;button&quot;
-		class=&quot;btn btn-hot dropdown-toggle&quot;
+		class=&quot;btn btn-icon btn-hot dropdown-toggle&quot;
 		data-bs-toggle=&quot;dropdown&quot;&gt;
-		&lt;i class=&quot;fa fa-download&quot; /&gt;
+		&lt;util:icon icon="download" /&gt;
 	&lt;/button&gt;
 
 	&lt;ul class=&quot;dropdown-menu&quot;&gt;
@@ -230,7 +233,7 @@
 				jsf:action=&quot;style&quot;
 				onclick=&quot;preventDoubleSubmit(this);&quot;
 				class=&quot;dropdown-item&quot;&gt;
-				&lt;i class=&quot;fa fa-file-code-o&quot; /&gt;
+				&lt;util:icon icon="file-code" /&gt;
 				&lt;span&gt;
 					&lt;h:outputText value=&quot;#{msgs.downloadLogFile}&quot; /&gt;
 				&lt;/span&gt;
@@ -243,7 +246,7 @@
 				jsf:action=&quot;style&quot;
 				onclick=&quot;preventDoubleSubmit(this);&quot;
 				class=&quot;dropdown-item&quot;&gt;
-				&lt;i class=&quot;fa fa-print&quot; /&gt;
+				&lt;util:icon icon="printer" /&gt;
 				&lt;span&gt;
 					&lt;h:outputText value=&quot;#{msgs.process_generateDocket}&quot; /&gt;
 				&lt;/span&gt;
@@ -257,7 +260,7 @@
 				jsf:id=&quot;action25&quot;
 				onclick=&quot;preventDoubleSubmit(this);&quot;
 				class=&quot;dropdown-item&quot;&gt;
-				&lt;i class=&quot;fa fa-floppy-o&quot; /&gt;
+				&lt;util:icon icon="device-floppy" /&gt;
 				&lt;span&gt;
 					&lt;h:outputText value=&quot;#{msgs.downloadMets}&quot; /&gt;
 				&lt;/span&gt;

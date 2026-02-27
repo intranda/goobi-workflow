@@ -1,6 +1,10 @@
 .dropdown-menu {
     --bs-dropdown-item-border-radius: 0;
     --bs-dropdown-font-size: var(--fs-400);
+
+    .dropdown-item {
+        padding: 0.5rem 1rem;
+    }
 }
 
 // this rule improves visual alignment of the dropdown arrow next to tabler icons

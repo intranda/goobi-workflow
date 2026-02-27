@@ -1,23 +1,5 @@
 package de.sub.goobi.persistence.managers;
 
-/**
- * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
- * Visit the websites for more information.
- *          - https://goobi.io
- *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi-workflow
- * 
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
- */
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -42,6 +24,22 @@ import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.cli.helper.StringPair;
+
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ *
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi-workflow
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *
+ */
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.PropertyType;
@@ -113,6 +111,9 @@ public final class StepMysqlHelper implements Serializable {
         }
 
         if (filter != null && !filter.isEmpty()) {
+            if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
+                sql.append(" WHERE ");
+            }
             sql.append(filter);
         } else if (MySQLHelper.getInstance().getSqlType() == SQLTYPE.MYSQL) {
             sql.append(" WHERE schritte.SchritteID > 0 ");
@@ -151,6 +152,9 @@ public final class StepMysqlHelper implements Serializable {
         String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (filter != null && !filter.isEmpty()) {
+            if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
+                sql.append(" WHERE ");
+            }
             sql.append(filter);
         }
         if (StringUtils.isNotBlank(sortfield)) {
@@ -1300,7 +1304,7 @@ public final class StepMysqlHelper implements Serializable {
 
     /**
      * Delete a list of steps in a single statement.
-     * 
+     *
      * @param steps
      * @throws SQLException
      */

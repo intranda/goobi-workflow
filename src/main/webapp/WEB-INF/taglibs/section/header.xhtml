@@ -5,14 +5,13 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:util="http://goobi.io/util"
 >
     <div class="box__title section-header#{compact ? ' section-header-compact' : ''}">
         <h2 class="#{collapsible ? 'section-header-collapsible' : ''}">
             <!-- Do not render icon if cc.attrs.icon is undefined -->
             <c:if test="#{icon != null}">
-                <span
-                    aria-hidden="true"
-                    class="fa fa-#{icon}" />
+                <util:icon icon="#{icon}" />
             </c:if>
             <ui:fragment rendered="#{collapsible}">
                 <h:commandLink
@@ -44,17 +43,13 @@
         <ui:fragment rendered="#{collapsible}">
             <h:commandLink
                 type="button"
-                styleClass="btn"
+                styleClass="btn btn--icon"
                 pt:data-bs-toggle="collapse"
                 pt:data-bs-target="##{component.parent.parent.parent.id}_body"
                 pt:aria-expanded="#{!section.isCollapsed(component.parent.parent.parent.clientId, component.parent.parent.parent.attributes['collapsed'])}"
                 pt:aria-controls="##{component.parent.parent.parent.id}_body">
-            <span
-                class="collapse-caret fa fa-angle-up"
-                aria-hidden="true" />
-            <span
-                class="extend-caret fa fa-angle-down"
-                aria-hidden="true" />
+            <util:icon icon="chevron-up" styleClass="collapse-caret" />
+            <util:icon icon="chevron-down" styleClass="extend-caret" />
             <f:ajax listener="#{section.toggle(component.parent.parent.parent.clientId, component.parent.parent.parent.attributes['collapsed'])}" render="@none" />
             </h:commandLink>
         </ui:fragment>

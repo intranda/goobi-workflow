@@ -8,6 +8,7 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
     xmlns:dl="http://goobi.io/dl"
     xmlns:button="http://goobi.io/button">
 
@@ -67,7 +68,7 @@
 
                         <intranda:boxTitle
                             title="#{myBoxTitle}"
-                            icon="fa-compass">
+                            icon="compass">
 
                             <ul class="tabs">
                                 <li class="tab #{ProjekteForm.displayMode eq ''?'active':''}">
@@ -540,7 +541,7 @@
                                             boxType="action"
                                             boxSmall="true"
                                             title="#{msgs.metsfilegroups}"
-                                            icon="fa-table"
+                                            icon="table"
                                             boxForm="true"
                                             boxPadding="false"
                                             id="filegroupbox">
@@ -650,7 +651,7 @@
                                                     class="btn btn-success"
                                                     jsf:action="#{ProjekteForm.filegroupSave}"
                                                     title="#{msgs.uebernehmen}">
-                                                    <span class="fa fa-save" />
+                                                    <util:icon icon="device-floppy" />
                                                     <span>
                                                         <h:outputText value="#{msgs.save}" />
                                                     </span>
@@ -678,7 +679,7 @@
                                             boxSmall="true"
                                             boxPadding="true"
                                             title="#{msgs.metsfilegroups}"
-                                            icon="fa-table">
+                                            icon="table">
 
                                             <h:dataTable
                                                 id="fileformats"
@@ -696,11 +697,11 @@
                                                             <!-- Edit-Schaltknopf -->
                                                             <button
                                                                 jsf:id="edit"
-                                                                class="btn btn-neutral-600"
+                                                                class="btn btn-icon btn-neutral-600"
                                                                 title="#{msgs.filegroupBearbeiten}"
                                                                 jsf:rel="tooltip"
                                                                 jsf:action="#{ProjekteForm.filegroupEdit}">
-                                                                <span class="fa fa-edit" />
+                                                                <util:icon icon="pencil" />
                                                                 <f:setPropertyActionListener
                                                                     target="#{ProjekteForm.myFilegroup}"
                                                                     value="#{item}" />
@@ -713,11 +714,11 @@
                                                             <!-- Löschen-Schaltknopf -->
                                                             <button
                                                                 jsf:id="delete"
-                                                                class="btn btn-hot"
+                                                                class="btn btn-icon btn-hot"
                                                                 title="#{msgs.filegroupLoeschen}"
                                                                 jsf:rel="tooltip"
                                                                 jsf:action="#{ProjekteForm.filegroupDelete}">
-                                                                <span class="fa fa-trash-o" />
+                                                                <util:icon icon="trash" />
                                                                 <f:setPropertyActionListener
                                                                     target="#{ProjekteForm.myFilegroup}"
                                                                     value="#{item}" />
@@ -741,7 +742,7 @@
                                                     class="me-auto btn btn-neutral-600"
                                                     jsf:action="#{ProjekteForm.filegroupAdd}"
                                                     jsf:immediate="true">
-                                                    <span class="fa fa-plus" />
+                                                    <util:icon icon="plus" />
                                                     <span>
                                                         <h:outputText value="#{msgs.filegroupHinzufuegen}" />
                                                     </span>
@@ -775,11 +776,11 @@
                                                 <button:row position="end">
                                                     <button
                                                         jsf:id="editProperty"
-                                                        class="btn btn-blank"
+                                                        class="btn btn-icon btn-blank"
                                                         title="#{msgs.bearbeiten}"
                                                         data-bs-toggle="tooltip"
                                                         jsf:action="#{NavigationForm.Reload}">
-                                                        <span class="fa fa-pencil" />
+                                                        <util:icon icon="pencil" />
                                                         <f:setPropertyActionListener
                                                             target="#{ProjekteForm.currentProperty}"
                                                             value="#{item}" />
@@ -796,7 +797,7 @@
                                             jsf:action="#{ProjekteForm.newProperty}"
                                             jsf:id="newProperty"
                                             class="btn btn-action">
-                                            <span class="fa fa-plus" />
+                                            <util:icon icon="plus" />
                                             <span>#{msgs.eigenschaftHinzufuegen}</span>
                                             <f:passThroughAttribute
                                                 name="data-toggle"
@@ -842,7 +843,7 @@
                                             jsf:id="saveProperty"
                                             type="submit"
                                             jsf:action="#{ProjekteForm.saveProperty}">
-                                            <span class="fa fa-save" />
+                                            <util:icon icon="device-floppy" />
                                             <span>
                                                 <h:outputText value="#{msgs.propertySave}" />
                                             </span>
@@ -858,7 +859,7 @@
                                             onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
                                             jsf:action="#{ProjekteForm.deleteProperty}"
                                             jsf:rendered="#{ProjekteForm.currentProperty.id != null}">
-                                            <span class="fa fa-trash-o" />
+                                            <util:icon icon="trash" />
                                             <span>
                                                 <h:outputText value="#{msgs.propertyDelete}" />
                                             </span>

@@ -41,6 +41,21 @@
   text-decoration: none;
 }
 
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6.5px;
+}
+
+
 button,
 .btn {
   --bs-btn-disabled-bg: var(--clr-neutral-200);

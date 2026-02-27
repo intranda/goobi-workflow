@@ -9,6 +9,7 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
 	xmlns:form="http://goobi.io/form">
 
     <composite:interface>
@@ -49,9 +50,9 @@
 
             <intranda:boxTitle
                 title="#{boxTitle}"
-                icon="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'fa-comment' : NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal'] == '' ? 'fa-list-ol' : 'fa-folder-o'}">
+                icon="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'message' : NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal'] == '' ? 'list-numbers' : 'folder'}">
 
-                <div class="actions d-flex">
+                <div class="actions d-flex align-items-center">
 
                     <h:panelGroup rendered="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null}">
 
@@ -64,12 +65,12 @@
                                     title="#{msgs.filterProcessLog}"
                                     id="filterLogDropdown"
                                     type="button"
-                                    class="btn d-flex align-items-center btn--title-action-neutral dropdown-toggle"
+                                    class="btn btn-icon d-flex align-items-center btn--title-action-neutral dropdown-toggle"
                                     aria-label="#{msgs.filterProcessLog}"
                                     aria-haspopup="true"
                                     aria-expanded="false"
                                     data-bs-toggle="dropdown">
-                                    <span class="fa fa-columns btn-dropDownInBoxHeader" />
+                                    <util:icon icon="columns" styleClass="icon--lg icon--b4" />
                                     <span class="caret"></span>
                                 </button>
 
@@ -78,9 +79,8 @@
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showDebugMessages"
-                                            class="dropdown-item">
-                                            <span
-                                                class="fa #{NavigationForm.uiStatus['process_log_level_debug']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            class="dropdown-item d-flex align-items-center">
+                                            <util:icon icon="#{NavigationForm.uiStatus['process_log_level_debug']?'square':'square-check'}" styleClass="me-2" />
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showDebugMessages}" />
                                             </span>
@@ -93,9 +93,8 @@
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showFileMessages"
-                                            class="dropdown-item">
-                                            <span
-                                                class="fa #{NavigationForm.uiStatus['process_log_level_file']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            class="dropdown-item d-flex align-items-center">
+                                            <util:icon icon="#{NavigationForm.uiStatus['process_log_level_file']?'square':'square-check'}" styleClass="me-2" />
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showFileMessages}" />
                                             </span>
@@ -108,9 +107,8 @@
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showInfoMessages"
-                                            class="dropdown-item">
-                                            <span
-                                                class="fa #{NavigationForm.uiStatus['process_log_level_info']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            class="dropdown-item d-flex align-items-center">
+                                            <util:icon icon="#{NavigationForm.uiStatus['process_log_level_info']?'square':'square-check'}" styleClass="me-2" />
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showInfoMessages}" />
                                             </span>
@@ -124,9 +122,8 @@
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showUserMessages"
-                                            class="dropdown-item">
-                                            <span
-                                                class="fa #{NavigationForm.uiStatus['process_log_level_user']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            class="dropdown-item d-flex align-items-center">
+                                            <util:icon icon="#{NavigationForm.uiStatus['process_log_level_user']?'square':'square-check'}" styleClass="me-2" />
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showUserMessages}" />
                                             </span>
@@ -139,9 +136,8 @@
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showUserImportantMessages"
-                                            class="dropdown-item">
-                                            <span
-                                                class="fa #{NavigationForm.uiStatus['process_log_level_important']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            class="dropdown-item d-flex align-items-center">
+                                            <util:icon icon="#{NavigationForm.uiStatus['process_log_level_important']?'square':'square-check'}" styleClass="me-2" />
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showUserImportantMessages}" />
                                             </span>
@@ -154,9 +150,8 @@
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showWarnMessages"
-                                            class="dropdown-item">
-                                            <span
-                                                class="fa #{NavigationForm.uiStatus['process_log_level_warn']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            class="dropdown-item d-flex align-items-center">
+                                            <util:icon icon="#{NavigationForm.uiStatus['process_log_level_warn']?'square':'square-check'}" styleClass="me-2" />
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showWarnMessages}" />
                                             </span>
@@ -170,9 +165,8 @@
                                         <button
                                             jsf:action="#{NavigationForm.Reload}"
                                             jsf:id="showErrorMessages"
-                                            class="dropdown-item">
-                                            <span
-                                                class="fa #{NavigationForm.uiStatus['process_log_level_error']?'fa-square-o':'fa-check-square-o'} margin-right-5" />
+                                            class="dropdown-item d-flex align-items-center">
+                                            <util:icon icon="#{NavigationForm.uiStatus['process_log_level_error']?'square':'square-check'}" styleClass="me-2" />
                                             <span>
                                                 <h:outputText value="#{msgs.process_log_showErrorMessages}" />
                                             </span>
@@ -202,8 +196,8 @@
                         data-toggle="tooltip"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
-                        class="btn d-flex align-items-center btn--title-action-neutral">
-                        <span class="fa #{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'fa-list-ol' : 'fa-comment-o'}" />
+                        class="btn btn-icon d-flex align-items-center btn--title-action-neutral">
+                        <util:icon icon="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? 'list-numbers' : 'message'}" styleClass="icon--lg icon--b4" />
                         <f:setPropertyActionListener
                             value="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal']=='fileUpload' ? 'imageComments' : '' }"
                             target="#{NavigationForm.uiStatus['toggleJournal']}" />
@@ -220,8 +214,8 @@
                         }"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         aria-label="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
-                        class="btn d-flex align-items-center btn--title-action-neutral">
-                        <span class="fa #{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? 'fa-list-ol ' : 'fa-folder-open-o'}" />
+                        class="btn btn-icon d-flex align-items-center btn--title-action-neutral">
+                        <util:icon icon="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? 'list-numbers' : 'folder-open'}" styleClass="icon--lg icon--b4" />
                         <f:setPropertyActionListener
                             value="#{NavigationForm.uiStatus['toggleJournal']=='' or NavigationForm.uiStatus['toggleJournal']== null or NavigationForm.uiStatus['toggleJournal']=='imageComments' ? 'fileUpload' : '' }"
                             target="#{NavigationForm.uiStatus['toggleJournal']}" />
@@ -234,7 +228,7 @@
                         title="#{msgs.resizeBox}"
                         aria-label="#{msgs.resizeBox}"
                         jsf:rendered="#{cc.attrs.showBigButton!='false'}">
-                        <span class="fa #{NavigationForm.uiStatus['journalBig']?'fa-compress':'fa-expand'}" />
+                        <util:icon icon="#{NavigationForm.uiStatus['journalBig']?'arrows-diagonal-minimize-2':'arrows-diagonal'}" styleClass="icon--lg icon--b4" />
                         <f:setPropertyActionListener
                             target="#{NavigationForm.uiStatus['journalBig']}"
                             value="#{not NavigationForm.uiStatus['journalBig']}" />
@@ -259,26 +253,26 @@
                                     <li class="feed-item feed-colored feed-color-#{entry.type.title}">
                                         <span class="feed-item-icon fs-600">
                                             <ui:fragment rendered="#{entry.type.title == 'important'}">
-                                                <span class="fa fa-exclamation-circle" />
+                                                <util:icon icon="alert-circle" />
                                             </ui:fragment>
                                             <ui:fragment rendered="#{entry.type.title != 'important'}">
                                                 <ui:fragment rendered="#{entry.type.title == 'debug'}">
-                                                    <span class="fa fa-desktop" />
+                                                    <util:icon icon="device-desktop" />
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{entry.type.title == 'info'}">
-                                                    <span class="fa fa-info-circle" />
+                                                    <util:icon icon="info-circle" />
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{entry.type.title == 'warn'}">
-                                                    <span class="log_color_#{entry.type.title} fa fa-exclamation-circle" />
+                                                    <util:icon icon="alert-circle" styleClass="log_color_#{entry.type.title}" />
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{entry.type.title == 'error'}">
-                                                    <span class="log_color_#{entry.type.title} fa fa-exclamation-triangle" />
+                                                    <util:icon icon="alert-triangle" styleClass="log_color_#{entry.type.title}" />
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{entry.type.title == 'user'}">
-                                                    <span class="fa fa-user-o" />
+                                                    <util:icon icon="user" />
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{entry.type.title == 'file'}">
-                                                    <span class="fa fa-file-o" />
+                                                    <util:icon icon="file" />
                                                 </ui:fragment>
                                             </ui:fragment>
                                             <span class="filler filler-vertical
@@ -290,11 +284,7 @@
                                                 <span class="fw-700">
                                                     #{msgs[entry.userName]}:
                                                 </span>
-                                                <!-- <ui:fragment rendered="#{msgs[entry.userName] == LoginForm.myBenutzer.nachVorname}">
-                                                    <button class="btn btn-outline">
-                                                        <span class="fa fa-pencil text-neutral-600" />
-                                                    </button>
-                                                </ui:fragment> -->
+
                                             </span>
                                             <h:outputText
                                                 value="#{entry.formattedContent}"
@@ -306,7 +296,7 @@
                                                         class="btn btn-primary-400"
                                                         jsf:action="#{cc.attrs.bean.downloadFile(entry)}"
                                                         title="#{msgs.downloadFile}">
-                                                        <span class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
+                                                        <util:icon icon="#{entry.externalFile ? 'world' : 'paperclip'}" styleClass="me-1" />
                                                         <span>
                                                             <h:outputText value="#{entry.basename}" />
                                                         </span>
@@ -318,7 +308,7 @@
                                                         class="btn btn-blank"
                                                         jsf:action="#{cc.attrs.bean.deleteFile(entry)}"
                                                         title="#{msgs.deleteFile}">
-                                                        <span class="fa fa-trash-o" />
+                                                        <util:icon icon="trash" />
                                                     </button>
                                                 </span>
                                             </h:panelGroup>
@@ -434,20 +424,20 @@
                                         <button
                                             jsf:id="deleteFile2"
                                             jsf:rendered="#{cc.attrs.bean.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
-                                            class="btn btn-blank"
+                                            class="btn btn-blank btn-icon"
                                             style="color: #333;"
                                             jsf:action="#{cc.attrs.bean.deleteFile(entry)}"
                                             title="#{msgs.deleteFile}">
-                                            <span class="fa fa-trash-o" />
+                                            <util:icon icon="trash" />
                                         </button>
                                         <!-- download button -->
                                         <button
                                             jsf:id="downloadFile"
-                                            class="btn btn-blank"
+                                            class="btn btn-blank btn-icon"
                                             style="color: #333;"
                                             jsf:action="#{cc.attrs.bean.downloadFile(entry)}"
                                             title="#{msgs.downloadFile}">
-                                            <span class="fa fa-download" />
+                                            <util:icon icon="download" />
                                         </button>
                                     </td>
                                 </tr>

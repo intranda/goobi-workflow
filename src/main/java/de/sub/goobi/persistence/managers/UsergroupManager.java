@@ -18,7 +18,6 @@ package de.sub.goobi.persistence.managers;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class UsergroupManager implements IManager, Serializable {
+public class UsergroupManager implements IManager {
     private static final long serialVersionUID = -6021826136861140126L;
 
     public static Usergroup getUsergroupById(int id) throws DAOException {

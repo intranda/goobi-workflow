@@ -38,7 +38,7 @@
                             class="btn text-white"
                             title="#{msgs.cancel}"
                             data-bs-dismiss="modal">
-                            <span class="fa fa-times" />
+                            <util:icon icon="x" />
                         </button>
                     </div>
                     <div class="modal-body">
@@ -66,9 +66,7 @@
                                 jsf:id="vocabularySearchAction"
                                 class="btn btn-primary"
                                 jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchVocabulary}">
-                                <span
-                                        class="fa fa-search"
-                                        aria-hidden="true"/>
+                                <util:icon icon="search" />
                                 <span>
                                     #{msgs.search}
                                 </span>
@@ -113,7 +111,7 @@
                                                     <div class="col-12 pb-1 text-muted small">
                                                         <ui:repeat var="parent" value="#{record.parents}">
                                                             <h:outputText value="#{parent.mainValue} "/>
-                                                            <span class="fa fa-caret-right mr-2"/>
+                                                            <util:icon icon="caret-right" styleClass="me-2" />
                                                         </ui:repeat>
                                                     </div>
                                                 </div>
@@ -134,7 +132,7 @@
                                                             value="#{record}"
                                                             target="#{Metadaten.currentMetadataToPerformSearch.selectedVocabularyRecord}"/>
 
-                                                    <span class="fa fa-check"/>
+                                                    <util:icon icon="check" />
                                                 </button>
                                             </div>
                                         </div>

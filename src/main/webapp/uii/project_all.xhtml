@@ -8,7 +8,8 @@
 	template="/uii/template/template.html"
 
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-  xmlns:jsf="http://xmlns.jcp.org/jsf">
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<ui:param name="myPageTitle" value="#{msgs.projekte}" />
 
@@ -30,7 +31,7 @@
 					<intranda:box
 						boxType="primary"
 						title="#{myPageTitle}"
-						icon="fa-compass"
+						icon="compass"
 					>
 
 							<div class="gw-table">
@@ -91,10 +92,10 @@
 											<f:passThroughAttribute name="id" value="status" />
 										</f:facet>
 										<h:panelGroup  rendered="#{item.projectIsArchived}"  class="badge badge-intranda-red">
-											<span class="fa fa-lock" /> <span>#{msgs.inactive}</span>
+											<util:icon icon="lock" /> <span>#{msgs.inactive}</span>
 										</h:panelGroup>
 										<h:panelGroup class="badge badge-intranda-green" rendered="#{!item.projectIsArchived}">
-											<span class="fa fa-unlock" /> <span>#{msgs.active}</span>
+											<util:icon icon="lock-open" /> <span>#{msgs.active}</span>
 										</h:panelGroup>
 									</h:column>
 
@@ -108,10 +109,10 @@
 											<!-- Bearbeiten-Schaltknopf -->
 											<button
 												jsf:id="edit"
-												class="btn btn-blank"
+												class="btn btn-icon btn-blank"
 												jsf:rel="tooltip"
 												jsf:action="project_edit">
-												<span class="fa fa-pencil" />
+												<util:icon icon="pencil" />
 												<f:passThroughAttribute name="title" value="#{msgs.bearbeiten}" />
 												<f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
 												<f:passThroughAttribute name="aria-label" value="#{msgs.bearbeiten}" />
@@ -124,11 +125,12 @@
 											<button
 												jsf:id="clone"
 												jsf:action="#{ProjekteForm.cloneProject}"
-												class="btn btn-blank"
+												class="btn btn-icon btn-blank"
 												title="#{msgs.duplicate}"
 												jsf:rel="tooltip"
 												onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-												<i class="fa fa-clipboard" title="#{msgs.duplicate}" jsf:rel="tooltip"/>
+												<util:icon icon="clipboard" />
+												<f:passThroughAttribute name="aria-label" value="#{msgs.duplicate}" />
 												<f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
 												<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
 											</button>
@@ -141,7 +143,7 @@
 								<div class="box__actions">
 									<!-- Neu-Schaltknopf -->
 									<button jsf:id="newProject" class="btn btn-primary-400 me-auto" jsf:action="#{ProjekteForm.Neu}" jsf:immediate="true">
-										<span class="fa fa-plus margin-right-5" />
+										<util:icon icon="plus" styleClass="me-1 icon--lg icon--b5" />
 										<span>
 											<h:outputText value="#{msgs.neuesProjektAnlegen}" />
 										</span>

@@ -47,7 +47,6 @@ import jakarta.jms.JMSException;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsClient;
@@ -104,7 +103,6 @@ public final class ExternalConnectionFactory {
 
         } else {
             client = SqsClient.builder()
-                    .credentialsProvider(ProfileCredentialsProvider.create())
                     .region(Region.of(System.getenv("AWS_REGION")))
                     .build();
         }

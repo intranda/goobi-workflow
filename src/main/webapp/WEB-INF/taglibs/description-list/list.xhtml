@@ -1,6 +1,6 @@
-<ui:composition
+<ui:component
     xmlns:ui="http://java.sun.com/jsf/facelets">
-    <dl class="definition-list#{bordered == false or bordered != null ? '' : ' definition-list-bordered'}">
+    <dl class="definition-list#{bordered == false or bordered != null ? '' : ' definition-list-bordered'}#{floating == true ? ' description-list-floating' : ''}">
         <ui:insert />
     </dl>
-</ui:composition>
+</ui:component>

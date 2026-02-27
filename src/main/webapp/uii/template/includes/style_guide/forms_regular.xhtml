@@ -4,13 +4,13 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:form="http://goobi.io/form">
+    xmlns:form="http://goobi.io/form"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface />
 
@@ -22,10 +22,10 @@
 			boxForm="true"
 			boxPadding="false"
 			title="#{myPageTitle}"
-			icon="fa-edit">
+			icon="edit">
 
 			<form:field
-				label="#{msgs.nachname}"
+				label="Input required"
 				required="true"
 				help="#{msgs.helpNachname}">
 				<h:inputText
@@ -35,7 +35,7 @@
 				<form:message target="lastname" />
 			</form:field>
 			<form:field
-				label="#{msgs.vorname}"
+				label="Text input"
 				help="#{msgs.helpVorname}">
 				<h:inputText
 					id="firstname"
@@ -44,7 +44,7 @@
 				<form:message target="firstname" />
 			</form:field>
 			<form:field
-				label="#{msgs.dashboard}"
+				label="Select"
 				help="#{msgs.helpUserDashboard}">
 				<h:selectOneMenu
 					id="dashboard"
@@ -57,7 +57,7 @@
 			</form:field>
 			<form:field
 				group="true"
-				label="#{msgs.istAktiv}"
+				label="Checkbox"
 				help="#{msgs.helpIstAktiv}">
 				<h:selectBooleanCheckbox
 					id="isActive"
@@ -66,7 +66,7 @@
 				<form:message target="isActive" />
 			</form:field>
 			<form:field
-				label="#{msgs.user_config_customCss}"
+				label="Textarea"
 				help="#{msgs.help_user_config_customCss}">
 				<form:grow-wrap>
 					<h:inputTextarea
@@ -78,7 +78,7 @@
 			</form:field>
 			<form:field
 				group="true"
-				label="#{msgs.defaultSortOrder}"
+				label="Radio vertical"
 				help="#{msgs.helpDefaultSortOrder}">
 				<h:selectOneRadio
 					id="processDefaultSortOrderVertical"
@@ -94,7 +94,7 @@
 			</form:field>
 			<form:field
 				group="true"
-				label="#{msgs.defaultSortOrder}"
+				label="Radio horizontal"
 				help="#{msgs.helpDefaultSortOrder}">
 				<h:selectOneRadio
 					id="processDefaultSortOrderHorizontal"
@@ -110,7 +110,7 @@
 			</form:field>
 			<form:field
 				group="true"
-				label="#{msgs.usergroup_assignedRoles}"
+				label="Display arbitrary content"
 				help="#{msgs.helpUserRoles}">
 				<span>
 					<ui:repeat
@@ -128,7 +128,7 @@
 			</form:field>
 			<form:field
 				group="true"
-				label="#{msgs.name}"
+				label="Form group/Multiple inputs"
 				help="#{msgs.helpName}">
 				<h:inputText
 					id="manualFieldC"
@@ -163,8 +163,38 @@
 					</c:if>
 				</h:inputText>
 			</form:field>
+			<form:field
+				group="true"
+				label="Input with button"
+				help="#{msgs.helpName}"
+				join="#{false}">
+				<h:inputText
+					id="inputWithButton"
+					styleClass="form-control form__input"
+					value="#{LoginForm.myBenutzer.vorname}"
+					required="true"
+					readonly="false"
+					tabindex="0">
+					<f:passThroughAttribute
+						name="aria-label"
+						value="#{msgs.vorname}" />
+					<c:if test="false">
+						<f:passThroughAttribute
+							name="data-gw-focus-on-load"
+							value="false" />
+					</c:if>
+				</h:inputText>
+				<button
+					type="button"
+					class="btn font-light"
+					title="#{msgs.delete}"
+					data-bs-toggle="tooltip"
+					aria-label="#{msgs.delete}">
+					<util:icon icon="trash" />
+				</button>
+			</form:field>
 			<form:fieldset
-				label="#{msgs.benutzer}">
+				label="Fieldset">
 				<form:field
 					label="#{msgs.nachname}"
 					help="#{msgs.helpNachname}">
@@ -185,9 +215,9 @@
 				</form:field>
 			</form:fieldset>
 			<form:fieldset
-				label="#{msgs.benutzer}">
+				label="Fieldsets">
 				<form:fieldset
-					label="#{msgs.name}">
+					label="Nested fieldset">
 					<form:field
 						label="#{msgs.nachname}"
 						help="#{msgs.helpNachname}">
@@ -225,7 +255,7 @@
 					jsf:id="absenden"
 					type="submit"
 					jsf:action="#{BenutzerverwaltungForm.Speichern}">
-					<span class="fa fa-save" />
+					<util:icon icon="device-floppy" />
 					<span>
 						<h:outputText value="#{msgs.speichern}" />
 					</span>
@@ -237,7 +267,7 @@
 					class="btn btn-hot trigger-delete"
 					onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
 					jsf:action="#{BenutzerverwaltungForm.Loeschen}">
-					<span class="fa fa-trash-o" />
+					<util:icon icon="trash" />
 					<span>
 						<h:outputText value="#{msgs.loeschen}" />
 					</span>
@@ -256,6 +286,10 @@
 				Use <code>&lt;form:field group="true"&gt;</code> for any field that contains one if the following input types: radio, checkboxes.
 				Also use this for multiple input elements in one field (see the "Assigned rights" as well as the following "Name" field above).
 				This will produce the field as a HTML fieldset, as well as the provided label as a HTML legend instead of a HTML label, to improve accessibility.
+				<br />
+				Elements with <code>&lt;form:field group="true"&gt;</code> will use Bootstrap's form grouping by default.
+				If you want the contained elements as distinct units, use <code>&lt;form:field group="true" join="#{false}"&gt;</code>,
+				as shown in the "Input with button" example.
 			</p>
 			<p>
 				Use <code>&lt;form:fieldset&gt;</code> for any field that contains multiple grouped, distinct input elements.
@@ -291,7 +325,7 @@
 	icon=&quot;fa-edit&quot;&gt;
 
 	&lt;form:field
-		label=&quot;#{msgs.nachname}&quot;
+		label=&quot;\#{Input required}&quot;
 		required=&quot;true&quot;
 		help=&quot;#{msgs.helpNachname}&quot;&gt;
 		&lt;h:inputText
@@ -301,7 +335,7 @@
 		&lt;form:message target=&quot;lastname&quot; /&gt;
 	&lt;/form:field&gt;
 	&lt;form:field
-		label=&quot;#{msgs.vorname}&quot;
+		label=&quot;\#{Text input}&quot;
 		help=&quot;#{msgs.helpVorname}&quot;&gt;
 		&lt;h:inputText
 			id=&quot;firstname&quot;
@@ -310,7 +344,7 @@
 		&lt;form:message target=&quot;firstname&quot; /&gt;
 	&lt;/form:field&gt;
 	&lt;form:field
-		label=&quot;#{msgs.dashboard}&quot;
+		label=&quot;\#{Select}&quot;
 		help=&quot;#{msgs.helpUserDashboard}&quot;&gt;
 		&lt;h:selectOneMenu
 			id=&quot;dashboard&quot;
@@ -323,7 +357,7 @@
 	&lt;/form:field&gt;
 	&lt;form:field
 		group=&quot;true&quot;
-		label=&quot;#{msgs.istAktiv}&quot;
+		label=&quot;\#{Checkbox}&quot;
 		help=&quot;#{msgs.helpIstAktiv}&quot;&gt;
 		&lt;h:selectBooleanCheckbox
 			id=&quot;isActive&quot;
@@ -332,7 +366,7 @@
 		&lt;form:message target=&quot;isActive&quot; /&gt;
 	&lt;/form:field&gt;
 	&lt;form:field
-		label=&quot;#{msgs.user_config_customCss}&quot;
+		label=&quot;\#{Textarea}&quot;
 		help=&quot;#{msgs.help_user_config_customCss}&quot;&gt;
 		&lt;form:grow-wrap&gt;
 			&lt;h:inputTextarea
@@ -345,7 +379,7 @@
 	&lt;/form:field&gt;
 	&lt;form:field
 		group=&quot;true&quot;
-		label=&quot;#{msgs.defaultSortOrder}&quot;
+		label=&quot;\#{Radio vertical}&quot;
 		help=&quot;#{msgs.helpDefaultSortOrder}&quot;&gt;
 		&lt;h:selectOneRadio
 			id=&quot;processDefaultSortOrderVertical&quot;
@@ -361,7 +395,7 @@
 	&lt;/form:field&gt;
 	&lt;form:field
 		group=&quot;true&quot;
-		label=&quot;#{msgs.defaultSortOrder}&quot;
+		label=&quot;\#{Radio horizontal}&quot;
 		help=&quot;#{msgs.helpDefaultSortOrder}&quot;&gt;
 		&lt;h:selectOneRadio
 			id=&quot;processDefaultSortOrderHorizontal&quot;
@@ -377,7 +411,7 @@
 	&lt;/form:field&gt;
 	&lt;form:field
 		group=&quot;true&quot;
-		label=&quot;#{msgs.usergroup_assignedRoles}&quot;
+		label=&quot;\#{Display arbitrary content}&quot;
 		help=&quot;#{msgs.helpUserRoles}&quot;&gt;
 		&lt;span&gt;
 			&lt;ui:repeat
@@ -395,7 +429,7 @@
 	&lt;/form:field&gt;
 	&lt;form:field
 		group=&quot;true&quot;
-		label=&quot;#{msgs.name}&quot;
+		label=&quot;\#{Form group/Multiple inputs}&quot;
 		help=&quot;#{msgs.helpName}&quot;&gt;
 		&lt;h:inputText
 			id=&quot;manualFieldC&quot;
@@ -430,8 +464,38 @@
 			&lt;/c:if&gt;
 		&lt;/h:inputText&gt;
 	&lt;/form:field&gt;
+	&lt;form:field
+		group=&quot;true&quot;
+		label=&quot;\#{Input with button}&quot;
+		help=&quot;#{msgs.helpName}&quot;
+		join=&quot;#{false}&quot;&gt;
+		&lt;h:inputText
+			id=&quot;inputWithButton&quot;
+			styleClass=&quot;form-control form__input&quot;
+			value=&quot;#{LoginForm.myBenutzer.vorname}&quot;
+			required=&quot;true&quot;
+			readonly=&quot;false&quot;
+			tabindex=&quot;0&quot;&gt;
+			&lt;f:passThroughAttribute
+				name=&quot;aria-label&quot;
+				value=&quot;#{msgs.vorname}&quot; /&gt;
+			&lt;c:if test=&quot;false&quot;&gt;
+				&lt;f:passThroughAttribute
+					name=&quot;data-gw-focus-on-load&quot;
+					value=&quot;false&quot; /&gt;
+			&lt;/c:if&gt;
+		&lt;/h:inputText&gt;
+		&lt;button
+			type=&quot;button&quot;
+			class=&quot;btn font-light&quot;
+			title=&quot;#{msgs.delete}&quot;
+			data-bs-toggle=&quot;tooltip&quot;
+			aria-label=&quot;#{msgs.delete}&quot;&gt;
+			&lt;util:icon icon=&quot;trash&quot; /&gt;
+		&lt;/button&gt;
+	&lt;/form:field&gt;
 	&lt;form:fieldset
-		label=&quot;#{msgs.benutzer}&quot;&gt;
+		label=&quot;\#{Fieldset}&quot;&gt;
 		&lt;form:field
 			label=&quot;#{msgs.nachname}&quot;
 			help=&quot;#{msgs.helpNachname}&quot;&gt;
@@ -452,9 +516,9 @@
 		&lt;/form:field&gt;
 	&lt;/form:fieldset&gt;
 	&lt;form:fieldset
-		label=&quot;#{msgs.benutzer}&quot;&gt;
+		label=&quot;\#{Fieldsets}&quot;&gt;
 		&lt;form:fieldset
-			label=&quot;#{msgs.name}&quot;&gt;
+			label=&quot;\#{Nested fieldset}&quot;&gt;
 			&lt;form:field
 				label=&quot;#{msgs.nachname}&quot;
 				help=&quot;#{msgs.helpNachname}&quot;&gt;
@@ -494,7 +558,7 @@
 			jsf:id=&quot;absenden&quot;
 			type=&quot;submit&quot;
 			jsf:action=&quot;{BenutzerverwaltungForm.Speichern}&quot;&gt;
-			&lt;i class=&quot;fa fa-save&quot;&gt;&lt;/i&gt;
+			&lt;util:icon icon="device-floppy" /&gt;
 			&lt;span&gt;
 				&lt;h:outputText value=&quot;#{msgs.speichern}&quot; /&gt;
 			&lt;/span&gt;
@@ -506,7 +570,7 @@
 			class=&quot;btn btn-hot trigger-delete&quot;
 			onclick=&quot;if (!confirm(&#39;#{msgs.sollDieserEintragWirklichGeloeschtWerden}&#39;)) return false&quot;
 			jsf:action=&quot;{BenutzerverwaltungForm.Loeschen}&quot;&gt;
-			&lt;i class=&quot;fa fa-trash-o&quot;&gt;&lt;/i&gt;
+			&lt;util:icon icon="trash" /&gt;
 			&lt;span&gt;
 				&lt;h:outputText value=&quot;#{msgs.loeschen}&quot; /&gt;
 			&lt;/span&gt;

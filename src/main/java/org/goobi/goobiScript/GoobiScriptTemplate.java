@@ -18,14 +18,12 @@
 
 package org.goobi.goobiScript;
 
-import java.io.Serializable;
-
 import org.goobi.beans.DatabaseObject;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class GoobiScriptTemplate implements Serializable, DatabaseObject {
+public class GoobiScriptTemplate implements DatabaseObject {
 
     private static final long serialVersionUID = 7978130620909363049L;
 

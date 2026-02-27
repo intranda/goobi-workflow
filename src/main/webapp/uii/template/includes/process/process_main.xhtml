@@ -6,7 +6,8 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:util="http://goobi.io/util">
 
 	<composite:interface>
 	</composite:interface>
@@ -28,7 +29,7 @@
 
 							<intranda:boxTitle
 								title="#{msgs.prozess}"
-								icon="fa-table">
+								icon="table">
 
 								<div class="actions d-flex">
 
@@ -41,7 +42,7 @@
 										jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
 										class="btn d-flex align-items-center btn--title-action"
 										jsf:rel="tooltip">
-										<span class="fa fa-pencil" />
+										<util:icon icon="pencil" />
 										<f:setPropertyActionListener
 											target="#{ProzessverwaltungForm.modusBearbeiten}"
 											value="prozess" />
@@ -59,7 +60,7 @@
 										class="btn d-flex align-items-center btn--title-action"
 										title="#{msgs.reload}"
 										jsf:rel="tooltip">
-										<span class="fa fa-refresh" />
+										<util:icon icon="refresh" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -75,7 +76,7 @@
 										title="#{msgs.metadatenBearbeiten}"
 										rel="tooltip"
 										rendered="#{(!LoginForm.hasRole('Task_Mets_Pagination') and !LoginForm.hasRole('Task_Mets_Structure') and !LoginForm.hasRole('Task_Mets_Metadata') and !LoginForm.hasRole('Task_Mets_Files')) and ProzessverwaltungForm.myProzess.benutzerGesperrt == null and !ProzessverwaltungForm.myProzess.istTemplate}">
-										<span class="fa fa-book" />
+										<util:icon icon="book" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -104,7 +105,7 @@
 										pt:aria-label="#{msgs.metadatenBearbeiten}"
 										rel="tooltip"
 										rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and (LoginForm.hasRole('Task_Mets_Pagination') or LoginForm.hasRole('Task_Mets_Structure') or LoginForm.hasRole('Task_Mets_Metadata') or LoginForm.hasRole('Task_Mets_Files')) and !ProzessverwaltungForm.myProzess.temporaryMetadataFiles}">
-										<span class="fa fa-book " />
+										<util:icon icon="book" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -144,7 +145,7 @@
 											title="#{msgs.metadatenBearbeiten}"
 											data-bs-toggle="modal"
 											data-bs-target="#myModal-#{count}">
-											<span class="fa fa-book" />
+											<util:icon icon="book" />
 										</button>
 									</h:panelGroup>
 									<div
@@ -169,7 +170,7 @@
 														title="#{msgs.cancel}"
 														data-bs-toggle="tooltip"
 														data-bs-dismiss="modal">
-														<span class="fa fa-times" />
+														<util:icon icon="x" />
 													</button>
 												</div>
 												<div class="modal-body">
@@ -185,7 +186,7 @@
 														title="#{msgs.discard}"
 														jsf:rel="tooltip"
 														class="btn btn-hot me-auto text-white">
-														<span class="fa fa-trash-o margin-right-10" />
+														<util:icon icon="trash" styleClass="me-2" />
 														<span>
 															#{msgs.discard}
 														</span>
@@ -229,7 +230,7 @@
 														title="#{msgs.overwrite}"
 														jsf:rel="tooltip"
 														class="btn btn-success text-white">
-														<span class="fa fa-floppy-o margin-right-10" />
+														<util:icon icon="device-floppy" styleClass="me-2" />
 														<span>
 															#{msgs.overwrite}
 														</span>
@@ -287,7 +288,7 @@
 											title="#{msgs.exportDMS}"
 											jsf:rel="tooltip"
 											jsf:disabled="#{!ProzessverwaltungForm.myProzess.containsExportStep}">
-											<span class="fa fa-globe" />
+											<util:icon icon="world" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -306,7 +307,7 @@
 										title="#{msgs.importDms}"
 										jsf:rel="tooltip"
 										jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !ProzessverwaltungForm.myProzess.displayDMSButton}">
-										<i class="font-light fa fa-globe"></i>
+										<util:icon icon="world" styleClass="icon--muted" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -323,7 +324,7 @@
 										aria-label="#{msgs.process_generateDocket}"
 										jsf:rel="tooltip"
 										jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate}">
-										<span class="fa fa-print" />
+										<util:icon icon="printer" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -339,7 +340,7 @@
 										aria-label="#{msgs.exportDatabaseInformation}"
 										jsf:rel="tooltip"
 										jsf:rendered="#{LoginForm.hasRole('Admin_Export_Processdata')}">
-										<span class="fa fa-file-archive-o" />
+										<util:icon icon="file-zip" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -356,7 +357,7 @@
 										aria-label="#{msgs.reImportDatabaseInformation}"
 										jsf:rel="tooltip"
 										jsf:rendered="#{ProzessverwaltungForm.renderReimport}">
-										<span class="fa fa-cloud-download" />
+										<util:icon icon="cloud-download" />
 										<f:passThroughAttribute
 											name="data-toggle"
 											value="tooltip" />
@@ -373,8 +374,7 @@
 											pt:aria-label="#{msgs.previousProcess}"
 											jsf:rel="tooltip"
 											jsf:disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">
-											<i
-												class="fa fa-angle-left #{not ProzessverwaltungForm.hasPreviousEntry?'font-light':''}" />
+											<util:icon icon="chevron-left" styleClass="#{not ProzessverwaltungForm.hasPreviousEntry?'icon--muted':''}" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -389,8 +389,7 @@
 											title="#{msgs.nextProcess}"
 											jsf:rel="tooltip"
 											jsf:disabled="#{not ProzessverwaltungForm.hasNextEntry}">
-											<i
-												class="fa fa-angle-right #{not ProzessverwaltungForm.hasNextEntry?'font-light':''}" />
+											<util:icon icon="chevron-right" styleClass="#{not ProzessverwaltungForm.hasNextEntry?'icon--muted':''}" />
 											<f:passThroughAttribute
 												name="data-toggle"
 												value="tooltip" />
@@ -433,15 +432,12 @@
 									value="#{ProzessverwaltungForm.myProzess.exportValidator.label != null ? ProzessverwaltungForm.myProzess.exportValidator.label : msgs.noValidation}" />
 
 								<h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
-								<i
-									class="fa #{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen?'fa-check-square-o':'fa-square-o'}"></i>
+								<util:icon icon="#{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen?'square-check':'square'}" styleClass="align-middle" />
 
 								<h:outputText value="#{msgs.istTemplate}:" />
-								<i
-									class="fa #{ProzessverwaltungForm.myProzess.istTemplate?'fa-check-square-o':'fa-square-o'}"></i>
+								<util:icon icon="#{ProzessverwaltungForm.myProzess.istTemplate?'square-check':'square'}" styleClass="align-middle" />
 								<h:outputText value="#{msgs.pauseAutomaticExecution}:" />
-								<i
-									class="fa #{ProzessverwaltungForm.myProzess.pauseAutomaticExecution?'fa-check-square-o':'fa-square-o'}"></i>
+								<util:icon icon="#{ProzessverwaltungForm.myProzess.pauseAutomaticExecution?'square-check':'square'}" styleClass="align-middle" />
 
 								<h:outputText
 									value="#{msgs.id}:"
@@ -502,7 +498,7 @@
 						boxForm="true"
 						boxPadding="false"
 						title="#{msgs.prozess}"
-						icon="fa-edit">
+						icon="edit">
 
 						<intranda:formInputText
 							id="title"
@@ -591,7 +587,7 @@
 								class="btn btn-success submitOnEnter"
 								jsf:id="save"
 								jsf:action="#{ProzessverwaltungForm.Speichern}">
-								<span class="fa fa-save" />
+								<util:icon icon="device-floppy" />
 								<span>
 									<h:outputText value="#{msgs.speichern}" />
 								</span>
@@ -610,7 +606,7 @@
 									class="btn btn-hot"
 									data-bs-toggle="modal"
 									data-bs-target="#deleteContentModal">
-									<span class="fa fa-trash-o" />
+									<util:icon icon="trash" />
 									<span>
 										<h:outputText value="#{msgs.contentLoeschen}" />
 									</span>
@@ -622,7 +618,7 @@
 									class="btn btn-hot"
 									data-bs-toggle="modal"
 									data-bs-target="#deleteModal">
-									<span class="fa fa-trash-o" />
+									<util:icon icon="trash" />
 									<span>
 										<h:outputText value="#{msgs.loeschen}" />
 									</span>
@@ -660,7 +656,7 @@
 												<button
 													class="btn btn-hot"
 													jsf:action="#{ProzessverwaltungForm.ContentLoeschen}">
-													<span class="fa fa-trash-o" />
+													<util:icon icon="trash" />
 													<span>
 														<h:outputText value="#{msgs.loeschen}" />
 													</span>
@@ -706,7 +702,7 @@
 													class="btn btn-hot"
 													jsf:id="confirmDelete"
 													jsf:action="#{ProzessverwaltungForm.Loeschen}">
-													<span class="fa fa-trash-o" />
+													<util:icon icon="trash" />
 													<span>
                                                         <h:outputText value="#{msgs.loeschen}" />
                                                     </span>

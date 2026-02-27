@@ -26,7 +26,6 @@
 package org.goobi.beans;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
@@ -110,7 +109,7 @@ import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 @Log4j2
-public class Process extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Process>, IJournal, IPropertyHolder {
+public class Process extends AbstractJournal implements DatabaseObject, Comparable<Process>, IPropertyHolder {
     private static final long serialVersionUID = -6503348094655786275L;
 
     private static final String META_FILE = "meta.xml";

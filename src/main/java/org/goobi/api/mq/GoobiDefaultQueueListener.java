@@ -155,8 +155,9 @@ public class GoobiDefaultQueueListener {
         if (optTicket.isPresent()) {
             try {
                 MqStatusMessage statusMessage = new MqStatusMessage(message.getJMSMessageID(), new Date(), status, "",
-                        origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getTaskType(), optTicket.get().getProcessId(),
-                        optTicket.get().getStepId(), optTicket.get().getStepName());
+                        origMessage, optTicket.get().getNumberOfObjects(), optTicket.get().getTaskType(),
+                        optTicket.get().getProcessId() == null ? 0 : optTicket.get().getProcessId(),
+                        optTicket.get().getStepId() == null ? 0 : optTicket.get().getStepId(), optTicket.get().getStepName());
                 MQResultManager.insertResult(statusMessage);
             } catch (JMSException e) {
                 // error when result is saved

@@ -7,12 +7,13 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:section="http://goobi.io/section"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:util="http://goobi.io/util">
     <composite:interface/>
     <composite:implementation>
         <h:panelGroup rendered="#{!(Metadaten.sizeOfMetadataGroups==0 and empty Metadaten.groups)}" layout="block" id="meEditGroupBox">
             <section:section type="#{empty Metadaten.groups ? 'outline' : 'neutral' }" id="metadataGroupSection" collapsible="true">
-                <section:header icon="bars" title="#{msgs.metadataGroups}">
+                <section:header icon="menu-2" title="#{msgs.metadataGroups}">
                 </section:header>
                 <section:body>
                     <p class="p-3 m-0 border-bottom" jsf:rendered="#{empty Metadaten.groups}">
@@ -25,13 +26,13 @@
                                     <h:outputText value="#{Item.name}"/>
                                 </h3>
                                 <button jsf:id="grpdelete" aria-label="#{msgs.mets_deleteMetadataGroup}" class="btn" jsf:action="#{Metadaten.deleteGroup}" title="#{msgs.mets_deleteMetadataGroup}" type="button">
-                                    <span class="fa fa-lg fa-trash-o" aria-hidden="true"/>
+                                    <util:icon icon="trash" styleClass="icon--lg" />
                                     <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{Item}" target="#{Metadaten.currentGroup}"/>
                                     <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                                     <f:ajax execute="@form" render="@form"/>
                                 </button>
                                 <button jsf:id="grpduplicate" aria-label="#{msgs.mets_duplicateMetadataGroup}" class="btn" jsf:action="#{Metadaten.CopyGroup}" title="#{msgs.mets_duplicateMetadataGroup}" type="button">
-                                    <span class="fa fa-lg fa-copy" aria-hidden="true"/>
+                                    <util:icon icon="copy" styleClass="icon--lg" />
                                     <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{Item}" target="#{Metadaten.currentGroup}"/>
                                     <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                                     <f:ajax execute="@form" render="@form"/>

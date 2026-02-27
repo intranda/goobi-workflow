@@ -3,7 +3,8 @@
     xmlns:image="http://goobi.io/image"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:util="http://goobi.io/util">
 
     <!-- Load all dependencies with regular script tags for guaranteed load order -->
     <script src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/static/reactiveX/rxjs.umd.min.js"></script>
@@ -69,7 +70,7 @@
                             aria-label="#{msgs.previous}"
                             jsf:action="#{images.previous()}"
                             jsf:id="navprev">
-                            <span class="fa fa-chevron-left" aria-hidden="true"></span>
+                            <util:icon icon="chevron-left" />
                         </button>
                         <span class="lightbox-control lightbox-imagename">
                             #{images.currentImage.imageName}
@@ -82,7 +83,7 @@
                             aria-label="Close"
                             jsf:action="#{images.close()}"
                             jsf:id="closeLightbox">
-                            <span class="fa fa-times" aria-hidden="true"></span>
+                            <util:icon icon="x" />
                         </button>
                         <button
                             type="button"
@@ -90,7 +91,7 @@
                             aria-label="#{msgs.next}"
                             jsf:action="#{images.next()}"
                             jsf:id="navnext">
-                            <span class="fa fa-chevron-right" aria-hidden="true"></span>
+                            <util:icon icon="chevron-right" />
                         </button>
                         <span class="lightbox-control lightbox-counter">
                             #{images.currentIndex + 1} / #{images.totalCount}

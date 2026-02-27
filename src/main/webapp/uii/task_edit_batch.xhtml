@@ -6,8 +6,8 @@
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
-
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:util="http://goobi.io/util"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -59,7 +59,7 @@
                         boxType="neutral"
                         boxForm="true"
                         boxPadding="false"
-                        icon="fa-wrench"
+                        icon="tool"
                         title="#{msgs.processesInThisBatch}">
 
                         <intranda:formInputDropDown2
@@ -80,7 +80,7 @@
                                 jsf:id="absenden"
                                 type="submit"
                                 jsf:action="#{NavigationForm.Reload}">
-                                <span class="fa fa-refresh" />
+                                <util:icon icon="refresh" />
                                 <span>
                                     <h:outputText value="#{msgs.uebernehmen}" />
                                 </span>

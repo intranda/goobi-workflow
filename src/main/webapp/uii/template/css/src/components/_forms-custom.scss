@@ -241,6 +241,7 @@ fieldSet:disabled .badge > a {
   .form-label-required {
     color: var(--clr-primary-400);
     display: flex;
+    align-self: flex-start;
     margin-inline: 0.25rem;
     order: 1;
   }
@@ -545,4 +546,17 @@ fieldSet:disabled .badge > a {
   display: flex;
   margin-block: auto;
   width: 100%;
+}
+
+// This makes sure that Bootstraps form groups are displayed correctly
+// even in cases where there are help elements or error messages, as
+// these would otherwise break the rounded borders of the form groups.
+.input-group {
+  .form-control,
+  .form-select {
+    &:has(+ .help-block) {
+      border-bottom-right-radius: var(--bs-border-radius) !important;
+      border-top-right-radius: var(--bs-border-radius) !important;
+    }
+  }
 }

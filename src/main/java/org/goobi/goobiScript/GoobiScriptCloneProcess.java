@@ -46,7 +46,7 @@ import ugh.dl.Fileformat;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptCloneProcess extends AbstractIGoobiScript {
 
     private static final String TITLE = "title";
     private static final String CONTENT = "content";

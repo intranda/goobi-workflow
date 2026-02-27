@@ -10,7 +10,8 @@
 
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util">
 
     <ui:param
         name="myPageTitle"
@@ -56,7 +57,7 @@
                     <intranda:box
                         boxType="primary"
                         boxPadding="true"
-                        icon="fa-tasks"
+                        icon="list-check"
                         title="#{myPageTitle}">
 
 
@@ -88,7 +89,7 @@
                                             jsf:id="resettop"
                                             class="btn btn-blank trigger-delete me-2"
                                             jsf:action="#{SessionForm.gsm.goobiScriptResultsReset}">
-                                            <span class="fa fa-trash-o" />
+                                            <util:icon icon="trash" />
                                             <span>
                                                 <h:outputText value="#{msgs.goobiScript_resetList}" />
                                             </span>
@@ -108,7 +109,7 @@
                                                 type="button"
                                                 class="btn btn-blank dropdown-toggle"
                                                 data-bs-toggle="dropdown">
-                                                <span class="fa fa-table" />
+                                                <util:icon icon="table" />
                                             </button>
 
                                             <ul class="dropdown-menu">
@@ -215,7 +216,7 @@
                                                         <f:setPropertyActionListener
                                                             target="#{SessionForm.gsm.sort}"
                                                             value="#{SessionForm.gsm.sort eq 'id'?'id desc':'id'}" />
-                                                        <span class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'id desc'?'fa-sort-desc':SessionForm.gsm.sort=='id'?'fa-sort-asc':'fa-sort'}"></span>
+                                                        <span class="pull-right table-sort-icon"><util:icon icon="#{SessionForm.gsm.sort eq 'id desc'?'sort-descending':SessionForm.gsm.sort=='id'?'sort-ascending':'arrows-sort'}" /></span>
                                                     </button>
                                                 </f:facet>
                                                 <h:outputText value="#{item.processId}" />
@@ -233,7 +234,7 @@
                                                         <f:setPropertyActionListener
                                                             target="#{SessionForm.gsm.sort}"
                                                             value="#{SessionForm.gsm.sort eq 'title'?'title desc':'title'}" />
-                                                        <span class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'title desc'?'fa-sort-desc':SessionForm.gsm.sort=='title'?'fa-sort-asc':'fa-sort'}"></span>
+                                                        <span class="pull-right table-sort-icon"><util:icon icon="#{SessionForm.gsm.sort eq 'title desc'?'sort-descending':SessionForm.gsm.sort=='title'?'sort-ascending':'arrows-sort'}" /></span>
                                                     </button>
                                                 </f:facet>
                                                 <h:outputText
@@ -253,7 +254,7 @@
                                                         <f:setPropertyActionListener
                                                             target="#{SessionForm.gsm.sort}"
                                                             value="#{SessionForm.gsm.sort eq 'command'?'command desc':'command'}" />
-                                                        <span class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'command desc'?'fa-sort-desc':SessionForm.gsm.sort=='command'?'fa-sort-asc':'fa-sort'}"></span>
+                                                        <span class="pull-right table-sort-icon"><util:icon icon="#{SessionForm.gsm.sort eq 'command desc'?'sort-descending':SessionForm.gsm.sort=='command'?'sort-ascending':'arrows-sort'}" /></span>
                                                     </button>
                                                 </f:facet>
                                                 <h:outputText
@@ -273,7 +274,7 @@
                                                         <f:setPropertyActionListener
                                                             target="#{SessionForm.gsm.sort}"
                                                             value="#{SessionForm.gsm.sort eq 'user'?'user desc':'user'}" />
-                                                        <span class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'user desc'?'fa-sort-desc':SessionForm.gsm.sort=='user'?'fa-sort-asc':'fa-sort'}"></span>
+                                                        <span class="pull-right table-sort-icon"><util:icon icon="#{SessionForm.gsm.sort eq 'user desc'?'sort-descending':SessionForm.gsm.sort=='user'?'sort-ascending':'arrows-sort'}" /></span>
                                                     </button>
                                                 </f:facet>
                                                 <h:outputText
@@ -293,7 +294,7 @@
                                                         <f:setPropertyActionListener
                                                             target="#{SessionForm.gsm.sort}"
                                                             value="#{SessionForm.gsm.sort eq 'timestamp'?'timestamp desc':'timestamp'}" />
-                                                        <span class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'timestamp desc'?'fa-sort-desc':SessionForm.gsm.sort=='timestamp'?'fa-sort-asc':'fa-sort'}"></span>
+                                                        <span class="pull-right table-sort-icon"><util:icon icon="#{SessionForm.gsm.sort eq 'timestamp desc'?'sort-descending':SessionForm.gsm.sort=='timestamp'?'sort-ascending':'arrows-sort'}" /></span>
                                                     </button>
                                                 </f:facet>
                                                 <h:outputText
@@ -315,11 +316,14 @@
                                                         <f:setPropertyActionListener
                                                             target="#{SessionForm.gsm.sort}"
                                                             value="#{SessionForm.gsm.sort eq 'status'?'status desc':'status'}" />
-                                                        <span class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'status desc'?'fa-sort-desc':SessionForm.gsm.sort=='status'?'fa-sort-asc':'fa-sort'}"></span>
+                                                        <span class="pull-right table-sort-icon"><util:icon icon="#{SessionForm.gsm.sort eq 'status desc'?'sort-descending':SessionForm.gsm.sort=='status'?'sort-ascending':'arrows-sort'}" /></span>
                                                     </button>
                                                 </f:facet>
                                                 <span class="badge #{item.resultType eq 'OK'?'badge-intranda-green':item.resultType eq 'WAITING'?'badge-intranda-orange':item.resultType eq 'RUNNING'?'badge-intranda-blue':'badge-intranda-red'}">
-                                                    <span class="fa #{item.resultType eq 'OK'?'fa-check':item.resultType eq 'WAITING'?'fa-clock-o':item.resultType eq 'RUNNING'?'fa-play':'fa-exclamation-triangle'} margin-right-5" />
+                                                    <ui:fragment rendered="#{item.resultType eq 'OK'}"><util:icon icon="check" styleClass="me-1" /></ui:fragment>
+                                                    <ui:fragment rendered="#{item.resultType eq 'WAITING'}"><util:icon icon="clock" styleClass="me-1" /></ui:fragment>
+                                                    <ui:fragment rendered="#{item.resultType eq 'RUNNING'}"><util:icon icon="player-play" styleClass="me-1" /></ui:fragment>
+                                                    <ui:fragment rendered="#{item.resultType ne 'OK' and item.resultType ne 'WAITING' and item.resultType ne 'RUNNING'}"><util:icon icon="alert-triangle" styleClass="me-1" /></ui:fragment>
                                                     #{msgs['goobiScript_status_'.concat(item.resultType)]}
                                                 </span>
                                             </h:column>
@@ -336,7 +340,7 @@
                                                         <f:setPropertyActionListener
                                                             target="#{SessionForm.gsm.sort}"
                                                             value="#{SessionForm.gsm.sort eq 'description'?'description desc':'description'}" />
-                                                        <span class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'description desc'?'fa-sort-desc':SessionForm.gsm.sort=='description'?'fa-sort-asc':'fa-sort'}"></span>
+                                                        <span class="pull-right table-sort-icon"><util:icon icon="#{SessionForm.gsm.sort eq 'description desc'?'sort-descending':SessionForm.gsm.sort=='description'?'sort-ascending':'arrows-sort'}" /></span>
                                                     </button>
                                                 </f:facet>
                                                 <h:outputText value="#{item.resultMessage} #{item.errorText}" />
@@ -357,7 +361,7 @@
                                         jsf:id="list_error"
                                         class="btn btn-blank me-2"
                                         jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('ERROR')}">
-                                        <span class="fa fa-exclamation-triangle" />
+                                        <util:icon icon="alert-triangle" />
                                         <span>
                                             <h:outputText value="#{msgs.goobiScript_filterErrorProcesses}" />
                                         </span>
@@ -368,7 +372,7 @@
                                         jsf:id="list_waiting"
                                         class="btn btn-blank me-2"
                                         jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('WAITING')}">
-                                        <span class="fa fa-clock-o" />
+                                        <util:icon icon="clock" />
                                         <span>
                                             <h:outputText value="#{msgs.goobiScript_filterWaitingProcesses}" />
                                         </span>
@@ -379,7 +383,7 @@
                                         jsf:id="list_ok"
                                         class="btn btn-blank me-2"
                                         jsf:action="#{ProzessverwaltungForm.FilterAktuelleProzesseOfGoobiScript('OK')}">
-                                        <span class="fa fa-check" />
+                                        <util:icon icon="check" />
                                         <span>
                                             <h:outputText value="#{msgs.goobiScript_filterOkProcesses}" />
                                         </span>
@@ -390,7 +394,7 @@
                                         jsf:id="excel_download"
                                         class="btn btn-primary-400 me-2"
                                         jsf:action="#{SessionForm.gsm.goobiScriptResultsExcel}">
-                                        <span class="fa fa-file-excel-o" />
+                                        <util:icon icon="file-spreadsheet" />
                                         <span>
                                             <h:outputText value="#{msgs.goobiScript_downloadExcel}" />
                                         </span>
@@ -401,7 +405,7 @@
                                         jsf:id="resetbottom"
                                         class="btn btn-blank trigger-delete"
                                         jsf:action="#{SessionForm.gsm.goobiScriptResultsReset}">
-                                        <span class="fa fa-trash-o" />
+                                        <util:icon icon="trash" />
                                         <span>
                                             <h:outputText value="#{msgs.goobiScript_resetList}" />
                                         </span>

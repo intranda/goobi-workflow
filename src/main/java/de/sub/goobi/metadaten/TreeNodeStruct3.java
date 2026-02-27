@@ -127,7 +127,7 @@ public class TreeNodeStruct3 extends TreeNode {
         }
         if (validationErrorPresent) {
             answer.append("<li class=\"text-danger\">");
-            answer.append("<span class=\"fa fa-exclamation-circle d-inline-block me-2\"></span>");
+            answer.append("<span class=\"icon-wrapper d-inline-block me-2\" aria-hidden=\"true\"><svg class=\"icon\" focusable=\"false\"><use href=\"/resources/icons/outline/alert-circle.svg#icon\"></use></svg></span>");
             answer.append(validationMessage);
             answer.append("</li>");
         }

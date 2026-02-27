@@ -10,6 +10,7 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:util="http://goobi.io/util"
     template="/uii/template/template_metseditor.html"
     >
     
@@ -45,7 +46,7 @@
                 layout="block"
                 rendered="#{SessionForm.logoutMessage != ''}"
                 styleClass="alert alert-danger">
-                <span class="fa fa-exclamation-triangle" />
+                <util:icon icon="alert-triangle" />
                 <h:outputText value="#{SessionForm.logoutMessage}" />
             </h:panelGroup>
         </h:panelGroup>

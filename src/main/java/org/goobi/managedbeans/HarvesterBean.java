@@ -17,7 +17,6 @@
  */
 package org.goobi.managedbeans;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +46,7 @@ import lombok.Setter;
 
 @Named
 @WindowScoped
-public class HarvesterBean extends BasicBean implements Serializable {
+public class HarvesterBean extends BasicBean {
 
     private static final long serialVersionUID = -8787011738438572424L;
 

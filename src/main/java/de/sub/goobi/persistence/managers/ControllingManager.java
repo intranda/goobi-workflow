@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.persistence.managers;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class ControllingManager implements IManager, Serializable {
+public class ControllingManager implements IManager {
 
     private static final long serialVersionUID = -8941047628267335304L;
 

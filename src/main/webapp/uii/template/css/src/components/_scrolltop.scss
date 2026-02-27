@@ -32,7 +32,9 @@
         height: 2.3rem;
         width: 2.3rem;
         cursor: pointer;
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         z-index: 1;
         transition: all .2s linear;
     }

@@ -51,7 +51,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptMetadataReplace extends AbstractIGoobiScript {
 
     // action:metadataReplace field:DocLanguage search:deutschTop replace:deutschNewTop position:top
     // action:metadataReplace field:DocLanguage search:deutschChild replace:deutschNewChild position:child
