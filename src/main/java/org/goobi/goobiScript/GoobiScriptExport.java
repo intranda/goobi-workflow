@@ -54,7 +54,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
 @Log4j2
-public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptExport extends AbstractIGoobiScript {
 
     @Override
     public String getAction() {

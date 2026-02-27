@@ -37,7 +37,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptOpenNextStep extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptOpenNextStep extends AbstractIGoobiScript {
 
     @Override
     public String getAction() {

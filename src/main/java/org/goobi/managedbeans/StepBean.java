@@ -26,7 +26,6 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -108,7 +107,7 @@ import lombok.extern.log4j.Log4j2;
 @Named("AktuelleSchritteForm")
 @WindowScoped
 @Log4j2
-public class StepBean extends BasicBean implements Serializable {
+public class StepBean extends BasicBean {
 
     private static final long serialVersionUID = 5841566727939692509L;
 

@@ -44,7 +44,7 @@ import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript {
 
     @Override
     public String getAction() {

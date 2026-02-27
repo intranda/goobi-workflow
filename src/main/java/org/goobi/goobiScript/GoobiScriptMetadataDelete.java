@@ -49,7 +49,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptMetadataDelete extends AbstractIGoobiScript {
 
     private static final String FIELD = "field";
     private static final String VALUE = "value";

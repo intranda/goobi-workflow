@@ -41,7 +41,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptSetStepNumber extends AbstractIGoobiScript {
 
     private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";

@@ -25,7 +25,6 @@
  */
 package org.goobi.managedbeans;
 
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ import lombok.Setter;
 
 @Named("RegelsaetzeForm")
 @WindowScoped
-public class RulesetBean extends BasicBean implements Serializable {
+public class RulesetBean extends BasicBean {
 
     private static final long serialVersionUID = -8994941188718721705L;
 

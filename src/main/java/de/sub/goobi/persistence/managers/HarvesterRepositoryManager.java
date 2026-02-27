@@ -18,7 +18,6 @@
 
 package de.sub.goobi.persistence.managers;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ import io.goobi.workflow.harvester.repository.Repository;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class HarvesterRepositoryManager implements IManager, Serializable {
+public class HarvesterRepositoryManager implements IManager {
 
     private static final long serialVersionUID = 5591131855633585870L;
 

@@ -18,7 +18,6 @@ package de.sub.goobi.persistence.managers;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -38,7 +37,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class ProjectManager implements IManager, Serializable {
+public class ProjectManager implements IManager {
     private static final long serialVersionUID = 6722792758015394586L;
 
     public static Project getProjectById(int id) throws DAOException {

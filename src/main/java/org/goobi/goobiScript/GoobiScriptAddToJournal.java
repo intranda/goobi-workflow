@@ -41,7 +41,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptAddToJournal extends AbstractIGoobiScript {
 
     private static final String MESSAGE = "message";
     private static final String TYPE = "type";

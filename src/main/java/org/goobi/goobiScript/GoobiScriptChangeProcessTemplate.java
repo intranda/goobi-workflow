@@ -36,7 +36,7 @@ import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-public class GoobiScriptChangeProcessTemplate extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptChangeProcessTemplate extends AbstractIGoobiScript {
 
     private static final String TEMPLATE_NAME = "templateName";
 

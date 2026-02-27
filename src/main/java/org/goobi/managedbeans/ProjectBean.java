@@ -28,7 +28,6 @@ package org.goobi.managedbeans;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -90,7 +89,7 @@ import lombok.extern.log4j.Log4j2;
 @Named("ProjekteForm")
 @WindowScoped
 @Log4j2
-public class ProjectBean extends BasicBean implements Serializable {
+public class ProjectBean extends BasicBean {
     private static final long serialVersionUID = 6735912903249358786L;
 
     private static final String RETURN_PAGE_ALL = "project_all";

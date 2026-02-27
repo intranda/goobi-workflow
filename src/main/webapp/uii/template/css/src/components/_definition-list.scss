@@ -29,6 +29,9 @@
 .definition-list-bordered {
     .definition-list-description {
         border-block-end: 1px solid var(--clr-neutral-300);
+        &:last-of-type {
+            border-block-end: none;
+        }
     }
 }
 
@@ -43,6 +46,9 @@
         .definition-list-term {
             border-block-end: 1px solid var(--clr-neutral-300);
             border-inline-end: 1px solid var(--clr-neutral-300);
+            &:last-of-type {
+                border-block-end: none;
+            }
         }
     }
     .definition-list-term {
@@ -50,5 +56,13 @@
     }
     .definition-list-description {
         grid-column: 2 / span 1;
+    }
+}
+
+.definition-list,
+.description-list {
+    &.description-list-floating {
+        border-block: 1px solid var(--clr-neutral-300);
+        border-inline: 1px solid var(--clr-neutral-300);
     }
 }

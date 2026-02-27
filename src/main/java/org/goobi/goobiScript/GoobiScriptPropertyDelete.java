@@ -37,7 +37,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
-public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptPropertyDelete extends AbstractIGoobiScript {
 
     @Override
     public String getAction() {

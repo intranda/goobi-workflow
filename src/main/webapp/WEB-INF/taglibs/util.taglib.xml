@@ -60,6 +60,12 @@
             <required>true</required>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+            <description>Position of the icon relative to text: left (default) or right</description>
+            <name>iconPosition</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
     <tag>
         <tag-name>ajax-loader</tag-name>

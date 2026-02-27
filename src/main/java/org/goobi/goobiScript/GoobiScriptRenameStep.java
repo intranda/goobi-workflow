@@ -42,7 +42,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptRenameStep extends AbstractIGoobiScript {
     // action:renameProcess search:415121809 replace:1659235871 type:contains|full
 
     private static final String OLD_STEP_NAME = "oldStepName";
