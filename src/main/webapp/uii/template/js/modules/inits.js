@@ -24,7 +24,6 @@ export const initFunctions = function initFunctions() {
     initMirrorValueTo();
     initAccessibilityModeButton();
     initHotkeys();
-
     focusOnLoad();
     toggleHelp();
 

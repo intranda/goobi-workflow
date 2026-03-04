@@ -246,7 +246,10 @@ export const init = function initializeResizeTables() {
     if (tables) {
         [...tables].forEach((table) => {
             loadColWidths(table);
-            initialize(table);
+            if (!table.hasAttribute('data-resizable-init')) {
+                table.setAttribute('data-resizable-init', '');
+                initialize(table);
+            }
         });
     }
 };
