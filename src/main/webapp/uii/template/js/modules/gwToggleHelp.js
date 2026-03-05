@@ -28,13 +28,14 @@ export const toggleHelp = function toggleHelp() {
     const helpButton = document.querySelector('[id$="showHelp"]');
     if (!helpButton) return;
 
-    helpButton.addEventListener('click', function() {
-        // Let JSF handle the state change, then sync after AJAX completes
-        setTimeout(() => {
-            syncHelpState();
-        }, 100); // Small delay to let AJAX complete
-    });
+    if (!helpButton.hasAttribute('data-help-init')) {
+        helpButton.setAttribute('data-help-init', '');
+        helpButton.addEventListener('click', function() {
+            setTimeout(() => {
+                syncHelpState();
+            }, 100);
+        });
+    }
 
-    // Sync on page load
     syncHelpState();
 };
