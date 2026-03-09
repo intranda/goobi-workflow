@@ -40,7 +40,6 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
@@ -61,30 +60,15 @@ public class MediaResource {
     @Operation(summary = "Serves a media resource",
             description = "Serves a media resource consisting of a process name, a directory name and a resource name")
     @ApiResponse(responseCode = "200", description = "OK")
-    @ApiResponse(responseCode = "206", description = "Partial Content")
     @ApiResponse(responseCode = "500", description = "Internal error")
 
     public Response serveMediaContent(@PathParam("process") String processIdString, @PathParam("folder") String folder,
-            @PathParam("filename") String filename, @HeaderParam("Range") String rangeHeader) {
+            @PathParam("filename") String filename) {
 
         Path processFolder = METADATA_FOLDER.resolve(processIdString);
 
         Path mediaFolder = getImagesFolder(processFolder, folder);
         Path mediaResource = mediaFolder.resolve(filename);
-
-        long fileSize;
-        try {
-            fileSize = StorageProvider.getInstance().getFileSize(mediaResource);
-        } catch (IOException e) {
-            log.error(e);
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        String mimeType = detectMimeType(filename);
-
-        if (rangeHeader != null && rangeHeader.startsWith("bytes=")) {
-            return servePartialContent(mediaResource, rangeHeader, fileSize, mimeType);
-        }
 
         StreamingOutput entity = new StreamingOutput() {
             @Override
@@ -94,81 +78,7 @@ public class MediaResource {
                 }
             }
         };
-        return Response.ok(entity)
-                .header("Accept-Ranges", "bytes")
-                .header("Content-Length", fileSize)
-                .header("Content-Type", mimeType)
-                .build();
-    }
-
-    private Response servePartialContent(Path mediaResource, String rangeHeader, long fileSize, String mimeType) {
-        String rangeValue = rangeHeader.substring("bytes=".length());
-        String[] parts = rangeValue.split("-", 2);
-
-        long start;
-        long end;
-        try {
-            start = parts[0].isEmpty() ? fileSize - Long.parseLong(parts[1]) : Long.parseLong(parts[0]);
-            end = (parts.length < 2 || parts[1].isEmpty()) ? fileSize - 1 : Long.parseLong(parts[1]);
-        } catch (NumberFormatException e) {
-            return Response.status(416)
-                    .header("Content-Range", "bytes */" + fileSize)
-                    .build();
-        }
-
-        if (start < 0 || start >= fileSize || end >= fileSize || start > end) {
-            return Response.status(416)
-                    .header("Content-Range", "bytes */" + fileSize)
-                    .build();
-        }
-
-        long contentLength = end - start + 1;
-        final long rangeStart = start;
-        final long rangeEnd = end;
-
-        StreamingOutput entity = new StreamingOutput() {
-            @Override
-            public void write(OutputStream output) throws IOException, WebApplicationException {
-                try (InputStream in = StorageProvider.getInstance().newInputStream(mediaResource)) {
-                    in.skip(rangeStart);
-                    byte[] buffer = new byte[8192];
-                    long remaining = rangeEnd - rangeStart + 1;
-                    int read;
-                    while (remaining > 0 && (read = in.read(buffer, 0, (int) Math.min(buffer.length, remaining))) != -1) {
-                        output.write(buffer, 0, read);
-                        remaining -= read;
-                    }
-                }
-            }
-        };
-
-        return Response.status(206)
-                .entity(entity)
-                .header("Accept-Ranges", "bytes")
-                .header("Content-Range", "bytes " + rangeStart + "-" + rangeEnd + "/" + fileSize)
-                .header("Content-Length", contentLength)
-                .header("Content-Type", mimeType)
-                .build();
-    }
-
-    private String detectMimeType(String filename) {
-        String lower = filename.toLowerCase();
-        if (lower.endsWith(".mp4")) {
-            return "video/mp4";
-        } else if (lower.endsWith(".webm")) {
-            return "video/webm";
-        } else if (lower.endsWith(".ogv")) {
-            return "video/ogg";
-        } else if (lower.endsWith(".mp3")) {
-            return "audio/mpeg";
-        } else if (lower.endsWith(".ogg") || lower.endsWith(".oga")) {
-            return "audio/ogg";
-        } else if (lower.endsWith(".wav")) {
-            return "audio/wav";
-        } else if (lower.endsWith(".flac")) {
-            return "audio/flac";
-        }
-        return MediaType.APPLICATION_OCTET_STREAM;
+        return Response.ok(entity).build();
     }
 
     private Path getImagesFolder(Path processFolder, String folder) {
