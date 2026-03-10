@@ -1,176 +1,127 @@
 <ui:composition
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:o="http://omnifaces.org/ui"
-	xmlns:of="http://omnifaces.org/functions"
-	template="/uii/template/template.html"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:util="http://goobi.io/util"
-	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:p="http://primefaces.org/ui">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:p="http://primefaces.org/ui">
 
-	<ui:param
-		name="myPageTitle"
-		value="#{msgs.MassImport}" />
+    <ui:param
+        name="myPageTitle"
+        value="#{msgs.MassImport}" />
 
-	<ui:define name="breadcrumb">
-		<intranda:breadcrumb
-			id="id2"
-			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-			action="index"
-			navId="a0" />
-		<intranda:breadcrumb
-			id="templates"
-			label="#{msgs.prozessvorlagen}"
-			action="process_all"
-			navId="a1" />
-		<intranda:breadcrumb
-			id="mass2"
-			label="#{msgs.MassImport}"
-			action="process_import_2_mass" />
-		<intranda:breadcrumb
-			id="templateName"
-			label="#{MassImportForm.template.titel}"
-			action="process_import_2_mass"
-			noSeparator="#{true}" />
-	</ui:define>
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb
+            id="id2"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="templates"
+            label="#{msgs.prozessvorlagen}"
+            action="process_all"
+            navId="a1" />
+        <intranda:breadcrumb
+            id="mass2"
+            label="#{msgs.MassImport}"
+            action="process_import_2_mass" />
+        <intranda:breadcrumb
+            id="templateName"
+            label="#{MassImportForm.template.titel}"
+            action="process_import_2_mass"
+            noSeparator="#{true}" />
+    </ui:define>
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-		<h:form
-			enctype="multipart/form-data"
-			prependId="false"
-			id="myform">
+        <h:form
+            enctype="multipart/form-data"
+            prependId="false"
+            id="myform">
 
-			<!-- UGLY PROGRESSBAR PART -->
-			<h:panelGroup
-				style="display: none"
-				id="progressPanel">
-				<p:commandButton
-					value="Start"
-					onclick="PF('pbAjax').start();"
-					type="button"
-					widgetVar="startButton2"
-					id="progressbutton"
-					style="display: none;" />
-				<p:progressBar
-					id="primefacesprogressbar"
-					widgetVar="pbAjax"
-					ajax="true"
-					value="#{MassImportForm.progress}"
-					labelTemplate="{value}%"
-					styleClass="animated mb-3"
-					global="false">
-					<p:ajax
-						event="complete"
-						listener="#{MassImportForm.onComplete}" />
-				</p:progressBar>
+            <!-- UGLY PROGRESSBAR PART -->
+            <h:panelGroup
+                style="display: none"
+                id="progressPanel">
+                <p:commandButton
+                    value="Start"
+                    onclick="PF('pbAjax').start();"
+                    type="button"
+                    widgetVar="startButton2"
+                    id="progressbutton"
+                    style="display: none;" />
+                <p:progressBar
+                    id="primefacesprogressbar"
+                    widgetVar="pbAjax"
+                    ajax="true"
+                    value="#{MassImportForm.progress}"
+                    labelTemplate="{value}%"
+                    styleClass="animated mb-3"
+                    global="false">
+                    <p:ajax
+                        event="complete"
+                        listener="#{MassImportForm.onComplete}" />
+                </p:progressBar>
 
-			</h:panelGroup>
-			<script type="text/javascript">
-				function displayProgressBar() {
-					var element = document.getElementById('progressPanel');
-					if (element.style.display == 'block') {
-						element.style.display = 'none';
-					} else {
-						element.style.display = 'block';
-					}
-					document.getElementById('progressbutton').click();
-				}
+            </h:panelGroup>
+            <script type="text/javascript">
+													function displayProgressBar() {
+														var element = document
+																.getElementById('progressPanel');
+														if (element.style.display == 'block') {
+															element.style.display = 'none';
+														} else {
+															element.style.display = 'block';
+														}
+														document
+																.getElementById(
+																		'progressbutton')
+																.click();
+													}
 
-				function start() {
-					window['progress'] = setInterval(function() {
-						var pbClient = PF('pbClient'), oldValue = pbClient
-								.getValue(), newValue = oldValue + 10;
+													function start() {
+														window['progress'] = setInterval(
+																function() {
+																	var pbClient = PF('pbClient'), oldValue = pbClient
+																			.getValue(), newValue = oldValue + 10;
 
-						pbClient.setValue(pbClient.getValue() + 10);
+																	pbClient
+																			.setValue(pbClient
+																					.getValue() + 10);
 
-						if (newValue === 100) {
-							clearInterval(window['progress']);
+																	if (newValue === 100) {
+																		clearInterval(window['progress']);
 
-						}
-					}, 1000);
-				}
-			</script>
-			<!-- // UGLY PROGRESSBAR PART -->
+																	}
+																}, 1000);
+													}
+												</script>
+            <!-- // UGLY PROGRESSBAR PART -->
 
-			<div class="row">
-				<div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-12">
 
-					<intranda:box
-						boxType="action"
-						boxForm="true"
-						boxPadding="false"
-						icon="cloud-download"
-						title="#{msgs.MassImport}">
+                    <intranda:box
+                        boxType="action"
+                        boxForm="true"
+                        boxPadding="false"
+                        icon="cloud-download"
+                        title="#{msgs.MassImport}">
 
-                        <ui:include src="template/includes/process/processcreation_properties.xhtml" >
-                         <ui:param
-                                    name="properties"
-                                    value="#{MassImportForm.configuredProperties}" />
+                        <ui:include src="template/includes/process/processcreation_properties.xhtml">
+                            <ui:param
+                                name="properties"
+                                value="#{MassImportForm.configuredProperties}" />
 
                         </ui:include>
 
-						<ui:repeat
-							forceId="true"
-							var="property"
-							id="processProperties"
-							value="#{MassImportForm.properties}">
-
-							<h:panelGroup
-								rendered="#{property.type.name == 'text' or property.type.name == 'link' or property.type.name == 'integer' or property.type.name == 'number' or property.type.name == 'date'}">
-								<intranda:formInputText
-									id="property"
-									label="#{property.name}"
-									field="#{property.value}"
-									help="#{msgs.helpProperty}"
-									name="inputText"
-									required="#{property.required}" />
-							</h:panelGroup>
-
-							<h:panelGroup rendered="#{(property.type.name == 'list')}">
-								<intranda:formInputDropDown2
-									id="list"
-									label="#{property.name}"
-									field="#{property.value}"
-									help="#{msgs.helpProperty}"
-									name="selectMenu"
-									selectItems="#{property.possibleValues}"
-									required="#{property.required}"
-									itemLabel="#{var}"
-									itemValue="#{var}" />
-							</h:panelGroup>
-
-							<h:panelGroup
-								rendered="#{(property.type.name == 'listmultiselect')}">
-								<intranda:formInputSelectMany
-									id="selectMany"
-									label="#{property.name}"
-									field="#{property.valueList}"
-									help="#{msgs.helpProperty}"
-									name="selectManyMenu"
-									selectItems="#{property.possibleValues}"
-									required="#{property.required}"
-									var="step"
-									itemLabel="#{step}"
-									itemValue="#{step}" />
-							</h:panelGroup>
-
-							<h:panelGroup rendered="#{(property.type.name == 'boolean')}">
-								<intranda:formInputCheckBox
-									id="checkbox"
-									label="#{property.name}"
-									field="#{property.booleanValue}"
-									help="#{msgs.helpProperty}"
-									name="checkbox"
-									required="#{property.required}" />
-							</h:panelGroup>
-
-						</ui:repeat>
-
+                  
                         <h:panelGroup rendered="#{MassImportForm.plugin.title == 'Multiple Manifestation Millennium Import'}">
                             <ui:include src="plugins/import_multiManifestationMillenium.xhtml" />
                         </h:panelGroup>
@@ -185,42 +136,42 @@
 
 
                         <div class="form-actions">
-							<!-- Cancel -->
-							<button
-								jsf:id="link_blank"
-								class="btn btn-blank"
-								jsf:immediate="true"
-								jsf:action="process_all">
-								<h:outputText value="#{msgs.abbrechen}" />
-							</button>
+                            <!-- Cancel -->
+                            <button
+                                jsf:id="link_blank"
+                                class="btn btn-blank"
+                                jsf:immediate="true"
+                                jsf:action="process_all">
+                                <h:outputText value="#{msgs.abbrechen}" />
+                            </button>
 
-							<!-- Save -->
-							<button
-								class="btn btn-success"
-								jsf:id="absenden"
-								type="submit"
-								jsf:action="#{MassImportForm.convertData}"
-								onclick="goobiWorkflowJS.progress.displayProgressBar()">
-								<util:icon icon="device-floppy" />
-								<span>#{msgs.speichern}</span>
-							</button>
+                            <!-- Save -->
+                            <button
+                                class="btn btn-success"
+                                jsf:id="absenden"
+                                type="submit"
+                                jsf:action="#{MassImportForm.convertData}"
+                                onclick="goobiWorkflowJS.progress.displayProgressBar()">
+                                <util:icon icon="device-floppy" />
+                                <span>#{msgs.speichern}</span>
+                            </button>
 
-							<!-- Back -->
-							<button
-								class="btn btn-primary-400 trigger-delete"
-								jsf:id="next"
-								type="submit"
-								jsf:immediate="true"
-								jsf:action="process_import_1">
-								<util:icon icon="circle-arrow-left" />
-								<span>#{msgs.zurueck}</span>
-							</button>
+                            <!-- Back -->
+                            <button
+                                class="btn btn-primary-400 trigger-delete"
+                                jsf:id="next"
+                                type="submit"
+                                jsf:immediate="true"
+                                jsf:action="process_import_1">
+                                <util:icon icon="circle-arrow-left" />
+                                <span>#{msgs.zurueck}</span>
+                            </button>
 
-						</div>
-					</intranda:box>
-				</div>
-			</div>
-		</h:form>
-	</ui:define>
+                        </div>
+                    </intranda:box>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
 
 </ui:composition>
