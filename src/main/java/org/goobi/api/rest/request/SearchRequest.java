@@ -33,6 +33,7 @@ import org.goobi.api.db.RestDbHelper;
 import org.goobi.api.rest.model.RestProcess;
 import org.goobi.api.rest.utils.MetadataUtils;
 
+import de.sub.goobi.helper.enums.StepStatus;
 import lombok.Data;
 
 @Data
@@ -241,7 +242,7 @@ public class SearchRequest {
 
         if (this.stepName != null) {
             params.add(this.stepName);
-            params.add(this.stepStatus);
+            params.add(resolveStepStatusValue(this.stepStatus));
         }
         for (SearchGroup sg : metadataFilters) {
             if (sg.getFilters().get(0).getField() != null) {
@@ -326,6 +327,17 @@ public class SearchRequest {
         return paramsArr;
     }
 
+    private String resolveStepStatusValue(String input) {
+        if (input == null) {
+            return null;
+        }
+        StepStatus status = StepStatus.getStatusFromName(input);
+        if (status != null) {
+            return String.valueOf(status.getValue());
+        }
+        return input;
+    }
+
     private void addLegacyWhereParams(List<Object> params) {
         if (this.filterProjects != null) {
             for (String project : this.filterProjects) {
@@ -340,7 +352,7 @@ public class SearchRequest {
 
         if (this.stepName != null) {
             params.add(this.stepName);
-            params.add(this.stepStatus);
+            params.add(resolveStepStatusValue(this.stepStatus));
         }
 
         if (metadataFilters != null) {

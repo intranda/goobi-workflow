@@ -170,6 +170,37 @@ public class SearchRequestTest extends AbstractTest {
     }
 
     @Test
+    public void testStepStatusNameResolution() {
+        SearchRequest req = new SearchRequest();
+        req.setStepStatus("Scan", "DONE");
+
+        Object[] params = req.createSqlParams();
+        // stepName at index 0, resolved stepStatus at index 1
+        assertEquals("Scan", params[0]);
+        assertEquals("3", params[1]);
+    }
+
+    @Test
+    public void testStepStatusSearchStringResolution() {
+        SearchRequest req = new SearchRequest();
+        req.setStepStatus("Scan", "stepopen");
+
+        Object[] params = req.createSqlParams();
+        assertEquals("Scan", params[0]);
+        assertEquals("1", params[1]);
+    }
+
+    @Test
+    public void testStepStatusNumericPassthrough() {
+        SearchRequest req = new SearchRequest();
+        req.setStepStatus("Scan", "3");
+
+        Object[] params = req.createSqlParams();
+        assertEquals("Scan", params[0]);
+        assertEquals("3", params[1]);
+    }
+
+    @Test
     public void testGroupManagement() {
 
         SearchRequest req = new SearchRequest();

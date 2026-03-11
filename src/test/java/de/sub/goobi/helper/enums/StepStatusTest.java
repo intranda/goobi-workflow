@@ -26,6 +26,7 @@
 package de.sub.goobi.helper.enums;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -81,6 +82,47 @@ public class StepStatusTest extends AbstractTest {
         assertEquals("stepopen", StepStatus.OPEN.getSearchString());
         assertEquals("stepinwork", StepStatus.INWORK.getSearchString());
         assertEquals("stepdone", StepStatus.DONE.getSearchString());
+    }
 
+    @Test
+    public void testGetStatusFromNameByEnumName() {
+        assertEquals(StepStatus.DONE, StepStatus.getStatusFromName("done"));
+        assertEquals(StepStatus.DONE, StepStatus.getStatusFromName("DONE"));
+        assertEquals(StepStatus.OPEN, StepStatus.getStatusFromName("OPEN"));
+        assertEquals(StepStatus.OPEN, StepStatus.getStatusFromName("open"));
+        assertEquals(StepStatus.INWORK, StepStatus.getStatusFromName("InWork"));
+        assertEquals(StepStatus.LOCKED, StepStatus.getStatusFromName("locked"));
+        assertEquals(StepStatus.ERROR, StepStatus.getStatusFromName("error"));
+        assertEquals(StepStatus.DEACTIVATED, StepStatus.getStatusFromName("deactivated"));
+        assertEquals(StepStatus.INFLIGHT, StepStatus.getStatusFromName("inflight"));
+    }
+
+    @Test
+    public void testGetStatusFromNameBySearchString() {
+        assertEquals(StepStatus.DONE, StepStatus.getStatusFromName("stepdone"));
+        assertEquals(StepStatus.OPEN, StepStatus.getStatusFromName("stepopen"));
+        assertEquals(StepStatus.INWORK, StepStatus.getStatusFromName("stepinwork"));
+        assertEquals(StepStatus.LOCKED, StepStatus.getStatusFromName("steplocked"));
+        assertEquals(StepStatus.ERROR, StepStatus.getStatusFromName("steperror"));
+        assertEquals(StepStatus.DONE, StepStatus.getStatusFromName("StepDone"));
+    }
+
+    @Test
+    public void testGetStatusFromNameByNumericString() {
+        assertEquals(StepStatus.LOCKED, StepStatus.getStatusFromName("0"));
+        assertEquals(StepStatus.OPEN, StepStatus.getStatusFromName("1"));
+        assertEquals(StepStatus.INWORK, StepStatus.getStatusFromName("2"));
+        assertEquals(StepStatus.DONE, StepStatus.getStatusFromName("3"));
+        assertEquals(StepStatus.ERROR, StepStatus.getStatusFromName("4"));
+        assertEquals(StepStatus.DEACTIVATED, StepStatus.getStatusFromName("5"));
+        assertEquals(StepStatus.INFLIGHT, StepStatus.getStatusFromName("6"));
+    }
+
+    @Test
+    public void testGetStatusFromNameInvalidInput() {
+        assertNull(StepStatus.getStatusFromName("invalid"));
+        assertNull(StepStatus.getStatusFromName("999"));
+        assertNull(StepStatus.getStatusFromName(null));
+        assertNull(StepStatus.getStatusFromName(""));
     }
 }
