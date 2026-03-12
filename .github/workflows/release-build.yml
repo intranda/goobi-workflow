@@ -30,26 +30,6 @@ jobs:
         run: mvn clean verify -U -P release-build
       - name: Rename WAR
         run: mv target/*.war target/goobi.war
-      - name: Create Docker workflow archive
-        run: |
-           set -e
-           
-           WORKDIR=/tmp/workflow
-           TAG=${{ github.ref_name }}
-           
-           mkdir -p ${WORKDIR}/goobi/{config,plugins/{administration,command,dashboard,export,generic,GUI,import,opac,statistics,step,theme,validation,workflow}} \
-                    ${WORKDIR}/tomcat \
-                    ${WORKDIR}/db/mysql
-           
-           cp -r ./install/config/* ${WORKDIR}/goobi/config
-           mv ${WORKDIR}/goobi/config/goobi_config.properties \
-              ${WORKDIR}/goobi/config/goobi_config.user.properties
-                      
-           cp docker-compose.yml ${WORKDIR}/
-           sed -i "s/goobi-workflow:latest/goobi-workflow:${TAG}/g" \
-             ${WORKDIR}/docker-compose.yml
-           
-           tar -czvf goobi-workflow-docker.tar.gz -C ${WORKDIR} .
       - name: Release
         id: create_release
         uses: softprops/action-gh-release@v2
@@ -59,6 +39,5 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            goobi-workflow-docker.tar.gz
             **/target/*.war
             install/*
