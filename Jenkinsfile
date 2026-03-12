@@ -62,7 +62,9 @@ pipeline {
         }
         stage('plugins') {
           steps {
-            sh 'git submodule update --init -- plugins/'
+            withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
+              sh 'git submodule update --init -- plugins/'
+            }
             script {
               if (env.TAG_NAME || env.BRANCH_NAME == 'master') {
                 // Update workflow-base parent version from dev-SNAPSHOT to the actual build version
@@ -207,7 +209,9 @@ pipeline {
           steps {
             unstash 'm2-goobi'
             sh 'mkdir -p /var/maven/.m2/repository/io/goobi/workflow && cp -r m2-goobi/. /var/maven/.m2/repository/io/goobi/workflow/'
-            sh 'git submodule update --init -- plugins/'
+            withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
+              sh 'git submodule update --init -- plugins/'
+            }
             unstash 'build-output'
             script {
               if (env.TAG_NAME || env.BRANCH_NAME == 'master') {
@@ -287,7 +291,9 @@ pipeline {
         sh 'mvn deploy -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U --no-transfer-progress'
         script {
           if (env.TAG_NAME || env.BRANCH_NAME == 'master') {
-            sh 'git submodule update --init -- plugins/'
+            withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
+              sh 'git submodule update --init -- plugins/'
+            }
             sh "sed -i '/<parent>/,/<\\/parent>/s|<version>dev-SNAPSHOT</version>|<version>'\$BUILD_VERSION'</version>|' plugins/goobi-plugin-*/pom.xml"
             sh '''#!/bin/bash -xe
                 for plugin_dir in plugins/goobi-plugin-*/; do
@@ -397,9 +403,9 @@ pipeline {
         branch 'v*'
       }
       steps {
-        sh 'git submodule update --init -- plugins/'
         withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314',
                  gitToolName: 'git-tool')]) {
+          sh 'git submodule update --init -- plugins/'
           sh '''#!/bin/bash -xe
               VERSION="${BUILD_VERSION}"
               TAG="v${VERSION}"
