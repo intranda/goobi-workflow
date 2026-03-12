@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset comparisonMethod="maven"
+	 xmlns="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0 http://www.mojohaus.org/versions-maven-plugin/xsd/rule-2.0.0.xsd">
+
+	<ignoreVersions>
+		<ignoreVersion type="regex">.*[-_\.](alpha|Alpha|ALPHA|beta|Beta|BETA|rc|RC|M|EA)[-_\.]?[0-9]?.*</ignoreVersion>
+	</ignoreVersions>
+    <rules>
+        <!-- updating to 2.4.0 currently breaks the file upload - leave at 2.3.8 for now -->
+        <rule groupId="org.glassfish" artifactId="javax.faces" comparisonMethod="maven">
+            <ignoreVersions>
+                <ignoreVersion>2.4.0</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+
+        <!-- updating breaks compiling -->
+        <rule groupId="avalon-framework" artifactId="avalon-framework-api" comparisonMethod="maven">
+            <ignoreVersions>
+                <ignoreVersion>4.3</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+        <rule groupId="opensymphony" artifactId="oscache" comparisonMethod="maven">
+            <ignoreVersions>
+                <ignoreVersion>2.4.1</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+
+        <!-- This is Jakarta EE 11, Tomcat 11 ...-->
+        <rule groupId="jakarta.servlet" artifactId="jakarta.servlet-api">
+            <ignoreVersions>
+                <ignoreVersion>6.1.0</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+        <rule groupId="org.jboss.weld.servlet" artifactId="weld-servlet-shaded">
+            <ignoreVersions>
+                <ignoreVersion type="regex">6.*</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+        <rule groupId="jakarta.ws.rs" artifactId="jakarta.ws.rs-api">
+            <ignoreVersions>
+                <ignoreVersion type="regex">4.*</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+        <rule groupId="jakarta.enterprise" artifactId="jakarta.enterprise.cdi-api">
+            <ignoreVersions>
+                <ignoreVersion>4.1.0</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+
+    </rules>
+</ruleset>

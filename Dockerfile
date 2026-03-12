@@ -8,7 +8,7 @@ WORKDIR /workflow
 RUN echo $build; if [ "$build" = "true" ]; then mvn clean package; elif [ -f "/workflow/target/workflow-core.war" ]; then echo "using existing workflow-core.war"; else echo "not supposed to build, but no workflow-core.war found either"; exit 1; fi
 
 # Build actual application container
-FROM tomcat:10-jre21 AS assemble
+FROM tomcat:10-jre21 AS slim
 LABEL maintainer="Matthias Geerdsen <matthias.geerdsen@intranda.com>"
 
 ##### SYSTEM PACKAGE INSTALLATION AND UPDATES
@@ -45,66 +45,6 @@ RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metad
 RUN ["/bin/bash","-c", "mkdir -p /workflow-template/default-plugins/{config,lib,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
 RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ /usr/local/tomcat/webapps/workflow
 
-# To change the plugin version when rebuilding older dockerfiles, use --build-arg plugin_version="tag/<release-version>" because github urls work like that
-ARG plugin_version="latest"
-
-# Install default plugins
-RUN set -eu; \
-    \
-    # OPAC plugins \
-    for plugin in pica marc; do \
-      curl -fL \
-        "https://github.com/intranda/goobi-plugin-opac-${plugin}/releases/$plugin_version/download/plugin-opac-${plugin}-base.jar" \
-        -o "/workflow-template/default-plugins/plugins/opac/plugin-opac-${plugin}-base.jar"; \
-    done; \
-    \
-    # Step plugins: GUI + base JARs \
-    for plugin in file-upload imageqa; do \
-      curl -fL \
-        "https://github.com/intranda/goobi-plugin-step-${plugin}/releases/$plugin_version/download/plugin-step-${plugin}-gui.jar" \
-        -o "/workflow-template/default-plugins/plugins/GUI/plugin-step-${plugin}-gui.jar"; \
-      curl -fL \
-        "https://github.com/intranda/goobi-plugin-step-${plugin}/releases/$plugin_version/download/plugin-step-${plugin}-base.jar" \
-        -o "/workflow-template/default-plugins/plugins/step/plugin-step-${plugin}-base.jar"; \
-    done; \
-    \
-    # Step plugin configs \
-    curl -fL \
-      https://github.com/intranda/goobi-plugin-step-file-upload/releases/$plugin_version/download/plugin_intranda_step_fileUpload.xml \
-      -o /workflow-template/default-plugins/config/plugin_intranda_step_fileUpload.xml; \
-    curl -fL \
-      https://github.com/intranda/goobi-plugin-step-imageqa/releases/$plugin_version/download/plugin_intranda_step_imageQA.xml \
-      -o /workflow-template/default-plugins/config/plugin_intranda_step_imageQA.xml; \
-    \
-    # Dashboard: Extended \
-    base=https://github.com/intranda/goobi-plugin-dashboard-extended/releases/$plugin_version/download; \
-    curl -fL "$base/plugin-dashboard-extended-gui.jar" \
-      -o /workflow-template/default-plugins/plugins/GUI/plugin-dashboard-extended-gui.jar; \
-    curl -fL "$base/plugin-dashboard-extended-base.jar" \
-      -o /workflow-template/default-plugins/plugins/dashboard/plugin-dashboard-extended-base.jar; \
-    curl -fL "$base/plugin-dashboard-extended-api.jar" \
-      -o /workflow-template/default-plugins/lib/plugin-dashboard-extended-api.jar; \
-    curl -fL "$base/plugin-dashboard-extended-lib.jar" \
-      -o /workflow-template/default-plugins/lib/plugin-dashboard-extended-lib.jar; \
-    curl -fL "$base/plugin_intranda_dashboard_extended.xml" \
-      -o /workflow-template/default-plugins/config/plugin_intranda_dashboard_extended.xml; \
-    \
-    # REST: intranda REST \
-    curl -fL \
-      https://github.com/intranda/goobi-plugin-rest-intranda/releases/$plugin_version/download/plugin-rest-intranda-api.jar \
-      -o /workflow-template/default-plugins/lib/plugin-rest-intranda-api.jar; \
-    \
-    # Controlling: intranda statistics \
-    base=https://github.com/intranda/goobi-plugin-statistics-intranda/releases/$plugin_version/download; \
-    for file in \
-      plugin-statistics-intranda-gui.jar \
-      plugin-statistics-intranda-base.jar \
-      statistics_template.pdf \
-      statistics_template.xlsx; \
-    do \
-      curl -fL "$base/$file" \
-        -o "/workflow-template/default-plugins/plugins/statistics/$file"; \
-    done
 
 # Prepare template configuration for Goobi workflow
 ENV CONFIGSOURCE=folder
@@ -136,3 +76,7 @@ COPY install/docker/run.sh /run.sh
 
 EXPOSE 8080
 CMD ["/run.sh"]
+
+# Full image: slim + default plugins pre-installed
+FROM slim AS full
+COPY target/default-plugins/ /workflow-template/default-plugins/
