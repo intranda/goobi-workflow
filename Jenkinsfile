@@ -56,7 +56,7 @@ pipeline {
         stage('core') {
           steps {
             // install so the JAR lands in .m2 for plugins
-            sh 'mvn clean install -U -Drevision=$BUILD_VERSION -DskipTests -Dcheckstyle.skip=true -Djacoco.skip=true --no-transfer-progress'
+            sh "mvn clean install -U -Drevision=\$BUILD_VERSION -DskipTests -Dcheckstyle.skip=true -Djacoco.skip=true -P '!local-development' --no-transfer-progress"
             archiveArtifacts artifacts: 'target/*.war, target/*.jar, install/db/goobi.sql', fingerprint: true, onlyIfSuccessful: true
           }
         }
@@ -72,7 +72,7 @@ pipeline {
               }
             }
             // Plugin poms use ${revision} placeholder for their own version, default is dev-SNAPSHOT.
-            sh 'mvn -f plugins/pom.xml clean install -U -T 1C -DskipTests -Dcheckstyle.skip=true -Djacoco.skip=true -Drevision=$BUILD_VERSION --no-transfer-progress'
+            sh "mvn -f plugins/pom.xml clean install -U -T 1C -DskipTests -Dcheckstyle.skip=true -Djacoco.skip=true -Drevision=\$BUILD_VERSION -P '!local-development' --no-transfer-progress"
             // Collect default plugin JARs into a staging dir for the Docker image (release only)
             script {
               if (env.TAG_NAME || env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop' || env.BRANCH_NAME?.endsWith('_docker')) {
@@ -185,9 +185,11 @@ pipeline {
             stage('checkstyle') {
               steps {
                 sh 'mvn checkstyle:checkstyle -Drevision=$BUILD_VERSION -Dcheckstyle.skip=false --no-transfer-progress'
+                archiveArtifacts artifacts: 'target/checkstyle-result.xml', allowEmptyArchive: true
                 script {
                   def strict = env.TAG_NAME != null || env.BRANCH_NAME == 'master'
                   recordIssues(
+                    id: 'checkstyle-core',
                     enabledForFailure: true,
                     aggregatingResults: false,
                     tools: [checkStyle(pattern: 'target/checkstyle-result.xml', reportEncoding: 'UTF-8')],
@@ -206,30 +208,50 @@ pipeline {
               args mavenDockerArgs
             }
           }
-          steps {
-            unstash 'm2-goobi'
-            sh 'mkdir -p /var/maven/.m2/repository/io/goobi/workflow && cp -r m2-goobi/. /var/maven/.m2/repository/io/goobi/workflow/'
-            withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
-              sh 'git submodule update --init -- plugins/'
-            }
-            unstash 'build-output'
-            script {
-              if (env.TAG_NAME || env.BRANCH_NAME == 'master') {
-                sh "sed -i '/<parent>/,/<\\/parent>/s|<version>dev-SNAPSHOT</version>|<version>'\$BUILD_VERSION'</version>|' plugins/goobi-plugin-*/pom.xml"
+          stages {
+            stage('test') {
+              steps {
+                unstash 'm2-goobi'
+                sh 'mkdir -p /var/maven/.m2/repository/io/goobi/workflow && cp -r m2-goobi/. /var/maven/.m2/repository/io/goobi/workflow/'
+                withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
+                  sh 'git submodule update --init -- plugins/'
+                }
+                unstash 'build-output'
+                script {
+                  if (env.TAG_NAME || env.BRANCH_NAME == 'master') {
+                    sh "sed -i '/<parent>/,/<\\/parent>/s|<version>dev-SNAPSHOT</version>|<version>'\$BUILD_VERSION'</version>|' plugins/goobi-plugin-*/pom.xml"
+                  }
+                }
+                script {
+                  def strict = env.TAG_NAME != null || env.BRANCH_NAME == 'master'
+                  def cmd = "mvn -f plugins/pom.xml test -T 1C -Dmaven.main.skip=true -Drevision=\$BUILD_VERSION -P '!local-development' --no-transfer-progress"
+                  if (strict) {
+                    sh cmd
+                  } else {
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                      sh cmd
+                    }
+                  }
+                }
+                junit 'plugins/**/target/surefire-reports/*.xml'
               }
             }
-            script {
-              def strict = env.TAG_NAME != null || env.BRANCH_NAME == 'master'
-              def cmd = "mvn -f plugins/pom.xml test -T 1C -Dmaven.main.skip=true -Drevision=\$BUILD_VERSION -P '!local-development' --no-transfer-progress"
-              if (strict) {
-                sh cmd
-              } else {
-                catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                  sh cmd
+            stage('checkstyle') {
+              steps {
+                sh "mvn -f plugins/pom.xml checkstyle:checkstyle -T 1C -Drevision=\$BUILD_VERSION -Dcheckstyle.skip=false -Dmaven.main.skip=true --no-transfer-progress"
+                archiveArtifacts artifacts: 'plugins/**/target/checkstyle-result.xml', allowEmptyArchive: true
+                script {
+                  def strict = env.TAG_NAME != null || env.BRANCH_NAME == 'master'
+                  recordIssues(
+                    id: 'checkstyle-plugins',
+                    enabledForFailure: true,
+                    aggregatingResults: false,
+                    tools: [checkStyle(pattern: 'plugins/**/target/checkstyle-result.xml', reportEncoding: 'UTF-8')],
+                    qualityGates: [[threshold: 1, type: 'TOTAL', unstable: !strict]]
+                  )
                 }
               }
             }
-            junit 'plugins/**/target/surefire-reports/*.xml'
           }
         }
 
@@ -352,15 +374,19 @@ pipeline {
             docker buildx inspect --bootstrap
 
             TAGS=""
+            SLIM_TAGS=""
             if [ -n "$TAG_NAME" ]; then
               TAGS="-t $GHCR_IMAGE_BASE:$TAG_NAME -t $DOCKERHUB_IMAGE_BASE:$TAG_NAME -t $NEXUS_IMAGE_BASE:$TAG_NAME"
+              SLIM_TAGS="-t $GHCR_IMAGE_BASE:$TAG_NAME-slim -t $DOCKERHUB_IMAGE_BASE:$TAG_NAME-slim -t $NEXUS_IMAGE_BASE:$TAG_NAME-slim"
             elif [ "$GIT_BRANCH" = "origin/master" ] || [ "$GIT_BRANCH" = "master" ]; then
               TAGS="-t $GHCR_IMAGE_BASE:latest -t $DOCKERHUB_IMAGE_BASE:latest -t $NEXUS_IMAGE_BASE:latest"
+              SLIM_TAGS="-t $GHCR_IMAGE_BASE:latest-slim -t $DOCKERHUB_IMAGE_BASE:latest-slim -t $NEXUS_IMAGE_BASE:latest-slim"
             elif [ "$GIT_BRANCH" = "origin/develop" ] || [ "$GIT_BRANCH" = "develop" ]; then
               TAGS="-t $GHCR_IMAGE_BASE:dev -t $DOCKERHUB_IMAGE_BASE:dev -t $NEXUS_IMAGE_BASE:dev"
+              SLIM_TAGS="-t $GHCR_IMAGE_BASE:dev-slim -t $DOCKERHUB_IMAGE_BASE:dev-slim -t $NEXUS_IMAGE_BASE:dev-slim"
             elif echo "$GIT_BRANCH" | grep -q "_docker$"; then
-              TAG_SUFFIX=$(echo "$GIT_BRANCH" | sed 's/_docker$//' | sed 's|/|_|g')
-              TAGS="-t $GHCR_IMAGE_BASE:$TAG_SUFFIX -t $DOCKERHUB_IMAGE_BASE:$TAG_SUFFIX -t $NEXUS_IMAGE_BASE:$TAG_SUFFIX"
+              TAGS="-t $NEXUS_IMAGE_BASE:docker-dev"
+              SLIM_TAGS="-t $NEXUS_IMAGE_BASE:docker-dev-slim"
             fi
 
             if [ -z "$TAGS" ]; then
@@ -369,8 +395,6 @@ pipeline {
             fi
 
             mkdir -p target/default-plugins
-
-            SLIM_TAGS=$(echo "$TAGS" | sed -E 's|-t ([^ ]*)|-t \1-slim|g')
 
             docker buildx build --build-arg build=false \
               --platform linux/amd64,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x \
