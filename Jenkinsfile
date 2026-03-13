@@ -199,6 +199,7 @@ pipeline {
             docker {
               image mavenDockerImage
               args mavenDockerArgs
+              reuseNode true
             }
           }
           stages {
