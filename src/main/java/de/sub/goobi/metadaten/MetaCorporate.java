@@ -137,11 +137,10 @@ public class MetaCorporate implements SearchableMetadata {
             return "";
         }
         if (StringUtils.isBlank(searchOption)) {
-            val = "dnb.nid=" + searchValue;
+            val = "dnb.nid=" + searchValue.replace(".", "");
         } else {
-            val = searchValue + " and BBG=" + searchOption;
+            val = searchValue.replace(".", "") + " and BBG=" + searchOption;
         }
-        val = val.replace(".", "");
         if (ConfigurationHelper.getInstance().isUseProxy()) {
             dataList =
                     NormDataImporter.getGndRecords("http://services.dnb.de/sru/authorities", val, ConfigurationHelper.getInstance().getProxyUrl(),
