@@ -2,7 +2,7 @@ def mavenDockerImage = 'maven:3-eclipse-temurin-21'
 def mavenDockerArgs = '-v $HOME/.m2:/var/maven/.m2:z -v $HOME/.config:/var/maven/.config -v $HOME/.sonar:/var/maven/.sonar -u 1000 -e _JAVA_OPTIONS=-Duser.home=/var/maven -e MAVEN_CONFIG=/var/maven/.m2'
 
 pipeline {
-  agent none
+  agent any
 
   options {
     buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '15', daysToKeepStr: '90', numToKeepStr: '')
@@ -24,7 +24,11 @@ pipeline {
     stage('setup') {
       agent any
       steps {
+        sh 'git submodule deinit -f -- plugins/ 2>/dev/null || true'
         sh 'git reset --hard HEAD && git clean -fdx'
+        withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
+          sh 'git submodule update --init -- plugins/'
+        }
         script {
           if (env.TAG_NAME) {
             env.BUILD_VERSION = env.TAG_NAME.replaceAll('^v', '')
@@ -45,6 +49,7 @@ pipeline {
         docker {
           image mavenDockerImage
           args mavenDockerArgs
+          reuseNode true
         }
       }
       stages {
@@ -62,9 +67,6 @@ pipeline {
         }
         stage('plugins') {
           steps {
-            withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
-              sh 'git submodule update --init -- plugins/'
-            }
             script {
               if (env.TAG_NAME || env.BRANCH_NAME == 'master') {
                 // Update workflow-base parent version from dev-SNAPSHOT to the actual build version
@@ -81,44 +83,35 @@ pipeline {
                              target/default-plugins/lib \
                              target/default-plugins/config
 
-                    for plugin in pica marc; do
-                      find "plugins/goobi-plugin-opac-${plugin}" -name "plugin-opac-${plugin}-base.jar" \
-                        -not -path "*sources*" | head -1 \
-                        | xargs -I{} cp {} "target/default-plugins/plugins/opac/plugin-opac-${plugin}-base.jar" || true
-                    done
+                    # opac
+                    cp plugins/goobi-plugin-opac-pica/module-base/target/plugin-opac-pica-base.jar target/default-plugins/plugins/opac/
+                    cp plugins/goobi-plugin-opac-marc/module-base/target/plugin-opac-marc-base.jar target/default-plugins/plugins/opac/
 
-                    for plugin in file-upload imageqa; do
-                      find "plugins/goobi-plugin-step-${plugin}" -name "plugin-step-${plugin}-gui.jar" \
-                        -not -path "*sources*" | head -1 \
-                        | xargs -I{} cp {} "target/default-plugins/plugins/GUI/plugin-step-${plugin}-gui.jar" || true
-                      find "plugins/goobi-plugin-step-${plugin}" -name "plugin-step-${plugin}-base.jar" \
-                        -not -path "*sources*" | head -1 \
-                        | xargs -I{} cp {} "target/default-plugins/plugins/step/plugin-step-${plugin}-base.jar" || true
-                    done
+                    # step: file-upload
+                    cp plugins/goobi-plugin-step-file-upload/module-base/target/plugin-step-file-upload-base.jar target/default-plugins/plugins/step/
+                    cp plugins/goobi-plugin-step-file-upload/module-gui/target/plugin-step-file-upload-gui.jar   target/default-plugins/plugins/GUI/
+                    cp plugins/goobi-plugin-step-file-upload/install/plugin_intranda_step_fileUpload.xml         target/default-plugins/config/
 
-                    find plugins/goobi-plugin-step-file-upload -name "plugin_intranda_step_fileUpload.xml" \
-                      | head -1 | xargs -I{} cp {} target/default-plugins/config/plugin_intranda_step_fileUpload.xml || true
-                    find plugins/goobi-plugin-step-imageqa -name "plugin_intranda_step_imageQA.xml" \
-                      | head -1 | xargs -I{} cp {} target/default-plugins/config/plugin_intranda_step_imageQA.xml || true
+                    # step: imageqa
+                    cp plugins/goobi-plugin-step-imageqa/module-base/target/plugin-step-imageqa-base.jar target/default-plugins/plugins/step/
+                    cp plugins/goobi-plugin-step-imageqa/module-gui/target/plugin-step-imageqa-gui.jar   target/default-plugins/plugins/GUI/
+                    cp plugins/goobi-plugin-step-imageqa/install/plugin_intranda_step_imageQA.xml        target/default-plugins/config/
 
-                    for artifact in gui base api lib; do
-                      find plugins/goobi-plugin-dashboard-extended -name "plugin-dashboard-extended-${artifact}.jar" \
-                        -not -path "*sources*" | head -1 \
-                        | xargs -I{} cp {} "target/default-plugins/plugins/$([ "$artifact" = "gui" ] && echo GUI || [ "$artifact" = "base" ] && echo dashboard || echo lib)/plugin-dashboard-extended-${artifact}.jar" || true
-                    done
-                    find plugins/goobi-plugin-dashboard-extended -name "plugin_intranda_dashboard_extended.xml" \
-                      | head -1 | xargs -I{} cp {} target/default-plugins/config/plugin_intranda_dashboard_extended.xml || true
+                    # dashboard-extended
+                    cp plugins/goobi-plugin-dashboard-extended/module-gui/target/plugin-dashboard-extended-gui.jar   target/default-plugins/plugins/GUI/
+                    cp plugins/goobi-plugin-dashboard-extended/module-base/target/plugin-dashboard-extended-base.jar target/default-plugins/plugins/dashboard/
+                    cp plugins/goobi-plugin-dashboard-extended/module-api/target/plugin-dashboard-extended-api.jar   target/default-plugins/lib/
+                    cp plugins/goobi-plugin-dashboard-extended/module-lib/target/plugin-dashboard-extended-lib.jar   target/default-plugins/lib/
+                    cp plugins/goobi-plugin-dashboard-extended/install/plugin_intranda_dashboard_extended.xml        target/default-plugins/config/
 
-                    find plugins/goobi-plugin-rest-intranda -name "plugin-rest-intranda-api.jar" \
-                      -not -path "*sources*" | head -1 \
-                      | xargs -I{} cp {} target/default-plugins/lib/plugin-rest-intranda-api.jar || true
+                    # rest-intranda
+                    cp plugins/goobi-plugin-rest-intranda/module-api/target/plugin-rest-intranda-api.jar target/default-plugins/lib/
 
-                    for file in plugin-statistics-intranda-gui.jar plugin-statistics-intranda-base.jar \
-                                statistics_template.pdf statistics_template.xlsx; do
-                      find plugins/goobi-plugin-statistics-intranda -name "${file}" \
-                        -not -path "*sources*" | head -1 \
-                        | xargs -I{} cp {} "target/default-plugins/plugins/statistics/${file}" || true
-                    done
+                    # statistics-intranda
+                    cp plugins/goobi-plugin-statistics-intranda/module-gui/target/plugin-statistics-intranda-gui.jar   target/default-plugins/plugins/GUI/
+                    cp plugins/goobi-plugin-statistics-intranda/module-base/target/plugin-statistics-intranda-base.jar target/default-plugins/plugins/statistics/
+                    cp plugins/goobi-plugin-statistics-intranda/install/statistics_template.pdf                        target/default-plugins/plugins/statistics/
+                    cp plugins/goobi-plugin-statistics-intranda/install/statistics_template.xlsx                       target/default-plugins/plugins/statistics/
                 '''
                 stash includes: 'target/default-plugins/**', name: 'default-plugins'
               }
@@ -187,7 +180,7 @@ pipeline {
                 sh 'mvn checkstyle:checkstyle -Drevision=$BUILD_VERSION -Dcheckstyle.skip=false --no-transfer-progress'
                 archiveArtifacts artifacts: 'target/checkstyle-result.xml', allowEmptyArchive: true
                 script {
-                  def strict = env.TAG_NAME != null || env.BRANCH_NAME == 'master'
+                  def strict = (env.TAG_NAME != null || env.BRANCH_NAME == 'master') && !${NO_STRICT_CHECKSTYLE}
                   recordIssues(
                     id: 'checkstyle-core',
                     enabledForFailure: true,
@@ -213,9 +206,6 @@ pipeline {
               steps {
                 unstash 'm2-goobi'
                 sh 'mkdir -p /var/maven/.m2/repository/io/goobi/workflow && cp -r m2-goobi/. /var/maven/.m2/repository/io/goobi/workflow/'
-                withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
-                  sh 'git submodule update --init -- plugins/'
-                }
                 unstash 'build-output'
                 script {
                   if (env.TAG_NAME || env.BRANCH_NAME == 'master') {
@@ -241,7 +231,7 @@ pipeline {
                 sh "mvn -f plugins/pom.xml checkstyle:checkstyle -T 1C -Drevision=\$BUILD_VERSION -Dcheckstyle.skip=false -Dmaven.main.skip=true --no-transfer-progress"
                 archiveArtifacts artifacts: 'plugins/**/target/checkstyle-result.xml', allowEmptyArchive: true
                 script {
-                  def strict = env.TAG_NAME != null || env.BRANCH_NAME == 'master'
+                  def strict = (env.TAG_NAME != null || env.BRANCH_NAME == 'master') && !${NO_STRICT_CHECKSTYLE}
                   recordIssues(
                     id: 'checkstyle-plugins',
                     enabledForFailure: true,
@@ -266,6 +256,7 @@ pipeline {
         docker {
           image mavenDockerImage
           args mavenDockerArgs
+          reuseNode true
         }
       }
       when {
@@ -296,6 +287,7 @@ pipeline {
         docker {
           image mavenDockerImage
           args mavenDockerArgs
+          reuseNode true
         }
       }
       when {
@@ -313,9 +305,6 @@ pipeline {
         sh 'mvn deploy -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U --no-transfer-progress'
         script {
           if (env.TAG_NAME || env.BRANCH_NAME == 'master') {
-            withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
-              sh 'git submodule update --init -- plugins/'
-            }
             sh "sed -i '/<parent>/,/<\\/parent>/s|<version>dev-SNAPSHOT</version>|<version>'\$BUILD_VERSION'</version>|' plugins/goobi-plugin-*/pom.xml"
             sh '''#!/bin/bash -xe
                 for plugin_dir in plugins/goobi-plugin-*/; do
@@ -394,17 +383,27 @@ pipeline {
               exit 0
             fi
 
+            if [ -n "$TAG_NAME" ] || [ "$GIT_BRANCH" = "origin/master" ] || [ "$GIT_BRANCH" = "master" ]; then
+              PLATFORMS="linux/amd64,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x"
+            else
+              PLATFORMS="linux/amd64,linux/arm64/v8"
+            fi
+
+            CACHE="--cache-from type=registry,ref=$NEXUS_IMAGE_BASE:buildcache --cache-to type=registry,ref=$NEXUS_IMAGE_BASE:buildcache,mode=max"
+
             mkdir -p target/default-plugins
 
             docker buildx build --build-arg build=false \
-              --platform linux/amd64,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x \
+              --platform $PLATFORMS \
               --target slim \
+              $CACHE \
               $SLIM_TAGS \
               --push .
 
             docker buildx build --build-arg build=false \
-              --platform linux/amd64,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x \
+              --platform $PLATFORMS \
               --target full \
+              $CACHE \
               $TAGS \
               --push .
           '''
@@ -420,6 +419,7 @@ pipeline {
         docker {
           image mavenDockerImage
           args mavenDockerArgs
+          reuseNode true
         }
       }
       when {
@@ -429,7 +429,6 @@ pipeline {
       steps {
         withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314',
                  gitToolName: 'git-tool')]) {
-          sh 'git submodule update --init -- plugins/'
           sh '''#!/bin/bash -xe
               VERSION="${BUILD_VERSION}"
               TAG="v${VERSION}"
