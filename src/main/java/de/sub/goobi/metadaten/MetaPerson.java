@@ -285,11 +285,10 @@ public class MetaPerson implements SearchableMetadata {
         } else { // default is GND
             String val = "";
             if (StringUtils.isBlank(searchOption)) {
-                val = "dnb.nid=" + searchValue;
+                val = "dnb.nid=" + searchValue.replace(".", "");
             } else {
-                val = searchValue + " and BBG=" + searchOption;
+                val = searchValue.replace(".", "") + " and BBG=" + searchOption;
             }
-            val = val.replace(".", "");
             if (ConfigurationHelper.getInstance().isUseProxy()) {
                 dataList =
                         NormDataImporter.getGndRecords("http://services.dnb.de/sru/authorities", val,

@@ -696,11 +696,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     return "";
                 }
                 if (StringUtils.isBlank(searchOption)) {
-                    val = "dnb.nid=" + searchValue;
+                    val = "dnb.nid=" + searchValue.replace(".", "");
                 } else {
-                    val = searchValue + " and BBG=" + searchOption;
+                    val = searchValue.replace(".", "") + " and BBG=" + searchOption;
                 }
-                val = val.replace(".", "");
                 if (ConfigurationHelper.getInstance().isUseProxy()) {
                     dataList =
                             NormDataImporter.getGndRecords("http://services.dnb.de/sru/authorities", val,
@@ -912,6 +911,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         if (xmlConf == null) {
             return;
         }
+
         HierarchicalConfiguration use = getConfigForProject(p, xmlConf);
         Map<String, List<RestMetadata>> addMetadata = new HashMap<>();
         if (use != null) {
@@ -938,6 +938,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         String[] split = name.split("/");
                         String group = split[0];
                         String metaName = split[1];
+                        // TODO re-use existing grp
                         MetadataGroupType mgt = prefs.getMetadataGroupTypeByName(group);
                         MetadataGroup addGroup = null;
                         addGroup = new MetadataGroup(mgt);
