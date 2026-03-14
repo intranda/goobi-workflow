@@ -82,10 +82,10 @@ docker-compose build
 ### Further Configuration
 
 The image provided here contains an example configuration. To allow the local editing of configuration files you can bind mount the Goobi configuration directory `/opt/digiverso/goobi/config` to a local directory containing the configuration files, see the comments in `docker-compose.yml`.
-The image currently does not contain any Goobi plugins. You can bind mount the plugins directory (`/opt/digiverso/goobi/plugins`) to a local directory containing compiled [Goobi plugins](https://docs.intranda.com/goobi-workflow-plugins-en/).
+The image currently does not contain any Goobi plugins. You can bind mount the plugins directory (`/opt/digiverso/goobi/plugins`) to a local directory containing compiled [Goobi plugins](https://docs.goobi.io/en/workflow/plugins).
 
 ### Information and Feedback
 
 - Goobi Website: https://goobi.io
 - Goobi Community: https://community.goobi.io/
-- Goobi Documentation: https://docs.intranda.com
+- Goobi Documentation: https://docs.goobi.io
