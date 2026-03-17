@@ -211,21 +211,25 @@ public class PluginsBean implements Serializable {
         return info;
     }
 
-    public int compareGoobiVersionToRunningVersion(String goobiVersion) {
-        if (StringUtils.isBlank(goobiVersion) || "N/A".equals(goobiVersion)) {
+    // TODO: implement correct version check against commit hash
+    public int comparePluginVersionToRunningVersion(String pluginVersion) {
+        if (StringUtils.isBlank(pluginVersion) || "N/A".equals(pluginVersion)) {
             return 1;
         }
-        if (goobiVersion.endsWith("-SNAPSHOT")) {
+        if (pluginVersion.endsWith("-SNAPSHOT")) {
             //SNAPSHOT versions are always a bad idea and should be marked as bad at all times
             return 1;
         }
-        String runningVersion = helperForm.getVersion().replace("-dev", "").replace("-SNAPSHOT", "");
-        return compareGoobiVersions(goobiVersion, runningVersion);
+        String runningVersion = helperForm.getVersion();
+        if (runningVersion.equals("dev-SNAPSHOT") ||  runningVersion.equals("latest-SNAPSHOT")) {
+            return 1;
+        }
+        return compareGoobiVersions(pluginVersion, runningVersion);
     }
 
-    public static int compareGoobiVersions(String goobiVersion, String runningVersion) {
+    public static int compareGoobiVersions(String pluginVersion, String runningVersion) {
         int[] runningVersionFields = Arrays.stream(runningVersion.split("\\.")).mapToInt(Integer::valueOf).toArray();
-        int[] submittedVersionFields = Arrays.stream(goobiVersion.split("\\.")).mapToInt(Integer::valueOf).toArray();
+        int[] submittedVersionFields = Arrays.stream(pluginVersion.split("\\.")).mapToInt(Integer::valueOf).toArray();
         int majorDiff = runningVersionFields[0] - submittedVersionFields[0];
         if (majorDiff != 0) {
             return majorDiff;
@@ -238,8 +242,8 @@ public class PluginsBean implements Serializable {
         return minorDiff;
     }
 
-    public String getBadgeClassForGoobiVersion(String goobiVersion) {
-        int compared = compareGoobiVersionToRunningVersion(goobiVersion);
+    public String getBadgeClassForGoobiVersion(String pluginVersion) {
+        int compared = comparePluginVersionToRunningVersion(pluginVersion);
         if (compared < 0) {
             return "badge-intranda-orange";
         }
