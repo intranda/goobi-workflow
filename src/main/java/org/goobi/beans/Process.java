@@ -215,7 +215,6 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
     private String representativeImage = null;
 
     private List<SelectItem> folderList = new ArrayList<>();
-    @Getter
     @Setter
     private String currentFolder;
 
@@ -1677,15 +1676,24 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
      * @return folder list
      */
 
+    public String getCurrentFolder() {
+        if (StringUtils.isBlank(currentFolder)) {
+            getVisibleFolder();
+        }
+        return currentFolder;
+    }
+
     public List<SelectItem> getVisibleFolder() {
         if (folderList.isEmpty()) {
             try {
-                folderList.add(new SelectItem(getExportDirectory(), Helper.getTranslation("process_log_file_exportFolder")));
-                folderList.add(new SelectItem(getImportDirectory(), Helper.getTranslation("process_log_file_importFolder")));
-                folderList.add(new SelectItem(getImagesTifDirectory(false), Helper.getTranslation("process_log_file_mediaFolder")));
+                String mediaFolder = getImagesTifDirectory(false);
+                if (StringUtils.isBlank(currentFolder)) {
+                    currentFolder = mediaFolder;
+                }
                 if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
                     folderList.add(new SelectItem(getImagesOrigDirectory(false), Helper.getTranslation("process_log_file_masterFolder")));
                 }
+                folderList.add(new SelectItem(mediaFolder, Helper.getTranslation("process_log_file_mediaFolder")));
 
                 Iterator<String> configuredImageFolder = ConfigurationHelper.getInstance().getLocalKeys("process.folder.images");
                 while (configuredImageFolder.hasNext()) {
@@ -1698,6 +1706,11 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
                         }
                     }
                 }
+
+                folderList.add(new SelectItem(getOcrAltoDirectory(), Helper.getTranslation("process_log_file_altoFolder")));
+                folderList.add(new SelectItem(getSourceDirectory(), Helper.getTranslation("process_log_file_sourceFolder")));
+                folderList.add(new SelectItem(getImportDirectory(), Helper.getTranslation("process_log_file_importFolder")));
+                folderList.add(new SelectItem(getExportDirectory(), Helper.getTranslation("process_log_file_exportFolder")));
 
             } catch (SwapException | DAOException | IOException e) {
                 log.error(e);
