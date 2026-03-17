@@ -686,6 +686,32 @@
 										<util:icon icon="world" />
 									</button>
 
+									<!-- METADATA EDITOR BUTTON -->
+									<h:commandLink
+										onclick="sessionStorage.removeItem('columnWidths');"
+										action="#{Metadaten.XMLlesen}"
+										id="openMetsEditor"
+										title="#{msgs.metadatenBearbeiten}"
+										aria-label="#{msgs.metadatenBearbeiten}"
+										rel="tooltip"
+										class="btn btn-icon btn-blank me-2"
+										rendered="#{item.typMetadaten and !ProzessverwaltungForm.myProzess.istTemplate}">
+										<util:icon icon="book" />
+										<f:passThroughAttribute
+											name="data-toggle"
+											value="tooltip" />
+										<f:param
+											name="ProzesseID"
+											value="#{ProzessverwaltungForm.myProzess.id}" />
+										<f:param
+											name="BenutzerID"
+											value="#{LoginForm.myBenutzer.id}" />
+										<f:param
+											name="zurueck"
+											value="process_edit" />
+									</h:commandLink>
+									<!-- // METADATA EDITOR BUTTON -->
+
 								</h:column>
 
 							</h:dataTable>
