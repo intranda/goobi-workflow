@@ -7,7 +7,7 @@ pipeline {
   options {
     buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '15', daysToKeepStr: '90', numToKeepStr: '')
     disableConcurrentBuilds()
-    timeout(time: 30, unit: 'MINUTES')
+    timeout(time: 45, unit: 'MINUTES')
   }
 
   environment {
@@ -279,7 +279,7 @@ pipeline {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 5. DEPLOY  (core + plugins to Nexus)
+    // 5. DEPLOY  (base + core + plugins to Nexus)
     //    core:    master, develop, v*
     //    plugins: master, v*
     // ─────────────────────────────────────────────────────────────────────────
@@ -304,6 +304,7 @@ pipeline {
         sh 'mkdir -p /var/maven/.m2/repository/io/goobi/workflow && cp -r m2-goobi/. /var/maven/.m2/repository/io/goobi/workflow/'
         unstash 'build-output'
         sh 'mvn deploy -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U --no-transfer-progress'
+        sh 'mvn deploy -f config/workflow-base/pom.xml -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U --no-transfer-progress'
         script {
           if (env.TAG_NAME || env.BRANCH_NAME == 'master') {
             sh "sed -i '/<parent>/,/<\\/parent>/s|<version>dev-SNAPSHOT</version>|<version>'\$BUILD_VERSION'</version>|' plugins/goobi-plugin-*/pom.xml"

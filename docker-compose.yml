@@ -14,7 +14,6 @@ services:
       DB_PORT: 3306
       DB_PASSWORD: CHANGEME
       PW_GOOBITESTUSER: CHANGEME
-      LOAD_DEFAULT_PLUGINS: true
       # Configure the goobi_config.properties using the schema GOOBI_<var_name>
       # All possible variables can be found here https://docs.goobi.io/de/workflow/manual/admin/config_files/goobi_config.properties
       GOOBI_ApplicationHeaderTitle: "Goobi workflow"
