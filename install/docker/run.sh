@@ -9,7 +9,7 @@ set -u
 # Create directories if not present
 mkdir -p /opt/digiverso/goobi/plugins/{administration,command,dashboard,export,generic,GUI,import,opac,statistics,step,theme,validation,workflow}
 
-echo "Generating config file /opt/digiverso/goobi/config/goobi_config.properties"
+echo "Setting properties from environment variables"
 /usr/bin/python3 /config.py
 
 echo "Setting database configuration from environment..."
@@ -43,7 +43,7 @@ if [[ -v PW_GOOBITESTUSER ]]; then
 fi
 
 
-if [[ ${LOAD_DEFAULT_PLUGINS,,} == true ]]; then
+if [[ -d "/workflow-template/default-plugins" ]]; then
   echo "Checking if default plugins are present"
   cp -r --update=none /workflow-template/default-plugins/plugins/* /opt/digiverso/goobi/plugins/
   cp -r --update=none /workflow-template/default-plugins/config/* /opt/digiverso/goobi/config/
@@ -96,8 +96,6 @@ case $CONFIGSOURCE in
     echo "Keeping configuration"
     ;;
 esac
-
-
 
 echo "Starting application server..."
 exec catalina.sh run

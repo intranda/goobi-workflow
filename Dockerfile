@@ -42,7 +42,6 @@ RUN unzip /*.war -d /usr/local/tomcat/webapps/workflow && rm /*.war
 
 # Structure is also created again in the run.sh in case of a run bind mount to not crash the container
 RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
-RUN ["/bin/bash","-c", "mkdir -p /workflow-template/default-plugins/{config,lib,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
 RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ /usr/local/tomcat/webapps/workflow
 
 
@@ -54,7 +53,7 @@ COPY install/rulesets/ /workflow-template/rulesets
 COPY install/scripts/copyfiles.sh install/scripts/iii.sh install/scripts/script_createDirMeta.sh /workflow-template/scripts/
 COPY install/xslt/ /workflow-template/xslt
 COPY install/db/goobi_blank.sql /workflow-template/db/goobi_blank.sql
-RUN mv /workflow-template/config/goobi_config.properties /workflow-template/config/goobi_config.user.properties
+
 # Script adjustments
 COPY install/docker/dummy.sh /workflow-template/scripts/
 RUN echo -e '#!/bin/bash\nplaceholder="$1"\nVerzeichnis="$2"\n/bin/mkdir "$Verzeichnis"' > /workflow-template/scripts/script_createDirUserHome.sh && \
@@ -79,4 +78,5 @@ CMD ["/run.sh"]
 
 # Full image: slim + default plugins pre-installed
 FROM slim AS full
+RUN ["/bin/bash","-c", "mkdir -p /workflow-template/default-plugins/{config,lib,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
 COPY target/default-plugins/ /workflow-template/default-plugins/

@@ -32,7 +32,7 @@ services:
         source: ./goobi/lib
         target: /opt/digiverso/goobi/lib
       - type: bind
-        source: ./tomcat/logs
+        source: ./logs/tomcat/workflow
         target: /usr/local/tomcat/logs
 
   workflow-db:
