@@ -380,7 +380,11 @@ public class ProcessTest extends AbstractTest {
     @Test
     public void testCurrentFolder() {
         Process process = new Process();
-        assertNull(process.getCurrentFolder());
+        process.setId(1);
+        Project p = new Project();
+        p.setId(1);
+        process.setProjekt(p);
+        assertTrue(process.getCurrentFolder().contains("1/images/"));
         process.setCurrentFolder("folder");
         assertEquals("folder", process.getCurrentFolder());
     }
