@@ -24,11 +24,7 @@ pipeline {
     stage('setup') {
       agent any
       steps {
-        sh 'git submodule deinit -f -- plugins/ 2>/dev/null || true'
         sh 'git reset --hard HEAD && git clean -fdx'
-        withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
-          sh 'git submodule update --init -- plugins/'
-        }
         script {
           if (env.TAG_NAME) {
             env.BUILD_VERSION = env.TAG_NAME.replaceAll('^v', '')

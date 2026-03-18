@@ -1,6 +1,3 @@
-[submodule "docs"]
-	path = docs
-	url = git@gitea.intranda.com:goobi-workflow/goobi-workflow-core-docs.git
 [submodule "plugins/goobi-plugin-opac-pica"]
 	path = plugins/goobi-plugin-opac-pica
 	url = ../goobi-plugin-opac-pica
