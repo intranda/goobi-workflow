@@ -925,8 +925,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 }
             }
         }
+
         Prefs prefs = this.getBean().getMyPrefs();
         DocStruct ds = this.getBean().getMyDocStruct();
+        MetadataGroup addGroup = null;
         for (Map.Entry<String, List<RestMetadata>> entry : addMetadata.entrySet()) {
             String name = entry.getKey();
             try {
@@ -938,10 +940,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         String[] split = name.split("/");
                         String group = split[0];
                         String metaName = split[1];
-                        // TODO re-use existing grp
-                        MetadataGroupType mgt = prefs.getMetadataGroupTypeByName(group);
-                        MetadataGroup addGroup = null;
-                        addGroup = new MetadataGroup(mgt);
+
+                        if (addGroup == null || !addGroup.getType().getName().equals(group)) {
+                            MetadataGroupType mgt = prefs.getMetadataGroupTypeByName(group);
+                            addGroup = new MetadataGroup(mgt);
+                            ds.addMetadataGroup(addGroup);
+                        }
                         List<Metadata> metaList = addGroup.getMetadataByType(metaName);
                         Metadata currentMetadata;
                         if (metaList.isEmpty()) {
@@ -962,7 +966,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         if (rmd.getAuthorityValue() != null) {
                             currentMetadata.setAuthorityValue(rmd.getAuthorityValue());
                         }
-                        ds.addMetadataGroup(addGroup);
+
                     } else {
                         Metadata currentMetadata = new Metadata(prefs.getMetadataTypeByName(name));
                         if (rmd.getValue() != null) {
