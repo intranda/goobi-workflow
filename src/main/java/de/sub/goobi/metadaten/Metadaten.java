@@ -5227,20 +5227,13 @@ public class Metadaten implements Serializable {
             return;
         }
 
-        Path imagesPath = Paths.get(imageFolderName);
-        // put all selected images into a URL
-        String imagesParameter = allImages.stream().map(Image::getImageName).collect(Collectors.joining("$"));
-
         URI goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
                 .path("api")
                 .path("process")
-                .path("image")
                 .path(Integer.toString(myProzess.getId()))
-                .path("media") //dummy, replaced by images parameter
-                .path("00000001.tif") //dummy, replaced by images parameter
+                .path("files")
+                .path("pdf")
                 .path(myProzess.getTitel() + ".pdf")
-                .queryParam("imageSource", imagesPath.toUri())
-                .queryParam("images", imagesParameter)
                 .build();
 
         FacesContext context = FacesContextHelper.getCurrentFacesContext();

@@ -26,11 +26,13 @@ package org.goobi.api.rest.process.pdf;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -82,10 +84,18 @@ public class GoobiFilesPdfResource {
     @Produces({ "application/pdf" })
     public Response getPdfFromImages() throws ContentLibException, IOException, SwapException, URISyntaxException {
         String tiffDirectory = this.process.getImagesTifDirectory(false);
+        String imageFolderPrefix;
+        if (ConfigurationHelper.getInstance().useS3()) {
+            imageFolderPrefix = "s3://" + ConfigurationHelper.getInstance().getS3Bucket() + "/" + Integer.toString(process.getId()) + "/images/"
+                    + Paths.get(tiffDirectory).getFileName().toString() + "/";
+        } else {
+            imageFolderPrefix = tiffDirectory;
+        }
+
         List<String> imageFiles = StorageProvider.getInstance()
                 .list(tiffDirectory.toString(), NIOFileUtils.imageOrPdfNameFilter)
                 .stream()
-                .map(img -> tiffDirectory + img)
+                .map(img -> imageFolderPrefix + img)
                 .toList();
 
         SinglePdfRequest pdfRequest = new SinglePdfRequest(StringUtils.join(imageFiles, "$"), GetAction.parseParameters(request, context));
