@@ -211,7 +211,7 @@ pipeline {
                 }
                 script {
                   def strict = env.TAG_NAME != null || env.BRANCH_NAME == 'master'
-                  def cmd = "mvn -f plugins/pom.xml test -T 1C -Dmaven.main.skip=true -Drevision=\$BUILD_VERSION -P '!local-development' --no-transfer-progress"
+                  def cmd = "mvn -f plugins/pom.xml test -T 1C -Dmaven.main.skip=true -Drevision=\$BUILD_VERSION -P '!local-development' --no-transfer-progress -fae"
                   if (strict) {
                     sh cmd
                   } else {
@@ -326,7 +326,6 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          branch 'master'
           branch 'develop'
           branch 'v*'
           expression { return env.BRANCH_NAME =~ /_docker$/ }
@@ -410,7 +409,36 @@ pipeline {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 7. PLUGIN RELEASE  (create version-bump commits and git tags for all plugins)
+    // 7. UPDATE COLLECTION  (master only: advance core submodule pointer in collection)
+    // ─────────────────────────────────────────────────────────────────────────
+    stage('update-collection') {
+      when {
+        branch 'master'
+      }
+      agent any
+      steps {
+        withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
+          sh '''#!/bin/bash -xe
+            WORK_DIR=$(mktemp -d)
+            git clone --depth 1 --branch master "$COLLECTION_REPO_URL" "$WORK_DIR"
+            cd "$WORK_DIR"
+            git submodule update --init --remote -- goobi-workflow-core
+            git add goobi-workflow-core
+            if git diff --cached --quiet; then
+              echo "Submodule already up to date."
+            else
+              git commit -m "Update goobi-workflow-core to latest master"
+              git push origin master
+            fi
+            rm -rf "$WORK_DIR"
+          '''
+        }
+      }
+    }
+
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // 8. PLUGIN RELEASE  (create version-bump commits and git tags for all plugins)
     // ─────────────────────────────────────────────────────────────────────────
     stage('plugin-release') {
       agent {
@@ -456,6 +484,7 @@ pipeline {
         }
       }
     }
+
 
   }
 
