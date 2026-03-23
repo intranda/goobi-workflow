@@ -9,9 +9,13 @@ import {
 } from './modules/saveScrollPosition';
 import { initAutosave } from './modules/metseditor/autosave';
 import { AjaxButtonManager } from './modules/ajax/buttonManager';
+import { initNotificationToggle } from './modules/notificationToggle';
 
 // Initialize AjaxButtonManager
 const ajaxButtonManager = new AjaxButtonManager();
+
+// Register notification toggle once
+initNotificationToggle();
 
 // Initialize all functions on initial page load
 document.addEventListener('DOMContentLoaded', () => {
