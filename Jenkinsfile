@@ -423,12 +423,12 @@ pipeline {
             git clone --depth 1 --branch master "$COLLECTION_REPO_URL" "$WORK_DIR"
             cd "$WORK_DIR"
             git submodule update --init --remote -- goobi-workflow-core
-            git add goobi-workflow-core
-            if git diff --cached --quiet; then
-              echo "Submodule already up to date."
-            else
+            if git status --porcelain -- goobi-workflow-core | grep -q .; then
+              git add goobi-workflow-core
               git commit -m "Update goobi-workflow-core to latest master"
               git push origin master
+            else
+              echo "Submodule already up to date."
             fi
             rm -rf "$WORK_DIR"
           '''
