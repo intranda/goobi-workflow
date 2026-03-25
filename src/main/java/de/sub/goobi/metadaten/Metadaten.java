@@ -101,6 +101,7 @@ import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.media.pdf.PDFGenerator;
 import de.sub.goobi.metadaten.Image.Type;
 import de.sub.goobi.metadaten.MetaConvertibleDate.DateType;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -5222,30 +5223,15 @@ public class Metadaten implements Serializable {
         // do nothing, this is needed for jsf calls
     }
 
-    public void downloadCurrentFolderAsPdf() throws IOException {
-        if (allImages.isEmpty()) {
-            return;
-        }
-
-        URI goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
-                .path("api")
-                .path("process")
-                .path(Integer.toString(myProzess.getId()))
-                .path("files")
-                .path("pdf")
-                .path(myProzess.getTitel() + ".pdf")
-                .build();
-
+    public void downloadCurrentFolderAsPdf() throws IOException, URISyntaxException, ContentLibException, SwapException {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         // generate the pdf and deliver it as download
         if (!context.getResponseComplete()) {
             HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
             String fileName = myProzess.getTitel() + ".pdf";
-            ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
-            String contentType = servletContext.getMimeType(fileName);
-            response.setContentType(contentType);
+            response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
-            response.sendRedirect(goobiContentServerUrl.toString());
+            new PDFGenerator(myProzess).writePDFFromFolder(currentTifFolder, response.getOutputStream());
             context.responseComplete();
         }
     }
