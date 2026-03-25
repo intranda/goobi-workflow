@@ -532,7 +532,7 @@ public class FilterHelperTest extends AbstractTest {
         String tok = "institution:ShortName";
         boolean negate = true;
         String expectedQuery =
-                "prozesse.ProjekteID not sin (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '%"
+                "prozesse.ProjekteID not in (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '%"
                         + MySQLHelper.escapeSql("ShortName") + "%') ";
 
         String result = FilterHelper.filterInstitution(tok, negate);
