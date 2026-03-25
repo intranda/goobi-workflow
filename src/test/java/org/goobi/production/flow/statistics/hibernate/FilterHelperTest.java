@@ -19,6 +19,7 @@
 package org.goobi.production.flow.statistics.hibernate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
@@ -28,6 +29,7 @@ import java.util.List;
 
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
+import org.goobi.api.rest.model.RestProcessQueryResource;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper.StepFilter;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +61,15 @@ public class FilterHelperTest extends AbstractTest {
         PowerMock.mockStatic(MySQLHelper.class);
 
         EasyMock.expect(MySQLHelper.escapeSql(EasyMock.anyString()))
+                .andAnswer(new IAnswer<String>() {
+                    @Override
+                    public String answer() throws Throwable {
+                        return (String) EasyMock.getCurrentArguments()[0];
+                    }
+                })
+                .anyTimes();
+
+        EasyMock.expect(MySQLHelper.escapeString(EasyMock.anyString()))
                 .andAnswer(new IAnswer<String>() {
                     @Override
                     public String answer() throws Throwable {
@@ -630,6 +641,33 @@ public class FilterHelperTest extends AbstractTest {
 
         // Assert that when the filter expression is not in the expected format, the method returns null
         assertEquals(expectedStartStep, result);
+    }
+
+    /**
+     * Verifies that multiple filter conditions joined into a single string and passed
+     * to criteriaBuilder produce valid SQL with only one WHERE clause.
+     *
+     * Previously, ProcessService called criteriaBuilder per condition and concatenated
+     * with AND, producing invalid "... AND WHERE ..." SQL.
+     */
+    @Test
+    public void testMultipleConditionsDoNotProduceDuplicateWhere() {
+        RestProcessQueryResource resource = new RestProcessQueryResource();
+        resource.setFilter("processproperty:Template:value'id:12819");
+        String[] conditions = resource.getConditions();
+        assertEquals(2, conditions.length);
+
+        // Replicate the fixed ProcessService logic: join conditions, single criteriaBuilder call
+        String combinedFilter = String.join(" ", conditions);
+        String criteria = FilterHelper.criteriaBuilder(combinedFilter, false, null, null, null, true, false);
+
+        // Must not contain duplicate WHERE clauses
+        assertFalse("SQL criteria must not contain duplicate WHERE clauses",
+                criteria.contains("WHERE") && criteria.indexOf("WHERE") != criteria.lastIndexOf("WHERE"));
+
+        // Must contain both filter conditions
+        assertTrue("Should filter by process property", criteria.contains("property_name like"));
+        assertTrue("Should filter by process id", criteria.contains("prozesse.prozesseId in (12819)"));
     }
 
 }

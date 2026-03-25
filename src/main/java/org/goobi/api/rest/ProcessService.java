@@ -195,16 +195,8 @@ public class ProcessService implements IRestAuthentication {
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Tag(name = "process")
     public Response retrieveProcessesSatisfyingCondition(RestProcessQueryResource resource) {
-        String[] splittedConditions = resource.getConditions();
-
-        StringBuilder builder = new StringBuilder();
-        for (String condition : splittedConditions) {
-            String filterCondition = FilterHelper.criteriaBuilder(condition, false, null, null, null, true, false);
-            builder.append(filterCondition);
-            builder.append(" AND ");
-        }
-        builder.append("TRUE");
-        String criteria = builder.toString();
+        String combinedFilter = String.join(" ", resource.getConditions());
+        String criteria = FilterHelper.criteriaBuilder(combinedFilter, false, null, null, null, true, false);
 
         List<Process> processes = ProcessManager.getProcesses("prozesse.Titel", criteria, null);
 
