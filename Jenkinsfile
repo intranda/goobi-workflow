@@ -486,6 +486,26 @@ pipeline {
     }
 
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // 9. TRIGGER COLLECTION  (downstream trigger for develop and master)
+    // ─────────────────────────────────────────────────────────────────────────
+    stage('trigger-collection') {
+      when {
+        beforeAgent true
+        anyOf {
+          branch 'master'
+          branch 'develop'
+        }
+      }
+      steps {
+        script {
+          build job: 'goobi-workflow-collection/master',
+                parameters: [string(name: 'UPSTREAM_BRANCH', value: env.BRANCH_NAME)],
+                wait: false
+        }
+      }
+    }
+
   }
 
   post {
