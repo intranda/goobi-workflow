@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Process;
 import org.goobi.production.cli.helper.StringPair;
@@ -132,6 +133,9 @@ public class RestProcessResource {
             Map<String, String> propertyMap = new HashMap<>();
             propertyMap.put("name", name);
             propertyMap.put("value", value);
+            if (StringUtils.isNotBlank(property.getContainer())) {
+                propertyMap.put("container", property.getContainer());
+            }
             propertiesList.add(propertyMap);
         }
     }

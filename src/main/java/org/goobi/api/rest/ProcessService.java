@@ -405,7 +405,7 @@ public class ProcessService implements IRestAuthentication {
     JSON:
     curl -H 'Content-Type: application/json' -X POST http://localhost:8080/goobi/api/process/ -d '{"title":"1234", "processTemplateName": "template", "projectName": "Archive_Project",
     "rulesetName": "Standard", "docketName": "Standard", "documentType": "Monograph", "propertiesList": [
-    {"name": "propertyName1", "value": "propertyValue1"},{"name": "propertyName2", "value": "propertyValue2"} ],
+    {"name": "propertyName1", "value": "propertyValue1"},{"name": "propertyName2", "value": "propertyValue2", "container": "optionalContainer"} ],
     "metadataList": [ {"name": "TitleDocMainShort", "value": "short title", "authorityValue": "authorityValue1"},
     {"name": "Author", "value": "Jack Sparrow"},
     {"name": "Creator", "authorityValue": "authorityValue3", "firstName": "Nicolas", "lastName": "Bourbaki"} ]}'
@@ -414,7 +414,7 @@ public class ProcessService implements IRestAuthentication {
     curl -H 'Content-Type: application/xml' -X POST http://localhost:8080/goobi/api/process/ -d '<process><title>1234</title><processTemplateName>template</processTemplateName>
     <projectName>Archive_Project</projectName><rulesetName>Standard</rulesetName><docketName>Standard</docketName>
     <documentType>Monograph</documentType><propertiesList><element><name>propertyName1</name><value>propertyValue1</value>
-    </element><element><name>propertyName2</name><value>propertyValue2</value></element></propertiesList>
+    </element><element><name>propertyName2</name><value>propertyValue2</value><container>optionalContainer</container></element></propertiesList>
     <metadataList><element><authorityValue>authorityValue1</authorityValue><name>TitleDocMainShort</name><value>short title</value></element>
     <element><name>Author</name><value>Jack Sparrow</value></element>
     <element><authorityValue>authorityValue3</authorityValue><firstName>Nicolas</firstName><lastName>Bourbaki</lastName><name>Creator</name></element>
@@ -509,7 +509,8 @@ public class ProcessService implements IRestAuthentication {
         for (Map<String, String> property : propertiesList) {
             String key = property.get("name");
             String value = property.get("value");
-            saveNewProcessproperty(process, key, value, null);
+            String container = property.get("container");
+            saveNewProcessproperty(process, key, value, null, container);
         }
 
         // add metadata if there are any
@@ -518,7 +519,7 @@ public class ProcessService implements IRestAuthentication {
             Fileformat fileformat = process.readMetadataFile();
             DocStruct logical = fileformat.getDigitalDocument().getLogicalDocStruct();
             if (logical.getType().isAnchor() && "topstruct".equals(resource.getMetadataLevel())) {
-                logical = logical.getAllChildren().get(process.getId());
+                logical = logical.getAllChildren().get(0);
             }
 
             Prefs prefs = process.getRegelsatz().getPreferences();
@@ -538,12 +539,21 @@ public class ProcessService implements IRestAuthentication {
                 String firstName = metadataMap.get("firstName");
                 String lastName = metadataMap.get("lastName");
 
-                try {
-                    addNewMetadataToDocStruct(logical, mdType, metadataValue, authorityValue, firstName, lastName);
-                } catch (MetadataTypeNotAllowedException ex) {
-                    Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Metadata type '" + metadataName + "' is not allowed.");
+                if (mdType.isIdentifier()) {
+                    // find existing metadata, replace value
+                    for (Metadata md : logical.getAllMetadata()) {
+                        if (md.getType().getName().equals(metadataName)) {
+                            md.setValue(metadataValue);
+                        }
+                    }
+                } else {
+                    try {
+                        // add new field
+                        addNewMetadataToDocStruct(logical, mdType, metadataValue, authorityValue, firstName, lastName);
+                    } catch (MetadataTypeNotAllowedException ex) {
+                        Helper.addMessageToProcessJournal(process.getId(), LogType.ERROR, "Metadata type '" + metadataName + "' is not allowed.");
+                    }
                 }
-
             }
             // save metadata file
             process.writeMetadataFile(fileformat);
@@ -559,12 +569,13 @@ public class ProcessService implements IRestAuthentication {
         return getProcessData(String.valueOf(process.getId()));
     }
 
-    private GoobiProperty saveNewProcessproperty(Process process, String key, String value, Date creationDate) {
+    private GoobiProperty saveNewProcessproperty(Process process, String key, String value, Date creationDate, String container) {
         GoobiProperty property = new GoobiProperty(PropertyOwnerType.PROCESS);
         property.setPropertyName(key);
         property.setPropertyValue(value);
         property.setOwner(process);
         property.setType(PropertyType.STRING);
+        property.setContainer(container);
         if (creationDate != null) {
             property.setCreationDate(creationDate);
         } else {
@@ -1427,7 +1438,7 @@ public class ProcessService implements IRestAuthentication {
         String propertyName = resource.getName();
         String propertyValue = resource.getValue();
         Date creationDate = resource.getCreationDate(); // maybe null but it doesn't matter
-        GoobiProperty property = saveNewProcessproperty(process, propertyName, propertyValue, creationDate);
+        GoobiProperty property = saveNewProcessproperty(process, propertyName, propertyValue, creationDate, null);
 
         return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
