@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -90,6 +91,10 @@ public class ProzesskopieFormTest extends AbstractTest {
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
         ConfigurationHelper.getInstance().setParameter("script_createDirMeta", "");
+
+        // redirect metadata writes to a temp directory so tests don't pollute src/test/resources
+        File metadataDir = folder.newFolder("metadata");
+        ConfigurationHelper.getInstance().setParameter("dataFolder", metadataDir.getAbsolutePath() + FileSystems.getDefault().getSeparator());
 
         this.template = MockProcess.createProcess();
         this.template.setDocket(new Docket());
@@ -182,10 +187,8 @@ public class ProzesskopieFormTest extends AbstractTest {
 
     @Test
     public void testCreateNewProcess() throws Exception {
-        Path meta = folder.newFolder("metadata").toPath();
-        Files.createDirectories(meta);
-        ConfigurationHelper.getInstance().setParameter("MetadatenVerzeichnis", meta.toString() + FileSystems.getDefault().getSeparator());
-        Path processFolder = Paths.get(meta.toString(), "0");
+        String metaPath = ConfigurationHelper.getInstance().getMetadataFolder();
+        Path processFolder = Paths.get(metaPath, "0");
         Files.createDirectories(processFolder);
 
         ProzesskopieForm form = new ProzesskopieForm();

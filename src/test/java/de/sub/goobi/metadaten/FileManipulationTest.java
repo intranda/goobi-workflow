@@ -31,6 +31,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -44,7 +45,9 @@ import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -78,6 +81,9 @@ public class FileManipulationTest extends AbstractTest {
     private Metadaten metadataBean;
     private Process testProcess;
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     @Before
     public void setUp() throws Exception {
 
@@ -86,6 +92,17 @@ public class FileManipulationTest extends AbstractTest {
         ConfigurationHelper.setImagesPath("/tmp/");
         testProcess = MockProcess.createProcess();
         testProcess.setId(1);
+
+        // redirect metadata writes to a temp directory so tests don't pollute src/test/resources
+        String resourcesFolder = "src/test/resources/";
+        if (!Files.exists(Paths.get(resourcesFolder))) {
+            resourcesFolder = "target/test-classes/";
+        }
+        File metadataDir = folder.newFolder("metadata");
+        Path sourceProcessDir = Paths.get(resourcesFolder + "metadata/1");
+        Path targetProcessDir = metadataDir.toPath().resolve("1");
+        StorageProvider.getInstance().copyDirectory(sourceProcessDir, targetProcessDir);
+        ConfigurationHelper.getInstance().setParameter("dataFolder", metadataDir.getAbsolutePath() + "/");
 
         metadataBean = new Metadaten();
         metadataBean.setMyBenutzerID("1");

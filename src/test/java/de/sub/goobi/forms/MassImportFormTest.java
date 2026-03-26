@@ -47,6 +47,7 @@ import org.goobi.production.flow.helper.JobCreation;
 import org.goobi.production.importer.DocstructElement;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.properties.ImportProperty;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -87,6 +88,13 @@ public class MassImportFormTest extends AbstractTest {
     //    private FacesContext facesContext;
     //    private ExternalContext externalContext;
     //    private Map<String, Object> requestMap;
+
+    @After
+    public void tearDown() throws Exception {
+        // clean up uploaded test file so it doesn't pollute src/test/resources/tmp/
+        Path uploadedFile = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder(), "junit.xml");
+        Files.deleteIfExists(uploadedFile);
+    }
 
     @Before
     public void setUp() throws Exception {

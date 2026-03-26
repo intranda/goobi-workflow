@@ -32,8 +32,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +51,9 @@ import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -99,6 +103,9 @@ public class MetadatenTest extends AbstractTest {
     private Process process;
     private Prefs prefs;
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     @Before
     public void setUp() throws Exception {
 
@@ -107,6 +114,17 @@ public class MetadatenTest extends AbstractTest {
         ConfigurationHelper.setImagesPath("/some/path/");
 
         process = MockProcess.createProcess();
+
+        // redirect metadata writes to a temp directory so tests don't pollute src/test/resources
+        String resourcesFolder = "src/test/resources/";
+        if (!Files.exists(Paths.get(resourcesFolder))) {
+            resourcesFolder = "target/test-classes/";
+        }
+        File metadataDir = folder.newFolder("metadata");
+        Path sourceProcessDir = Paths.get(resourcesFolder + "metadata/1");
+        Path targetProcessDir = metadataDir.toPath().resolve("1");
+        StorageProvider.getInstance().copyDirectory(sourceProcessDir, targetProcessDir);
+        ConfigurationHelper.getInstance().setParameter("dataFolder", metadataDir.getAbsolutePath() + "/");
 
         // mock jsf context and http session
         PowerMock.mockStatic(ExternalContext.class);
