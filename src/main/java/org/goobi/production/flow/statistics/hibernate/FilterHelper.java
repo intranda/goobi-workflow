@@ -684,7 +684,7 @@ public final class FilterHelper {
             query.append(rightTruncationCharacter);
             query.append("') ");
         } else {
-            query.append("prozesse.ProjekteID not sin (select ProjekteID from projekte left join ");
+            query.append("prozesse.ProjekteID not in (select ProjekteID from projekte left join ");
             query.append("institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '");
             query.append(leftTruncationCharacter);
             query.append(MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)));
