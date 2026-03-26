@@ -111,7 +111,7 @@
             ${project.build.directory}/site/jacoco/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
     <!-- intranda internal -->
-    <ics.version>4.0.6</ics.version>
+    <ics.version>4.2.0</ics.version>
     <normdataimporter.version>2.1.0</normdataimporter.version>
     <vocabulary-server.version>1.2.8</vocabulary-server.version>
     <ugh-core.version>5.0.37</ugh-core.version>
