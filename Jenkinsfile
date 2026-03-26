@@ -70,7 +70,7 @@ pipeline {
               }
             }
             // Plugin poms use ${revision} placeholder for their own version, default is dev-SNAPSHOT.
-            sh "mvn -f plugins/pom.xml clean install -U -T 1C -DskipTests -Dcheckstyle.skip=true -Djacoco.skip=true -Drevision=\$BUILD_VERSION -P '!local-development' --no-transfer-progress"
+            sh "mvn -f plugins/pom.xml clean install -U -T 1C -DskipTests -Dcheckstyle.skip=true -Djacoco.skip=true -Drevision=\$BUILD_VERSION -P '!local-development' --no-transfer-progress -fae"
             // Collect default plugin JARs into a staging dir for the Docker image (release only)
             script {
               if (env.TAG_NAME || env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop' || env.BRANCH_NAME?.endsWith('_docker')) {
@@ -485,6 +485,26 @@ pipeline {
       }
     }
 
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // 9. TRIGGER COLLECTION  (downstream trigger for develop and master)
+    // ─────────────────────────────────────────────────────────────────────────
+    stage('trigger-collection') {
+      when {
+        beforeAgent true
+        anyOf {
+          branch 'master'
+          branch 'develop'
+        }
+      }
+      steps {
+        script {
+          build job: 'goobi-workflow-collection/master',
+                parameters: [string(name: 'UPSTREAM_BRANCH', value: env.BRANCH_NAME)],
+                wait: false
+        }
+      }
+    }
 
   }
 
