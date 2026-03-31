@@ -8,15 +8,13 @@
   <properties>
     <revision>dev-SNAPSHOT</revision>
   </properties>
-  <!-- RELEASE REPOSITORIES -->
-  <distributionManagement>
-    <repository>
-      <id>intranda-releases</id>
-      <url>https://nexus.intranda.com/repository/maven-releases</url>
-    </repository>
-    <snapshotRepository>
-      <id>intranda-snapshots</id>
-      <url>https://nexus.intranda.com/repository/maven-snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>3.1.4</version>
+      </plugin>
+    </plugins>
+  </build>
 </project>
