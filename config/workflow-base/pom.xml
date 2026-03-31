@@ -3,7 +3,6 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.goobi.workflow</groupId>
   <artifactId>workflow-base</artifactId>
-  <!-- ALWAYS KEEP THIS VERSION IN SYNC WITH THE VERSION OF `workflow-maven-config` -->
   <version>${revision}</version>
   <packaging>pom</packaging>
   <organization>
@@ -20,27 +19,16 @@
   <!-- FETCH REPOSITORIES -->
   <repositories>
     <repository>
-      <id>intranda-public</id>
-      <url>https://nexus.intranda.com/repository/maven-public</url>
+      <id>intranda-nexus</id>
+      <url>${nexus.repository.url}</url>
     </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
-      <id>intranda-public</id>
-      <url>https://nexus.intranda.com/repository/maven-public</url>
+      <id>intranda-nexus</id>
+      <url>${nexus.repository.url}</url>
     </pluginRepository>
   </pluginRepositories>
-  <!-- RELEASE REPOSITORIES -->
-  <distributionManagement>
-    <repository>
-      <id>intranda-releases</id>
-      <url>https://nexus.intranda.com/repository/maven-releases</url>
-    </repository>
-    <snapshotRepository>
-      <id>intranda-snapshots</id>
-      <url>https://nexus.intranda.com/repository/maven-snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -52,15 +40,11 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <!-- TODO: Check meaning of this -->
-  <!-- <scm> -->
-  <!--     <url>scm:git:https://github.com/intranda/goobi-workflow</url> -->
-  <!--     <connection>scm:git:https://github.com/intranda/goobi-workflow</connection> -->
-  <!-- </scm> -->
   <properties>
     <revision>dev-SNAPSHOT</revision>
+    <nexus.repository.url>https://nexus.intranda.com/repository/maven-public</nexus.repository.url>
     <skip.cve.check>true</skip.cve.check>
-    <!-- Use Java 17 for compiling -->
+    <!-- Use Java 21 for compiling -->
     <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
@@ -1585,6 +1569,15 @@
   </dependencies>
   <build>
     <finalName>${project.artifactId}</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.1.4</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <!-- CI-FRIENDLY VERSION FLATTENING -->
       <plugin>
