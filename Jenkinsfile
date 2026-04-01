@@ -170,7 +170,8 @@ pipeline {
                   sourcePattern    : 'src/main/java',
                   exclusionPattern : '**/*Test.class'
                 ])
-                stash name: 'jacoco-core', includes: 'target/jacoco.exec', allowEmpty: true
+                sh "mvn org.jacoco:jacoco-maven-plugin:report -Drevision=\$BUILD_VERSION -Dmaven.main.skip=true --no-transfer-progress"
+                stash name: 'jacoco-core', includes: 'target/site/jacoco/jacoco.xml', allowEmpty: true
               }
             }
             stage('checkstyle') {
@@ -223,7 +224,8 @@ pipeline {
                   }
                 }
                 junit 'plugins/**/target/surefire-reports/*.xml'
-                stash name: 'jacoco-plugins', includes: 'plugins/**/target/jacoco.exec', allowEmpty: true
+                sh "mvn -f plugins/pom.xml org.jacoco:jacoco-maven-plugin:report -Drevision=\$BUILD_VERSION -Dmaven.main.skip=true --no-transfer-progress -fae"
+                stash name: 'jacoco-plugins', includes: 'plugins/**/target/site/jacoco/jacoco.xml', allowEmpty: true
               }
             }
             stage('checkstyle') {
@@ -273,8 +275,6 @@ pipeline {
         unstash 'build-output'
         unstash 'jacoco-core'
         unstash 'jacoco-plugins'
-        sh 'mvn jacoco:report -Drevision=$BUILD_VERSION -Dmaven.main.skip=true --no-transfer-progress'
-        sh 'mvn -f plugins/pom.xml jacoco:report -Drevision=$BUILD_VERSION -Dmaven.main.skip=true --no-transfer-progress -fae'
         withCredentials([string(credentialsId: 'jenkins-sonarcloud', variable: 'TOKEN')]) {
           sh 'mvn sonar:sonar -Drevision=$BUILD_VERSION -Dsonar.token=$TOKEN -U --no-transfer-progress'
         }
