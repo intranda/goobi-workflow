@@ -35,7 +35,7 @@ services:
         target: /usr/local/tomcat/logs
 
   workflow-db:
-    image: mariadb:lts
+    image: mariadb:latest
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
