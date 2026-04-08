@@ -70,7 +70,7 @@ public class MediaResource {
         Path processFolder = METADATA_FOLDER.resolve(processIdString);
 
         Path mediaFolder = getImagesFolder(processFolder, folder);
-        Path mediaResource = mediaFolder.resolve(filename);
+        Path mediaResource = mediaFolder.resolve(Path.of(filename).getFileName().toString());
 
         long fileSize;
         try {
@@ -130,7 +130,14 @@ public class MediaResource {
             @Override
             public void write(OutputStream output) throws IOException, WebApplicationException {
                 try (InputStream in = StorageProvider.getInstance().newInputStream(mediaResource)) {
-                    in.skip(rangeStart);
+                    long toSkip = rangeStart;
+                    while (toSkip > 0) {
+                        long skipped = in.skip(toSkip);
+                        if (skipped <= 0) {
+                            break;
+                        }
+                        toSkip -= skipped;
+                    }
                     byte[] buffer = new byte[8192];
                     long remaining = rangeEnd - rangeStart + 1;
                     int read;

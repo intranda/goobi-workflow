@@ -14,6 +14,7 @@ pipeline {
     GHCR_IMAGE_BASE = 'ghcr.io/intranda/goobi-workflow'
     DOCKERHUB_IMAGE_BASE = 'intranda/goobi-workflow'
     NEXUS_IMAGE_BASE = 'nexus.intranda.com:4443/goobi-workflow'
+    NEXUS_BASE = 'intranda-nexus::https://nexus.intranda.com/repository'
   }
 
   stages {
@@ -169,6 +170,7 @@ pipeline {
                   sourcePattern    : 'src/main/java',
                   exclusionPattern : '**/*Test.class'
                 ])
+                stash name: 'jacoco-core', includes: 'target/jacoco.exec', allowEmpty: true
               }
             }
             stage('checkstyle') {
@@ -176,7 +178,7 @@ pipeline {
                 sh 'mvn checkstyle:checkstyle -Drevision=$BUILD_VERSION -Dcheckstyle.skip=false --no-transfer-progress'
                 archiveArtifacts artifacts: 'target/checkstyle-result.xml', allowEmptyArchive: true
                 script {
-                  def strict = (env.TAG_NAME != null || env.BRANCH_NAME == 'master') && !${NO_STRICT_CHECKSTYLE}
+                  def strict = (env.TAG_NAME != null || env.BRANCH_NAME == 'master') && !env.NO_STRICT_CHECKSTYLE
                   recordIssues(
                     id: 'checkstyle-core',
                     enabledForFailure: true,
@@ -221,6 +223,7 @@ pipeline {
                   }
                 }
                 junit 'plugins/**/target/surefire-reports/*.xml'
+                stash name: 'jacoco-plugins', includes: 'plugins/**/target/jacoco.exec', allowEmpty: true
               }
             }
             stage('checkstyle') {
@@ -228,7 +231,7 @@ pipeline {
                 sh "mvn -f plugins/pom.xml checkstyle:checkstyle -T 1C -Drevision=\$BUILD_VERSION -Dcheckstyle.skip=false -Dmaven.main.skip=true --no-transfer-progress"
                 archiveArtifacts artifacts: 'plugins/**/target/checkstyle-result.xml', allowEmptyArchive: true
                 script {
-                  def strict = (env.TAG_NAME != null || env.BRANCH_NAME == 'master') && !${NO_STRICT_CHECKSTYLE}
+                  def strict = (env.TAG_NAME != null || env.BRANCH_NAME == 'master') && !env.NO_STRICT_CHECKSTYLE
                   recordIssues(
                     id: 'checkstyle-plugins',
                     enabledForFailure: true,
@@ -268,6 +271,10 @@ pipeline {
         unstash 'm2-goobi'
         sh 'mkdir -p /var/maven/.m2/repository/io/goobi/workflow && cp -r m2-goobi/. /var/maven/.m2/repository/io/goobi/workflow/'
         unstash 'build-output'
+        unstash 'jacoco-core'
+        unstash 'jacoco-plugins'
+        sh 'mvn jacoco:report -Drevision=$BUILD_VERSION -Dmaven.main.skip=true --no-transfer-progress'
+        sh 'mvn -f plugins/pom.xml jacoco:report -Drevision=$BUILD_VERSION -Dmaven.main.skip=true --no-transfer-progress -fae'
         withCredentials([string(credentialsId: 'jenkins-sonarcloud', variable: 'TOKEN')]) {
           sh 'mvn sonar:sonar -Drevision=$BUILD_VERSION -Dsonar.token=$TOKEN -U --no-transfer-progress'
         }
@@ -299,18 +306,22 @@ pipeline {
         unstash 'm2-goobi'
         sh 'mkdir -p /var/maven/.m2/repository/io/goobi/workflow && cp -r m2-goobi/. /var/maven/.m2/repository/io/goobi/workflow/'
         unstash 'build-output'
-        sh 'mvn deploy -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U --no-transfer-progress'
-        sh 'mvn deploy -f config/workflow-base/pom.xml -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U --no-transfer-progress'
+        sh '''#!/bin/bash -xe
+          ALT_REPO="-DaltDeploymentRepository=${NEXUS_BASE}/${NEXUS_PUBLIC_REPO}-releases -DaltSnapshotDeploymentRepository=${NEXUS_BASE}/${NEXUS_PUBLIC_REPO}-snapshots"
+          mvn deploy -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U $ALT_REPO --no-transfer-progress
+          mvn deploy -f config/workflow-base/pom.xml -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U $ALT_REPO --no-transfer-progress
+        '''
         script {
           if (env.TAG_NAME || env.BRANCH_NAME == 'master') {
             sh "sed -i '/<parent>/,/<\\/parent>/s|<version>dev-SNAPSHOT</version>|<version>'\$BUILD_VERSION'</version>|' plugins/goobi-plugin-*/pom.xml"
             sh '''#!/bin/bash -xe
+                ALT_REPO="-DaltDeploymentRepository=${NEXUS_BASE}/${NEXUS_PUBLIC_REPO}-releases -DaltSnapshotDeploymentRepository=${NEXUS_BASE}/${NEXUS_PUBLIC_REPO}-snapshots"
                 for plugin_dir in plugins/goobi-plugin-*/; do
                   [ -f "${plugin_dir}module-lib/pom.xml" ] || continue
                   mvn -f "${plugin_dir}pom.xml" -N deploy \
-                    -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U --no-transfer-progress
+                    -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U $ALT_REPO --no-transfer-progress
                   mvn -f "${plugin_dir}module-lib/pom.xml" deploy \
-                    -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U --no-transfer-progress
+                    -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U $ALT_REPO --no-transfer-progress
                 done
             '''
           }
