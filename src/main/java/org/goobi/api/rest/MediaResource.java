@@ -67,7 +67,13 @@ public class MediaResource {
     public Response serveMediaContent(@PathParam("process") String processIdString, @PathParam("folder") String folder,
             @PathParam("filename") String filename, @HeaderParam("Range") String rangeHeader) {
 
-        Path processFolder = METADATA_FOLDER.resolve(processIdString);
+        int processId;
+        try {
+            processId = Integer.parseInt(processIdString);
+        } catch (NumberFormatException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        Path processFolder = METADATA_FOLDER.resolve(String.valueOf(processId));
 
         Path mediaFolder = getImagesFolder(processFolder, folder);
         Path mediaResource = mediaFolder.resolve(Path.of(filename).getFileName().toString());
@@ -203,15 +209,21 @@ public class MediaResource {
                     return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getOcrPdfDirectory());
                 default:
                     if (!folder.contains("_")) {
-                        return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesDirectory(), folder);
+                        Path imagesDir = Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesDirectory()).normalize();
+                        Path resolved = imagesDir.resolve(folder).normalize();
+                        return resolved.startsWith(imagesDir) ? resolved : imagesDir;
                     } else {
-                        return processFolder.resolve("images").resolve(folder);
+                        Path imagesDir = processFolder.resolve("images").normalize();
+                        Path resolved = imagesDir.resolve(folder).normalize();
+                        return resolved.startsWith(imagesDir) ? resolved : imagesDir;
                     }
             }
         } catch (IOException | SwapException | DAOException e) {
             log.error(e);
         }
-        return processFolder.resolve("images").resolve(folder);
+        Path imagesDir = processFolder.resolve("images").normalize();
+        Path resolved = imagesDir.resolve(folder).normalize();
+        return resolved.startsWith(imagesDir) ? resolved : imagesDir;
     }
 
     /**
