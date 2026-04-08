@@ -70,7 +70,7 @@ public class MediaResource {
         Path processFolder = METADATA_FOLDER.resolve(processIdString);
 
         Path mediaFolder = getImagesFolder(processFolder, folder);
-        Path mediaResource = mediaFolder.resolve(filename);
+        Path mediaResource = mediaFolder.resolve(Path.of(filename).getFileName().toString());
 
         long fileSize;
         try {
