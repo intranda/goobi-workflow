@@ -19,7 +19,10 @@ const settings = {
             columns: 1,
             columnOffset: 0,
             rowMargin: 0
-        } 
+        },
+		zoom: {
+			max: 5
+		}
     }
 }
 
