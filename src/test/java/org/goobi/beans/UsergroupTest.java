@@ -159,8 +159,8 @@ public class UsergroupTest extends AbstractTest {
         assertEquals(0, group1.compareTo(group1));
         assertEquals(0, group1.compareTo(group2));
         assertEquals(0, group2.compareTo(group1));
-        assertNotEquals(-1, group1.compareTo(group3));// "institution" is different
-        assertNotEquals(1, group1.compareTo(group4));// "titel" is different
+        assertNotEquals(-1, group1.compareTo(group3)); // "institution" is different
+        assertNotEquals(1, group1.compareTo(group4)); // "titel" is different
     }
 
     @Test
@@ -181,8 +181,8 @@ public class UsergroupTest extends AbstractTest {
         assertEquals(group1, group1);
         assertEquals(group1, group2);
         assertEquals(group2, group1);
-        assertNotEquals(group1, group3);// "institutionId" is different
-        assertNotEquals(group1, group4);// "titel" is different
+        assertNotEquals(group1, group3); // "institutionId" is different
+        assertNotEquals(group1, group4); // "titel" is different
     }
 
     @Test

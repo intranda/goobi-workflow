@@ -35,6 +35,7 @@ public class ErrorPropertyTest extends AbstractTest {
 
     @Test
     public void testIstObligatorisch() {
+        @SuppressWarnings("deprecation")
         ErrorProperty property = new ErrorProperty();
 
         // tests whether 'false' is returned correctly
@@ -48,6 +49,7 @@ public class ErrorPropertyTest extends AbstractTest {
 
     @Test
     public void testType() {
+        @SuppressWarnings("deprecation")
         ErrorProperty property = new ErrorProperty();
 
         // test that property is set and returned correctly
@@ -57,6 +59,7 @@ public class ErrorPropertyTest extends AbstractTest {
 
     @Test
     public void testValueList() {
+        @SuppressWarnings("deprecation")
         ErrorProperty property = new ErrorProperty();
 
         // null should be replaced with an empty list (by the getter)
@@ -74,6 +77,7 @@ public class ErrorPropertyTest extends AbstractTest {
 
     @Test
     public void testContainer() {
+        @SuppressWarnings("deprecation")
         ErrorProperty property = new ErrorProperty();
 
         assertEquals(property.getContainer(), "0");
@@ -89,6 +93,7 @@ public class ErrorPropertyTest extends AbstractTest {
 
     @Test
     public void testGetNormalizedTitle() {
+        @SuppressWarnings("deprecation")
         ErrorProperty property = new ErrorProperty();
         property.setPropertyName("\tMy Title\t");
         assertEquals("My_Title", property.getNormalizedTitle());
@@ -96,6 +101,7 @@ public class ErrorPropertyTest extends AbstractTest {
 
     @Test
     public void testGetNormalizedValue() {
+        @SuppressWarnings("deprecation")
         ErrorProperty property = new ErrorProperty();
         property.setPropertyName("\tMy Value\t");
         assertEquals("My_Value", property.getNormalizedTitle());
@@ -103,6 +109,7 @@ public class ErrorPropertyTest extends AbstractTest {
 
     @Test
     public void testStep() {
+        @SuppressWarnings("deprecation")
         ErrorProperty property = new ErrorProperty();
         Step step = new Step();
         step.setId(1);
