@@ -34,6 +34,8 @@ pipeline {
           } else {
             env.BUILD_VERSION = 'dev-SNAPSHOT'
           }
+          env.CHECKSTYLE_CORE_THRESHOLD = env.CHECKSTYLE_CORE_THRESHOLD ?: '450'
+          env.CHECKSTYLE_PLUGINS_THRESHOLD = env.CHECKSTYLE_PLUGINS_THRESHOLD ?: '4300'
         }
       }
     }
@@ -185,7 +187,10 @@ pipeline {
                     enabledForFailure: true,
                     aggregatingResults: false,
                     tools: [checkStyle(pattern: 'target/checkstyle-result.xml', reportEncoding: 'UTF-8')],
-                    qualityGates: [[threshold: 1, type: 'TOTAL', unstable: !strict]]
+                    qualityGates: [
+                            [threshold: 1, type: 'TOTAL_HIGH', unstable: false],
+                            [threshold: env.CHECKSTYLE_CORE_THRESHOLD as int, type: 'TOTAL_NORMAL', unstable: !strict]
+                    ]
                   )
                 }
               }
@@ -239,7 +244,10 @@ pipeline {
                     enabledForFailure: true,
                     aggregatingResults: false,
                     tools: [checkStyle(pattern: 'plugins/**/target/checkstyle-result.xml', reportEncoding: 'UTF-8')],
-                    qualityGates: [[threshold: 1, type: 'TOTAL', unstable: !strict]]
+                          qualityGates: [
+                                  [threshold: 1, type: 'TOTAL_HIGH', unstable: false],
+                                  [threshold: env.CHECKSTYLE_PLUGINS_THRESHOLD as int, type: 'TOTAL_NORMAL', unstable: !strict]
+                          ]
                   )
                 }
               }
