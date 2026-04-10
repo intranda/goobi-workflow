@@ -154,8 +154,8 @@ public class RecordTest extends AbstractTest {
 
     @Test
     public void testArgsConstructor() {
-        Record rec = new Record(1, new Timestamp(1l), "identifier", new Date(), "title", "creator", 1, "SpecAsString", 1, "source", "exported",
-                new Date(), "subquery");
+        Record rec = new Record(1, new Timestamp(1L), "identifier", new Date(), "title", "creator", 1,
+                "SpecAsString", 1, "source", "exported", new Date(), "subquery");
         assertNotNull(rec);
         assertEquals(1, rec.getId().intValue());
     }
