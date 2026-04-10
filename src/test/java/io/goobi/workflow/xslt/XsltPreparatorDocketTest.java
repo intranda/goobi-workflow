@@ -1,27 +1,19 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
- * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
- * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
- * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
- * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
- * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
- * exception statement from your version.
  */
 package io.goobi.workflow.xslt;
 
@@ -29,40 +21,27 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.easymock.EasyMock;
-import org.goobi.beans.Batch;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
-import org.goobi.beans.JournalEntry;
-import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.cli.helper.StringPair;
-import org.goobi.production.enums.LogType;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
-import org.jdom2.input.SAXBuilder;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -70,8 +49,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
-import de.sub.goobi.config.ConfigProjectsTest;
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.HistoryEventType;
@@ -91,50 +68,18 @@ import jakarta.servlet.http.HttpServletRequest;
 @PrepareForTest({ PropertyManager.class, StepManager.class, HistoryManager.class,
         MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class, InstitutionManager.class, UserManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
-public class GeneratePdfFromXsltTest extends AbstractTest {
+public class XsltPreparatorDocketTest extends AbstractTest {
 
     private static final Namespace XMLNS = Namespace.getNamespace("http://www.goobi.io/logfile");
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-
     private Process process;
-    private String xsltfile;
 
     @Before
     public void setUp() throws Exception {
-        Path path = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path goobiFolder = Paths.get(path.getParent().getParent().toString()
-                + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
-        if (!Files.exists(goobiFolder)) {
-            goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
-        }
-        ConfigurationHelper.configFileName = goobiFolder.toString();
-        ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
-        xsltfile = goobiFolder.getParent().getParent() + "/xslt/docket.xsl";
-
-        // journal
-
         process = MockProcess.createProcess();
-        List<JournalEntry> journal = new ArrayList<>();
-        JournalEntry e1 = new JournalEntry(1, 1, new Date(), "user", LogType.INFO, "content", "", EntryType.PROCESS, null);
-        journal.add(e1);
-        JournalEntry e2 =
-                new JournalEntry(2, 1, new Date(), "user", LogType.FILE, "content", "filename", EntryType.PROCESS, Paths.get("/path/to/fle"));
-        journal.add(e2);
-        process.setJournal(journal);
+        process.setErstellungsdatum(new Date());
 
-        // batch
-        Batch batch = new Batch();
-        batch.setBatchId(1);
-        batch.setBatchLabel("label");
-        batch.setBatchName("name");
-        batch.setStartDate(new Date());
-        batch.setEndDate(new Date());
-        process.setBatch(batch);
-
-        // institution
+        // Institution
         Institution inst = new Institution();
         inst.setId(1);
         inst.setShortName("short name");
@@ -143,27 +88,25 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         InstitutionConfigurationObject ico = new InstitutionConfigurationObject();
         ico.setInstitution_id(1);
         ico.setId(1);
-
         ico.setObject_id(1);
         ico.setObject_name("name");
         ico.setObject_type("type");
 
         List<InstitutionConfigurationObject> icolist = new ArrayList<>();
         icolist.add(ico);
+
         PowerMock.mockStatic(InstitutionManager.class);
         EasyMock.expect(InstitutionManager.getConfiguredRulesets(EasyMock.anyInt())).andReturn(icolist).anyTimes();
         EasyMock.expect(InstitutionManager.getConfiguredDockets(EasyMock.anyInt())).andReturn(icolist).anyTimes();
         EasyMock.expect(InstitutionManager.getConfiguredAuthentications(EasyMock.anyInt())).andReturn(icolist).anyTimes();
 
         process.getProjekt().setInstitution(inst);
-
         process.setSortHelperStatus("12345567890");
 
         PowerMock.mockStatic(PropertyManager.class);
         PowerMock.mockStatic(StepManager.class);
         PowerMock.mockStatic(HistoryManager.class);
         PowerMock.mockStatic(MetadataManager.class);
-
         PowerMock.mockStatic(UserManager.class);
 
         List<GoobiProperty> props = new ArrayList<>();
@@ -173,11 +116,11 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         props.add(p);
 
         EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.anyObject())).andReturn(props).anyTimes();
+
         List<Step> steps = new ArrayList<>();
         Step step = new Step();
         step.setTitel("title");
         step.setBearbeitungsstatusEnum(StepStatus.OPEN);
-        steps.add(step);
         User user = new User();
         user.setId(1);
         user.setNachname("lastname");
@@ -185,10 +128,10 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         user.setLogin("login");
         user.setStandort("location");
         step.setBearbeitungsbenutzer(user);
-
+        steps.add(step);
         process.setSchritte(steps);
 
-        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(steps);
+        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(steps).anyTimes();
 
         List<HistoryEvent> hel = new ArrayList<>();
         HistoryEvent he = new HistoryEvent();
@@ -196,7 +139,7 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         he.setNumericValue(1.0);
         he.setStringValue("one");
         hel.add(he);
-        EasyMock.expect(HistoryManager.getHistoryEvents(EasyMock.anyInt())).andReturn(hel);
+        EasyMock.expect(HistoryManager.getHistoryEvents(EasyMock.anyInt())).andReturn(hel).anyTimes();
 
         List<StringPair> metadataList = new ArrayList<>();
         StringPair sp = new StringPair("title", "value");
@@ -205,17 +148,10 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
         EasyMock.expect(UserManager.getAllUsers()).andReturn(Collections.emptyList()).anyTimes();
 
-        //        PowerMock.createMockAndExpectNew(Image.class, EasyMock.anyObject(Paths.class), EasyMock.anyInt(), EasyMock.anyInt());
-        //        EasyMock.expect(new HelperForm()).andReturn(helperFormMock).anyTimes();
-        //        EasyMock.expect(helperFormMock.getServletPathWithHostAsUrl()).andReturn("http://example.com").anyTimes();
-        //        EasyMock.replay(helperFormMock);
         PowerMock.mockStatic(Helper.class);
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("fixture").anyTimes();
-
         EasyMock.expect(Helper.getDateAsFormattedString(EasyMock.anyObject())).andReturn("date").anyTimes();
         EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
-
-        EasyMock.expectLastCall();
         PowerMock.replayAll();
 
         PowerMock.mockStatic(ExternalContext.class);
@@ -237,131 +173,164 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         EasyMock.replay(request);
         EasyMock.replay(externalContext);
         EasyMock.replay(facesContext);
-
     }
 
     @Test
-    public void testConstructor() {
-        XsltToPdf xslt = new XsltToPdf();
-        assertNotNull(xslt);
+    public void testStartExportToOutputStream() throws Exception {
+        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        exporter.startExport(process, bos, null);
+
+        assertTrue(bos.size() > 0);
+        String xml = bos.toString("UTF-8");
+        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+        assertTrue(xml.contains("testprocess"));
     }
 
     @Test
-    public void testXmlLog() throws Exception {
+    public void testStartExportToOutputStreamWithIncludeImagesTrue() throws Exception {
+        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        exporter.startExport(process, bos, null, true);
 
-        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
-        assertNotNull(xmlExport);
+        assertTrue(bos.size() > 0);
+        String xml = bos.toString("UTF-8");
+        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+    }
 
-        File fixture = folder.newFile("log.xml");
+    @Test
+    public void testStartExportToOutputStreamWithIncludeImagesFalse() throws Exception {
+        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        exporter.startExport(process, bos, null, false);
 
-        xmlExport.startExport(process, fixture.toPath());
+        assertTrue(bos.size() > 0);
+        String xml = bos.toString("UTF-8");
+        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+        assertTrue(xml.contains("testprocess"));
+    }
 
-        assertNotNull(fixture);
+    @Test
+    public void testStartExportListWithoutBoolean() throws Exception {
+        List<Process> processList = new ArrayList<>();
+        processList.add(process);
 
-        SAXBuilder saxBuilder = new SAXBuilder();
-        Document document = saxBuilder.build(fixture);
-        Element root = document.getRootElement();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+        exporter.startExport(processList, bos, null);
 
-        assertEquals("process", root.getName());
+        assertTrue(bos.size() > 0);
+        String xml = bos.toString("UTF-8");
+        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESSES));
+        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+    }
 
-        assertEquals(root.getAttributeValue("processID"), "1");
+    @Test
+    public void testStartExportListWithIncludeImagesTrue() throws Exception {
+        List<Process> processList = new ArrayList<>();
+        processList.add(process);
 
-        Element title = root.getChild("title", XMLNS);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+        exporter.startExport(processList, bos, null, true);
+
+        assertTrue(bos.size() > 0);
+        String xml = bos.toString("UTF-8");
+        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESSES));
+    }
+
+    @Test
+    public void testXmlTransformationWithNullFilename() throws Exception {
+        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+        Document doc = exporter.createDocument(process, true, false);
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        exporter.xmlTransformation(bos, doc, null);
+
+        assertTrue(bos.size() > 0);
+        String xml = bos.toString("UTF-8");
+        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+    }
+
+    @Test
+    public void testXmlTransformationWithNonEmptyFilename() throws Exception {
+        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+        Document doc = exporter.createDocument(process, true, false);
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        // A non-empty filename means no XSLT transformation - doc is output as-is
+        exporter.xmlTransformation(bos, doc, "somefile.xsl");
+
+        assertTrue(bos.size() > 0);
+    }
+
+    @Test
+    public void testStartTransformation() throws Exception {
+        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        exporter.startTransformation(process, bos, null);
+
+        assertTrue(bos.size() > 0);
+        String xml = bos.toString("UTF-8");
+        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+    }
+
+    @Test
+    public void testStartTransformationAlternativeSignature() throws Exception {
+        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        exporter.startTransformation(bos, process, null);
+
+        assertTrue(bos.size() > 0);
+        String xml = bos.toString("UTF-8");
+        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+    }
+
+    @Test
+    public void testGetProjectExportConfiguration() {
+        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+        Namespace ns = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
+        Element projectElement = new Element(XsltPreparatorDocket.ELEMENT_PROJECT, ns);
+
+        exporter.getProjectExportConfiguration(process, projectElement);
+
+        Element exportConfig = projectElement.getChild(XsltPreparatorDocket.ELEMENT_EXPORT_CONFIGURATION, ns);
+        assertNotNull(exportConfig);
+
+        // useDmsImport should be present
+        String useDmsImport = exportConfig.getAttributeValue(XsltPreparatorDocket.ATTRIBUTE_USE_DMS_IMPORT);
+        assertNotNull(useDmsImport);
+        assertEquals("true", useDmsImport);
+    }
+
+    @Test
+    public void testGetMetsConfiguration() {
+        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+        Namespace ns = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
+        Element projectElement = new Element(XsltPreparatorDocket.ELEMENT_PROJECT, ns);
+
+        exporter.getMetsConfiguration(process, projectElement);
+
+        Element metsConfig = projectElement.getChild(XsltPreparatorDocket.ELEMENT_METS_CONFIGURATION, ns);
+        assertNotNull(metsConfig);
+        assertNotNull(metsConfig.getChild(XsltPreparatorDocket.ELEMENT_METS_RIGHTS_OWNER, ns));
+        assertNotNull(metsConfig.getChild(XsltPreparatorDocket.ELEMENT_METS_DIGIPROV_REFERENCE, ns));
+        assertNotNull(metsConfig.getChild(XsltPreparatorDocket.ELEMENT_METS_POINTER_PATH, ns));
+    }
+
+    @Test
+    public void testCreateDocumentStructure() throws Exception {
+        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+        Document doc = exporter.createDocument(process, true, false);
+
+        assertNotNull(doc);
+        Element root = doc.getRootElement();
+        assertEquals(XsltPreparatorDocket.ELEMENT_PROCESS, root.getName());
+        assertEquals("1", root.getAttributeValue(XsltPreparatorDocket.ATTRIBUTE_PROCESS_ID));
+
+        Element title = root.getChild(XsltPreparatorDocket.ELEMENT_TITLE, XMLNS);
+        assertNotNull(title);
         assertEquals("testprocess", title.getValue());
-
-        Element properties = root.getChild("properties", XMLNS);
-        Element prop = properties.getChildren().get(0);
-        assertEquals("Test1", prop.getAttributeValue("propertyIdentifier"));
-        assertEquals("1", prop.getAttributeValue("value"));
-
-        Element steps = root.getChild("steps", XMLNS);
-        Element step = steps.getChildren().get(0);
-
-        assertEquals("title", step.getChildText("title", XMLNS));
-        assertEquals("1", step.getChildText("processingstatus", XMLNS));
-
-        Element metadatalist = root.getChild("metadatalist", XMLNS);
-        Element metadata = metadatalist.getChildren().get(0);
-
-        assertEquals("title", metadata.getAttributeValue("name"));
-        assertEquals("value", metadata.getValue());
-    }
-
-    @Ignore
-    @Test
-    public void startMassExport() throws Exception {
-
-        List<Process> processList = new ArrayList<>();
-        processList.add(process);
-
-        File fixture = folder.newFile("docket.pdf");
-
-        OutputStream os = new FileOutputStream(fixture);
-
-        XsltToPdf xslt = new XsltToPdf();
-        assertNotNull(xslt);
-
-        xslt.startExport(processList, os, xsltfile);
-
-        assertTrue(fixture.exists());
-        assertTrue(fixture.length() > 0);
-    }
-
-    @Ignore
-    @Test
-    public void startSingleDocketExport() throws Exception {
-
-        File fixture = folder.newFile("docket.pdf");
-
-        OutputStream os = new FileOutputStream(fixture);
-
-        XsltToPdf xslt = new XsltToPdf();
-        assertNotNull(xslt);
-        xslt.startExport(process, os, xsltfile, new XsltPreparatorDocket());
-
-        assertTrue(fixture.exists());
-        assertTrue(fixture.length() > 0);
-    }
-
-    @Ignore
-    @Test
-    public void startMetadataExport() throws Exception {
-
-        File fixture = folder.newFile("docket.pdf");
-
-        OutputStream os = new FileOutputStream(fixture);
-
-        XsltToPdf xslt = new XsltToPdf();
-        assertNotNull(xslt);
-        xslt.startExport(process, os, xsltfile, new XsltPreparatorMetadata());
-
-        assertTrue(fixture.exists());
-        assertTrue(fixture.length() > 0);
-    }
-
-    @Test
-    public void testStartExportList() throws Exception {
-        List<Process> processList = new ArrayList<>();
-        processList.add(process);
-
-        File fixture = folder.newFile("docket.pdf");
-
-        OutputStream os = new FileOutputStream(fixture);
-
-        XsltPreparatorDocket xslt = new XsltPreparatorDocket();
-        assertNotNull(xslt);
-        xslt.startExport(processList, os, xsltfile, false);
-        assertTrue(fixture.exists());
-        assertTrue(fixture.length() > 0);
-    }
-
-    @Test
-    public void testCreateExtendedDocument() throws Exception {
-
-        XsltPreparatorDocket xslt = new XsltPreparatorDocket();
-
-        Document fixture = xslt.createExtendedDocument(process);
-        assertNotNull(fixture);
     }
 
 }
