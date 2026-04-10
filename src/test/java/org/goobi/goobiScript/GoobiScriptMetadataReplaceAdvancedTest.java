@@ -96,7 +96,7 @@ public class GoobiScriptMetadataReplaceAdvancedTest extends AbstractTest {
         PowerMock.mockStatic(ConfigurationHelper.class);
         ConfigurationHelper configurationHelper = EasyMock.createMock(ConfigurationHelper.class);
         EasyMock.expect(ConfigurationHelper.getInstance()).andReturn(configurationHelper).anyTimes();
-        EasyMock.expect(configurationHelper.getMetsEditorLockingTime()).andReturn(1800000l).anyTimes();
+        EasyMock.expect(configurationHelper.getMetsEditorLockingTime()).andReturn(1800000L).anyTimes();
         EasyMock.expect(configurationHelper.isAllowWhitespacesInFolder()).andReturn(false).anyTimes();
         EasyMock.expect(configurationHelper.useS3()).andReturn(false).anyTimes();
         EasyMock.expect(configurationHelper.isUseProxy()).andReturn(false).anyTimes();

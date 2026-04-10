@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -218,7 +219,12 @@ public final class FilesystemHelper {
                 if (!sp.isFileExists(ocrfile)) {
                     ocrfile = altoFolder.resolve(ocrFile + XML);
                 }
-                AltoDocument alto = AltoDocument.getDocumentFromFile(ocrfile.toFile());
+                String result = "";
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(sp.newInputStream(ocrfile)))) {
+                    result = in.lines().collect(Collectors.joining());
+                }
+
+                AltoDocument alto = AltoDocument.getDocumentFromString(result);
                 return alto.getContent().replace(LINEBREAK, XML_LINEBREAK);
             } else if (sp.isFileExists(xmlFolder)) {
                 // try to return content from xml folder

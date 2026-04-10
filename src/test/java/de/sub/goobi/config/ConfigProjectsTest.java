@@ -97,7 +97,7 @@ public class ConfigProjectsTest extends AbstractTest {
         ConfigProjects cp = new ConfigProjects("default");
         List<String> fixture = cp.getParamList("createNewProcess/itemlist/item");
         assertNotNull(fixture);
-        assertEquals(1, fixture.size());
+        assertEquals(7, fixture.size());
 
         fixture = cp.getParamList("wrongParameter");
         assertNotNull(fixture);

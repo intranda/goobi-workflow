@@ -50,7 +50,8 @@ const handleTooltip = function handleTooltip(element) {
 export const dropdownTooltips = function toggleDropdownTooltips(selector = defaultSelector) {
   const elements = document.querySelectorAll(selector);
   elements.forEach((element) => {
-    if (element.querySelector('.dropdown-toggle')) {
+    if (element.querySelector('.dropdown-toggle') && !element.hasAttribute('data-dropdown-tooltip-init')) {
+      element.setAttribute('data-dropdown-tooltip-init', '');
       handleTooltip(element);
     }
   })

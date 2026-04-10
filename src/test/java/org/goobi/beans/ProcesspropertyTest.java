@@ -37,6 +37,7 @@ public class ProcesspropertyTest extends AbstractTest {
 
     @Test
     public void testIstObligatorisch() {
+        @SuppressWarnings("deprecation")
         Processproperty property = new Processproperty();
 
         // tests whether 'false' is returned correctly
@@ -50,6 +51,7 @@ public class ProcesspropertyTest extends AbstractTest {
 
     @Test
     public void testType() {
+        @SuppressWarnings("deprecation")
         Processproperty property = new Processproperty();
 
         // test that property is set and returned correctly
@@ -59,6 +61,7 @@ public class ProcesspropertyTest extends AbstractTest {
 
     @Test
     public void testValueList() {
+        @SuppressWarnings("deprecation")
         Processproperty property = new Processproperty();
 
         // null should be replaced with an empty list (by the getter)
@@ -76,6 +79,7 @@ public class ProcesspropertyTest extends AbstractTest {
 
     @Test
     public void testContainer() {
+        @SuppressWarnings("deprecation")
         Processproperty property = new Processproperty();
 
         assertEquals(property.getContainer(), "0");
@@ -91,6 +95,7 @@ public class ProcesspropertyTest extends AbstractTest {
 
     @Test
     public void testGetNormalizedTitle() {
+        @SuppressWarnings("deprecation")
         Processproperty property = new Processproperty();
         property.setPropertyName("\tMy Title\t");
         assertEquals("My_Title", property.getNormalizedTitle());
@@ -98,6 +103,7 @@ public class ProcesspropertyTest extends AbstractTest {
 
     @Test
     public void testGetNormalizedValue() {
+        @SuppressWarnings("deprecation")
         Processproperty property = new Processproperty();
         property.setPropertyName("\tMy Value\t");
         assertEquals("My_Value", property.getNormalizedTitle());
@@ -106,14 +112,17 @@ public class ProcesspropertyTest extends AbstractTest {
     @Test
     public void testHashCode() {
         Date date = new Date();
+        @SuppressWarnings("deprecation")
         Processproperty property1 = new Processproperty();
         property1.setId(1);
         property1.setObjectId(1);
         property1.setCreationDate(date);
+        @SuppressWarnings("deprecation")
         Processproperty property2 = new Processproperty();
         property2.setId(1);
         property2.setObjectId(1);
         property2.setCreationDate(date);
+        @SuppressWarnings("deprecation")
         Processproperty property3 = new Processproperty();
         property3.setId(2);
         property3.setObjectId(2);
@@ -128,6 +137,7 @@ public class ProcesspropertyTest extends AbstractTest {
 
     @Test
     public void testEquals() {
+        @SuppressWarnings("deprecation")
         Processproperty property1 = new Processproperty();
         property1.setId(1);
         property1.setContainer("1");
@@ -136,29 +146,36 @@ public class ProcesspropertyTest extends AbstractTest {
         property1.setObjectId(1);
         property1.setPropertyName("Title");
         property1.setPropertyValue("Value");
+        @SuppressWarnings("deprecation")
         Processproperty property2 = new Processproperty();
         property2.setId(2);
+        @SuppressWarnings("deprecation")
         Processproperty property3 = new Processproperty();
         property3.setContainer("2");
+        @SuppressWarnings("deprecation")
         Processproperty property4 = new Processproperty();
         property4.setCreationDate(null);
+        @SuppressWarnings("deprecation")
         Processproperty property5 = new Processproperty();
         property5.setType(PropertyType.NUMBER);
+        @SuppressWarnings("deprecation")
         Processproperty property6 = new Processproperty();
         property6.setObjectId(2);
+        @SuppressWarnings("deprecation")
         Processproperty property7 = new Processproperty();
         property7.setPropertyName("Title 2");
+        @SuppressWarnings("deprecation")
         Processproperty property8 = new Processproperty();
         property8.setPropertyValue("Value 2");
         // test that property1 has the same hash code as itself
         assertEquals(property1.hashCode(), property1.hashCode());
         // test that property1 has a different hash code to all other properties
-        assertNotEquals(property1.hashCode(), property2.hashCode());// different id
-        assertNotEquals(property1.hashCode(), property3.hashCode());// different container
-        assertNotEquals(property1.hashCode(), property4.hashCode());// different creation date
-        assertNotEquals(property1.hashCode(), property5.hashCode());// different type
-        assertNotEquals(property1.hashCode(), property6.hashCode());// different process id
-        assertNotEquals(property1.hashCode(), property7.hashCode());// different title
-        assertNotEquals(property1.hashCode(), property8.hashCode());// different value
+        assertNotEquals(property1.hashCode(), property2.hashCode()); // different id
+        assertNotEquals(property1.hashCode(), property3.hashCode()); // different container
+        assertNotEquals(property1.hashCode(), property4.hashCode()); // different creation date
+        assertNotEquals(property1.hashCode(), property5.hashCode()); // different type
+        assertNotEquals(property1.hashCode(), property6.hashCode()); // different process id
+        assertNotEquals(property1.hashCode(), property7.hashCode()); // different title
+        assertNotEquals(property1.hashCode(), property8.hashCode()); // different value
     }
 }

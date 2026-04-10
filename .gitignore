@@ -13,7 +13,7 @@ build/
 /src/main/webapp/resources/js/dist/
 /src/main/webapp/resources/icons/
 #/src/main/webapp/npm-debug.log
-
+.flattened-pom.xml
 # Eclipse
 .project
 .classpath

@@ -1,3 +1,1080 @@
-[submodule "docs"]
-	path = docs
-	url = git@gitea.intranda.com:goobi-workflow/goobi-workflow-core-docs.git
+[submodule "plugins/goobi-plugin-opac-pica"]
+	path = plugins/goobi-plugin-opac-pica
+	url = ../goobi-plugin-opac-pica
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-sru"]
+	path = plugins/goobi-plugin-opac-sru
+	url = ../goobi-plugin-opac-sru
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-marc"]
+	path = plugins/goobi-plugin-opac-marc
+	url = ../goobi-plugin-opac-marc
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-file-upload"]
+	path = plugins/goobi-plugin-step-file-upload
+	url = ../goobi-plugin-step-file-upload
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-imageqa"]
+	path = plugins/goobi-plugin-step-imageqa
+	url = ../goobi-plugin-step-imageqa
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-exchange"]
+	path = plugins/goobi-plugin-administration-exchange
+	url = ../goobi-plugin-administration-exchange
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-command-intranda"]
+	path = plugins/goobi-plugin-command-intranda
+	url = ../goobi-plugin-command-intranda
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-dashboard-extended"]
+	path = plugins/goobi-plugin-dashboard-extended
+	url = ../goobi-plugin-dashboard-extended
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-statistics-intranda"]
+	path = plugins/goobi-plugin-statistics-intranda
+	url = ../goobi-plugin-statistics-intranda
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-rest-intranda"]
+	path = plugins/goobi-plugin-rest-intranda
+	url = ../goobi-plugin-rest-intranda
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-display-metadata"]
+	path = plugins/goobi-plugin-step-display-metadata
+	url = ../goobi-plugin-step-display-metadata
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-rest-nle"]
+	path = plugins/goobi-plugin-rest-nle
+	url = ../goobi-plugin-rest-nle
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-pdf-extraction"]
+	path = plugins/goobi-plugin-step-pdf-extraction
+	url = ../goobi-plugin-step-pdf-extraction
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-copyanchor"]
+	path = plugins/goobi-plugin-administration-copyanchor
+	url = ../goobi-plugin-administration-copyanchor
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-data-poller"]
+	path = plugins/goobi-plugin-administration-data-poller
+	url = ../goobi-plugin-administration-data-poller
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-representative-creation"]
+	path = plugins/goobi-plugin-step-representative-creation
+	url = ../goobi-plugin-step-representative-creation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-pdf-upload"]
+	path = plugins/goobi-plugin-step-pdf-upload
+	url = ../goobi-plugin-step-pdf-upload
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-ocr-selector"]
+	path = plugins/goobi-plugin-step-ocr-selector
+	url = ../goobi-plugin-step-ocr-selector
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-mixed-ocr"]
+	path = plugins/goobi-plugin-step-mixed-ocr
+	url = ../goobi-plugin-step-mixed-ocr
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-xmp-header"]
+	path = plugins/goobi-plugin-step-xmp-header
+	url = ../goobi-plugin-step-xmp-header
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-change-workflow"]
+	path = plugins/goobi-plugin-step-change-workflow
+	url = ../goobi-plugin-step-change-workflow
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-analysis-imagename"]
+	path = plugins/goobi-plugin-step-analysis-imagename
+	url = ../goobi-plugin-step-analysis-imagename
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-ewig"]
+	path = plugins/goobi-plugin-step-ewig
+	url = ../goobi-plugin-step-ewig
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-rename-files"]
+	path = plugins/goobi-plugin-step-rename-files
+	url = ../goobi-plugin-step-rename-files
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-tif-validation"]
+	path = plugins/goobi-plugin-step-tif-validation
+	url = ../goobi-plugin-step-tif-validation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-yerusha-validation"]
+	path = plugins/goobi-plugin-step-yerusha-validation
+	url = ../goobi-plugin-step-yerusha-validation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-ead"]
+	path = plugins/goobi-plugin-opac-ead
+	url = ../goobi-plugin-opac-ead
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-generic-xml"]
+	path = plugins/goobi-plugin-opac-generic-xml
+	url = ../goobi-plugin-opac-generic-xml
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-excel"]
+	path = plugins/goobi-plugin-import-excel
+	url = ../goobi-plugin-import-excel
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-fedora"]
+	path = plugins/goobi-plugin-export-fedora
+	url = ../goobi-plugin-export-fedora
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-fedora-prov"]
+	path = plugins/goobi-plugin-export-fedora-prov
+	url = ../goobi-plugin-export-fedora-prov
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-weimar-haab"]
+	path = plugins/goobi-plugin-export-weimar-haab
+	url = ../goobi-plugin-export-weimar-haab
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-excel-import"]
+	path = plugins/goobi-plugin-workflow-excel-import
+	url = ../goobi-plugin-workflow-excel-import
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-barcode-generator"]
+	path = plugins/goobi-plugin-workflow-barcode-generator
+	url = ../goobi-plugin-workflow-barcode-generator
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-wuwien"]
+	path = plugins/goobi-plugin-import-wuwien
+	url = ../goobi-plugin-import-wuwien
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-json"]
+	path = plugins/goobi-plugin-opac-json
+	url = ../goobi-plugin-opac-json
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-soutron"]
+	path = plugins/goobi-plugin-opac-soutron
+	url = ../goobi-plugin-opac-soutron
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-placeholder-creation"]
+	path = plugins/goobi-plugin-step-placeholder-creation
+	url = ../goobi-plugin-step-placeholder-creation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-replace-images"]
+	path = plugins/goobi-plugin-step-replace-images
+	url = ../goobi-plugin-step-replace-images
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-goobi2goobi-import"]
+	path = plugins/goobi-plugin-administration-goobi2goobi-import
+	url = ../goobi-plugin-administration-goobi2goobi-import
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-goobi2goobi-export"]
+	path = plugins/goobi-plugin-administration-goobi2goobi-export
+	url = ../goobi-plugin-administration-goobi2goobi-export
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-image-resize-and-watermark"]
+	path = plugins/goobi-plugin-step-image-resize-and-watermark
+	url = ../goobi-plugin-step-image-resize-and-watermark
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-reorder-images"]
+	path = plugins/goobi-plugin-step-reorder-images
+	url = ../goobi-plugin-step-reorder-images
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-delete-content"]
+	path = plugins/goobi-plugin-step-delete-content
+	url = ../goobi-plugin-step-delete-content
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-export-package"]
+	path = plugins/goobi-plugin-step-export-package
+	url = ../goobi-plugin-step-export-package
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-generate-identifier"]
+	path = plugins/goobi-plugin-step-generate-identifier
+	url = ../goobi-plugin-step-generate-identifier
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-metadata-edition"]
+	path = plugins/goobi-plugin-step-metadata-edition
+	url = ../goobi-plugin-step-metadata-edition
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-mass-upload"]
+	path = plugins/goobi-plugin-workflow-mass-upload
+	url = ../goobi-plugin-workflow-mass-upload
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-project-export"]
+	path = plugins/goobi-plugin-workflow-project-export
+	url = ../goobi-plugin-workflow-project-export
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-oid-creation"]
+	path = plugins/goobi-plugin-step-oid-creation
+	url = ../goobi-plugin-step-oid-creation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-epic-pid"]
+	path = plugins/goobi-plugin-step-epic-pid
+	url = ../goobi-plugin-step-epic-pid
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-statistics-sudan-memory"]
+	path = plugins/goobi-plugin-statistics-sudan-memory
+	url = ../goobi-plugin-statistics-sudan-memory
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-transcription"]
+	path = plugins/goobi-plugin-step-transcription
+	url = ../goobi-plugin-step-transcription
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-archive-management"]
+	path = plugins/goobi-plugin-administration-archive-management
+	url = ../goobi-plugin-administration-archive-management
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-image-metadata-extraction"]
+	path = plugins/goobi-plugin-step-image-metadata-extraction
+	url = ../goobi-plugin-step-image-metadata-extraction
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-sisis-sunrise-file"]
+	path = plugins/goobi-plugin-import-sisis-sunrise-file
+	url = ../goobi-plugin-import-sisis-sunrise-file
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-file-upload-process-creation"]
+	path = plugins/goobi-plugin-workflow-file-upload-process-creation
+	url = ../goobi-plugin-workflow-file-upload-process-creation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-catalogue-request"]
+	path = plugins/goobi-plugin-step-catalogue-request
+	url = ../goobi-plugin-step-catalogue-request
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-metadata-update-field"]
+	path = plugins/goobi-plugin-step-metadata-update-field
+	url = ../goobi-plugin-step-metadata-update-field
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-reset-pagination"]
+	path = plugins/goobi-plugin-administration-reset-pagination
+	url = ../goobi-plugin-administration-reset-pagination
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-ruleset-compatibility"]
+	path = plugins/goobi-plugin-administration-ruleset-compatibility
+	url = ../goobi-plugin-administration-ruleset-compatibility
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-bka-bda"]
+	path = plugins/goobi-plugin-import-bka-bda
+	url = ../goobi-plugin-import-bka-bda
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-heris"]
+	path = plugins/goobi-plugin-step-heris
+	url = ../goobi-plugin-step-heris
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-bda-single-image"]
+	path = plugins/goobi-plugin-export-bda-single-image
+	url = ../goobi-plugin-export-bda-single-image
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-batch-progress"]
+	path = plugins/goobi-plugin-step-batch-progress
+	url = ../goobi-plugin-step-batch-progress
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-aeon-process-creation"]
+	path = plugins/goobi-plugin-workflow-aeon-process-creation
+	url = ../goobi-plugin-workflow-aeon-process-creation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-barcode-scanner"]
+	path = plugins/goobi-plugin-step-barcode-scanner
+	url = ../goobi-plugin-step-barcode-scanner
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-delete-first-image"]
+	path = plugins/goobi-plugin-step-delete-first-image
+	url = ../goobi-plugin-step-delete-first-image
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-image-manipulation"]
+	path = plugins/goobi-plugin-step-image-manipulation
+	url = ../goobi-plugin-step-image-manipulation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-image-converter"]
+	path = plugins/goobi-plugin-step-image-converter
+	url = ../goobi-plugin-step-image-converter
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-vocabulary"]
+	path = plugins/goobi-plugin-opac-vocabulary
+	url = ../goobi-plugin-opac-vocabulary
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-move-folder-to-master"]
+	path = plugins/goobi-plugin-step-move-folder-to-master
+	url = ../goobi-plugin-step-move-folder-to-master
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-user-assignment"]
+	path = plugins/goobi-plugin-step-user-assignment
+	url = ../goobi-plugin-step-user-assignment
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-validation-imagename"]
+	path = plugins/goobi-plugin-validation-imagename
+	url = ../goobi-plugin-validation-imagename
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-validation"]
+	path = plugins/goobi-plugin-validation
+	url = ../goobi-plugin-validation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-show-config-files"]
+	path = plugins/goobi-plugin-administration-show-config-files
+	url = ../goobi-plugin-administration-show-config-files
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-hotfolder-nli"]
+	path = plugins/goobi-plugin-administration-hotfolder-nli
+	url = ../goobi-plugin-administration-hotfolder-nli
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-googlebooks-harvester"]
+	path = plugins/goobi-plugin-administration-googlebooks-harvester
+	url = ../goobi-plugin-administration-googlebooks-harvester
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-hotfolder-tib"]
+	path = plugins/goobi-plugin-administration-hotfolder-tib
+	url = ../goobi-plugin-administration-hotfolder-tib
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-nli-dailypress"]
+	path = plugins/goobi-plugin-administration-nli-dailypress
+	url = ../goobi-plugin-administration-nli-dailypress
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-wellcome"]
+	path = plugins/goobi-plugin-administration-wellcome
+	url = ../goobi-plugin-administration-wellcome
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-actapro"]
+	path = plugins/goobi-plugin-import-actapro
+	url = ../goobi-plugin-import-actapro
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-basel"]
+	path = plugins/goobi-plugin-import-basel
+	url = ../goobi-plugin-import-basel
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-bsz"]
+	path = plugins/goobi-plugin-import-bsz
+	url = ../goobi-plugin-import-bsz
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-fulda"]
+	path = plugins/goobi-plugin-import-fulda
+	url = ../goobi-plugin-import-fulda
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-mpi-khi-tn"]
+	path = plugins/goobi-plugin-import-mpi-khi-tn
+	url = ../goobi-plugin-import-mpi-khi-tn
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-soton"]
+	path = plugins/goobi-plugin-import-soton
+	url = ../goobi-plugin-import-soton
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-mets-creation"]
+	path = plugins/goobi-plugin-step-mets-creation
+	url = ../goobi-plugin-step-mets-creation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-fetch-images-from-metadata"]
+	path = plugins/goobi-plugin-step-fetch-images-from-metadata
+	url = ../goobi-plugin-step-fetch-images-from-metadata
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-delay"]
+	path = plugins/goobi-plugin-step-delay
+	url = ../goobi-plugin-step-delay
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-create-full-pdf"]
+	path = plugins/goobi-plugin-step-create-full-pdf
+	url = ../goobi-plugin-step-create-full-pdf
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-update-process-title"]
+	path = plugins/goobi-plugin-step-update-process-title
+	url = ../goobi-plugin-step-update-process-title
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-kalliope"]
+	path = plugins/goobi-plugin-opac-kalliope
+	url = ../goobi-plugin-opac-kalliope
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-iai"]
+	path = plugins/goobi-plugin-opac-iai
+	url = ../goobi-plugin-opac-iai
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-weimar-sru"]
+	path = plugins/goobi-plugin-opac-weimar-sru
+	url = ../goobi-plugin-opac-weimar-sru
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-excel"]
+	path = plugins/goobi-plugin-opac-excel
+	url = ../goobi-plugin-opac-excel
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-ariadne"]
+	path = plugins/goobi-plugin-opac-ariadne
+	url = ../goobi-plugin-opac-ariadne
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-opac-bsz"]
+	path = plugins/goobi-plugin-opac-bsz
+	url = ../goobi-plugin-opac-bsz
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-wellcome"]
+	path = plugins/goobi-plugin-import-wellcome
+	url = ../goobi-plugin-import-wellcome
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-image-download-sim"]
+	path = plugins/goobi-plugin-step-image-download-sim
+	url = ../goobi-plugin-step-image-download-sim
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-image-size-validation"]
+	path = plugins/goobi-plugin-step-image-size-validation
+	url = ../goobi-plugin-step-image-size-validation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-gei-eurviews"]
+	path = plugins/goobi-plugin-step-gei-eurviews
+	url = ../goobi-plugin-step-gei-eurviews
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-metadata-replacement"]
+	path = plugins/goobi-plugin-step-metadata-replacement
+	url = ../goobi-plugin-step-metadata-replacement
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-metadata-backup"]
+	path = plugins/goobi-plugin-administration-metadata-backup
+	url = ../goobi-plugin-administration-metadata-backup
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-tei-import"]
+	path = plugins/goobi-plugin-step-tei-import
+	url = ../goobi-plugin-step-tei-import
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-mpi-fulltext-generation"]
+	path = plugins/goobi-plugin-step-mpi-fulltext-generation
+	url = ../goobi-plugin-step-mpi-fulltext-generation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-cdstar"]
+	path = plugins/goobi-plugin-step-cdstar
+	url = ../goobi-plugin-step-cdstar
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-download-docket"]
+	path = plugins/goobi-plugin-step-download-docket
+	url = ../goobi-plugin-step-download-docket
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-wiener-library"]
+	path = plugins/goobi-plugin-export-wiener-library
+	url = ../goobi-plugin-export-wiener-library
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-sword"]
+	path = plugins/goobi-plugin-export-sword
+	url = ../goobi-plugin-export-sword
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-journals"]
+	path = plugins/goobi-plugin-import-journals
+	url = ../goobi-plugin-import-journals
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-filename-import"]
+	path = plugins/goobi-plugin-step-filename-import
+	url = ../goobi-plugin-step-filename-import
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-alto-correction"]
+	path = plugins/goobi-plugin-step-alto-correction
+	url = ../goobi-plugin-step-alto-correction
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-ark"]
+	path = plugins/goobi-plugin-step-ark
+	url = ../goobi-plugin-step-ark
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-urn"]
+	path = plugins/goobi-plugin-step-urn
+	url = ../goobi-plugin-step-urn
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-send-mail"]
+	path = plugins/goobi-plugin-step-send-mail
+	url = ../goobi-plugin-step-send-mail
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-newspaper"]
+	path = plugins/goobi-plugin-export-newspaper
+	url = ../goobi-plugin-export-newspaper
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-archive-image-folder"]
+	path = plugins/goobi-plugin-step-archive-image-folder
+	url = ../goobi-plugin-step-archive-image-folder
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-restore-archived-image-folders"]
+	path = plugins/goobi-plugin-administration-restore-archived-image-folders
+	url = ../goobi-plugin-administration-restore-archived-image-folders
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-geonames-auto-annotator"]
+	path = plugins/goobi-plugin-step-geonames-auto-annotator
+	url = ../goobi-plugin-step-geonames-auto-annotator
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-geonames-correction"]
+	path = plugins/goobi-plugin-step-geonames-correction
+	url = ../goobi-plugin-step-geonames-correction
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-delay-workflow-status"]
+	path = plugins/goobi-plugin-step-delay-workflow-status
+	url = ../goobi-plugin-step-delay-workflow-status
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-rest-wellcome-photos"]
+	path = plugins/goobi-plugin-rest-wellcome-photos
+	url = ../goobi-plugin-rest-wellcome-photos
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-rest-wellcome"]
+	path = plugins/goobi-plugin-rest-wellcome
+	url = ../goobi-plugin-rest-wellcome
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-rest-wellcome-counterscript"]
+	path = plugins/goobi-plugin-rest-wellcome-counterscript
+	url = ../goobi-plugin-rest-wellcome-counterscript
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-tickets-wellcome"]
+	path = plugins/goobi-plugin-tickets-wellcome
+	url = ../goobi-plugin-tickets-wellcome
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-file-delivery"]
+	path = plugins/goobi-plugin-step-file-delivery
+	url = ../goobi-plugin-step-file-delivery
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-oepma-importer"]
+	path = plugins/goobi-plugin-workflow-oepma-importer
+	url = ../goobi-plugin-workflow-oepma-importer
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-oepma-class-assignement"]
+	path = plugins/goobi-plugin-step-oepma-class-assignement
+	url = ../goobi-plugin-step-oepma-class-assignement
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-configurable"]
+	path = plugins/goobi-plugin-export-configurable
+	url = ../goobi-plugin-export-configurable
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-save-docket-file"]
+	path = plugins/goobi-plugin-step-save-docket-file
+	url = ../goobi-plugin-step-save-docket-file
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-delivery-management"]
+	path = plugins/goobi-plugin-administration-delivery-management
+	url = ../goobi-plugin-administration-delivery-management
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-rest-user-creation"]
+	path = plugins/goobi-plugin-rest-user-creation
+	url = ../goobi-plugin-rest-user-creation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-excel-metadata-enrichment"]
+	path = plugins/goobi-plugin-step-excel-metadata-enrichment
+	url = ../goobi-plugin-step-excel-metadata-enrichment
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-import-from-folder"]
+	path = plugins/goobi-plugin-step-import-from-folder
+	url = ../goobi-plugin-step-import-from-folder
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-kiel-archive-cleanup"]
+	path = plugins/goobi-plugin-step-kiel-archive-cleanup
+	url = ../goobi-plugin-step-kiel-archive-cleanup
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-olr-correction"]
+	path = plugins/goobi-plugin-step-olr-correction
+	url = ../goobi-plugin-step-olr-correction
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-doi"]
+	path = plugins/goobi-plugin-step-doi
+	url = ../goobi-plugin-step-doi
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-hu-importer"]
+	path = plugins/goobi-plugin-workflow-hu-importer
+	url = ../goobi-plugin-workflow-hu-importer
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-dashboard-entity"]
+	path = plugins/goobi-plugin-dashboard-entity
+	url = ../goobi-plugin-dashboard-entity
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-duplicates-fixer"]
+	path = plugins/goobi-plugin-administration-duplicates-fixer
+	url = ../goobi-plugin-administration-duplicates-fixer
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-process-inspection"]
+	path = plugins/goobi-plugin-workflow-process-inspection
+	url = ../goobi-plugin-workflow-process-inspection
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-entity-editor"]
+	path = plugins/goobi-plugin-workflow-entity-editor
+	url = ../goobi-plugin-workflow-entity-editor
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-dashboard-delivery"]
+	path = plugins/goobi-plugin-dashboard-delivery
+	url = ../goobi-plugin-dashboard-delivery
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-rest-marc-delivery"]
+	path = plugins/goobi-plugin-rest-marc-delivery
+	url = ../goobi-plugin-rest-marc-delivery
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-file-validation"]
+	path = plugins/goobi-plugin-step-file-validation
+	url = ../goobi-plugin-step-file-validation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-fulltext-generation"]
+	path = plugins/goobi-plugin-step-fulltext-generation
+	url = ../goobi-plugin-step-fulltext-generation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-marc-export"]
+	path = plugins/goobi-plugin-step-marc-export
+	url = ../goobi-plugin-step-marc-export
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-intranda"]
+	path = plugins/goobi-plugin-import-intranda
+	url = ../goobi-plugin-import-intranda
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-luxembourg-artist-dictionary"]
+	path = plugins/goobi-plugin-export-luxembourg-artist-dictionary
+	url = ../goobi-plugin-export-luxembourg-artist-dictionary
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-vlm"]
+	path = plugins/goobi-plugin-export-vlm
+	url = ../goobi-plugin-export-vlm
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-rename-process"]
+	path = plugins/goobi-plugin-step-rename-process
+	url = ../goobi-plugin-step-rename-process
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-zop"]
+	path = plugins/goobi-plugin-export-zop
+	url = ../goobi-plugin-export-zop
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-quartz-heris"]
+	path = plugins/goobi-plugin-quartz-heris
+	url = ../goobi-plugin-quartz-heris
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-heris"]
+	path = plugins/goobi-plugin-export-heris
+	url = ../goobi-plugin-export-heris
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-image-selection"]
+	path = plugins/goobi-plugin-step-image-selection
+	url = ../goobi-plugin-step-image-selection
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-dashboard-barcode"]
+	path = plugins/goobi-plugin-dashboard-barcode
+	url = ../goobi-plugin-dashboard-barcode
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-duplicate-tasks"]
+	path = plugins/goobi-plugin-step-duplicate-tasks
+	url = ../goobi-plugin-step-duplicate-tasks
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-alma-api"]
+	path = plugins/goobi-plugin-step-alma-api
+	url = ../goobi-plugin-step-alma-api
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-download-and-verify-assets"]
+	path = plugins/goobi-plugin-step-download-and-verify-assets
+	url = ../goobi-plugin-step-download-and-verify-assets
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-rename-files-before-rosetta"]
+	path = plugins/goobi-plugin-step-rename-files-before-rosetta
+	url = ../goobi-plugin-step-rename-files-before-rosetta
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-selected-images"]
+	path = plugins/goobi-plugin-export-selected-images
+	url = ../goobi-plugin-export-selected-images
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-ocr-to-metadata"]
+	path = plugins/goobi-plugin-step-ocr-to-metadata
+	url = ../goobi-plugin-step-ocr-to-metadata
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-bag-creation"]
+	path = plugins/goobi-plugin-step-bag-creation
+	url = ../goobi-plugin-step-bag-creation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-import-json"]
+	path = plugins/goobi-plugin-workflow-import-json
+	url = ../goobi-plugin-workflow-import-json
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-newspaper-pages-importer"]
+	path = plugins/goobi-plugin-workflow-newspaper-pages-importer
+	url = ../goobi-plugin-workflow-newspaper-pages-importer
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-crown"]
+	path = plugins/goobi-plugin-import-crown
+	url = ../goobi-plugin-import-crown
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-adm-bsme"]
+	path = plugins/goobi-plugin-export-adm-bsme
+	url = ../goobi-plugin-export-adm-bsme
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-cbl"]
+	path = plugins/goobi-plugin-export-cbl
+	url = ../goobi-plugin-export-cbl
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-katzoom"]
+	path = plugins/goobi-plugin-import-katzoom
+	url = ../goobi-plugin-import-katzoom
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-quartz-bka-wohnbau"]
+	path = plugins/goobi-plugin-quartz-bka-wohnbau
+	url = ../goobi-plugin-quartz-bka-wohnbau
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-eth-no-catalogue"]
+	path = plugins/goobi-plugin-import-eth-no-catalogue
+	url = ../goobi-plugin-import-eth-no-catalogue
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-mab"]
+	path = plugins/goobi-plugin-import-mab
+	url = ../goobi-plugin-import-mab
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-zbz-alma"]
+	path = plugins/goobi-plugin-import-zbz-alma
+	url = ../goobi-plugin-import-zbz-alma
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-zbz-cmi"]
+	path = plugins/goobi-plugin-import-zbz-cmi
+	url = ../goobi-plugin-import-zbz-cmi
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-import-zbz-no-catalogue"]
+	path = plugins/goobi-plugin-import-zbz-no-catalogue
+	url = ../goobi-plugin-import-zbz-no-catalogue
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-nli-pdf-to-folder-structure"]
+	path = plugins/goobi-plugin-export-nli-pdf-to-folder-structure
+	url = ../goobi-plugin-export-nli-pdf-to-folder-structure
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-process-folder-migration"]
+	path = plugins/goobi-plugin-step-process-folder-migration
+	url = ../goobi-plugin-step-process-folder-migration
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-reverse-image-order"]
+	path = plugins/goobi-plugin-step-reverse-image-order
+	url = ../goobi-plugin-step-reverse-image-order
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-metadata-create-structure-elements"]
+	path = plugins/goobi-plugin-metadata-create-structure-elements
+	url = ../goobi-plugin-metadata-create-structure-elements
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-statistics-user-throughput"]
+	path = plugins/goobi-plugin-statistics-user-throughput
+	url = ../goobi-plugin-statistics-user-throughput
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-create-structure-from-filenames"]
+	path = plugins/goobi-plugin-step-create-structure-from-filenames
+	url = ../goobi-plugin-step-create-structure-from-filenames
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-linked-process-creation"]
+	path = plugins/goobi-plugin-workflow-linked-process-creation
+	url = ../goobi-plugin-workflow-linked-process-creation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-zbz-order-delivery"]
+	path = plugins/goobi-plugin-step-zbz-order-delivery
+	url = ../goobi-plugin-step-zbz-order-delivery
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-transkribus-collection"]
+	path = plugins/goobi-plugin-step-transkribus-collection
+	url = ../goobi-plugin-step-transkribus-collection
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-pdf-book-interchange-convert"]
+	path = plugins/goobi-plugin-step-pdf-book-interchange-convert
+	url = ../goobi-plugin-step-pdf-book-interchange-convert
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-generate-alto-ids"]
+	path = plugins/goobi-plugin-step-generate-alto-ids
+	url = ../goobi-plugin-step-generate-alto-ids
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-metadata-per-image"]
+	path = plugins/goobi-plugin-step-metadata-per-image
+	url = ../goobi-plugin-step-metadata-per-image
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-metadata-structure-import"]
+	path = plugins/goobi-plugin-step-metadata-structure-import
+	url = ../goobi-plugin-step-metadata-structure-import
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-mix-metadata-enrichment"]
+	path = plugins/goobi-plugin-step-mix-metadata-enrichment
+	url = ../goobi-plugin-step-mix-metadata-enrichment
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-stanford"]
+	path = plugins/goobi-plugin-export-stanford
+	url = ../goobi-plugin-export-stanford
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-metadata-change-type"]
+	path = plugins/goobi-plugin-metadata-change-type
+	url = ../goobi-plugin-metadata-change-type
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-flex-editor"]
+	path = plugins/goobi-plugin-step-flex-editor
+	url = ../goobi-plugin-step-flex-editor
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-vocabulary-enrichment"]
+	path = plugins/goobi-plugin-step-vocabulary-enrichment
+	url = ../goobi-plugin-step-vocabulary-enrichment
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-yerusha-aim25"]
+	path = plugins/goobi-plugin-workflow-yerusha-aim25
+	url = ../goobi-plugin-workflow-yerusha-aim25
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-close-step"]
+	path = plugins/goobi-plugin-workflow-close-step
+	url = ../goobi-plugin-workflow-close-step
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-mets-enhancer"]
+	path = plugins/goobi-plugin-step-mets-enhancer
+	url = ../goobi-plugin-step-mets-enhancer
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-wu-wma-import"]
+	path = plugins/goobi-plugin-workflow-wu-wma-import
+	url = ../goobi-plugin-workflow-wu-wma-import
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-migrate-visual-library-to-goobi"]
+	path = plugins/goobi-plugin-step-migrate-visual-library-to-goobi
+	url = ../goobi-plugin-step-migrate-visual-library-to-goobi
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-batch-assignment"]
+	path = plugins/goobi-plugin-step-batch-assignment
+	url = ../goobi-plugin-step-batch-assignment
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-display-content"]
+	path = plugins/goobi-plugin-step-display-content
+	url = ../goobi-plugin-step-display-content
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-generic-barcode-scanner"]
+	path = plugins/goobi-plugin-generic-barcode-scanner
+	url = ../goobi-plugin-generic-barcode-scanner
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-olr-newspaper-recognizer"]
+	path = plugins/goobi-plugin-step-olr-newspaper-recognizer
+	url = ../goobi-plugin-step-olr-newspaper-recognizer
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-actapro-sync"]
+	path = plugins/goobi-plugin-administration-actapro-sync
+	url = ../goobi-plugin-administration-actapro-sync
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-actapro"]
+	path = plugins/goobi-plugin-step-actapro
+	url = ../goobi-plugin-step-actapro
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-generate-property"]
+	path = plugins/goobi-plugin-step-generate-property
+	url = ../goobi-plugin-step-generate-property
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-workflow-batch-imageqa"]
+	path = plugins/goobi-plugin-workflow-batch-imageqa
+	url = ../goobi-plugin-workflow-batch-imageqa
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-arche-export"]
+	path = plugins/goobi-plugin-step-arche-export
+	url = ../goobi-plugin-step-arche-export
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-arche-validation"]
+	path = plugins/goobi-plugin-step-arche-validation
+	url = ../goobi-plugin-step-arche-validation
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-arche-to-viewer"]
+	path = plugins/goobi-plugin-export-arche-to-viewer
+	url = ../goobi-plugin-export-arche-to-viewer
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-arche-project-export"]
+	path = plugins/goobi-plugin-administration-arche-project-export
+	url = ../goobi-plugin-administration-arche-project-export
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-administration-licences"]
+	path = plugins/goobi-plugin-administration-licences
+	url = ../goobi-plugin-administration-licences
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-wait-for-others"]
+	path = plugins/goobi-plugin-step-wait-for-others
+	url = ../goobi-plugin-step-wait-for-others
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-export-mei"]
+	path = plugins/goobi-plugin-export-mei
+	url = ../goobi-plugin-export-mei
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-mycore-ingest"]
+	path = plugins/goobi-plugin-step-mycore-ingest
+	url = ../goobi-plugin-step-mycore-ingest
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-read-structure-from-csv"]
+	path = plugins/goobi-plugin-step-read-structure-from-csv
+	url = ../goobi-plugin-step-read-structure-from-csv
+	branch = master
+	ignore = all

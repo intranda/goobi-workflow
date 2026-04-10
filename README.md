@@ -24,35 +24,35 @@ The discussion is currently still mostly happening in German. Nonetheless, pleas
 
 The central documentation space for all topics around Goobi workflow and Goobi viewer is located here:
 
-https://docs.goobi.io/docs/
+https://docs.goobi.io
 
 A complete German documentation regarding Goobi workflow can be found using this URL:
 
-https://docs.goobi.io/goobi-workflow/de/
+https://docs.goobi.io/de/workflow/manual
 
 The English documentation for Goobi workflow is located here:
 
-https://docs.goobi.io/goobi-workflow/en/
+https://docs.goobi.io/en/workflow/manual
 
 ## Plugin Documentation
 
 Currently there are about 370 different plugins for Goobi workflow. Not all of those are currently documented. However, the new documentation area lists approx. 160 documented plugins here:
 
 German documentation of the plugins:
-https://docs.goobi.io/workflow-plugins/de/
+https://docs.goobi.io/de/workflow/plugins
 
 English documentation of the plugins:
-https://docs.goobi.io/workflow-plugins/en/
+https://docs.goobi.io/en/workflow/plugins
 
 ## Development
 
 The development of Goobi workflow in mostly done by the software company [intranda GmbH](https://intranda.com) located in Göttingen, Germany. All current developments are centrally listed and explained in the monthly digests which can be found here:
 
 German monthly digests:
-https://docs.goobi.io/goobi-workflow-digests-de/
+https://docs.goobi.io/de/workflow/digests
 
 English monthly digests:
-https://docs.goobi.io/goobi-workflow-digests-en/
+https://docs.goobi.io/en/workflow/digests
 
 ## Technical background
 
@@ -70,7 +70,7 @@ The digitisation project management solution Goobi is based on the latest softwa
 
 ## Technical parameters
 
-- Development based on JavaServer Faces (JSF) 2.2.
+- Development based on JavaServer Faces (JSF) 2.3.
 - Support for commonly used Java application servers (e. g. Apache Tomcat, GlassFish)
 - Support for commonly used SQL-compliant databases (e. g. MySQL)
 - Support for directory services based on the x.500 protocol (e. g. LDAP, Active Directory)

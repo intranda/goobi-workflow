@@ -16,6 +16,12 @@
 					Artist
 					<select label="INTRANDA"> intranda GmbH </select>
 				</item>
+				<item docstruct="topstruct" property="true" isnotdoctype="multivolume" metadata="TitleDocMain">Title</item>
+				<item docstruct="topstruct" property="true" isdoctype="multivolume" metadata="TitleDocMain">Title</item>
+				<item docstruct="topstruct" isnotdoctype="multivolume" metadata="TitleDocMainShort">Sorting title</item>
+				<item docstruct="topstruct" isdoctype="multivolume" metadata="TitleDocMainShort">Sorting title</item>
+				<item docstruct="topstruct" property="true" isdoctype="monograph" metadata="PublicationYear">Publishing year</item>
+				<item docstruct="firstchild" property="true" isdoctype="multivolume" metadata="PublicationYear">Publishing year</item>
 				<processtitle isdoctype="monograph">ATS+TSL+'_'+Identifier analog a-set</processtitle>
 				<hide>images</hide>
 			</itemlist>

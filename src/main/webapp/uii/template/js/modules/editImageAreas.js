@@ -97,7 +97,7 @@ function closeSubscriptions() {
 function drawAreas(areas, image) {
     for(let area of areas) {
         if(_debug)console.log("draw area ", area);
-        const rect = new OpenSeadragon.Rect(parseInt(area.x), parseInt(area.y), parseInt(area.w), parseInt(area.h));
+        const rect = ImageView.CoordinateConversion.convertToOpenSeadragonObject({x:parseInt(area.x), y:parseInt(area.y), width:parseInt(area.w), height:parseInt(area.h)});
 	    const displayRect = ImageView.CoordinateConversion.scaleToOpenSeadragonCoordinates(rect, image.openseadragon, image.getOriginalImageSize());
         if(_debug)console.log("draw rect", rect, displayRect );
         const overlay = new ImageView.Overlay(displayRect, {style: settings.style}, area.areaId);

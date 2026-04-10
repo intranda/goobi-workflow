@@ -353,7 +353,7 @@ public class ProjectTest extends AbstractTest {
 
     // TODO: getWorkFlow() can not be tested without database
 
-    /**
+    /*
      * Note: This method tests "compareTo()" and "equals()" to avoid some redundancy
      */
     @Test
@@ -391,7 +391,7 @@ public class ProjectTest extends AbstractTest {
     }
 
     @Test
-    public void testHashCode() {// NOSONAR This method needs > 25 asserts to be complete
+    public void testHashCode() { // NOSONAR This method needs > 25 asserts to be complete
         Project project1 = new Project();
         // Here, the hash code method should be called twice:
         assertEquals(project1.hashCode(), project1.hashCode());
@@ -549,17 +549,9 @@ public class ProjectTest extends AbstractTest {
         assertNotEquals(hash, project37.hashCode());
     }
 
-    public void testCloneConstructor() {
-        // TODO: The clone constructor can not be tested without database access
-    }
-
     @Test
     public void testGetEntryType() {
         assertEquals(JournalEntry.EntryType.PROJECT, new Project().getEntryType());
-    }
-
-    public void testCloneProjectTitleWithoutNameConflict() {
-        // TODO: This method can not be tested without accessing the database
     }
 
 }

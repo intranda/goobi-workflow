@@ -1,22 +1,57 @@
 .imagefilters {
-    padding: 0.5rem 0.75rem;
+    min-width: 280px;
+    max-width: 320px;
+    max-height: 60vh;
+    overflow-y: auto;
+    user-select: none;
 
-    &_filter-list {
-        margin-block-end: 1em;
+    &_header {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--bs-border-color, #dee2e6);
     }
 
-    &_label {
+    &_title {
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    &_body {
+        padding: 0.5rem 0.75rem;
         display: flex;
-        flex-wrap: nowrap;
+        flex-direction: column;
+        gap: 0.15rem;
+    }
+
+    &_row {
+        display: flex;
         justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        cursor: pointer;
     }
 
-    &_slider {
-        width: 100%;
+    &_value {
+        font-size: 0.75rem;
+        font-variant-numeric: tabular-nums;
+        color: var(--bs-secondary-color, #6c757d);
     }
 
-    &_options {
-        display: flex;
-        justify-content: flex-end;
+    &_checkbox {
+        width: 1em;
+        height: 1em;
+        cursor: pointer;
+        accent-color: var(--bs-primary, #0d6efd);
     }
+
+    &_divider {
+        margin: 0.25rem 0;
+        opacity: 0.15;
+    }
+
+    &_footer {
+        padding: 0.75rem;
+        border-top: 1px solid var(--bs-border-color, #dee2e6);
+    }
+
+
 }

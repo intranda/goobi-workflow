@@ -6,12 +6,55 @@ set -e
 
 set -u
 
+# Create directories if not present
+mkdir -p /opt/digiverso/goobi/plugins/{administration,command,dashboard,export,generic,GUI,import,opac,statistics,step,theme,validation,workflow}
+
+echo "Setting properties from environment variables"
+/usr/bin/python3 /config.py
+
 echo "Setting database configuration from environment..."
-envsubst '\$DB_SERVER \$DB_PORT \$DB_NAME \$DB_USER \$DB_PASSWORD' </usr/local/tomcat/conf/goobi.xml.template > /usr/local/tomcat/conf/Catalina/localhost/goobi.xml
+envsubst "\$DB_HOST \$DB_PORT \$DB_NAME \$DB_USER \$DB_PASSWORD" </usr/local/tomcat/conf/workflow.xml.template > /usr/local/tomcat/conf/Catalina/localhost/workflow.xml
+
+set +u
+
+export MYSQL_PWD="${DB_PASSWORD}"
+
+while ! mysqladmin ping -h "${DB_HOST}" -u "${DB_USER}" -P "${DB_PORT}" --silent; do
+    echo "Waiting for database to boot..."
+    sleep 2
+done
+
+TABLE_COUNT=$(mysql -h "${DB_HOST}" -u "${DB_USER}" -P "${DB_PORT}" -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE TABLE_SCHEMA = '${DB_NAME}';")
+
+if [[ "${TABLE_COUNT}" -eq 0 ]]; then
+  echo "Initializing database..."
+  mysql -h "${DB_HOST}" -u "${DB_USER}" -P "${DB_PORT}" "${DB_NAME}" < /workflow-template/db/goobi_blank.sql
+  echo "Done"
+else
+  echo "Database already initialized. Skipping"
+fi
+
+if [[ -v PW_GOOBITESTUSER ]]; then
+  echo "Setting password for test users"
+  SALT=$(head -c 16 /dev/urandom | base64)
+  export SALT
+  ENCRYPTED_PW=$(python3 -c "import hashlib,base64,os;d=hashlib.sha256(os.getenv('SALT').encode()+os.getenv('PW_GOOBITESTUSER').encode()).digest();[d:=hashlib.sha256(d).digest() for _ in range(1,10000)];print(base64.b64encode(d).decode())")
+  mysql -h "${DB_HOST}" -u "${DB_USER}" -e "USE goobi;UPDATE benutzer SET salt='$SALT', encryptedPassword='$ENCRYPTED_PW' WHERE login IN ('testadmin','testmetadata','testbookmanager','testscanning','testqc','testprojectmanagement','goobi');"
+fi
+
+
+if [[ -d "/workflow-template/default-plugins" ]]; then
+  echo "Checking if default plugins are present"
+  cp -r --update=none /workflow-template/default-plugins/plugins/* /opt/digiverso/goobi/plugins/
+  cp -r --update=none /workflow-template/default-plugins/config/* /opt/digiverso/goobi/config/
+  cp -r --update=none /workflow-template/default-plugins/lib/* /opt/digiverso/goobi/lib/
+fi
+
+set -u
 
 if [ -n "${WORKING_STORAGE:-}" ]
 then
-  CATALINA_TMPDIR="${WORKING_STORAGE}/goobi/jvmtemp"
+  CATALINA_TMPDIR="${WORKING_STORAGE}/workflow/jvmtemp"
   mkdir -p "${CATALINA_TMPDIR}"
   echo >> /usr/local/tomcat/bin/setenv.sh
   echo "CATALINA_TMPDIR=${CATALINA_TMPDIR}" >> /usr/local/tomcat/bin/setenv.sh
@@ -43,18 +86,16 @@ case $CONFIGSOURCE in
     fi
     
     echo "Copying configuration from local folder"
-    [ -d "$CONFIG_FOLDER"/config ] && cp -arnv "$CONFIG_FOLDER"/config/* /opt/digiverso/goobi/config/
-    [ -d "$CONFIG_FOLDER"/rulesets ] && cp -arnv "$CONFIG_FOLDER"/rulesets/* /opt/digiverso/goobi/rulesets/
-    [ -d "$CONFIG_FOLDER"/scripts ] && cp -arnv "$CONFIG_FOLDER"/scripts/* /opt/digiverso/goobi/scripts/
-    [ -d "$CONFIG_FOLDER"/xslt ] && cp -arnv "$CONFIG_FOLDER"/xslt/* /opt/digiverso/goobi/xslt/
+    [ -d "$CONFIG_FOLDER"/config ] && cp -arv --update=none "$CONFIG_FOLDER"/config/* /opt/digiverso/goobi/config/
+    [ -d "$CONFIG_FOLDER"/rulesets ] && cp -arv --update=none "$CONFIG_FOLDER"/rulesets/* /opt/digiverso/goobi/rulesets/
+    [ -d "$CONFIG_FOLDER"/scripts ] && cp -arv --update=none "$CONFIG_FOLDER"/scripts/* /opt/digiverso/goobi/scripts/
+    [ -d "$CONFIG_FOLDER"/xslt ] && cp -arv --update=none "$CONFIG_FOLDER"/xslt/* /opt/digiverso/goobi/xslt/
     ;;
 
   *)
     echo "Keeping configuration"
     ;;
 esac
-
-#cat /usr/local/tomcat/conf/Catalina/localhost/goobi.xml
 
 echo "Starting application server..."
 exec catalina.sh run

@@ -19,7 +19,10 @@ const settings = {
             columns: 1,
             columnOffset: 0,
             rowMargin: 0
-        } 
+        },
+		zoom: {
+			max: 5
+		}
     }
 }
 
@@ -83,9 +86,6 @@ export const loadImage = function() {
         element?.addEventListener("click", listener);
     });
 
-    getElement(settings.controls.rotateLeft)?.addEventListener("click", turnLeftEvent)
-    getElement(settings.controls.rotateRight)?.addEventListener("click", turnRightEvent)
-    getElement(settings.controls.reset)?.addEventListener("click", resetEvent);
     const tileSource = getValue(settings.tileSources);
     if(_debug)console.log("load tilesource ", tileSource);
     loadedImage.load(tileSource).then(() => {

@@ -57,8 +57,8 @@ public class SessionInfoTest extends AbstractTest {
     public void testSessionCreatedTimestamp() {
         SessionInfo fixture = new SessionInfo();
         assertEquals(0, fixture.getSessionCreatedTimestamp());
-        fixture.setSessionCreatedTimestamp(1l);
-        assertEquals(1l, fixture.getSessionCreatedTimestamp());
+        fixture.setSessionCreatedTimestamp(1L);
+        assertEquals(1L, fixture.getSessionCreatedTimestamp());
     }
 
     @Test
@@ -73,8 +73,8 @@ public class SessionInfoTest extends AbstractTest {
     public void testLastAccessTimestamp() {
         SessionInfo fixture = new SessionInfo();
         assertEquals(0, fixture.getLastAccessTimestamp());
-        fixture.setLastAccessTimestamp(1l);
-        assertEquals(1l, fixture.getLastAccessTimestamp());
+        fixture.setLastAccessTimestamp(1L);
+        assertEquals(1L, fixture.getLastAccessTimestamp());
     }
 
     @Test

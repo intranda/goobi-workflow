@@ -145,4 +145,37 @@ public enum StepStatus {
         }
         return LOCKED;
     }
+
+    /**
+     * Resolve a StepStatus from a name string. Accepts (case-insensitive):
+     * <ul>
+     * <li>Enum names: "DONE", "open", "InWork"</li>
+     * <li>Search string values: "stepdone", "stepopen", "stepinwork"</li>
+     * <li>Numeric strings: "0", "3"</li>
+     * </ul>
+     *
+     * @param name the status name, search string, or numeric value
+     * @return the matching {@link StepStatus}, or null if no match
+     */
+    public static StepStatus getStatusFromName(String name) {
+        if (name == null || name.isEmpty()) {
+            return null;
+        }
+        for (StepStatus ss : values()) {
+            if (ss.name().equalsIgnoreCase(name) || ss.getSearchString().equalsIgnoreCase(name)) {
+                return ss;
+            }
+        }
+        try {
+            int numericValue = Integer.parseInt(name);
+            for (StepStatus ss : values()) {
+                if (ss.getValue() == numericValue) {
+                    return ss;
+                }
+            }
+        } catch (NumberFormatException e) {
+            // not a number, no match
+        }
+        return null;
+    }
 }

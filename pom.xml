@@ -4,12 +4,13 @@
   <parent>
     <groupId>io.goobi.workflow</groupId>
     <artifactId>workflow-base</artifactId>
-    <version>26.02</version>
-    <relativePath/>
+    <version>${revision}</version>
+    <relativePath>config/workflow-base/pom.xml</relativePath>
   </parent>
   <artifactId>workflow-core</artifactId>
   <packaging>war</packaging>
   <properties>
+    <revision>dev-SNAPSHOT</revision>
     <!-- Checkstyle -->
     <checkstyle.max.violations>1800</checkstyle.max.violations>
     <skipCheckstyle>false</skipCheckstyle>
@@ -44,7 +45,7 @@
           <dependency>
             <groupId>io.goobi.workflow</groupId>
             <artifactId>workflow-maven-config</artifactId>
-            <version>26.02</version>
+            <version>${revision}</version>
           </dependency>
         </dependencies>
         <!-- TODO: Check where and how to execute checkstyle -->

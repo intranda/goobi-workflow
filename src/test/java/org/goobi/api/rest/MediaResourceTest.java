@@ -56,7 +56,7 @@ public class MediaResourceTest extends AbstractTest {
         MediaResource res = new MediaResource();
         Response response =
                 res.serveMediaContent("" + process.getId(), "testprocess_media",
-                        "00000001.tif");
+                        "00000001.tif", null);
 
         assertNotNull(response);
     }

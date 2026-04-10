@@ -441,7 +441,7 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testIMAGE_SIZE() {
+    public void testIMAGESIZE() {
         assertEquals(27, User.getIMAGE_SIZE());
     }
 
@@ -778,10 +778,10 @@ public class UserTest extends AbstractTest {
         user5.setVorname("firstname");
         // test whether user1 is equal to itself, but all others are different
         assertEquals(user1.hashCode(), user1.hashCode());
-        assertNotEquals(user1.hashCode(), user2.hashCode());// different id
-        assertNotEquals(user1.hashCode(), user3.hashCode());// different login
-        assertNotEquals(user1.hashCode(), user4.hashCode());// different last name
-        assertNotEquals(user1.hashCode(), user5.hashCode());// different first name
+        assertNotEquals(user1.hashCode(), user2.hashCode()); //different id
+        assertNotEquals(user1.hashCode(), user3.hashCode()); // different login
+        assertNotEquals(user1.hashCode(), user4.hashCode()); // different last name
+        assertNotEquals(user1.hashCode(), user5.hashCode()); // different first name
     }
 
     @Test
@@ -801,10 +801,10 @@ public class UserTest extends AbstractTest {
         user5.setVorname("firstname");
         // test whether user1 is equal to itself, but all others are different
         assertEquals(user1, user1);
-        assertNotEquals(user1, user2);// different id
-        assertNotEquals(user1, user3);// different login
-        assertNotEquals(user1, user4);// different last name
-        assertNotEquals(user1, user5);// different first name
+        assertNotEquals(user1, user2); // different id
+        assertNotEquals(user1, user3); // different login
+        assertNotEquals(user1, user4); // different last name
+        assertNotEquals(user1, user5); // different first name
     }
 
     @Test

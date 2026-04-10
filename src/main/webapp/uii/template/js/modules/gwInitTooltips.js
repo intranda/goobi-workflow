@@ -9,17 +9,24 @@ const findTooltips = function findTooltips (scope = document, selectors = '[data
 const initTooltips = function initTooltips(scope = document) {
   const tooltipTriggers = findTooltips(scope);
 
-  tooltipTriggers.map(function (tooltipTriggerEl) {
-    return hoverableTooltip(tooltipTriggerEl)
-  })
+  tooltipTriggers
+    .filter(el => !el.hasAttribute('data-tooltip-init'))
+    .map(function (tooltipTriggerEl) {
+      tooltipTriggerEl.setAttribute('data-tooltip-init', '');
+      return hoverableTooltip(tooltipTriggerEl)
+    })
 };
 
 const initPopovers = function initPopovers() {
   const selector = '[data-bs-toggle="popover"]';
   const popoverTargets = findTooltips(document, selector);
-  popoverTargets.map(function (popoverTriggerEl) {
-    return hoverablePopover(popoverTriggerEl)
-  })
+
+  popoverTargets
+    .filter(el => !el.hasAttribute('data-popover-init'))
+    .map(function (popoverTriggerEl) {
+      popoverTriggerEl.setAttribute('data-popover-init', '');
+      return hoverablePopover(popoverTriggerEl)
+    })
 };
 
 /**

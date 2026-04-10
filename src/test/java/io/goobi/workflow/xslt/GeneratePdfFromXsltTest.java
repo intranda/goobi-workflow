@@ -93,7 +93,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class GeneratePdfFromXsltTest extends AbstractTest {
 
-    private static final Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+    private static final Namespace XMLNS = Namespace.getNamespace("http://www.goobi.io/logfile");
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -104,7 +104,8 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
     @Before
     public void setUp() throws Exception {
         Path path = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path goobiFolder = Paths.get(path.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        Path goobiFolder = Paths.get(path.getParent().getParent().toString()
+                + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
@@ -265,21 +266,21 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
         assertEquals(root.getAttributeValue("processID"), "1");
 
-        Element title = root.getChild("title", xmlns);
+        Element title = root.getChild("title", XMLNS);
         assertEquals("testprocess", title.getValue());
 
-        Element properties = root.getChild("properties", xmlns);
+        Element properties = root.getChild("properties", XMLNS);
         Element prop = properties.getChildren().get(0);
         assertEquals("Test1", prop.getAttributeValue("propertyIdentifier"));
         assertEquals("1", prop.getAttributeValue("value"));
 
-        Element steps = root.getChild("steps", xmlns);
+        Element steps = root.getChild("steps", XMLNS);
         Element step = steps.getChildren().get(0);
 
-        assertEquals("title", step.getChildText("title", xmlns));
-        assertEquals("1", step.getChildText("processingstatus", xmlns));
+        assertEquals("title", step.getChildText("title", XMLNS));
+        assertEquals("1", step.getChildText("processingstatus", XMLNS));
 
-        Element metadatalist = root.getChild("metadatalist", xmlns);
+        Element metadatalist = root.getChild("metadatalist", XMLNS);
         Element metadata = metadatalist.getChildren().get(0);
 
         assertEquals("title", metadata.getAttributeValue("name"));

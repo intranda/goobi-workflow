@@ -80,7 +80,7 @@ public class StepTest extends AbstractTest {
         Step step = new Step();
         step.setBearbeitungsstatusEnum(StepStatus.OPEN);
         assertSame(StepStatus.OPEN, step.getBearbeitungsstatusEnum());
-        step.setBearbeitungsstatusAsString("5");// = StepStatus.DEACTIVATED
+        step.setBearbeitungsstatusAsString("5"); // = StepStatus.DEACTIVATED
         assertEquals("5", step.getBearbeitungsstatusAsString());
     }
 
@@ -544,7 +544,7 @@ public class StepTest extends AbstractTest {
         assertTrue(step.isSelected());
     }
 
-    /**
+    /*
      * This method is explicitly constructed with java.util.GregorianCalendar because java.util.Date is deprecated
      */
     @Test
@@ -671,14 +671,7 @@ public class StepTest extends AbstractTest {
         assertEquals("value2", value2);
     }
 
-    @Ignore("A test on this method would require database and message queue access.")
-    @Test
-    public void testSubmitAutomaticThumbnailTicket() {
-        // TODO: Can the method 'submitAutomaticThumbnailTicket()' be tested?
-        //Step step = new Step();
-        //step.submitAutomaticThumbnailTicket();
-        assertTrue(true);
-    }
+ 
 
     @Test
     public void testBearbeitungszeitpunktNow() {

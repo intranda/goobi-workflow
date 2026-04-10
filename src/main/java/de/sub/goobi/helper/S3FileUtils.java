@@ -147,7 +147,7 @@ public class S3FileUtils implements StorageProviderInterface {
                     .retryConfiguration(S3CrtRetryConfiguration.builder().numRetries(10).build())
                     .httpConfiguration(S3CrtHttpConfiguration.builder().connectionTimeout(Duration.ofSeconds(20)).build())
                     .targetThroughputInGbps(5.0)
-                    .minimumPartSizeInBytes(1000000L)
+                    .minimumPartSizeInBytes(5 * MB)
                     .build();
         }
         return mys3;

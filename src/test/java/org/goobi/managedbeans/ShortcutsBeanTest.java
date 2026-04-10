@@ -37,7 +37,7 @@ public class ShortcutsBeanTest {
     }
 
     @Test
-    public void testGetUserShortcutPrefix_withUser() {
+    public void testGetUserShortcutPrefixWithUser() {
 
         bean = new ShortcutsBean();
         // set private field manually (since @Inject is not active in unit test)
@@ -50,14 +50,14 @@ public class ShortcutsBeanTest {
     }
 
     @Test
-    public void testGetUserShortcutPrefix_withoutLoginBean() {
+    public void testGetUserShortcutPrefixWithoutLoginBean() {
         bean = new ShortcutsBean(); // loginBean == null
         String prefix = bean.getUserShortcutPrefix();
         assertEquals("", prefix);
     }
 
     @Test
-    public void testGetUserShortcutPrefixParts_withPlus() {
+    public void testGetUserShortcutPrefixPartsWithPlus() {
 
         setField(bean, "loginBean", loginBeanMock);
 
@@ -81,7 +81,7 @@ public class ShortcutsBeanTest {
             java.lang.reflect.Field field = target.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
             field.set(target, value);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
             throw new RuntimeException(e);
         }
     }

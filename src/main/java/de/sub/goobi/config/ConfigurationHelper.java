@@ -834,6 +834,10 @@ public final class ConfigurationHelper implements Serializable {
         return getLocalInt("batchMaxSize", 100);
     }
 
+    public boolean isProcessCreationShowDuplicateButton() {
+        return getLocalBoolean("ProcessCreationShowDuplicateButton", true);
+    }
+
     public boolean isProcesslistShowEditionData() {
         return getLocalBoolean("ProcesslistShowEditionData", false);
     }

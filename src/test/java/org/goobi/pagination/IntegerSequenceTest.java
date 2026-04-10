@@ -82,4 +82,52 @@ public class IntegerSequenceTest extends AbstractTest {
 
     }
 
+    @Test
+    public void sequenceWithStartEqualsEndHasSingleElement() {
+        IntegerSequence seq = new IntegerSequence(7, 7);
+        assertEquals(1, seq.size());
+        assertEquals(Integer.valueOf(7), seq.get(0));
+    }
+
+    @Test
+    public void firstElementEqualsStart() {
+        IntegerSequence seq = new IntegerSequence(3, 10);
+        assertEquals(Integer.valueOf(3), seq.get(0));
+    }
+
+    @Test
+    public void lastElementEqualsEnd() {
+        IntegerSequence seq = new IntegerSequence(1, 8);
+        assertEquals(Integer.valueOf(8), seq.get(seq.size() - 1));
+    }
+
+    @Test
+    public void sequenceWithIncrementHasCorrectSize() {
+        // 1,3,5,7,9 → 5 elements
+        IntegerSequence seq = new IntegerSequence(1, 9, 2);
+        assertEquals(5, seq.size());
+    }
+
+    @Test
+    public void sequenceWithIncrementLargerThanRangeContainsOnlyStart() {
+        IntegerSequence seq = new IntegerSequence(1, 5, 10);
+        assertEquals(1, seq.size());
+        assertEquals(Integer.valueOf(1), seq.get(0));
+    }
+
+    @Test
+    public void sequenceContainsExpectedValues() {
+        IntegerSequence seq = new IntegerSequence(2, 6);
+        assertEquals(Integer.valueOf(2), seq.get(0));
+        assertEquals(Integer.valueOf(3), seq.get(1));
+        assertEquals(Integer.valueOf(4), seq.get(2));
+        assertEquals(Integer.valueOf(5), seq.get(3));
+        assertEquals(Integer.valueOf(6), seq.get(4));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwIllegalArgumentExceptionWithIncrementWhenStartIsBelowEnd() {
+        new IntegerSequence(10, 1, 2);
+    }
+
 }

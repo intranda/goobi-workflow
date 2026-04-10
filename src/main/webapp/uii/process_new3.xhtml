@@ -75,7 +75,21 @@
 							</span>
 						</button>
 
-						<!-- BUTTON TO OPEN PROCESS DETAILS -->
+						<!-- BUTTON TO DUPLICATE PROCESS -->
+					<button
+						jsf:id="utid23"
+						jsf:action="#{ProzesskopieForm.prepareDuplicate}"
+						class="btn btn-link d-block mb-2"
+						jsf:rendered="#{ProzesskopieForm.showDuplicateButton}">
+						<span class="btn btn-blank">
+							<util:icon icon="copy" />
+						</span>
+						<span>
+							<h:outputText value="#{msgs.process_createDuplicate}" />
+						</span>
+					</button>
+
+					<!-- BUTTON TO OPEN PROCESS DETAILS -->
 						<button
 							jsf:id="utid22"
 							jsf:action="process_edit"

@@ -8,11 +8,10 @@
         <button
             class="btn btn-primary"
             type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#menu\:notificationArea"
             role="button"
             aria-expanded="#{HelperForm.getFacesMessageList(null).size() > 0 ? 'true' : 'false'}"
-            aria-controls="notificationArea">
+            aria-controls="menu:notificationArea"
+            data-toggle-notification="menu:notificationArea">
             <span class="notification-count">
                 #{HelperForm.getFacesMessageList(null).size()}
                 <span class="visually-hidden">messages</span>

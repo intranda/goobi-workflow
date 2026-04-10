@@ -257,6 +257,9 @@ public class ProzesskopieForm implements Serializable {
     private boolean showExistingProcessTables;
 
     @Getter
+    private boolean showDuplicateButton;
+
+    @Getter
     private boolean showExistingProcessButton;
 
     public String prepare() {
@@ -319,8 +322,106 @@ public class ProzesskopieForm implements Serializable {
 
         this.showExistingProcessButton = false;
         this.showExistingProcessTables = false;
+        this.showDuplicateButton = ConfigurationHelper.getInstance().isProcessCreationShowDuplicateButton();
 
         return this.naviFirstPage;
+    }
+
+    /**
+     * Prepares the process creation form pre-filled with data from the previously created process. This allows users to quickly create multiple similar
+     * processes (e.g., volumes of the same series) without re-entering all field values.
+     *
+     * @return navigation outcome for the first page of the process creation form, or "" on error
+     */
+    public String prepareDuplicate() {
+        // snapshot current field values by index before prepare() reinitializes everything.
+        // Using index instead of field title because the project config can define multiple
+        // fields with the same title for different doc types (e.g. "Title" for monograph and
+        // "Title" for multivolume). A title-keyed map would lose values when later entries
+        // overwrite earlier ones.
+        List<String> fieldSnapshot = new ArrayList<>();
+        if (additionalFields != null) {
+            for (AdditionalField field : additionalFields) {
+                fieldSnapshot.add(field.getWert());
+            }
+        }
+        List<String> savedDigitalCollections = digitalCollections != null ? new ArrayList<>(digitalCollections) : new ArrayList<>();
+        String savedDocType = docType;
+        String savedOpacKatalog = opacKatalog;
+        String savedOpacSuchfeld = opacSuchfeld;
+        String savedOpacSuchbegriff = opacSuchbegriff;
+        String savedAddToWikiField = addToWikiField;
+        String savedTifHeaderDocumentname = tifHeaderDocumentname;
+        String savedTifHeaderImagedescription = tifHeaderImagedescription;
+
+        Map<String, String> savedPropertyValues = new HashMap<>();
+        if (configuredProperties != null) {
+            for (DisplayProperty prop : configuredProperties) {
+                if (prop.getName() != null) {
+                    savedPropertyValues.put(prop.getName(), prop.getValue());
+                }
+            }
+        }
+
+        // reinitialize the form cleanly
+        String result = prepare();
+        if ("".equals(result)) {
+            return "";
+        }
+
+        // restore docType (triggers dependent field visibility)
+        if (savedDocType != null) {
+            try {
+                setDocType(savedDocType);
+            } catch (TypeNotAllowedForParentException | TypeNotAllowedAsChildException e) {
+                log.error("Error restoring docType during duplicate", e);
+            }
+        }
+
+        // restore additional field values by index. The field list is rebuilt from the same
+        // project config, so fields appear in the same order.
+        if (additionalFields != null) {
+            for (int i = 0; i < additionalFields.size() && i < fieldSnapshot.size(); i++) {
+                AdditionalField field = additionalFields.get(i);
+                String rawValue = fieldSnapshot.get(i);
+                // Strip initStart/initEnd from the snapshot value before calling setWert(),
+                // because setWert() will re-apply them. Without stripping, initEnd gets doubled.
+                String initStart = field.getInitStart();
+                String initEnd = field.getInitEnd();
+                String cleanValue = rawValue;
+                if (initStart != null && !initStart.isEmpty() && cleanValue.startsWith(initStart)) {
+                    cleanValue = cleanValue.substring(initStart.length());
+                }
+                if (initEnd != null && !initEnd.isEmpty() && cleanValue.endsWith(initEnd)) {
+                    cleanValue = cleanValue.substring(0, cleanValue.length() - initEnd.length());
+                }
+                field.setWert(cleanValue);
+            }
+        }
+        // clear process title — it must be unique for each new process
+        this.prozessKopie.setTitel("");
+
+        // restore other form state
+        this.digitalCollections = savedDigitalCollections;
+        if (savedOpacKatalog != null && !savedOpacKatalog.isEmpty()) {
+            setOpacKatalog(savedOpacKatalog);
+        }
+        this.opacSuchfeld = savedOpacSuchfeld;
+        this.opacSuchbegriff = savedOpacSuchbegriff;
+        this.addToWikiField = savedAddToWikiField;
+        this.tifHeaderDocumentname = savedTifHeaderDocumentname;
+        this.tifHeaderImagedescription = savedTifHeaderImagedescription;
+
+        // restore configured property values
+        if (configuredProperties != null) {
+            for (DisplayProperty prop : configuredProperties) {
+                if (prop.getName() != null && savedPropertyValues.containsKey(prop.getName())) {
+                    prop.setValue(savedPropertyValues.get(prop.getName()));
+                }
+            }
+        }
+
+        return result;
     }
 
     /**

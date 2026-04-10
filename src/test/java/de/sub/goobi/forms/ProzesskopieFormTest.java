@@ -412,6 +412,62 @@ public class ProzesskopieFormTest extends AbstractTest {
         assertEquals("longwo", form.createAtstsl("longword word", ""));
     }
 
+    @Test
+    public void testShowDuplicateButtonDefaultTrue() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
+        assertEquals("process_new1", form.prepare());
+        assertTrue(form.isShowDuplicateButton());
+    }
+
+    @Test
+    public void testPrepareDuplicate() {
+        ProzesskopieForm form = new ProzesskopieForm();
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
+        assertEquals("process_new1", form.prepare());
+
+        // The test config defines duplicate-titled fields for different doc types
+        // (e.g. "Title" for isnotdoctype=multivolume and "Title" for isdoctype=multivolume).
+        // Default doctype is "monograph", so only the first "Title" field is active.
+        List<AdditionalField> fields = form.getAdditionalFields();
+        assertNotNull(fields);
+        assertTrue("Expected at least 7 additional fields from test config", fields.size() >= 7);
+
+        // Set values on the fields visible for the active doctype (monograph)
+        // Field index 1 = "Title" (isnotdoctype=multivolume) — active for monograph
+        // Field index 2 = "Title" (isdoctype=multivolume) — NOT active for monograph
+        fields.get(1).setWert("Das Kapital");
+        fields.get(3).setWert("Kapital, Das");
+        fields.get(5).setWert("1867");
+
+        form.setTifHeaderDocumentname("my-document");
+        form.setTifHeaderImagedescription("my-description");
+        form.setAddToWikiField("some wiki text");
+
+        // call prepareDuplicate
+        String result = form.prepareDuplicate();
+        assertEquals("process_new1", result);
+
+        // verify field values are preserved — especially the active fields must not be
+        // overwritten by the empty duplicate-titled fields for other doc types
+        List<AdditionalField> restored = form.getAdditionalFields();
+        assertEquals("Das Kapital", restored.get(1).getWert());   // Title (monograph)
+        assertEquals("", restored.get(2).getWert());               // Title (multivolume) was empty
+        assertEquals("Kapital, Das", restored.get(3).getWert());   // Sorting title (monograph)
+        assertEquals("", restored.get(4).getWert());               // Sorting title (multivolume) was empty
+        assertEquals("1867", restored.get(5).getWert());           // Publishing year (monograph)
+        assertEquals("", restored.get(6).getWert());               // Publishing year (multivolume) was empty
+
+        assertEquals("my-document", form.getTifHeaderDocumentname());
+        assertEquals("my-description", form.getTifHeaderImagedescription());
+        assertEquals("some wiki text", form.getAddToWikiField());
+
+        // process title must be cleared
+        assertEquals("", form.getProzessKopie().getTitel());
+    }
+
     @SuppressWarnings("unchecked")
     private void prepareMocking() throws Exception {
 

@@ -144,8 +144,8 @@ public class JobTest extends AbstractTest {
         Job job = new Job(null, Job.WAITING, 1, "repository", null, new Timestamp(mdt.getMillis()));
         assertNotNull(job);
         assertEquals(mdt.getMillis(), job.getTimestamp().getTime());
-        job.setTimestamp(new Timestamp(1l));
-        assertEquals(1l, job.getTimestamp().getTime());
+        job.setTimestamp(new Timestamp(1L));
+        assertEquals(1L, job.getTimestamp().getTime());
     }
 
     @Test

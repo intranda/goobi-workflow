@@ -7,11 +7,8 @@
 const defaultSelector = '[data-gw-focus-on-load="true"]';
 
 export const focusOnLoad = function focusOnLoad(selector = defaultSelector) {
-  window.addEventListener("DOMContentLoaded", function() {
     try {
-      const element = document.querySelector(selector);
-      element?.focus();
-    }
-    catch {}
-  })
+        const element = document.querySelector(selector);
+        element?.focus();
+    } catch {}
 };
