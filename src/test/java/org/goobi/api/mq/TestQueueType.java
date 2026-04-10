@@ -34,7 +34,7 @@ import de.sub.goobi.AbstractTest;
 public class TestQueueType extends AbstractTest {
 
     @Test
-    public void TestQueueInstantiation() {
+    public void testQueueInstantiation() {
         QueueType slowQueue = QueueType.getByName("goobi_slow");
         assertTrue("queue should be identical to QueueType.GOOBI_SLOW", slowQueue == QueueType.SLOW_QUEUE);
 
