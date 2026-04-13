@@ -129,11 +129,11 @@
     	const add = 14;
     	const lineBox = this.alto.lineMap[e.item.word.lineId];
     	const lineRect = new OpenSeadragon.Rect((lineBox.x)-add, (lineBox.y)-add, (lineBox.width)+add*2, (lineBox.height)+add*2);
-        const lineRectViewport = this.imageView.openseadragon.viewport.imageToViewportRectangle(lineRect);
+        const lineRectViewport = ImageView.CoordinateConversion.convertRectFromImageToOpenSeadragon(lineRect, this.imageView.openseadragon, this.imageView.getOriginalImageSize());
 
         const wordBox = e.item.word
     	const wordRect = new OpenSeadragon.Rect((wordBox.x)-add, (wordBox.y)-add, (wordBox.width)+add*2, (wordBox.height)+add*2);
-        const wordRectViewport = this.imageView.openseadragon.viewport.imageToViewportRectangle(wordRect);
+        const wordRectViewport = ImageView.CoordinateConversion.convertRectFromImageToOpenSeadragon(wordRect, this.imageView.openseadragon, this.imageView.getOriginalImageSize());
 
         if(this.lineOverlay) {
             this.lineOverlay.remove();
@@ -261,6 +261,7 @@
 
     initNamedEntityEditor(element, config) {
         const opts = $.extend(true, {}, config, {
+        	contextPath: this.opts.contextPath,
             wordSelector: ".altoword",
             wordContainerSelector: ".alto-edit",
             namedEntities: this.alto.namedEntities.map(entity => {
@@ -288,7 +289,8 @@
 	        var y = e.clientY - rect.top;  //y position within the element.
 	        pixel = new OpenSeadragon.Point(x, y);
         }
-        var pos = this.imageView.openseadragon.viewport.viewerElementToImageCoordinates( pixel );
+        var posCanvas = ImageView.CoordinateConversion.convertPointFromCanvasToImage(pixel, this.imageView.openseadragon);
+        var pos = ImageView.CoordinateConversion.convertPointFromOpenSeadragonToImage(posCanvas, this.imageView.openseadragon, this.imageView.getOriginalImageSize())
         for(let line of this.lines) {
         	if(this.posInRect(pos, line)) {
         		for(let word of line.words) {
