@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.goobi.workflow</groupId>
   <artifactId>workflow-maven-config</artifactId>
-  <version>${revision}</version>
+  <version>26.03</version>
   <packaging>jar</packaging>
   <properties>
-    <revision>dev-SNAPSHOT</revision>
+    <revision>26.03</revision>
   </properties>
   <build>
     <plugins>
