@@ -1,8 +1,13 @@
 package de.sub.goobi.metadaten;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,7 +16,12 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 
 import de.sub.goobi.persistence.managers.PropertyManager;
 import lombok.NonNull;
@@ -31,7 +41,9 @@ public class ImageCommentPropertyHelper {
     private static final String ERROR_MESSAGE_FOR_NULL_FOLDER_NAME = "folderName should not be null";
     private static final String ERROR_MESSAGE_FOR_NULL_IMAGE_NAME = "imageName should not be null";
 
-    private Gson gson = new Gson();
+    private Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Date.class, new DateTypeAdapter())
+            .create();
 
     @NonNull
     private Process process;
@@ -137,6 +149,38 @@ public class ImageCommentPropertyHelper {
         } catch (JsonSyntaxException ex) {
             log.error("Unable to read image comments Json property");
             throw ex;
+        }
+    }
+
+    private static final class DateTypeAdapter extends TypeAdapter<Date> {
+        private static final String ISO_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+        private static final String LEGACY_FORMAT = "MMM d, yyyy, h:mm:ss a";
+
+        @Override
+        public void write(JsonWriter out, Date value) throws IOException {
+            if (value == null) {
+                out.nullValue();
+                return;
+            }
+            out.value(new SimpleDateFormat(ISO_FORMAT, Locale.ENGLISH).format(value));
+        }
+
+        @Override
+        public Date read(JsonReader in) throws IOException {
+            if (in.peek() == JsonToken.NULL) {
+                in.nextNull();
+                return null;
+            }
+            String dateStr = in.nextString();
+            try {
+                return new SimpleDateFormat(ISO_FORMAT, Locale.ENGLISH).parse(dateStr);
+            } catch (ParseException e) {
+                try {
+                    return new SimpleDateFormat(LEGACY_FORMAT, Locale.ENGLISH).parse(dateStr);
+                } catch (ParseException e2) {
+                    throw new JsonSyntaxException("Failed parsing '" + dateStr + "' as Date", e2);
+                }
+            }
         }
     }
 
