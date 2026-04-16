@@ -99,6 +99,29 @@ public class ImageCommentPropertyHelperTest extends AbstractTest {
         assertNotNull("creationDate must be parsed from legacy format", comments.get(0).getCreationDate());
     }
 
+    /**
+     * Regression test: Java 17+ CLDR uses U+202F (narrow no-break space) before AM/PM.
+     * Dates stored on a Java 17+ server look identical in logs but differ at byte level.
+     */
+    @Test
+    public void testLoadCommentWithLegacyDateFormatJava17ThinSpace() {
+        // U+202F narrow no-break space between seconds and AM — as produced by Java 17+ CLDR
+        String legacyJsonThinSpace = "{\"comments\":[{"
+                + "\"comment\":\"test comment\","
+                + "\"imageName\":\"image.tif\","
+                + "\"imageFolder\":\"master\","
+                + "\"creationDate\":\"Apr 14, 2026, 10:59:53\u202FAM\""
+                + "}]}";
+        mockPropertyManagerWithValue(legacyJsonThinSpace);
+
+        ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
+        List<ImageComment> comments = helper.getAllComments();
+
+        assertNotNull(comments);
+        assertEquals(1, comments.size());
+        assertNotNull("creationDate with U+202F thin space must be parsed", comments.get(0).getCreationDate());
+    }
+
     @Test
     public void testLoadCommentWithIsoDateFormat() {
         String isoJson = "{\"comments\":[{"

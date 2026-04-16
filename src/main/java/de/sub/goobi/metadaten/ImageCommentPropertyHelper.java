@@ -172,11 +172,14 @@ public class ImageCommentPropertyHelper {
                 return null;
             }
             String dateStr = in.nextString();
+            // Java 17+ CLDR uses U+202F (narrow no-break space) before AM/PM instead of regular space.
+            // Normalize to a regular space so the legacy format pattern can match both variants.
+            String normalizedDate = dateStr.replace('\u202F', ' ');
             try {
-                return new SimpleDateFormat(ISO_FORMAT, Locale.ENGLISH).parse(dateStr);
+                return new SimpleDateFormat(ISO_FORMAT, Locale.ENGLISH).parse(normalizedDate);
             } catch (ParseException e) {
                 try {
-                    return new SimpleDateFormat(LEGACY_FORMAT, Locale.ENGLISH).parse(dateStr);
+                    return new SimpleDateFormat(LEGACY_FORMAT, Locale.ENGLISH).parse(normalizedDate);
                 } catch (ParseException e2) {
                     throw new JsonSyntaxException("Failed parsing '" + dateStr + "' as Date", e2);
                 }
