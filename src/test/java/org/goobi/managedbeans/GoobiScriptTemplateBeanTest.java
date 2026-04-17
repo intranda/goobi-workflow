@@ -35,6 +35,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.GoobiScriptTemplateManager;
 import de.sub.goobi.persistence.managers.GoobiScriptTemplateMysqlHelper;
 
@@ -53,16 +54,19 @@ public class GoobiScriptTemplateBeanTest extends AbstractTest {
         PowerMock.mockStatic(GoobiScriptTemplateManager.class);
         PowerMock.mockStatic(Helper.class);
         GoobiScriptTemplateManager.saveGoobiScriptTemplate(EasyMock.anyObject());
+        EasyMock.expectLastCall().anyTimes();
         GoobiScriptTemplateManager.deleteGoobiScriptTemplate(EasyMock.anyObject());
+        EasyMock.expectLastCall().anyTimes();
 
         PowerMock.mockStatic(GoobiScriptTemplateMysqlHelper.class);
         EasyMock.expect(GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateCount(EasyMock.anyString())).andReturn(1).anyTimes();
         EasyMock.expect(GoobiScriptTemplateManager.getGoobiScriptTemplates(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(),
                 EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
         EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
+        EasyMock.expectLastCall().anyTimes();
 
         PowerMock.replayAll();
-
     }
 
     @Test
@@ -141,5 +145,51 @@ public class GoobiScriptTemplateBeanTest extends AbstractTest {
         String returnValue = fixture.FilterKeinMitZurueck();
         assertNotNull(fixture.getPaginator());
         assertEquals("back", returnValue);
+    }
+
+    @Test
+    public void testInitialState() {
+        GoobiScriptTemplateBean fixture = new GoobiScriptTemplateBean();
+        assertNotNull(fixture.getTemplate());
+        assertNull(fixture.getTemplate().getId());
+        assertNull(fixture.getPaginator());
+    }
+
+    @Test
+    public void testSpeichernWithException() throws Exception {
+        PowerMock.reset(GoobiScriptTemplateManager.class);
+        GoobiScriptTemplateManager.saveGoobiScriptTemplate(EasyMock.anyObject());
+        EasyMock.expectLastCall().andThrow(new DAOException("save failed")).anyTimes();
+        GoobiScriptTemplateManager.deleteGoobiScriptTemplate(EasyMock.anyObject());
+        EasyMock.expectLastCall().anyTimes();
+        EasyMock.expect(GoobiScriptTemplateManager.getGoobiScriptTemplates(EasyMock.anyString(), EasyMock.anyString(),
+                EasyMock.anyInt(), EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
+        PowerMock.replay(GoobiScriptTemplateManager.class);
+
+        GoobiScriptTemplateBean fixture = new GoobiScriptTemplateBean();
+        fixture.setTemplate(template);
+
+        String result = fixture.Speichern();
+
+        assertEquals("", result);
+    }
+
+    @Test
+    public void testLoeschenWithException() throws Exception {
+        PowerMock.reset(GoobiScriptTemplateManager.class);
+        GoobiScriptTemplateManager.saveGoobiScriptTemplate(EasyMock.anyObject());
+        EasyMock.expectLastCall().anyTimes();
+        GoobiScriptTemplateManager.deleteGoobiScriptTemplate(EasyMock.anyObject());
+        EasyMock.expectLastCall().andThrow(new DAOException("delete failed")).anyTimes();
+        EasyMock.expect(GoobiScriptTemplateManager.getGoobiScriptTemplates(EasyMock.anyString(), EasyMock.anyString(),
+                EasyMock.anyInt(), EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
+        PowerMock.replay(GoobiScriptTemplateManager.class);
+
+        GoobiScriptTemplateBean fixture = new GoobiScriptTemplateBean();
+        fixture.setTemplate(template);
+
+        String result = fixture.Loeschen();
+
+        assertEquals("", result);
     }
 }

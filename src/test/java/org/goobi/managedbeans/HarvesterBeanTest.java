@@ -20,6 +20,7 @@ package org.goobi.managedbeans;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +36,15 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryMysqlHelper;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import io.goobi.workflow.harvester.repository.Repository;
 import jakarta.faces.model.SelectItem;
 
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
+
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ HarvesterRepositoryMysqlHelper.class, Helper.class })
+@PrepareForTest({ HarvesterRepositoryMysqlHelper.class, Helper.class, ProjectManager.class, ProcessManager.class, FilterHelper.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class HarvesterBeanTest {
 
@@ -54,6 +59,20 @@ public class HarvesterBeanTest {
         EasyMock.expect(HarvesterRepositoryMysqlHelper.getRepositories(EasyMock.anyString())).andReturn(new ArrayList<>()).anyTimes();
 
         EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
+        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
+
+        PowerMock.mockStatic(ProjectManager.class);
+        EasyMock.expect(ProjectManager.getAllProjects()).andReturn(new ArrayList<>()).anyTimes();
+
+        PowerMock.mockStatic(ProcessManager.class);
+        EasyMock.expect(ProcessManager.getProcesses(EasyMock.anyString(), EasyMock.anyString(), EasyMock.isNull()))
+                .andReturn(new ArrayList<>()).anyTimes();
+
+        PowerMock.mockStatic(FilterHelper.class);
+        EasyMock.expect(FilterHelper.criteriaBuilder(EasyMock.anyString(), EasyMock.anyBoolean(), EasyMock.isNull(),
+                EasyMock.isNull(), EasyMock.isNull(), EasyMock.anyBoolean(), EasyMock.anyBoolean()))
+                .andReturn("").anyTimes();
+
         PowerMock.replayAll();
     }
 
@@ -135,5 +154,38 @@ public class HarvesterBeanTest {
         HarvesterBean fixture = new HarvesterBean();
         assertNotNull(fixture);
         assertEquals("repository_all", fixture.Loeschen());
+    }
+
+    @Test
+    public void testGetProjectList() throws Exception {
+        HarvesterBean fixture = new HarvesterBean();
+        List<SelectItem> projects = fixture.getProjectList();
+        assertNotNull(projects);
+        assertTrue(projects.isEmpty());
+    }
+
+    @Test
+    public void testGetProjectListCached() throws Exception {
+        HarvesterBean fixture = new HarvesterBean();
+        List<SelectItem> first = fixture.getProjectList();
+        List<SelectItem> second = fixture.getProjectList();
+        // second call returns the cached list
+        assertEquals(first, second);
+    }
+
+    @Test
+    public void testGetProcessTemplateList() {
+        HarvesterBean fixture = new HarvesterBean();
+        List<SelectItem> templates = fixture.getProcessTemplateList();
+        assertNotNull(templates);
+        assertTrue(templates.isEmpty());
+    }
+
+    @Test
+    public void testGetProcessTemplateListCached() {
+        HarvesterBean fixture = new HarvesterBean();
+        List<SelectItem> first = fixture.getProcessTemplateList();
+        List<SelectItem> second = fixture.getProcessTemplateList();
+        assertEquals(first, second);
     }
 }
