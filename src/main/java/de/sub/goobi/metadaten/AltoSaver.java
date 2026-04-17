@@ -35,6 +35,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.AltoChange;
+import org.goobi.beans.SimpleAlto;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -58,9 +59,9 @@ public final class AltoSaver {
 
     private static XPathFactory xFactory = XPathFactory.instance();
 
-    public static void saveAltoChanges(Path altoFile, AltoChange[] changes) throws JDOMException, IOException {
+    public static SimpleAlto saveAltoChanges(Path altoFile, AltoChange[] changes) throws JDOMException, IOException {
         if (changes == null) {
-            return;
+            return null;
         }
         Document doc = XmlTools.readDocumentFromStream(StorageProvider.getInstance().newInputStream(altoFile));
         Namespace namespace = Namespace.getNamespace("alto", doc.getRootElement().getNamespaceURI());
@@ -119,6 +120,9 @@ public final class AltoSaver {
             XMLOutputter xmlOut = new XMLOutputter(Format.getPrettyFormat());
             xmlOut.output(doc, out);
         }
+        SimpleAlto alto = new SimpleAlto();
+        alto.readAlto(doc);
+        return alto;
     }
 
     public static Element getWordById(Document doc, Namespace namespace, String id) {

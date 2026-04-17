@@ -3753,9 +3753,13 @@ public class Metadaten implements Serializable {
     public void saveAlto() {
         AltoChange[] changes = new Gson().fromJson(this.altoChanges, AltoChange[].class);
         try {
-            AltoSaver.saveAltoChanges(getCurrentAltoPath(), changes);
+            SimpleAlto savedAlto = AltoSaver.saveAltoChanges(getCurrentAltoPath(), changes);
             replaceTxtFileIfPresent(getCurrentTxtPath());
-            this.loadJsonAlto();
+            if (savedAlto != null) {
+                this.currentJsonAlto = new Gson().toJson(savedAlto);
+            } else {
+                this.loadJsonAlto();
+            }
             FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO, Helper.getTranslation("savedAlto"), null);
             FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
         } catch (JDOMException | IOException | SwapException | DAOException e) {

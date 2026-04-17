@@ -97,11 +97,14 @@ public class SimpleAlto {
 
     public void readAlto(Path altoPath) throws IOException, JDOMException {
         SAXBuilder sax = XmlTools.getSAXBuilder();
-        Document doc = null;
+        Document doc;
         try (InputStream in = StorageProvider.getInstance().newInputStream(altoPath)) {
             doc = sax.build(in);
         }
+        readAlto(doc);
+    }
 
+    public void readAlto(Document doc) {
         initializePatterns(doc);
 
         List<Element> xmlLines = linesXpath.evaluate(doc);
