@@ -42,7 +42,7 @@ import de.sub.goobi.persistence.managers.IManager;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ InstitutionManager.class, Helper.class, StorageProvider.class, ConfigurationHelper.class })
+@PrepareForTest({ InstitutionBean.class, InstitutionManager.class, Helper.class, StorageProvider.class, ConfigurationHelper.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class InstitutionBeanTest extends AbstractTest {
 

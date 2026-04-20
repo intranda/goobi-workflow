@@ -43,7 +43,7 @@ import de.sub.goobi.persistence.managers.LdapManager;
 import jakarta.faces.model.SelectItem;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ LdapManager.class, Helper.class })
+@PrepareForTest({ AuthenticationBean.class, LdapManager.class, Helper.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class AuthenticationBeanTest extends AbstractTest {
 
