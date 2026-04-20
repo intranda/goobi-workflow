@@ -197,9 +197,20 @@ public class UserBean extends BasicBean {
             sqlQuery = sqlQueryBuilder.toString();
         }
 
-        this.paginator = new DatabasePaginator(sortField, sqlQuery, m, RETURN_PAGE_ALL);
+        this.paginator = new DatabasePaginator(calcSortField(), sqlQuery, m, RETURN_PAGE_ALL);
 
         return RETURN_PAGE_ALL;
+    }
+
+    private String calcSortField() {
+        String field = sortField;
+        if ("benutzer.nachname, benutzer.vorname asc".equals(sortField)) {
+            field = "benutzer.nachname, benutzer.vorname";
+        } else if ("benutzer.nachname, benutzer.vorname desc".equals(sortField)) {
+            field = "benutzer.nachname desc, benutzer.vorname desc";
+        }
+
+        return field;
     }
 
     public String Speichern() {
