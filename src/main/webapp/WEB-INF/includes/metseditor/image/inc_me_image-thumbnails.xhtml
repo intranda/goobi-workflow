@@ -40,7 +40,7 @@
                                         <f:setPropertyActionListener value="false" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" target="#{NavigationForm.uiStatus.mets_scrollToThumb}"/>
                                         <f:setPropertyActionListener value="#{image.order -1}" property="#{Metadaten.imageIndex}" target="#{Metadaten.imageIndex}"/>
                                         <f:passThroughAttribute name="data-bs-toggle" value="tooltip"/>
-                                        <f:ajax render=":pagePaginationList :openseadragonform :altoEditAutocomplete" execute="@form"/>
+                                        <f:ajax render=":meSelectPagesBox:pagePaginationList :openseadragonform :altoEditAutocomplete" execute="@form"/>
                                         <f:passThroughAttribute name="data-renderimage" value="true"/>
                                         <!-- THUMBNAIL CAPTION -->
                                         <div class="thumbnails__thumb-caption">
