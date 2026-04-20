@@ -1178,6 +1178,12 @@ public final class FilterHelper {
                     || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTABGESCHLOSSEN)) {
                 whereClause = checkStringBuilder(whereClause, false);
                 whereClause.append(createStepFilters(tok, StepStatus.DONE, false, currentDateFilter.getDateFilter(), isStep));
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPERROR)) {
+                whereClause = checkStringBuilder(whereClause, false);
+                whereClause.append(createStepFilters(tok, StepStatus.ERROR, false, currentDateFilter.getDateFilter(), isStep));
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPDEACTIVATED)) {
+                whereClause = checkStringBuilder(whereClause, false);
+                whereClause.append(createStepFilters(tok, StepStatus.DEACTIVATED, false, currentDateFilter.getDateFilter(), isStep));
 
                 // new keyword stepDoneTitle implemented, replacing so far
                 // undocumented
