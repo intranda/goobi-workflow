@@ -61,11 +61,14 @@ const parseTargetsObject = (targetSelector) => {
 };
 
 const handleComplexKeyDown = (event, targetSelector, state) => {
-    event.preventDefault();
-    event.stopPropagation();
     const targetsObject = parseTargetsObject(targetSelector);
     if (!targetsObject) {
         return;
+    }
+
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        event.stopPropagation();
     }
 
     if (event.ctrlKey && targetsObject.ctrl) {
