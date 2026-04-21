@@ -18,7 +18,7 @@ pipeline {
   }
 
   parameters {
-    string(name: 'RUN_SONAR_ANALYSIS', defaultValue: false, description: 'Manually trigger sonar analysis (tags always do it nonetheless)')
+    string(name: 'RUN_SONAR_ANALYSIS', defaultValue: 'false', description: 'Manually trigger sonar analysis (tags always do it nonetheless)')
   }
 
   stages {
@@ -277,7 +277,7 @@ pipeline {
         beforeAgent true
         anyOf {
           branch 'v*'
-          expression { return params.RUN_SONAR_ANALYSIS == true }
+          expression { return params.RUN_SONAR_ANALYSIS == 'true' }
         }
       }
       steps {
