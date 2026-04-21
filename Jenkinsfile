@@ -17,6 +17,10 @@ pipeline {
     NEXUS_BASE = 'intranda-nexus::https://nexus.intranda.com/repository'
   }
 
+  parameters {
+    string(name: 'RUN_SONAR_ANALYSIS', defaultValue: false, description: 'Manually trigger sonar analysis (tags always do it nonetheless)')
+  }
+
   stages {
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -272,9 +276,8 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          branch 'master'
           branch 'v*'
-          branch 'sonar_*'
+          expression { return params.RUN_SONAR_ANALYSIS == true }
         }
       }
       steps {
@@ -291,8 +294,8 @@ pipeline {
 
     // ─────────────────────────────────────────────────────────────────────────
     // 5. DEPLOY  (base + core + plugins to Nexus)
-    //    core:    master, develop, v*
-    //    plugins: master, v*
+    //    core:    master, develop
+    //    plugins: master
     // ─────────────────────────────────────────────────────────────────────────
     stage('deploy') {
       agent {
@@ -307,7 +310,6 @@ pipeline {
         anyOf {
           branch 'master'
           branch 'develop'
-          branch 'v*'
         }
       }
       steps {
@@ -320,7 +322,7 @@ pipeline {
           mvn deploy -f config/workflow-base/pom.xml -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U $ALT_REPO --no-transfer-progress
         '''
         script {
-          if (env.TAG_NAME || env.BRANCH_NAME == 'master') {
+          if (env.BRANCH_NAME == 'master') {
             sh "sed -i '/<parent>/,/<\\/parent>/s|<version>dev-SNAPSHOT</version>|<version>'\$BUILD_VERSION'</version>|' plugins/goobi-plugin-*/pom.xml"
             sh '''#!/bin/bash -xe
                 ALT_REPO="-DaltDeploymentRepository=${NEXUS_BASE}/${NEXUS_PUBLIC_REPO}-releases -DaltSnapshotDeploymentRepository=${NEXUS_BASE}/${NEXUS_PUBLIC_REPO}-snapshots"
@@ -338,7 +340,47 @@ pipeline {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 6. DOCKER  (build multiarch image and push to all registries)
+    // 6. UPDATE COLLECTION  (master: advance core submodule pointer in collection;
+    //                        master + develop: trigger downstream collection build)
+    // ─────────────────────────────────────────────────────────────────────────
+    stage('update-collection') {
+      when {
+        beforeAgent true
+        anyOf {
+          branch 'master'
+          branch 'develop'
+        }
+      }
+      agent any
+      steps {
+        script {
+          if (env.BRANCH_NAME == 'master') {
+            withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
+              sh '''#!/bin/bash -xe
+                WORK_DIR=$(mktemp -d)
+                git clone --depth 1 --branch master "$COLLECTION_REPO_URL" "$WORK_DIR"
+                cd "$WORK_DIR"
+                git submodule update --init --remote -- goobi-workflow-core
+                if git status --porcelain --ignore-submodules=none -- goobi-workflow-core | grep -q .; then
+                  git add goobi-workflow-core
+                  git commit -m "Update goobi-workflow-core to latest master"
+                  git push origin master
+                else
+                  echo "Submodule already up to date."
+                fi
+                rm -rf "$WORK_DIR"
+              '''
+            }
+          }
+          build job: 'goobi-workflow/goobi-workflow-collection/master',
+                  parameters: [string(name: 'UPSTREAM_BRANCH', value: env.BRANCH_NAME)],
+                  wait: false
+        }
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // 7. DOCKER  (build multiarch image and push to all registries)
     // ─────────────────────────────────────────────────────────────────────────
     stage('docker') {
       agent any
@@ -428,35 +470,6 @@ pipeline {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 7. UPDATE COLLECTION  (master only: advance core submodule pointer in collection)
-    // ─────────────────────────────────────────────────────────────────────────
-    stage('update-collection') {
-      when {
-        branch 'master'
-      }
-      agent any
-      steps {
-        withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
-          sh '''#!/bin/bash -xe
-            WORK_DIR=$(mktemp -d)
-            git clone --depth 1 --branch master "$COLLECTION_REPO_URL" "$WORK_DIR"
-            cd "$WORK_DIR"
-            git submodule update --init --remote -- goobi-workflow-core
-            if git status --porcelain -- goobi-workflow-core | grep -q .; then
-              git add goobi-workflow-core
-              git commit -m "Update goobi-workflow-core to latest master"
-              git push origin master
-            else
-              echo "Submodule already up to date."
-            fi
-            rm -rf "$WORK_DIR"
-          '''
-        }
-      }
-    }
-
-
-    // ─────────────────────────────────────────────────────────────────────────
     // 8. PLUGIN RELEASE  (create version-bump commits and git tags for all plugins)
     // ─────────────────────────────────────────────────────────────────────────
     stage('plugin-release') {
@@ -505,25 +518,6 @@ pipeline {
     }
 
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // 9. TRIGGER COLLECTION  (downstream trigger for develop and master)
-    // ─────────────────────────────────────────────────────────────────────────
-    stage('trigger-collection') {
-      when {
-        beforeAgent true
-        anyOf {
-          branch 'master'
-          branch 'develop'
-        }
-      }
-      steps {
-        script {
-          build job: 'goobi-workflow/goobi-workflow-collection/master',
-                parameters: [string(name: 'UPSTREAM_BRANCH', value: env.BRANCH_NAME)],
-                wait: false
-        }
-      }
-    }
 
   }
 

@@ -27,7 +27,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Build with Maven
-        run: mvn clean verify -U -P release-build
+        run: mvn clean install -f config/workflow-base/pom.xml && mvn clean verify -U -P release-build
       - name: Rename WAR
         run: mv target/*.war target/goobi.war
       - name: Release
