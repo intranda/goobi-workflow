@@ -4,6 +4,8 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:dialog="http://goobi.io/dialog"
     xmlns:properties="http://goobi.io/properties"
+    xmlns:section="http://goobi.io/section"
+    xmlns:dl="http://goobi.io/dl"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 >
     <c:set var="evenContainers" value="#{bean.containerList.size() % 2 == 0}" />
@@ -27,6 +29,27 @@
                     <properties:group group="#{container}" bean="#{bean}" fullWidth="#{fullWidth}" groupId="#{iteration.index}" />
                 </c:if>
             </c:forEach>
+            <c:if test="#{bean.sizeOfDisplayableMetadata gt 0}">
+                <div class="properties-group">
+                    <section:section type="outline">
+                        <section:header title="#{msgs.metadaten}" icon="list" />
+                        <dl:list>
+                            <c:forEach items="#{bean.displayableMetadataMap}" var="metadata">
+                                <dt class="definition-list-term">
+                                    <h:outputText value="#{msgs[metadata.key]}" />
+                                </dt>
+                                <dd class="definition-list-description">
+                                    <c:forEach items="#{metadata.value}" var="metadataValue">
+                                        <h:outputText value="#{msgs[metadataValue]}" rendered="#{metadata.key == 'DocStruct'}" />
+                                        <h:outputText value="#{metadataValue}" rendered="#{metadata.key != 'DocStruct'}" />
+                                        <br />
+                                    </c:forEach>
+                                </dd>
+                            </c:forEach>
+                        </dl:list>
+                    </section:section>
+                </div>
+            </c:if>
         </h:panelGroup>
     </div>
     <h:panelGroup id="vocabularyRecordDetails" layout="block">
