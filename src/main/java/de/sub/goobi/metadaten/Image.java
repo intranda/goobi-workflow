@@ -149,6 +149,12 @@ public class Image {
     private Type type;
 
     /**
+     * url for the image in original file size
+     */
+
+    private String maxUrl;
+
+    /**
      * Creates an image object from the given file within the goobi-metadata hierarchy. All required urls are either set in the constructor, or
      * created when needed This class can also contain other media objects link 3D obects, video and audio. In these cases a default image is used for
      * thumbnails.
@@ -175,6 +181,7 @@ public class Image {
         if (Type.image.equals(this.type) || Type.pdf.equals(this.type)) {
             this.bookmarkUrl = createThumbnailUrl(process, 1000, imageFolderName, filename);
             this.objectUrl = createIIIFUrl(process, imageFolderName, filename);
+            maxUrl = createMaxUrl(process, imageFolderName, filename);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type) || Type.object2vr.equals(this.type)) {
             this.objectUrl = create3DObjectUrl(process, imageFolderName, filename);
         } else if (Type.audio.equals(this.type) || Type.video.equals(this.type) || Type.unknown.equals(this.type)) {
@@ -482,6 +489,18 @@ public class Image {
                 .append(size)
                 .append(",")
                 .append("/0/default.jpg");
+        return sb.toString();
+    }
+
+    public String createMaxUrl(Process process, String imageFolderName, String filename) {
+        StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
+        sb.append("/api/process/image/")
+                .append(process.getId())
+                .append("/")
+                .append(getImageFolderShort(imageFolderName))
+                .append("/")
+                .append(filename)
+                .append("/full/max/0/default.jpg");
         return sb.toString();
     }
 

@@ -28,7 +28,9 @@
                         title="#{msgs.mets_rotateImageLeft}"
                         data-toggle="tooltip"
                         data-placement="top">
-                        <util:icon icon="rotate" styleClass="icon--lg" />
+                        <util:icon
+                            icon="rotate"
+                            styleClass="icon--lg" />
                     </button>
                 </li>
                 <!-- ROTATE RIGHT -->
@@ -41,7 +43,9 @@
                         title="#{msgs.mets_rotateImageRight}"
                         data-toggle="tooltip"
                         data-placement="top">
-                        <util:icon icon="rotate-clockwise" styleClass="icon--lg" />
+                        <util:icon
+                            icon="rotate-clockwise"
+                            styleClass="icon--lg" />
                     </button>
                 </li>
 
@@ -55,7 +59,9 @@
                         title="#{msgs.mets_resetImageRotation}"
                         data-toggle="tooltip"
                         data-placement="top">
-                        <util:icon icon="circle-x" styleClass="icon--lg" />
+                        <util:icon
+                            icon="circle-x"
+                            styleClass="icon--lg" />
                     </button>
                 </li>
                 <li class="image__controls-zoom">
@@ -85,12 +91,28 @@
                         data-toggle="tooltip"
                         data-placement="top"
                         aria-label="#{msgs.label__image_filter_toolkit}">
-                        <util:icon icon="chevron-up" styleClass="icon--lg" />
+                        <util:icon
+                            icon="chevron-up"
+                            styleClass="icon--lg" />
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
                         <ui:include src="inc_me_image-imageFilters.xhtml" />
                     </div>
                 </li>
+                <li>
+                    <a
+                        target="_blank"
+                        href="#{Metadaten.image.maxUrl}"
+                        class="btn btn-icon btn-blank"
+                        title="#{msgs.displayImage}"
+                        aria-label="#{msgs.displayImage}">
+                        <util:icon
+                            icon="photo"
+                            styleClass="icon--lg" />
+                    </a>
+                </li>
+
+
             </ul>
         </div>
     </composite:implementation>
