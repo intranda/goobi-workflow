@@ -17,13 +17,14 @@
         <composite:attribute
             name="renderDelete"
             default="true" />
-            <composite:attribute name="changeRole" default="true"/>
+        <composite:attribute
+            name="changeRole"
+            default="true" />
     </composite:interface>
     <composite:implementation>
         <!-- FORM GROUP CORPORATE -->
         <!-- FORM GROUP PERSON -->
-        <form:fieldset
-            label="#{msgs.mets_corporate_corporate}">
+        <form:fieldset label="#{msgs.mets_corporate_corporate}">
             <!-- MAIN NAME -->
             <div class="form-row">
                 <!-- LABEL -->
@@ -42,10 +43,14 @@
                             data-bs-toggle="tooltip">
                             <util:icon icon="lock-open" />
                             <ui:fragment rendered="#{cc.attrs.corporate.restricted == false}">
-                                <util:icon icon="toggle-left" styleClass="px-1" />
+                                <util:icon
+                                    icon="toggle-left"
+                                    styleClass="px-1" />
                             </ui:fragment>
                             <ui:fragment rendered="#{cc.attrs.corporate.restricted == true}">
-                                <util:icon icon="toggle-right" styleClass="px-1 toggle-on" />
+                                <util:icon
+                                    icon="toggle-right"
+                                    styleClass="px-1 toggle-on" />
                             </ui:fragment>
                             <util:icon icon="lock" />
                             <f:ajax
@@ -61,6 +66,7 @@
                 <div class="form-input">
                     <div class="d-flex w-100 my-auto">
                         <h:inputText
+                            dir="auto"
                             id="mainName"
                             pt:aria-label="#{msgs.mets_corporate_mainName}"
                             styleClass="form-control"
@@ -116,7 +122,7 @@
                                     src="template/img/Icons_Viaf_color.png" />
                                 <f:setPropertyActionListener
                                     value="#{cc.attrs.corporate}"
-                                    target="#{Metadaten.currentMetadataToPerformSearch}"/>
+                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
                                 <f:ajax
                                     execute="@this"
                                     render=":viafModalContent" />
@@ -141,7 +147,9 @@
                             jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.corporate.corporate.type)}"
                             type="button"
                             class="btn font-light">
-                            <util:icon icon="copy" styleClass="icon--lg" />
+                            <util:icon
+                                icon="copy"
+                                styleClass="icon--lg" />
                             <f:setPropertyActionListener
                                 target="#{Metadaten.currentCorporate}"
                                 value="#{cc.attrs.corporate.corporate}" />
@@ -165,7 +173,9 @@
                             jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
                             class="btn font-light"
                             type="button">
-                            <util:icon icon="trash" styleClass="icon--lg" />
+                            <util:icon
+                                icon="trash"
+                                styleClass="icon--lg" />
                             <f:setPropertyActionListener
                                 target="#{Metadaten.currentCorporate}"
                                 value="#{cc.attrs.corporate.corporate}" />
@@ -197,6 +207,7 @@
                     <div class="form-input">
                         <div class="d-flex w-100 my-auto">
                             <h:inputText
+                                dir="auto"
                                 id="subName"
                                 pt:aria-label="#{msgs.mets_corporate_subName}"
                                 styleClass="form-control"
@@ -214,7 +225,9 @@
                                 jsf:action="#{cc.attrs.corporate.addSubName}"
                                 title="#{msgs.mets_corporate_addSubName}"
                                 type="button">
-                                <util:icon icon="plus" styleClass="icon--xl icon--bold" />
+                                <util:icon
+                                    icon="plus"
+                                    styleClass="icon--xl icon--bold" />
                                 <f:passThroughAttribute
                                     name="data-toggle"
                                     value="tooltip" />
@@ -235,7 +248,9 @@
                                 title="#{msgs.mets_corporate_deleteSubName}"
                                 jsf:rendered="#{cc.attrs.renderDelete == 'true' and cc.attrs.corporate.subNameSize gt 1}"
                                 type="button">
-                                <util:icon icon="trash" styleClass="icon--lg" />
+                                <util:icon
+                                    icon="trash"
+                                    styleClass="icon--lg" />
                                 <f:passThroughAttribute
                                     name="data-toggle"
                                     value="tooltip" />
@@ -261,6 +276,7 @@
                 <!-- INPUT -->
                 <div class="form-input">
                     <h:inputText
+                        dir="auto"
                         id="partName"
                         pt:aria-label="#{msgs.mets_corporate_partName}"
                         styleClass="form-control"
@@ -301,13 +317,15 @@
                         <h:outputText
                             id="roleText"
                             pt:aria-label="#{msgs.rolle}"
-                            value="#{cc.attrs.corporate.role}"
-                            />
+                            value="#{cc.attrs.corporate.role}" />
                     </c:if>
                 </div>
             </div>
             <!-- AUTHORITY DATA -->
-            <h:panelGroup layout="block" styleClass="form-row" rendered="#{cc.attrs.corporate.normdata}">
+            <h:panelGroup
+                layout="block"
+                styleClass="form-row"
+                rendered="#{cc.attrs.corporate.normdata}">
                 <!-- LABEL -->
                 <div class="form-label">
                     <h:outputText
