@@ -31,7 +31,7 @@ public class AltoSaverTest extends AbstractTest {
 
     private Path sampleAltoFile;
 
-    Namespace namespace = Namespace.getNamespace("alto", "http://www.loc.gov/standards/alto/ns-v2#");
+    private Namespace namespace = Namespace.getNamespace("alto", "http://www.loc.gov/standards/alto/ns-v2#");
 
     @Before
     public void setUp() throws Exception {

@@ -66,9 +66,8 @@ public class JobBeanTest {
         jobs.add(job);
 
         EasyMock.expect(BackgroundJobsMysqlHelper.getList(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
-        .andReturn(jobs)
-        .anyTimes();
-
+                .andReturn(jobs)
+                .anyTimes();
         PowerMock.replay(BackgroundJobsMysqlHelper.class);
     }
 

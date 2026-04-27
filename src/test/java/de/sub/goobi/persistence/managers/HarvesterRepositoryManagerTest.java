@@ -62,11 +62,11 @@ public class HarvesterRepositoryManagerTest extends AbstractTest {
         HarvesterRepositoryMysqlHelper.saveRepository(EasyMock.anyObject());
         HarvesterRepositoryMysqlHelper.deleteRepository(EasyMock.anyObject());
 
-        Job job = new Job(1, Job.WAITING, 0, "repository", null, new Timestamp(1l));
+        Job job = new Job(1, Job.WAITING, 0, "repository", null, new Timestamp(1L));
         EasyMock.expect(HarvesterRepositoryMysqlHelper.addNewJob(EasyMock.anyObject())).andReturn(job).anyTimes();
         HarvesterRepositoryMysqlHelper.updateJobStatus(EasyMock.anyObject());
 
-        EasyMock.expect(HarvesterRepositoryMysqlHelper.getLastHarvest(EasyMock.anyInt())).andReturn(new Timestamp(1l)).anyTimes();
+        EasyMock.expect(HarvesterRepositoryMysqlHelper.getLastHarvest(EasyMock.anyInt())).andReturn(new Timestamp(1L)).anyTimes();
         EasyMock.expect(HarvesterRepositoryMysqlHelper.addRecords(EasyMock.anyObject(), EasyMock.anyBoolean())).andReturn(5).anyTimes();
 
         List<String> idList = new ArrayList<>();
@@ -161,14 +161,14 @@ public class HarvesterRepositoryManagerTest extends AbstractTest {
 
     @Test
     public void testAddNewJob() throws Exception {
-        Job job = new Job(null, Job.WAITING, 0, "repository", null, new Timestamp(1l));
+        Job job = new Job(null, Job.WAITING, 0, "repository", null, new Timestamp(1L));
         assertNull(job.getId());
         assertEquals(1, HarvesterRepositoryManager.addNewJob(job).getId().intValue());
     }
 
     @Test
     public void testUpdateJobStatus() throws Exception {
-        Job job = new Job(null, Job.WAITING, 0, "repository", null, new Timestamp(1l));
+        Job job = new Job(null, Job.WAITING, 0, "repository", null, new Timestamp(1L));
         HarvesterRepositoryManager.updateJobStatus(job);
         assertNotNull(job);
     }
@@ -186,11 +186,9 @@ public class HarvesterRepositoryManagerTest extends AbstractTest {
         assertNotNull(hist);
     }
 
-
-
     @Test
     public void testUpdateLastHarvestingTime() throws Exception {
-        Timestamp ts = new Timestamp(1l);
+        Timestamp ts = new Timestamp(1L);
         HarvesterRepositoryManager.updateLastHarvestingTime(1, ts);
         assertNotNull(ts);
     }
@@ -201,6 +199,5 @@ public class HarvesterRepositoryManagerTest extends AbstractTest {
         HarvesterRepositoryManager.setRecordExported(rec);
         assertNotNull(rec);
     }
-
 
 }

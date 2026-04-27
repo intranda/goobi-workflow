@@ -52,13 +52,12 @@ public class BackgroundJobManagerTest extends AbstractTest {
         jobs.add(job);
 
         EasyMock.expect(BackgroundJobsMysqlHelper.getList(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
-        .andReturn(jobs)
-        .anyTimes();
+                .andReturn(jobs)
+                .anyTimes();
 
         List<Integer> ids = new ArrayList<>();
         ids.add(1);
         EasyMock.expect(BackgroundJobsMysqlHelper.getIdList(EasyMock.anyString())).andReturn(ids).anyTimes();
-
 
         EasyMock.expect(BackgroundJobsMysqlHelper.getBackgroundJobById(EasyMock.anyInt())).andReturn(job).anyTimes();
         BackgroundJobsMysqlHelper.saveBackgroundJob(EasyMock.anyObject(BackgroundJob.class));
@@ -109,14 +108,14 @@ public class BackgroundJobManagerTest extends AbstractTest {
 
     @Test
     public void saveBackgroundJob() {
-        BackgroundJob job = EasyMock.createMock( BackgroundJob.class);
+        BackgroundJob job = EasyMock.createMock(BackgroundJob.class);
         BackgroundJobManager.saveBackgroundJob(job);
         assertNotNull(job);
     }
 
     @Test
     public void deleteBackgroundJob() {
-        BackgroundJob job = EasyMock.createMock( BackgroundJob.class);
+        BackgroundJob job = EasyMock.createMock(BackgroundJob.class);
         BackgroundJobManager.deleteBackgroundJob(job);
         assertNotNull(job);
 

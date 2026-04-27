@@ -97,9 +97,9 @@ public class MetadatenSperrungTest extends AbstractTest {
         MetadatenSperrung ms = new MetadatenSperrung();
         ms.setLocked(1, "1");
         long time = ms.getLockSekunden(2);
-        assertEquals(0l, time);
+        assertEquals(0L, time);
         Thread.sleep(1000);
         time = ms.getLockSekunden(1);
-        assertEquals(1l, time);
+        assertEquals(1L, time);
     }
 }
