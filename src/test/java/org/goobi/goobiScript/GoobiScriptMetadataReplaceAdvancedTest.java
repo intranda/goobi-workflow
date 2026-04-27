@@ -120,9 +120,7 @@ public class GoobiScriptMetadataReplaceAdvancedTest extends AbstractTest {
 
         PowerMock.mockStatic(MetadataManager.class);
         MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
-        MetadataManager.updateJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
         MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
-        MetadataManager.updateJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
         PowerMock.replay(MetadataManager.class);
 
         EasyMock.replay(configurationHelper);

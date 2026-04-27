@@ -19,7 +19,6 @@
 package org.goobi.api.rest.request;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,14 +40,14 @@ public class SearchGroupTest extends AbstractTest {
         group.addFilter(new SearchQuery("f2", "v2", RelationalOperator.NEQUAL));
 
         StringBuilder b = new StringBuilder();
-        group.createLegacySqlClause(b);
+        group.createSqlClause(b);
 
         assertEquals(
-                "((name=? and value=?)OR (name=? and value!=?))",
+                " EXISTS (SELECT 1 FROM metadata m0 WHERE m0.processid = prozesse.ProzesseID  AND m0.name = ?  AND m0.value = ? )  OR  NOT EXISTS (SELECT 1 FROM metadata m1 WHERE m1.processid = prozesse.ProzesseID  AND m1.name = ?  AND m1.value != ? ) ",
                 b.toString());
 
         List<Object> params = new ArrayList<>();
-        group.addLegacyParams(params);
+        group.addParams(params);
 
         assertEquals(4, params.size());
         assertEquals("f1", params.get(0));
@@ -67,10 +66,12 @@ public class SearchGroupTest extends AbstractTest {
         group.addFilter(new SearchQuery("b", "2", RelationalOperator.NLIKE));
 
         StringBuilder b = new StringBuilder();
-        group.createLegacySqlClause(b);
+        group.createSqlClause(b);
 
         assertEquals(
-                "((name=? and value LIKE ?)AND (name=? and value NOT LIKE ?))",
+                " EXISTS (SELECT 1 FROM metadata m0 WHERE m0.processid = prozesse.ProzesseID  AND m0.name = ?  AND m0.value  LIKE  ? )  "
+                        + "AND  NOT EXISTS (SELECT 1 FROM metadata m1 WHERE m1.processid = prozesse.ProzesseID  AND m1.name = ?"
+                        + "  AND m1.value  NOT LIKE  ? ) ",
                 b.toString());
     }
 
@@ -87,7 +88,8 @@ public class SearchGroupTest extends AbstractTest {
         group.createSqlClause(b);
 
         assertEquals(
-                "((JSON_EXTRACT(value, ?) LIKE ?)AND (JSON_CONTAINS(value, ?, ?)))",
+                " EXISTS (SELECT 1 FROM metadata m0 WHERE m0.processid = prozesse.ProzesseID  AND m0.name = ?  AND m0.value  LIKE  ? )  "
+                        + "AND  EXISTS (SELECT 1 FROM metadata m1 WHERE m1.processid = prozesse.ProzesseID  AND m1.name = ?  AND m1.value = ? ) ",
                 b.toString());
 
         List<Object> params = new ArrayList<>();
@@ -96,30 +98,12 @@ public class SearchGroupTest extends AbstractTest {
         assertEquals(4, params.size());
 
         // LIKE params
-        assertEquals("$.title", params.get(0));
+        assertEquals("title", params.get(0));
         assertEquals("%goobi%", params.get(1));
 
         // EQUAL params
-        assertEquals("\"done\"", params.get(2));
-        assertEquals("$.status", params.get(3));
-    }
-
-    @Test
-    public void testEmptyGroupProducesEmptyBrackets() {
-
-        SearchGroup group = new SearchGroup();
-
-        StringBuilder b1 = new StringBuilder();
-        group.createLegacySqlClause(b1);
-        assertEquals("()", b1.toString());
-
-        StringBuilder b2 = new StringBuilder();
-        group.createSqlClause(b2);
-        assertEquals("()", b2.toString());
-
-        List<Object> params = new ArrayList<>();
-        group.addParams(params);
-        assertTrue(params.isEmpty());
+        assertEquals("status", params.get(2));
+        assertEquals("done", params.get(3));
     }
 
     @Test

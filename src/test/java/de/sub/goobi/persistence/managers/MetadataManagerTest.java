@@ -56,11 +56,8 @@ public class MetadataManagerTest extends AbstractTest {
 
         MetadataMysqlHelper.removeMetadata(EasyMock.anyInt());
         EasyMock.expectLastCall().anyTimes();
-        MetadataMysqlHelper.removeJSONMetadata(EasyMock.anyInt());
-        EasyMock.expectLastCall().anyTimes();
+
         MetadataMysqlHelper.insertMetadata(EasyMock.anyInt(), EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        MetadataMysqlHelper.insertJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject());
         EasyMock.expectLastCall().anyTimes();
 
         List<String> names = Arrays.asList("TitleDocMain", "Author");
@@ -87,18 +84,8 @@ public class MetadataManagerTest extends AbstractTest {
     }
 
     @Test
-    public void testInsertJSONMetadata() {
-        MetadataManager.insertJSONMetadata(1, sampleMetadata);
-    }
-
-    @Test
     public void testInsertMetadata() {
         MetadataManager.insertMetadata(1, sampleMetadata);
-    }
-
-    @Test
-    public void testUpdateJSONMetadata() {
-        MetadataManager.updateJSONMetadata(1, sampleMetadata);
     }
 
     @Test

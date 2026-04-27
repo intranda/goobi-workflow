@@ -218,7 +218,6 @@ public class ProcessServiceTest extends AbstractTest {
         PowerMock.mockStatic(MetadataManager.class);
 
         MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject());
-        MetadataManager.updateJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject());
         List<StringPair> metadataList = new ArrayList<>();
         EasyMock.expect(MetadataManager.getMetadata(EasyMock.anyInt())).andReturn(metadataList).anyTimes();
 

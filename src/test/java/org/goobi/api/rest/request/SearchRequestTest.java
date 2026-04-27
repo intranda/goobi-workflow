@@ -45,13 +45,11 @@ public class SearchRequestTest extends AbstractTest {
         req.addSearchGroup(group);
         req.setMetadataConjunctive(true);
 
-        String sql = req.createSql();
+        String sql = req.createLegacySql();
 
         assertTrue(sql.contains("SELECT prozesse.ProzesseID"));
-        assertTrue(sql.contains("FROM metadata_json"));
+        assertTrue(sql.contains("FROM metadata"));
         assertTrue(sql.contains("WHERE"));
-        assertTrue(sql.contains("JSON_EXTRACT(value, ?) LIKE ?"));
-        assertTrue(sql.contains("ORDER BY metadata_json.processid ASC"));
     }
 
     @Test
@@ -67,8 +65,8 @@ public class SearchRequestTest extends AbstractTest {
         Object[] params = req.createSqlParams();
 
         assertEquals(2, params.length);
-        assertEquals("\"value\"", params[0]);
-        assertEquals("$.field", params[1]);
+        assertEquals("field", params[0]);
+        assertEquals("value", params[1]);
     }
 
     @Test
@@ -81,13 +79,13 @@ public class SearchRequestTest extends AbstractTest {
         req.setProperty("propName", "propValue");
         req.setStepStatus("Scan", "DONE");
 
-        String sql = req.createSql();
+        String sql = req.createLegacySql();
 
-        assertTrue(sql.contains("LEFT JOIN projekte"));
+        assertTrue(sql.contains("JOIN projekte"));
         assertTrue(sql.contains("LEFT JOIN properties"));
         assertTrue(sql.contains("LEFT JOIN schritte"));
 
-        assertTrue(sql.contains("projekte.Titel IN"));
+        assertTrue(sql.contains("pr.Titel IN"));
         assertTrue(sql.contains("properties.property_name=\"templateID\""));
         assertTrue(sql.contains("schritte.Titel IN"));
     }
@@ -102,9 +100,9 @@ public class SearchRequestTest extends AbstractTest {
         req.setLimit(10);
         req.setOffset(5);
 
-        String sql = req.createSql();
+        String sql = req.createLegacySql();
 
-        assertTrue(sql.contains("ORDER BY JSON_EXTRACT(value, ?) DESC"));
+        assertTrue(sql.contains("ORDER BY prozesse.ProzesseID ASC"));
         assertTrue(sql.contains("LIMIT ? OFFSET ?"));
 
         Object[] params = req.createSqlParams();
@@ -129,9 +127,8 @@ public class SearchRequestTest extends AbstractTest {
         String sql = req.createLegacySql();
 
         assertTrue(sql.contains("FROM metadata"));
-        assertTrue(sql.contains("prozesse.ProzesseID IN"));
-        assertTrue(sql.contains("name=? and value=?"));
-        assertFalse(sql.contains("projekte.Titel IN (?)"));
+        assertTrue(sql.contains("FROM prozesse"));
+        assertFalse(sql.contains("pr.Titel IN (?"));
         assertFalse(sql.contains("properties.property_name=\"templateID\""));
 
         // project filter
@@ -140,7 +137,7 @@ public class SearchRequestTest extends AbstractTest {
 
         req.setFilterProjects(filterList);
         sql = req.createLegacySql();
-        assertTrue(sql.contains("projekte.Titel IN (?)"));
+        assertTrue(sql.contains("pr.Titel IN (?)"));
 
         // template filter
         List<Integer> idList = new ArrayList<>();

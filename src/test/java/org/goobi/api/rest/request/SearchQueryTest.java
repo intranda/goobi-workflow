@@ -92,32 +92,32 @@ public class SearchQueryTest extends AbstractTest {
     @Test
     public void testCreateSqlClauseEQUAL() {
         testSqlClause(RelationalOperator.EQUAL,
-                "(JSON_CONTAINS(value, ?, ?))");
+                " EXISTS (SELECT 1 FROM metadata m0 WHERE m0.processid = prozesse.ProzesseID  AND m0.name = ?  AND m0.value = ? ) ");
     }
 
     @Test
     public void testCreateSqlClauseNEQUAL() {
         testSqlClause(RelationalOperator.NEQUAL,
-                "(NOT JSON_CONTAINS(value, ?, ?))");
+                " NOT EXISTS (SELECT 1 FROM metadata m0 WHERE m0.processid = prozesse.ProzesseID  AND m0.name = ?  AND m0.value != ? ) ");
     }
 
     @Test
     public void testCreateSqlClauseLIKE() {
         testSqlClause(RelationalOperator.LIKE,
-                "(JSON_EXTRACT(value, ?) LIKE ?)");
+                " EXISTS (SELECT 1 FROM metadata m0 WHERE m0.processid = prozesse.ProzesseID  AND m0.name = ?  AND m0.value  LIKE  ? ) ");
     }
 
     @Test
     public void testCreateSqlClauseNLIKE() {
         testSqlClause(RelationalOperator.NLIKE,
-                "(JSON_EXTRACT(value, ?) NOT LIKE ?)");
+                " NOT EXISTS (SELECT 1 FROM metadata m0 WHERE m0.processid = prozesse.ProzesseID  AND m0.name = ?  AND m0.value  NOT LIKE  ? ) ");
     }
 
     private void testSqlClause(RelationalOperator op, String expected) {
         SearchQuery q = new SearchQuery("f", "v", op);
 
         StringBuilder b = new StringBuilder();
-        q.createSqlClause(b);
+        q.createSqlClause(b, 0);
 
         assertEquals(expected, b.toString());
     }
@@ -130,8 +130,8 @@ public class SearchQueryTest extends AbstractTest {
         q.addParams(params);
 
         assertEquals(2, params.size());
-        assertEquals("\"value\"", params.get(0));
-        assertEquals("$.field", params.get(1));
+        assertEquals("field", params.get(0));
+        assertEquals("value", params.get(1));
     }
 
     @Test
@@ -141,8 +141,8 @@ public class SearchQueryTest extends AbstractTest {
         List<Object> params = new ArrayList<>();
         q.addParams(params);
 
-        assertEquals("\"value\"", params.get(0));
-        assertEquals("$.field", params.get(1));
+        assertEquals("field", params.get(0));
+        assertEquals("value", params.get(1));
     }
 
     @Test
@@ -152,7 +152,7 @@ public class SearchQueryTest extends AbstractTest {
         List<Object> params = new ArrayList<>();
         q.addParams(params);
 
-        assertEquals("$.field", params.get(0));
+        assertEquals("field", params.get(0));
         assertEquals("%value%", params.get(1));
     }
 
@@ -163,7 +163,7 @@ public class SearchQueryTest extends AbstractTest {
         List<Object> params = new ArrayList<>();
         q.addParams(params);
 
-        assertEquals("$.field", params.get(0));
+        assertEquals("field", params.get(0));
         assertEquals("%value%", params.get(1));
     }
 }
