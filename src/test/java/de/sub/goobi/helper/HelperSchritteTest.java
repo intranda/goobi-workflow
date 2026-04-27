@@ -70,6 +70,7 @@ public class HelperSchritteTest extends AbstractTest {
     private Step step2;
     private User user;
 
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
@@ -148,7 +149,6 @@ public class HelperSchritteTest extends AbstractTest {
 
         PowerMock.mockStatic(MetadataManager.class);
         MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
-        MetadataManager.updateJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
 
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();

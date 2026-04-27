@@ -334,7 +334,7 @@ public class ProzesskopieFormTest extends AbstractTest {
     }
 
     @Test
-    public void testTifHeader_documentname() {
+    public void testTifHeaderDocumentname() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         String fixture = "test";
@@ -343,7 +343,7 @@ public class ProzesskopieFormTest extends AbstractTest {
     }
 
     @Test
-    public void testTifHeader_imagedescription() {
+    public void testTifHeaderImagedescription() {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         String fixture = "test";
@@ -456,12 +456,12 @@ public class ProzesskopieFormTest extends AbstractTest {
         // verify field values are preserved — especially the active fields must not be
         // overwritten by the empty duplicate-titled fields for other doc types
         List<AdditionalField> restored = form.getAdditionalFields();
-        assertEquals("Das Kapital", restored.get(1).getWert());   // Title (monograph)
-        assertEquals("", restored.get(2).getWert());               // Title (multivolume) was empty
-        assertEquals("Kapital, Das", restored.get(3).getWert());   // Sorting title (monograph)
-        assertEquals("", restored.get(4).getWert());               // Sorting title (multivolume) was empty
-        assertEquals("1867", restored.get(5).getWert());           // Publishing year (monograph)
-        assertEquals("", restored.get(6).getWert());               // Publishing year (multivolume) was empty
+        assertEquals("Das Kapital", restored.get(1).getWert()); // Title (monograph)
+        assertEquals("", restored.get(2).getWert()); // Title (multivolume) was empty
+        assertEquals("Kapital, Das", restored.get(3).getWert()); // Sorting title (monograph)
+        assertEquals("", restored.get(4).getWert()); // Sorting title (multivolume) was empty
+        assertEquals("1867", restored.get(5).getWert()); // Publishing year (monograph)
+        assertEquals("", restored.get(6).getWert()); // Publishing year (multivolume) was empty
 
         assertEquals("my-document", form.getTifHeaderDocumentname());
         assertEquals("my-description", form.getTifHeaderImagedescription());
@@ -488,7 +488,6 @@ public class ProzesskopieFormTest extends AbstractTest {
         PowerMock.mockStatic(MetadataManager.class);
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
         MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
-        MetadataManager.updateJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
 
         PowerMock.mockStatic(HistoryAnalyserJob.class);
         EasyMock.expect(HistoryAnalyserJob.updateHistoryForProzess(EasyMock.anyObject(Process.class))).andReturn(true);
