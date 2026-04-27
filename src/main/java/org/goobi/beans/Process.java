@@ -1036,9 +1036,6 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
 
         MetadataManager.updateMetadata(id, metadata);
 
-        Map<String, List<String>> jsonMetadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, true);
-
-        MetadataManager.updateJSONMetadata(id, jsonMetadata);
         return true;
     }
 

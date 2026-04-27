@@ -74,33 +74,39 @@ public class SearchQuery {
         params.add(value);
     }
 
-    public void createSqlClause(StringBuilder b) {
-        b.append('(');
+    public void createSqlClause(StringBuilder b, int counter) {
         switch (relation) {
             case EQUAL:
-                b.append("JSON_CONTAINS(value, ?, ?)");
+            case LIKE:
+                b.append(" EXISTS (");
+                b.append("SELECT 1 FROM metadata m").append(counter);
+                b.append(" WHERE m").append(counter).append(".processid = prozesse.ProzesseID ");
+                b.append(" AND m").append(counter).append(".name = ? ");
+                b.append(" AND m").append(counter).append(".value ");
+                b.append(relation.toString()).append(" ? ");
+                b.append(") ");
                 break;
             case NEQUAL:
-                b.append("NOT JSON_CONTAINS(value, ?, ?)");
-                break;
-            case LIKE:
-                b.append("JSON_EXTRACT(value, ?) LIKE ?");
-                break;
             case NLIKE:
-                b.append("JSON_EXTRACT(value, ?) NOT LIKE ?");
+                b.append(" NOT EXISTS (");
+                b.append("SELECT 1 FROM metadata m").append(counter);
+                b.append(" WHERE m").append(counter).append(".processid = prozesse.ProzesseID ");
+                b.append(" AND m").append(counter).append(".name = ? ");
+                b.append(" AND m").append(counter).append(".value ");
+                b.append(relation.toString()).append(" ? ");
+                b.append(") ");
                 break;
             default:
                 // nothing
         }
-        b.append(')');
     }
 
     public void addParams(List<Object> params) {
         if (relation == RelationalOperator.EQUAL || relation == RelationalOperator.NEQUAL) {
-            params.add("\"" + value + "\"");
-            params.add("$." + field);
+            params.add(field);
+            params.add(value);
         } else {
-            params.add("$." + field);
+            params.add(field);
             params.add("%" + value + "%");
         }
 

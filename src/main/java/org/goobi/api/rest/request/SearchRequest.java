@@ -95,17 +95,6 @@ public class SearchRequest {
         return processes;
     }
 
-    public String createSql() {
-        //example sql: select * from metadata left join prozesse on metadata.processid = prozesse.ProzesseID where prozesse.ProzesseID IN
-        //(select processid from metadata where metadata.name="_dateDigitization" and metadata.value="2018"); (NOSONAR)
-        StringBuilder b = new StringBuilder();
-        createSelect(b);
-        createFrom(b);
-        createWhere(b);
-        createOrderAndLimit(b);
-        return b.toString();
-    }
-
     private void createSelect(StringBuilder b) {
         b.append("SELECT prozesse.ProzesseID,  metadatenkonfigurationen.Datei ");
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
@@ -117,7 +106,7 @@ public class SearchRequest {
     }
 
     private void createFrom(StringBuilder b) {
-        b.append("FROM metadata_json LEFT JOIN prozesse ON metadata_json.processid = prozesse.ProzesseID LEFT JOIN");
+        b.append("FROM metadata LEFT JOIN prozesse ON metadata.processid = prozesse.ProzesseID LEFT JOIN");
         b.append(" metadatenkonfigurationen on metadatenkonfigurationen.MetadatenKonfigurationID=prozesse.MetadatenKonfigurationID ");
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
             b.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
@@ -160,7 +149,7 @@ public class SearchRequest {
         boolean firstWhere = inFirstWhere;
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
             firstWhere = false;
-            b.append("projekte.Titel IN (");
+            b.append("pr.Titel IN (");
             for (int i = 0; i < this.filterProjects.size(); i++) {
                 b.append("?");
                 if (i + 1 < this.filterProjects.size()) {
@@ -208,7 +197,7 @@ public class SearchRequest {
             b.append(" ORDER BY JSON_EXTRACT(value, ?) ");
             b.append(sortDescending ? "DESC " : "ASC ");
         } else {
-            b.append(" ORDER BY metadata_json.processid ASC ");
+            b.append(" ORDER BY metadata.processid ASC ");
         }
         if (limit != 0) {
             b.append("LIMIT ? OFFSET ?");
@@ -262,26 +251,26 @@ public class SearchRequest {
     }
 
     public String createLegacySql() {
-        //example sql: select * from metadata left join prozesse on metadata.processid = prozesse.ProzesseID where prozesse.ProzesseID IN
-        //(select processid from metadata where metadata.name="_dateDigitization" and metadata.value="2018");  (NOSONAR)
+
         StringBuilder builder = new StringBuilder();
         createLegacySelect(builder);
         createLegacyFrom(builder);
         createLegacyWhere(builder);
         return builder.toString();
 
-        //        return "SELECT * FROM ( SELECT processid FROM metadata WHERE (name=? and value LIKE ?)) as t"; (NOSONAR)
     }
 
     private void createLegacySelect(StringBuilder b) {
-        b.append("SELECT prozesse.ProzesseID,  metadatenkonfigurationen.Datei ");
+        b.append("SELECT prozesse.ProzesseID, metadatenkonfigurationen.Datei ");
     }
 
     private void createLegacyFrom(StringBuilder b) {
-        b.append("FROM metadata LEFT JOIN prozesse ON metadata.processid = prozesse.ProzesseID LEFT JOIN ");
-        b.append("metadatenkonfigurationen on metadatenkonfigurationen.MetadatenKonfigurationID=prozesse.MetadatenKonfigurationID ");
+
+        b.append("FROM prozesse JOIN metadatenkonfigurationen ");
+        b.append("ON metadatenkonfigurationen.MetadatenKonfigurationID = prozesse.MetadatenKonfigurationID ");
+
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
-            b.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
+            b.append("JOIN projekte pr ON prozesse.ProjekteID = pr.ProjekteID ");
         }
         if ((this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) || (this.propName != null && !this.propName.isEmpty())) {
             b.append("LEFT JOIN properties ON prozesse.prozesseID = properties.object_id AND properties.object_type = 'process'");
@@ -304,19 +293,17 @@ public class SearchRequest {
             b.append("AND ");
         }
 
-        b.append("prozesse.ProzesseID IN ( SELECT * FROM ( SELECT processid FROM metadata WHERE (");
         for (int i = 0; i < metadataFilters.size(); i++) {
             SearchGroup sg = metadataFilters.get(i);
-            sg.createLegacySqlClause(b);
+            sg.createSqlClause(b);
             if (i + 1 < metadataFilters.size()) {
                 b.append(conj);
             }
         }
-        b.append(") ORDER BY metadata.processid ASC ");
+        b.append(" ORDER BY prozesse.ProzesseID ASC ");
         if (limit != 0) {
             b.append("LIMIT ? OFFSET ? ");
         }
-        b.append(") as t) ");
     }
 
     public Object[] createLegacySqlParams() {
@@ -357,7 +344,7 @@ public class SearchRequest {
 
         if (metadataFilters != null) {
             for (SearchGroup sg : metadataFilters) {
-                sg.addLegacyParams(params);
+                sg.addParams(params);
             }
         }
         if (limit != 0) {

@@ -298,7 +298,6 @@ public class HelperSchritte {
             if (StorageProvider.getInstance().isFileExists(anchorFile)) {
                 extractAuthorityMetadata(anchorFile, pairs);
             }
-            MetadataManager.updateJSONMetadata(process.getId(), pairs);
 
             HistoryAnalyserJob.updateHistory(process);
 

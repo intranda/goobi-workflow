@@ -43,47 +43,39 @@ public final class RestDbHelper {
 
     public static List<RestProcess> searchProcesses(SearchRequest req) throws SQLException {
         List<RestProcess> results = null;
-        if (MySQLHelper.isJsonCapable()) {
-            String sql = req.createSql();
-            Object[] params = req.createSqlParams();
-            try (Connection conn = MySQLHelper.getInstance().getConnection()) {
-                QueryRunner run = new QueryRunner();
-                results = run.query(conn, sql, new JsonResultSetToRestProcessList(), params);
-            }
-        } else {
 
-            //        SELECT sql_no_cache
-            //        p.ProzesseID, mk.Datei
-            //    FROM prozesse p
-            //    JOIN metadatenkonfigurationen mk 
-            //      ON mk.MetadatenKonfigurationID = p.MetadatenKonfigurationID
-            //    JOIN projekte pr 
-            //      ON p.ProjekteID = pr.ProjekteID
-            //    WHERE pr.Titel IN ('Cataloguing - Module 1',
-            //                       'Cataloguing - Module 2',
-            //                       'Cataloguing - Module 3')
-            //      AND EXISTS (
-            //          SELECT 1 
-            //          FROM metadata m1 
-            //          WHERE m1.processid = p.ProzesseID
-            //            AND m1.name = 'location_shelfLocator'
-            //            AND m1.value LIKE '%HCA%'
-            //      )
-            //      AND EXISTS (
-            //          SELECT 1 
-            //          FROM metadata m2 
-            //          WHERE m2.processid = p.ProzesseID
-            //            AND m2.name = 'TitleDocMain'
-            //            AND m2.value LIKE '%Customs%'
-            //      )
-            //    ORDER BY p.ProzesseID ASC;
+        //        SELECT sql_no_cache
+        //        p.ProzesseID, mk.Datei
+        //    FROM prozesse p
+        //    JOIN metadatenkonfigurationen mk
+        //      ON mk.MetadatenKonfigurationID = p.MetadatenKonfigurationID
+        //    JOIN projekte pr
+        //      ON p.ProjekteID = pr.ProjekteID
+        //    WHERE pr.Titel IN ('Cataloguing - Module 1',
+        //                       'Cataloguing - Module 2',
+        //                       'Cataloguing - Module 3')
+        //      AND EXISTS (
+        //          SELECT 1
+        //          FROM metadata m1
+        //          WHERE m1.processid = p.ProzesseID
+        //            AND m1.name = 'location_shelfLocator'
+        //            AND m1.value LIKE '%HCA%'
+        //      )
+        //      AND EXISTS (
+        //          SELECT 1
+        //          FROM metadata m2
+        //          WHERE m2.processid = p.ProzesseID
+        //            AND m2.name = 'TitleDocMain'
+        //            AND m2.value LIKE '%Customs%'
+        //      )
+        //    ORDER BY p.ProzesseID ASC;
 
-            String sql = req.createLegacySql();
-            Object[] params = req.createLegacySqlParams();
-            try (Connection conn = MySQLHelper.getInstance().getConnection()) {
-                QueryRunner run = new QueryRunner();
-                results = run.query(conn, sql, new ResultSetToRestProcessList(), params);
-            }
+        String sql = req.createLegacySql();
+        Object[] params = req.createLegacySqlParams();
+        try (Connection conn = MySQLHelper.getInstance().getConnection()) {
+            QueryRunner run = new QueryRunner();
+            results = run.query(conn, sql, new JsonResultSetToRestProcessList(), params);
+
         }
         return results;
     }
