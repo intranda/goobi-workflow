@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.db.RestDbHelper;
 import org.goobi.api.rest.model.RestProcess;
 import org.goobi.api.rest.utils.MetadataUtils;
@@ -95,56 +96,6 @@ public class SearchRequest {
         return processes;
     }
 
-    private void createSelect(StringBuilder b) {
-        b.append("SELECT prozesse.ProzesseID,  metadatenkonfigurationen.Datei ");
-        if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
-            b.append(", projekte.Titel ");
-        }
-        if (this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) {
-            b.append(", properties.property_name, properties.property_value ");
-        }
-    }
-
-    private void createFrom(StringBuilder b) {
-        b.append("FROM metadata LEFT JOIN prozesse ON metadata.processid = prozesse.ProzesseID LEFT JOIN");
-        b.append(" metadatenkonfigurationen on metadatenkonfigurationen.MetadatenKonfigurationID=prozesse.MetadatenKonfigurationID ");
-        if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
-            b.append("LEFT JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID ");
-        }
-        if (this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) {
-            b.append("LEFT JOIN properties ON prozesse.prozesseID = properties.object_id and object_type = 'process' ");
-        }
-        if (this.stepName != null && !this.stepName.isEmpty()) {
-            b.append("LEFT JOIN schritte ON prozesse.prozesseID = schritte.ProzesseID ");
-        }
-        if ((this.propName != null && !this.propName.isEmpty())) {
-            b.append("LEFT JOIN properties ON prozesse.prozesseID = properties.object_id AND properties.object_type = 'process' ");
-        }
-    }
-
-    private void createWhere(StringBuilder b) {
-        boolean firstWhere = true;
-        String conj = metadataConjunctive ? "AND " : "OR ";
-        b.append("WHERE ");
-
-        firstWhere = addFilters(b, firstWhere);
-
-        if (metadataFilters != null && !metadataFilters.isEmpty()) {
-            if (metadataFilters.get(0).getFilters().get(0).getField() != null) {
-                if (!firstWhere) {
-                    b.append("AND ");
-                }
-                for (int i = 0; i < metadataFilters.size(); i++) {
-                    SearchGroup sg = metadataFilters.get(i);
-                    sg.createSqlClause(b);
-                    if (i + 1 < metadataFilters.size()) {
-                        b.append(conj);
-                    }
-                }
-            }
-        }
-    }
-
     private boolean addFilters(StringBuilder b, boolean inFirstWhere) {
         boolean firstWhere = inFirstWhere;
         if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
@@ -192,79 +143,21 @@ public class SearchRequest {
         return firstWhere;
     }
 
-    private void createOrderAndLimit(StringBuilder b) {
-        if (sortField != null && !sortField.isEmpty()) {
-            b.append(" ORDER BY JSON_EXTRACT(value, ?) ");
-            b.append(sortDescending ? "DESC " : "ASC ");
-        } else {
-            b.append(" ORDER BY metadata.processid ASC ");
-        }
-        if (limit != 0) {
-            b.append("LIMIT ? OFFSET ?");
-        }
-    }
-
-    public Object[] createSqlParams() {
-        List<Object> params = new ArrayList<>();
-        addWhereParams(params);
-        addOrderAndLimitParams(params);
-        Object[] paramsArr = new Object[params.size()];
-        params.toArray(paramsArr);
-        return paramsArr;
-    }
-
-    private void addWhereParams(List<Object> params) {
-        if (this.filterProjects != null) {
-            for (String project : this.filterProjects) {
-                params.add(project);
-            }
-        }
-        if (this.filterTemplateIDs != null) {
-            for (Integer templateId : this.filterTemplateIDs) {
-                params.add(templateId.toString());
-            }
-        }
-        if (this.propName != null) {
-            params.add(this.propName);
-            params.add(this.propValue);
-        }
-
-        if (this.stepName != null) {
-            params.add(this.stepName);
-            params.add(resolveStepStatusValue(this.stepStatus));
-        }
-        for (SearchGroup sg : metadataFilters) {
-            if (sg.getFilters().get(0).getField() != null) {
-                sg.addParams(params);
-            }
-        }
-    }
-
-    private void addOrderAndLimitParams(List<Object> params) {
-        if (sortField != null && !sortField.isEmpty()) {
-            params.add("$." + sortField);
-        }
-        if (limit != 0) {
-            params.add(limit);
-            params.add(offset);
-        }
-    }
-
-    public String createLegacySql() {
+    public String createSql() {
 
         StringBuilder builder = new StringBuilder();
-        createLegacySelect(builder);
-        createLegacyFrom(builder);
-        createLegacyWhere(builder);
+        createSelect(builder);
+        createFrom(builder);
+        createWhere(builder);
         return builder.toString();
 
     }
 
-    private void createLegacySelect(StringBuilder b) {
+    private void createSelect(StringBuilder b) {
         b.append("SELECT prozesse.ProzesseID, metadatenkonfigurationen.Datei ");
     }
 
-    private void createLegacyFrom(StringBuilder b) {
+    private void createFrom(StringBuilder b) {
 
         b.append("FROM prozesse JOIN metadatenkonfigurationen ");
         b.append("ON metadatenkonfigurationen.MetadatenKonfigurationID = prozesse.MetadatenKonfigurationID ");
@@ -278,9 +171,18 @@ public class SearchRequest {
         if (this.stepName != null && !this.stepName.isEmpty()) {
             b.append("LEFT JOIN schritte ON prozesse.prozesseID = schritte.ProzesseID ");
         }
+        if (StringUtils.isNotBlank(sortField)) {
+            b.append(" ");
+            b.append("LEFT JOIN ( ");
+            b.append("SELECT processid, MAX(value) AS sortField ");
+            b.append("FROM metadata ");
+            b.append("WHERE name = ? ");
+            b.append("GROUP BY processid ");
+            b.append(") sort_meta ON sort_meta.processid = prozesse.ProzesseID ");
+        }
     }
 
-    private void createLegacyWhere(StringBuilder b) {
+    private void createWhere(StringBuilder b) {
 
         boolean firstWhere = true;
         String conj = metadataConjunctive ? "AND " : "OR ";
@@ -300,13 +202,18 @@ public class SearchRequest {
                 b.append(conj);
             }
         }
-        b.append(" ORDER BY prozesse.ProzesseID ASC ");
+        if (StringUtils.isNotBlank(sortField)) {
+            b.append(" ORDER BY sort_meta.sortField ");
+            b.append(sortDescending ? "DESC " : "ASC ");
+        } else {
+            b.append(" ORDER BY prozesse.ProzesseID ASC ");
+        }
         if (limit != 0) {
             b.append("LIMIT ? OFFSET ? ");
         }
     }
 
-    public Object[] createLegacySqlParams() {
+    public Object[] createSqlParams() {
         List<Object> params = new ArrayList<>();
         addLegacyWhereParams(params);
         Object[] paramsArr = new Object[params.size()];
@@ -326,6 +233,10 @@ public class SearchRequest {
     }
 
     private void addLegacyWhereParams(List<Object> params) {
+        if (StringUtils.isNotBlank(sortField)) {
+            params.add(sortField);
+        }
+
         if (this.filterProjects != null) {
             for (String project : this.filterProjects) {
                 params.add(project);

@@ -809,7 +809,7 @@ public class MetadatenHelper {
         return null;
     }
 
-    public static Map<String, List<String>> getMetadataOfFileformat(Fileformat gdzfile, boolean includeAuthority) {
+    public static Map<String, List<String>> getMetadataOfFileformat(Fileformat gdzfile) {
 
         Map<String, List<String>> metadataList = new HashMap<>();
 
@@ -818,12 +818,12 @@ public class MetadatenHelper {
             metadataList.put("DocStruct", Collections.singletonList(ds.getType().getName()));
             if (ds.getType().isAnchor() && ds.getAllChildren() != null) {
                 DocStruct volume = ds.getAllChildren().get(0);
-                getMetadataFromDocstruct(includeAuthority, metadataList, volume);
+                getMetadataFromDocstruct(metadataList, volume);
             }
-            getMetadataFromDocstruct(includeAuthority, metadataList, ds);
+            getMetadataFromDocstruct(metadataList, ds);
 
             ds = gdzfile.getDigitalDocument().getPhysicalDocStruct();
-            getMetadataFromDocstruct(includeAuthority, metadataList, ds);
+            getMetadataFromDocstruct(metadataList, ds);
         } catch (PreferencesException e) {
             log.error(e);
         }
@@ -841,14 +841,12 @@ public class MetadatenHelper {
         return getSingleMetadata(docStruct, metadataType).map(Metadata::getValue);
     }
 
-    private static void getMetadataFromDocstruct(boolean includeAuthority, Map<String, List<String>> metadataList, DocStruct ds) {
+    private static void getMetadataFromDocstruct(Map<String, List<String>> metadataList, DocStruct ds) {
         if (ds.getAllMetadataGroups() != null) {
             for (MetadataGroup mg : ds.getAllMetadataGroups()) {
                 if (mg.getPersonList() != null) {
                     for (Person p : mg.getPersonList()) {
-                        if (includeAuthority) {
-                            addAuthorityFromPerson(metadataList, p);
-                        }
+                        addAuthorityFromPerson(metadataList, p);
                         if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                             if (metadataList.containsKey(p.getType().getName())) {
                                 List<String> oldValue = metadataList.get(p.getType().getName());
@@ -864,9 +862,7 @@ public class MetadatenHelper {
                 }
                 if (mg.getMetadataList() != null) {
                     for (Metadata md : mg.getMetadataList()) {
-                        if (includeAuthority) {
-                            addAuthorityFromMeta(metadataList, md);
-                        }
+                        addAuthorityFromMeta(metadataList, md);
                         if (StringUtils.isNotBlank(md.getValue())) {
                             if (metadataList.containsKey(md.getType().getName())) {
                                 List<String> oldValue = metadataList.get(md.getType().getName());
@@ -882,9 +878,8 @@ public class MetadatenHelper {
                 }
                 if (mg.getCorporateList() != null) {
                     for (Corporate c : mg.getCorporateList()) {
-                        if (includeAuthority) {
-                            addAuthorityFromMeta(metadataList, c);
-                        }
+                        addAuthorityFromMeta(metadataList, c);
+
                         StringBuilder corporate = new StringBuilder();
                         if (StringUtils.isNotBlank(c.getMainName())) {
                             corporate.append(c.getMainName());
@@ -918,9 +913,8 @@ public class MetadatenHelper {
 
         if (ds.getAllCorporates() != null) {
             for (Corporate c : ds.getAllCorporates()) {
-                if (includeAuthority) {
-                    addAuthorityFromMeta(metadataList, c);
-                }
+                addAuthorityFromMeta(metadataList, c);
+
                 StringBuilder corporate = new StringBuilder();
                 if (StringUtils.isNotBlank(c.getMainName())) {
                     corporate.append(c.getMainName());
@@ -955,9 +949,8 @@ public class MetadatenHelper {
 
         if (ds.getAllMetadata() != null) {
             for (Metadata md : ds.getAllMetadata()) {
-                if (includeAuthority) {
-                    addAuthorityFromMeta(metadataList, md);
-                }
+                addAuthorityFromMeta(metadataList, md);
+
                 if (StringUtils.isNotBlank(md.getValue())) {
                     if (metadataList.containsKey(md.getType().getName())) {
                         List<String> oldValue = metadataList.get(md.getType().getName());
@@ -973,9 +966,8 @@ public class MetadatenHelper {
         }
         if (ds.getAllPersons() != null) {
             for (Person p : ds.getAllPersons()) {
-                if (includeAuthority) {
-                    addAuthorityFromPerson(metadataList, p);
-                }
+                addAuthorityFromPerson(metadataList, p);
+
                 if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                     if (metadataList.containsKey(p.getType().getName())) {
                         List<String> oldValue = metadataList.get(p.getType().getName());

@@ -1032,7 +1032,7 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
                 throw ughException;
             }
         }
-        Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, false);
+        Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
 
         MetadataManager.updateMetadata(id, metadata);
 

@@ -104,13 +104,12 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript {
                 HelperSchritte.extractMetadata(anchorFile, pairs);
             }
 
-            MetadataManager.updateMetadata(p.getId(), pairs);
-
             // now add all authority fields to the metadata pairs
             HelperSchritte.extractAuthorityMetadata(metadataFile, pairs);
             if (StorageProvider.getInstance().isFileExists(anchorFile)) {
                 HelperSchritte.extractAuthorityMetadata(anchorFile, pairs);
             }
+            MetadataManager.updateMetadata(p.getId(), pairs);
 
             // calculate history entries
             boolean result = HistoryAnalyserJob.updateHistoryForProzess(p);

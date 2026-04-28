@@ -129,14 +129,18 @@ public final class MetadataUtils {
                 continue;
             }
             String type = el.getAttributeValue("type");
-            if ("person".equals(type)) {
+            if ("person".equals(type) || "corporate".equals(type)) {
                 meta.setValue(el.getChildText("displayName", GOOBI_NS));
+                meta.setAuthorityID(el.getChildText("authorityID", GOOBI_NS));
+                meta.setAuthorityURI(el.getChildText("authorityURI", GOOBI_NS));
+                meta.setAuthorityValue(el.getChildText("authorityValue", GOOBI_NS));
             } else {
                 meta.setValue(el.getText());
+                meta.setAuthorityID(el.getAttributeValue("authority"));
+                meta.setAuthorityURI(el.getAttributeValue("authorityURI"));
+                meta.setAuthorityValue(el.getAttributeValue("valueURI"));
+
             }
-            meta.setAuthorityID(el.getChildText("authorityID", GOOBI_NS));
-            meta.setAuthorityURI(el.getChildText("authorityURI", GOOBI_NS));
-            meta.setAuthorityValue(el.getChildText("authorityValue", GOOBI_NS));
             meta.setLabels(labelMap.get(name));
             p.addMetadata(name, meta);
         }

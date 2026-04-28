@@ -45,7 +45,7 @@ public class SearchRequestTest extends AbstractTest {
         req.addSearchGroup(group);
         req.setMetadataConjunctive(true);
 
-        String sql = req.createLegacySql();
+        String sql = req.createSql();
 
         assertTrue(sql.contains("SELECT prozesse.ProzesseID"));
         assertTrue(sql.contains("FROM metadata"));
@@ -79,7 +79,7 @@ public class SearchRequestTest extends AbstractTest {
         req.setProperty("propName", "propValue");
         req.setStepStatus("Scan", "DONE");
 
-        String sql = req.createLegacySql();
+        String sql = req.createSql();
 
         assertTrue(sql.contains("JOIN projekte"));
         assertTrue(sql.contains("LEFT JOIN properties"));
@@ -100,7 +100,7 @@ public class SearchRequestTest extends AbstractTest {
         req.setLimit(10);
         req.setOffset(5);
 
-        String sql = req.createLegacySql();
+        String sql = req.createSql();
 
         assertTrue(sql.contains("ORDER BY prozesse.ProzesseID ASC"));
         assertTrue(sql.contains("LIMIT ? OFFSET ?"));
@@ -124,7 +124,7 @@ public class SearchRequestTest extends AbstractTest {
         req.addSearchGroup(group);
 
         // first case, without any additional data
-        String sql = req.createLegacySql();
+        String sql = req.createSql();
 
         assertTrue(sql.contains("FROM metadata"));
         assertTrue(sql.contains("FROM prozesse"));
@@ -136,7 +136,7 @@ public class SearchRequestTest extends AbstractTest {
         filterList.add("A");
 
         req.setFilterProjects(filterList);
-        sql = req.createLegacySql();
+        sql = req.createSql();
         assertTrue(sql.contains("pr.Titel IN (?)"));
 
         // template filter
@@ -144,7 +144,7 @@ public class SearchRequestTest extends AbstractTest {
         idList.add(1);
         req.setFilterTemplateIDs(idList);
 
-        sql = req.createLegacySql();
+        sql = req.createSql();
         assertTrue(sql.contains("properties.property_name=\"templateID\""));
 
     }
@@ -159,7 +159,7 @@ public class SearchRequestTest extends AbstractTest {
 
         req.addSearchGroup(group);
 
-        Object[] params = req.createLegacySqlParams();
+        Object[] params = req.createSqlParams();
 
         assertEquals(2, params.length);
         assertEquals("field", params[0]);
