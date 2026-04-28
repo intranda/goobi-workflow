@@ -8,6 +8,7 @@ import {
     saveAllScrollPositions,
 } from './modules/saveScrollPosition';
 import { initAutosave } from './modules/metseditor/autosave';
+import { initRaceGuard } from './modules/metseditor/raceGuard';
 import { AjaxButtonManager } from './modules/ajax/buttonManager';
 import { initNotificationToggle } from './modules/notificationToggle';
 
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSaveScrollPosition();
     restoreAllScrollPositions();
     initAutosave();
+    initRaceGuard();
 });
 
 // Initialize all functions after an ajax call
