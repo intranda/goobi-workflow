@@ -38,19 +38,20 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.metadaten.search.DatabaseMetadataField;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ MetadataMysqlHelper.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class MetadataManagerTest extends AbstractTest {
 
-    private Map<String, List<String>> sampleMetadata;
+    private Map<String, List<DatabaseMetadataField>> sampleMetadata;
 
     @Before
     public void setUp() throws Exception {
         sampleMetadata = new HashMap<>();
-        sampleMetadata.put("TitleDocMain", Arrays.asList("Test Title"));
-        sampleMetadata.put("Author", Arrays.asList("Test Author"));
+        sampleMetadata.put("TitleDocMain", Arrays.asList(new DatabaseMetadataField("TitleDocMain", "Test Title", "", "", "")));
+        sampleMetadata.put("Author", Arrays.asList(new DatabaseMetadataField("Author", "Test Author", "", "", "")));
 
         PowerMock.mockStatic(MetadataMysqlHelper.class);
 

@@ -76,6 +76,7 @@ import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.metadaten.ImageCommentPropertyHelper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
+import de.sub.goobi.metadaten.search.DatabaseMetadataField;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -1032,7 +1033,7 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
                 throw ughException;
             }
         }
-        Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
+        Map<String, List<DatabaseMetadataField>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile);
 
         MetadataManager.updateMetadata(id, metadata);
 

@@ -30,6 +30,7 @@ import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.metadaten.search.DatabaseMetadataField;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -50,7 +51,7 @@ public final class MetadataManager implements Serializable {
         }
     }
 
-    public static void insertMetadata(int processId, Map<String, List<String>> metadata) {
+    public static void insertMetadata(int processId, Map<String, List<DatabaseMetadataField>> metadata) {
 
         generateIndexFields(metadata);
 
@@ -62,7 +63,7 @@ public final class MetadataManager implements Serializable {
         }
     }
 
-    public static void updateMetadata(int processId, Map<String, List<String>> metadata) {
+    public static void updateMetadata(int processId, Map<String, List<DatabaseMetadataField>> metadata) {
         log.trace("Update metadata for process with id " + processId);
         try {
             MetadataMysqlHelper.removeMetadata(processId);
@@ -126,7 +127,7 @@ public final class MetadataManager implements Serializable {
         return new ArrayList<>();
     }
 
-    private static void generateIndexFields(Map<String, List<String>> metadata) {
+    private static void generateIndexFields(Map<String, List<DatabaseMetadataField>> metadata) {
         List<SearchIndexField> fields = ConfigurationHelper.getInstance().getIndexFields();
         if (!fields.isEmpty()) {
             for (SearchIndexField index : fields) {
@@ -138,9 +139,9 @@ public final class MetadataManager implements Serializable {
                         sb.append(" ");
                     }
                 }
-                String indexValue = sb.toString();
-                if (StringUtils.isNotBlank(indexValue)) {
-                    List<String> valueList = new ArrayList<>();
+                if (StringUtils.isNotBlank(sb.toString())) {
+                    DatabaseMetadataField indexValue = new DatabaseMetadataField(indexName, sb.toString(), null, null, null);
+                    List<DatabaseMetadataField> valueList = new ArrayList<>();
                     valueList.add(indexValue);
                     metadata.put(indexName, valueList);
                 }

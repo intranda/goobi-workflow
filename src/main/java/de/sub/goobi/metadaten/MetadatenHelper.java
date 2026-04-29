@@ -50,6 +50,7 @@ import org.reflections.util.ConfigurationBuilder;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
+import de.sub.goobi.metadaten.search.DatabaseMetadataField;
 import jakarta.faces.model.SelectItem;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Corporate;
@@ -572,6 +573,9 @@ public class MetadatenHelper {
 
     /**
      * prüfen, ob es sich hier um eine rdf- oder um eine mets-Datei handelt.
+     * 
+     * @param file path to metadata file
+     * @return metadata file type
      */
     public static String getMetaFileType(String file) throws IOException {
         /*
@@ -809,13 +813,14 @@ public class MetadatenHelper {
         return null;
     }
 
-    public static Map<String, List<String>> getMetadataOfFileformat(Fileformat gdzfile) {
+    public static Map<String, List<DatabaseMetadataField>> getMetadataOfFileformat(Fileformat gdzfile) {
 
-        Map<String, List<String>> metadataList = new HashMap<>();
+        Map<String, List<DatabaseMetadataField>> metadataList = new HashMap<>();
 
         try {
             DocStruct ds = gdzfile.getDigitalDocument().getLogicalDocStruct();
-            metadataList.put("DocStruct", Collections.singletonList(ds.getType().getName()));
+            metadataList.put("DocStruct",
+                    Collections.singletonList(new DatabaseMetadataField("DocStruct", ds.getType().getName(), null, null, null)));
             if (ds.getType().isAnchor() && ds.getAllChildren() != null) {
                 DocStruct volume = ds.getAllChildren().get(0);
                 getMetadataFromDocstruct(metadataList, volume);
@@ -841,20 +846,23 @@ public class MetadatenHelper {
         return getSingleMetadata(docStruct, metadataType).map(Metadata::getValue);
     }
 
-    private static void getMetadataFromDocstruct(Map<String, List<String>> metadataList, DocStruct ds) {
+    private static void getMetadataFromDocstruct(Map<String, List<DatabaseMetadataField>> metadataList, DocStruct ds) {
         if (ds.getAllMetadataGroups() != null) {
             for (MetadataGroup mg : ds.getAllMetadataGroups()) {
                 if (mg.getPersonList() != null) {
                     for (Person p : mg.getPersonList()) {
-                        addAuthorityFromPerson(metadataList, p);
                         if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                             if (metadataList.containsKey(p.getType().getName())) {
-                                List<String> oldValue = metadataList.get(p.getType().getName());
-                                oldValue.add(p.getFirstname() + " " + p.getLastname());
+                                List<DatabaseMetadataField> oldValue = metadataList.get(p.getType().getName());
+                                oldValue.add(
+                                        new DatabaseMetadataField(p.getType().getName(), p.getFirstname() + " " + p.getLastname(), p.getAuthorityID(),
+                                                p.getAuthorityURI(), p.getAuthorityValue()));
                                 metadataList.put(p.getType().getName(), oldValue);
                             } else {
-                                List<String> list = new ArrayList<>();
-                                list.add(p.getFirstname() + " " + p.getLastname());
+                                List<DatabaseMetadataField> list = new ArrayList<>();
+                                list.add(
+                                        new DatabaseMetadataField(p.getType().getName(), p.getFirstname() + " " + p.getLastname(), p.getAuthorityID(),
+                                                p.getAuthorityURI(), p.getAuthorityValue()));
                                 metadataList.put(p.getType().getName(), list);
                             }
                         }
@@ -862,15 +870,17 @@ public class MetadatenHelper {
                 }
                 if (mg.getMetadataList() != null) {
                     for (Metadata md : mg.getMetadataList()) {
-                        addAuthorityFromMeta(metadataList, md);
                         if (StringUtils.isNotBlank(md.getValue())) {
                             if (metadataList.containsKey(md.getType().getName())) {
-                                List<String> oldValue = metadataList.get(md.getType().getName());
-                                oldValue.add(md.getValue());
+                                List<DatabaseMetadataField> oldValue = metadataList.get(md.getType().getName());
+                                oldValue.add(
+                                        new DatabaseMetadataField(md.getType().getName(), md.getValue(), md.getAuthorityID(), md.getAuthorityURI(),
+                                                md.getAuthorityValue()));
                                 metadataList.put(md.getType().getName(), oldValue);
                             } else {
-                                List<String> list = new ArrayList<>();
-                                list.add(md.getValue());
+                                List<DatabaseMetadataField> list = new ArrayList<>();
+                                list.add(new DatabaseMetadataField(md.getType().getName(), md.getValue(), md.getAuthorityID(), md.getAuthorityURI(),
+                                        md.getAuthorityValue()));
                                 metadataList.put(md.getType().getName(), list);
                             }
                         }
@@ -878,8 +888,6 @@ public class MetadatenHelper {
                 }
                 if (mg.getCorporateList() != null) {
                     for (Corporate c : mg.getCorporateList()) {
-                        addAuthorityFromMeta(metadataList, c);
-
                         StringBuilder corporate = new StringBuilder();
                         if (StringUtils.isNotBlank(c.getMainName())) {
                             corporate.append(c.getMainName());
@@ -897,12 +905,14 @@ public class MetadatenHelper {
                         String val = corporate.toString().trim();
                         if (StringUtils.isNotBlank(val)) {
                             if (metadataList.containsKey(c.getType().getName())) {
-                                List<String> oldValue = metadataList.get(c.getType().getName());
-                                oldValue.add(val);
+                                List<DatabaseMetadataField> oldValue = metadataList.get(c.getType().getName());
+                                oldValue.add(new DatabaseMetadataField(c.getType().getName(), val, c.getAuthorityID(), c.getAuthorityURI(),
+                                        c.getAuthorityValue()));
                                 metadataList.put(c.getType().getName(), oldValue);
                             } else {
-                                List<String> list = new ArrayList<>();
-                                list.add(val);
+                                List<DatabaseMetadataField> list = new ArrayList<>();
+                                list.add(new DatabaseMetadataField(c.getType().getName(), val, c.getAuthorityID(), c.getAuthorityURI(),
+                                        c.getAuthorityValue()));
                                 metadataList.put(c.getType().getName(), list);
                             }
                         }
@@ -913,8 +923,6 @@ public class MetadatenHelper {
 
         if (ds.getAllCorporates() != null) {
             for (Corporate c : ds.getAllCorporates()) {
-                addAuthorityFromMeta(metadataList, c);
-
                 StringBuilder corporate = new StringBuilder();
                 if (StringUtils.isNotBlank(c.getMainName())) {
                     corporate.append(c.getMainName());
@@ -922,10 +930,8 @@ public class MetadatenHelper {
                 }
                 for (NamePart namePart : c.getSubNames()) {
                     if (StringUtils.isNotBlank(namePart.getValue())) {
-
                         corporate.append(namePart.getValue());
                         corporate.append(" ");
-
                     }
                 }
                 if (StringUtils.isNotBlank(c.getPartName())) {
@@ -933,32 +939,32 @@ public class MetadatenHelper {
                 }
                 String val = corporate.toString().trim();
                 if (StringUtils.isNotBlank(val)) {
-
                     if (metadataList.containsKey(c.getType().getName())) {
-                        List<String> oldValue = metadataList.get(c.getType().getName());
-                        oldValue.add(val);
+                        List<DatabaseMetadataField> oldValue = metadataList.get(c.getType().getName());
+                        oldValue.add(new DatabaseMetadataField(c.getType().getName(), val, c.getAuthorityID(), c.getAuthorityURI(),
+                                c.getAuthorityValue()));
                         metadataList.put(c.getType().getName(), oldValue);
                     } else {
-                        List<String> list = new ArrayList<>();
-                        list.add(val);
+                        List<DatabaseMetadataField> list = new ArrayList<>();
+                        list.add(new DatabaseMetadataField(c.getType().getName(), val, c.getAuthorityID(), c.getAuthorityURI(),
+                                c.getAuthorityValue()));
                         metadataList.put(c.getType().getName(), list);
                     }
                 }
             }
         }
-
         if (ds.getAllMetadata() != null) {
             for (Metadata md : ds.getAllMetadata()) {
-                addAuthorityFromMeta(metadataList, md);
-
                 if (StringUtils.isNotBlank(md.getValue())) {
                     if (metadataList.containsKey(md.getType().getName())) {
-                        List<String> oldValue = metadataList.get(md.getType().getName());
-                        oldValue.add(md.getValue());
+                        List<DatabaseMetadataField> oldValue = metadataList.get(md.getType().getName());
+                        oldValue.add(new DatabaseMetadataField(md.getType().getName(), md.getValue(), md.getAuthorityID(), md.getAuthorityURI(),
+                                md.getAuthorityValue()));
                         metadataList.put(md.getType().getName(), oldValue);
                     } else {
-                        List<String> list = new ArrayList<>();
-                        list.add(md.getValue());
+                        List<DatabaseMetadataField> list = new ArrayList<>();
+                        list.add(new DatabaseMetadataField(md.getType().getName(), md.getValue(), md.getAuthorityID(), md.getAuthorityURI(),
+                                md.getAuthorityValue()));
                         metadataList.put(md.getType().getName(), list);
                     }
                 }
@@ -966,48 +972,20 @@ public class MetadatenHelper {
         }
         if (ds.getAllPersons() != null) {
             for (Person p : ds.getAllPersons()) {
-                addAuthorityFromPerson(metadataList, p);
-
                 if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
                     if (metadataList.containsKey(p.getType().getName())) {
-                        List<String> oldValue = metadataList.get(p.getType().getName());
-                        oldValue.add(p.getFirstname() + " " + p.getLastname());
+                        List<DatabaseMetadataField> oldValue = metadataList.get(p.getType().getName());
+                        oldValue.add(new DatabaseMetadataField(p.getType().getName(), p.getFirstname() + " " + p.getLastname(), p.getAuthorityID(),
+                                p.getAuthorityURI(), p.getAuthorityValue()));
                         metadataList.put(p.getType().getName(), oldValue);
                     } else {
-                        List<String> list = new ArrayList<>();
-                        list.add(p.getFirstname() + " " + p.getLastname());
+                        List<DatabaseMetadataField> list = new ArrayList<>();
+                        list.add(new DatabaseMetadataField(p.getType().getName(), p.getFirstname() + " " + p.getLastname(), p.getAuthorityID(),
+                                p.getAuthorityURI(), p.getAuthorityValue()));
                         metadataList.put(p.getType().getName(), list);
                     }
                 }
             }
-        }
-    }
-
-    private static void addAuthorityFromPerson(Map<String, List<String>> metadataList, Person p) {
-
-        if (StringUtils.isNotBlank(p.getAuthorityID())) {
-
-            String key = p.getType().getName() + "_authority";
-            List<String> value = metadataList.get(key);
-            if (value == null) {
-                value = new ArrayList<>();
-                metadataList.put(key, value);
-            }
-            value.add(p.getAuthorityID());
-        }
-    }
-
-    private static void addAuthorityFromMeta(Map<String, List<String>> metadataList, Metadata md) {
-
-        if (StringUtils.isNotBlank(md.getAuthorityID())) {
-
-            String key = md.getType().getName() + "_authority";
-            List<String> value = metadataList.get(key);
-            if (value == null) {
-                value = new ArrayList<>();
-                metadataList.put(key, value);
-            }
-            value.add(md.getAuthorityID());
         }
     }
 

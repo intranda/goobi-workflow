@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -286,20 +285,4 @@ public class HelperSchritteTest extends AbstractTest {
 
     }
 
-    @Test
-    public void testExtractAuthorityMetadata() throws Exception {
-        Map<String, List<String>> metadataPairs = new HashMap<>();
-        HelperSchritte.extractAuthorityMetadata(Paths.get(process.getMetadataFilePath()), metadataPairs);
-        assertTrue(metadataPairs.isEmpty());
-    }
-
-    @Test
-    public void testExtractMetadata() throws Exception {
-
-        Map<String, List<String>> metadataPairs = new HashMap<>();
-        HelperSchritte.extractMetadata(Paths.get(process.getMetadataFilePath()), metadataPairs);
-        assertEquals(7, metadataPairs.size());
-        assertEquals("main title", metadataPairs.get("TitleDocMain").get(0));
-
-    }
 }

@@ -71,10 +71,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
-import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
-import org.jdom2.xpath.XPathExpression;
-import org.jdom2.xpath.XPathFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -91,6 +88,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.metadaten.search.DatabaseMetadataField;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -283,7 +281,7 @@ public class HelperSchritte {
             String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
             Path metadataFile = Paths.get(metdatdaPath);
             Path anchorFile = Paths.get(anchorPath);
-            Map<String, List<String>> pairs = new HashMap<>();
+            Map<String, List<DatabaseMetadataField>> pairs = new HashMap<>();
 
             extractMetadata(metadataFile, pairs);
 
@@ -292,12 +290,6 @@ public class HelperSchritte {
             }
 
             MetadataManager.updateMetadata(process.getId(), pairs);
-
-            // now add all authority fields to the metadata pairs
-            extractAuthorityMetadata(metadataFile, pairs);
-            if (StorageProvider.getInstance().isFileExists(anchorFile)) {
-                extractAuthorityMetadata(anchorFile, pairs);
-            }
 
             HistoryAnalyserJob.updateHistory(process);
 
@@ -704,33 +696,7 @@ public class HelperSchritte {
 
     }
 
-    public static void extractAuthorityMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) {
-        XPathFactory xFactory = XPathFactory.instance();
-        XPathExpression<Element> authorityMetaXpath =
-                xFactory.compile("//mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[goobi:authorityValue]", Filters.element(), null,
-                        MODS, METS, GOOBI_NAMESPACE);
-        SAXBuilder builder = XmlTools.getSAXBuilder();
-        Document doc;
-        try {
-            doc = builder.build(metadataFile.toString());
-        } catch (JDOMException | IOException e1) {
-            return;
-        }
-        for (Element meta : authorityMetaXpath.evaluate(doc)) {
-            String name = meta.getAttributeValue("name");
-            if (name != null) {
-                String key = name + "_authority";
-                List<String> values = metadataPairs.get(key);
-                if (values == null) {
-                    values = new ArrayList<>();
-                    metadataPairs.put(key, values);
-                }
-                values.add(meta.getChildText("authorityValue", GOOBI_NAMESPACE));
-            }
-        }
-    }
-
-    public static void extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) {
+    public static void extractMetadata(Path metadataFile, Map<String, List<DatabaseMetadataField>> metadataPairs) {
         SAXBuilder builder = XmlTools.getSAXBuilder();
         Document doc;
         try {
@@ -770,7 +736,7 @@ public class HelperSchritte {
             }
             // create field for "DocStruct"
             String docType = root.getChildren("structMap", METS).get(0).getChild("div", METS).getAttributeValue("TYPE");
-            metadataPairs.put("DocStruct", Collections.singletonList(docType));
+            metadataPairs.put("DocStruct", Collections.singletonList(new DatabaseMetadataField("DocStruct", docType, null, null, null)));
 
         } catch (NullPointerException e) {
             log.error(e);
@@ -778,33 +744,51 @@ public class HelperSchritte {
         }
     }
 
-    private static void addMetadata(List<Element> elements, Map<String, List<String>> metadataPairs) {
+    private static void addMetadata(List<Element> elements, Map<String, List<DatabaseMetadataField>> metadataPairs) {
         for (Element goobimetadata : elements) {
             String metadataName = goobimetadata.getAttributeValue("name");
             String metadataType = goobimetadata.getAttributeValue("type");
             String metadataValue = "";
-            if (metadataType != null && "person".equals(metadataType)) {
+            String authorityName = null;
+            String authorityUri = null;
+            String authorityValue = null;
+
+            if (metadataType != null && ("person".equals(metadataType) || "corporate".equals(metadataType))) {
                 Element displayName = goobimetadata.getChild("displayName", GOOBI_NAMESPACE);
                 if (displayName != null && !",".equals(displayName.getValue())) {
                     metadataValue = displayName.getValue();
+                    authorityName = goobimetadata.getChildText("authorityID", GOOBI_NAMESPACE);
+                    authorityUri = goobimetadata.getChildText("authorityURI", GOOBI_NAMESPACE);
+                    authorityValue = goobimetadata.getChildText("authorityValue", GOOBI_NAMESPACE);
+
                 }
             } else if (metadataType != null && "group".equals(metadataType)) {
                 List<Element> groupMetadataList = goobimetadata.getChildren();
                 addMetadata(groupMetadataList, metadataPairs);
             } else {
                 metadataValue = goobimetadata.getValue();
+                authorityName = goobimetadata.getAttributeValue("authority");
+                authorityUri = goobimetadata.getAttributeValue("authorityURI");
+                authorityValue = goobimetadata.getAttributeValue("valueURI");
             }
             if (!"".equals(metadataValue)) {
 
                 if (metadataPairs.containsKey(metadataName)) {
-                    List<String> oldValue = metadataPairs.get(metadataName);
-                    if (!oldValue.contains(metadataValue)) {
-                        oldValue.add(metadataValue);
+                    List<DatabaseMetadataField> oldValue = metadataPairs.get(metadataName);
+                    boolean added = false;
+                    for (DatabaseMetadataField dmf : oldValue) {
+                        if (dmf.getMetadataValue().equals(metadataValue)) {
+                            added = true;
+                            break;
+                        }
+                    }
+                    if (!added) {
+                        oldValue.add(new DatabaseMetadataField(metadataName, metadataValue, authorityName, authorityUri, authorityValue));
                         metadataPairs.put(metadataName, oldValue);
                     }
                 } else {
-                    List<String> list = new ArrayList<>();
-                    list.add(metadataValue);
+                    List<DatabaseMetadataField> list = new ArrayList<>();
+                    list.add(new DatabaseMetadataField(metadataName, metadataValue, authorityName, authorityUri, authorityValue));
                     metadataPairs.put(metadataName, list);
                 }
             }

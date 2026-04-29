@@ -44,6 +44,7 @@ import de.sub.goobi.helper.XmlArtikelZaehlen;
 import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.metadaten.search.DatabaseMetadataField;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -96,7 +97,7 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript {
             String anchorPath = metdatdaPath.replace("meta.xml", "meta_anchor.xml");
             Path metadataFile = Paths.get(metdatdaPath);
             Path anchorFile = Paths.get(anchorPath);
-            Map<String, List<String>> pairs = new HashMap<>();
+            Map<String, List<DatabaseMetadataField>> pairs = new HashMap<>();
 
             HelperSchritte.extractMetadata(metadataFile, pairs);
 
@@ -104,11 +105,6 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript {
                 HelperSchritte.extractMetadata(anchorFile, pairs);
             }
 
-            // now add all authority fields to the metadata pairs
-            HelperSchritte.extractAuthorityMetadata(metadataFile, pairs);
-            if (StorageProvider.getInstance().isFileExists(anchorFile)) {
-                HelperSchritte.extractAuthorityMetadata(anchorFile, pairs);
-            }
             MetadataManager.updateMetadata(p.getId(), pairs);
 
             // calculate history entries

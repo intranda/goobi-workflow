@@ -32,7 +32,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.production.cli.helper.StringPair;
 
-import com.google.gson.Gson;
+import de.sub.goobi.metadaten.search.DatabaseMetadataField;
 
 final class MetadataMysqlHelper implements Serializable {
 
@@ -41,7 +41,6 @@ final class MetadataMysqlHelper implements Serializable {
     }
 
     private static final long serialVersionUID = -8391750763010758774L;
-    private static Gson gson = new Gson();
 
     /**
      * deletes metadata values for processId from `metadata` table
@@ -71,26 +70,26 @@ final class MetadataMysqlHelper implements Serializable {
      * @param metadata the metadata
      * @throws SQLException
      */
-    public static void insertMetadata(int processid, Map<String, List<String>> metadata) throws SQLException {
+    public static void insertMetadata(int processid, Map<String, List<DatabaseMetadataField>> metadata) throws SQLException {
         StringBuilder sql = new StringBuilder();
-
+        // TODO
         sql.append("INSERT INTO metadata (processid, name, value, print) VALUES ");
         List<Object> values = new ArrayList<>();
-        for (Entry<String, List<String>> pair : metadata.entrySet()) {
+        for (Entry<String, List<DatabaseMetadataField>> pair : metadata.entrySet()) {
             String metadataName = pair.getKey();
-            List<String> valueList = pair.getValue();
+            List<DatabaseMetadataField> valueList = pair.getValue();
             StringBuilder sb = new StringBuilder();
-            Iterator<String> iter = valueList.iterator();
+            Iterator<DatabaseMetadataField> iter = valueList.iterator();
             while (iter.hasNext()) {
-                sb.append(MySQLHelper.escapeSql(iter.next()));
+                sb.append(MySQLHelper.escapeSql(iter.next().getMetadataName()));
                 if (iter.hasNext()) {
                     sb.append("; ");
                 }
             }
-            for (String item : valueList) {
+            for (DatabaseMetadataField item : valueList) {
                 sql.append("(" + processid + ", ? , ?, ? ),");
                 values.add(metadataName);
-                values.add(item.trim());
+                values.add(item.getMetadataName().trim());
                 values.add(sb.toString());
             }
 
