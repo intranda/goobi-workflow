@@ -47,6 +47,8 @@ import org.jdom2.xpath.XPathFactory;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.XmlTools;
+import de.sub.goobi.metadaten.search.DatabaseMetadataField;
+import de.sub.goobi.persistence.managers.MetadataManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -101,11 +103,30 @@ public final class MetadataUtils {
 
     private static RestProcess addMetadataToRestProcess(RestProcess p, String metadataFolder, SearchRequest req,
             Map<String, Map<String, String>> labelMap) {
-        Path metsPath = Paths.get(metadataFolder, Integer.toString(p.getId()), "meta.xml");
-        Path anchorPath = metsPath.resolveSibling("meta_anchor.xml");
+        if (req.isCachedMetadata()) {
+            // get data from db
+            List<DatabaseMetadataField> metadataList = MetadataManager.getExtendedMetadata(p.getId());
+            for (DatabaseMetadataField md : metadataList) {
+                String name = md.getMetadataName();
+                if (req.getWantedFields() != null && !req.getWantedFields().contains(name)) {
+                    continue;
+                }
+                RestMetadata meta = new RestMetadata();
 
-        extractMetadataFromFile(metsPath, p, labelMap, req);
-        extractMetadataFromFile(anchorPath, p, labelMap, req);
+                meta.setValue(md.getMetadataValue());
+                meta.setAuthorityID(md.getAuthorityName());
+                meta.setAuthorityURI(md.getAuthorityUri());
+                meta.setAuthorityValue(md.getAuthorityValue());
+                meta.setLabels(labelMap.get(name));
+
+                p.addMetadata(name, meta);
+            }
+        } else {
+            Path metsPath = Paths.get(metadataFolder, Integer.toString(p.getId()), "meta.xml");
+            Path anchorPath = metsPath.resolveSibling("meta_anchor.xml");
+            extractMetadataFromFile(metsPath, p, labelMap, req);
+            extractMetadataFromFile(anchorPath, p, labelMap, req);
+        }
         return p;
     }
 

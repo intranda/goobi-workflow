@@ -23,18 +23,37 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.dbutils.BasicRowProcessor;
+import org.apache.commons.dbutils.BeanProcessor;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.RowProcessor;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.goobi.production.cli.helper.StringPair;
 
 import de.sub.goobi.metadaten.search.DatabaseMetadataField;
 
 final class MetadataMysqlHelper implements Serializable {
+
+    private static RowProcessor rowProcessor;
+
+    static {
+        Map<String, String> mapColumnsToProperties = new HashMap<>();
+        mapColumnsToProperties.put("name", "metadataName");
+        mapColumnsToProperties.put("value", "metadataValue");
+        mapColumnsToProperties.put("authority_name", "authorityName");
+        mapColumnsToProperties.put("authority_uri", "authorityUri");
+        mapColumnsToProperties.put("authority_value", "authorityValue");
+        BeanProcessor beanProcessor = new BeanProcessor(mapColumnsToProperties);
+        rowProcessor = new BasicRowProcessor(beanProcessor);
+
+    }
 
     private MetadataMysqlHelper() {
         // hide implicit public constructor
@@ -88,7 +107,7 @@ final class MetadataMysqlHelper implements Serializable {
             for (DatabaseMetadataField item : valueList) {
                 sql.append("(" + processid + ", ? , ?, ?, ?, ?, ?),");
                 values.add(metadataName);
-                values.add(item.getMetadataName().trim());
+                values.add(item.getMetadataValue().trim());
                 values.add(sb.toString());
 
                 values.add(item.getAuthorityName());
@@ -136,6 +155,20 @@ final class MetadataMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             return new QueryRunner().query(connection, sql, resultSetToMetadataHandler, param);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static List<DatabaseMetadataField> getExtendedMetadata(int processId) throws SQLException {
+        String sql = "SELECT * FROM metadata WHERE processid = ? ORDER BY name";
+        Object[] param = { processId };
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, new BeanListHandler<>(DatabaseMetadataField.class, rowProcessor), param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

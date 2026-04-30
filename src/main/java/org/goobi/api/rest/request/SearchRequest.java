@@ -60,6 +60,8 @@ public class SearchRequest {
     private int limit;
     private int offset;
 
+    private boolean cachedMetadata;
+
     public void newGroup() {
         SearchGroup group = new SearchGroup();
         group.newFilter();

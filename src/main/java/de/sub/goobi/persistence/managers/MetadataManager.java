@@ -148,4 +148,13 @@ public final class MetadataManager implements Serializable {
             }
         }
     }
+
+    public static List<DatabaseMetadataField> getExtendedMetadata(int processId) {
+        try {
+            return MetadataMysqlHelper.getExtendedMetadata(processId);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return new ArrayList<>();
+    }
 }
