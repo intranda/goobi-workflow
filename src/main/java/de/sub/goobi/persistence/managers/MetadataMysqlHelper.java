@@ -72,8 +72,7 @@ final class MetadataMysqlHelper implements Serializable {
      */
     public static void insertMetadata(int processid, Map<String, List<DatabaseMetadataField>> metadata) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        // TODO
-        sql.append("INSERT INTO metadata (processid, name, value, print) VALUES ");
+        sql.append("INSERT INTO metadata (processid, name, value, print, authority_name, authority_uri, authority_value) VALUES ");
         List<Object> values = new ArrayList<>();
         for (Entry<String, List<DatabaseMetadataField>> pair : metadata.entrySet()) {
             String metadataName = pair.getKey();
@@ -87,10 +86,14 @@ final class MetadataMysqlHelper implements Serializable {
                 }
             }
             for (DatabaseMetadataField item : valueList) {
-                sql.append("(" + processid + ", ? , ?, ? ),");
+                sql.append("(" + processid + ", ? , ?, ?, ?, ?, ?),");
                 values.add(metadataName);
                 values.add(item.getMetadataName().trim());
                 values.add(sb.toString());
+
+                values.add(item.getAuthorityName());
+                values.add(item.getAuthorityUri());
+                values.add(item.getAuthorityValue());
             }
 
         }

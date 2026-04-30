@@ -59,7 +59,7 @@ public final class DatabaseVersion {
         // hide implicit public constructor
     }
 
-    public static final int EXPECTED_VERSION = 61;
+    public static final int EXPECTED_VERSION = 62;
     private static final Gson GSON = new Gson();
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -489,6 +489,11 @@ public final class DatabaseVersion {
                     updateToVersion61();
                     tempVersion++;
                     //fall through
+                case 61: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 62.");
+                    updateToVersion62();
+                    tempVersion++;
+                    //fall through
                 default://NOSONAR, no break on purpose to run through all cases
                         // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -501,6 +506,18 @@ public final class DatabaseVersion {
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
         }
+    }
+
+    private static void updateToVersion62() {
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+            DatabaseVersion.runSql("alter table metadata add column authority_name varchar(255) DEFAULT null;");
+            DatabaseVersion.runSql("alter table metadata add column authority_uri varchar(255) DEFAULT null;");
+            DatabaseVersion.runSql("alter table metadata add column authority_value varchar(255) DEFAULT null;");
+            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_metadata_name_value_proc ON metadata(name, processid, value(50));");
+        } catch (SQLException e) {
+            log.error(e);
+        }
+
     }
 
     private static void updateToVersion61() {
