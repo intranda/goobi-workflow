@@ -76,6 +76,11 @@ public class MetadataManagerTest extends AbstractTest {
         EasyMock.expect(MetadataMysqlHelper.getAllProcessesWithMetadata(EasyMock.anyString(), EasyMock.anyString()))
                 .andReturn(Arrays.asList(1, 2, 3))
                 .anyTimes();
+
+        List<DatabaseMetadataField> extendedMetadata = Arrays.asList(
+                new DatabaseMetadataField("TitleDocMain", "Test Title", "GND", "https://d-nb.info/gnd/", "12345"));
+        EasyMock.expect(MetadataMysqlHelper.getExtendedMetadata(EasyMock.anyInt())).andReturn(extendedMetadata).anyTimes();
+
         PowerMock.replay(MetadataMysqlHelper.class);
     }
 
@@ -132,5 +137,17 @@ public class MetadataManagerTest extends AbstractTest {
         List<Integer> result = MetadataManager.getProcessesWithMetadata("TitleDocMain", "Test Title");
         assertNotNull(result);
         assertEquals(3, result.size());
+    }
+
+    @Test
+    public void testGetExtendedMetadata() {
+        List<DatabaseMetadataField> result = MetadataManager.getExtendedMetadata(1);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("TitleDocMain", result.get(0).getMetadataName());
+        assertEquals("Test Title", result.get(0).getMetadataValue());
+        assertEquals("GND", result.get(0).getAuthorityName());
+        assertEquals("https://d-nb.info/gnd/", result.get(0).getAuthorityUri());
+        assertEquals("12345", result.get(0).getAuthorityValue());
     }
 }

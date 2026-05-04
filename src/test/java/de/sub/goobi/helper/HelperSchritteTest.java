@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
+import de.sub.goobi.metadaten.search.DatabaseMetadataField;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.HistoryManager;
@@ -283,6 +285,14 @@ public class HelperSchritteTest extends AbstractTest {
         fixture.errorStep(step1);
         assertEquals(StepStatus.ERROR, step1.getBearbeitungsstatusEnum());
 
+    }
+
+    @Test
+    public void testExtractMetadata() throws Exception {
+        Map<String, List<DatabaseMetadataField>> metadataPairs = new HashMap<>();
+        HelperSchritte.extractMetadata(Paths.get(process.getMetadataFilePath()), metadataPairs);
+        assertEquals(7, metadataPairs.size());
+        assertEquals("main title", metadataPairs.get("TitleDocMain").get(0).getMetadataValue());
     }
 
 }

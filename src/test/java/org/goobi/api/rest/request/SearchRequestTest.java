@@ -102,15 +102,51 @@ public class SearchRequestTest extends AbstractTest {
 
         String sql = req.createSql();
 
-        assertTrue(sql.contains("ORDER BY prozesse.ProzesseID ASC"));
+        assertTrue(sql.contains("LEFT JOIN"));
+        assertTrue(sql.contains("WHERE name = ?"));
+        assertTrue(sql.contains("ORDER BY sort_meta.sortField DESC"));
         assertTrue(sql.contains("LIMIT ? OFFSET ?"));
 
         Object[] params = req.createSqlParams();
 
         assertEquals(3, params.length);
-        assertEquals("$.title", params[0]);
+        assertEquals("title", params[0]);
         assertEquals(10, params[1]);
         assertEquals(5, params[2]);
+    }
+
+    @Test
+    public void testSortAscending() {
+
+        SearchRequest req = new SearchRequest();
+        req.setSortField("author");
+        req.setSortDescending(false);
+
+        String sql = req.createSql();
+
+        assertTrue(sql.contains("ORDER BY sort_meta.sortField ASC"));
+        assertFalse(sql.contains("ORDER BY prozesse.ProzesseID ASC"));
+    }
+
+    @Test
+    public void testNoSortFieldUsesDefaultOrder() {
+
+        SearchRequest req = new SearchRequest();
+
+        String sql = req.createSql();
+
+        assertTrue(sql.contains("ORDER BY prozesse.ProzesseID ASC"));
+        assertFalse(sql.contains("sort_meta"));
+    }
+
+    @Test
+    public void testCachedMetadata() {
+
+        SearchRequest req = new SearchRequest();
+        assertFalse(req.isCachedMetadata());
+
+        req.setCachedMetadata(true);
+        assertTrue(req.isCachedMetadata());
     }
 
     @Test
