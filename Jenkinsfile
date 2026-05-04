@@ -522,6 +522,9 @@ pipeline {
   }
 
   post {
+    always {
+      sh 'rm -rf $HOME/.m2/repository/io/goobi/workflow/*'
+    }
     changed {
       emailext(
         subject: '${DEFAULT_SUBJECT}',
