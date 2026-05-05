@@ -77,10 +77,10 @@ public class XsltPreparatorMetadataTest extends AbstractTest {
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("fixture").anyTimes();
         EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
         EasyMock.expect(Helper.getDateAsFormattedString(EasyMock.anyObject())).andReturn("date").anyTimes();
-        PowerMock.replayAll();
 
         PowerMock.mockStatic(FacesContext.class);
         PowerMock.mockStatic(ExternalContext.class);
+        PowerMock.replayAll();
         FacesContext facesContext = EasyMock.createMock(FacesContext.class);
         FacesContextHelper.setFacesContext(facesContext);
         ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);

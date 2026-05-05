@@ -216,10 +216,9 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
 
         EasyMock.expectLastCall();
-        PowerMock.replayAll();
-
         PowerMock.mockStatic(ExternalContext.class);
         PowerMock.mockStatic(FacesContext.class);
+        PowerMock.replayAll();
         FacesContext facesContext = EasyMock.createMock(FacesContext.class);
         FacesContextHelper.setFacesContext(facesContext);
         ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
