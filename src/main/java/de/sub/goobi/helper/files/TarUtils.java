@@ -158,7 +158,20 @@ public final class TarUtils {
      */
     private static void extractTarOrTarGz(TarArchiveInputStream tar, Path destinationDir) throws IOException {
         ArchiveEntry entry;
-        while ((entry = tar.getNextEntry()) != null) {
+        /*
+         * Explanation for NOSONAR comment: The sizes are not checked because:
+         * - tar files may be huge due to lots of images
+         * - the tar files may contain thousands of images/entries, a threshold would not make sense (or would also be very high)
+         * - especially master images may be of very large file size. Thresholds would also make no sense for them
+         * - due to file formats and very efficient compressing rates, very high decompression rates are allowed
+         * - The total size of the unzipped archive may use hundrets of Gigabytes
+         *
+         * Implemented protection:
+         * - Symlinks are ignored (and can not produce denial of service due to recursion)
+         * - the absolute path of each file entry is checked (so that "../" entries can not overwrite files outside the target directory)
+         */
+
+        while ((entry = tar.getNextEntry()) != null) { // NOSONAR (see above)
 
             // The absolute path is created here, entries like "../" cause an IOException
             Path newPath = zipSlipProtect(entry, destinationDir);

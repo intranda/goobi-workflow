@@ -274,7 +274,11 @@ public class PluginInstaller implements Serializable {
         try (TarArchiveInputStream tarInputStream = new TarArchiveInputStream(Files.newInputStream(archivePath))) {
             TarArchiveEntry tarEntry;
             do {
-                tarEntry = (tarInputStream.getNextEntry());
+                /*
+                 Explanation for NOSONAR comment: No writing to disk, no zip-slip risk.
+                 The archives come from a trusted source; the contents are only loaded into memory for comparison purposes.
+                */
+                tarEntry = (tarInputStream.getNextEntry()); // NOSONAR (see above)
                 if (tarEntry != null && !tarEntry.isDirectory() && tarEntry.getName().endsWith(fileName)) {
                     content = IOUtils.toString(tarInputStream, StandardCharsets.UTF_8.name());
                     break;
