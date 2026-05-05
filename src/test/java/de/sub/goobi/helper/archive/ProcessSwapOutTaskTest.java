@@ -41,7 +41,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 
 @Ignore("Crashing")
 public class ProcessSwapOutTaskTest extends AbstractTest {
-    static Process proz = null;
+    private static Process proz = null;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

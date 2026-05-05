@@ -35,7 +35,7 @@ import org.junit.Test;
 import de.sub.goobi.AbstractTest;
 
 public class DesEncrypterTest extends AbstractTest {
-    static Map<String, String> testData;
+    private static Map<String, String> testData;
 
     static {
         testData = new HashMap<>();

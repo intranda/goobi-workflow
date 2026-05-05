@@ -39,7 +39,8 @@ public class NavigationFormTest extends AbstractTest {
     @Before
     public void setUp() {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        Path goobiFolder = Paths.get(template.getParent().getParent().toString()
+                + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
@@ -105,6 +106,37 @@ public class NavigationFormTest extends AbstractTest {
         String fixture = "test";
         form.setActiveTab(fixture);
         assertEquals(fixture, form.getActiveTab());
+    }
+
+    @Test
+    public void testParentMenu() {
+        NavigationForm form = new NavigationForm();
+        assertEquals("start_menu", form.getParentMenu());
+        form.setParentMenu("other_menu");
+        assertEquals("other_menu", form.getParentMenu());
+    }
+
+    @Test
+    public void testActiveImportTab() {
+        NavigationForm form = new NavigationForm();
+        assertEquals("recordImport", form.getActiveImportTab());
+        form.setActiveImportTab("fileUpload");
+        assertEquals("fileUpload", form.getActiveImportTab());
+    }
+
+    @Test
+    public void testWorkflowPlugin() {
+        NavigationForm form = new NavigationForm();
+        assertNotNull(form);
+        // null by default since no plugin loaded
+        assertEquals(null, form.getWorkflowPlugin());
+    }
+
+    @Test
+    public void testGetUiStatus() {
+        NavigationForm form = new NavigationForm();
+        assertNotNull(form.getUiStatus());
+        assertEquals("true", form.getUiStatus().get("process_log_level_debug"));
     }
 
 }

@@ -47,7 +47,7 @@ public class FilesystemHelperTest extends AbstractTest {
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Test(expected = java.nio.file.NoSuchFileException.class)
-    public void RenamingOfNonExistingFileShouldThrowFileNotFoundException() throws IOException {
+    public void testRenamingOfNonExistingFileShouldThrowFileNotFoundException() throws IOException {
         String oldFileName = "old.xml";
         String newFileName = "new.xml";
 

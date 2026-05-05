@@ -20,6 +20,9 @@ package de.sub.goobi.forms;
  */
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -36,9 +39,59 @@ public class SessionFormTest extends AbstractTest {
     @Test
     public void testGetNumberOfSessions() {
         SessionForm form = new SessionForm();
-        assertNotNull(form);
         assertEquals(0, form.getNumberOfSessions());
+    }
 
+    @Test
+    public void testGetNumberOfRealUserSessions() {
+        SessionForm form = new SessionForm();
+        assertEquals(0, form.getNumberOfRealUserSessions());
+    }
+
+    @Test
+    public void testGetCurrentTime() {
+        SessionForm form = new SessionForm();
+        String time = form.getCurrentTime();
+        assertNotNull(time);
+        assertTrue(Pattern.matches("\\d{2}:\\d{2}:\\d{2}", time));
+    }
+
+    @Test
+    public void testGetDate() {
+        SessionForm form = new SessionForm();
+        String date = form.getDate();
+        assertNotNull(date);
+        assertTrue(date.length() > 0);
+    }
+
+    @Test
+    public void testGetLogoutMessageDefault() {
+        SessionForm form = new SessionForm();
+        assertEquals("", form.getLogoutMessage());
+    }
+
+    @Test
+    public void testSendLogoutMessage() {
+        SessionForm form = new SessionForm();
+        assertEquals("admin", form.sendLogoutMessage());
+    }
+
+    @Test
+    public void testLoggedOutConstant() {
+        assertEquals(" - ausgeloggt - ", SessionForm.LOGGED_OUT);
+    }
+
+    @Test
+    public void testNotLoggedInConstant() {
+        assertEquals(" - ", SessionForm.NOT_LOGGED_IN);
+    }
+
+    @Test
+    public void testGetSessionInfoByIdReturnsNullWhenEmpty() {
+        SessionForm form = new SessionForm();
+        assertNotNull(form);
+        // no sessions added, lookup by any id returns null
+        assertEquals(null, form.getSessionInfoById("nonexistent-id"));
     }
 
 }

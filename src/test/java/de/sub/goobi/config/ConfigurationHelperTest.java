@@ -50,7 +50,8 @@ public class ConfigurationHelperTest extends AbstractTest {
     @BeforeClass
     public static void setUp() throws URISyntaxException {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        Path goobiFolder = Paths.get(template.getParent().getParent().toString()
+                + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
@@ -198,6 +199,7 @@ public class ConfigurationHelperTest extends AbstractTest {
         assertEquals("fertig/", ConfigurationHelper.getInstance().getDoneDirectoryName());
     }
 
+    @SuppressWarnings("removal")
     @Test
     public void testIsUseSwapping() {
         assertFalse(ConfigurationHelper.getInstance().isUseSwapping());
@@ -898,6 +900,7 @@ public class ConfigurationHelperTest extends AbstractTest {
         assertNull(ConfigurationHelper.getInstance().getGeonamesCredentials());
     }
 
+    @SuppressWarnings("removal")
     @Test
     public void testGetGoobiModuleServerPort() {
         assertEquals(8000, ConfigurationHelper.getInstance().getGoobiModuleServerPort());

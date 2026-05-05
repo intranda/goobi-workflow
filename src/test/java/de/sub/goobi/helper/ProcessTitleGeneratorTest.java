@@ -345,7 +345,6 @@ public class ProcessTitleGeneratorTest extends AbstractTest {
     @Test
     public void testGenerateTitleAndGetAlternativeTitleInRealCases3() {
         // case for AMH  (Archäologisches Museum Hamburg)
-        String uuid = "11b72235-2875-4061-ab19-cead86af1386";
         String mark = "Marmstorf 9";
         String signature = "HM 270";
         boolean useSignature = true;

@@ -403,7 +403,7 @@ public class LdapUserTest extends AbstractTest {
     }
 
     //public NamingEnumeration<SearchResult> search(Name name, Attributes matchingAttributes, String[] attributesToReturn) throws NamingException {
-    //    public NamingEnumeration<SearchResult> search(String name, Attributes matchingAttributes, String[] attributesToReturn) throws NamingException {
+    //public NamingEnumeration<SearchResult> search(String name, Attributes matchingAttributes, String[] attributesToReturn) throws NamingException {
     @Test(expected = OperationNotSupportedException.class)
     public void testSearchName() throws Exception {
         LdapUser fixture = new LdapUser();

@@ -45,8 +45,8 @@ public class NIOFileUtilsTest extends AbstractTest {
         //set up our directory
         Path testPath = Files.createTempDirectory("test");
         for (String name : new String[] { "test1", "test2", ".testhidden" }) {
-            try (OutputStream os = Files.newOutputStream(testPath.resolve(name))) {
-            }
+            OutputStream os = Files.newOutputStream(testPath.resolve(name));
+            os.close();
         }
 
         nio.deleteInDir(testPath);
@@ -69,12 +69,14 @@ public class NIOFileUtilsTest extends AbstractTest {
         Path hiddenSubPath = testPath.resolve("hiddenSubDir");
         Files.createDirectories(hiddenSubPath);
         for (String name : new String[] { "test1", "test2", ".testhiddenFile" }) {
-            try (OutputStream os = Files.newOutputStream(testPath.resolve(name))) {
-            }
-            try (OutputStream os = Files.newOutputStream(subPath2.resolve(name))) {
-            }
-            try (OutputStream os = Files.newOutputStream(hiddenSubPath.resolve(name))) {
-            }
+            OutputStream os = Files.newOutputStream(testPath.resolve(name));
+            os.close();
+
+            os = Files.newOutputStream(subPath2.resolve(name));
+            os.close();
+
+            os = Files.newOutputStream(hiddenSubPath.resolve(name));
+            os.close();
         }
 
         nio.deleteInDir(testPath);

@@ -50,7 +50,8 @@ public class CopyFileTest extends AbstractTest {
     @Before
     public void setUp() throws IOException, URISyntaxException {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        Path goobiFolder = Paths.get(template.getParent().getParent().toString()
+                + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
@@ -73,7 +74,7 @@ public class CopyFileTest extends AbstractTest {
         Path srcFile = Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder() + "plugin_JunitImportPluginError.xml");
         long checksum = StorageProvider.getInstance().createChecksum(srcFile);
 
-        assertEquals(2827966374l, checksum);
+        assertEquals(2827966374L, checksum);
     }
 
     @Test

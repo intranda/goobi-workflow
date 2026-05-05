@@ -62,7 +62,6 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 @PrepareForTest({ StepManager.class, UserManager.class, UsergroupManager.class, ProcessManager.class, RulesetManager.class, Helper.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 
-@SuppressWarnings("deprecation")
 public class GoobiScriptTest extends AbstractTest {
 
     private List<Integer> processList;
@@ -72,7 +71,8 @@ public class GoobiScriptTest extends AbstractTest {
     @Before
     public void setUp() throws Exception {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        Path goobiFolder = Paths.get(template.getParent().getParent().toString()
+                + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
@@ -211,6 +211,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testExecuteSwapStepsAction() throws Exception {
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
@@ -240,6 +241,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testExecuteSwapProzessesOutAction() throws Exception {
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
@@ -255,6 +257,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testExecuteSwapProzessesInAction() throws Exception {
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
@@ -281,6 +284,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testExecuteAddUserAction() throws Exception {
 
         PowerMock.mockStatic(ProcessManager.class);
@@ -312,6 +316,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testExecuteAddUserGroupAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: addUserGroup");
@@ -321,6 +326,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testExecuteSetStepPropertyAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: setStepProperty");
@@ -341,6 +347,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testSetStepStatusAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: setStepStatus");
@@ -350,6 +357,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testSetStepNumberAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: setStepNumber");
@@ -359,6 +367,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testAddStepAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: addStep");
@@ -368,6 +377,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testDeleteStepAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: deleteStep");
@@ -376,6 +386,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testAddShellScriptToStepAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: addShellScriptToStep");
@@ -385,6 +396,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testAddModuleToStepAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: addModuleToStep");
@@ -393,6 +405,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testSetRulesetAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: setRuleset");
@@ -400,6 +413,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testDeleteProcessAction() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: deleteProcess");
@@ -409,6 +423,7 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
+    @SuppressWarnings("removal")
     public void testAddPluginToStep() {
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: addPluginToStep");

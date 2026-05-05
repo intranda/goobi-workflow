@@ -61,7 +61,8 @@ public class GoobiFileComparatorTest {
 
     @Test
     public void verifyCorrectOrderingForWeirdCase() {
-        // In a screenshot from a collegue, Windows decided to order the last three files in the following order: "000051.jpg", "0051_B.jpg", "51_A.jpg"
+        // In a screenshot from a collegue, Windows decided to order the last three files in the following order:
+        // "000051.jpg", "0051_B.jpg", "51_A.jpg"
         // We don't know why and our comparator behaves differently, in the way we would expect the order to be.
         List<String> correctOrder =
                 List.of("000000009.tif", "000000009a.tif", "000000010.tif", "000051.jpg", "51_A.jpg", "0051_B.jpg");

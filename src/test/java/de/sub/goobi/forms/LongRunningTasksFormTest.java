@@ -20,7 +20,6 @@ package de.sub.goobi.forms;
  */
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.goobi.beans.Process;
 import org.junit.Test;
@@ -143,11 +142,17 @@ public class LongRunningTasksFormTest extends AbstractTest {
         assertEquals(p, lrtf.getProzess());
     }
 
-    //@Test
+    @Test
     public void testIsRunning() {
         LongRunningTasksForm lrtf = new LongRunningTasksForm();
         assertNotNull(lrtf);
-        assertTrue(lrtf.isRunning());
+        // isRunning reflects LongRunningTaskManager's static flag; just verify it is callable
+        boolean running = lrtf.isRunning();
+        // no assertion on value — toggle verifies it changes
+        lrtf.toggleRunning();
+        assertEquals(!running, lrtf.isRunning());
+        // restore
+        lrtf.toggleRunning();
     }
 
     @Test
@@ -155,5 +160,11 @@ public class LongRunningTasksFormTest extends AbstractTest {
         LongRunningTasksForm lrtf = new LongRunningTasksForm();
         assertNotNull(lrtf);
         lrtf.toggleRunning();
+    }
+
+    @Test
+    public void testGetTasks() {
+        LongRunningTasksForm lrtf = new LongRunningTasksForm();
+        assertNotNull(lrtf.getTasks());
     }
 }
