@@ -35,7 +35,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "org.easymock.*" })
 public abstract class AbstractTest {
 
     @BeforeClass
