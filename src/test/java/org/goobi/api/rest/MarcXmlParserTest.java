@@ -115,7 +115,7 @@ public class MarcXmlParserTest extends AbstractTest {
                 .anyTimes();
         EasyMock.replay(repository);
 
-        Process process = EasyMock.createMock(Process.class);
+        Process process = PowerMock.createMock(Process.class);
         Ruleset ruleset = EasyMock.createMock(Ruleset.class);
         Project project = EasyMock.createMock(Project.class);
 
@@ -144,7 +144,6 @@ public class MarcXmlParserTest extends AbstractTest {
 
         EasyMock.expectLastCall();
         EasyMock.replay(ruleset);
-        EasyMock.replay(process);
         PowerMock.replayAll();
 
     }

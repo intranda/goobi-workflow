@@ -25,6 +25,7 @@ import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -39,7 +40,7 @@ public class PDFGeneratorTest extends AbstractTest {
 
     @Before
     public void setUp() throws Exception {
-        mockProcess = EasyMock.createMock(Process.class);
+        mockProcess = PowerMock.createMock(Process.class);
         EasyMock.expect(mockProcess.getId()).andReturn(42).anyTimes();
         EasyMock.expect(mockProcess.getImagesDirectory()).andReturn("/tmp/goobi/images/").anyTimes();
         EasyMock.expect(mockProcess.getOcrAltoDirectory()).andReturn("/tmp/goobi/ocr/alto/").anyTimes();
