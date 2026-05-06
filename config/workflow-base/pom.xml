@@ -141,7 +141,9 @@
     <jhove.version>1.34.0</jhove.version>
     <jna.version>5.11.0</jna.version>
     <joda.version>2.14.0</joda.version>
-    <junit.version>4.13.2</junit.version>
+    <junit4.version>4.13.2</junit4.version>
+    <junit5.version>5.11.4</junit5.version>
+    <mockito.version>5.14.2</mockito.version>
     <jsonpath.version>2.9.0</jsonpath.version>
     <jwks-rsa.version>0.23.0</jwks-rsa.version>
     <log4j.version>2.25.1</log4j.version>
@@ -1188,7 +1190,21 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
+      <version>${junit4.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- JUnit 5 Jupiter API + Engine -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit5.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Vintage Engine: lässt JUnit-4-Tests unter JUnit-5-Surefire laufen -->
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>${junit5.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -1215,10 +1231,17 @@
       <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- Mockito: ersetzt PowerMock für statisches Mocking in JUnit 5 -->
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.10.19</version>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
     <!-- used to simplify pojo class tests -->
