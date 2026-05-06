@@ -24,10 +24,11 @@
 //
 package org.goobi.pagination;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
@@ -41,11 +42,11 @@ public class IntegerSequenceTest extends AbstractTest {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void throwIllegalArgumentExceptionWhenStartIsBelowEnd() {
-
-        new IntegerSequence(5, 1);
-
+        assertThrows(IllegalArgumentException.class, () -> {
+            new IntegerSequence(5, 1);
+        });
     }
 
     @Test
@@ -76,7 +77,7 @@ public class IntegerSequenceTest extends AbstractTest {
 
         int last = -1;
         for (int i : seq) {
-            assertTrue("Difference between elements should be equal to increment (2)", (last + 2) == i);
+            assertTrue((last + 2) == i, "Difference between elements should be equal to increment (2)");
             last = i;
         }
 
@@ -125,9 +126,11 @@ public class IntegerSequenceTest extends AbstractTest {
         assertEquals(Integer.valueOf(6), seq.get(4));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void throwIllegalArgumentExceptionWithIncrementWhenStartIsBelowEnd() {
-        new IntegerSequence(10, 1, 2);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new IntegerSequence(10, 1, 2);
+        });
     }
 
 }

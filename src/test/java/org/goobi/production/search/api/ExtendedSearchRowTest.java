@@ -18,11 +18,11 @@ package org.goobi.production.search.api;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
  */
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
@@ -30,7 +30,7 @@ public class ExtendedSearchRowTest extends AbstractTest {
 
     private ExtendedSearchRow row;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         row = new ExtendedSearchRow();
     }

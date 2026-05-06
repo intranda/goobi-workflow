@@ -17,22 +17,22 @@
  */
 package io.goobi.workflow.harvester.export;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Timestamp;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import io.goobi.workflow.harvester.beans.Record;
 
 public class ExportHistoryEntryTest extends AbstractTest {
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     }
 

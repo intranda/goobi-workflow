@@ -17,13 +17,13 @@
  */
 package org.goobi.production.enums;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
@@ -53,9 +53,8 @@ public class UserRoleTest extends AbstractTest {
     public void testGetAllRolesIsSorted() {
         List<String> roles = UserRole.getAllRoles();
         for (int i = 0; i < roles.size() - 1; i++) {
-            assertFalse(
-                    "List not sorted at index " + i + ": " + roles.get(i) + " > " + roles.get(i + 1),
-                    roles.get(i).compareTo(roles.get(i + 1)) > 0);
+            assertFalse(roles.get(i).compareTo(roles.get(i + 1)) > 0,
+                    "List not sorted at index " + i + ": " + roles.get(i) + " > " + roles.get(i + 1));
         }
     }
 

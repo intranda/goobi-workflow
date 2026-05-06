@@ -26,32 +26,33 @@
 
 package de.sub.goobi.helper;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
 
 public class FilesystemHelperTest extends AbstractTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    Path tempDir;
 
-    @Test(expected = java.nio.file.NoSuchFileException.class)
+    @Test
     public void testRenamingOfNonExistingFileShouldThrowFileNotFoundException() throws IOException {
         String oldFileName = "old.xml";
         String newFileName = "new.xml";
 
-        StorageProvider.getInstance().renameTo(Paths.get(oldFileName), newFileName);
+        assertThrows(java.nio.file.NoSuchFileException.class,
+                () -> StorageProvider.getInstance().renameTo(Paths.get(oldFileName), newFileName));
     }
 
     @Test
@@ -76,7 +77,7 @@ public class FilesystemHelperTest extends AbstractTest {
     }
 
     private Path createFile() throws IOException {
-        Path path = folder.newFile().toPath();
+        Path path = Files.createTempFile(tempDir, "temp", ".xml");
         return path;
     }
 }

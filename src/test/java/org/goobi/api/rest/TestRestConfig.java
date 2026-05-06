@@ -25,17 +25,17 @@
  */
 package org.goobi.api.rest;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -43,7 +43,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 
 public class TestRestConfig extends AbstractTest {
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
         Path goobiFolder = Paths.get(template.getParent().getParent().toString()
@@ -61,9 +61,9 @@ public class TestRestConfig extends AbstractTest {
     public void testGetConfigForPath() {
         try {
             RestEndpointConfig endpointConfig = RestConfig.getConfigForPath("/addtoprocesslog", null);
-            assertNotNull("Rest endpoint configuration should not be null", endpointConfig);
+            assertNotNull(endpointConfig, "Rest endpoint configuration should not be null");
             endpointConfig = RestConfig.getConfigForPath("/fail", null);
-            assertNull("Rest endpoint configuration should be null for unconfigured path", endpointConfig);
+            assertNull(endpointConfig, "Rest endpoint configuration should be null for unconfigured path");
         } catch (ConfigurationException e) {
             fail("Getting rest auth configuration for path should not throw exception");
         }

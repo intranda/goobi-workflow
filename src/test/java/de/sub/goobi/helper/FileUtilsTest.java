@@ -25,7 +25,7 @@
  */
 package de.sub.goobi.helper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -33,10 +33,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -44,12 +43,12 @@ import de.sub.goobi.config.ConfigurationHelper;
 
 public class FileUtilsTest extends AbstractTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    Path tempDir;
 
     private Path currentFolder;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException, URISyntaxException {
 
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
@@ -61,7 +60,8 @@ public class FileUtilsTest extends AbstractTest {
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
 
-        currentFolder = folder.newFolder("temp").toPath();
+        currentFolder = tempDir.resolve("temp");
+        Files.createDirectories(currentFolder);
         Path tif = Paths.get(currentFolder.toString(), "00000001.tif");
         Files.createFile(tif);
     }

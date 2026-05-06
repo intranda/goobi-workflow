@@ -25,7 +25,7 @@
  */
 package de.sub.goobi.helper;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,7 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
@@ -53,7 +53,7 @@ public class NIOFileUtilsTest extends AbstractTest {
 
         try (Stream<Path> dirStream = Files.list(testPath)) {
 
-            assertTrue("directory should be empty", dirStream.count() == 0);
+            assertTrue(dirStream.count() == 0, "directory should be empty");
         }
     }
 
@@ -83,7 +83,7 @@ public class NIOFileUtilsTest extends AbstractTest {
 
         try (Stream<Path> dirStream = Files.list(testPath)) {
 
-            assertTrue("directory should be empty", dirStream.count() == 0);
+            assertTrue(dirStream.count() == 0, "directory should be empty");
         }
     }
 }

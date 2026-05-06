@@ -18,20 +18,20 @@ package org.goobi.production.properties;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
  */
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.goobi.production.cli.helper.StringPair;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ShowStepConditionTest {
 
     private ShowStepCondition condition;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         condition = new ShowStepCondition();
     }

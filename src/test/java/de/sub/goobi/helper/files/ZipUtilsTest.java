@@ -18,19 +18,17 @@
 
 package de.sub.goobi.helper.files;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -38,13 +36,13 @@ import de.sub.goobi.helper.StorageProvider;
 
 public class ZipUtilsTest extends AbstractTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    Path tempDir;
 
     private Path sourceFolder;
     private Path destinationFolder;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
         // for junit tests in eclipse
@@ -55,12 +53,10 @@ public class ZipUtilsTest extends AbstractTest {
         Path resourceFolder = goobiFolder.getParent().getParent();
 
         // create directories
-        File source = folder.newFolder("source");
-        source.mkdirs();
-        sourceFolder = source.toPath();
-        File dest = folder.newFolder("destination");
-        dest.mkdirs();
-        destinationFolder = dest.toPath();
+        sourceFolder = tempDir.resolve("source");
+        Files.createDirectories(sourceFolder);
+        destinationFolder = tempDir.resolve("destination");
+        Files.createDirectories(destinationFolder);
         // copy some sample files to source folder
         Path samplexml = Paths.get(resourceFolder.toString(), "metadata/1/meta.xml");
         Path sampleImage = Paths.get(resourceFolder.toString(), "file_example_TIFF_1MB.tif");

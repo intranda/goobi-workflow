@@ -1,8 +1,8 @@
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,10 +15,9 @@ import org.goobi.beans.NamedEntity;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -26,14 +25,14 @@ import de.sub.goobi.helper.XmlTools;
 
 public class AltoSaverTest extends AbstractTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    Path tempDir;
 
     private Path sampleAltoFile;
 
     private Namespace namespace = Namespace.getNamespace("alto", "http://www.loc.gov/standards/alto/ns-v2#");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // copy sample file
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
@@ -43,7 +42,7 @@ public class AltoSaverTest extends AbstractTest {
             altoFile = Paths.get("target/test-classes/samplefiles/alto.xml"); // to run mvn test from cli or in jenkins
         }
 
-        sampleAltoFile = Paths.get(folder.newFolder().toString(), "alto.xml");
+        sampleAltoFile = tempDir.resolve("alto.xml");
 
         Files.copy(altoFile, sampleAltoFile);
     }

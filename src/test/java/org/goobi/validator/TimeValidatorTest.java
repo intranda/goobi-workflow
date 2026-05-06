@@ -18,11 +18,12 @@ package org.goobi.validator;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
  */
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import jakarta.faces.validator.ValidatorException;
@@ -31,7 +32,7 @@ public class TimeValidatorTest extends AbstractTest {
 
     private TimeValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new TimeValidator();
     }
@@ -64,26 +65,34 @@ public class TimeValidatorTest extends AbstractTest {
         validator.validate(null, null, 20);
     }
 
-    @Test(expected = ValidatorException.class)
+    @Test
     public void testValidateBelowMinThrowsException() {
-        // 9 is just below the minimum allowed value
-        validator.validate(null, null, 9);
+        assertThrows(ValidatorException.class, () -> {
+            // 9 is just below the minimum allowed value
+            validator.validate(null, null, 9);
+        });
     }
 
-    @Test(expected = ValidatorException.class)
+    @Test
     public void testValidateOneThrowsException() {
-        validator.validate(null, null, 1);
+        assertThrows(ValidatorException.class, () -> {
+            validator.validate(null, null, 1);
+        });
     }
 
-    @Test(expected = ValidatorException.class)
+    @Test
     public void testValidateNegativeThrowsException() {
-        validator.validate(null, null, -1);
+        assertThrows(ValidatorException.class, () -> {
+            validator.validate(null, null, -1);
+        });
     }
 
-    @Test(expected = ValidatorException.class)
+    @Test
     public void testValidateAboveMaxThrowsException() {
-        // 31 is just above the maximum allowed value
-        validator.validate(null, null, 31);
+        assertThrows(ValidatorException.class, () -> {
+            // 31 is just above the maximum allowed value
+            validator.validate(null, null, 31);
+        });
     }
 
     @Test

@@ -2,7 +2,7 @@ package io.goobi.workflow.api.vocabulary.helper;
 
 import io.goobi.vocabulary.exception.VocabularyException;
 import io.goobi.workflow.api.vocabulary.APIException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
 import java.util.Map;

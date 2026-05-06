@@ -17,13 +17,13 @@
  */
 package org.goobi.production.chart;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Date;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProjectStatusDataTableTest {
 
@@ -32,7 +32,7 @@ public class ProjectStatusDataTableTest {
 
     private ProjectStatusDataTable table;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         table = new ProjectStatusDataTable("TestProject", BEGIN, END);
     }

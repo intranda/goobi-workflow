@@ -25,13 +25,13 @@
  */
 package de.sub.goobi.validator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExtendedDateTimeFormatGrammarTest {
 
@@ -59,43 +59,43 @@ public class ExtendedDateTimeFormatGrammarTest {
     @Test
     public void level0DateYMDTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985-04-12");
-        assertFalse("Could not parse level 0 date with day precision.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 date with day precision.");
     }
 
     @Test
     public void level0DateYMTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985-04");
-        assertFalse("Could not parse level 0 date with month precision.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 date with month precision.");
     }
 
     @Test
     public void level0DateYTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985");
-        assertFalse("Could not parse level 0 date with year precision.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 date with year precision.");
     }
 
     @Test
     public void level0DateTimeLocalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985-04-12T23:20:30");
-        assertFalse("Could not parse level 0 date and local time.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 date and local time.");
     }
 
     @Test
     public void level0DateTimeUTCTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985-04-12T23:20:30Z");
-        assertFalse("Could not parse level 0 date and UTC time.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 date and UTC time.");
     }
 
     @Test
     public void level0DateTimeShiftedHoursTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985-04-12T23:20:30-04");
-        assertFalse("Could not parse level 0 date and time shifted four hours behind UTC.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 date and time shifted four hours behind UTC.");
     }
 
     @Test
     public void level0DateTimeShiftedHoursMinutesTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985-04-12T23:20:30+04:30");
-        assertFalse("Could not parse level 0 date and time shifted four hours and 30 minutes ahead of UTC.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 date and time shifted four hours and 30 minutes ahead of UTC.");
     }
 
     // level 0 - interval
@@ -103,44 +103,44 @@ public class ExtendedDateTimeFormatGrammarTest {
     @Test
     public void level0IntervalYTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1964/2008");
-        assertFalse("Could not parse level 0 interval with year precision.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 interval with year precision.");
     }
 
     @Test
     public void level0IntervalYMTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("2004-06/2006-08");
-        assertFalse("Could not parse level 0 interval with month precision.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 interval with month precision.");
     }
 
     @Test
     public void level0IntervalYMDTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("2004-02-01/2005-02-08");
-        assertFalse("Could not parse level 0 interval with day precision.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 interval with day precision.");
     }
 
     @Test
     public void level0IntervalYMD2YMTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("2004-02-01/2005-02");
-        assertFalse("Could not parse level 0 interval with beginning day precision to end month precision.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 interval with beginning day precision to end month precision.");
     }
 
     @Test
     public void level0IntervalYMD2YTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("2004-02-01/2005");
-        assertFalse("Could not parse level 0 interval with beginning day precision to end year precision.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 interval with beginning day precision to end year precision.");
     }
 
     @Test
     public void level0IntervalY2YMTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("2005/2006-02");
-        assertFalse("Could not parse level 0 interval with beginning year precision to end month precision.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 interval with beginning year precision to end month precision.");
 
     }
 
     @Test
     public void level0IntervalYM2YMDTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1964-01/2000-03-05");
-        assertFalse("Could not parse level 0 interval with beginning month precision to end day precision.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 0 interval with beginning month precision to end day precision.");
     }
 
     // level 1 - seasons
@@ -148,7 +148,7 @@ public class ExtendedDateTimeFormatGrammarTest {
     @Test
     public void level1SeasonTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("2001-21");
-        assertFalse("Could not parse level 1 date with season precision.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 date with season precision.");
     }
 
     // level 1 - uncertain, approximate, uncertain + approximate
@@ -156,19 +156,19 @@ public class ExtendedDateTimeFormatGrammarTest {
     @Test
     public void level1UncertainTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1984?");
-        assertFalse("Could not parse level 1 date with ? modifier.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 date with ? modifier.");
     }
 
     @Test
     public void level1DateApproximateTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("2004-06~");
-        assertFalse("Could not parse level 1 date with ~ modifier.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 date with ~ modifier.");
     }
 
     @Test
     public void level1DateUncertainAndApproximateTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("2004-06-11%");
-        assertFalse("Could not parse level 1 date with % modifier.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 date with % modifier.");
     }
 
     // level 1 - unspecified X and XX
@@ -176,31 +176,31 @@ public class ExtendedDateTimeFormatGrammarTest {
     @Test
     public void level1DateYearXTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("201X");
-        assertFalse("Could not parse level 1 date with single unspecified rightmost year.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 date with single unspecified rightmost year.");
     }
 
     @Test
     public void level1DateYearXXTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("20XX");
-        assertFalse("Could not parse level 1 date with two unspecified rightmost years.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 date with two unspecified rightmost years.");
     }
 
     @Test
     public void level1DateMonthXXTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("2004-XX");
-        assertFalse("Could not parse level 1 date with unspecified month.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 date with unspecified month.");
     }
 
     @Test
     public void level1DateDayXXTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985-04-XX");
-        assertFalse("Could not parse level 1 date with unspecified day.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 date with unspecified day.");
     }
 
     @Test
     public void level1DateDayMonthXXTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985-XX-XX");
-        assertFalse("Could not parse level 1 date with unspecified month and day.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 date with unspecified month and day.");
     }
 
     // level 1 - unknown and open extended intervals
@@ -208,73 +208,73 @@ public class ExtendedDateTimeFormatGrammarTest {
     @Test
     public void level1OpenEndYMDIntervalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985-04-12/..");
-        assertFalse("Could not parse level 1 interval with day precision and open end.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 interval with day precision and open end.");
     }
 
     @Test
     public void level1OpenEndYMIntervalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985-04/..");
-        assertFalse("Could not parse level 1 interval with month precision and open end.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 interval with month precision and open end.");
     }
 
     @Test
     public void level1OpenEndYIntervalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985/..");
-        assertFalse("Could not parse level 1 interval with year precision and open end.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 interval with year precision and open end.");
     }
 
     @Test
     public void level1OpenBeginningYMDIntervalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("../1985-04-12");
-        assertFalse("Could not parse level 1 interval with day precision and open beginning.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 interval with day precision and open beginning.");
     }
 
     @Test
     public void level1OpenBeginningYMIntervalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("../1985-04");
-        assertFalse("Could not parse level 1 interval with month precision and open beginning.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 interval with month precision and open beginning.");
     }
 
     @Test
     public void level1OpenBeginningYIntervalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("../1985");
-        assertFalse("Could not parse level 1 interval with year precision and open beginning.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 interval with year precision and open beginning.");
     }
 
     @Test
     public void level1UnknownEndYMDIntervalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985-04-12/");
-        assertFalse("Could not parse level 1 interval with day precision and unknown end.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 interval with day precision and unknown end.");
     }
 
     @Test
     public void level1UnknownEndYMIntervalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985-04/");
-        assertFalse("Could not parse level 1 interval with month precision and unknown end.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 interval with month precision and unknown end.");
     }
 
     @Test
     public void level1UnknownEndYIntervalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1985/");
-        assertFalse("Could not parse level 1 interval with year precision and unknown end.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 interval with year precision and unknown end.");
     }
 
     @Test
     public void level1UnknownBeginningYMDIntervalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("/1985-04-12");
-        assertFalse("Could not parse level 1 interval with day precision and unknown beginning.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 interval with day precision and unknown beginning.");
     }
 
     @Test
     public void level1UnknownBeginningYMIntervalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("/1985-04");
-        assertFalse("Could not parse level 1 interval with month precision and unknown beginning.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 interval with month precision and unknown beginning.");
     }
 
     @Test
     public void level1UnknownBeginningYIntervalTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("/1985");
-        assertFalse("Could not parse level 1 interval with year precision and unknown beginning.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse level 1 interval with year precision and unknown beginning.");
     }
 
     // level 1 - negative years
@@ -282,7 +282,7 @@ public class ExtendedDateTimeFormatGrammarTest {
     @Test
     public void level1NegativeYearTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("-1985");
-        assertFalse("Could not parse negative level 1 year.", hasErrors(parser));
+        assertFalse(hasErrors(parser), "Could not parse negative level 1 year.");
     }
 
     // sanity
@@ -290,19 +290,19 @@ public class ExtendedDateTimeFormatGrammarTest {
     @Test
     public void randomStringTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("iloveicecream");
-        assertTrue("String 'iloveicecream' parsed as valid date. Letters other than X should not be recognized.", hasErrors(parser));
+        assertTrue(hasErrors(parser), "String 'iloveicecream' parsed as valid date. Letters other than X should not be recognized.");
     }
 
     @Test
     public void unknownTokenTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1934;1935");
-        assertTrue("String '1934;1935' parsed as valid interval. ';' should not be recognized.", hasErrors(parser));
+        assertTrue(hasErrors(parser), "String '1934;1935' parsed as valid interval. ';' should not be recognized.");
     }
 
     @Test
     public void unexpectedTokenTest() {
         ExtendedDateTimeFormatParser parser = getParserFromString("1934%1935");
-        assertTrue("String '1934%1935' parsed as valid interval. '%' should not be able to act as an interval divider, expected '/'",
-                hasErrors(parser));
+        assertTrue(hasErrors(parser),
+                "String '1934%1935' parsed as valid interval. '%' should not be able to act as an interval divider, expected '/'");
     }
 }

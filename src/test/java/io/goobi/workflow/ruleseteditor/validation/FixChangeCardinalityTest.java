@@ -18,12 +18,12 @@
 
 package io.goobi.workflow.ruleseteditor.validation;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.easymock.EasyMock;
 import org.jdom2.Element;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
@@ -31,7 +31,7 @@ public class FixChangeCardinalityTest {
 
     private FixChangeCardinality fixer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         fixer = new FixChangeCardinality();
     }

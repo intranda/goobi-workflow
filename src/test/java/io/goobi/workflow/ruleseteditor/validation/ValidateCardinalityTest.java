@@ -18,8 +18,8 @@
 
 package io.goobi.workflow.ruleseteditor.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.StringReader;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.List;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
@@ -45,7 +45,7 @@ public class ValidateCardinalityTest {
         ValidateCardinality validator = new ValidateCardinality();
         List<RulesetValidationError> errors = validator.validate(root);
 
-        assertTrue("No errors expected for valid cardinalities", errors.isEmpty());
+        assertTrue(errors.isEmpty(), "No errors expected for valid cardinalities");
     }
 
     @Test
@@ -60,7 +60,7 @@ public class ValidateCardinalityTest {
         ValidateCardinality validator = new ValidateCardinality();
         List<RulesetValidationError> errors = validator.validate(root);
 
-        assertEquals("Two invalid cardinalities expected", 2, errors.size());
+        assertEquals(2, errors.size(), "Two invalid cardinalities expected");
 
         for (RulesetValidationError error : errors) {
             assertTrue(error.getMessage().contains("ruleset_validation_wrong_cardinality"));
@@ -78,7 +78,7 @@ public class ValidateCardinalityTest {
         ValidateCardinality validator = new ValidateCardinality();
         List<RulesetValidationError> errors = validator.validate(root);
 
-        assertTrue("No error expected if num attribute is missing", errors.isEmpty());
+        assertTrue(errors.isEmpty(), "No error expected if num attribute is missing");
     }
 
     private Element loadRoot(String xml) throws Exception {

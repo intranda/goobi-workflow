@@ -18,13 +18,13 @@
  */
 package org.goobi.beans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.Date;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.enums.HistoryEventType;
@@ -38,7 +38,7 @@ public class HistoryEventTest extends AbstractTest {
     /**
      * event1 and event2 are equal and have the same hash code. event3 is different and has an other hash code.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setupHistoryEvents() {
         Date now = new Date();
         Process process = new Process();

@@ -18,11 +18,11 @@
 
 package io.goobi.workflow.ruleseteditor;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.easymock.EasyMock;
 import org.jdom2.Element;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RulesetValidationErrorTest {
 

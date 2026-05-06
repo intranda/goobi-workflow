@@ -17,16 +17,16 @@
  */
 package org.goobi.production.importer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ImportConflictsTest {
 
     private ImportConflicts conflict;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         conflict = new ImportConflicts("id-001", "title", "goobiTitle", "productionTitle");
     }

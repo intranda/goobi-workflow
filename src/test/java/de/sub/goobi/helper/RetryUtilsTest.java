@@ -17,12 +17,13 @@
  */
 package de.sub.goobi.helper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RetryUtilsTest {
 
@@ -45,11 +46,11 @@ public class RetryUtilsTest {
         assertEquals(3, attempts.get());
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testThrowsWhenMaxRetriesExhausted() throws RuntimeException {
-        RetryUtils.retry(new RuntimeException("exhausted"), Duration.ZERO, 3, () -> {
+    @Test
+    public void testThrowsWhenMaxRetriesExhausted() {
+        assertThrows(RuntimeException.class, () -> RetryUtils.retry(new RuntimeException("exhausted"), Duration.ZERO, 3, () -> {
             throw new RuntimeException("always fails");
-        });
+        }));
     }
 
     @Test

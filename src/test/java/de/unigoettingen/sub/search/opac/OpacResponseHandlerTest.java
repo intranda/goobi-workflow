@@ -17,9 +17,9 @@
  */
 package de.unigoettingen.sub.search.opac;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -130,7 +130,7 @@ public class OpacResponseHandlerTest {
         }
         //CHECKSTYLE:ON
         // If we reach here without catching SAXException, fail
-        assertTrue("Expected SAXException with IllegalQueryException cause", false);
+        assertTrue(false, "Expected SAXException with IllegalQueryException cause");
     }
 
 }

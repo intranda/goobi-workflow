@@ -25,8 +25,8 @@
  */
 package de.sub.goobi.helper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -34,20 +34,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 
 public class CopyFileTest extends AbstractTest {
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
 
-    @Before
+    @TempDir
+    Path tempDir;
+
+    @BeforeEach
     public void setUp() throws IOException, URISyntaxException {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
         Path goobiFolder = Paths.get(template.getParent().getParent().toString()
@@ -63,7 +63,7 @@ public class CopyFileTest extends AbstractTest {
     public void testCopyFile() throws IOException {
 
         Path srcFile = Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder() + "/plugin_JunitImportPluginError.xml");
-        Path destFile = folder.newFile("destination").toPath();
+        Path destFile = tempDir.resolve("destination");
 
         StorageProvider.getInstance().copyFile(srcFile, destFile);
         assertTrue(Files.exists(destFile));
@@ -81,7 +81,7 @@ public class CopyFileTest extends AbstractTest {
     public void testStart() throws IOException {
 
         Path srcFile = Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder() + "plugin_JunitImportPluginError.xml");
-        Path destFile = folder.newFile("destination").toPath();
+        Path destFile = tempDir.resolve("destination");
 
         StorageProvider.getInstance().start(srcFile, destFile);
         assertTrue(Files.exists(destFile));
@@ -90,7 +90,8 @@ public class CopyFileTest extends AbstractTest {
     @Test
     public void testCopyDirectory() throws IOException {
         Path srcDir = Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder());
-        Path dstDir = folder.newFolder("dest").toPath();
+        Path dstDir = tempDir.resolve("dest");
+        Files.createDirectories(dstDir);
 
         StorageProvider.getInstance().copyDirectory(srcDir, dstDir);
         assertTrue(Files.exists(dstDir));

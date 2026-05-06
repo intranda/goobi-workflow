@@ -19,13 +19,13 @@
 
 package org.goobi.beans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,8 +38,8 @@ import java.util.Set;
 import org.goobi.api.mq.QueueType;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.json.JSONObject;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -702,7 +702,7 @@ public class StepTest extends AbstractTest {
     }
 
     // TODO: This test is ignored because the java.util.ResourceBundle is not loaded in unit tests
-    @Ignore("Resource Bundle is not loaded during unit tests")
+    @Disabled("Resource Bundle is not loaded during unit tests")
     @Test
     public void testGetTitelLokalisiert() {
         Step step = new Step();
@@ -721,7 +721,7 @@ public class StepTest extends AbstractTest {
     }
 
     // TODO: To test this method, the "send mail algorithm" must be separated from the "set status logic"
-    @Ignore("This method can not be tested because logic depends on database access")
+    @Disabled("This method can not be tested because logic depends on database access")
     @Test
     public void testSetBearbeitungsstatusUp() {
         Step step = new Step();
@@ -764,7 +764,7 @@ public class StepTest extends AbstractTest {
     }
 
     // TODO: To test this method, the "send mail algorithm" must be separated from the "set status logic"
-    @Ignore("This method can not be tested because logic depends on database access")
+    @Disabled("This method can not be tested because logic depends on database access")
     @Test
     public void testSetBearbeitungsstatusDown() {
         Step step = new Step();

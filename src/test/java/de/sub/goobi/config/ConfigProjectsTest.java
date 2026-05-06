@@ -1,8 +1,8 @@
 package de.sub.goobi.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -29,14 +29,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
 public class ConfigProjectsTest extends AbstractTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws URISyntaxException {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
         Path goobiFolder = Paths.get(template.getParent().getParent().toString()

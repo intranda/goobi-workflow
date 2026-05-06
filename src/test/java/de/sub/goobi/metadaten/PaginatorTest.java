@@ -21,28 +21,28 @@
 
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
-import org.junit.internal.ArrayComparisonFailure;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockMetadatum;
 
 public class PaginatorTest extends AbstractTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void throwsExceptionOnEmptyPageSelection() {
         Paginator paginator = new Paginator();
-        paginator.run();
+        assertThrows(IllegalArgumentException.class, paginator::run);
     }
 
-    @Test(expected = NumberFormatException.class)
+    @Test
     public void throwsExceptionWhenCalledWithInvalidStartValue() {
         Paginator paginator =
                 new Paginator().setPageSelection(new int[] { 1, 2 }).setPaginationType(Paginator.Type.ARABIC).setPaginationStartValue("II");
-        paginator.run();
+        assertThrows(NumberFormatException.class, paginator::run);
     }
 
     @Test
@@ -266,9 +266,9 @@ public class PaginatorTest extends AbstractTest {
 
         Metadatum[] newPaginated = paginator.getPagesToPaginate();
 
-        assertNotNull("Expected paginator result set.", newPaginated);
+        assertNotNull(newPaginated, "Expected paginator result set.");
 
-        assertEquals("Unexpected number of paginated pages.", sequence.length, newPaginated.length);
+        assertEquals(sequence.length, newPaginated.length, "Unexpected number of paginated pages.");
 
         for (int i = 0; i < sequence.length; i++) {
             assertEquals("Actual paginator value did not match expected.", sequence[i], newPaginated[i].getValue());
@@ -276,11 +276,11 @@ public class PaginatorTest extends AbstractTest {
 
     }
 
-    private void assertAllPagenumbersSetToValue(Paginator paginator, String expectedValue) throws ArrayComparisonFailure {
+    private void assertAllPagenumbersSetToValue(Paginator paginator, String expectedValue) {
 
         Metadatum[] newPaginated = paginator.getPagesToPaginate();
 
-        assertNotNull("Expected paginator result set.", newPaginated);
+        assertNotNull(newPaginated, "Expected paginator result set.");
 
         for (Metadatum m : newPaginated) {
             assertEquals("Actual paginator value did not match expected.", expectedValue, m.getValue());

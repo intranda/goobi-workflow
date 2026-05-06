@@ -1,6 +1,6 @@
 package io.goobi.workflow.api.vocabulary;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class VocabularyAPIManagerTest {
     @Test

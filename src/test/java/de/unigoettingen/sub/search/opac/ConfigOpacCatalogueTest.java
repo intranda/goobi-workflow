@@ -17,9 +17,9 @@
  */
 package de.unigoettingen.sub.search.opac;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +28,8 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -41,7 +41,7 @@ public class ConfigOpacCatalogueTest extends AbstractTest {
     private ConfigOpacCatalogue catalogue;
     private Map<String, String> searchFields;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         searchFields = new HashMap<>();
         searchFields.put("ISBN", "7");

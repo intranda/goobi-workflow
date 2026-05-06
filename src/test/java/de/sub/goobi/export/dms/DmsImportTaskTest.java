@@ -17,15 +17,15 @@
  */
 package de.sub.goobi.export.dms;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
@@ -33,7 +33,7 @@ public class DmsImportTaskTest extends AbstractTest {
 
     private Process process;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Project project = new Project();
         project.setDmsImportRootPath("/nonexistent/root");

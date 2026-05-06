@@ -25,13 +25,14 @@
  */
 package de.sub.goobi.converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.thoughtworks.xstream.converters.ConversionException;
 
@@ -43,11 +44,11 @@ public class RectangleCoordinateConverterTest {
         assertNotNull(conv);
     }
 
-    @Test(expected = ConversionException.class)
+    @Test
     public void testGetAsObjectInvalid() {
         RectangleCoordinateConverter conv = new RectangleCoordinateConverter();
         String emptyTestString = "";
-        conv.getAsObject(null, null, emptyTestString);
+        assertThrows(ConversionException.class, () -> conv.getAsObject(null, null, emptyTestString));
     }
 
     @Test

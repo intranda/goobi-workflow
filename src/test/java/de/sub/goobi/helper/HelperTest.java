@@ -25,9 +25,9 @@
  */
 package de.sub.goobi.helper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -37,10 +37,9 @@ import java.nio.file.Paths;
 import java.util.Date;
 
 import org.jdom2.Element;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -48,12 +47,12 @@ import de.sub.goobi.config.ConfigurationHelper;
 
 public class HelperTest extends AbstractTest {
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    @TempDir
+    Path tempDir;
 
     private Path currentFolder;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException, URISyntaxException {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
         Path goobiFolder = Paths.get(template.getParent().getParent().toString()
@@ -63,7 +62,7 @@ public class HelperTest extends AbstractTest {
         }
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
-        currentFolder = temporaryFolder.newFolder("temp").toPath();
+        currentFolder = tempDir.resolve("temp");
         Files.createDirectories(currentFolder);
         Path tif = Paths.get(currentFolder.toString(), "00000001.tif");
         Files.createFile(tif);
@@ -97,7 +96,8 @@ public class HelperTest extends AbstractTest {
 
     @Test
     public void testCopyDirectoryWithCrc32Check() throws IOException {
-        Path dest = temporaryFolder.newFolder("dest").toPath();
+        Path dest = tempDir.resolve("dest");
+        Files.createDirectories(dest);
         Element element = new Element("test");
         Helper.copyDirectoryWithCrc32Check(currentFolder, dest, 10, element);
         assertTrue(Files.exists(dest));

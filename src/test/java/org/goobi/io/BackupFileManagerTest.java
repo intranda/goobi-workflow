@@ -33,11 +33,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class BackupFileManagerTest {
     //
@@ -47,18 +47,18 @@ public class BackupFileManagerTest {
     //    public int maximumNumberOfBackupFiles = 1;
     //    public List<String> createdFiles = new ArrayList<>();
     //
-    //    @BeforeClass
+    //    @BeforeAll
     //    public static void oneTimeSetUp() {
     //    }
     //
-    //    @Before
+    //    @BeforeEach
     //    public void setUp() throws IOException {
     //        String fileName = this.getTestFileName();
     //        this.createFile(fileName);
     //        this.writeFile(fileName, this.TEST_FILE_CONTENT);
     //    }
     //
-    //    @After
+    //    @AfterEach
     //    public void tearDown() throws IOException {
     //        this.deleteFile(this.getTestFileName());
     //        for (int index = 0; index < this.createdFiles.size(); index++) {

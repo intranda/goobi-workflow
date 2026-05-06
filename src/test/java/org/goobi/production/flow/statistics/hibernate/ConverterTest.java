@@ -17,16 +17,19 @@
  */
 package org.goobi.production.flow.statistics.hibernate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConverterTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorWithNullThrowsNPE() {
-        new Converter(null);
+        assertThrows(NullPointerException.class, () -> {
+            new Converter(null);
+        });
     }
 
     @Test
@@ -54,9 +57,11 @@ public class ConverterTest {
         assertEquals(Integer.valueOf(99), new Converter(99L).getInteger());
     }
 
-    @Test(expected = NumberFormatException.class)
+    @Test
     public void testGetIntegerFromUnknownTypeThrows() {
-        new Converter(new Object()).getInteger();
+        assertThrows(NumberFormatException.class, () -> {
+            new Converter(new Object()).getInteger();
+        });
     }
 
     @Test
@@ -79,9 +84,11 @@ public class ConverterTest {
         assertEquals(Double.valueOf(1000.0), new Converter(1000L).getDouble());
     }
 
-    @Test(expected = NumberFormatException.class)
+    @Test
     public void testGetDoubleFromUnknownTypeThrows() {
-        new Converter(new Object()).getDouble();
+        assertThrows(NumberFormatException.class, () -> {
+            new Converter(new Object()).getDouble();
+        });
     }
 
     @Test

@@ -1,13 +1,14 @@
 package io.goobi.workflow.api.vocabulary;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.goobi.vocabulary.exception.VocabularyException;
 import io.goobi.vocabulary.exchange.Vocabulary;
@@ -24,7 +25,7 @@ public class VocabularyAPITest {
 
     private Response response;
 
-    @Before
+    @BeforeEach
     public void init() {
         api = VocabularyAPIManager.getInstance().vocabularies();
         Client testClient = EasyMock.createMock(Client.class);
@@ -61,10 +62,12 @@ public class VocabularyAPITest {
         return new VocabularyException(VocabularyException.ErrorCode.EntityNotFound, null, null, (params) -> "Vocabulary test exception");
     }
 
-    @Test(expected = APIException.class)
+    @Test
     public void givenVocabularyDoesNotExist_whenGetVocabulary_thenThrowAPIException() {
-        setupResponse(null, null);
-        api.get(0L);
+        assertThrows(APIException.class, () -> {
+            setupResponse(null, null);
+            api.get(0L);
+        });
     }
 
     @Test

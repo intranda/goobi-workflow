@@ -19,14 +19,14 @@
 
 package org.goobi.beans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,9 +34,9 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -56,7 +56,7 @@ public class ProcessTest extends AbstractTest {
      * This method prepares the process for the testFortschritt* methods. The test process contains multiple steps with different states, the states
      * can then be analyzed in the unit tests.
      */
-    @BeforeClass
+    @BeforeAll
     public static void prepareStepsForProgressTests() {
 
         ProcessTest.testProcess = new Process();
@@ -671,7 +671,7 @@ public class ProcessTest extends AbstractTest {
         double result = ProcessTest.testProcess.getFortschritt1();
         double expected = 25.0;
         double delta = result - expected;
-        assertEquals("Result of getFortschritt1 (StepStatus.LOCKED) is wrong.", result, expected, delta);
+        assertEquals(result, expected, delta, "Result of getFortschritt1 (StepStatus.LOCKED) is wrong.");
     }
 
     @Test
@@ -680,7 +680,7 @@ public class ProcessTest extends AbstractTest {
         double result = ProcessTest.testProcess.getFortschritt2();
         double expected = 37.5;
         double delta = result - expected;
-        assertEquals("Result of getFortschritt2 (StepStatus.OPEN, INWORK and INFLIGHT) is wrong.", result, expected, delta);
+        assertEquals(result, expected, delta, "Result of getFortschritt2 (StepStatus.OPEN, INWORK and INFLIGHT) is wrong.");
     }
 
     @Test
@@ -689,7 +689,7 @@ public class ProcessTest extends AbstractTest {
         double result = ProcessTest.testProcess.getFortschrittError();
         double expected = 12.5;
         double delta = result - expected;
-        assertEquals("Result of getFortschrittError (StepStatus.ERROR) is wrong.", result, expected, delta);
+        assertEquals(result, expected, delta, "Result of getFortschrittError (StepStatus.ERROR) is wrong.");
     }
 
     @Test
@@ -698,7 +698,7 @@ public class ProcessTest extends AbstractTest {
         double result = ProcessTest.testProcess.getFortschritt3();
         double expected = 25.0;
         double delta = result - expected;
-        assertEquals("Result of getFortschritt3 (StepStatus.DONE) is wrong.", result, expected, delta);
+        assertEquals(result, expected, delta, "Result of getFortschritt3 (StepStatus.DONE) is wrong.");
     }
 
     @Test
@@ -841,7 +841,7 @@ public class ProcessTest extends AbstractTest {
         assertNotEquals(process1.hashCode(), process2.hashCode());
     }
 
-    @Ignore("This test can not be executed without a database")
+    @Disabled("This test can not be executed without a database")
     @Test
     public void testCloneConstructor() {
         Process process = new Process();
@@ -880,7 +880,7 @@ public class ProcessTest extends AbstractTest {
         assertEquals("Titel", process.getTitelLokalisiert());
     }
 
-    @Ignore("This test can not be executed when the translator is not loaded.")
+    @Disabled("This test can not be executed when the translator is not loaded.")
     @Test
     public void testGetStepsAsString() {
         Process process = new Process();

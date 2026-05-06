@@ -26,8 +26,8 @@
 
 package org.goobi.api.display;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,8 +36,8 @@ import java.nio.file.Paths;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.MetadataGeneration;
 import org.goobi.beans.Process;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -49,7 +49,7 @@ public class DisplayCaseTest extends AbstractTest {
 
     private Process process;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
         Path goobiFolder = Paths.get(template.getParent().getParent().toString()

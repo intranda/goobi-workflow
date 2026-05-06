@@ -25,11 +25,11 @@
  */
 package de.sub.goobi.helper.importer;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 import de.sub.goobi.AbstractTest;
 
-@Ignore("Test defintion incorrect.")
+@Disabled("Test defintion incorrect.")
 public class ImportOpacTest extends AbstractTest {
     public static void main(String[] args) {
         System.out.println("class ImportOpac has been deleted.");

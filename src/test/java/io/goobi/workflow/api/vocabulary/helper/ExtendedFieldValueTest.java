@@ -1,7 +1,7 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.goobi.vocabulary.exchange.FieldValue;
 import io.goobi.vocabulary.exchange.HateoasHref;
@@ -41,7 +41,7 @@ public class ExtendedFieldValueTest {
     private FieldValue referenceValueSimple;
     private FieldValue referenceValueTranslated;
 
-    @Before
+    @BeforeEach
     public void setup() {
         api = VocabularyAPIManager.getInstance().languages();
         Client testClient = EasyMock.createMock(Client.class);

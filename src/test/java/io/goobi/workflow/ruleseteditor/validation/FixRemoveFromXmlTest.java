@@ -18,15 +18,15 @@
 
 package io.goobi.workflow.ruleseteditor.validation;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.StringReader;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
@@ -35,7 +35,7 @@ public class FixRemoveFromXmlTest {
     private Element root;
     private FixRemoveFromXml fixer;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         String xml = "<root>"
                 + "  <parent>"
@@ -57,7 +57,7 @@ public class FixRemoveFromXmlTest {
         fixer.fix(root, error, false);
 
         Element parent = root.getChild("parent");
-        assertNotNull("parent should still exist", parent);
-        assertNotNull("child should still exist", parent.getChild("child"));
+        assertNotNull(parent, "parent should still exist");
+        assertNotNull(parent.getChild("child"), "child should still exist");
     }
 }

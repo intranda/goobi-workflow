@@ -17,18 +17,18 @@
  */
 package de.sub.goobi.helper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.easymock.EasyMock;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import jakarta.faces.context.FacesContext;
 
 public class FacesContextHelperTest {
 
-    @After
+    @AfterEach
     public void tearDown() {
         FacesContextHelper.reset();
     }

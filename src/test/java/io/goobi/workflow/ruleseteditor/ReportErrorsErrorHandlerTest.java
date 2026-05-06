@@ -18,20 +18,20 @@
 
 package io.goobi.workflow.ruleseteditor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXParseException;
 
 public class ReportErrorsErrorHandlerTest {
 
     private ReportErrorsErrorHandler handler;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         handler = new ReportErrorsErrorHandler();
     }
