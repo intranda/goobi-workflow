@@ -29,16 +29,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.BeforeClass;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.junit.jupiter.api.BeforeAll;
 
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "org.easymock.*" })
 public abstract class AbstractTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws Exception {
         // setup log4j configuration
         String log4jFile = "src/test/resources/log4j2.test.xml"; // for junit tests in eclipse
