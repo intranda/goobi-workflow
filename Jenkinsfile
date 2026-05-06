@@ -80,7 +80,7 @@ pipeline {
             sh "mvn -f plugins/pom.xml clean install -U -T 1C -DskipTests -Dcheckstyle.skip=true -Djacoco.skip=true -Drevision=\$BUILD_VERSION -P '!local-development' --no-transfer-progress -fae"
             // Collect default plugin JARs into a staging dir for the Docker image (release only)
             script {
-              if (env.TAG_NAME || env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop' || env.BRANCH_NAME?.endsWith('_docker')) {
+              if (env.TAG_NAME || env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop' || env.BRANCH_NAME?.endsWith('_docker') || env.BRANCH_NAME?.startsWith('release')) {
                 sh '''#!/bin/bash -xe
                     mkdir -p target/default-plugins/plugins/{opac,GUI,step,dashboard,statistics} \
                              target/default-plugins/lib \
@@ -277,6 +277,7 @@ pipeline {
         beforeAgent true
         anyOf {
           branch 'v*'
+          branch 'release*'
           expression { return params.RUN_SONAR_ANALYSIS == 'true' }
         }
       }
@@ -341,7 +342,7 @@ pipeline {
 
     // ─────────────────────────────────────────────────────────────────────────
     // 6. UPDATE COLLECTION  (master: advance core submodule pointer in collection;
-    //                        master + develop: trigger downstream collection build)
+    //                        master, release* & develop: trigger downstream collection build)
     // ─────────────────────────────────────────────────────────────────────────
     stage('update-collection') {
       when {
@@ -349,6 +350,7 @@ pipeline {
         anyOf {
           branch 'master'
           branch 'develop'
+          branch 'release*'
         }
       }
       agent any
@@ -388,6 +390,7 @@ pipeline {
         beforeAgent true
         anyOf {
           branch 'develop'
+          branch 'release*'
           branch 'v*'
           expression { return env.BRANCH_NAME =~ /_docker$/ }
         }
@@ -425,15 +428,24 @@ pipeline {
             if [ -n "$TAG_NAME" ]; then
               TAGS="-t $GHCR_IMAGE_BASE:$TAG_NAME -t $DOCKERHUB_IMAGE_BASE:$TAG_NAME -t $NEXUS_IMAGE_BASE:$TAG_NAME"
               SLIM_TAGS="-t $GHCR_IMAGE_BASE:$TAG_NAME-slim -t $DOCKERHUB_IMAGE_BASE:$TAG_NAME-slim -t $NEXUS_IMAGE_BASE:$TAG_NAME-slim"
-            elif [ "$GIT_BRANCH" = "origin/master" ] || [ "$GIT_BRANCH" = "master" ]; then
-              TAGS="-t $GHCR_IMAGE_BASE:latest -t $DOCKERHUB_IMAGE_BASE:latest -t $NEXUS_IMAGE_BASE:latest"
-              SLIM_TAGS="-t $GHCR_IMAGE_BASE:latest-slim -t $DOCKERHUB_IMAGE_BASE:latest-slim -t $NEXUS_IMAGE_BASE:latest-slim"
-            elif [ "$GIT_BRANCH" = "origin/develop" ] || [ "$GIT_BRANCH" = "develop" ]; then
-              TAGS="-t $GHCR_IMAGE_BASE:dev -t $DOCKERHUB_IMAGE_BASE:dev -t $NEXUS_IMAGE_BASE:dev"
-              SLIM_TAGS="-t $GHCR_IMAGE_BASE:dev-slim -t $DOCKERHUB_IMAGE_BASE:dev-slim -t $NEXUS_IMAGE_BASE:dev-slim"
-            elif echo "$GIT_BRANCH" | grep -q "_docker$"; then
-              TAGS="-t $NEXUS_IMAGE_BASE:docker-dev"
-              SLIM_TAGS="-t $NEXUS_IMAGE_BASE:docker-dev-slim"
+            else
+              case $GIT_BRANCH in
+                origin/master|master)
+                  TAGS="-t $GHCR_IMAGE_BASE:latest -t $DOCKERHUB_IMAGE_BASE:latest -t $NEXUS_IMAGE_BASE:latest"
+                  SLIM_TAGS="-t $GHCR_IMAGE_BASE:latest-slim -t $DOCKERHUB_IMAGE_BASE:latest-slim -t $NEXUS_IMAGE_BASE:latest-slim"
+                ;;
+                origin/develop|develop)
+                  TAGS="-t $GHCR_IMAGE_BASE:dev -t $DOCKERHUB_IMAGE_BASE:dev -t $NEXUS_IMAGE_BASE:dev"
+                  SLIM_TAGS="-t $GHCR_IMAGE_BASE:dev-slim -t $DOCKERHUB_IMAGE_BASE:dev-slim -t $NEXUS_IMAGE_BASE:dev-slim"
+                ;;
+                origin/release*|release*)
+                  TAGS="-t $NEXUS_IMAGE_BASE:$BRANCH_NAME"
+                  SLIM_TAGS="-t $NEXUS_IMAGE_BASE:$BRANCH_NAME-slim"
+                ;;
+                *)
+                TAGS="-t $NEXUS_IMAGE_BASE:docker-dev"
+                SLIM_TAGS="-t $NEXUS_IMAGE_BASE:docker-dev-slim"
+              esac
             fi
 
             if [ -z "$TAGS" ]; then
