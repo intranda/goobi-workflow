@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.goobi.workflow</groupId>
   <artifactId>workflow-base</artifactId>
-  <version>${revision}</version>
+  <version>26.04</version>
   <packaging>pom</packaging>
   <organization>
     <name>intranda GmbH</name>
@@ -41,7 +41,7 @@
     </dependencies>
   </dependencyManagement>
   <properties>
-    <revision>dev-SNAPSHOT</revision>
+    <revision>26.04</revision>
     <nexus.repository.url>https://nexus.intranda.com/repository/maven-public</nexus.repository.url>
     <skip.cve.check>true</skip.cve.check>
     <!-- Use Java 21 for compiling -->
@@ -176,7 +176,7 @@
     <dependency>
       <groupId>io.goobi.workflow</groupId>
       <artifactId>workflow-maven-config</artifactId>
-      <version>${revision}</version>
+      <version>26.04</version>
     </dependency>
     <dependency>
       <groupId>de.intranda.ugh</groupId>
