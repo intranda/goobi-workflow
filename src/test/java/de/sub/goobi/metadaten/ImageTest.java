@@ -35,28 +35,27 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.FacesContextHelper;
-import de.sub.goobi.helper.Helper;
 import de.sub.goobi.metadaten.Image.Type;
 import de.sub.goobi.mock.MockProcess;
-import de.sub.goobi.persistence.managers.ProcessManager;
 import jakarta.faces.application.Application;
-import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class ImageTest extends AbstractTest {
 
@@ -69,35 +68,31 @@ public class ImageTest extends AbstractTest {
 
         // mock jsf context and http session
 
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
-        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
-        Application application = EasyMock.createMock(Application.class);
-        HttpServletRequest servletRequest = EasyMock.createMock(HttpServletRequest.class);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
+        Application application = Mockito.mock(Application.class);
+        HttpServletRequest servletRequest = Mockito.mock(HttpServletRequest.class);
 
-        HttpSession session = EasyMock.createMock(HttpSession.class);
+        HttpSession session = Mockito.mock(HttpSession.class);
         FacesContextHelper.setFacesContext(facesContext);
-        EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
-        EasyMock.expect(facesContext.getApplication()).andReturn(application).anyTimes();
+        Mockito.when(facesContext.getExternalContext()).thenReturn(externalContext);
+        Mockito.when(facesContext.getApplication()).thenReturn(application);
 
-        EasyMock.expect(externalContext.getSession(false)).andReturn(session).anyTimes();
-        EasyMock.expect(session.getId()).andReturn("123").anyTimes();
-        EasyMock.expect(externalContext.getRequest()).andReturn(servletRequest).anyTimes();
+        Mockito.when(externalContext.getSession(false)).thenReturn(session);
+        Mockito.when(session.getId()).thenReturn("123");
+        Mockito.when(externalContext.getRequest()).thenReturn(servletRequest);
 
-        EasyMock.expect(servletRequest.getScheme()).andReturn("https").anyTimes();
-        EasyMock.expect(servletRequest.getServerName()).andReturn("localhost").anyTimes();
-        EasyMock.expect(servletRequest.getServerPort()).andReturn(443).anyTimes();
-        EasyMock.expect(servletRequest.getContextPath()).andReturn("/goobi").anyTimes();
+        Mockito.when(servletRequest.getScheme()).thenReturn("https");
+        Mockito.when(servletRequest.getServerName()).thenReturn("localhost");
+        Mockito.when(servletRequest.getServerPort()).thenReturn(443);
+        Mockito.when(servletRequest.getContextPath()).thenReturn("/goobi");
 
-        EasyMock.replay(servletRequest);
-        EasyMock.replay(externalContext);
-        EasyMock.replay(facesContext);
-        EasyMock.replay(application);
     }
 
     @Test
     public void testImageConstructorWithProcess() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
             Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
             assertNotNull(image);
@@ -118,27 +113,27 @@ public class ImageTest extends AbstractTest {
             assertEquals("00000001.tif", image.getTooltip());
             assertEquals(Type.image, image.getType());
             assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/info.json", image.getUrl());
-    
+
         }
-}
+    }
 
     @Test
     public void testImageConstructorWithImagePath() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
             Path imagePath = Paths.get(process.getImagesTifDirectory(false), "00000001.tif");
             Image image = new Image(imagePath, 1, 200);
             assertNotNull(image);
             assertEquals("https://localhost:443/goobi/uii/template/img/goobi_placeholder_notFound_large.png?version=1", image.getBookmarkUrl());
-    
+
         }
-}
+    }
 
     @Test
     public void testCreateThumbnailUrls() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
             Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
             assertNotNull(image);
@@ -151,14 +146,14 @@ public class ImageTest extends AbstractTest {
                     image.getThumbnailUrl());
             assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/1500,/0/default.jpg",
                     image.getLargeThumbnailUrl());
-    
+
         }
-}
+    }
 
     @Test
     public void testAddImageLevel() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
             Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
             assertNotNull(image);
@@ -167,52 +162,52 @@ public class ImageTest extends AbstractTest {
             assertEquals("localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/500,/0/default.jpg", lvl.getUrl());
             assertEquals(500, lvl.getWidth());
             assertEquals(375, lvl.getHeight());
-    
+
         }
-}
+    }
 
     @Test
     public void testHasImageLevels() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
             Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
             assertNotNull(image);
             assertFalse(image.hasImageLevels());
             image.addImageLevel("localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/500,/0/default.jpg", 500);
             assertTrue(image.hasImageLevels());
-    
+
         }
-}
+    }
 
     @Test
     public void testToString() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
             Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
             assertNotNull(image);
             assertEquals(Paths.get(process.getImagesTifDirectory(false), "00000001.tif").toString(),
                     image.toString());
-    
+
         }
-}
+    }
 
     @Test
     public void testCreate3DObjectUrl() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
             assertEquals("https://localhost:443/goobi/api/view/object/1/testprocess_media/00000001.tif/info.json",
                     Image.create3DObjectUrl(process, "testprocess_media", "00000001.tif"));
-    
+
         }
-}
+    }
 
     @Test
     public void testGetFromFilenameExtension() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
             assertEquals(Type.image, Image.Type.getFromFilenameExtension("00000001.tif"));
             assertEquals(Type.unknown, Image.Type.getFromFilenameExtension("00000001.mp3"));
@@ -220,14 +215,14 @@ public class ImageTest extends AbstractTest {
             assertEquals(Type.object, Image.Type.getFromFilenameExtension("00000001.x3d"));
             assertEquals(Type.object, Image.Type.getFromFilenameExtension("00000001.obj"));
             assertEquals(Type.object2vr, Image.Type.getFromFilenameExtension("00000001.xml"));
-    
+
         }
-}
+    }
 
     @Test
     public void testLayerSizes() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
             Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
             assertEquals(0, image.getLayerSizes().size());
@@ -237,18 +232,17 @@ public class ImageTest extends AbstractTest {
             image.setLayerSizes(layers);
             assertEquals(2, image.getLayerSizes().size());
 
-    
         }
-}
+    }
 
     @Test
     public void testCleanedName() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
             assertEquals("00000001.tif", Image.getCleanedName(Paths.get(process.getImagesTifDirectory(false), "00000001.tif").toString()));
-    
+
         }
-}
+    }
 
 }

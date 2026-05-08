@@ -32,17 +32,16 @@ import org.goobi.beans.User;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.StepManager;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class GoobiScriptDeleteProcessTest extends AbstractTest {
 
@@ -76,42 +75,41 @@ public class GoobiScriptDeleteProcessTest extends AbstractTest {
     @Test
     public void testConstructor() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             GoobiScriptDeleteProcess fixture = new GoobiScriptDeleteProcess();
             assertNotNull(fixture);
             assertEquals("deleteProcess", fixture.getAction());
-    
+
         }
-}
+    }
 
     @Test
     public void testSampleCall() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             GoobiScriptDeleteProcess fixture = new GoobiScriptDeleteProcess();
             assertNotNull(fixture);
             assertEquals(
-                    "---\\n# This GoobiScript allows you to delete existing processes.\\naction: deleteProcess\\n\\n# Define here if just the content shall be deleted (true) or the the entire process from the database as well (false).\\ncontentOnly: false",
+                    "---\\n# This GoobiScript allows you to delete existing processes.\\naction: deleteProcess\\n\\n# "
+                            + "Define here if just the content shall be deleted (true) or the the entire process from the "
+                            + "database as well (false).\\ncontentOnly: false",
                     fixture.getSampleCall());
-    
+
         }
-}
+    }
 
     @Test
     public void testPrepare() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -123,17 +121,16 @@ public class GoobiScriptDeleteProcessTest extends AbstractTest {
             List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
             assertEquals(1, results.size());
             assertEquals("deleteProcess", results.get(0).getCommand());
-    
+
         }
-}
+    }
 
     @Test
     public void testExecute() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -161,8 +158,8 @@ public class GoobiScriptDeleteProcessTest extends AbstractTest {
             fixture.execute(results.get(0));
             assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
             assertEquals("Process could be deleted successfully using GoobiScript.", results.get(0).getResultMessage());
-    
+
         }
-}
+    }
 
 }

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
@@ -38,6 +37,12 @@ import org.goobi.production.importer.ImportObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.forms.AdditionalField;
@@ -50,10 +55,7 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import ugh.dl.Fileformat;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class CopyProcessTest extends AbstractTest {
 
@@ -84,19 +86,28 @@ public class CopyProcessTest extends AbstractTest {
         step.setBearbeitungsstatusEnum(StepStatus.OPEN);
         processTemplate.setSchritte(Collections.singletonList(step));
 
-        mockFileformat = EasyMock.createMock(Fileformat.class);
-        EasyMock.expect(mockFileformat.read(EasyMock.anyString())).andReturn(true).anyTimes();
-        EasyMock.replay(mockFileformat);
+        mockFileformat = Mockito.mock(Fileformat.class);
+        Mockito.when(mockFileformat.read(Mockito.anyString())).thenReturn(true);
         prepareMocking();
     }
 
     @AfterEach
     public void tearDown() {
-        if (mockedHelper != null) mockedHelper.close();
-        if (mockedStepManager != null) mockedStepManager.close();
-        if (mockedPropertyManager != null) mockedPropertyManager.close();
-        if (mockedProcessManager != null) mockedProcessManager.close();
-        if (mockedMetadatenHelper != null) mockedMetadatenHelper.close();
+        if (mockedHelper != null) {
+            mockedHelper.close();
+        }
+        if (mockedStepManager != null) {
+            mockedStepManager.close();
+        }
+        if (mockedPropertyManager != null) {
+            mockedPropertyManager.close();
+        }
+        if (mockedProcessManager != null) {
+            mockedProcessManager.close();
+        }
+        if (mockedMetadatenHelper != null) {
+            mockedMetadatenHelper.close();
+        }
     }
 
     private void prepareMocking() throws Exception {
@@ -107,12 +118,14 @@ public class CopyProcessTest extends AbstractTest {
         mockedHelper = Mockito.mockStatic(Helper.class);
 
         mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(mockFileformat);
+        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                .thenReturn(mockFileformat);
 
         mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
 
         List<GoobiProperty> emptyProps = new ArrayList<>();
-        mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any(PropertyOwnerType.class))).thenReturn(emptyProps);
+        mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any(PropertyOwnerType.class)))
+                .thenReturn(emptyProps);
 
         mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
 

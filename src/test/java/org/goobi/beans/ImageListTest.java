@@ -18,18 +18,17 @@
 
 package org.goobi.beans;
 
-import static org.easymock.EasyMock.createMock;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.metadaten.Image;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class ImageListTest {
 
@@ -45,9 +44,9 @@ public class ImageListTest {
     public void setUp() {
         imageList = new ImageList();
 
-        img1 = createMock(Image.class);
-        img2 = createMock(Image.class);
-        img3 = createMock(Image.class);
+        img1 = Mockito.mock(Image.class);
+        img2 = Mockito.mock(Image.class);
+        img3 = Mockito.mock(Image.class);
 
         images = new ArrayList<>();
         images.add(img1);

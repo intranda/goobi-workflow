@@ -1,15 +1,18 @@
 package io.goobi.workflow.api.vocabulary;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.goobi.vocabulary.exception.VocabularyException;
 import io.goobi.vocabulary.exchange.Vocabulary;
@@ -24,6 +27,7 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+@ExtendWith(MockitoExtension.class)
 public class VocabularyRecordAPITest {
     private VocabularyRecordAPI api;
 
@@ -36,26 +40,24 @@ public class VocabularyRecordAPITest {
     //    @BeforeEach
     public void init() {
         api = VocabularyAPIManager.getInstance().vocabularyRecords();
-        Client testClient = EasyMock.createMock(Client.class);
-        WebTarget target = EasyMock.createMock(WebTarget.class);
-        Invocation.Builder builder = EasyMock.createMock(Invocation.Builder.class);
-        response = EasyMock.createMock(Response.class);
+        Client testClient = Mockito.mock(Client.class);
+        WebTarget target = Mockito.mock(WebTarget.class);
+        Invocation.Builder builder = Mockito.mock(Invocation.Builder.class);
+        response = Mockito.mock(Response.class);
 
-        EasyMock.expect(testClient.target((String) EasyMock.anyObject())).andReturn(target).anyTimes();
+        Mockito.when(testClient.target((String) Mockito.any())).thenReturn(target);
         RESTAPI.setClient(testClient);
 
-        EasyMock.expect(target.request(MediaType.APPLICATION_JSON)).andReturn(builder).anyTimes();
-        EasyMock.expect(target.request(MediaType.MULTIPART_FORM_DATA)).andReturn(builder).anyTimes();
+        Mockito.when(target.request(MediaType.APPLICATION_JSON)).thenReturn(builder);
+        Mockito.when(target.request(MediaType.MULTIPART_FORM_DATA)).thenReturn(builder);
 
-        EasyMock.expect(builder.header(EasyMock.anyString(), EasyMock.anyString())).andReturn(builder).anyTimes();
-        EasyMock.expect(builder.get()).andReturn(response).anyTimes();
-        EasyMock.expect(builder.post(EasyMock.anyObject())).andReturn(response).anyTimes();
-        EasyMock.expect(builder.put(EasyMock.anyObject())).andReturn(response).anyTimes();
-        EasyMock.expect(builder.delete()).andReturn(response).anyTimes();
+        Mockito.when(builder.header(Mockito.anyString(), Mockito.anyString())).thenReturn(builder);
+        Mockito.when(builder.get()).thenReturn(response);
+        Mockito.when(builder.post(Mockito.any())).thenReturn(response);
+        Mockito.when(builder.put(Mockito.any())).thenReturn(response);
+        Mockito.when(builder.delete()).thenReturn(response);
 
-        EasyMock.expect(response.readEntity(VocabularyException.class)).andReturn(generateVocabularyException()).anyTimes();
-
-        EasyMock.replay(testClient, target, builder);
+        Mockito.when(response.readEntity(VocabularyException.class)).thenReturn(generateVocabularyException());
 
         vocabulary = new Vocabulary();
         vocabulary.setId(0L);
@@ -75,11 +77,7 @@ public class VocabularyRecordAPITest {
     }
 
     private void setupResponseSuccess(boolean success, int times) {
-        if (times == Integer.MAX_VALUE) {
-            EasyMock.expect(response.getStatus()).andReturn(success ? 200 : 500).anyTimes();
-        } else {
-            EasyMock.expect(response.getStatus()).andReturn(success ? 200 : 500).times(times);
-        }
+        Mockito.when(response.getStatus()).thenReturn(success ? 200 : 500);
     }
 
     private <T> void setupResponse(T o, Class<T> clazz) {
@@ -87,17 +85,11 @@ public class VocabularyRecordAPITest {
     }
 
     private <T> void setupResponse(T o, Class<T> clazz, int times) {
-        if (times == Integer.MAX_VALUE) {
-            EasyMock.expect(response.readEntity(clazz)).andReturn(o).anyTimes();
-        } else {
-            EasyMock.expect(response.readEntity(clazz)).andReturn(o).times(times);
-        }
+        Mockito.when(response.readEntity(clazz)).thenReturn(o);
     }
 
     private void setupResponseFinish() {
         response.close();
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.replay(response);
     }
 
     private VocabularyException generateVocabularyException() {
@@ -106,7 +98,7 @@ public class VocabularyRecordAPITest {
 
     @Test
     @Disabled
-    public void givenVocabularyRecordDoesNotExist_whenGetVocabularyRecord_thenThrowAPIException() {
+    public void givenVocabularyRecordDoesNotExistWhenGetVocabularyRecordThenThrowAPIException() {
         setupResponseSuccess(false);
         setupResponseFinish();
 
@@ -115,7 +107,7 @@ public class VocabularyRecordAPITest {
 
     @Test
     @Disabled
-    public void givenVocabularyRecordDoesExist_whenGetVocabularyRecord_thenReturnCorrectResult() {
+    public void givenVocabularyRecordDoesExistWhenGetVocabularyRecordThenReturnCorrectResult() {
         setupResponseSuccess(true);
         setupResponse(vocabularyRecord, VocabularyRecord.class);
         setupResponse(vocabulary, Vocabulary.class);
@@ -129,7 +121,7 @@ public class VocabularyRecordAPITest {
 
     @Test
     @Disabled
-    public void givenVocabularyRecordDoesExist_whenGetByUrlVocabularyRecord_thenReturnCorrectResult() {
+    public void givenVocabularyRecordDoesExistWhenGetByUrlVocabularyRecordThenReturnCorrectResult() {
         setupResponseSuccess(true);
         setupResponse(vocabularyRecord, VocabularyRecord.class);
         setupResponse(vocabulary, Vocabulary.class);
@@ -143,7 +135,7 @@ public class VocabularyRecordAPITest {
 
     @Test
     @Disabled
-    public void givenVocabularyRecordDoesExist_whenListWithAllQueryParamsVocabularyRecords_thenReturnCorrectResult() {
+    public void givenVocabularyRecordDoesExistWhenListWithAllQueryParamsVocabularyRecordsThenReturnCorrectResult() {
         VocabularyRecordPageResult pageResult = new VocabularyRecordPageResult();
         pageResult.setContent(List.of(new ExtendedVocabularyRecord(vocabularyRecord)));
 
@@ -162,11 +154,12 @@ public class VocabularyRecordAPITest {
                 .sorting("")
                 .all()
                 .request();
+        assertNotNull(result.getPage());
     }
 
     @Test
     @Disabled
-    public void givenVocabularyRecordDoesExist_whenListWithAllEmptyQueryParamsVocabularyRecords_thenReturnCorrectResult() {
+    public void givenVocabularyRecordDoesExistWhenListWithAllEmptyQueryParamsVocabularyRecordsThenReturnCorrectResult() {
         VocabularyRecordPageResult pageResult = new VocabularyRecordPageResult();
         pageResult.setContent(List.of(new ExtendedVocabularyRecord(vocabularyRecord)));
 
@@ -184,11 +177,12 @@ public class VocabularyRecordAPITest {
                 .page(Optional.empty())
                 .sorting(Optional.empty())
                 .request();
+        assertNotNull(result.getPage());
     }
 
     @Test
     @Disabled
-    public void givenVocabularyRecordDoesExist_whenListWithNoQueryParamsVocabularyRecords_thenReturnCorrectResult() {
+    public void givenVocabularyRecordDoesExistWhenListWithNoQueryParamsVocabularyRecordsThenReturnCorrectResult() {
         VocabularyRecordPageResult pageResult = new VocabularyRecordPageResult();
         pageResult.setContent(List.of(new ExtendedVocabularyRecord(vocabularyRecord)));
 
@@ -201,11 +195,12 @@ public class VocabularyRecordAPITest {
 
         VocabularyRecordAPI.VocabularyRecordQueryBuilder query = api.list(0L);
         VocabularyRecordPageResult result = query.request();
+        assertNotNull(result.getPage());
     }
 
     @Test
     @Disabled
-    public void givenVocabularyRecordThatExists_whenSaveVocabularyRecord_thenChangeExisting() {
+    public void givenVocabularyRecordThatExistsWhenSaveVocabularyRecordThenChangeExisting() {
         setupResponseSuccess(true);
         setupResponse(vocabularyRecord, VocabularyRecord.class);
         setupResponse(vocabulary, Vocabulary.class);
@@ -213,11 +208,12 @@ public class VocabularyRecordAPITest {
         setupResponseFinish();
 
         VocabularyRecord result = api.save(vocabularyRecord);
+        assertNotNull(result);
     }
 
     @Test
     @Disabled
-    public void givenVocabularyRecordThatDoesNotExist_whenSaveVocabularyRecord_thenCreateNew() {
+    public void givenVocabularyRecordThatDoesNotExistWhenSaveVocabularyRecordThenCreateNew() {
         setupResponseSuccess(true);
         setupResponse(vocabularyRecord, VocabularyRecord.class);
         setupResponse(vocabulary, Vocabulary.class);
@@ -228,11 +224,12 @@ public class VocabularyRecordAPITest {
         newRecord.setVocabularyId(0L);
         newRecord.setFields(Collections.emptySet());
         VocabularyRecord result = api.save(newRecord);
+        assertNotNull(result);
     }
 
     @Test
     @Disabled
-    public void givenVocabularyRecordThatIsMetadata_whenSaveVocabularyRecord_thenChangeMetadata() {
+    public void givenVocabularyRecordThatIsMetadataWhenSaveVocabularyRecordThenChangeMetadata() {
         setupResponseSuccess(true);
         setupResponse(vocabularyRecord, VocabularyRecord.class);
         setupResponse(vocabulary, Vocabulary.class);
@@ -244,11 +241,12 @@ public class VocabularyRecordAPITest {
         newRecord.setMetadata(true);
         newRecord.setFields(Collections.emptySet());
         VocabularyRecord result = api.save(newRecord);
+        assertNotNull(result);
     }
 
     @Test
     @Disabled
-    public void givenVocabularyIsNotEmpty_whenGetRecordSelectItems_thenReturnCorrectList() {
+    public void givenVocabularyIsNotEmptyWhenGetRecordSelectItemsThenReturnCorrectList() {
         VocabularyRecordPageResult pageResult = new VocabularyRecordPageResult();
         pageResult.setContent(new LinkedList<>(List.of(new ExtendedVocabularyRecord(vocabularyRecord))));
 
@@ -260,11 +258,12 @@ public class VocabularyRecordAPITest {
         setupResponseFinish();
 
         List<SelectItem> items = api.getRecordSelectItems(0L);
+        assertEquals(10, items.size());
     }
 
     @Test
     @Disabled
-    public void givenVocabularyIsNotEmpty_whenGetAllHierarchicalRecords_thenReturnCorrectList() {
+    public void givenVocabularyIsNotEmptyWhenGetAllHierarchicalRecordsThenReturnCorrectList() {
         VocabularyRecordPageResult pageResult = new VocabularyRecordPageResult();
         pageResult.setContent(new LinkedList<>(List.of(new ExtendedVocabularyRecord(vocabularyRecord))));
 
@@ -276,5 +275,6 @@ public class VocabularyRecordAPITest {
         setupResponseFinish();
 
         List<ExtendedVocabularyRecord> items = api.getAllHierarchicalRecords(0L);
+        assertEquals(10, items.size());
     }
 }

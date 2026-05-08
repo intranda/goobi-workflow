@@ -3,11 +3,12 @@ package org.goobi.api.rest.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
@@ -15,10 +16,6 @@ import de.sub.goobi.helper.StorageProviderInterface;
 import de.sub.goobi.metadaten.Metadaten;
 import jakarta.ws.rs.core.Response;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class RestVideoVttResourceTest {
 
@@ -94,7 +91,6 @@ public class RestVideoVttResourceTest {
             String process = "999";
             String folder = "notfound";
             String filename = "missing.vtt";
-            Path expectedPath = Paths.get("/tmp/metadata/999/ocr/notfound/missing.vtt");
 
             StorageProviderInterface storageProvider = Mockito.mock(StorageProviderInterface.class);
 

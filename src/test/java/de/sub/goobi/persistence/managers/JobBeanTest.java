@@ -33,14 +33,14 @@ import org.goobi.production.flow.jobs.BackgroundJob;
 import org.goobi.production.flow.jobs.QuartzJobDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.quartz.JobKey;
 
 import de.sub.goobi.helper.Helper;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class JobBeanTest {
 
@@ -48,8 +48,6 @@ public class JobBeanTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-
-
 
         BackgroundJob job = Mockito.mock(BackgroundJob.class);
         jobs = new ArrayList<>();
@@ -60,26 +58,28 @@ public class JobBeanTest {
     @Test
     public void testConstructor() {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.nullable(String.class))).thenReturn(1);
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.nullable(String.class), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
-
+            mockedBackgroundJobsMysqlHelper.when(
+                    () -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.nullable(String.class), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
 
             JobBean fixture = new JobBean();
             assertNotNull(fixture);
-    
+
         }
-}
+    }
 
     @Test
     public void testInit() throws Exception {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.nullable(String.class))).thenReturn(1);
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.nullable(String.class), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
-
+            mockedBackgroundJobsMysqlHelper.when(
+                    () -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.nullable(String.class), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
 
             JobBean fixture = new JobBean();
             assertNotNull(fixture);
@@ -87,18 +87,18 @@ public class JobBeanTest {
             fixture.init();
             assertEquals(1, fixture.getPaginator().getTotalResults());
 
-    
         }
-}
+    }
 
     @Test
     public void testPauseAndResumeAllJobs() throws Exception {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.nullable(String.class))).thenReturn(1);
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.nullable(String.class), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
-
+            mockedBackgroundJobsMysqlHelper.when(
+                    () -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.nullable(String.class), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
 
             JobBean fixture = new JobBean();
             fixture.init();
@@ -107,18 +107,19 @@ public class JobBeanTest {
             assertTrue(fixture.isPaused());
             fixture.resumeAllJobs();
             assertFalse(fixture.isPaused());
-    
+
         }
-}
+    }
 
     @Test
     public void testPauseAndResumeJob() throws Exception {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.nullable(String.class))).thenReturn(1);
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.nullable(String.class), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
-
+            mockedBackgroundJobsMysqlHelper.when(
+                    () -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.nullable(String.class), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
 
             QuartzJobDetails details = new QuartzJobDetails();
             JobKey jobKey = new JobKey("key");
@@ -132,18 +133,18 @@ public class JobBeanTest {
             fixture.resumeJob();
             assertFalse(details.isPaused());
 
-    
         }
-}
+    }
 
     @Test
     public void testTriggerQuartzJob() throws Exception {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.nullable(String.class))).thenReturn(1);
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.nullable(String.class), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
-
+            mockedBackgroundJobsMysqlHelper.when(
+                    () -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.nullable(String.class), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
 
             QuartzJobDetails details = new QuartzJobDetails();
             JobKey jobKey = new JobKey("key");
@@ -154,22 +155,22 @@ public class JobBeanTest {
             fixture.triggerQuartzJob();
             assertEquals("key", fixture.getQuartzJobDetails().getJobKey().getName());
 
-    
         }
-}
+    }
 
     @Test
     public void testGetActiveJobs() throws Exception {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.nullable(String.class))).thenReturn(1);
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.nullable(String.class), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
-
+            mockedBackgroundJobsMysqlHelper.when(
+                    () -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.nullable(String.class), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
 
             JobBean fixture = new JobBean();
             assertEquals(0, fixture.getActiveJobs().size());
-    
+
         }
-}
+    }
 }

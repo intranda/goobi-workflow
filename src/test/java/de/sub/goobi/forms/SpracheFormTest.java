@@ -27,9 +27,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -39,80 +44,73 @@ import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class SpracheFormTest extends AbstractTest {
 
     @BeforeEach
     public void setUp() throws Exception {
 
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         FacesContextHelper.setFacesContext(facesContext);
-        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
-        UIViewRoot root = EasyMock.createMock(UIViewRoot.class);
-        Application application = EasyMock.createMock(Application.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
+        UIViewRoot root = Mockito.mock(UIViewRoot.class);
+        Application application = Mockito.mock(Application.class);
 
-        EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
-        EasyMock.expect(facesContext.getApplication()).andReturn(application).anyTimes();
+        Mockito.when(facesContext.getExternalContext()).thenReturn(externalContext);
+        Mockito.when(facesContext.getApplication()).thenReturn(application);
 
-        EasyMock.expect(externalContext.getRequestContextPath()).andReturn("junit").anyTimes();
+        Mockito.when(externalContext.getRequestContextPath()).thenReturn("junit");
 
-        EasyMock.expect(facesContext.getViewRoot()).andReturn(root).anyTimes();
-        root.setLocale(EasyMock.anyObject(Locale.class));
+        Mockito.when(facesContext.getViewRoot()).thenReturn(root);
+        root.setLocale(Mockito.any());
         List<Locale> locale = new ArrayList<>();
         locale.add(Locale.GERMAN);
-        EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
-        root.setLocale(EasyMock.anyObject(Locale.class));
-        root.setLocale(EasyMock.anyObject(Locale.class));
+        Mockito.when(application.getSupportedLocales()).thenReturn(locale.iterator());
+        root.setLocale(Mockito.any());
+        root.setLocale(Mockito.any());
 
         Map<String, Object> sessionMap = new HashMap<>();
-        EasyMock.expect(externalContext.getSessionMap()).andReturn(sessionMap).anyTimes();
+        Mockito.when(externalContext.getSessionMap()).thenReturn(sessionMap);
 
         Map<String, String> requestMap = new HashMap<>();
         requestMap.put("locale", "de");
         requestMap.put("ziel", "test");
-        EasyMock.expect(externalContext.getRequestParameterMap()).andReturn(requestMap).anyTimes();
+        Mockito.when(externalContext.getRequestParameterMap()).thenReturn(requestMap);
 
-        EasyMock.expect(root.getLocale()).andReturn(Locale.GERMAN).anyTimes();
-        EasyMock.replay(application);
-        EasyMock.replay(root);
-        EasyMock.replay(externalContext);
-        EasyMock.replay(facesContext);
+        Mockito.when(root.getLocale()).thenReturn(Locale.GERMAN);
     }
 
     @Test
     public void testConstructor() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             SpracheForm form = new SpracheForm();
             assertNotNull(form);
-    
+
         }
-}
+    }
 
     @Test
     public void testConstructorDefault() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             ConfigurationHelper.getInstance().setParameter("language.force-default", "de");
             SpracheForm form = new SpracheForm();
             assertNotNull(form);
-    
+
         }
-}
+    }
 
     @Test
     public void testSupportedLocales() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             ConfigurationHelper.getInstance().setParameter("language.force-default", "de");
             SpracheForm form = new SpracheForm();
@@ -121,44 +119,43 @@ public class SpracheFormTest extends AbstractTest {
             List<Map<String, Object>> fixture = form.getSupportedLocales();
             assertNotNull(fixture);
 
-    
         }
-}
+    }
 
     @Test
     public void testSwitchLanguage() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             ConfigurationHelper.getInstance().setParameter("language.force-default", "de");
             SpracheForm form = new SpracheForm();
             assertNotNull(form);
             form.switchLanguage("de");
-    
+
         }
-}
+    }
 
     @Test
     public void testSpracheUmschalten() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             ConfigurationHelper.getInstance().setParameter("language.force-default", "de");
             SpracheForm form = new SpracheForm();
             assertNotNull(form);
             String fixture = form.changeLanguage();
             assertEquals("test", fixture);
-    
+
         }
-}
+    }
 
     @Test
     public void testGetLocale() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             ConfigurationHelper.getInstance().setParameter("language.force-default", "de");
             SpracheForm form = new SpracheForm();
@@ -166,8 +163,8 @@ public class SpracheFormTest extends AbstractTest {
             form.switchLanguage("de");
             Locale fixture = form.getLocale();
             assertEquals(Locale.GERMAN, fixture);
-    
+
         }
-}
+    }
 
 }

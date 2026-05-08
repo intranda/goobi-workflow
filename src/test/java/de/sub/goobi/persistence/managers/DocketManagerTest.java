@@ -27,13 +27,13 @@ import java.util.List;
 import org.goobi.beans.Docket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class DocketManagerTest extends AbstractTest {
 
@@ -56,173 +56,183 @@ public class DocketManagerTest extends AbstractTest {
     public void testGetDocketById() throws Exception {
         try (MockedStatic<DocketMysqlHelper> mockedDocketMysqlHelper = Mockito.mockStatic(DocketMysqlHelper.class)) {
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketById(Mockito.anyInt())).thenReturn(sampleDocket);
-                        mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
-                Mockito.any())).thenReturn(sampleDockets);
+            mockedDocketMysqlHelper
+                    .when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                            Mockito.any()))
+                    .thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getAllDockets()).thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketByName(Mockito.anyString())).thenReturn(sampleDocket);
 
-
             Docket result = DocketManager.getDocketById(1);
             assertNotNull(result);
             assertEquals("TestDocket", result.getName());
-    
+
         }
-}
+    }
 
     @Test
     public void testSaveDocket() throws Exception {
         try (MockedStatic<DocketMysqlHelper> mockedDocketMysqlHelper = Mockito.mockStatic(DocketMysqlHelper.class)) {
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketById(Mockito.anyInt())).thenReturn(sampleDocket);
-                        mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
-                Mockito.any())).thenReturn(sampleDockets);
+            mockedDocketMysqlHelper
+                    .when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                            Mockito.any()))
+                    .thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getAllDockets()).thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketByName(Mockito.anyString())).thenReturn(sampleDocket);
 
-
             DocketManager.saveDocket(sampleDocket);
-    
+
         }
-}
+    }
 
     @Test
     public void testDeleteDocket() throws Exception {
         try (MockedStatic<DocketMysqlHelper> mockedDocketMysqlHelper = Mockito.mockStatic(DocketMysqlHelper.class)) {
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketById(Mockito.anyInt())).thenReturn(sampleDocket);
-                        mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
-                Mockito.any())).thenReturn(sampleDockets);
+            mockedDocketMysqlHelper
+                    .when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                            Mockito.any()))
+                    .thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getAllDockets()).thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketByName(Mockito.anyString())).thenReturn(sampleDocket);
 
-
             DocketManager.deleteDocket(sampleDocket);
-    
+
         }
-}
+    }
 
     @Test
     public void testGetDockets() throws Exception {
         try (MockedStatic<DocketMysqlHelper> mockedDocketMysqlHelper = Mockito.mockStatic(DocketMysqlHelper.class)) {
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketById(Mockito.anyInt())).thenReturn(sampleDocket);
-                        mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
-                Mockito.any())).thenReturn(sampleDockets);
+            mockedDocketMysqlHelper
+                    .when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                            Mockito.any()))
+                    .thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getAllDockets()).thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketByName(Mockito.anyString())).thenReturn(sampleDocket);
 
-
             List<Docket> result = DocketManager.getDockets("", "", 0, 10, null);
             assertNotNull(result);
             assertEquals(1, result.size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetList() throws Exception {
         try (MockedStatic<DocketMysqlHelper> mockedDocketMysqlHelper = Mockito.mockStatic(DocketMysqlHelper.class)) {
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketById(Mockito.anyInt())).thenReturn(sampleDocket);
-                        mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
-                Mockito.any())).thenReturn(sampleDockets);
+            mockedDocketMysqlHelper
+                    .when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                            Mockito.any()))
+                    .thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getAllDockets()).thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketByName(Mockito.anyString())).thenReturn(sampleDocket);
-
 
             DocketManager manager = new DocketManager();
             List<?> result = manager.getList("", "", 0, 10, null);
             assertNotNull(result);
             assertEquals(1, result.size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetHitSize() throws Exception {
         try (MockedStatic<DocketMysqlHelper> mockedDocketMysqlHelper = Mockito.mockStatic(DocketMysqlHelper.class)) {
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketById(Mockito.anyInt())).thenReturn(sampleDocket);
-                        mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
-                Mockito.any())).thenReturn(sampleDockets);
+            mockedDocketMysqlHelper
+                    .when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                            Mockito.any()))
+                    .thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getAllDockets()).thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketByName(Mockito.anyString())).thenReturn(sampleDocket);
 
-
             DocketManager manager = new DocketManager();
             assertEquals(1, manager.getHitSize("", "", null));
-    
+
         }
-}
+    }
 
     @Test
     public void testGetIdListReturnsNull() {
         try (MockedStatic<DocketMysqlHelper> mockedDocketMysqlHelper = Mockito.mockStatic(DocketMysqlHelper.class)) {
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketById(Mockito.anyInt())).thenReturn(sampleDocket);
-                        mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
-                Mockito.any())).thenReturn(sampleDockets);
+            mockedDocketMysqlHelper
+                    .when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                            Mockito.any()))
+                    .thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getAllDockets()).thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketByName(Mockito.anyString())).thenReturn(sampleDocket);
 
-
             DocketManager manager = new DocketManager();
             assertNull(manager.getIdList("", "", null));
-    
+
         }
-}
+    }
 
     @Test
     public void testGetAllDockets() {
         try (MockedStatic<DocketMysqlHelper> mockedDocketMysqlHelper = Mockito.mockStatic(DocketMysqlHelper.class)) {
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketById(Mockito.anyInt())).thenReturn(sampleDocket);
-                        mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
-                Mockito.any())).thenReturn(sampleDockets);
+            mockedDocketMysqlHelper
+                    .when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                            Mockito.any()))
+                    .thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getAllDockets()).thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketByName(Mockito.anyString())).thenReturn(sampleDocket);
 
-
             List<Docket> result = DocketManager.getAllDockets();
             assertNotNull(result);
             assertEquals(1, result.size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetDocketByName() throws Exception {
         try (MockedStatic<DocketMysqlHelper> mockedDocketMysqlHelper = Mockito.mockStatic(DocketMysqlHelper.class)) {
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketById(Mockito.anyInt())).thenReturn(sampleDocket);
-                        mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
-                Mockito.any())).thenReturn(sampleDockets);
+            mockedDocketMysqlHelper
+                    .when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                            Mockito.any()))
+                    .thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getAllDockets()).thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketByName(Mockito.anyString())).thenReturn(sampleDocket);
 
-
             Docket result = DocketManager.getDocketByName("TestDocket");
             assertNotNull(result);
             assertEquals("TestDocket", result.getName());
-    
+
         }
-}
+    }
 
     @Test
     public void testResultSetHandlersNotNull() {
         try (MockedStatic<DocketMysqlHelper> mockedDocketMysqlHelper = Mockito.mockStatic(DocketMysqlHelper.class)) {
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketById(Mockito.anyInt())).thenReturn(sampleDocket);
-                        mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
-                Mockito.any())).thenReturn(sampleDockets);
+            mockedDocketMysqlHelper
+                    .when(() -> DocketMysqlHelper.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                            Mockito.any()))
+                    .thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getAllDockets()).thenReturn(sampleDockets);
             mockedDocketMysqlHelper.when(() -> DocketMysqlHelper.getDocketByName(Mockito.anyString())).thenReturn(sampleDocket);
 
-
             assertNotNull(DocketManager.RESULTSET_TO_DOCKET_HANDLER);
             assertNotNull(DocketManager.RESULTSET_TO_DOCKET_LIST_HANDLER);
-    
+
         }
-}
+    }
 }

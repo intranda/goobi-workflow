@@ -33,6 +33,10 @@ import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
@@ -43,10 +47,6 @@ import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import ugh.dl.DigitalDocument;
 import ugh.dl.Prefs;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class VariableReplacerTest extends AbstractTest {
 
@@ -151,7 +151,7 @@ public class VariableReplacerTest extends AbstractTest {
             // Don't replace on broken pattern
             assertEquals("{datetime.abcdefghijk}", replacer.replace("{datetime.abcdefghijk}"));
         }
-}
+    }
 
     @Test
     public void testReplaceProperties() {
@@ -201,13 +201,12 @@ public class VariableReplacerTest extends AbstractTest {
         Mockito.lenient().when(vocabularyAPIManager.vocabularyRecords()).thenReturn(recordAPI);
 
         try (MockedStatic<VocabularyAPIManager> mockedVocabularyAPIManager = Mockito.mockStatic(VocabularyAPIManager.class);
-                     MockedStatic<PropertyParser> mockedPropertyParser = Mockito.mockStatic(PropertyParser.class)) {
+                MockedStatic<PropertyParser> mockedPropertyParser = Mockito.mockStatic(PropertyParser.class)) {
             mockedVocabularyAPIManager.when(() -> VocabularyAPIManager.getInstance()).thenReturn(vocabularyAPIManager);
 
             PropertyParser parser = Mockito.mock(PropertyParser.class);
             Mockito.lenient().when(parser.getPropertiesForProcess(process)).thenReturn(List.of(appleProperty, bananaProperty, fruitsProperty));
             mockedPropertyParser.when(() -> PropertyParser.getInstance()).thenReturn(parser);
-
 
             assertEquals("Apple", replacer.replace("{process.AppleProperty}"));
             assertEquals("Banana", replacer.replace("{process.BananaProperty}"));
@@ -215,7 +214,7 @@ public class VariableReplacerTest extends AbstractTest {
             assertEquals("Apple,Banana", replacer.replace("{processes.FruitsProperty}"));
             assertEquals("A", replacer.replace("{process.AppleProperty.First Letter}"));
         }
-}
+    }
 
     @Test
     public void testProcessProperties() {
@@ -243,7 +242,8 @@ public class VariableReplacerTest extends AbstractTest {
         commonPropertyTwo.setValue("Two");
 
         PropertyParser parser = Mockito.mock(PropertyParser.class);
-        Mockito.lenient().when(parser.getPropertiesForProcess(process))
+        Mockito.lenient()
+                .when(parser.getPropertiesForProcess(process))
                 .thenReturn(List.of(uniqueSingleProperty, uniqueMultiProperty, commonPropertyOne, commonPropertyTwo));
 
         try (MockedStatic<PropertyParser> mockedPropertyParser = Mockito.mockStatic(PropertyParser.class)) {
@@ -258,7 +258,7 @@ public class VariableReplacerTest extends AbstractTest {
             assertEquals("", replacer.replace("{process.Missing}"));
             assertEquals("", replacer.replace("{processes.Missing}"));
         }
-}
+    }
 
     @Test
     public void testCombineValues() {

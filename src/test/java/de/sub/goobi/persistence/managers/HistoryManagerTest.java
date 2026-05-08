@@ -29,14 +29,14 @@ import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.enums.HistoryEventType;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class HistoryManagerTest extends AbstractTest {
 
@@ -64,13 +64,12 @@ public class HistoryManagerTest extends AbstractTest {
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
 
-
             List<HistoryEvent> result = HistoryManager.getHistoryEvents(1);
             assertNotNull(result);
             assertEquals(1, result.size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetNumberOfImages() {
@@ -78,12 +77,11 @@ public class HistoryManagerTest extends AbstractTest {
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
 
-
             int result = HistoryManager.getNumberOfImages(1);
             assertEquals(42, result);
-    
+
         }
-}
+    }
 
     @Test
     public void testAddHistory() {
@@ -91,11 +89,10 @@ public class HistoryManagerTest extends AbstractTest {
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
 
-
             HistoryManager.addHistory(new Date(), 1.0, "value", 1, 1);
-    
+
         }
-}
+    }
 
     @Test
     public void testAddHistoryEvent() {
@@ -103,11 +100,10 @@ public class HistoryManagerTest extends AbstractTest {
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
 
-
             HistoryManager.addHistoryEvent(sampleEvent);
-    
+
         }
-}
+    }
 
     @Test
     public void testUpdateHistoryEvent() {
@@ -115,11 +111,10 @@ public class HistoryManagerTest extends AbstractTest {
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
 
-
             HistoryManager.updateHistoryEvent(sampleEvent);
-    
+
         }
-}
+    }
 
     @Test
     public void testDeleteHistoryEvent() {
@@ -127,11 +122,10 @@ public class HistoryManagerTest extends AbstractTest {
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
 
-
             HistoryManager.deleteHistoryEvent(sampleEvent);
-    
+
         }
-}
+    }
 
     @Test
     public void testAddAllEvents() {
@@ -139,10 +133,9 @@ public class HistoryManagerTest extends AbstractTest {
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
             mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
 
-
             HistoryManager.addAllEvents(sampleEvents);
             assertTrue(true);
-    
+
         }
-}
+    }
 }

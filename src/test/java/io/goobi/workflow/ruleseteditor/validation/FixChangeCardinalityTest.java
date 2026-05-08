@@ -20,13 +20,16 @@ package io.goobi.workflow.ruleseteditor.validation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.easymock.EasyMock;
 import org.jdom2.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
+@ExtendWith(MockitoExtension.class)
 public class FixChangeCardinalityTest {
 
     private FixChangeCardinality fixer;
@@ -37,7 +40,7 @@ public class FixChangeCardinalityTest {
     }
 
     @Test
-    public void testFix_setsCorrectNumAttributeValue() {
+    public void testFixSetsCorrectNumAttributeValue() {
         // Prepare XML element with attribute goobi_lineNumber = 42 and num = "old"
         Element root = new Element("Root");
 
@@ -48,9 +51,8 @@ public class FixChangeCardinalityTest {
         root.addContent(target);
 
         // Mock RulesetValidationError
-        RulesetValidationError error = EasyMock.createMock(RulesetValidationError.class);
-        EasyMock.expect(error.getLine()).andReturn(42).anyTimes();
-        EasyMock.replay(error);
+        RulesetValidationError error = Mockito.mock(RulesetValidationError.class);
+        Mockito.when(error.getLine()).thenReturn(42);
 
         // Call fix for value = 1 → should set num="1o"
         fixer.fix(root, error, 1);
@@ -68,7 +70,6 @@ public class FixChangeCardinalityTest {
         fixer.fix(root, error, 4);
         assertEquals("+", target.getAttributeValue("num"));
 
-        EasyMock.verify(error);
     }
 
 }

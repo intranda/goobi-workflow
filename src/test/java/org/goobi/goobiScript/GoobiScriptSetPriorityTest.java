@@ -32,6 +32,10 @@ import org.goobi.beans.User;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
@@ -39,10 +43,6 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class GoobiScriptSetPriorityTest extends AbstractTest {
 
@@ -70,49 +70,45 @@ public class GoobiScriptSetPriorityTest extends AbstractTest {
         steps.add(s1);
         process.setSchritte(steps);
 
-
     }
 
     @Test
     public void testConstructor() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             GoobiScriptSetPriority fixture = new GoobiScriptSetPriority();
             assertNotNull(fixture);
             assertEquals("setPriority", fixture.getAction());
-    
+
         }
-}
+    }
 
     @Test
     public void testSampleCall() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             GoobiScriptSetPriority fixture = new GoobiScriptSetPriority();
             assertNotNull(fixture.getSampleCall());
             assertTrue(fixture.getSampleCall().contains("setPriority"));
-    
+
         }
-}
+    }
 
     @Test
     public void testPrepare() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -123,18 +119,17 @@ public class GoobiScriptSetPriorityTest extends AbstractTest {
             List<GoobiScriptResult> results = fixture.prepare(processes, "setPriority", parameters);
             assertEquals(1, results.size());
             assertEquals("setPriority", results.get(0).getCommand());
-    
+
         }
-}
+    }
 
     @Test
     public void testPrepareWithMissingPriorityReturnsEmpty() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -143,18 +138,17 @@ public class GoobiScriptSetPriorityTest extends AbstractTest {
             GoobiScriptSetPriority fixture = new GoobiScriptSetPriority();
             List<GoobiScriptResult> results = fixture.prepare(processes, "setPriority", parameters);
             assertTrue(results.isEmpty());
-    
+
         }
-}
+    }
 
     @Test
     public void testPrepareWithInvalidPriorityReturnsEmpty() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -163,18 +157,17 @@ public class GoobiScriptSetPriorityTest extends AbstractTest {
             GoobiScriptSetPriority fixture = new GoobiScriptSetPriority();
             List<GoobiScriptResult> results = fixture.prepare(processes, "setPriority", parameters);
             assertTrue(results.isEmpty());
-    
+
         }
-}
+    }
 
     @Test
     public void testExecuteSetsPriorityHigh() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -186,18 +179,17 @@ public class GoobiScriptSetPriorityTest extends AbstractTest {
             fixture.execute(results.get(0));
             assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
             assertEquals(1, s1.getPrioritaet().intValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testExecuteSetsPriorityCorrection() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -208,7 +200,7 @@ public class GoobiScriptSetPriorityTest extends AbstractTest {
             List<GoobiScriptResult> results = fixture.prepare(processes, "setPriority", parameters);
             fixture.execute(results.get(0));
             assertEquals(10, s1.getPrioritaet().intValue());
-    
+
         }
-}
+    }
 }

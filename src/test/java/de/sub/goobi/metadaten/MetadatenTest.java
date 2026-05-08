@@ -45,14 +45,19 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.easymock.EasyMock;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -65,12 +70,10 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
 import jakarta.faces.application.Application;
-import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -88,10 +91,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class MetadatenTest extends AbstractTest {
 
@@ -99,7 +99,7 @@ public class MetadatenTest extends AbstractTest {
     private Prefs prefs;
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -123,13 +123,13 @@ public class MetadatenTest extends AbstractTest {
 
         // mock jsf context and http session
 
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
-        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
-        Application application = EasyMock.createMock(Application.class);
-        UIViewRoot root = EasyMock.createMock(UIViewRoot.class);
-        HttpServletRequest servletRequest = EasyMock.createMock(HttpServletRequest.class);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
+        Application application = Mockito.mock(Application.class);
+        UIViewRoot root = Mockito.mock(UIViewRoot.class);
+        HttpServletRequest servletRequest = Mockito.mock(HttpServletRequest.class);
 
-        HttpSession session = EasyMock.createMock(HttpSession.class);
+        HttpSession session = Mockito.mock(HttpSession.class);
 
         Map<String, String> requestMap = new HashMap<>();
         requestMap.put("Ansicht", "test");
@@ -142,37 +142,31 @@ public class MetadatenTest extends AbstractTest {
         requestMap.put("areaId", "1_1");
 
         FacesContextHelper.setFacesContext(facesContext);
-        EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
-        EasyMock.expect(externalContext.getRequestParameterMap()).andReturn(requestMap).anyTimes();
-        EasyMock.expect(facesContext.getApplication()).andReturn(application).anyTimes();
+        Mockito.when(facesContext.getExternalContext()).thenReturn(externalContext);
+        Mockito.when(externalContext.getRequestParameterMap()).thenReturn(requestMap);
+        Mockito.when(facesContext.getApplication()).thenReturn(application);
 
-        EasyMock.expect(externalContext.getSession(false)).andReturn(session).anyTimes();
-        EasyMock.expect(session.getId()).andReturn("123").anyTimes();
-        EasyMock.expect(externalContext.getRequest()).andReturn(servletRequest).anyTimes();
+        Mockito.when(externalContext.getSession(false)).thenReturn(session);
+        Mockito.when(session.getId()).thenReturn("123");
+        Mockito.when(externalContext.getRequest()).thenReturn(servletRequest);
 
-        EasyMock.expect(servletRequest.getScheme()).andReturn("https").anyTimes();
-        EasyMock.expect(servletRequest.getServerName()).andReturn("localhost").anyTimes();
-        EasyMock.expect(servletRequest.getServerPort()).andReturn(443).anyTimes();
-        EasyMock.expect(servletRequest.getContextPath()).andReturn("goobi").anyTimes();
+        Mockito.when(servletRequest.getScheme()).thenReturn("https");
+        Mockito.when(servletRequest.getServerName()).thenReturn("localhost");
+        Mockito.when(servletRequest.getServerPort()).thenReturn(443);
+        Mockito.when(servletRequest.getContextPath()).thenReturn("goobi");
 
-        EasyMock.expect(facesContext.getViewRoot()).andReturn(root).anyTimes();
-        EasyMock.expect(root.getLocale()).andReturn(Locale.GERMAN).anyTimes();
+        Mockito.when(facesContext.getViewRoot()).thenReturn(root);
+        Mockito.when(root.getLocale()).thenReturn(Locale.GERMAN);
         List<Locale> locale = new ArrayList<>();
         locale.add(Locale.GERMAN);
 
-        EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
-        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
-        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
-        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
+        Mockito.when(application.getSupportedLocales()).thenReturn(locale.iterator());
+        facesContext.addMessage(Mockito.anyString(), Mockito.any());
+        facesContext.addMessage(Mockito.anyString(), Mockito.any());
+        facesContext.addMessage(Mockito.anyString(), Mockito.any());
 
         // database connection
         // Mock ui error message handling
-
-        EasyMock.replay(servletRequest);
-        EasyMock.replay(externalContext);
-        EasyMock.replay(facesContext);
-        EasyMock.replay(root);
-        EasyMock.replay(application);
 
         prefs = process.getRegelsatz().getPreferences();
     }
@@ -180,11 +174,11 @@ public class MetadatenTest extends AbstractTest {
     @Test
     public void testMetadaten() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -194,21 +188,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = new Metadaten();
             assertNotNull(fixture);
-    
+
         }
-}
+    }
 
     @Test
     public void testAnsichtAendern() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -217,7 +210,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -225,18 +217,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             String value = fixture.AnsichtAendern();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testHinzufuegen() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -245,7 +237,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -254,18 +245,18 @@ public class MetadatenTest extends AbstractTest {
             String value = fixture.Hinzufuegen();
             value = fixture.Hinzufuegen();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testAddGroup() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -274,7 +265,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -283,18 +273,18 @@ public class MetadatenTest extends AbstractTest {
             String value = fixture.AddGroup();
             value = fixture.AddGroup();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testHinzufuegenPerson() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -303,7 +293,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -311,18 +300,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             String value = fixture.HinzufuegenPerson();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testAddCorporate() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -331,7 +320,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -339,18 +327,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             String value = fixture.AddCorporate();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testAbbrechen() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -359,7 +347,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -367,18 +354,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             String value = fixture.Abbrechen();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testRepresentativeMetadata() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -387,7 +374,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -430,18 +416,18 @@ public class MetadatenTest extends AbstractTest {
             }
             assertEquals("1", rep.getValue());
             assertFalse(fixture.isPagesRTL());
-    
+
         }
-}
+    }
 
     @Test
     public void testToggleImageView() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -450,7 +436,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -458,18 +443,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             String value = fixture.toggleImageView();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testAutomaticSave() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -478,7 +463,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -486,18 +470,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             String value = fixture.automaticSave();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testReload() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -506,7 +490,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -514,18 +497,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             String value = fixture.Reload();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testCopyGroup() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -534,7 +517,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -562,18 +544,18 @@ public class MetadatenTest extends AbstractTest {
 
             String value = fixture.CopyGroup();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testKopieren() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -582,7 +564,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -597,18 +578,18 @@ public class MetadatenTest extends AbstractTest {
 
             String value = fixture.Kopieren();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testCopyCorporate() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -617,7 +598,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -631,18 +611,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setCurrentCorporate(c);
             String value = fixture.copyCorporate();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testKopierenPerson() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -651,7 +631,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -669,18 +648,18 @@ public class MetadatenTest extends AbstractTest {
 
             String value = fixture.KopierenPerson();
             assertEquals("", value);
-    
+
         }
-}
+    }
 
     @Test
     public void testChangeCurrentDocstructType() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -689,7 +668,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -701,18 +679,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setTempWert("Chapter");
 
             assertEquals("metseditor", fixture.ChangeCurrentDocstructType());
-    
+
         }
-}
+    }
 
     @Test
     public void testAddNewMetadata() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -721,7 +699,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -758,18 +735,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setTempTyp("TitleDocMain");
             fixture.setSelectedMetadatum(titleImpl);
             assertEquals("", fixture.addNewMetadata());
-    
+
         }
-}
+    }
 
     @Test
     public void testAddNewCorporate() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -778,7 +755,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -803,18 +779,17 @@ public class MetadatenTest extends AbstractTest {
             assertEquals("sub name", corp.getSubNames().get(0).getValue());
             assertEquals("part name", corp.getPartName());
 
-    
         }
-}
+    }
 
     @Test
     public void testSaveGroup() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -823,7 +798,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -849,9 +823,9 @@ public class MetadatenTest extends AbstractTest {
             fixture.setSelectedGroup(mdg);
 
             assertEquals("", fixture.saveGroup());
-    
+
         }
-}
+    }
 
     public void testLoadRightFrame() throws Exception {
         Metadaten fixture = new Metadaten();
@@ -864,11 +838,11 @@ public class MetadatenTest extends AbstractTest {
     @Test
     public void testSpeichernPerson() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -877,7 +851,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -889,18 +862,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setTempPersonNachname("lastname");
 
             assertEquals("", fixture.addNewPerson());
-    
+
         }
-}
+    }
 
     @Test
     public void testDeleteGroup() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -909,7 +882,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -927,18 +899,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setCurrentGroup(mdg);
 
             assertEquals("", fixture.deleteGroup());
-    
+
         }
-}
+    }
 
     @Test
     public void testLoeschen() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -947,7 +919,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -971,18 +942,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setCurMetadatum(md2);
             assertEquals("", fixture.Loeschen());
             assertEquals("", md2.getValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testDelete() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -991,7 +962,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1013,18 +983,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setCurrentMetadata(m2);
             assertEquals("", fixture.delete());
             assertEquals("", m2.getValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testLoeschenPerson() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1033,7 +1003,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1059,19 +1028,19 @@ public class MetadatenTest extends AbstractTest {
             assertEquals("", fixture.LoeschenPerson());
             assertEquals("", md.getVorname());
             assertEquals("", md.getNachname());
-    
+
         }
-}
+    }
 
     //    deletePerson
     @Test
     public void testDeletePerson() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1080,7 +1049,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1106,18 +1074,18 @@ public class MetadatenTest extends AbstractTest {
             assertEquals("", fixture.deletePerson());
             assertEquals("", p.getFirstname());
             assertEquals("", p.getLastname());
-    
+
         }
-}
+    }
 
     @Test
     public void testDeleteCorporate() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1126,7 +1094,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1144,18 +1111,17 @@ public class MetadatenTest extends AbstractTest {
             fixture.setCurrentCorporate(c);
             assertEquals("", fixture.deleteCorporate());
 
-    
         }
-}
+    }
 
     @Test
     public void testGetAddableRollen() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1164,7 +1130,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1182,18 +1147,18 @@ public class MetadatenTest extends AbstractTest {
             list = fixture.getAddableRollen();
             assertEquals(1, list.size());
             assertEquals("junitPerson", list.get(0).getLabel());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetAddableCorporateRoles() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1202,7 +1167,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1220,18 +1184,18 @@ public class MetadatenTest extends AbstractTest {
             list = fixture.getAddableCorporateRoles();
             assertEquals(1, list.size());
             assertEquals("junitCorporate", list.get(0).getLabel());
-    
+
         }
-}
+    }
 
     @Test
     public void testSizeOfRoles() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1240,7 +1204,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1248,18 +1211,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             fixture.setSizeOfRoles(1);
             assertEquals(6, fixture.getSizeOfRoles());
-    
+
         }
-}
+    }
 
     @Test
     public void testSizeOfMetadata() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1268,7 +1231,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1276,18 +1238,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             fixture.setSizeOfMetadata(1);
             assertEquals(15, fixture.getSizeOfMetadata());
-    
+
         }
-}
+    }
 
     @Test
     public void testSizeOfCorporates() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1296,7 +1258,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1304,18 +1265,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             fixture.setSizeOfMetadata(1);
             assertEquals(1, fixture.getSizeOfCorporates());
-    
+
         }
-}
+    }
 
     @Test
     public void testSizeOfMetadataGroups() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1324,7 +1285,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1332,18 +1292,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             fixture.setSizeOfMetadataGroups(1);
             assertEquals(1, fixture.getSizeOfMetadataGroups());
-    
+
         }
-}
+    }
 
     @Test
     public void testAddableMetadataTypes() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1352,7 +1312,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1365,18 +1324,18 @@ public class MetadatenTest extends AbstractTest {
             MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
             fixture.setCurrentGroup(mdg);
             assertEquals(1, fixture.getAddableMetadataTypes().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testAddableMetadataGroupTypes() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1385,7 +1344,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1398,18 +1356,18 @@ public class MetadatenTest extends AbstractTest {
             MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
             fixture.setCurrentGroup(mdg);
             assertEquals(0, fixture.getAddableMetadataGroupTypes().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testTempMetadatumList() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1418,7 +1376,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1429,18 +1386,18 @@ public class MetadatenTest extends AbstractTest {
 
             fixture.setTempMetadatumList(new ArrayList<>());
             assertEquals(0, fixture.getTempMetadatumList().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testTempMetadataGroupList() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1449,7 +1406,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1460,18 +1416,18 @@ public class MetadatenTest extends AbstractTest {
 
             fixture.setTempMetadataGroupList(new ArrayList<>());
             assertTrue(fixture.getTempMetadataGroupList().isEmpty());
-    
+
         }
-}
+    }
 
     @Test
     public void testMetadatenTypen() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1480,7 +1436,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1488,18 +1443,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             SelectItem[] data = fixture.getMetadatenTypen();
             assertEquals(22, data.length);
-    
+
         }
-}
+    }
 
     @Test
     public void testMetadataGroupTypes() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1508,7 +1463,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyProzess(process);
@@ -1516,18 +1470,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             SelectItem[] data = fixture.getMetadataGroupTypes();
             assertEquals(1, data.length);
-    
+
         }
-}
+    }
 
     @Test
     public void testXMLlesen() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1536,25 +1490,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
             fixture.setMyProzess(process);
             String data = fixture.XMLlesen();
             assertEquals("metseditor", data);
-    
+
         }
-}
+    }
 
     @Test
     public void testCheckForRepresentative() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1563,25 +1516,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
             fixture.setMyProzess(process);
             fixture.XMLlesenStart();
             assertTrue(fixture.isCheckForRepresentative());
-    
+
         }
-}
+    }
 
     @Test
     public void testCheckForReadingDirection() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1590,25 +1542,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
             fixture.setMyProzess(process);
             fixture.XMLlesenStart();
             assertTrue(fixture.isCheckForReadingDirection());
-    
+
         }
-}
+    }
 
     @Test
     public void testKnotenUp() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1617,7 +1568,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -1627,18 +1577,18 @@ public class MetadatenTest extends AbstractTest {
             DocStruct ds = fixture.getDocument().getLogicalDocStruct().getAllChildren().get(1);
             fixture.setMyStrukturelement(ds);
             assertEquals("metseditor", fixture.KnotenUp());
-    
+
         }
-}
+    }
 
     @Test
     public void testKnotenDown() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1647,7 +1597,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -1657,18 +1606,18 @@ public class MetadatenTest extends AbstractTest {
             DocStruct ds = fixture.getDocument().getLogicalDocStruct().getAllChildren().get(0);
             fixture.setMyStrukturelement(ds);
             assertEquals("metseditor", fixture.KnotenDown());
-    
+
         }
-}
+    }
 
     @Test
     public void testKnotenVerschieben() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1677,7 +1626,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -1689,18 +1637,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setTempStrukturelement(other);
             fixture.setMyStrukturelement(ds);
             assertEquals("metseditor", fixture.KnotenVerschieben());
-    
+
         }
-}
+    }
 
     @Test
     public void testKnotenDelete() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1709,7 +1657,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -1720,18 +1667,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setMyStrukturelement(ds);
             fixture.KnotenDelete();
             assertEquals(2, fixture.getDocument().getLogicalDocStruct().getAllChildren().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testDuplicateNode() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1740,7 +1687,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -1751,18 +1697,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setMyStrukturelement(ds);
             fixture.duplicateNode();
             assertEquals(4, fixture.getDocument().getLogicalDocStruct().getAllChildren().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testKnotenAdd() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1771,7 +1717,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -1808,18 +1753,17 @@ public class MetadatenTest extends AbstractTest {
             fixture.setNeuesElementWohin("4");
             assertEquals("metseditor", fixture.KnotenAdd());
 
-    
         }
-}
+    }
 
     @Test
     public void testetAddableDocStructTypenAlsKind() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1828,7 +1772,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -1838,18 +1781,18 @@ public class MetadatenTest extends AbstractTest {
             DocStruct ds = fixture.getDocument().getLogicalDocStruct().getAllChildren().get(2);
             fixture.setMyStrukturelement(ds);
             assertEquals(31, fixture.getAddableDocStructTypenAlsKind().length);
-    
+
         }
-}
+    }
 
     @Test
     public void testetAddableDocStructTypenAlsNachbar() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1858,7 +1801,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -1868,18 +1810,18 @@ public class MetadatenTest extends AbstractTest {
             DocStruct ds = fixture.getDocument().getLogicalDocStruct().getAllChildren().get(2);
             fixture.setMyStrukturelement(ds);
             assertEquals(46, fixture.getAddableDocStructTypenAlsNachbar().length);
-    
+
         }
-}
+    }
 
     @Test
     public void testCreatePagination() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1888,25 +1830,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
             fixture.setMyProzess(process);
             fixture.XMLlesenStart();
             assertTrue(StringUtils.isBlank(fixture.createPagination()));
-    
+
         }
-}
+    }
 
     @Test
     public void testPaginierung() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1915,7 +1856,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -1928,18 +1868,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setPaginierungAbSeiteOderMarkierung(2);
 
             assertNull(fixture.Paginierung());
-    
+
         }
-}
+    }
 
     @Test
     public void testTreeExpand() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1948,25 +1888,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
             fixture.setMyProzess(process);
             fixture.XMLlesenStart();
             assertEquals("metseditor", fixture.TreeExpand());
-    
+
         }
-}
+    }
 
     @Test
     public void testXMLschreiben() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -1975,7 +1914,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -1983,18 +1921,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
             fixture.setCurrentRepresentativePage("1");
             assertEquals("Main", fixture.XMLschreiben());
-    
+
         }
-}
+    }
 
     @Test
     public void testGoMain() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2003,7 +1941,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2011,18 +1948,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
 
             assertEquals("index", fixture.goMain());
-    
+
         }
-}
+    }
 
     @Test
     public void testGoZurueck() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2031,25 +1968,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
             fixture.setMyProzess(process);
             fixture.XMLlesenStart();
             assertEquals("Main", fixture.goZurueck());
-    
+
         }
-}
+    }
 
     @Test
     public void testImageRight() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2058,7 +1994,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2075,18 +2010,18 @@ public class MetadatenTest extends AbstractTest {
             assertEquals(1, fixture.getImageIndex());
             fixture.imageRight();
             assertEquals(0, fixture.getImageIndex());
-    
+
         }
-}
+    }
 
     @Test
     public void testImageRight2() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2095,7 +2030,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2106,18 +2040,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setImageIndex(0);
             fixture.imageRight2();
             assertEquals(2, fixture.getImageIndex());
-    
+
         }
-}
+    }
 
     @Test
     public void testImageLeft() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2126,7 +2060,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2143,18 +2076,18 @@ public class MetadatenTest extends AbstractTest {
             assertEquals(4, fixture.getImageIndex());
             fixture.imageLeft();
             assertEquals(5, fixture.getImageIndex());
-    
+
         }
-}
+    }
 
     @Test
     public void testImageLeft2() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2163,7 +2096,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2174,18 +2106,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setImageIndex(5);
             fixture.imageLeft2();
             assertEquals(3, fixture.getImageIndex());
-    
+
         }
-}
+    }
 
     @Test
     public void testImageLeftMost() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2194,7 +2126,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2210,18 +2141,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setPagesRTL(true);
             fixture.imageLeftmost();
             assertEquals(5, fixture.getImageIndex());
-    
+
         }
-}
+    }
 
     @Test
     public void testImageRightMost() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2230,7 +2161,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2246,18 +2176,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setPagesRTL(true);
             fixture.imageRightmost();
             assertEquals(0, fixture.getImageIndex());
-    
+
         }
-}
+    }
 
     @Test
     public void testReloadPagination() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2266,7 +2196,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2275,18 +2204,17 @@ public class MetadatenTest extends AbstractTest {
 
             assertEquals("", fixture.reloadPagination());
 
-    
         }
-}
+    }
 
     @Test
     public void testAddPageAreaCommand() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2295,7 +2223,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2307,18 +2234,18 @@ public class MetadatenTest extends AbstractTest {
 
             DocStruct page = fixture.getDocument().getPhysicalDocStruct().getAllChildren().get(0);
             assertEquals(1, page.getAllChildren().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testSetPageAreaCommand() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2327,7 +2254,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2343,18 +2269,18 @@ public class MetadatenTest extends AbstractTest {
             DocStruct area = page.getAllChildren().get(0);
             Metadata coords = area.getAllMetadataByType(prefs.getMetadataTypeByName("_COORDS")).get(0);
             assertEquals("10,10,50,50", coords.getValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testDeletePageAreaCommand() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2363,7 +2289,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2382,18 +2307,17 @@ public class MetadatenTest extends AbstractTest {
             fixture.deletePageAreaCommand();
             assertNull(page.getAllChildren());
 
-    
         }
-}
+    }
 
     @Test
     public void testDeletePageArea() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2402,7 +2326,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2418,18 +2341,18 @@ public class MetadatenTest extends AbstractTest {
             DocStruct area = page.getAllChildren().get(0);
             fixture.deletePageArea(area);
             assertNull(page.getAllChildren());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetPageAreas() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2438,7 +2361,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
@@ -2452,18 +2374,18 @@ public class MetadatenTest extends AbstractTest {
             assertEquals(1, page.getAllChildren().size());
             assertEquals("[{\"highlight\":true,\"areaId\":\"1_1\",\"w\":\"50\",\"x\":\"10\",\"h\":\"50\",\"y\":\"10\",\"logId\":\"LOG_0000\"}]",
                     fixture.getPageAreas());
-    
+
         }
-}
+    }
 
     @Test
     public void testScrollPage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2472,7 +2394,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             MetadatenImagesHelper mih = mockImageHelper();
             Metadaten fixture = initMetadaten();
@@ -2482,18 +2403,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setNumberOfNavigation(2);
             fixture.BildBlaettern();
             assertEquals(3, fixture.getBildNummer());
-    
+
         }
-}
+    }
 
     @Test
     public void testMoveToPage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2502,7 +2423,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             MetadatenImagesHelper mih = mockImageHelper();
             Metadaten fixture = initMetadaten();
@@ -2512,18 +2432,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setBildNummerGeheZu("3");
             fixture.BildGeheZu();
             assertEquals(2, fixture.getBildNummer());
-    
+
         }
-}
+    }
 
     @Test
     public void testLoadImageInThumbnailList() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2532,7 +2452,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             MetadatenImagesHelper mih = mockImageHelper();
             Metadaten fixture = initMetadaten();
@@ -2542,18 +2461,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setBildNummerGeheZu("3");
             fixture.loadImageInThumbnailList();
             assertEquals(2, fixture.getBildNummer());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetAllTifFolders() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2563,21 +2482,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertEquals(3, fixture.getAllTifFolders().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testSwitchImage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2586,7 +2504,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             MetadatenImagesHelper mih = mockImageHelper();
             Metadaten fixture = initMetadaten();
@@ -2604,18 +2521,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.BildAnzeigen();
             fixture.BildErmitteln(2);
             assertEquals(3, fixture.getBildNummer());
-    
+
         }
-}
+    }
 
     @Test
     public void testDiscard() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2624,23 +2541,22 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.automaticSave();
             assertEquals("Main", fixture.discard());
-    
+
         }
-}
+    }
 
     @Test
     public void testCheckForNewerTemporaryMetadataFiles() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2649,24 +2565,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             assertFalse(fixture.isCheckForNewerTemporaryMetadataFiles());
             fixture.automaticSave();
             assertTrue(fixture.isCheckForNewerTemporaryMetadataFiles());
-    
+
         }
-}
+    }
 
     @Test
     public void testImportSubElementsFromOpac() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2675,7 +2590,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             GoobiProperty pp = new GoobiProperty(PropertyOwnerType.PROCESS);
@@ -2692,18 +2606,18 @@ public class MetadatenTest extends AbstractTest {
             DocStruct logical = fixture.getDocument().getLogicalDocStruct();
             DocStruct lastChild = logical.getAllChildren().get(logical.getAllChildren().size() - 1);
             assertEquals("Chapter", lastChild.getType().getName());
-    
+
         }
-}
+    }
 
     @Test
     public void testImportMetadataFromOpac() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2712,7 +2626,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             GoobiProperty pp = new GoobiProperty(PropertyOwnerType.PROCESS);
@@ -2739,18 +2652,18 @@ public class MetadatenTest extends AbstractTest {
             }
             assertEquals("Semi-Vektoren und Spinoren", md1.getValue());
             assertEquals("von A. Einstein und W. Mayer", md2.getValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testValidate() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2759,23 +2672,22 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.Validate();
             assertEquals(6, fixture.getStructSeiten().length);
-    
+
         }
-}
+    }
 
     @Test
     public void testCurrentStartpage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2784,24 +2696,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setPageNumber(1);
             fixture.CurrentStartpage();
             assertEquals("1: uncounted", fixture.getPagesStart());
-    
+
         }
-}
+    }
 
     @Test
     public void testCurrentEndpage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2810,24 +2721,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setPageNumber(4);
             fixture.CurrentEndpage();
             assertEquals("4: uncounted", fixture.getPagesEnd());
-    
+
         }
-}
+    }
 
     @Test
     public void testStartpage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2836,24 +2746,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setPageNumber(1);
             fixture.startpage();
             assertEquals("1: uncounted", fixture.getPagesStartCurrentElement());
-    
+
         }
-}
+    }
 
     @Test
     public void testEndpage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2862,24 +2771,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setPageNumber(4);
             fixture.endpage();
             assertEquals("4: uncounted", fixture.getPagesEndCurrentElement());
-    
+
         }
-}
+    }
 
     @Test
     public void testSetPages() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2888,7 +2796,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setPagesStartCurrentElement("1: uncounted");
@@ -2901,18 +2808,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setPages();
             // now 1-3 are assigned
             assertEquals(3, ds.getAllToReferences().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testPageNumber() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2921,24 +2828,22 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setPageNumber(2);
             assertEquals(1, fixture.getPageNumber());
 
-    
         }
-}
+    }
 
     @Test
     public void testAjaxPageAssignment() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2947,24 +2852,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             List<String> results = fixture.getAjaxAlleSeiten("1");
             assertEquals(1, results.size());
             assertEquals("1: uncounted", results.get(0));
-    
+
         }
-}
+    }
 
     @Test
     public void testGetPageAssignmentFromChildren() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -2973,7 +2877,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
 
@@ -2995,18 +2898,18 @@ public class MetadatenTest extends AbstractTest {
             // assign pages from sub elements
             fixture.SeitenVonChildrenUebernehmen();
             assertEquals(6, logical.getAllToReferences().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testShowFirstPage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3015,7 +2918,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setPageSelectionFirstPage("1");
@@ -3023,18 +2925,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.BildErsteSeiteAnzeigen();
             assertEquals(0, fixture.getImageIndex());
             assertEquals(0, fixture.getBildNummer());
-    
+
         }
-}
+    }
 
     @Test
     public void testShowLastPage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3043,7 +2945,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setPageSelectionLastPage("6");
@@ -3051,18 +2952,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.BildLetzteSeiteAnzeigen();
             assertEquals(5, fixture.getImageIndex());
             assertEquals(5, fixture.getBildNummer());
-    
+
         }
-}
+    }
 
     @Test
     public void testAddPagAssignment() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3071,7 +2972,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
 
@@ -3085,18 +2985,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.SeitenHinzu();
 
             assertEquals(6, chapter.getAllToReferences().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testRemovePagAssignment() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3105,7 +3005,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
 
@@ -3119,18 +3018,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.SeitenWeg();
 
             assertEquals(0, chapter.getAllToReferences().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testImageHasOcr() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3140,21 +3039,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertTrue(fixture.isImageHasOcr());
-    
+
         }
-}
+    }
 
     @Test
     public void testShowOcrButton() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3164,21 +3062,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertTrue(fixture.isShowOcrButton());
-    
+
         }
-}
+    }
 
     @Test
     public void testOcrResult() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3188,21 +3085,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertTrue(StringUtils.isNotBlank(fixture.getOcrResult()));
-    
+
         }
-}
+    }
 
     @Test
     public void testJsonAlto() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3211,23 +3107,22 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.loadJsonAlto();
             assertTrue(StringUtils.isNotBlank(fixture.getJsonAlto()));
-    
+
         }
-}
+    }
 
     @Test
     public void testGetTempTyp() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3237,21 +3132,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertEquals("CreatorsAllOrigin", fixture.getTempTyp());
-    
+
         }
-}
+    }
 
     @Test
     public void tesMetadatum() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3260,25 +3154,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.getTempTyp();
             MetadatumImpl mi = fixture.getSelectedMetadatum();
             fixture.setMetadatum(mi);
             assertEquals(mi.getTyp(), fixture.getMetadatum().getTyp());
-    
+
         }
-}
+    }
 
     @Test
     public void testTempMetadataGroupType() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3287,7 +3180,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.getSelectedGroup();
@@ -3295,18 +3187,18 @@ public class MetadatenTest extends AbstractTest {
 
             assertEquals("junitgrp", fixture.getTempMetadataGroupType());
             assertEquals("junitgrp", fixture.getSelectedGroup().getMetadataGroup().getType().getName());
-    
+
         }
-}
+    }
 
     @Test
     public void testOutputType() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3315,25 +3207,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.getTempTyp();
             MetadatumImpl mi = fixture.getSelectedMetadatum();
             fixture.setMetadatum(mi);
             assertEquals(mi.getOutputType(), fixture.getOutputType());
-    
+
         }
-}
+    }
 
     @Test
     public void testStructSeiten() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3342,24 +3233,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             SelectItem[] items = fixture.getStructSeiten();
 
             assertEquals(6, items.length);
-    
+
         }
-}
+    }
 
     @Test
     public void testBildNummerGeheZuCompleteString() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3368,24 +3258,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setBildNummerGeheZuCompleteString("2: uncounted");
             fixture.BildGeheZu();
             assertEquals(1, fixture.getImageIndex());
-    
+
         }
-}
+    }
 
     @Test
     public void testNeuesElementWohin() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3394,24 +3283,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             assertEquals("4", fixture.getNeuesElementWohin());
             fixture.setNeuesElementWohin("1");
             assertEquals("1", fixture.getNeuesElementWohin());
-    
+
         }
-}
+    }
 
     @Test
     public void testStrukturBaum3() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3421,21 +3309,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertEquals(1, fixture.getStrukturBaum3().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testStrukturBaum3Alle() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3445,21 +3332,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertEquals(4, fixture.getStrukturBaum3Alle().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testModusStrukturelementVerschieben() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3468,24 +3354,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             assertFalse(fixture.isModusStrukturelementVerschieben());
             fixture.setModusStrukturelementVerschieben(true);
             assertTrue(fixture.isModusStrukturelementVerschieben());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetMetadata() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3495,21 +3380,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertEquals("CatalogIDDigital", fixture.getMetadata().getMd().getType().getName());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetOpacKatalog() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3518,7 +3402,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             GoobiProperty pp = new GoobiProperty(PropertyOwnerType.PROCESS);
@@ -3528,18 +3411,18 @@ public class MetadatenTest extends AbstractTest {
             props.add(pp);
             process.setEigenschaften(props);
             assertEquals("KXP", fixture.getOpacKatalog());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetAllSearchFields() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3548,7 +3431,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             GoobiProperty pp = new GoobiProperty(PropertyOwnerType.PROCESS);
@@ -3562,18 +3444,18 @@ public class MetadatenTest extends AbstractTest {
             List<String> catalogues = fixture.getAllOpacCatalogues();
             fixture.setOpacKatalog(catalogues.get(0));
             assertEquals(5, fixture.getAllSearchFields().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testCurrentTifFolder() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3582,23 +3464,22 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setCurrentTifFolder("test");
             assertEquals("test", fixture.getCurrentTifFolder());
-    
+
         }
-}
+    }
 
     @Test
     public void testAutocomplete() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3607,24 +3488,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             List<String> complete = fixture.autocomplete("2");
             assertEquals(1, complete.size());
             assertEquals("2: uncounted", complete.get(0));
-    
+
         }
-}
+    }
 
     @Test
     public void testIsNotRootElement() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3633,25 +3513,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             assertFalse(fixture.getIsNotRootElement());
             DocStruct dsToChange = fixture.getDocument().getLogicalDocStruct().getAllChildren().get(0);
             fixture.setMyStrukturelement(dsToChange);
             assertTrue(fixture.getIsNotRootElement());
-    
+
         }
-}
+    }
 
     @Test
     public void testUpdateRepresentativePage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3660,7 +3539,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setResetRepresentative(true);
@@ -3674,18 +3552,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setCurrentRepresentativePage("5");
             fixture.updateRepresentativePage();
             assertTrue(fixture.getPageMap().get("5").isRepresentative());
-    
+
         }
-}
+    }
 
     @Test
     public void testMoveSeltectedPagesUp() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3694,7 +3572,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
 
@@ -3706,18 +3583,18 @@ public class MetadatenTest extends AbstractTest {
 
             fixture.moveSeltectedPagesUp(1);
             assertEquals("1", order.getValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testMoveSeltectedPages() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3726,7 +3603,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
 
@@ -3738,18 +3614,18 @@ public class MetadatenTest extends AbstractTest {
 
             fixture.moveSelectedPages("up", 1);
             assertEquals("1", order.getValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testMoveSeltectedPagesDown() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3758,7 +3634,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
 
@@ -3770,18 +3645,18 @@ public class MetadatenTest extends AbstractTest {
 
             fixture.moveSeltectedPagesDown(1);
             assertEquals("3", order.getValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testDeleteSelectedPages() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3791,12 +3666,12 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Process secondProcess = MockProcess.createProcess();
             secondProcess.setId(2);
 
             // copy metadata + images from first to a second process
-            StorageProvider.getInstance().copyDirectory(Paths.get(process.getProcessDataDirectory()), Paths.get(secondProcess.getProcessDataDirectory()));
+            StorageProvider.getInstance()
+                    .copyDirectory(Paths.get(process.getProcessDataDirectory()), Paths.get(secondProcess.getProcessDataDirectory()));
 
             String imageFolder = secondProcess.getImagesTifDirectory(true);
             assertTrue(Files.exists(Paths.get(imageFolder)));
@@ -3819,18 +3694,17 @@ public class MetadatenTest extends AbstractTest {
             // cleanup copied data
             StorageProvider.getInstance().deleteDir(Paths.get(secondProcess.getProcessDataDirectory()));
 
-    
         }
-}
+    }
 
     @Test
     public void testReOrderPagination() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3839,7 +3713,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
 
@@ -3852,18 +3725,17 @@ public class MetadatenTest extends AbstractTest {
 
             assertEquals("00000003.tif", page.getImageName());
 
-    
         }
-}
+    }
 
     @Test
     public void testFileManipulation() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3873,21 +3745,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertNotNull(fixture.getFileManipulation());
-    
+
         }
-}
+    }
 
     @Test
     public void testModusCopyDocstructFromOtherProcess() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3896,7 +3767,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setDisplayInsertion(true);
@@ -3906,18 +3776,18 @@ public class MetadatenTest extends AbstractTest {
 
             fixture.setModusCopyDocstructFromOtherProcess(true);
             assertFalse(fixture.isDisplayInsertion());
-    
+
         }
-}
+    }
 
     @Test
     public void testDisplayFileManipulation() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3927,21 +3797,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertFalse(fixture.getDisplayFileManipulation());
-    
+
         }
-}
+    }
 
     @Test
     public void testIsProcessLoaded() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3951,21 +3820,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertFalse(fixture.getIsProcessLoaded());
-    
+
         }
-}
+    }
 
     @Test
     public void testProgress() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -3974,7 +3842,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             assertEquals(0, fixture.getProgress().intValue());
@@ -3982,18 +3849,18 @@ public class MetadatenTest extends AbstractTest {
             assertEquals(0, fixture.getProgress().intValue());
 
             assertFalse(fixture.isShowProgressBar());
-    
+
         }
-}
+    }
 
     @Test
     public void testToggleDocStruct() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4002,7 +3869,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             assertFalse(fixture.isPhysicalTopstruct());
@@ -4010,18 +3876,18 @@ public class MetadatenTest extends AbstractTest {
             assertTrue(fixture.isPhysicalTopstruct());
             fixture.changeTopstruct();
             assertFalse(fixture.isPhysicalTopstruct());
-    
+
         }
-}
+    }
 
     @Test
     public void testCheckSelectedThumbnail() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4030,7 +3896,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.getPageMap().get("2").setSelected(true);
@@ -4039,18 +3904,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.checkSelectedThumbnail(4);
             assertFalse(fixture.getPageMap().get("2").isSelected());
             assertTrue(fixture.getPageMap().get("4").isSelected());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetImageWidth() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4060,21 +3925,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertEquals(640, fixture.getImageWidth());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetImageHeight() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4084,21 +3948,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertEquals(480, fixture.getImageHeight());
-    
+
         }
-}
+    }
 
     @Test
     public void testCmdMoveFirst() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4108,7 +3971,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             fixture.setNumberOfImagesPerPage(2);
             fixture.setPageNo(1);
@@ -4117,18 +3979,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setPagesRTL(true);
             fixture.cmdMoveFirst();
             assertEquals(2, fixture.getPageNo());
-    
+
         }
-}
+    }
 
     @Test
     public void testCmdMovePrevious() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4138,7 +4000,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             fixture.setNumberOfImagesPerPage(2);
             fixture.setPageNo(1);
@@ -4147,18 +4008,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setPagesRTL(true);
             fixture.cmdMovePrevious();
             assertEquals(1, fixture.getPageNo());
-    
+
         }
-}
+    }
 
     @Test
     public void testCmdMoveNext() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4167,7 +4028,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setNumberOfImagesPerPage(2);
@@ -4177,18 +4037,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setPagesRTL(true);
             fixture.cmdMoveNext();
             assertEquals(1, fixture.getPageNo());
-    
+
         }
-}
+    }
 
     @Test
     public void testCmdMoveLast() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4197,7 +4057,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setNumberOfImagesPerPage(2);
@@ -4207,18 +4066,18 @@ public class MetadatenTest extends AbstractTest {
             fixture.setPagesRTL(true);
             fixture.cmdMoveLast();
             assertEquals(0, fixture.getPageNo());
-    
+
         }
-}
+    }
 
     @Test
     public void testTxtMoveTo() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4227,25 +4086,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setNumberOfImagesPerPage(2);
             fixture.setPageNo(1);
             fixture.setTxtMoveTo(3);
             assertEquals(2, fixture.getPageNo());
-    
+
         }
-}
+    }
 
     @Test
     public void testLastPageNumber() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4254,23 +4112,22 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setNumberOfImagesPerPage(2);
             assertEquals(2, fixture.getLastPageNumber());
-    
+
         }
-}
+    }
 
     @Test
     public void testFirstPage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4279,25 +4136,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setNumberOfImagesPerPage(2);
             assertTrue(fixture.isFirstPage());
             fixture.setTxtMoveTo(3);
             assertFalse(fixture.isFirstPage());
-    
+
         }
-}
+    }
 
     @Test
     public void testLastPage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4306,25 +4162,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setNumberOfImagesPerPage(2);
             assertFalse(fixture.isLastPage());
             fixture.setTxtMoveTo(3);
             assertTrue(fixture.isLastPage());
-    
+
         }
-}
+    }
 
     @Test
     public void testHasNextPage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4333,24 +4188,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setNumberOfImagesPerPage(2);
             fixture.setTxtMoveTo(2);
             assertTrue(fixture.hasNextPage());
-    
+
         }
-}
+    }
 
     @Test
     public void testHasPreviousPage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4359,24 +4213,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setNumberOfImagesPerPage(2);
             fixture.setTxtMoveTo(2);
             assertTrue(fixture.hasPreviousPage());
-    
+
         }
-}
+    }
 
     @Test
     public void testPageNumberCurrent() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4385,24 +4238,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setNumberOfImagesPerPage(2);
             fixture.setTxtMoveTo(2);
             assertEquals(2L, fixture.getPageNumberCurrent().longValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testPageNumberLast() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4411,24 +4263,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             fixture.setNumberOfImagesPerPage(2);
             fixture.setTxtMoveTo(2);
             assertEquals(3L, fixture.getPageNumberLast().longValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testThumbnailSize() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4437,24 +4288,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             assertEquals(200, fixture.getThumbnailSize());
             fixture.setThumbnailSize(150);
             assertEquals(150, fixture.getThumbnailSize());
-    
+
         }
-}
+    }
 
     @Test
     public void testContainerWidth() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4463,7 +4313,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             assertEquals(600, fixture.getContainerWidth());
@@ -4475,18 +4324,18 @@ public class MetadatenTest extends AbstractTest {
             assertEquals(200, fixture.getContainerWidth());
             fixture.increaseContainerWidth();
             assertEquals(300, fixture.getContainerWidth());
-    
+
         }
-}
+    }
 
     @Test
     public void testNumberOfImagesPerPage() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4495,7 +4344,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             assertEquals(96, fixture.getNumberOfImagesPerPage());
@@ -4504,18 +4352,18 @@ public class MetadatenTest extends AbstractTest {
             // still old value
             fixture.setNumberOfImagesPerPage(0);
             assertEquals(4, fixture.getNumberOfImagesPerPage());
-    
+
         }
-}
+    }
 
     @Test
     public void testPossibleDatabases() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4525,21 +4373,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertEquals(1, fixture.getPossibleDatabases().size());
-    
+
         }
-}
+    }
 
     @Test
     public void testPossibleNamePartTypes() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4548,24 +4395,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             assertEquals(2, fixture.getPossibleNamePartTypes().size());
             assertEquals("date", fixture.getPossibleNamePartTypes().get(0));
             assertEquals("termsOfAddress", fixture.getPossibleNamePartTypes().get(1));
-    
+
         }
-}
+    }
 
     @Test
     public void testAddableMetadata() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4575,21 +4421,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertTrue(fixture.isAddableMetadata(prefs.getMetadataTypeByName("junitMetadata")));
-    
+
         }
-}
+    }
 
     @Test
     public void testAddableMetadata2() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4598,25 +4443,24 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             Metadata md = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
             md.setValue("x");
             fixture.getDocument().getLogicalDocStruct().addMetadata(md);
             assertTrue(fixture.isAddableMetadata(md));
-    
+
         }
-}
+    }
 
     @Test
     public void testAddablePerson() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4626,21 +4470,20 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-
             Metadaten fixture = initMetadaten();
             assertTrue(fixture.isAddablePerson(prefs.getMetadataTypeByName("junitPerson")));
-    
+
         }
-}
+    }
 
     @Test
     public void testAllPages() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4649,24 +4492,23 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             List<PhysicalObject> pages = fixture.getAllPages();
             assertEquals(6, pages.size());
             assertEquals("1: uncounted", pages.get(0).getLabel());
-    
+
         }
-}
+    }
 
     @Test
     public void testCurrentMetadataToPerformSearch() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4675,7 +4517,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
@@ -4683,18 +4524,18 @@ public class MetadatenTest extends AbstractTest {
             MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
             fixture.setCurrentMetadataToPerformSearch(md);
             assertEquals(DisplayType.select, fixture.getCurrentMetadataToPerformSearch().getMetadataDisplaytype());
-    
+
         }
-}
+    }
 
     @Test
     public void testVttGeneration() throws Exception {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -4703,7 +4544,6 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
-
 
             Metadaten fixture = initMetadaten();
             // no file set or file is no video
@@ -4783,9 +4623,8 @@ public class MetadatenTest extends AbstractTest {
 
             assertEquals(expected, fixture.getChapterInformationAsVTT());
 
-    
         }
-}
+    }
 
     private Metadaten initMetadaten() throws ReadException, IOException, PreferencesException, SwapException, DAOException {
         Metadaten fixture = new Metadaten();
@@ -4797,11 +4636,10 @@ public class MetadatenTest extends AbstractTest {
 
     private MetadatenImagesHelper mockImageHelper()
             throws IOException, SwapException, InvalidImagesException, ContentLibException, ImageManipulatorException {
-        MetadatenImagesHelper mih = EasyMock.createMock(MetadatenImagesHelper.class);
+        MetadatenImagesHelper mih = Mockito.mock(MetadatenImagesHelper.class);
         List<String> files = StorageProvider.getInstance().list(process.getImagesTifDirectory(true));
-        EasyMock.expect(mih.getImageFiles(EasyMock.anyObject(), EasyMock.anyString(), EasyMock.anyBoolean())).andReturn(files).anyTimes();
-        mih.scaleFile(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt());
-        EasyMock.replay(mih);
+        Mockito.when(mih.getImageFiles(Mockito.any(), Mockito.anyString(), Mockito.anyBoolean())).thenReturn(files);
+        mih.scaleFile(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt());
         return mih;
     }
 

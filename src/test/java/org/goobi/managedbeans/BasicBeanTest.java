@@ -20,11 +20,14 @@ package org.goobi.managedbeans;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class BasicBeanTest {
 
     private BasicBean bean;
@@ -91,66 +94,52 @@ public class BasicBeanTest {
 
     @Test
     public void testAddFilterToUserWithNullFilterDoesNotCallUser() {
-        User mockUser = EasyMock.createMock(User.class);
+        User mockUser = Mockito.mock(User.class);
         injectUser(bean, mockUser);
-        EasyMock.replay(mockUser); // no expectations → any call would fail
         bean.setFilter(null);
         bean.addFilterToUser();
-        EasyMock.verify(mockUser);
     }
 
     @Test
     public void testAddFilterToUserWithEmptyFilterDoesNotCallUser() {
-        User mockUser = EasyMock.createMock(User.class);
+        User mockUser = Mockito.mock(User.class);
         injectUser(bean, mockUser);
-        EasyMock.replay(mockUser);
         bean.setFilter("");
         bean.addFilterToUser();
-        EasyMock.verify(mockUser);
     }
 
     @Test
     public void testAddFilterToUserDelegatesFilterToUser() {
-        User mockUser = EasyMock.createMock(User.class);
+        User mockUser = Mockito.mock(User.class);
         injectUser(bean, mockUser);
         mockUser.addFilter("myFilter");
-        EasyMock.expectLastCall();
-        EasyMock.replay(mockUser);
         bean.setFilter("myFilter");
         bean.addFilterToUser();
-        EasyMock.verify(mockUser);
     }
 
     @Test
     public void testRemoveFilterFromUserWithNullFilterDoesNotCallUser() {
-        User mockUser = EasyMock.createMock(User.class);
+        User mockUser = Mockito.mock(User.class);
         injectUser(bean, mockUser);
-        EasyMock.replay(mockUser);
         bean.setFilter(null);
         bean.removeFilterFromUser();
-        EasyMock.verify(mockUser);
     }
 
     @Test
     public void testRemoveFilterFromUserWithEmptyFilterDoesNotCallUser() {
-        User mockUser = EasyMock.createMock(User.class);
+        User mockUser = Mockito.mock(User.class);
         injectUser(bean, mockUser);
-        EasyMock.replay(mockUser);
         bean.setFilter("");
         bean.removeFilterFromUser();
-        EasyMock.verify(mockUser);
     }
 
     @Test
     public void testRemoveFilterFromUserDelegatesFilterToUser() {
-        User mockUser = EasyMock.createMock(User.class);
+        User mockUser = Mockito.mock(User.class);
         injectUser(bean, mockUser);
         mockUser.removeFilter("aFilter");
-        EasyMock.expectLastCall();
-        EasyMock.replay(mockUser);
         bean.setFilter("aFilter");
         bean.removeFilterFromUser();
-        EasyMock.verify(mockUser);
     }
 
     private void injectUser(BasicBean target, User user) {
@@ -158,7 +147,7 @@ public class BasicBeanTest {
             java.lang.reflect.Field f = BasicBean.class.getDeclaredField("user");
             f.setAccessible(true);
             f.set(target, user);
-        } catch (Exception e) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }

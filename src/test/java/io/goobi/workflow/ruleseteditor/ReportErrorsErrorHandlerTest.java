@@ -37,7 +37,7 @@ public class ReportErrorsErrorHandlerTest {
     }
 
     @Test
-    public void testErrorHandling_error() throws Exception {
+    public void testErrorHandlingError() throws Exception {
         SAXParseException exception = new SAXParseException("Invalid element", null, null, 12, 34);
         handler.error(exception);
 
@@ -54,7 +54,7 @@ public class ReportErrorsErrorHandlerTest {
     }
 
     @Test
-    public void testErrorHandling_fatalError() throws Exception {
+    public void testErrorHandlingFatalError() throws Exception {
         SAXParseException exception = new SAXParseException("Broken root tag", null, null, 7, 15);
         handler.fatalError(exception);
 
@@ -69,7 +69,7 @@ public class ReportErrorsErrorHandlerTest {
     }
 
     @Test
-    public void testErrorHandling_warning() throws Exception {
+    public void testErrorHandlingWarning() throws Exception {
         SAXParseException exception = new SAXParseException("Deprecated attribute", null, null, 3, 8);
         handler.warning(exception);
 

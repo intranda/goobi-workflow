@@ -37,20 +37,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.enums.ImportFormat;
-import org.goobi.production.flow.helper.JobCreation;
 import org.goobi.production.importer.DocstructElement;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.properties.ImportProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -60,18 +63,13 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.mock.MockUploadedFile;
 import jakarta.faces.application.Application;
-import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.PartialViewContext;
 import jakarta.servlet.http.Part;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class MassImportFormTest extends AbstractTest {
 
@@ -89,15 +87,22 @@ public class MassImportFormTest extends AbstractTest {
         // clean up uploaded test file so it doesn't pollute src/test/resources/tmp/
         Path uploadedFile = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder(), "junit.xml");
         Files.deleteIfExists(uploadedFile);
-        if (mockedHelper != null) mockedHelper.close();
-        if (mockedExternalContext != null) mockedExternalContext.close();
-        if (mockedFacesContext != null) mockedFacesContext.close();
+        if (mockedHelper != null) {
+            mockedHelper.close();
+        }
+        if (mockedExternalContext != null) {
+            mockedExternalContext.close();
+        }
+        if (mockedFacesContext != null) {
+            mockedFacesContext.close();
+        }
     }
 
     @BeforeEach
     public void setUp() throws Exception {
         Path configBase = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path goobiFolder = Paths.get(configBase.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        // for junit tests in eclipse
+        Path goobiFolder = Paths.get(configBase.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties");
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
@@ -133,47 +138,40 @@ public class MassImportFormTest extends AbstractTest {
         prepareMocking();
     }
 
-    @SuppressWarnings("deprecation")
     private void prepareMocking() {
         mockedFacesContext = Mockito.mockStatic(FacesContext.class);
         mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
         mockedHelper = Mockito.mockStatic(Helper.class);
 
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
-        UIViewRoot root = EasyMock.createMock(UIViewRoot.class);
-        Application application = EasyMock.createMock(Application.class);
-        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
-        PartialViewContext pvc = EasyMock.createMock(PartialViewContext.class);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        UIViewRoot root = Mockito.mock(UIViewRoot.class);
+        Application application = Mockito.mock(Application.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
+        PartialViewContext pvc = Mockito.mock(PartialViewContext.class);
 
-        EasyMock.expect(facesContext.getApplication()).andReturn(application).anyTimes();
+        Mockito.when(facesContext.getApplication()).thenReturn(application);
         List<Locale> locale = new ArrayList<>();
         locale.add(Locale.GERMAN);
 
-        EasyMock.expect(facesContext.getViewRoot()).andReturn(root).anyTimes();
+        Mockito.when(facesContext.getViewRoot()).thenReturn(root);
 
         FacesContextHelper.setFacesContext(facesContext);
         mockedFacesContext.when(() -> FacesContext.getCurrentInstance()).thenReturn(facesContext);
         Map<String, Object> requestMap = new HashMap<>();
-        EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
-        EasyMock.expect(externalContext.getSessionMap()).andReturn(requestMap).anyTimes();
+        Mockito.when(facesContext.getExternalContext()).thenReturn(externalContext);
+        Mockito.when(externalContext.getSessionMap()).thenReturn(requestMap);
 
-        EasyMock.expect(root.getLocale()).andReturn(Locale.GERMAN).anyTimes();
-        EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
-        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(facesContext.getPartialViewContext()).andReturn(pvc).anyTimes();
-        EasyMock.expect(pvc.getRenderIds()).andReturn(new ArrayList<>()).anyTimes();
+        Mockito.when(root.getLocale()).thenReturn(Locale.GERMAN);
+        Mockito.when(application.getSupportedLocales()).thenReturn(locale.iterator());
+        facesContext.addMessage(Mockito.anyString(), Mockito.any());
+        Mockito.when(facesContext.getPartialViewContext()).thenReturn(pvc);
+        Mockito.when(pvc.getRenderIds()).thenReturn(new ArrayList<>());
 
         mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
         mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
         mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
         mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
 
-        EasyMock.replay(root);
-        EasyMock.replay(application);
-        EasyMock.replay(externalContext);
-        EasyMock.replay(pvc);
-        EasyMock.replay(facesContext);
     }
 
     @Test
@@ -262,7 +260,7 @@ public class MassImportFormTest extends AbstractTest {
         assertNotEquals(0, fixture.size());
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     @Test
     public void testCurrentFormat() {
         MassImportForm massImportForm = new MassImportForm();
@@ -290,7 +288,7 @@ public class MassImportFormTest extends AbstractTest {
         assertEquals("test", massImportForm.getRecords());
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({ "removal" })
     @Test
     public void testProcess() {
         MassImportForm massImportForm = new MassImportForm();
@@ -370,7 +368,7 @@ public class MassImportFormTest extends AbstractTest {
         assertEquals("JunitImportPlugin", plugin.getTitle());
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({ "removal" })
     @Test
     public void testGetInclude() {
         MassImportForm massImportForm = new MassImportForm();

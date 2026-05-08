@@ -20,12 +20,15 @@ package de.sub.goobi.helper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import jakarta.faces.context.FacesContext;
 
+@ExtendWith(MockitoExtension.class)
 public class FacesContextHelperTest {
 
     @AfterEach
@@ -35,16 +38,14 @@ public class FacesContextHelperTest {
 
     @Test
     public void testSetAndGetFacesContext() {
-        FacesContext mockContext = EasyMock.createMock(FacesContext.class);
-        EasyMock.replay(mockContext);
+        FacesContext mockContext = Mockito.mock(FacesContext.class);
         FacesContextHelper.setFacesContext(mockContext);
         assertEquals(mockContext, FacesContextHelper.getCurrentFacesContext());
     }
 
     @Test
     public void testResetSetsContextToNull() {
-        FacesContext mockContext = EasyMock.createMock(FacesContext.class);
-        EasyMock.replay(mockContext);
+        FacesContext mockContext = Mockito.mock(FacesContext.class);
         FacesContextHelper.setFacesContext(mockContext);
         FacesContextHelper.reset();
         // after reset, falls back to FacesContext.getCurrentInstance() which is null in unit tests

@@ -84,7 +84,8 @@ public class SearchColumnTest {
 
         col.setValue("property.customProperty");
         String expectedPropJoin =
-                " properties properties5 ON prozesse.ProzesseID = properties5.object_id AND properties5.object_type = 'process' AND properties5.property_name = \"customProperty\"";
+                " properties properties5 ON prozesse.ProzesseID = properties5.object_id AND properties5.object_type = "
+                        + "'process' AND properties5.property_name = \"customProperty\"";
         assertEquals(expectedPropJoin, col.getJoinClause());
 
         col.setValue("metadata.title");

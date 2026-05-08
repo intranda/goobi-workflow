@@ -44,7 +44,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 public class FileUtilsTest extends AbstractTest {
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     private Path currentFolder;
 

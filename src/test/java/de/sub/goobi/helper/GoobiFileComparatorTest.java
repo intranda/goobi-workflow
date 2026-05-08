@@ -23,13 +23,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.config.ConfigurationHelper;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class GoobiFileComparatorTest {
     private GoobiStringFileComparator comparator;
@@ -48,9 +48,9 @@ public class GoobiFileComparatorTest {
                             "000051.jpg", "51_A.jpg", "0051_b.jpg");
 
             verifyComparatorOrder(correctOrder);
-    
+
         }
-}
+    }
 
     @Test
     public void verifyCorrectOrderingForWeirdCase() {
@@ -63,9 +63,9 @@ public class GoobiFileComparatorTest {
                     List.of("000000009.tif", "000000009a.tif", "000000010.tif", "000051.jpg", "51_A.jpg", "0051_B.jpg");
 
             verifyComparatorOrder(correctOrder);
-    
+
         }
-}
+    }
 
     @Test
     public void verifyCorrectOrderingForStringPrefixFileNames() {
@@ -76,9 +76,9 @@ public class GoobiFileComparatorTest {
                             "Ben05Carl.tif", "Ben10Carl.bmp");
 
             verifyComparatorOrder(correctOrder);
-    
+
         }
-}
+    }
 
     @Test
     public void verifySemanticEquality() {
@@ -87,9 +87,9 @@ public class GoobiFileComparatorTest {
             verifySemanticEquality("001a.jpg", "1A.TIF");
             verifySemanticEquality("haRrY13a.jpg", "Harry00000013A.tiFF");
             verifySemanticEquality("Catalog0000001_0.jpg", "CATALOG1_0.tif");
-    
+
         }
-}
+    }
 
     private void verifySemanticEquality(String a, String b) {
         assertEquals(0, comparator.compare(a, b), "Semantic equality check failed. expected \"" + a + "\" == \"" + b + "\"\n");
@@ -114,8 +114,9 @@ public class GoobiFileComparatorTest {
                 if (Math.abs(actual) > 1) {
                     actual /= Math.abs(actual);
                 }
-                assertEquals(expected, actual, "Semantic ordering check failed! expected: \"" + a + "\" " + transformComparisonIntToChar(expected) + " \"" + b
-                        + "\" but was: \"" + a + "\" " + transformComparisonIntToChar(actual) + " \"" + b + "\"\n");
+                assertEquals(expected, actual,
+                        "Semantic ordering check failed! expected: \"" + a + "\" " + transformComparisonIntToChar(expected) + " \"" + b
+                                + "\" but was: \"" + a + "\" " + transformComparisonIntToChar(actual) + " \"" + b + "\"\n");
             }
         }
     }

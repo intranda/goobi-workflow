@@ -45,7 +45,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 public class CopyFileTest extends AbstractTest {
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     @BeforeEach
     public void setUp() throws IOException, URISyntaxException {

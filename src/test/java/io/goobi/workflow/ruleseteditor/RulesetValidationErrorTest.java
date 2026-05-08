@@ -20,15 +20,18 @@ package io.goobi.workflow.ruleseteditor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.easymock.EasyMock;
 import org.jdom2.Element;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class RulesetValidationErrorTest {
 
     @Test
     public void testConstructorWithParsedLine() {
-        Element mockElement = EasyMock.mock(Element.class);
+        Element mockElement = Mockito.mock(Element.class);
         RulesetValidationError error = new RulesetValidationError(
                 "ERROR",
                 "Test message",
@@ -46,7 +49,7 @@ public class RulesetValidationErrorTest {
 
     @Test
     public void testConstructorWithInvalidLine() {
-        Element dummyElement = EasyMock.mock(Element.class);
+        Element dummyElement = Mockito.mock(Element.class);
         RulesetValidationError error = new RulesetValidationError(
                 "WARN",
                 "Invalid line test",
@@ -72,7 +75,7 @@ public class RulesetValidationErrorTest {
 
     @Test
     public void testAllArgsConstructor() {
-        Element mockElement = EasyMock.mock(Element.class);
+        Element mockElement = Mockito.mock(Element.class);
         RulesetValidationError error = new RulesetValidationError(
                 5, 10, "INFO", "AllArgs message", mockElement,
                 RulesetValidationError.ErrorType.EMPTY_NAME);

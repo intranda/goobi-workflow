@@ -26,14 +26,14 @@ import java.util.List;
 import org.jdom2.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class ValidateTranslationsTest {
 
@@ -58,13 +58,11 @@ public class ValidateTranslationsTest {
             elem.addContent(name);
             root.addContent(elem);
 
-
             List<RulesetValidationError> errors = validator.validate(root);
             assertTrue(errors.isEmpty());
 
-    
         }
-}
+    }
 
     @Test
     public void testErrorWhenLanguageEmpty() {
@@ -81,8 +79,7 @@ public class ValidateTranslationsTest {
             elem.addContent(name);
             root.addContent(elem);
 
-                        mockedHelper.when(() -> Helper.getTranslation("ruleset_validation_emptyTranslation", "TestName")).thenReturn("Translated error message");
-
+            mockedHelper.when(() -> Helper.getTranslation("ruleset_validation_emptyTranslation", "TestName")).thenReturn("Translated error message");
 
             List<RulesetValidationError> errors = validator.validate(root);
             assertEquals(1, errors.size());
@@ -91,9 +88,8 @@ public class ValidateTranslationsTest {
             assertEquals("Translated error message", error.getMessage());
             assertEquals(42, error.getLine());
 
-    
         }
-}
+    }
 
     @Test
     public void testErrorWithNoLineNumber() {
@@ -110,15 +106,14 @@ public class ValidateTranslationsTest {
             elem.addContent(name);
             root.addContent(elem);
 
-                        mockedHelper.when(() -> Helper.getTranslation("ruleset_validation_emptyTranslation", "AnotherName")).thenReturn("Translated error message");
-
+            mockedHelper.when(() -> Helper.getTranslation("ruleset_validation_emptyTranslation", "AnotherName"))
+                    .thenReturn("Translated error message");
 
             List<RulesetValidationError> errors = validator.validate(root);
             assertEquals(1, errors.size());
             RulesetValidationError error = errors.get(0);
             assertEquals(0, error.getLine()); // fallback to "0"
 
-    
         }
-}
+    }
 }

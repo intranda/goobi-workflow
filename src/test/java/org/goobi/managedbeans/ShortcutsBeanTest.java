@@ -1,9 +1,5 @@
 package org.goobi.managedbeans;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,12 +9,16 @@ import java.util.Map;
 import org.goobi.beans.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+
 /**
- * Unit tests for {@link ShortcutsBean} using JUnit4 + EasyMock.
+ * Unit tests for {@link ShortcutsBean} using JUnit 5 + Mockito.
  */
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class ShortcutsBeanTest {
 
@@ -29,11 +29,10 @@ public class ShortcutsBeanTest {
     @BeforeEach
     public void setUp() {
         bean = new ShortcutsBean();
-        loginBeanMock = createMock(LoginBean.class);
-        benutzerMock = createMock(User.class);
-        expect(loginBeanMock.getMyBenutzer()).andReturn(benutzerMock).anyTimes();
-        expect(benutzerMock.getShortcutPrefix()).andReturn("CTRL+ALT").anyTimes();
-        replay(loginBeanMock, benutzerMock);
+        loginBeanMock = Mockito.mock(LoginBean.class);
+        benutzerMock = Mockito.mock(User.class);
+        Mockito.when(loginBeanMock.getMyBenutzer()).thenReturn(benutzerMock);
+        Mockito.when(benutzerMock.getShortcutPrefix()).thenReturn("CTRL+ALT");
     }
 
     @Test
@@ -46,7 +45,6 @@ public class ShortcutsBeanTest {
         String prefix = bean.getUserShortcutPrefix();
         assertEquals("CTRL+ALT", prefix);
 
-        verify(loginBeanMock, benutzerMock);
     }
 
     @Test

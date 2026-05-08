@@ -29,8 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import jakarta.servlet.FilterChain;
@@ -38,6 +40,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@ExtendWith(MockitoExtension.class)
 public class Utf8FilterTest extends AbstractTest {
 
     @Test
@@ -45,15 +48,13 @@ public class Utf8FilterTest extends AbstractTest {
         Utf8Filter filter = new Utf8Filter();
         assertNotNull(filter);
 
-        HttpServletRequest servletRequest = EasyMock.createMock(HttpServletRequest.class);
-        HttpServletResponse servletResponse = EasyMock.createMock(HttpServletResponse.class);
-        FilterChain filterChain = EasyMock.createMock(FilterChain.class);
+        HttpServletRequest servletRequest = Mockito.mock(HttpServletRequest.class);
+        HttpServletResponse servletResponse = Mockito.mock(HttpServletResponse.class);
+        FilterChain filterChain = Mockito.mock(FilterChain.class);
 
-        servletRequest.setCharacterEncoding(EasyMock.anyString());
-        servletResponse.setCharacterEncoding(EasyMock.anyString());
+        servletRequest.setCharacterEncoding(Mockito.anyString());
+        servletResponse.setCharacterEncoding(Mockito.anyString());
         filterChain.doFilter(servletRequest, servletResponse);
-
-        EasyMock.expectLastCall();
 
         filter.doFilter(servletRequest, servletResponse, filterChain);
     }

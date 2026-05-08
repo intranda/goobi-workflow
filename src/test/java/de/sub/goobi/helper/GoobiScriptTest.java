@@ -28,18 +28,19 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Institution;
-import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
-import org.goobi.production.enums.LogType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -53,10 +54,6 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class GoobiScriptTest extends AbstractTest {
 
@@ -103,13 +100,12 @@ public class GoobiScriptTest extends AbstractTest {
 
     private void prepareMocking() throws Exception {
 
-
         // swapSteps
 
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-                     MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
-                     MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-                     MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class)) {
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class)) {
             // addUser
             user = new User();
             user.setLogin("test");
@@ -119,7 +115,7 @@ public class GoobiScriptTest extends AbstractTest {
 
             List<User> userList = new ArrayList<>();
             userList.add(user);
-                        mockedUserManager.when(() -> UserManager.getUsers(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+            mockedUserManager.when(() -> UserManager.getUsers(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
                     Mockito.any(Institution.class))).thenReturn(userList);
 
             // addUsergroup
@@ -129,8 +125,10 @@ public class GoobiScriptTest extends AbstractTest {
             group.setBerechtigung(3);
             List<Usergroup> usergroupList = new ArrayList<>();
             usergroupList.add(group);
-                        mockedUsergroupManager.when(() -> UsergroupManager.getUsergroups(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
-                    Mockito.any(Institution.class))).thenReturn(usergroupList);
+            mockedUsergroupManager
+                    .when(() -> UsergroupManager.getUsergroups(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                            Mockito.any(Institution.class)))
+                    .thenReturn(usergroupList);
 
             Ruleset r = new Ruleset();
             r.setTitel("title");
@@ -138,13 +136,13 @@ public class GoobiScriptTest extends AbstractTest {
             r.setOrderMetadataByRuleset(false);
             List<Ruleset> rulesetList = new ArrayList<>();
             rulesetList.add(r);
-                        mockedRulesetManager.when(() -> RulesetManager.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+            mockedRulesetManager.when(() -> RulesetManager.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
                     Mockito.any(Institution.class))).thenReturn(rulesetList);
 
             //        Mockito.mockStatic(ProcessManager.class);
-            //        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
-            //        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-            //        ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
+            //        Mockito.when(ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            //        ProcessManager.saveProcess(Mockito.any());
+            //        ProcessManager.deleteProcess(Mockito.any());
             //        //
             //        Mockito.mockStatic(Helper.class);
             //
@@ -155,26 +153,26 @@ public class GoobiScriptTest extends AbstractTest {
             //        mockedHelper.when(() -> Helper.getManagedBeanValue("#{SessionForm}")).thenReturn(sessionForm);
             //        mockedHelper.when(() -> Helper.getManagedBeanValue("#{LoginForm}")).thenReturn(loginBean);
             //
-            //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-            //        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
+            //        Helper.setFehlerMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setFehlerMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setFehlerMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setFehlerMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setFehlerMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setMeldung(Mockito.anyString(), Mockito.anyString());
+            //        Helper.setMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.setMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+            //        Helper.addMessageToProcessJournal(Mockito.anyInt(), Mockito.any(), Mockito.anyString());
             //
             //
         }
-}
+    }
 
     @Test
     public void testConstructor() {
@@ -201,17 +199,17 @@ public class GoobiScriptTest extends AbstractTest {
     @SuppressWarnings("removal")
     public void testExecuteSwapStepsAction() throws Exception {
         Mockito.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
-        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-        ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
-        JournalManager.saveJournalEntry(EasyMock.anyObject(JournalEntry.class));
+        Mockito.when(ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+        ProcessManager.saveProcess(Mockito.any());
+        ProcessManager.deleteProcess(Mockito.any());
+        JournalManager.saveJournalEntry(Mockito.any());
 
         Mockito.mockStatic(Helper.class);
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
 
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+        Helper.setFehlerMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+        Helper.setMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: swapSteps");
@@ -226,10 +224,10 @@ public class GoobiScriptTest extends AbstractTest {
     @SuppressWarnings("removal")
     public void testExecuteSwapProzessesOutAction() throws Exception {
         Mockito.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
-        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-        ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
-        JournalManager.saveJournalEntry(EasyMock.anyObject(JournalEntry.class));
+        Mockito.when(ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+        ProcessManager.saveProcess(Mockito.any());
+        ProcessManager.deleteProcess(Mockito.any());
+        JournalManager.saveJournalEntry(Mockito.any());
 
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: swapProzessesOut");
@@ -239,19 +237,18 @@ public class GoobiScriptTest extends AbstractTest {
     @SuppressWarnings("removal")
     public void testExecuteSwapProzessesInAction() throws Exception {
         Mockito.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
-        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-        ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
-        JournalManager.saveJournalEntry(EasyMock.anyObject(JournalEntry.class));
+        Mockito.when(ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+        ProcessManager.saveProcess(Mockito.any());
+        ProcessManager.deleteProcess(Mockito.any());
+        JournalManager.saveJournalEntry(Mockito.any());
 
         Mockito.mockStatic(Helper.class);
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
 
-        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+        Helper.setMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
-        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
-
+        Helper.addMessageToProcessJournal(Mockito.anyInt(), Mockito.any(), Mockito.anyString());
 
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: swapProzessesIn");
@@ -262,21 +259,19 @@ public class GoobiScriptTest extends AbstractTest {
     public void testExecuteAddUserAction() throws Exception {
 
         Mockito.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
-        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-        ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
-        JournalManager.saveJournalEntry(EasyMock.anyObject(JournalEntry.class));
+        Mockito.when(ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+        ProcessManager.saveProcess(Mockito.any());
+        ProcessManager.deleteProcess(Mockito.any());
+        JournalManager.saveJournalEntry(Mockito.any());
 
         Mockito.mockStatic(Helper.class);
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
 
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+        Helper.setFehlerMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+        Helper.setMeldung(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
-        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
-
-
+        Helper.addMessageToProcessJournal(Mockito.anyInt(), Mockito.any(), Mockito.anyString());
 
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: addUser");

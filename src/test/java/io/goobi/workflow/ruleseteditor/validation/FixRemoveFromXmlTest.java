@@ -51,7 +51,7 @@ public class FixRemoveFromXmlTest {
     }
 
     @Test
-    public void testFix_NoMatchingLine() {
+    public void testFixNoMatchingLine() {
         RulesetValidationError error = new RulesetValidationError("dummy", "message", "line", 999, root);
 
         fixer.fix(root, error, false);

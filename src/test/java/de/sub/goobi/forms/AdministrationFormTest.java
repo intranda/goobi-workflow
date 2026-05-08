@@ -27,12 +27,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 
+@ExtendWith(MockitoExtension.class)
 public class AdministrationFormTest extends AbstractTest {
 
     @Test
@@ -66,7 +69,7 @@ public class AdministrationFormTest extends AbstractTest {
         AdministrationForm fixture = new AdministrationForm();
         assertNotNull(fixture);
         assertNull(fixture.getAdministrationPlugin());
-        IAdministrationPlugin plugin = EasyMock.createMock(IAdministrationPlugin.class);
+        IAdministrationPlugin plugin = Mockito.mock(IAdministrationPlugin.class);
         fixture.setAdministrationPlugin(plugin);
         assertNotNull(fixture.getAdministrationPlugin());
     }

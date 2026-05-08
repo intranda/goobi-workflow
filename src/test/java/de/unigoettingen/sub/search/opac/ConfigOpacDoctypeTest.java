@@ -29,17 +29,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.FacesContextHelper;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class ConfigOpacDoctypeTest extends AbstractTest {
 
@@ -57,13 +60,11 @@ public class ConfigOpacDoctypeTest extends AbstractTest {
         doctype = new ConfigOpacDoctype("monograph", "Monograph", "Monographie", false, false, false,
                 labels, mappings, "Volume");
 
-        UIViewRoot viewRoot = EasyMock.createMock(UIViewRoot.class);
-        EasyMock.expect(viewRoot.getLocale()).andReturn(Locale.ENGLISH).anyTimes();
-        EasyMock.replay(viewRoot);
+        UIViewRoot viewRoot = Mockito.mock(UIViewRoot.class);
+        Mockito.when(viewRoot.getLocale()).thenReturn(Locale.ENGLISH);
 
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
-        EasyMock.expect(facesContext.getViewRoot()).andReturn(viewRoot).anyTimes();
-        EasyMock.replay(facesContext);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        Mockito.when(facesContext.getViewRoot()).thenReturn(viewRoot);
 
         FacesContextHelper.setFacesContext(facesContext);
     }

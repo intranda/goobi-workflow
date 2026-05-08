@@ -27,17 +27,16 @@ import java.util.List;
 import org.goobi.beans.Ldap;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 import org.junit.jupiter.api.Test;
-
-import de.sub.goobi.AbstractTest;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.persistence.managers.LdapManager;
-import jakarta.faces.model.SelectItem;
-
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import de.sub.goobi.AbstractTest;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.LdapManager;
+import jakarta.faces.model.SelectItem;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthenticationBeanTest extends AbstractTest {
@@ -105,7 +104,9 @@ public class AuthenticationBeanTest extends AbstractTest {
                 MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
                 MockedConstruction<LdapManager> mockedConstruction = Mockito.mockConstruction(LdapManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
@@ -127,7 +128,9 @@ public class AuthenticationBeanTest extends AbstractTest {
                 MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
                 MockedConstruction<LdapManager> mockedConstruction = Mockito.mockConstruction(LdapManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
@@ -149,7 +152,9 @@ public class AuthenticationBeanTest extends AbstractTest {
                 MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
                 MockedConstruction<LdapManager> mockedConstruction = Mockito.mockConstruction(LdapManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
@@ -171,7 +176,9 @@ public class AuthenticationBeanTest extends AbstractTest {
                 MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
                 MockedConstruction<LdapManager> mockedConstruction = Mockito.mockConstruction(LdapManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
@@ -192,7 +199,9 @@ public class AuthenticationBeanTest extends AbstractTest {
                 MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
                 MockedConstruction<LdapManager> mockedConstruction = Mockito.mockConstruction(LdapManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
@@ -213,7 +222,9 @@ public class AuthenticationBeanTest extends AbstractTest {
                 MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
                 MockedConstruction<LdapManager> mockedConstruction = Mockito.mockConstruction(LdapManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);

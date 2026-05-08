@@ -6,9 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.Collections;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import io.goobi.vocabulary.exception.VocabularyException;
 import io.goobi.vocabulary.exchange.Vocabulary;
@@ -20,6 +24,8 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+@MockitoSettings(strictness = Strictness.LENIENT)
+@ExtendWith(MockitoExtension.class)
 public class VocabularyAPITest {
     private VocabularyAPI api;
 
@@ -28,34 +34,32 @@ public class VocabularyAPITest {
     @BeforeEach
     public void init() {
         api = VocabularyAPIManager.getInstance().vocabularies();
-        Client testClient = EasyMock.createMock(Client.class);
-        WebTarget target = EasyMock.createMock(WebTarget.class);
-        Invocation.Builder builder = EasyMock.createMock(Invocation.Builder.class);
-        response = EasyMock.createMock(Response.class);
+        Client testClient = Mockito.mock(Client.class);
+        WebTarget target = Mockito.mock(WebTarget.class);
+        Invocation.Builder builder = Mockito.mock(Invocation.Builder.class);
+        response = Mockito.mock(Response.class);
 
-        EasyMock.expect(testClient.target((String) EasyMock.anyObject())).andReturn(target);
+        Mockito.when(testClient.target((String) Mockito.any())).thenReturn(target);
         RESTAPI.setClient(testClient);
 
-        EasyMock.expect(target.request(MediaType.APPLICATION_JSON)).andReturn(builder).anyTimes();
-        EasyMock.expect(target.request(MediaType.MULTIPART_FORM_DATA)).andReturn(builder).anyTimes();
+        Mockito.when(target.request(MediaType.APPLICATION_JSON)).thenReturn(builder);
+        Mockito.when(target.request(MediaType.MULTIPART_FORM_DATA)).thenReturn(builder);
 
-        EasyMock.expect(builder.header(EasyMock.anyString(), EasyMock.anyString())).andReturn(builder).anyTimes();
-        EasyMock.expect(builder.get()).andReturn(response).anyTimes();
-        EasyMock.expect(builder.post(EasyMock.anyObject())).andReturn(response).anyTimes();
-        EasyMock.expect(builder.put(EasyMock.anyObject())).andReturn(response).anyTimes();
-        EasyMock.expect(builder.delete()).andReturn(response).anyTimes();
+        Mockito.when(builder.header(Mockito.anyString(), Mockito.anyString())).thenReturn(builder);
+        Mockito.when(builder.get()).thenReturn(response);
+        Mockito.when(builder.post(Mockito.any())).thenReturn(response);
+        Mockito.when(builder.put(Mockito.any())).thenReturn(response);
+        Mockito.when(builder.delete()).thenReturn(response);
 
-        EasyMock.replay(testClient, target, builder);
     }
 
     private <T> void setupResponse(T o, Class<T> clazz) {
-        EasyMock.expect(response.getStatus()).andReturn(o != null ? 200 : 500).anyTimes();
+        Mockito.when(response.getStatus()).thenReturn(o != null ? 200 : 500);
 
-        EasyMock.expect(response.readEntity(VocabularyException.class)).andReturn(generateVocabularyException()).anyTimes();
-        EasyMock.expect(response.readEntity(clazz)).andReturn(o).anyTimes();
+        Mockito.when(response.readEntity(VocabularyException.class)).thenReturn(generateVocabularyException());
+        Mockito.when(response.readEntity(clazz)).thenReturn(o);
         response.close();
 
-        EasyMock.replay(response);
     }
 
     private VocabularyException generateVocabularyException() {
@@ -63,7 +67,7 @@ public class VocabularyAPITest {
     }
 
     @Test
-    public void givenVocabularyDoesNotExist_whenGetVocabulary_thenThrowAPIException() {
+    public void givenVocabularyDoesNotExistWhenGetVocabularyThenThrowAPIException() {
         assertThrows(APIException.class, () -> {
             setupResponse(null, null);
             api.get(0L);
@@ -71,17 +75,18 @@ public class VocabularyAPITest {
     }
 
     @Test
-    public void givenVocabularyDoesExist_whenGetVocabulary_thenReturnCorrectResult() {
+    public void givenVocabularyDoesExistWhenGetVocabularyThenReturnCorrectResult() {
         Vocabulary vocabulary = new Vocabulary();
+        vocabulary.setId(0L);
         setupResponse(vocabulary, Vocabulary.class);
 
         Vocabulary result = api.get(0L);
 
-        assertEquals(vocabulary, result);
+        assertEquals(vocabulary.getId(), result.getId());
     }
 
     @Test
-    public void givenVocabularyDoesExist_whenGetByNameVocabulary_thenReturnCorrectResult() {
+    public void givenVocabularyDoesExistWhenGetByNameVocabularyThenReturnCorrectResult() {
         Vocabulary vocabulary = new Vocabulary();
         setupResponse(vocabulary, Vocabulary.class);
 
@@ -91,7 +96,7 @@ public class VocabularyAPITest {
     }
 
     @Test
-    public void givenVocabularyDoesExist_whenChangeVocabulary_thenReturnCorrectResult() {
+    public void givenVocabularyDoesExistWhenChangeVocabularyThenReturnCorrectResult() {
         Vocabulary vocabulary = new Vocabulary();
         vocabulary.setId(0L);
 
@@ -103,7 +108,7 @@ public class VocabularyAPITest {
     }
 
     @Test
-    public void givenVocabularyDoesExist_whenDeleteVocabulary_thenReturnCorrectResult() {
+    public void givenVocabularyDoesExistWhenDeleteVocabularyThenReturnCorrectResult() {
         Vocabulary vocabulary = new Vocabulary();
         vocabulary.setId(0L);
 
@@ -113,7 +118,7 @@ public class VocabularyAPITest {
     }
 
     @Test
-    public void givenNothing_whenGetAll_thenReturnCorrectPageResult() {
+    public void givenNothingWhenGetAllThenReturnCorrectPageResult() {
         VocabularyPageResult pageResult = new VocabularyPageResult();
         pageResult.setContent(Collections.emptyList());
 

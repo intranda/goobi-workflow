@@ -20,8 +20,8 @@ package de.sub.goobi.helper;
  */
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,6 +36,10 @@ import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -43,11 +47,6 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
-
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 @ExtendWith(MockitoExtension.class)
 public class BatchProcessHelperTest extends AbstractTest {

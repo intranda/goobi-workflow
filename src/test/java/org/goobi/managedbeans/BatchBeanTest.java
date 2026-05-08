@@ -80,7 +80,6 @@ public class BatchBeanTest extends AbstractTest {
         process2.setTitel("Process2");
         process2.setBatch(batch1);
         process2.setProjekt(project);
-
     }
 
     @Test

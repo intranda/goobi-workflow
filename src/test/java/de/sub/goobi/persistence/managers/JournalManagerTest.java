@@ -19,8 +19,8 @@ package de.sub.goobi.persistence.managers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,13 +30,13 @@ import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.production.enums.LogType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class JournalManagerTest extends AbstractTest {
 
@@ -59,11 +59,10 @@ public class JournalManagerTest extends AbstractTest {
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-
             JournalManager.saveJournalEntry(sampleEntry);
-    
+
         }
-}
+    }
 
     @Test
     public void testDeleteJournalEntry() {
@@ -72,11 +71,10 @@ public class JournalManagerTest extends AbstractTest {
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-
             JournalManager.deleteJournalEntry(sampleEntry);
-    
+
         }
-}
+    }
 
     @Test
     public void testDeleteAllJournalEntries() {
@@ -85,11 +83,10 @@ public class JournalManagerTest extends AbstractTest {
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-
             JournalManager.deleteAllJournalEntries(1, EntryType.PROCESS);
-    
+
         }
-}
+    }
 
     @Test
     public void testGetLogEntriesForProcess() {
@@ -98,13 +95,12 @@ public class JournalManagerTest extends AbstractTest {
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-
             List<JournalEntry> result = JournalManager.getLogEntriesForProcess(1);
             assertNotNull(result);
             assertEquals(1, result.size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetLogEntriesForInstitution() {
@@ -113,13 +109,12 @@ public class JournalManagerTest extends AbstractTest {
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-
             List<JournalEntry> result = JournalManager.getLogEntriesForInstitution(1);
             assertNotNull(result);
             assertEquals(1, result.size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetLogEntriesForUser() {
@@ -128,13 +123,12 @@ public class JournalManagerTest extends AbstractTest {
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-
             List<JournalEntry> result = JournalManager.getLogEntriesForUser(1);
             assertNotNull(result);
             assertEquals(1, result.size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetLogEntriesForProject() {
@@ -143,13 +137,12 @@ public class JournalManagerTest extends AbstractTest {
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-
             List<JournalEntry> result = JournalManager.getLogEntriesForProject(1);
             assertNotNull(result);
             assertEquals(1, result.size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetJournalEntryById() {
@@ -158,13 +151,12 @@ public class JournalManagerTest extends AbstractTest {
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-
             JournalEntry result = JournalManager.getJournalEntryById(1);
             assertNotNull(result);
             assertEquals(Integer.valueOf(1), result.getId());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetHitSizeThrowsUnsupported() throws Exception {
@@ -175,12 +167,11 @@ public class JournalManagerTest extends AbstractTest {
                 mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
                 mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-
                 new JournalManager().getHitSize("", "", null);
-    
+
             }
         });
-}
+    }
 
     @Test
     public void testGetListThrowsUnsupported() throws Exception {
@@ -191,12 +182,11 @@ public class JournalManagerTest extends AbstractTest {
                 mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
                 mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-
                 new JournalManager().getList("", "", 0, 10, null);
-    
+
             }
         });
-}
+    }
 
     @Test
     public void testGetIdListThrowsUnsupported() {
@@ -207,12 +197,11 @@ public class JournalManagerTest extends AbstractTest {
                 mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
                 mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-
                 new JournalManager().getIdList("", "", null);
-    
+
             }
         });
-}
+    }
 
     @Test
     public void testResultSetToLogEntryListHandlerNotNull() {
@@ -221,9 +210,8 @@ public class JournalManagerTest extends AbstractTest {
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
             mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-
             assertNotNull(JournalManager.resultSetToLogEntryListHandler);
-    
+
         }
-}
+    }
 }

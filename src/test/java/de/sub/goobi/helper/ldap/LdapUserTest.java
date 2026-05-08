@@ -54,15 +54,15 @@ public class LdapUserTest extends AbstractTest {
         assertThrows(NamingException.class, () -> {
             User user = new User();
             user.setLogin("login");
-    
+
             Ldap ldap = new Ldap();
             ldap.setAuthenticationType("ldap");
             ldap.setObjectClasses(null);
             ldap.setReadonly(false);
             user.setLdapGruppe(ldap);
-    
+
             LdapUser fixture = new LdapUser();
-    
+
             fixture.configure(user, "test", "666");
         });
     }

@@ -39,7 +39,7 @@ public class ValidateFormatsTest {
     }
 
     @Test
-    public void testUndefinedMetadataType_shouldReturnError() {
+    public void testUndefinedMetadataTypeShouldReturnError() {
         Element root = new Element("Ruleset");
 
         // Define <Formats><PicaPlus><Metadata><name>Title</name></Metadata></PicaPlus></Formats>
@@ -65,7 +65,7 @@ public class ValidateFormatsTest {
     }
 
     @Test
-    public void testDefinedMetadataType_shouldPassValidation() {
+    public void testDefinedMetadataTypeShouldPassValidation() {
         Element root = new Element("Ruleset");
 
         // Used
@@ -93,7 +93,7 @@ public class ValidateFormatsTest {
     }
 
     @Test
-    public void testGroupRecursion_shouldDetectUndefinedGroup() {
+    public void testGroupRecursionShouldDetectUndefinedGroup() {
         Element root = new Element("Ruleset");
 
         // Used in nested group
@@ -123,7 +123,7 @@ public class ValidateFormatsTest {
     }
 
     @Test
-    public void testDefinedGroup_shouldNotRaiseError() {
+    public void testDefinedGroupShouldNotRaiseError() {
         Element root = new Element("Ruleset");
 
         // Used

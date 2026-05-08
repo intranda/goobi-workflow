@@ -37,7 +37,7 @@ import de.sub.goobi.helper.StorageProvider;
 public class TarUtilsTest extends AbstractTest {
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     private Path sourceFolder;
     private Path destinationFolder;
@@ -89,7 +89,6 @@ public class TarUtilsTest extends AbstractTest {
         assertTrue(Files.exists(extractedMetadata));
         assertTrue(Files.exists(extractedImage));
     }
-
 
     @Test
     public void testTarGZFile() {

@@ -23,14 +23,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.SessionInfo;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.forms.SessionForm;
 import jakarta.servlet.http.HttpSession;
 
+@ExtendWith(MockitoExtension.class)
 public class CurrentUsersTest extends AbstractTest {
 
     @Test
@@ -46,10 +49,9 @@ public class CurrentUsersTest extends AbstractTest {
         list = fixture.getCurrentUsers();
         assertTrue(list.isEmpty());
 
-        HttpSession session = EasyMock.createMock(HttpSession.class);
-        EasyMock.expect(session.getId()).andReturn("1").anyTimes();
-        EasyMock.expect(session.getMaxInactiveInterval()).andReturn(1).anyTimes();
-        EasyMock.replay(session);
+        HttpSession session = Mockito.mock(HttpSession.class);
+        Mockito.when(session.getId()).thenReturn("1");
+        Mockito.when(session.getMaxInactiveInterval()).thenReturn(1);
 
         sf.updateSessionLastAccess(session);
 

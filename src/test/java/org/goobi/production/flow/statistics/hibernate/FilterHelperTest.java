@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.api.rest.model.RestProcessQueryResource;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper.StepFilter;
 import org.junit.jupiter.api.Test;

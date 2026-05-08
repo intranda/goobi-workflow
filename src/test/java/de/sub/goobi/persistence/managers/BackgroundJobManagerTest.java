@@ -27,13 +27,13 @@ import java.util.List;
 import org.goobi.production.flow.jobs.BackgroundJob;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class BackgroundJobManagerTest extends AbstractTest {
 
@@ -44,11 +44,9 @@ public class BackgroundJobManagerTest extends AbstractTest {
     @BeforeEach
     public void setUp() throws Exception {
 
-
         job = Mockito.mock(BackgroundJob.class);
         jobs = new ArrayList<>();
         jobs.add(job);
-
 
         ids = new ArrayList<>();
         ids.add(1);
@@ -58,141 +56,149 @@ public class BackgroundJobManagerTest extends AbstractTest {
     public void testConstructor() {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.anyString())).thenReturn(10);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
+            mockedBackgroundJobsMysqlHelper
+                    .when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getIdList(Mockito.anyString())).thenReturn(ids);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getBackgroundJobById(Mockito.anyInt())).thenReturn(job);
 
-
             BackgroundJobManager fixture = new BackgroundJobManager();
             assertNotNull(fixture);
-    
+
         }
-}
+    }
 
     @Test
     public void testGetHitSize() throws Exception {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.anyString())).thenReturn(10);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
+            mockedBackgroundJobsMysqlHelper
+                    .when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getIdList(Mockito.anyString())).thenReturn(ids);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getBackgroundJobById(Mockito.anyInt())).thenReturn(job);
-
 
             BackgroundJobManager fixture = new BackgroundJobManager();
             assertNotNull(fixture);
             assertEquals(10, fixture.getHitSize("", "", null));
-    
+
         }
-}
+    }
 
     @Test
     public void testGetList() throws Exception {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.anyString())).thenReturn(10);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
+            mockedBackgroundJobsMysqlHelper
+                    .when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getIdList(Mockito.anyString())).thenReturn(ids);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getBackgroundJobById(Mockito.anyInt())).thenReturn(job);
-
 
             BackgroundJobManager fixture = new BackgroundJobManager();
             assertNotNull(fixture);
             assertEquals(1, fixture.getList("", "", 0, 10, null).size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetJobs() throws Exception {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.anyString())).thenReturn(10);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
+            mockedBackgroundJobsMysqlHelper
+                    .when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getIdList(Mockito.anyString())).thenReturn(ids);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getBackgroundJobById(Mockito.anyInt())).thenReturn(job);
-
 
             BackgroundJobManager fixture = new BackgroundJobManager();
             assertNotNull(fixture);
             assertEquals(1, fixture.getJobs("", "", 0, 10).size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetIdList() throws Exception {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.anyString())).thenReturn(10);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
+            mockedBackgroundJobsMysqlHelper
+                    .when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getIdList(Mockito.anyString())).thenReturn(ids);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getBackgroundJobById(Mockito.anyInt())).thenReturn(job);
-
 
             BackgroundJobManager fixture = new BackgroundJobManager();
             assertNotNull(fixture);
             assertEquals(1, fixture.getIdList("", "", null).size());
-    
+
         }
-}
+    }
 
     @Test
     public void getBackgroundJobById() {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.anyString())).thenReturn(10);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
+            mockedBackgroundJobsMysqlHelper
+                    .when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getIdList(Mockito.anyString())).thenReturn(ids);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getBackgroundJobById(Mockito.anyInt())).thenReturn(job);
 
-
             BackgroundJob job = BackgroundJobManager.getBackgroundJobById(1);
             assertNotNull(job);
-    
+
         }
-}
+    }
 
     @Test
     public void saveBackgroundJob() {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.anyString())).thenReturn(10);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
+            mockedBackgroundJobsMysqlHelper
+                    .when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getIdList(Mockito.anyString())).thenReturn(ids);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getBackgroundJobById(Mockito.anyInt())).thenReturn(job);
-
 
             BackgroundJob job = Mockito.mock(BackgroundJob.class);
             BackgroundJobManager.saveBackgroundJob(job);
             assertNotNull(job);
-    
+
         }
-}
+    }
 
     @Test
     public void deleteBackgroundJob() {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.anyString())).thenReturn(10);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
+            mockedBackgroundJobsMysqlHelper
+                    .when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getIdList(Mockito.anyString())).thenReturn(ids);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getBackgroundJobById(Mockito.anyInt())).thenReturn(job);
-
 
             BackgroundJob job = Mockito.mock(BackgroundJob.class);
             BackgroundJobManager.deleteBackgroundJob(job);
             assertNotNull(job);
 
-    
         }
-}
+    }
 
     @Test
     public void clearHistory() {
         try (MockedStatic<BackgroundJobsMysqlHelper> mockedBackgroundJobsMysqlHelper = Mockito.mockStatic(BackgroundJobsMysqlHelper.class)) {
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getHitSize(Mockito.anyString())).thenReturn(10);
-                        mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(jobs);
+            mockedBackgroundJobsMysqlHelper
+                    .when(() -> BackgroundJobsMysqlHelper.getList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
+                    .thenReturn(jobs);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getIdList(Mockito.anyString())).thenReturn(ids);
             mockedBackgroundJobsMysqlHelper.when(() -> BackgroundJobsMysqlHelper.getBackgroundJobById(Mockito.anyInt())).thenReturn(job);
 
-
             BackgroundJobManager.clearHistory();
-    
+
         }
-}
+    }
 
 }

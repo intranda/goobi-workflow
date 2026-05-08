@@ -32,17 +32,16 @@ import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.StepManager;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class GoobiScriptAddShellScriptToStepTest extends AbstractTest {
 
@@ -76,42 +75,43 @@ public class GoobiScriptAddShellScriptToStepTest extends AbstractTest {
     @Test
     public void testConstructor() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             GoobiScriptAddShellScriptToStep fixture = new GoobiScriptAddShellScriptToStep();
             assertNotNull(fixture);
             assertEquals("addShellScriptToStep", fixture.getAction());
-    
+
         }
-}
+    }
 
     @Test
     public void testSampleCall() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             GoobiScriptAddShellScriptToStep fixture = new GoobiScriptAddShellScriptToStep();
             assertNotNull(fixture);
             assertEquals(
-                    "---\\n# This GoobiScript allows to add a shell script to an existing workflow step.\\naction: addShellScriptToStep\\n\\n# This is the title of the workflow step to be used.\\nsteptitle: Generate MD5 Hashes\\n\\n# Define a label for the script that shall be visible for that script inside of an accepted task.\\nlabel: Hash generation\\n\\n# Define the script that shall be added here.\\nscript: /bin/bash /path/to/script.sh \"parameter with blanks\"",
+                    "---\\n# This GoobiScript allows to add a shell script to an existing workflow step.\\naction: "
+                            + "addShellScriptToStep\\n\\n# This is the title of the workflow step to be used.\\n"
+                            + "steptitle: Generate MD5 Hashes\\n\\n# Define a label for the script that shall be "
+                            + "visible for that script inside of an accepted task.\\nlabel: Hash generation\\n\\n# "
+                            + "Define the script that shall be added here.\\nscript: /bin/bash /path/to/script.sh \"parameter with blanks\"",
                     fixture.getSampleCall());
-    
+
         }
-}
+    }
 
     @Test
     public void testPrepare() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -125,17 +125,16 @@ public class GoobiScriptAddShellScriptToStepTest extends AbstractTest {
             List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
             assertEquals(1, results.size());
             assertEquals("addShellScriptToStep", results.get(0).getCommand());
-    
+
         }
-}
+    }
 
     @Test
     public void testExecute() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -154,8 +153,8 @@ public class GoobiScriptAddShellScriptToStepTest extends AbstractTest {
 
             assertEquals("abc", s1.getScriptname1());
             assertEquals("xyz", s1.getTypAutomatischScriptpfad());
-    
+
         }
-}
+    }
 
 }

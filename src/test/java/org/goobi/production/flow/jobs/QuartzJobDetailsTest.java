@@ -34,12 +34,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.quartz.JobKey;
 
 import de.sub.goobi.AbstractTest;
 
+@ExtendWith(MockitoExtension.class)
 public class QuartzJobDetailsTest extends AbstractTest {
 
     @Test
@@ -105,7 +108,7 @@ public class QuartzJobDetailsTest extends AbstractTest {
     public void testJob() throws Exception {
         QuartzJobDetails fixture = new QuartzJobDetails();
         assertNull(fixture.getJob());
-        IGoobiJob job = EasyMock.createMock(IGoobiJob.class);
+        IGoobiJob job = Mockito.mock(IGoobiJob.class);
         fixture.setJob(job);
         assertNotNull(fixture.getJob());
     }
@@ -146,11 +149,5 @@ public class QuartzJobDetailsTest extends AbstractTest {
         other.setJobName("a");
         assertEquals(1, fixture.compareTo(other));
     }
-
-    //
-    //    @Override
-    //    public int compareTo(QuartzJobDetails o) {
-    //        return jobName.compareTo(o.getJobName());
-    //    }
 
 }

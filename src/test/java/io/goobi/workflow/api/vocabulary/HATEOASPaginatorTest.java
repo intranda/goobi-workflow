@@ -9,8 +9,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import io.goobi.vocabulary.exchange.HateoasHref;
 import io.goobi.vocabulary.exchange.Identifiable;
@@ -22,7 +26,10 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@MockitoSettings(strictness = Strictness.LENIENT)
+@ExtendWith(MockitoExtension.class)
 public class HATEOASPaginatorTest {
     @Data
     @AllArgsConstructor
@@ -33,6 +40,7 @@ public class HATEOASPaginatorTest {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = false)
     class TestItemResultPage extends BasePageResult<TestItem> {
         private List<TestItem> content;
     }
@@ -52,25 +60,20 @@ public class HATEOASPaginatorTest {
                 id -> items.stream().filter(i -> i.getId().equals(id)).findFirst().orElseThrow());
 
         // Client mocking
-        Response response = EasyMock.createMock(Response.class);
-        EasyMock.expect(response.getStatus()).andReturn(200).anyTimes();
-        EasyMock.expect(response.readEntity(TestItemResultPage.class)).andReturn(resultPage).anyTimes();
+        Response response = Mockito.mock(Response.class);
+        Mockito.when(response.getStatus()).thenReturn(200);
+        Mockito.when(response.readEntity(TestItemResultPage.class)).thenReturn(resultPage);
         response.close();
-        EasyMock.expectLastCall();
-        EasyMock.replay(response);
 
-        Invocation.Builder builder = EasyMock.createMock(Invocation.Builder.class);
-        EasyMock.expect(builder.header(EasyMock.anyString(), EasyMock.anyString())).andReturn(builder).anyTimes();
-        EasyMock.expect(builder.get()).andReturn(response).anyTimes();
-        EasyMock.replay(builder);
+        Invocation.Builder builder = Mockito.mock(Invocation.Builder.class);
+        Mockito.when(builder.header(Mockito.anyString(), Mockito.anyString())).thenReturn(builder);
+        Mockito.when(builder.get()).thenReturn(response);
 
-        WebTarget target = EasyMock.createMock(WebTarget.class);
-        EasyMock.expect(target.request(EasyMock.anyString())).andReturn(builder).anyTimes();
-        EasyMock.replay(target);
+        WebTarget target = Mockito.mock(WebTarget.class);
+        Mockito.when(target.request(Mockito.anyString())).thenReturn(builder);
 
-        Client client = EasyMock.createMock(Client.class);
-        EasyMock.expect(client.target((String) EasyMock.anyObject())).andReturn(target).anyTimes();
-        EasyMock.replay(client);
+        Client client = Mockito.mock(Client.class);
+        Mockito.when(client.target((String) Mockito.any())).thenReturn(target);
 
         this.paginator.setClient(client);
     }
@@ -80,7 +83,7 @@ public class HATEOASPaginatorTest {
     }
 
     @Test
-    public void givenFlatItemPage_whenGetItems_thenReturnAllItems() {
+    public void givenFlatItemPageWhenGetItemsThenReturnAllItems() {
         List<TestItem> items = Stream.of(1L, 2L, 3L)
                 .map(this::createFlat)
                 .collect(Collectors.toList());
@@ -91,7 +94,7 @@ public class HATEOASPaginatorTest {
     }
 
     @Test
-    public void givenSimpleHierarchyItemPage_whenGetItems_thenReturnOnlyRootItems() {
+    public void givenSimpleHierarchyItemPageWhenGetItemsThenReturnOnlyRootItems() {
         List<TestItem> items = List.of(
                 new TestItem(1L, null, List.of(11L)),
                 new TestItem(2L, null, null),
@@ -107,7 +110,7 @@ public class HATEOASPaginatorTest {
     }
 
     @Test
-    public void givenSimpleHierarchyItemPage_whenExpandAndGetItems_thenReturnAllItems() {
+    public void givenSimpleHierarchyItemPageWhenExpandAndGetItemsThenReturnAllItems() {
         List<TestItem> items = List.of(
                 new TestItem(1L, null, List.of(11L)),
                 new TestItem(11L, 1L, null),
@@ -121,7 +124,7 @@ public class HATEOASPaginatorTest {
     }
 
     @Test
-    public void givenSimpleHierarchyItemPage_whenIsExpandedChild_thenReturnFalse() {
+    public void givenSimpleHierarchyItemPageWhenIsExpandedChildThenReturnFalse() {
         List<TestItem> items = List.of(
                 new TestItem(1L, null, List.of(11L)),
                 new TestItem(11L, 1L, null),
@@ -134,7 +137,7 @@ public class HATEOASPaginatorTest {
     }
 
     @Test
-    public void givenSimpleHierarchyItemPage_whenIsExpandedParent_thenReturnFalse() {
+    public void givenSimpleHierarchyItemPageWhenIsExpandedParentThenReturnFalse() {
         List<TestItem> items = List.of(
                 new TestItem(1L, null, List.of(11L)),
                 new TestItem(11L, 1L, null),
@@ -147,7 +150,7 @@ public class HATEOASPaginatorTest {
     }
 
     @Test
-    public void givenEmptyPage_whenSettingAndGettingSortFieldAndSearchParameter_thenEverythingWorks() {
+    public void givenEmptyPageWhenSettingAndGettingSortFieldAndSearchParameterThenEverythingWorks() {
         setupPaginator(Collections.emptyList());
 
         this.paginator.setSortField("sort");
@@ -158,7 +161,7 @@ public class HATEOASPaginatorTest {
     }
 
     @Test
-    public void givenComplexHierarchyItemPage_whenExpandDeepChildAndGetItems_thenReturnAllRootsAndIntermediateParentsWithChild() {
+    public void givenComplexHierarchyItemPageWhenExpandDeepChildAndGetItemsThenReturnAllRootsAndIntermediateParentsWithChild() {
         List<TestItem> items = List.of(
                 new TestItem(1L, null, List.of(11L)),
                 new TestItem(11L, 1L, List.of(111L)),
@@ -175,7 +178,7 @@ public class HATEOASPaginatorTest {
     }
 
     @Test
-    public void givenEmptyPage_whenReloading_thenNoErrors() {
+    public void givenEmptyPageWhenReloadingThenNoErrors() {
         setupPaginator(Collections.emptyList());
 
         this.paginator.reload();

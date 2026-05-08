@@ -20,17 +20,15 @@ package de.sub.goobi.media.pdf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class PDFGeneratorTest extends AbstractTest {
 
@@ -39,11 +37,10 @@ public class PDFGeneratorTest extends AbstractTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        mockProcess = EasyMock.createMock(Process.class);
-        EasyMock.expect(mockProcess.getId()).andReturn(42).anyTimes();
-        EasyMock.expect(mockProcess.getImagesDirectory()).andReturn("/tmp/goobi/images/").anyTimes();
-        EasyMock.expect(mockProcess.getOcrAltoDirectory()).andReturn("/tmp/goobi/ocr/alto/").anyTimes();
-        EasyMock.replay(mockProcess);
+        mockProcess = Mockito.mock(Process.class);
+        Mockito.when(mockProcess.getId()).thenReturn(42);
+        Mockito.when(mockProcess.getImagesDirectory()).thenReturn("/tmp/goobi/images/");
+        Mockito.when(mockProcess.getOcrAltoDirectory()).thenReturn("/tmp/goobi/ocr/alto/");
         generator = new PDFGenerator(mockProcess);
     }
 

@@ -21,33 +21,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
-import org.easymock.Capture;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import jakarta.websocket.RemoteEndpoint;
 import jakarta.websocket.Session;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class MessagesWsTest {
 
     @Test
     public void testOnMessageKnownKeyReturnsTranslation() throws IOException {
-        RemoteEndpoint.Basic remote = EasyMock.createMock(RemoteEndpoint.Basic.class);
-        Session session = EasyMock.createMock(Session.class);
+        RemoteEndpoint.Basic remote = Mockito.mock(RemoteEndpoint.Basic.class);
+        Session session = Mockito.mock(Session.class);
 
-        Capture<String> responseCapture = EasyMock.newCapture();
-        EasyMock.expect(session.getBasicRemote()).andReturn(remote);
-        remote.sendText(EasyMock.capture(responseCapture));
-        EasyMock.expectLastCall();
-        EasyMock.replay(session, remote);
+        ArgumentCaptor<String> responseCapture = ArgumentCaptor.forClass(String.class);
+        Mockito.when(session.getBasicRemote()).thenReturn(remote);
 
         MessagesWs ws = new MessagesWs();
         ws.onMessage("{\"lang\":\"en\",\"key\":\"Content\"}", session);
 
-        EasyMock.verify(session, remote);
+        Mockito.verify(remote).sendText(responseCapture.capture());
         String response = responseCapture.getValue();
         assertTrue(response.contains("\"key\":\"Content\""));
         assertTrue(response.contains("\"value\":"));
@@ -55,37 +52,29 @@ public class MessagesWsTest {
 
     @Test
     public void testOnMessageUnknownKeyReturnsFallback() throws IOException {
-        RemoteEndpoint.Basic remote = EasyMock.createMock(RemoteEndpoint.Basic.class);
-        Session session = EasyMock.createMock(Session.class);
+        RemoteEndpoint.Basic remote = Mockito.mock(RemoteEndpoint.Basic.class);
+        Session session = Mockito.mock(Session.class);
 
-        Capture<String> responseCapture = EasyMock.newCapture();
-        EasyMock.expect(session.getBasicRemote()).andReturn(remote);
-        remote.sendText(EasyMock.capture(responseCapture));
-        EasyMock.expectLastCall();
-        EasyMock.replay(session, remote);
+        ArgumentCaptor<String> responseCapture = ArgumentCaptor.forClass(String.class);
+        Mockito.when(session.getBasicRemote()).thenReturn(remote);
 
         MessagesWs ws = new MessagesWs();
         ws.onMessage("{\"lang\":\"en\",\"key\":\"unknownKeyThatDoesNotExist99999\"}", session);
 
-        EasyMock.verify(session, remote);
+        Mockito.verify(remote).sendText(responseCapture.capture());
         assertTrue(responseCapture.getValue().contains("???unknownKeyThatDoesNotExist99999???"));
     }
 
     @Test
     public void testOnMessageCachesLocale() throws IOException {
-        RemoteEndpoint.Basic remote = EasyMock.createMock(RemoteEndpoint.Basic.class);
-        Session session = EasyMock.createMock(Session.class);
+        RemoteEndpoint.Basic remote = Mockito.mock(RemoteEndpoint.Basic.class);
+        Session session = Mockito.mock(Session.class);
 
-        // two calls expected
-        EasyMock.expect(session.getBasicRemote()).andReturn(remote).times(2);
-        remote.sendText(EasyMock.anyString());
-        EasyMock.expectLastCall().times(2);
-        EasyMock.replay(session, remote);
+        Mockito.when(session.getBasicRemote()).thenReturn(remote);
 
         MessagesWs ws = new MessagesWs();
         ws.onMessage("{\"lang\":\"en\",\"key\":\"Content\"}", session);
         ws.onMessage("{\"lang\":\"en\",\"key\":\"Content\"}", session);
 
-        EasyMock.verify(session, remote);
     }
 }

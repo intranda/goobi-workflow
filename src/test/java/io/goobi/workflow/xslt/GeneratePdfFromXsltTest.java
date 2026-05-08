@@ -40,7 +40,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Batch;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
@@ -61,7 +60,13 @@ import org.jdom2.input.SAXBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -81,17 +86,14 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class GeneratePdfFromXsltTest extends AbstractTest {
 
     private static final Namespace XMLNS = Namespace.getNamespace("http://www.goobi.io/logfile");
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     private Process process;
     private String xsltfile;
@@ -157,8 +159,6 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
         process.setSortHelperStatus("12345567890");
 
-
-
         props = new ArrayList<>();
         GoobiProperty p = new GoobiProperty(PropertyOwnerType.PROCESS);
         p.setPropertyName("title");
@@ -180,7 +180,6 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
         process.setSchritte(steps);
 
-
         hel = new ArrayList<>();
         HistoryEvent he = new HistoryEvent();
         he.setHistoryType(HistoryEventType.unknown);
@@ -192,40 +191,37 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         StringPair sp = new StringPair("title", "value");
         metadataList.add(sp);
 
+        //        PowerMock.createMockAndExpectNew(Image.class, Mockito.any(), Mockito.anyInt(), Mockito.anyInt());
+        //        Mockito.when(new HelperForm()).thenReturn(helperFormMock);
+        //        Mockito.when(helperFormMock.getServletPathWithHostAsUrl()).thenReturn("http://example.com");
 
-        //        PowerMock.createMockAndExpectNew(Image.class, EasyMock.anyObject(Paths.class), EasyMock.anyInt(), EasyMock.anyInt());
-        //        EasyMock.expect(new HelperForm()).andReturn(helperFormMock);
-        //        EasyMock.expect(helperFormMock.getServletPathWithHostAsUrl()).andReturn("http://example.com");
-
-
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         FacesContextHelper.setFacesContext(facesContext);
-        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
 
-        HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 
-        EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
-        EasyMock.expect(externalContext.getRequestContextPath()).andReturn("junit").anyTimes();
-        EasyMock.expect(externalContext.getRequest()).andReturn(request).anyTimes();
-        EasyMock.expect(request.getScheme()).andReturn("https").anyTimes();
-        EasyMock.expect(request.getServerName()).andReturn("example.com").anyTimes();
-        EasyMock.expect(request.getServerPort()).andReturn(443).anyTimes();
-        EasyMock.expect(request.getContextPath()).andReturn("/goobi").anyTimes();
+        Mockito.when(facesContext.getExternalContext()).thenReturn(externalContext);
+        Mockito.when(externalContext.getRequestContextPath()).thenReturn("junit");
+        Mockito.when(externalContext.getRequest()).thenReturn(request);
+        Mockito.when(request.getScheme()).thenReturn("https");
+        Mockito.when(request.getServerName()).thenReturn("example.com");
+        Mockito.when(request.getServerPort()).thenReturn(443);
+        Mockito.when(request.getContextPath()).thenReturn("/goobi");
 
-        EasyMock.replay(facesContext); EasyMock.replay(externalContext); EasyMock.replay(request);
     }
 
     @Test
     public void testConstructor() {
         try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
@@ -238,24 +234,23 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-
             XsltToPdf xslt = new XsltToPdf();
             assertNotNull(xslt);
-    
+
         }
-}
+    }
 
     @Test
     public void testXmlLog() throws Exception {
         try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
@@ -267,8 +262,6 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
             mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
-
-
 
             XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
             assertNotNull(xmlExport);
@@ -306,22 +299,22 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
             assertEquals("title", metadata.getAttributeValue("name"));
             assertEquals("value", metadata.getValue());
-    
+
         }
-}
+    }
 
     @Disabled
     @Test
     public void startMassExport() throws Exception {
         try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
@@ -333,8 +326,6 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
             mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
-
-
 
             List<Process> processList = new ArrayList<>();
             processList.add(process);
@@ -350,22 +341,22 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
             assertTrue(fixture.exists());
             assertTrue(fixture.length() > 0);
-    
+
         }
-}
+    }
 
     @Disabled
     @Test
     public void startSingleDocketExport() throws Exception {
         try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
@@ -377,8 +368,6 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
             mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
-
-
 
             File fixture = tempDir.resolve("docket.pdf").toFile();
 
@@ -390,22 +379,22 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
             assertTrue(fixture.exists());
             assertTrue(fixture.length() > 0);
-    
+
         }
-}
+    }
 
     @Disabled
     @Test
     public void startMetadataExport() throws Exception {
         try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
@@ -417,8 +406,6 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
             mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
-
-
 
             File fixture = tempDir.resolve("docket.pdf").toFile();
 
@@ -430,21 +417,21 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
             assertTrue(fixture.exists());
             assertTrue(fixture.length() > 0);
-    
+
         }
-}
+    }
 
     @Test
     public void testStartExportList() throws Exception {
         try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
@@ -456,7 +443,6 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
             mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
-
 
             List<Process> processList = new ArrayList<>();
             processList.add(process);
@@ -470,21 +456,21 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
             xslt.startExport(processList, os, xsltfile, false);
             assertTrue(fixture.exists());
             assertTrue(fixture.length() > 0);
-    
+
         }
-}
+    }
 
     @Test
     public void testCreateExtendedDocument() throws Exception {
         try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
             mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
@@ -497,14 +483,12 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-
-
             XsltPreparatorDocket xslt = new XsltPreparatorDocket();
 
             Document fixture = xslt.createExtendedDocument(process);
             assertNotNull(fixture);
-    
+
         }
-}
+    }
 
 }

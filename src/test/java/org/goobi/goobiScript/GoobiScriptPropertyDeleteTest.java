@@ -26,22 +26,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.User;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class GoobiScriptPropertyDeleteTest extends AbstractTest {
 
@@ -58,53 +57,51 @@ public class GoobiScriptPropertyDeleteTest extends AbstractTest {
 
         process = new Process();
         process.setId(1);
-
-
     }
 
     @Test
     public void testConstructor() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-                        mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(new java.util.ArrayList<GoobiProperty>());
-
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any()))
+                    .thenReturn(new java.util.ArrayList<>());
 
             GoobiScriptPropertyDelete fixture = new GoobiScriptPropertyDelete();
             assertNotNull(fixture);
             assertEquals("propertyDelete", fixture.getAction());
-    
+
         }
-}
+    }
 
     @Test
     public void testSampleCall() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-                        mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(new java.util.ArrayList<GoobiProperty>());
-
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any()))
+                    .thenReturn(new java.util.ArrayList<>());
 
             GoobiScriptPropertyDelete fixture = new GoobiScriptPropertyDelete();
             assertNotNull(fixture.getSampleCall());
             assertTrue(fixture.getSampleCall().contains("propertyDelete"));
-    
+
         }
-}
+    }
 
     @Test
     public void testPrepare() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-                        mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(new java.util.ArrayList<GoobiProperty>());
-
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any()))
+                    .thenReturn(new java.util.ArrayList<>());
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -114,19 +111,19 @@ public class GoobiScriptPropertyDeleteTest extends AbstractTest {
             List<GoobiScriptResult> results = fixture.prepare(processes, "propertyDelete", parameters);
             assertEquals(1, results.size());
             assertEquals("propertyDelete", results.get(0).getCommand());
-    
+
         }
-}
+    }
 
     @Test
     public void testPrepareWithMissingNameReturnsEmpty() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-                        mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(new java.util.ArrayList<GoobiProperty>());
-
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any()))
+                    .thenReturn(new java.util.ArrayList<>());
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -134,19 +131,19 @@ public class GoobiScriptPropertyDeleteTest extends AbstractTest {
             GoobiScriptPropertyDelete fixture = new GoobiScriptPropertyDelete();
             List<GoobiScriptResult> results = fixture.prepare(processes, "propertyDelete", parameters);
             assertTrue(results.isEmpty());
-    
+
         }
-}
+    }
 
     @Test
     public void testExecutePropertyNotFound() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-                        mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(new java.util.ArrayList<GoobiProperty>());
-
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any()))
+                    .thenReturn(new java.util.ArrayList<>());
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -157,7 +154,7 @@ public class GoobiScriptPropertyDeleteTest extends AbstractTest {
             fixture.execute(results.get(0));
             assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
             assertEquals("Property not found: Opening angle", results.get(0).getResultMessage());
-    
+
         }
-}
+    }
 }

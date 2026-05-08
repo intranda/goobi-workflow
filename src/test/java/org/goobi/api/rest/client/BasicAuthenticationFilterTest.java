@@ -23,14 +23,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 
+@ExtendWith(MockitoExtension.class)
 public class BasicAuthenticationFilterTest extends AbstractTest {
 
     @Test
@@ -44,10 +47,8 @@ public class BasicAuthenticationFilterTest extends AbstractTest {
 
         MultivaluedMap<String, Object> map = new MultivaluedHashMap<>();
 
-        ClientRequestContext mock = EasyMock.createMock(ClientRequestContext.class);
-        EasyMock.expect(mock.getHeaders()).andReturn(map).anyTimes();
-
-        EasyMock.replay(mock);
+        ClientRequestContext mock = Mockito.mock(ClientRequestContext.class);
+        Mockito.when(mock.getHeaders()).thenReturn(map);
 
         BasicAuthenticationFilter baf = new BasicAuthenticationFilter("user", "password");
         assertNotNull(baf);

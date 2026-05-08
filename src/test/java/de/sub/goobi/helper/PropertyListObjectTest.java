@@ -21,10 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.easymock.EasyMock;
 import org.goobi.production.properties.DisplayProperty;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class PropertyListObjectTest {
 
     @Test
@@ -46,8 +49,7 @@ public class PropertyListObjectTest {
     @Test
     public void testAddToList() {
         PropertyListObject obj = new PropertyListObject();
-        DisplayProperty prop = EasyMock.createMock(DisplayProperty.class);
-        EasyMock.replay(prop);
+        DisplayProperty prop = Mockito.mock(DisplayProperty.class);
         obj.addToList(prop);
         assertEquals(1, obj.getPropertyListSize());
     }
@@ -56,9 +58,8 @@ public class PropertyListObjectTest {
     public void testGetPropertyListSize() {
         PropertyListObject obj = new PropertyListObject();
         assertEquals(0, obj.getPropertyListSize());
-        DisplayProperty prop1 = EasyMock.createMock(DisplayProperty.class);
-        DisplayProperty prop2 = EasyMock.createMock(DisplayProperty.class);
-        EasyMock.replay(prop1, prop2);
+        DisplayProperty prop1 = Mockito.mock(DisplayProperty.class);
+        DisplayProperty prop2 = Mockito.mock(DisplayProperty.class);
         obj.addToList(prop1);
         obj.addToList(prop2);
         assertEquals(2, obj.getPropertyListSize());
@@ -68,8 +69,7 @@ public class PropertyListObjectTest {
     public void testGetPropertyListSizeString() {
         PropertyListObject obj = new PropertyListObject();
         assertEquals("0", obj.getPropertyListSizeString());
-        DisplayProperty prop = EasyMock.createMock(DisplayProperty.class);
-        EasyMock.replay(prop);
+        DisplayProperty prop = Mockito.mock(DisplayProperty.class);
         obj.addToList(prop);
         assertEquals("1", obj.getPropertyListSizeString());
     }

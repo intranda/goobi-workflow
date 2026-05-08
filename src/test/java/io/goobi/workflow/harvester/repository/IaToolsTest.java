@@ -27,22 +27,22 @@ import java.nio.file.Paths;
 import org.jdom2.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
 import io.goobi.workflow.api.connection.HttpUtils;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class IaToolsTest extends AbstractTest {
 
     @TempDir
-    Path tempFolder;
+    private Path tempFolder;
 
     private Path testFile;
 
@@ -66,17 +66,15 @@ public class IaToolsTest extends AbstractTest {
         response = "<root><result numFound=\"1\"><doc><field name=\"identifier\">1234</field><field name=\"publicdate\">1234</field>"
                 + "<field name=\"title\">1234</field><field name=\"creator\">1234</field></doc></result></root>";
 
-
     }
 
     @Test
     public void testOutputDirName() {
         try (MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class);
-             MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
+                MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHttpUtils.when(() -> HttpUtils.getStreamFromUrl(Mockito.any(), Mockito.any())).thenReturn(null);
             mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(response);
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
-
 
             // 1.) no underscore
             String identifier = "123456";
@@ -93,54 +91,50 @@ public class IaToolsTest extends AbstractTest {
             // 4.) underscore, non digits
             identifier = "123456_aaa";
             assertEquals("monograph", IaTools.getOutputDirName(identifier));
-    
+
         }
-}
+    }
 
     @Test
     public void testDownloadFile() throws Exception {
         try (MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class);
-             MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
+                MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHttpUtils.when(() -> HttpUtils.getStreamFromUrl(Mockito.any(), Mockito.any())).thenReturn(null);
             mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(response);
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
 
-
             Path fixture = IaTools.downloadFile("url", tempFolder.toString(), testFile.getFileName().toString());
             assertEquals("b20411595_marc.xml", fixture.getFileName().toString());
-    
+
         }
-}
+    }
 
     @Test
     public void testQuerySolrToJsonResult() throws Exception {
         try (MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class);
-             MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
+                MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHttpUtils.when(() -> HttpUtils.getStreamFromUrl(Mockito.any(), Mockito.any())).thenReturn(null);
             mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(response);
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
 
-
             Document doc = IaTools.querySolrToJsonResult("url");
             assertNotNull(doc);
-    
+
         }
-}
+    }
 
     @Test
     public void testQuerySolrToDB() throws Exception {
         try (MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class);
-             MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
+                MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHttpUtils.when(() -> HttpUtils.getStreamFromUrl(Mockito.any(), Mockito.any())).thenReturn(null);
             mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(response);
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
 
-
             //querySolrToDB(String query, Integer jobId, Integer repositoryId) {
             assertEquals(1, IaTools.querySolrToDB("url", 1, 1));
 
-    
         }
-}
+    }
 
 }

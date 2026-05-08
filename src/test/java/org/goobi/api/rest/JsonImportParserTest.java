@@ -32,18 +32,15 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
-import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.ProjectManager;
-import de.sub.goobi.persistence.managers.StepManager;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class JsonImportParserTest extends AbstractTest {
 

@@ -16,7 +16,6 @@
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-
 package de.sub.goobi.helper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,20 +29,20 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class BagCreationTest extends AbstractTest {
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     private String bagitFolder;
 
@@ -62,7 +61,6 @@ public class BagCreationTest extends AbstractTest {
         try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
             mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(configurationHelper);
 
-
             // use a root name
             BagCreation creation = new BagCreation(bagitFolder + "/fixture");
             assertEquals("fixture", creation.getBagitRoot().getFileName().toString());
@@ -74,15 +72,14 @@ public class BagCreationTest extends AbstractTest {
             // null as root name, create a uuid
             creation = new BagCreation(null);
             assertEquals(36, creation.getBagitRoot().getFileName().toString().length());
-    
+
         }
-}
+    }
 
     @Test
     public void testCreateIEFolder() {
         try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
             mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(configurationHelper);
-
 
             BagCreation creation = new BagCreation(bagitFolder + "/fixture");
             assertEquals("fixture", creation.getBagitRoot().getFileName().toString());
@@ -90,29 +87,27 @@ public class BagCreationTest extends AbstractTest {
             assertEquals("subfolder", creation.getIeFolder().getFileName().toString());
             assertEquals("metadata", creation.getMetadataFolder().getFileName().toString());
             assertEquals("objects", creation.getObjectsFolder().getFileName().toString());
-    
+
         }
-}
+    }
 
     @Test
     public void testMetadata() {
         try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
             mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(configurationHelper);
 
-
             BagCreation creation = new BagCreation(bagitFolder + "/fixture");
             assertTrue(creation.getMetadata().isEmpty());
             creation.addMetadata("key", "value");
             assertFalse(creation.getMetadata().isEmpty());
-    
+
         }
-}
+    }
 
     @Test
     public void testCreateBag() throws IOException {
         try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
             mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(configurationHelper);
-
 
             // folder preparation
             BagCreation creation = new BagCreation(bagitFolder + "/fixture");
@@ -152,7 +147,6 @@ public class BagCreationTest extends AbstractTest {
             assertTrue(Files.exists(manifest));
             assertTrue(Files.exists(tagmanifest));
 
-    
         }
-}
+    }
 }

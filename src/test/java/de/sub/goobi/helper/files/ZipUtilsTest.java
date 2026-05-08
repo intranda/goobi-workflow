@@ -37,7 +37,7 @@ import de.sub.goobi.helper.StorageProvider;
 public class ZipUtilsTest extends AbstractTest {
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     private Path sourceFolder;
     private Path destinationFolder;

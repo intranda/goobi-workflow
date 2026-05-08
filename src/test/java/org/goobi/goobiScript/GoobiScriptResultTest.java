@@ -25,14 +25,14 @@ import java.util.Map;
 
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class GoobiScriptResultTest extends AbstractTest {
 
@@ -83,5 +83,5 @@ public class GoobiScriptResultTest extends AbstractTest {
             GoobiScriptResult result = new GoobiScriptResult(1, "cmd", params, "user", 0L);
             assertEquals("2024-01-01 00:00:00", result.getFormattedTimestamp());
         }
-}
+    }
 }

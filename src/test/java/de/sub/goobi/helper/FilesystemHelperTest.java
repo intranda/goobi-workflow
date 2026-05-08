@@ -44,7 +44,7 @@ import de.sub.goobi.AbstractTest;
 public class FilesystemHelperTest extends AbstractTest {
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     @Test
     public void testRenamingOfNonExistingFileShouldThrowFileNotFoundException() throws IOException {

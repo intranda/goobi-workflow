@@ -67,10 +67,6 @@ public class UsergroupTest extends AbstractTest {
         assertEquals("1", group.getBerechtigungAsString());
     }
 
-    public void testBenutzer() {
-        // getBenutzer() can not be tested without database
-    }
-
     @Test
     public void testIsDeletable() {
         Usergroup group = new Usergroup();

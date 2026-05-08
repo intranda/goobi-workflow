@@ -26,15 +26,15 @@ import java.sql.SQLException;
 
 import org.goobi.beans.Docket;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class DocketConverterTest extends AbstractTest {
 
@@ -55,7 +55,7 @@ public class DocketConverterTest extends AbstractTest {
 
             assertNull(conv.getAsObject(null, null, "2"));
         }
-}
+    }
 
     @Test
     public void testGetAsString() {

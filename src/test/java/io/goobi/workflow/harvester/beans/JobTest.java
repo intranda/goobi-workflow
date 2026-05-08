@@ -25,20 +25,22 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.joda.time.MutableDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
 import io.goobi.workflow.harvester.export.ExportOutcome;
 import io.goobi.workflow.harvester.repository.Repository;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class JobTest extends AbstractTest {
 
@@ -48,62 +50,65 @@ public class JobTest extends AbstractTest {
     @BeforeEach
     public void setUp() throws Exception {
 
-        repository = EasyMock.createMock(Repository.class);
-        //        Record rec = EasyMock.createMock(Record.class);
+        repository = Mockito.mock(Repository.class);
+        //        Record rec = Mockito.mock(Record.class);
         Record rec = new Record();
         recordList = new ArrayList<>();
         recordList.add(rec);
 
-
-        EasyMock.expect(repository.isEnabled()).andReturn(true).anyTimes();
-        EasyMock.expect(repository.isAutoExport()).andReturn(true).anyTimes();
-        EasyMock.expect(repository.executeScript()).andReturn(null).anyTimes();
+        Mockito.when(repository.isEnabled()).thenReturn(true);
+        Mockito.when(repository.isAutoExport()).thenReturn(true);
+        Mockito.when(repository.executeScript()).thenReturn(null);
 
         ExportOutcome out = new ExportOutcome();
-        EasyMock.expect(repository.exportRecord(EasyMock.anyObject())).andReturn(out).anyTimes();
+        Mockito.when(repository.exportRecord(Mockito.any())).thenReturn(out);
 
-        EasyMock.expect(repository.harvest(EasyMock.anyInt())).andReturn(1).anyTimes();
-        EasyMock.replay(repository); }
+        Mockito.when(repository.harvest(Mockito.anyInt())).thenReturn(1);
+
+    }
 
     @Test
     public void testJobStatusTypes() {
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(repository);
-                        mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
-                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
-
+            mockedHarvesterRepositoryManager
+                    .when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                            Mockito.any(), Mockito.anyBoolean()))
+                    .thenReturn(recordList);
 
             assertEquals("WAITING", Job.WAITING);
             assertEquals("WORKING", Job.WORKING);
             assertEquals("DONE", Job.DONE);
             assertEquals("ERROR", Job.ERROR);
             assertEquals("CANCELLED", Job.CANCELLED);
-    
+
         }
-}
+    }
 
     @Test
     public void testJobConstructor() {
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(repository);
-                        mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
-                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
-
+            mockedHarvesterRepositoryManager
+                    .when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                            Mockito.any(), Mockito.anyBoolean()))
+                    .thenReturn(recordList);
 
             MutableDateTime mdt = new MutableDateTime();
             Job job = new Job(null, Job.WAITING, 0, "repository", null, new Timestamp(mdt.getMillis()));
             assertNotNull(job);
-    
+
         }
-}
+    }
 
     @Test
     public void testJobId() {
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(repository);
-                        mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
-                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
-
+            mockedHarvesterRepositoryManager
+                    .when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                            Mockito.any(), Mockito.anyBoolean()))
+                    .thenReturn(recordList);
 
             MutableDateTime mdt = new MutableDateTime();
             Job job = new Job(null, Job.WAITING, 0, "repository", null, new Timestamp(mdt.getMillis()));
@@ -111,49 +116,52 @@ public class JobTest extends AbstractTest {
             assertNull(job.getId());
             job.setId(1);
             assertEquals(1, job.getId().intValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testRepositoryId() {
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(repository);
-                        mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
-                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
-
+            mockedHarvesterRepositoryManager
+                    .when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                            Mockito.any(), Mockito.anyBoolean()))
+                    .thenReturn(recordList);
 
             MutableDateTime mdt = new MutableDateTime();
             Job job = new Job(null, Job.WAITING, 1, "repository", null, new Timestamp(mdt.getMillis()));
             assertNotNull(job);
             assertEquals(1, job.getRepositoryId().intValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testRepositoryName() {
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(repository);
-                        mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
-                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
-
+            mockedHarvesterRepositoryManager
+                    .when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                            Mockito.any(), Mockito.anyBoolean()))
+                    .thenReturn(recordList);
 
             MutableDateTime mdt = new MutableDateTime();
             Job job = new Job(null, Job.WAITING, 1, "repository", null, new Timestamp(mdt.getMillis()));
             assertNotNull(job);
             assertEquals("repository", job.getRepositoryName());
-    
+
         }
-}
+    }
 
     @Test
     public void testStatus() {
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(repository);
-                        mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
-                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
-
+            mockedHarvesterRepositoryManager
+                    .when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                            Mockito.any(), Mockito.anyBoolean()))
+                    .thenReturn(recordList);
 
             MutableDateTime mdt = new MutableDateTime();
             Job job = new Job(null, Job.WAITING, 1, "repository", null, new Timestamp(mdt.getMillis()));
@@ -161,17 +169,18 @@ public class JobTest extends AbstractTest {
             assertEquals(Job.WAITING, job.getStatus());
             job.setStatus(Job.DONE);
             assertEquals(Job.DONE, job.getStatus());
-    
+
         }
-}
+    }
 
     @Test
     public void testMessage() {
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(repository);
-                        mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
-                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
-
+            mockedHarvesterRepositoryManager
+                    .when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                            Mockito.any(), Mockito.anyBoolean()))
+                    .thenReturn(recordList);
 
             MutableDateTime mdt = new MutableDateTime();
             Job job = new Job(null, Job.WAITING, 1, "repository", null, new Timestamp(mdt.getMillis()));
@@ -179,17 +188,18 @@ public class JobTest extends AbstractTest {
             assertNull(job.getMessage());
             job.setMessage("fixture");
             assertEquals("fixture", job.getMessage());
-    
+
         }
-}
+    }
 
     @Test
     public void testTimestamp() {
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(repository);
-                        mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
-                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
-
+            mockedHarvesterRepositoryManager
+                    .when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                            Mockito.any(), Mockito.anyBoolean()))
+                    .thenReturn(recordList);
 
             MutableDateTime mdt = new MutableDateTime();
             Job job = new Job(null, Job.WAITING, 1, "repository", null, new Timestamp(mdt.getMillis()));
@@ -197,24 +207,25 @@ public class JobTest extends AbstractTest {
             assertEquals(mdt.getMillis(), job.getTimestamp().getTime());
             job.setTimestamp(new Timestamp(1L));
             assertEquals(1L, job.getTimestamp().getTime());
-    
+
         }
-}
+    }
 
     @Test
     public void testRun() {
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(repository);
-                        mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
-                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
-
+            mockedHarvesterRepositoryManager
+                    .when(() -> HarvesterRepositoryManager.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                            Mockito.any(), Mockito.anyBoolean()))
+                    .thenReturn(recordList);
 
             MutableDateTime mdt = new MutableDateTime();
             Job job = new Job(1, Job.WAITING, 1, "repository", null, new Timestamp(mdt.getMillis()));
             assertEquals(Job.WAITING, job.getStatus());
             job.run(false);
             assertEquals(Job.DONE, job.getStatus());
-    
+
         }
-}
+    }
 }

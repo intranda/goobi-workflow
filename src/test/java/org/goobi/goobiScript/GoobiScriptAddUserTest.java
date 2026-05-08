@@ -31,6 +31,10 @@ import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
@@ -39,10 +43,6 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class GoobiScriptAddUserTest extends AbstractTest {
 
@@ -75,57 +75,58 @@ public class GoobiScriptAddUserTest extends AbstractTest {
         users = new ArrayList<>();
         users.add(user);
 
-
     }
 
     @Test
     public void testConstructor() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
-                        mockedUserManager.when(() -> UserManager.getUsers(Mockito.any(), Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(users);
+            mockedUserManager.when(() -> UserManager.getUsers(Mockito.any(), Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any()))
+                    .thenReturn(users);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             GoobiScriptAddUser fixture = new GoobiScriptAddUser();
             assertNotNull(fixture);
             assertEquals("addUser", fixture.getAction());
-    
+
         }
-}
+    }
 
     @Test
     public void testSampleCall() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
-                        mockedUserManager.when(() -> UserManager.getUsers(Mockito.any(), Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(users);
+            mockedUserManager.when(() -> UserManager.getUsers(Mockito.any(), Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any()))
+                    .thenReturn(users);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             GoobiScriptAddUser fixture = new GoobiScriptAddUser();
             assertNotNull(fixture);
             assertEquals(
-                    "---\\n# This GoobiScript allows to assign a user to an existing workflow step.\\naction: addUser\\n\\n# Title of the workflow step to be edited\\nsteptitle: Scanning\\n\\n# Login name of the user to assign to the workflow step.\\nusername: steffen",
+                    "---\\n# This GoobiScript allows to assign a user to an existing workflow step.\\naction: addUser\\n\\n# Title of the "
+                            + "workflow step to be edited\\nsteptitle: Scanning\\n\\n# Login name of the user to assign to the workflow "
+                            + "step.\\nusername: steffen",
                     fixture.getSampleCall());
-    
+
         }
-}
+    }
 
     @Test
     public void testPrepare() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
-                        mockedUserManager.when(() -> UserManager.getUsers(Mockito.any(), Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(users);
+            mockedUserManager.when(() -> UserManager.getUsers(Mockito.any(), Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any()))
+                    .thenReturn(users);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -138,20 +139,20 @@ public class GoobiScriptAddUserTest extends AbstractTest {
             List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
             assertEquals(1, results.size());
             assertEquals("addUser", results.get(0).getCommand());
-    
+
         }
-}
+    }
 
     @Test
     public void testExecute() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class)) {
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
-                        mockedUserManager.when(() -> UserManager.getUsers(Mockito.any(), Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(users);
+            mockedUserManager.when(() -> UserManager.getUsers(Mockito.any(), Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any()))
+                    .thenReturn(users);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
-
 
             List<Integer> processes = new ArrayList<>();
             processes.add(1);
@@ -173,8 +174,7 @@ public class GoobiScriptAddUserTest extends AbstractTest {
             fixture.execute(results.get(0));
             assertEquals(1, s1.getBenutzer().size());
 
-    
         }
-}
+    }
 
 }

@@ -141,6 +141,7 @@ public class TimeUnitTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testGetDateRowDaysReturnsDayList() {
         // range of 3 days: 2024-01-01 to 2024-01-04
         Date start = new Date(124, 0, 1); // 2024-01-01
@@ -151,6 +152,7 @@ public class TimeUnitTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testGetDateRowMonthsReturnsMonthList() {
         Date start = new Date(124, 0, 1); // 2024-01
         Date end = new Date(124, 2, 1); // 2024-03
@@ -161,6 +163,7 @@ public class TimeUnitTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testGetDateRowYearsReturnsYearList() {
         Date start = new Date(122, 0, 1); // 2022
         Date end = new Date(124, 0, 1); // 2024

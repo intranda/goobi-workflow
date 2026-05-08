@@ -52,7 +52,6 @@ public class HarvesterGoobiImportTest extends AbstractTest {
         @HarvesterGoobiImport
         class TestImplDefault {
         }
-
         HarvesterGoobiImport anno = TestImplDefault.class.getAnnotation(HarvesterGoobiImport.class);
         assertNotNull(anno);
         assertEquals("", anno.description());

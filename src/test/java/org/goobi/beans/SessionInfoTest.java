@@ -22,12 +22,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import jakarta.servlet.http.HttpSession;
 
+@ExtendWith(MockitoExtension.class)
 public class SessionInfoTest extends AbstractTest {
 
     @Test
@@ -38,7 +41,7 @@ public class SessionInfoTest extends AbstractTest {
 
     @Test
     public void testSession() {
-        HttpSession session = EasyMock.createMock(HttpSession.class);
+        HttpSession session = Mockito.mock(HttpSession.class);
         SessionInfo fixture = new SessionInfo();
         assertNull(fixture.getSession());
         fixture.setSession(session);

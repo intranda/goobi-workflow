@@ -355,12 +355,6 @@ public class ProcessTest extends AbstractTest {
         assertEquals(10, process.getDocketId().intValue());
     }
 
-    // TODO: Can 'msp' be tested?
-
-    // Note: 'help' can not be tested directly
-
-    // Note: 'tempVariableMap' can not be tested directly
-
     @Test
     public void testMediaFolderExists() {
         Process process = new Process();
@@ -370,12 +364,6 @@ public class ProcessTest extends AbstractTest {
         process.setMediaFolderExists(false);
         assertFalse(process.isMediaFolderExists());
     }
-
-    // TODO: 'metadataList' can not be tested without database
-
-    // Note: 'representativeImage' can not be tested directly
-
-    // Note: 'folderList' can not be tested directly
 
     @Test
     public void testCurrentFolder() {
@@ -912,6 +900,7 @@ public class ProcessTest extends AbstractTest {
         assertTrue(process.isConfiguredWithExportValidator());
     }
 
+    @SuppressWarnings("removal")
     @Deprecated(since = "23.05", forRemoval = true)
     @Test
     public void testProcessLog() {

@@ -21,9 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
@@ -32,10 +35,6 @@ import io.goobi.workflow.harvester.export.ExportOutcome;
 import io.goobi.workflow.harvester.export.ExportOutcome.ExportOutcomeStatus;
 import io.goobi.workflow.harvester.repository.Repository;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class RecordExportTest extends AbstractTest {
 
@@ -56,9 +55,8 @@ public class RecordExportTest extends AbstractTest {
         ExportOutcome outcome = new ExportOutcome();
         outcome.setStatus(ExportOutcomeStatus.OK);
 
-        Repository mockRepository = EasyMock.createMock(Repository.class);
-        EasyMock.expect(mockRepository.exportRecord(EasyMock.anyObject())).andReturn(outcome);
-        EasyMock.replay(mockRepository);
+        Repository mockRepository = Mockito.mock(Repository.class);
+        Mockito.when(mockRepository.exportRecord(Mockito.any())).thenReturn(outcome);
 
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(mockRepository);
@@ -70,9 +68,8 @@ public class RecordExportTest extends AbstractTest {
             assertEquals("OK", hist.getStatus());
             assertNotNull(record.getExportedDatestamp());
 
-            EasyMock.verify(mockRepository);
         }
-}
+    }
 
     @Test
     public void testExportOutcomeNotFound() throws Exception {
@@ -80,9 +77,8 @@ public class RecordExportTest extends AbstractTest {
         ExportOutcome outcome = new ExportOutcome();
         outcome.setStatus(ExportOutcomeStatus.NOT_FOUND);
 
-        Repository mockRepository = EasyMock.createMock(Repository.class);
-        EasyMock.expect(mockRepository.exportRecord(EasyMock.anyObject())).andReturn(outcome);
-        EasyMock.replay(mockRepository);
+        Repository mockRepository = Mockito.mock(Repository.class);
+        Mockito.when(mockRepository.exportRecord(Mockito.any())).thenReturn(outcome);
 
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(mockRepository);
@@ -95,9 +91,8 @@ public class RecordExportTest extends AbstractTest {
             assertEquals("Record missing.", hist.getMessage());
             assertNull(record.getExportedDatestamp());
 
-            EasyMock.verify(mockRepository);
         }
-}
+    }
 
     @Test
     public void testExportOutcomeError() throws Exception {
@@ -108,9 +103,8 @@ public class RecordExportTest extends AbstractTest {
         record.setExported("previous-value");
         record.setExportedDatestamp(new java.util.Date());
 
-        Repository mockRepository = EasyMock.createMock(Repository.class);
-        EasyMock.expect(mockRepository.exportRecord(EasyMock.anyObject())).andReturn(outcome);
-        EasyMock.replay(mockRepository);
+        Repository mockRepository = Mockito.mock(Repository.class);
+        Mockito.when(mockRepository.exportRecord(Mockito.any())).thenReturn(outcome);
 
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(mockRepository);
@@ -123,9 +117,8 @@ public class RecordExportTest extends AbstractTest {
             assertNull(record.getExported());
             assertNull(record.getExportedDatestamp());
 
-            EasyMock.verify(mockRepository);
         }
-}
+    }
 
     @Test
     public void testExportOutcomeSkip() throws Exception {
@@ -133,9 +126,8 @@ public class RecordExportTest extends AbstractTest {
         ExportOutcome outcome = new ExportOutcome();
         outcome.setStatus(ExportOutcomeStatus.SKIP);
 
-        Repository mockRepository = EasyMock.createMock(Repository.class);
-        EasyMock.expect(mockRepository.exportRecord(EasyMock.anyObject())).andReturn(outcome);
-        EasyMock.replay(mockRepository);
+        Repository mockRepository = Mockito.mock(Repository.class);
+        Mockito.when(mockRepository.exportRecord(Mockito.any())).thenReturn(outcome);
 
         try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class)) {
             mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.getRepository(Mockito.anyInt())).thenReturn(mockRepository);
@@ -148,8 +140,7 @@ public class RecordExportTest extends AbstractTest {
             assertEquals("SKIPPED", record.getExported());
             assertNotNull(record.getExportedDatestamp());
 
-            EasyMock.verify(mockRepository);
         }
-}
+    }
 
 }

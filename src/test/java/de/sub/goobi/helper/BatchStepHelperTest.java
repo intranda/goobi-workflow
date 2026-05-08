@@ -20,8 +20,8 @@ package de.sub.goobi.helper;
  */
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
@@ -38,6 +37,10 @@ import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -45,11 +48,6 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
-
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 @ExtendWith(MockitoExtension.class)
 public class BatchStepHelperTest extends AbstractTest {

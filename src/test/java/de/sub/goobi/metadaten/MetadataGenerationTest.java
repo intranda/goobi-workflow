@@ -13,6 +13,8 @@ import org.jdom2.Element;
 import org.jdom2.xpath.XPathFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
@@ -21,9 +23,6 @@ import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 import ugh.fileformats.mets.ModsHelper;
-
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class MetadataGenerationTest extends AbstractTest {

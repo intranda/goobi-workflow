@@ -27,11 +27,11 @@ import java.util.List;
 
 import org.goobi.api.rest.request.SearchQuery.RelationalOperator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class SearchQueryTest extends AbstractTest {
 

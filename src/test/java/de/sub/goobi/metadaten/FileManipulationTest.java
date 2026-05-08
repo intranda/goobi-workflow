@@ -41,12 +41,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -56,7 +61,6 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.mock.MockUploadedFile;
 import de.sub.goobi.persistence.managers.MetadataManager;
-import de.sub.goobi.persistence.managers.ProcessManager;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
@@ -67,11 +71,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class FileManipulationTest extends AbstractTest {
 
@@ -85,7 +85,7 @@ public class FileManipulationTest extends AbstractTest {
     private MockedStatic<MetadataManager> mockedMetadataManager;
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -120,11 +120,21 @@ public class FileManipulationTest extends AbstractTest {
         Path file2 = Paths.get(testProcess.getImagesTifDirectory(false), "fixture2.tif");
         Files.deleteIfExists(file1);
         Files.deleteIfExists(file2);
-        if (mockedMetadataManager != null) mockedMetadataManager.close();
-        if (mockedHelper != null) mockedHelper.close();
-        if (mockedHttpSession != null) mockedHttpSession.close();
-        if (mockedFacesContext != null) mockedFacesContext.close();
-        if (mockedExternalContext != null) mockedExternalContext.close();
+        if (mockedMetadataManager != null) {
+            mockedMetadataManager.close();
+        }
+        if (mockedHelper != null) {
+            mockedHelper.close();
+        }
+        if (mockedHttpSession != null) {
+            mockedHttpSession.close();
+        }
+        if (mockedFacesContext != null) {
+            mockedFacesContext.close();
+        }
+        if (mockedExternalContext != null) {
+            mockedExternalContext.close();
+        }
     }
 
     @Test
@@ -341,44 +351,43 @@ public class FileManipulationTest extends AbstractTest {
         mockedHelper = Mockito.mockStatic(Helper.class);
         mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
 
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
-        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
-        HttpSession session = EasyMock.createMock(HttpSession.class);
-        UIViewRoot root = EasyMock.createMock(UIViewRoot.class);
-        HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
-        PartialViewContext pvc = EasyMock.createMock(PartialViewContext.class);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
+        HttpSession session = Mockito.mock(HttpSession.class);
+        UIViewRoot root = Mockito.mock(UIViewRoot.class);
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        PartialViewContext pvc = Mockito.mock(PartialViewContext.class);
 
         FacesContextHelper.setFacesContext(facesContext);
         mockedFacesContext.when(() -> FacesContext.getCurrentInstance()).thenReturn(facesContext);
-        EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
-        EasyMock.expect(externalContext.getSession(EasyMock.anyBoolean())).andReturn(session).anyTimes();
-        EasyMock.expect(externalContext.getRequest()).andReturn(request).anyTimes();
+        Mockito.when(facesContext.getExternalContext()).thenReturn(externalContext);
+        Mockito.when(externalContext.getSession(Mockito.anyBoolean())).thenReturn(session);
+        Mockito.when(externalContext.getRequest()).thenReturn(request);
 
-        EasyMock.expect(request.getScheme()).andReturn("http://").anyTimes();
-        EasyMock.expect(request.getServerName()).andReturn("example.com").anyTimes();
-        EasyMock.expect(request.getServerPort()).andReturn(80).anyTimes();
-        EasyMock.expect(request.getContextPath()).andReturn("goobi").anyTimes();
+        Mockito.when(request.getScheme()).thenReturn("http://");
+        Mockito.when(request.getServerName()).thenReturn("example.com");
+        Mockito.when(request.getServerPort()).thenReturn(80);
+        Mockito.when(request.getContextPath()).thenReturn("goobi");
 
-        EasyMock.expect(session.getId()).andReturn("fixture").anyTimes();
+        Mockito.when(session.getId()).thenReturn("fixture");
 
-        ServletContext context = EasyMock.createMock(ServletContext.class);
-        EasyMock.expect(session.getServletContext()).andReturn(context).anyTimes();
-        EasyMock.expect(context.getContextPath()).andReturn("fixture").anyTimes();
+        ServletContext context = Mockito.mock(ServletContext.class);
+        Mockito.when(session.getServletContext()).thenReturn(context);
+        Mockito.when(context.getContextPath()).thenReturn("fixture");
 
-        Application application = EasyMock.createMock(Application.class);
-        EasyMock.expect(facesContext.getApplication()).andReturn(application).anyTimes();
+        Application application = Mockito.mock(Application.class);
+        Mockito.when(facesContext.getApplication()).thenReturn(application);
 
         List<Locale> locale = new ArrayList<>();
         locale.add(Locale.GERMAN);
 
-        EasyMock.expect(facesContext.getViewRoot()).andReturn(root).anyTimes();
-        EasyMock.expect(root.getLocale()).andReturn(Locale.GERMAN).anyTimes();
-        EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
+        Mockito.when(facesContext.getViewRoot()).thenReturn(root);
+        Mockito.when(root.getLocale()).thenReturn(Locale.GERMAN);
+        Mockito.when(application.getSupportedLocales()).thenReturn(locale.iterator());
 
-        facesContext.addMessage(EasyMock.anyObject(), EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(facesContext.getPartialViewContext()).andReturn(pvc).anyTimes();
-        EasyMock.expect(pvc.getRenderIds()).andReturn(new ArrayList<>()).anyTimes();
+        facesContext.addMessage(Mockito.any(), Mockito.any());
+        Mockito.when(facesContext.getPartialViewContext()).thenReturn(pvc);
+        Mockito.when(pvc.getRenderIds()).thenReturn(new ArrayList<>());
 
         mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
         mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
@@ -387,13 +396,5 @@ public class FileManipulationTest extends AbstractTest {
         mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
         mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
 
-        EasyMock.replay(request);
-        EasyMock.replay(root);
-        EasyMock.replay(session);
-        EasyMock.replay(application);
-        EasyMock.replay(externalContext);
-        EasyMock.replay(context);
-        EasyMock.replay(pvc);
-        EasyMock.replay(facesContext);
     }
 }

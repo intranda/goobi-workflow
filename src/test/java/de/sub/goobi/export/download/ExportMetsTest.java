@@ -29,7 +29,11 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -42,10 +46,6 @@ import ugh.dl.Prefs;
 import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class ExportMetsTest extends AbstractTest {
 
@@ -55,7 +55,7 @@ public class ExportMetsTest extends AbstractTest {
     private MetsModsImportExport metsModsImportExport;
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -78,62 +78,65 @@ public class ExportMetsTest extends AbstractTest {
     @Test
     public void testConstructor() {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedJwtHelper.when(() -> JwtHelper.createApiToken(Mockito.anyString(), Mockito.any())).thenReturn("12356");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
 
-
             ExportMets exportMets = new ExportMets();
             assertNotNull(exportMets);
-    
+
         }
-}
+    }
 
     @Test
     public void testGetProblemsInitiallyEmpty() {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedJwtHelper.when(() -> JwtHelper.createApiToken(Mockito.anyString(), Mockito.any())).thenReturn("12356");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
-
 
             ExportMets exportMets = new ExportMets();
             assertNotNull(exportMets.getProblems());
             assertTrue(exportMets.getProblems().isEmpty());
-    
+
         }
-}
+    }
 
     @Test
     public void testStartExport() throws Exception {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedJwtHelper.when(() -> JwtHelper.createApiToken(Mockito.anyString(), Mockito.any())).thenReturn("12356");
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
-
 
             Path destination = tempDir.resolve("export");
             Files.createDirectories(destination);
             ExportMets exportMets = new ExportMets();
             assertNotNull(exportMets);
             exportMets.startExport(testProcess, destination.toString());
-    
+
         }
-}
+    }
 
 }

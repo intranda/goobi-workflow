@@ -1,12 +1,5 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
-import io.goobi.vocabulary.exception.VocabularyException;
-import io.goobi.workflow.api.vocabulary.APIException;
-import org.junit.jupiter.api.Test;
-
-import java.util.Locale;
-import java.util.Map;
-
 import static io.goobi.vocabulary.exception.VocabularyException.ErrorCode.DataIntegrityViolation;
 import static io.goobi.vocabulary.exception.VocabularyException.ErrorCode.DeletionOfReferencedVocabulary;
 import static io.goobi.vocabulary.exception.VocabularyException.ErrorCode.DeletionOfReferencedVocabularyRecord;
@@ -16,13 +9,24 @@ import static io.goobi.vocabulary.exception.VocabularyException.ErrorCode.FieldV
 import static io.goobi.vocabulary.exception.VocabularyException.ErrorCode.GenericValidation;
 import static io.goobi.vocabulary.exception.VocabularyException.ErrorCode.RecordImportUnsupportedExcelCellType;
 import static io.goobi.vocabulary.exception.VocabularyException.ErrorCode.RecordValidationMissingRequiredFields;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.Locale;
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+
+import io.goobi.vocabulary.exception.VocabularyException;
+import io.goobi.workflow.api.vocabulary.APIException;
 
 public class APIExceptionExtractorTest {
+
     private void testForNonEmptyness(VocabularyException.ErrorCode code) {
         VocabularyException vocabularyException = new VocabularyException(code, null, Map.of("reason", "nothing"), params -> "");
         APIException exception = new APIException("localhost", "GET", 200, "some reason", vocabularyException, null);
         APIExceptionExtractor extractor = new APIExceptionExtractor(exception);
         String message = extractor.getLocalizedMessage(Locale.ENGLISH);
+        assertNotNull(message);
     }
 
     @Test

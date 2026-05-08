@@ -67,10 +67,9 @@ public class BatchDisplayItemTest {
         BatchDisplayItem fixture = new BatchDisplayItem(step);
         assertNotNull(fixture);
         assertEquals(5, fixture.getStepOrder().intValue());
-        fixture.setStepOrder(2);;
+        fixture.setStepOrder(2);
         assertEquals(2, fixture.getStepOrder().intValue());
     }
-
 
     @Test
     public void testStepStatus() {

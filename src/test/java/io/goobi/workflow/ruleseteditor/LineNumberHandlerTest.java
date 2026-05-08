@@ -18,9 +18,6 @@
 
 package io.goobi.workflow.ruleseteditor;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -29,9 +26,13 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 
+@ExtendWith(MockitoExtension.class)
 public class LineNumberHandlerTest {
 
     private LineNumberHandler handler;
@@ -48,17 +49,15 @@ public class LineNumberHandlerTest {
     }
 
     @Test
-    public void testStartAndEndElement_singleElementWithLineNumber() {
-        Locator locator = createMock(Locator.class);
-        expect(locator.getLineNumber()).andReturn(42).anyTimes();
-        replay(locator);
+    public void testStartAndEndElementSingleElementWithLineNumber() {
+        Locator locator = Mockito.mock(Locator.class);
+        Mockito.when(locator.getLineNumber()).thenReturn(42);
 
         handler.setDocumentLocator(locator);
         handler.startDocument();
 
-        Attributes attributes = createMock(Attributes.class);
-        expect(attributes.getLength()).andReturn(0).anyTimes();
-        replay(attributes);
+        Attributes attributes = Mockito.mock(Attributes.class);
+        Mockito.when(attributes.getLength()).thenReturn(0);
 
         handler.startElement("", "", "root", attributes);
         handler.endElement("", "", "root");
@@ -72,16 +71,14 @@ public class LineNumberHandlerTest {
 
     @Test
     public void testFlushTextAppendsToCurrentElement() {
-        Locator locator = createMock(Locator.class);
-        expect(locator.getLineNumber()).andReturn(3).once();
-        replay(locator);
+        Locator locator = Mockito.mock(Locator.class);
+        Mockito.when(locator.getLineNumber()).thenReturn(3);
 
         handler.setDocumentLocator(locator);
         handler.startDocument();
 
-        Attributes attrs = createMock(Attributes.class);
-        expect(attrs.getLength()).andReturn(0).anyTimes();
-        replay(attrs);
+        Attributes attrs = Mockito.mock(Attributes.class);
+        Mockito.when(attrs.getLength()).thenReturn(0);
 
         handler.startElement("", "", "test", attrs);
         handler.characters("some text".toCharArray(), 0, "some text".length());

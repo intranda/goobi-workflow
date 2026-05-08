@@ -26,7 +26,7 @@ import de.sub.goobi.helper.XmlTools;
 public class AltoSaverTest extends AbstractTest {
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     private Path sampleAltoFile;
 

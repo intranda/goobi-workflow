@@ -30,25 +30,23 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.easymock.EasyMock;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.Process;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.Corporate;
 import ugh.dl.DocStruct;
 import ugh.dl.NamePart;
 import ugh.dl.Prefs;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class MetaCorporateTest extends AbstractTest {
 
@@ -62,9 +60,6 @@ public class MetaCorporateTest extends AbstractTest {
         process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
         c = new Corporate(prefs.getMetadataTypeByName(METADATA_TYPE));
-        ViafSearch viafSearch = EasyMock.createMock(ViafSearch.class);
-        // TODO: /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew needs manual migration to Mockito.mockConstruction
-        // /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew(ViafSearch.class).andReturn(viafSearch).anyTimes();
 
     }
 
@@ -75,12 +70,11 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
             assertNotNull(fixture);
-    
+
         }
-}
+    }
 
     @Test
     public void testDisplaytype() {
@@ -89,12 +83,11 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
             assertEquals(DisplayType.corporate, fixture.getMetadataDisplaytype());
-    
+
         }
-}
+    }
 
     @Test
     public void testRole() {
@@ -103,13 +96,12 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
             fixture.setRole(METADATA_TYPE);
             assertEquals(METADATA_TYPE, fixture.getRole());
-    
+
         }
-}
+    }
 
     @Test
     public void testAddableRoles() throws Exception {
@@ -118,16 +110,15 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             DocStruct ds = process.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
             ds.addCorporate(c);
             MetaCorporate fixture = new MetaCorporate(c, prefs, ds, null);
 
             assertEquals(1, fixture.getAddableRoles().size());
             assertEquals(METADATA_TYPE, fixture.getAddableRoles().get(0).getValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testMainName() {
@@ -136,13 +127,12 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
             fixture.setMainName("main name");
             assertEquals("main name", fixture.getMainName());
-    
+
         }
-}
+    }
 
     @Test
     public void testPartName() {
@@ -151,13 +141,12 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
             fixture.setPartName("part name");
             assertEquals("part name", fixture.getPartName());
-    
+
         }
-}
+    }
 
     @Test
     public void testSubNames() {
@@ -165,7 +154,6 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
-
 
             MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
             assertEquals(1, fixture.getSubNames().size());
@@ -175,9 +163,9 @@ public class MetaCorporateTest extends AbstractTest {
             NamePart np = fixture.getSubNames().get(1);
             fixture.removeSubName(np);
             assertEquals(1, fixture.getSubNameSize());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetPossibleDatabases() {
@@ -186,12 +174,11 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
             assertEquals("gnd", fixture.getPossibleDatabases().get(0));
-    
+
         }
-}
+    }
 
     @Test
     public void testIsNormdata() {
@@ -200,12 +187,11 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
             assertTrue(fixture.isNormdata());
-    
+
         }
-}
+    }
 
     @Test
     public void testNormdataValue() {
@@ -214,13 +200,12 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
             fixture.setNormdataValue("test");
             assertEquals("test", fixture.getNormdataValue());
-    
+
         }
-}
+    }
 
     @Test
     public void testNormDatabase() {
@@ -229,13 +214,12 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
             fixture.setNormDatabase("gnd");
             assertEquals("gnd", fixture.getNormDatabase());
-    
+
         }
-}
+    }
 
     @Test
     public void testDisplayRestrictions() {
@@ -244,16 +228,14 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
 
             assertFalse(fixture.isDisplayRestrictions());
             c.getType().setAllowAccessRestriction(true);
             assertTrue(fixture.isDisplayRestrictions());
 
-    
         }
-}
+    }
 
     @Test
     public void testRestricted() {
@@ -262,16 +244,15 @@ public class MetaCorporateTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
             c.getType().setAllowAccessRestriction(true);
 
             assertFalse(fixture.isRestricted());
             fixture.setRestricted(true);
             assertTrue(fixture.isRestricted());
-    
+
         }
-}
+    }
 
     //    search
     //    getData

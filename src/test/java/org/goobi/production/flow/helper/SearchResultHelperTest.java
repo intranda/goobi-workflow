@@ -10,14 +10,14 @@ import java.util.List;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.persistence.managers.ProcessManager;
 import jakarta.faces.model.SelectItem;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class SearchResultHelperTest {
 
@@ -41,6 +41,7 @@ public class SearchResultHelperTest {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void testGetResult() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             Object[] row1 = new Object[] { "1", "Test 1" };
@@ -48,13 +49,13 @@ public class SearchResultHelperTest {
             List lst = new ArrayList();
             lst.add(row1);
             lst.add(row2);
-                        mockedProcessManager.when(() -> ProcessManager.runSQL(Mockito.anyString())).thenReturn(lst);
+            mockedProcessManager.when(() -> ProcessManager.runSQL(Mockito.anyString())).thenReturn(lst);
 
             XSSFWorkbook wb = helper.getResult(columnList, "", "{process.propertyname}", true, true);
 
             assertNotNull(wb);
             assertEquals("Search results", wb.getSheetName(0));
         }
-}
+    }
 
 }

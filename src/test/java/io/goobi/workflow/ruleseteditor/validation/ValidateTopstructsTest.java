@@ -64,7 +64,7 @@ public class ValidateTopstructsTest {
     }
 
     @Test
-    public void testAllowedChildTypeMatchingTopstruct_ShouldReturnError() {
+    public void testAllowedChildTypeMatchingTopstructShouldReturnError() {
         Element root = new Element("Root");
 
         // DocStrctType with topStruct and Name = TopStruct1

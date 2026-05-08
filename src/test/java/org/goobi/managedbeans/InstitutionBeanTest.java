@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Institution;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +31,8 @@ import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -41,6 +42,7 @@ import de.sub.goobi.helper.StorageProviderInterface;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class InstitutionBeanTest extends AbstractTest {
 
@@ -49,14 +51,13 @@ public class InstitutionBeanTest extends AbstractTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        mockStorage = EasyMock.createMock(StorageProviderInterface.class);
+        mockStorage = Mockito.mock(StorageProviderInterface.class);
         mockConfig = Mockito.mock(ConfigurationHelper.class);
 
         Mockito.lenient().when(mockConfig.getGoobiFolder()).thenReturn("/tmp/goobi/");
 
-        EasyMock.expect(mockStorage.isFileExists(EasyMock.anyObject())).andReturn(false).anyTimes();
-        EasyMock.expect(mockStorage.deleteDir(EasyMock.anyObject())).andReturn(true).anyTimes();
-        EasyMock.replay(mockStorage);
+        Mockito.when(mockStorage.isFileExists(Mockito.any())).thenReturn(false);
+        Mockito.when(mockStorage.deleteDir(Mockito.any())).thenReturn(true);
     }
 
     @Test
@@ -116,7 +117,9 @@ public class InstitutionBeanTest extends AbstractTest {
                 MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class);
                 MockedConstruction<InstitutionManager> mockedConstruction = Mockito.mockConstruction(InstitutionManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
@@ -142,7 +145,9 @@ public class InstitutionBeanTest extends AbstractTest {
                 MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class);
                 MockedConstruction<InstitutionManager> mockedConstruction = Mockito.mockConstruction(InstitutionManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
@@ -166,7 +171,9 @@ public class InstitutionBeanTest extends AbstractTest {
                 MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class);
                 MockedConstruction<InstitutionManager> mockedConstruction = Mockito.mockConstruction(InstitutionManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
@@ -191,7 +198,9 @@ public class InstitutionBeanTest extends AbstractTest {
                 MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class);
                 MockedConstruction<InstitutionManager> mockedConstruction = Mockito.mockConstruction(InstitutionManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
@@ -217,7 +226,9 @@ public class InstitutionBeanTest extends AbstractTest {
                 MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class);
                 MockedConstruction<InstitutionManager> mockedConstruction = Mockito.mockConstruction(InstitutionManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
@@ -244,17 +255,18 @@ public class InstitutionBeanTest extends AbstractTest {
                 MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class);
                 MockedConstruction<InstitutionManager> mockedConstruction = Mockito.mockConstruction(InstitutionManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(mockConfig);
             mockedStorageProvider.when(() -> StorageProvider.getInstance()).thenReturn(mockStorage);
 
-            EasyMock.reset(mockStorage);
-            EasyMock.expect(mockStorage.isFileExists(EasyMock.anyObject())).andReturn(true).anyTimes();
-            EasyMock.expect(mockStorage.deleteDir(EasyMock.anyObject())).andReturn(true).anyTimes();
-            EasyMock.replay(mockStorage);
+            Mockito.reset(mockStorage);
+            Mockito.when(mockStorage.isFileExists(Mockito.any())).thenReturn(true);
+            Mockito.when(mockStorage.deleteDir(Mockito.any())).thenReturn(true);
             InstitutionBean fixture = new InstitutionBean();
             fixture.FilterKein();
             Institution inst = new Institution();
@@ -275,7 +287,9 @@ public class InstitutionBeanTest extends AbstractTest {
                 MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class);
                 MockedConstruction<InstitutionManager> mockedConstruction = Mockito.mockConstruction(InstitutionManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
@@ -301,7 +315,9 @@ public class InstitutionBeanTest extends AbstractTest {
                 MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class);
                 MockedConstruction<InstitutionManager> mockedConstruction = Mockito.mockConstruction(InstitutionManager.class, (mock, context) -> {
                     Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
-                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient()
+                            .when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                            .thenReturn(new ArrayList<>());
                     Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
                 })) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);

@@ -24,14 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.goobi.beans.Process;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class ProcessConverterTest extends AbstractTest {
 
@@ -48,7 +48,7 @@ public class ProcessConverterTest extends AbstractTest {
             Object fixture = conv.getAsObject(null, null, "1");
             assertNotNull(fixture);
         }
-}
+    }
 
     @Test
     public void testGetAsString() {

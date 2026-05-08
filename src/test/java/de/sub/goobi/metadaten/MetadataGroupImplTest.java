@@ -34,15 +34,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
@@ -50,10 +51,6 @@ import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class MetadataGroupImplTest extends AbstractTest {
 
@@ -66,11 +63,6 @@ public class MetadataGroupImplTest extends AbstractTest {
         process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
 
-        ViafSearch viafSearch = EasyMock.createMock(ViafSearch.class);
-        // TODO: /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew needs manual migration to Mockito.mockConstruction
-        // /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew(ViafSearch.class).andReturn(viafSearch).anyTimes();
-
-
     }
 
     @Test
@@ -80,13 +72,12 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
             MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
             assertNotNull(fixture);
-    
+
         }
-}
+    }
 
     @Test
     public void testGetPersonList() throws MetadataTypeNotAllowedException {
@@ -94,7 +85,6 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
-
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
             Person p = new Person(prefs.getMetadataTypeByName("junitPerson"));
@@ -107,9 +97,9 @@ public class MetadataGroupImplTest extends AbstractTest {
             assertFalse(personList.isEmpty());
             MetaPerson mp = personList.get(0);
             assertEquals("junitPerson", mp.getRolle());
-    
+
         }
-}
+    }
 
     @Test
     public void testSetPersonList() throws MetadataTypeNotAllowedException {
@@ -117,7 +107,6 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
-
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
             Person p = new Person(prefs.getMetadataTypeByName("junitPerson"));
@@ -127,11 +116,11 @@ public class MetadataGroupImplTest extends AbstractTest {
             MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
 
             assertFalse(fixture.getPersonList().isEmpty());
-            fixture.setPersonList(new ArrayList<MetaPerson>());
+            fixture.setPersonList(new ArrayList<>());
             assertTrue(fixture.getPersonList().isEmpty());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetMetadataList() throws MetadataTypeNotAllowedException {
@@ -139,7 +128,6 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
-
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
             Metadata metadata = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
@@ -149,9 +137,9 @@ public class MetadataGroupImplTest extends AbstractTest {
             assertFalse(metadataList.isEmpty());
             MetadatumImpl mp = metadataList.get(0);
             assertEquals("junitMetadata", mp.getTyp());
-    
+
         }
-}
+    }
 
     @Test
     public void testSetMetadataList() throws MetadataTypeNotAllowedException {
@@ -160,18 +148,17 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
             Metadata metadata = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
             md.addMetadata(metadata);
 
             MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
             assertFalse(fixture.getMetadataList().isEmpty());
-            fixture.setMetadataList(new ArrayList<MetadatumImpl>());
+            fixture.setMetadataList(new ArrayList<>());
             assertTrue(fixture.getMetadataList().isEmpty());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetMyPrefs() throws MetadataTypeNotAllowedException {
@@ -180,13 +167,12 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
             MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
             assertEquals(prefs, fixture.getMyPrefs());
-    
+
         }
-}
+    }
 
     @Test
     public void testSetMyPrefs() throws MetadataTypeNotAllowedException {
@@ -195,14 +181,13 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
             MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
             fixture.setMyPrefs(null);
             assertNull(fixture.getMyPrefs());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetMyProcess() throws MetadataTypeNotAllowedException {
@@ -211,13 +196,12 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
             MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
             assertEquals(process, fixture.getMyProcess());
-    
+
         }
-}
+    }
 
     @Test
     public void testSetMyProcess() throws MetadataTypeNotAllowedException {
@@ -226,14 +210,13 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
             MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
             fixture.setMyProcess(null);
             assertNull(fixture.getMyProcess());
-    
+
         }
-}
+    }
 
     @Test
     public void testMetadataGroup() throws MetadataTypeNotAllowedException {
@@ -242,14 +225,13 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
             MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
             fixture.setMetadataGroup(md);
             assertEquals(md, fixture.getMetadataGroup());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetName() throws MetadataTypeNotAllowedException {
@@ -258,12 +240,11 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
             MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
             assertEquals("junitgrp", fixture.getName());
-    
+
         }
-}
+    }
 
 }

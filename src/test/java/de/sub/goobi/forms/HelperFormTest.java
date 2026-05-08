@@ -34,13 +34,18 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ruleset;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -56,10 +61,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class HelperFormTest extends AbstractTest {
 
@@ -75,31 +77,25 @@ public class HelperFormTest extends AbstractTest {
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
 
-
-
-
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
         FacesContextHelper.setFacesContext(facesContext);
-        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
+        ExternalContext externalContext = Mockito.mock(ExternalContext.class);
 
-        //        UIViewRoot root = EasyMock.createMock(UIViewRoot.class);
-        Application application = EasyMock.createMock(Application.class);
+        //        UIViewRoot root = Mockito.mock(UIViewRoot.class);
+        Application application = Mockito.mock(Application.class);
 
-        EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
+        Mockito.when(facesContext.getExternalContext()).thenReturn(externalContext);
 
-        EasyMock.expect(externalContext.getRequestContextPath()).andReturn("junit").anyTimes();
+        Mockito.when(externalContext.getRequestContextPath()).thenReturn("junit");
 
-        //        EasyMock.expect(facesContext.getViewRoot()).andReturn(root).anyTimes();
-        //        EasyMock.expect(root.getLocale()).andReturn(Locale.GERMAN).anyTimes();
+        //        Mockito.when(facesContext.getViewRoot()).thenReturn(root);
+        //        Mockito.when(root.getLocale()).thenReturn(Locale.GERMAN);
 
-        EasyMock.expect(facesContext.getApplication()).andReturn(application).anyTimes();
+        Mockito.when(facesContext.getApplication()).thenReturn(application);
         List<Locale> locale = new ArrayList<>();
         locale.add(Locale.GERMAN);
 
-        EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
-        EasyMock.replay(application);
-        EasyMock.replay(externalContext);
-        EasyMock.replay(facesContext);
+        Mockito.when(application.getSupportedLocales()).thenReturn(locale.iterator());
     }
 
     @AfterEach
@@ -110,38 +106,38 @@ public class HelperFormTest extends AbstractTest {
     @Test
     public void testConstructor() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
-    
+
         }
-}
+    }
 
     @SuppressWarnings("deprecation")
     @Test
     public void testGetBuildversion() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             String fixture = helperForm.getBuildVersion();
             assertNotNull(fixture);
-    
+
         }
-}
+    }
 
     @Test
     public void testGetVersion() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
@@ -149,106 +145,106 @@ public class HelperFormTest extends AbstractTest {
             Pattern versionRegex = Pattern.compile("^\\d{2}\\.\\d{2}(\\.\\d+)?(-dev|-SNAPSHOT)?$");
             Matcher versionMatcher = versionRegex.matcher(fixture);
             assertTrue(versionMatcher.find());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetApplicationHeaderTitle() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             String fixture = helperForm.getApplicationHeaderTitle();
             assertNotNull(fixture);
-    
+
         }
-}
+    }
 
     @Test
     public void testGetApplicationTitle() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             String fixture = helperForm.getApplicationTitle();
             assertNotNull(fixture);
-    
+
         }
-}
+    }
 
     @Test
     public void testGetApplicationWebsiteUrl() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             String fixture = helperForm.getApplicationWebsiteUrl();
             assertEquals("junit/", fixture);
-    
+
         }
-}
+    }
 
     //    @Test
     public void testGetApplicationWebsiteMsg() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             String fixture = helperForm.getApplicationWebsiteMsg();
             assertEquals("goobiWebseite", fixture);
-    
+
         }
-}
+    }
 
     //    @Test
     public void testGetApplicationHomepageMsg() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             String fixture = helperForm.getApplicationHomepageMsg();
             assertNotNull(fixture);
-    
+
         }
-}
+    }
 
     @Test
     public void testGetAnonymized() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             assertFalse(helperForm.getAnonymized());
-    
+
         }
-}
+    }
 
     //    @Test
     public void testGetRegelsaetze() throws DAOException {
 
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             Ruleset r = new Ruleset();
             r.setTitel("title");
@@ -257,27 +253,29 @@ public class HelperFormTest extends AbstractTest {
             List<Ruleset> rulesetList = new ArrayList<>();
             rulesetList.add(r);
 
-        try (MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class)) {
-                                mockedRulesetManager.when(() -> RulesetManager.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
-                        Mockito.any(Institution.class))).thenReturn(rulesetList);
+            try (MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class)) {
+                mockedRulesetManager
+                        .when(() -> RulesetManager.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                                Mockito.any(Institution.class)))
+                        .thenReturn(rulesetList);
 
                 HelperForm helperForm = new HelperForm();
                 assertNotNull(helperForm);
                 List<SelectItem> fixture = helperForm.getRegelsaetze();
                 assertNotNull(fixture);
                 assertEquals(1, fixture.size());
-    
+
             }
         }
-}
+    }
 
     //    @Test
     public void testGetDockets() throws DAOException {
 
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             Docket d = new Docket();
             d.setFile("file");
@@ -286,116 +284,116 @@ public class HelperFormTest extends AbstractTest {
             List<Docket> docketList = new ArrayList<>();
             docketList.add(d);
 
-        try (MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class)) {
-                                mockedDocketManager.when(() -> DocketManager.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+            try (MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class)) {
+                mockedDocketManager.when(() -> DocketManager.getDockets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
                         Mockito.any(Institution.class))).thenReturn(docketList);
                 HelperForm helperForm = new HelperForm();
                 assertNotNull(helperForm);
                 List<SelectItem> fixture = helperForm.getDockets();
                 assertNotNull(fixture);
                 assertEquals(1, fixture.size());
-    
+
             }
         }
-}
+    }
 
     //    @Test
     public void testGetFileFormats() throws DAOException {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             List<SelectItem> fixture = helperForm.getFileFormats();
             assertNotNull(fixture);
             assertNotEquals(0, fixture.size());
-    
+
         }
-}
+    }
 
     //    @Test
     public void testGetFileFormatsInternalOnly() throws DAOException {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             List<SelectItem> fixture = helperForm.getFileFormatsInternalOnly();
             assertNotNull(fixture);
             assertNotEquals(0, fixture.size());
-    
+
         }
-}
+    }
 
     //    @Test
     public void testGetStepStatusList() throws DAOException {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             List<SelectItem> fixture = helperForm.getStepStatusList();
             assertNotNull(fixture);
             assertEquals(5, fixture.size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetTimeZone() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             TimeZone tz = helperForm.getTimeZone();
             assertNotNull(tz);
-    
+
         }
-}
+    }
 
     @Test
     public void testGetMassImportAllowed() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             assertTrue(helperForm.getMassImportAllowed());
-    
+
         }
-}
+    }
 
     //    @Test
     public void testIsPasswordIsChangable() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
             assertFalse(helperForm.isPasswordIsChangable());
-    
+
         }
-}
+    }
 
     @Test
     public void testIsShowError() {
         try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
-             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UIViewRoot> mockedUIViewRoot = Mockito.mockStatic(UIViewRoot.class)) {
 
             HelperForm helperForm = new HelperForm();
             assertNotNull(helperForm);
@@ -403,8 +401,7 @@ public class HelperFormTest extends AbstractTest {
             helperForm.setShowError(true);
             assertTrue(helperForm.isShowError());
 
-    
         }
-}
+    }
 
 }

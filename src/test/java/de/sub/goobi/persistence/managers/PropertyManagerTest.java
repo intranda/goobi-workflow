@@ -30,13 +30,13 @@ import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Processproperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class PropertyManagerTest extends AbstractTest {
 
@@ -44,10 +44,11 @@ public class PropertyManagerTest extends AbstractTest {
     private Processproperty sampleProcessProperty;
     private GoobiProperty sampleGoobiProperty;
 
-    @SuppressWarnings("deprecation")
     private List<GoobiProperty> goobiProperties;
+    @SuppressWarnings("deprecation")
     private List<Processproperty> processproperties;
 
+    @SuppressWarnings("deprecation")
     @BeforeEach
     public void setUp() throws Exception {
         sampleProcessProperty = new Processproperty();
@@ -109,17 +110,17 @@ public class PropertyManagerTest extends AbstractTest {
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getProcessPropertiesForProcess(Mockito.anyInt())).thenReturn(processproperties);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getProcessPropertyById(Mockito.anyInt())).thenReturn(sampleProcessProperty);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getDistinctPropertyTitles()).thenReturn(Arrays.asList("title1", "title2"));
-            mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(goobiProperties);
+            mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertiesForObject(Mockito.anyInt(), Mockito.any()))
+                    .thenReturn(goobiProperties);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertyById(Mockito.anyInt())).thenReturn(sampleGoobiProperty);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertyTitles(Mockito.any())).thenReturn(Arrays.asList("propTitle"));
-
 
             List<String> result = PropertyManager.getDistinctProcessPropertyTitles();
             assertNotNull(result);
             assertEquals(2, result.size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetPropertiesForObject() {
@@ -127,17 +128,17 @@ public class PropertyManagerTest extends AbstractTest {
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getProcessPropertiesForProcess(Mockito.anyInt())).thenReturn(processproperties);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getProcessPropertyById(Mockito.anyInt())).thenReturn(sampleProcessProperty);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getDistinctPropertyTitles()).thenReturn(Arrays.asList("title1", "title2"));
-            mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(goobiProperties);
+            mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertiesForObject(Mockito.anyInt(), Mockito.any()))
+                    .thenReturn(goobiProperties);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertyById(Mockito.anyInt())).thenReturn(sampleGoobiProperty);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertyTitles(Mockito.any())).thenReturn(Arrays.asList("propTitle"));
-
 
             List<GoobiProperty> result = PropertyManager.getPropertiesForObject(1, PropertyOwnerType.PROCESS);
             assertNotNull(result);
             assertEquals(1, result.size());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetPropertById() {
@@ -145,16 +146,16 @@ public class PropertyManagerTest extends AbstractTest {
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getProcessPropertiesForProcess(Mockito.anyInt())).thenReturn(processproperties);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getProcessPropertyById(Mockito.anyInt())).thenReturn(sampleProcessProperty);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getDistinctPropertyTitles()).thenReturn(Arrays.asList("title1", "title2"));
-            mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(goobiProperties);
+            mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertiesForObject(Mockito.anyInt(), Mockito.any()))
+                    .thenReturn(goobiProperties);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertyById(Mockito.anyInt())).thenReturn(sampleGoobiProperty);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertyTitles(Mockito.any())).thenReturn(Arrays.asList("propTitle"));
 
-
             GoobiProperty result = PropertyManager.getPropertById(1);
             assertNotNull(result);
-    
+
         }
-}
+    }
 
     @Test
     public void testSaveProperty() {
@@ -162,15 +163,15 @@ public class PropertyManagerTest extends AbstractTest {
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getProcessPropertiesForProcess(Mockito.anyInt())).thenReturn(processproperties);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getProcessPropertyById(Mockito.anyInt())).thenReturn(sampleProcessProperty);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getDistinctPropertyTitles()).thenReturn(Arrays.asList("title1", "title2"));
-            mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(goobiProperties);
+            mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertiesForObject(Mockito.anyInt(), Mockito.any()))
+                    .thenReturn(goobiProperties);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertyById(Mockito.anyInt())).thenReturn(sampleGoobiProperty);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertyTitles(Mockito.any())).thenReturn(Arrays.asList("propTitle"));
 
-
             PropertyManager.saveProperty(sampleGoobiProperty);
-    
+
         }
-}
+    }
 
     @Test
     public void testDeleteProperty() {
@@ -178,15 +179,15 @@ public class PropertyManagerTest extends AbstractTest {
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getProcessPropertiesForProcess(Mockito.anyInt())).thenReturn(processproperties);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getProcessPropertyById(Mockito.anyInt())).thenReturn(sampleProcessProperty);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getDistinctPropertyTitles()).thenReturn(Arrays.asList("title1", "title2"));
-            mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(goobiProperties);
+            mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertiesForObject(Mockito.anyInt(), Mockito.any()))
+                    .thenReturn(goobiProperties);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertyById(Mockito.anyInt())).thenReturn(sampleGoobiProperty);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertyTitles(Mockito.any())).thenReturn(Arrays.asList("propTitle"));
 
-
             PropertyManager.deleteProperty(sampleGoobiProperty);
-    
+
         }
-}
+    }
 
     @Test
     public void testGetPropertyTitles() {
@@ -194,16 +195,16 @@ public class PropertyManagerTest extends AbstractTest {
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getProcessPropertiesForProcess(Mockito.anyInt())).thenReturn(processproperties);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getProcessPropertyById(Mockito.anyInt())).thenReturn(sampleProcessProperty);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getDistinctPropertyTitles()).thenReturn(Arrays.asList("title1", "title2"));
-            mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(goobiProperties);
+            mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertiesForObject(Mockito.anyInt(), Mockito.any()))
+                    .thenReturn(goobiProperties);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertyById(Mockito.anyInt())).thenReturn(sampleGoobiProperty);
             mockedPropertyMysqlHelper.when(() -> PropertyMysqlHelper.getPropertyTitles(Mockito.any())).thenReturn(Arrays.asList("propTitle"));
-
 
             List<String> result = PropertyManager.getPropertyTitles(PropertyOwnerType.PROCESS);
             assertNotNull(result);
             assertTrue(result.contains("propTitle"));
-    
+
         }
-}
+    }
 
 }

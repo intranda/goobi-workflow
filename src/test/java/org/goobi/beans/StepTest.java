@@ -671,8 +671,6 @@ public class StepTest extends AbstractTest {
         assertEquals("value2", value2);
     }
 
- 
-
     @Test
     public void testBearbeitungszeitpunktNow() {
         Step step = new Step();

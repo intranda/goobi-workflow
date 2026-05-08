@@ -27,13 +27,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
 import org.goobi.production.enums.PluginType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -56,10 +59,6 @@ import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class ExportDmsTest extends AbstractTest {
 
@@ -69,7 +68,7 @@ public class ExportDmsTest extends AbstractTest {
     private MetsModsImportExport metsModsImportExport;
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -92,98 +91,103 @@ public class ExportDmsTest extends AbstractTest {
     @Test
     public void testExportDms() {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
 
-
             ExportDms dms = new ExportDms();
             assertNotNull(dms);
-    
+
         }
-}
+    }
 
     @Test
     public void testExportDmsBoolean() {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
 
-
             ExportDms dms = new ExportDms(false);
             assertNotNull(dms);
-    
+
         }
-}
+    }
 
     @Test
     public void testSetExportFulltext() {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
-
 
             ExportDms dms = new ExportDms(false);
             dms.setExportFulltext(false);
             assertNotNull(dms);
-    
+
         }
-}
+    }
 
     @Test
     public void testSetExportImages() {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
-
 
             ExportDms dms = new ExportDms(false);
             dms.setExportImages(false);
             assertNotNull(dms);
-    
+
         }
-}
+    }
 
     @Test
     public void testFulltextDownload() throws SwapException, DAOException, IOException, InterruptedException {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
-
 
             ExportDms dms = new ExportDms(false);
             dms.setExportFulltext(true);
@@ -191,23 +195,24 @@ public class ExportDmsTest extends AbstractTest {
             Files.createDirectories(dest);
             dms.fulltextDownload(testProcess, dest, testProcess.getTitel(), "qwertzu");
             assertNotNull(StorageProvider.getInstance().list(dest.toString()));
-    
+
         }
-}
+    }
 
     @Test
     public void testImageDownload() throws SwapException, DAOException, IOException, InterruptedException {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
-
 
             ExportDms dms = new ExportDms(true);
             dms.setExportFulltext(true);
@@ -215,90 +220,94 @@ public class ExportDmsTest extends AbstractTest {
             Files.createDirectories(dest);
             dms.imageDownload(testProcess, dest, testProcess.getTitel(), "qwertzu");
             assertNotNull(StorageProvider.getInstance().list(dest.toString()));
-    
+
         }
-}
+    }
 
     @Test
     public void testStartExportProcessString()
             throws DocStructHasNoTypeException, PreferencesException, WriteException, MetadataTypeNotAllowedException, ExportFileException,
             UghHelperException, ReadException, SwapException, DAOException, TypeNotAllowedForParentException, IOException, InterruptedException {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
-
 
             ExportDms dms = new ExportDms();
             dms.setExportFulltext(true);
             assertTrue(dms.startExport(testProcess));
-    
+
         }
-}
+    }
 
     @Test
     public void testGetType() {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
 
-
             ExportDms dms = new ExportDms(true);
             assertEquals(PluginType.Export, dms.getType());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetTitle() {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
 
-
             ExportDms dms = new ExportDms(true);
             assertEquals("ExportDms", dms.getTitle());
-    
+
         }
-}
+    }
 
     @Test
     public void testGetDescription() {
         try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
             mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
-                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
 
-
             ExportDms dms = new ExportDms(true);
             assertEquals("ExportDms", dms.getDescription());
-    
+
         }
-}
+    }
 }

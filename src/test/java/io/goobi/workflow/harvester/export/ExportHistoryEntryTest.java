@@ -65,7 +65,7 @@ public class ExportHistoryEntryTest extends AbstractTest {
 
     @Test
     public void testAllArgsConstructor() {
-        ExportHistoryEntry fixture = new ExportHistoryEntry(1, new Timestamp(1l), 1, "1234", "title", 1, "DONE", "message");
+        ExportHistoryEntry fixture = new ExportHistoryEntry(1, new Timestamp(1L), 1, "1234", "title", 1, "DONE", "message");
         assertNotNull(fixture);
         assertEquals(1, fixture.getRecordId().intValue());
         assertEquals("1234", fixture.getRecordIdentifier());

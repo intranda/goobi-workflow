@@ -9,12 +9,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -23,9 +25,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.StreamingOutput;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
 @ExtendWith(MockitoExtension.class)
 public class ObjectResourceTest {
 
@@ -67,16 +66,14 @@ public class ObjectResourceTest {
     @Test
     public void testGetObject() throws IOException, InterruptedException, SwapException, DAOException {
 
-
         Path objectFilePath = tempProcessPath.resolve(Path.of(FOLDERNAME_IMAGES, FOLDERNAME_MASTER, FILENAME_GLTF));
         Files.createDirectories(objectFilePath.getParent());
         Files.createFile(objectFilePath);
         Files.writeString(objectFilePath, CONTENT_GLTF);
         assertEquals(CONTENT_GLTF, Files.readString(objectFilePath));
 
-        Process process = EasyMock.createMock(Process.class);
-        EasyMock.expect(process.getImagesDirectory()).andReturn(objectFilePath.getParent().getParent().toString()).anyTimes();
-        EasyMock.replay(process);
+        Process process = Mockito.mock(Process.class);
+        Mockito.when(process.getImagesDirectory()).thenReturn(objectFilePath.getParent().getParent().toString());
 
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(PROCESS_ID)).thenReturn(process);
@@ -89,11 +86,10 @@ public class ObjectResourceTest {
                 assertEquals(CONTENT_GLTF, out.toString(Charset.defaultCharset()));
             }
         }
-}
+    }
 
     @Test
     public void testGetObjectResource() throws IOException, InterruptedException, SwapException, DAOException {
-
 
         Path objectFilePath = tempProcessPath.resolve(Path.of(FOLDERNAME_IMAGES, FOLDERNAME_MASTER, FOLDERNAME_RESOURCES, FILENAME_BIN));
         Files.createDirectories(objectFilePath.getParent());
@@ -101,9 +97,8 @@ public class ObjectResourceTest {
         Files.writeString(objectFilePath, CONTENT_BIN);
         assertEquals(CONTENT_BIN, Files.readString(objectFilePath));
 
-        Process process = EasyMock.createMock(Process.class);
-        EasyMock.expect(process.getImagesDirectory()).andReturn(objectFilePath.getParent().getParent().getParent().toString()).anyTimes();
-        EasyMock.replay(process);
+        Process process = Mockito.mock(Process.class);
+        Mockito.when(process.getImagesDirectory()).thenReturn(objectFilePath.getParent().getParent().getParent().toString());
 
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(PROCESS_ID)).thenReturn(process);
@@ -117,11 +112,10 @@ public class ObjectResourceTest {
                 assertEquals(CONTENT_BIN, out.toString(Charset.defaultCharset()));
             }
         }
-}
+    }
 
     @Test
     public void testGetSecondaryObjectResource() throws IOException, InterruptedException, SwapException, DAOException {
-
 
         Path objectFilePath = tempProcessPath
                 .resolve(Path.of(FOLDERNAME_IMAGES, FOLDERNAME_MASTER, FOLDERNAME_RESOURCES, FOLDERNAME_RESOURCES_IMAGES, FILENAME_SURFACE));
@@ -130,9 +124,8 @@ public class ObjectResourceTest {
         Files.writeString(objectFilePath, CONTENT_SURFACE);
         assertEquals(CONTENT_SURFACE, Files.readString(objectFilePath));
 
-        Process process = EasyMock.createMock(Process.class);
-        EasyMock.expect(process.getImagesDirectory()).andReturn(objectFilePath.getParent().getParent().getParent().getParent().toString()).anyTimes();
-        EasyMock.replay(process);
+        Process process = Mockito.mock(Process.class);
+        Mockito.when(process.getImagesDirectory()).thenReturn(objectFilePath.getParent().getParent().getParent().getParent().toString());
 
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(PROCESS_ID)).thenReturn(process);
@@ -146,6 +139,6 @@ public class ObjectResourceTest {
                 assertEquals(CONTENT_SURFACE, out.toString(Charset.defaultCharset()));
             }
         }
-}
+    }
 
 }

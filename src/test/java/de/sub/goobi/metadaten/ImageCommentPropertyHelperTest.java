@@ -31,15 +31,15 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 @ExtendWith(MockitoExtension.class)
 public class ImageCommentPropertyHelperTest extends AbstractTest {
 
@@ -51,6 +51,7 @@ public class ImageCommentPropertyHelperTest extends AbstractTest {
         process.setId(1);
     }
 
+    @SuppressWarnings("deprecation")
     private List<Processproperty> propertiesWithValue(String propertyValue) {
         Processproperty property = new Processproperty();
         property.setPropertyName("image_comments");
@@ -61,9 +62,10 @@ public class ImageCommentPropertyHelperTest extends AbstractTest {
     }
 
     /**
-     * Regression test for the bug where the legacy Gson date format "Apr 12, 2026, 11:44:50 AM"
-     * could not be deserialized after a Gson version update.
+     * Regression test for the bug where the legacy Gson date format "Apr 12, 2026, 11:44:50 AM" could not be deserialized after a Gson version
+     * update.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testLoadCommentWithLegacyDateFormat() {
         String legacyJson = "{\"comments\":[{"
@@ -92,9 +94,10 @@ public class ImageCommentPropertyHelperTest extends AbstractTest {
     }
 
     /**
-     * Regression test: Java 17+ CLDR uses U+202F (narrow no-break space) before AM/PM.
-     * Dates stored on a Java 17+ server look identical in logs but differ at byte level.
+     * Regression test: Java 17+ CLDR uses U+202F (narrow no-break space) before AM/PM. Dates stored on a Java 17+ server look identical in logs but
+     * differ at byte level.
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testLoadCommentWithLegacyDateFormatJava17ThinSpace() {
         // U+202F narrow no-break space between seconds and AM — as produced by Java 17+ CLDR
@@ -118,6 +121,7 @@ public class ImageCommentPropertyHelperTest extends AbstractTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testLoadCommentWithIsoDateFormat() {
         String isoJson = "{\"comments\":[{"
@@ -141,6 +145,7 @@ public class ImageCommentPropertyHelperTest extends AbstractTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testLoadCommentWithNullDate() {
         String nullDateJson = "{\"comments\":[{"
@@ -163,6 +168,7 @@ public class ImageCommentPropertyHelperTest extends AbstractTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testSaveAndLoadComment() {
         try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {

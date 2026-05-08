@@ -29,8 +29,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -42,10 +47,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class SessionCounterFilterTest extends AbstractTest {
 
@@ -54,9 +56,9 @@ public class SessionCounterFilterTest extends AbstractTest {
         SessionCounterFilter filter = new SessionCounterFilter();
         assertNotNull(filter);
 
-        FilterConfig conf = EasyMock.createMock(FilterConfig.class);
-        ServletContext context = EasyMock.createMock(ServletContext.class);
-        EasyMock.expect(conf.getServletContext()).andReturn(context).anyTimes();
+        FilterConfig conf = Mockito.mock(FilterConfig.class);
+        ServletContext context = Mockito.mock(ServletContext.class);
+        Mockito.when(conf.getServletContext()).thenReturn(context);
 
         filter.init(conf);
 
@@ -65,18 +67,18 @@ public class SessionCounterFilterTest extends AbstractTest {
     @Test
     public void testDoFilter() throws IOException, ServletException {
 
-        HttpServletRequest servletRequest = EasyMock.createMock(HttpServletRequest.class);
-        HttpServletResponse servletResponse = EasyMock.createMock(HttpServletResponse.class);
-        FilterChain filterChain = EasyMock.createMock(FilterChain.class);
+        HttpServletRequest servletRequest = Mockito.mock(HttpServletRequest.class);
+        HttpServletResponse servletResponse = Mockito.mock(HttpServletResponse.class);
+        FilterChain filterChain = Mockito.mock(FilterChain.class);
 
         try (MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
-            FacesContext facesContext = EasyMock.createMock(FacesContext.class);
+            FacesContext facesContext = Mockito.mock(FacesContext.class);
             FacesContextHelper.setFacesContext(facesContext);
 
             SessionCounterFilter filter = new SessionCounterFilter();
             filter.doFilter(servletRequest, servletResponse, filterChain);
         }
-}
+    }
 
 }
