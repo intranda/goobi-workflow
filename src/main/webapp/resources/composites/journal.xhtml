@@ -448,8 +448,10 @@
 
 
             </ui:fragment>
-            <ui:fragment rendered="#{NavigationForm.uiStatus['toggleJournal']=='imageComments'}">
-                <ui:include src="/uii/template/includes/imageComments.xhtml" />
+            <ui:fragment rendered="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments'}">
+                <ui:include src="/uii/template/includes/imageComments.xhtml">
+                    <ui:param name="bean" value="#{cc.attrs.bean}" />
+                </ui:include>
             </ui:fragment>
 
         </intranda:box>
