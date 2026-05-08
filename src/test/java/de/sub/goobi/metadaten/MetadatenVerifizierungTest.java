@@ -25,10 +25,10 @@
  */
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,13 +38,8 @@ import java.util.Locale;
 
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -57,6 +52,7 @@ import jakarta.faces.application.Application;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -70,16 +66,35 @@ import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.fileformats.mets.MetsMods;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ FacesContext.class, ExternalContext.class, HttpSession.class, Helper.class, MetadataManager.class, ProcessManager.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+@ExtendWith(MockitoExtension.class)
 public class MetadatenVerifizierungTest extends AbstractTest {
 
     private Process process;
     private Prefs prefs;
     private Fileformat fileformat;
 
-    @Before
+    private MockedStatic<ExternalContext> mockedExternalContext;
+    private MockedStatic<FacesContext> mockedFacesContext;
+    private MockedStatic<HttpSession> mockedHttpSession;
+    private MockedStatic<Helper> mockedHelper;
+    private MockedStatic<MetadataManager> mockedMetadataManager;
+
+    @AfterEach
+    public void tearDown() {
+        if (mockedMetadataManager != null) mockedMetadataManager.close();
+        if (mockedHelper != null) mockedHelper.close();
+        if (mockedHttpSession != null) mockedHttpSession.close();
+        if (mockedFacesContext != null) mockedFacesContext.close();
+        if (mockedExternalContext != null) mockedExternalContext.close();
+    }
+
+    @BeforeEach
     public void setUp() throws Exception {
         // mock jsf context and http session
         prepareMocking();
@@ -294,26 +309,26 @@ public class MetadatenVerifizierungTest extends AbstractTest {
     }
 
     private void prepareMocking() {
-        PowerMock.mockStatic(ExternalContext.class);
-        PowerMock.mockStatic(FacesContext.class);
-        PowerMock.mockStatic(HttpSession.class);
-        PowerMock.mockStatic(Helper.class);
+        mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+        mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+        mockedHttpSession = Mockito.mockStatic(HttpSession.class);
+        mockedHelper = Mockito.mockStatic(Helper.class);
+        mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
 
         FacesContext facesContext = EasyMock.createMock(FacesContext.class);
         ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
         HttpSession session = EasyMock.createMock(HttpSession.class);
         UIViewRoot root = EasyMock.createMock(UIViewRoot.class);
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
+        PartialViewContext pvc = EasyMock.createMock(PartialViewContext.class);
 
         FacesContextHelper.setFacesContext(facesContext);
-        //        facesContext.responseComplete();
-        EasyMock.expect(FacesContext.getCurrentInstance()).andReturn(facesContext).anyTimes();
+        mockedFacesContext.when(() -> FacesContext.getCurrentInstance()).thenReturn(facesContext);
         EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
         EasyMock.expect(externalContext.getSession(EasyMock.anyBoolean())).andReturn(session).anyTimes();
         EasyMock.expect(externalContext.getRequest()).andReturn(request).anyTimes();
 
         EasyMock.expect(request.getScheme()).andReturn("http://").anyTimes();
-
         EasyMock.expect(request.getServerName()).andReturn("example.com").anyTimes();
         EasyMock.expect(request.getServerPort()).andReturn(80).anyTimes();
         EasyMock.expect(request.getContextPath()).andReturn("goobi").anyTimes();
@@ -325,65 +340,36 @@ public class MetadatenVerifizierungTest extends AbstractTest {
         EasyMock.expect(context.getContextPath()).andReturn("fixture").anyTimes();
 
         Application application = EasyMock.createMock(Application.class);
-
         EasyMock.expect(facesContext.getApplication()).andReturn(application).anyTimes();
 
         List<Locale> locale = new ArrayList<>();
         locale.add(Locale.GERMAN);
 
         EasyMock.expect(facesContext.getViewRoot()).andReturn(root).anyTimes();
-
         EasyMock.expect(root.getLocale()).andReturn(Locale.GERMAN).anyTimes();
         EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
 
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("error").anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString())).andReturn("error").anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn("error").anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString()))
-                .andReturn("error")
-                .anyTimes();
-        EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
-        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
-        EasyMock.expect(Helper.getRequestParameter(EasyMock.anyString())).andReturn("1").anyTimes();
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
-        Helper.setMeldung(EasyMock.anyString());
-        Helper.setMeldung(EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyObject(Exception.class));
-        Helper.setFehlerMeldung(EasyMock.anyString());
-        PowerMock.mockStatic(MetadataManager.class);
-        MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject());
+        facesContext.addMessage(EasyMock.anyObject(), EasyMock.anyObject());
+        EasyMock.expectLastCall().anyTimes();
+        EasyMock.expect(facesContext.getPartialViewContext()).andReturn(pvc).anyTimes();
+        EasyMock.expect(pvc.getRenderIds()).andReturn(new ArrayList<>()).anyTimes();
 
-        PowerMock.replay(Helper.class);
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("error");
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("error");
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("error");
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("error");
+        mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+        mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+        mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
+        mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+
         EasyMock.replay(request);
         EasyMock.replay(root);
         EasyMock.replay(session);
         EasyMock.replay(application);
         EasyMock.replay(externalContext);
         EasyMock.replay(context);
+        EasyMock.replay(pvc);
         EasyMock.replay(facesContext);
     }
 }

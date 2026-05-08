@@ -17,11 +17,11 @@
  */
 package org.goobi.production.cli.helper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,13 +35,9 @@ import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.importer.ImportObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.forms.AdditionalField;
@@ -54,15 +50,23 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import ugh.dl.Fileformat;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ MetadatenHelper.class, Helper.class, ProcessManager.class, StepManager.class, PropertyManager.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class CopyProcessTest extends AbstractTest {
 
     private Process processTemplate;
     private Fileformat mockFileformat;
 
-    @Before
+    private MockedStatic<MetadatenHelper> mockedMetadatenHelper;
+    private MockedStatic<ProcessManager> mockedProcessManager;
+    private MockedStatic<PropertyManager> mockedPropertyManager;
+    private MockedStatic<StepManager> mockedStepManager;
+    private MockedStatic<Helper> mockedHelper;
+
+    @BeforeEach
     public void setUp() throws Exception {
         // prepare process template
         processTemplate = MockProcess.createProcess();
@@ -83,44 +87,38 @@ public class CopyProcessTest extends AbstractTest {
         mockFileformat = EasyMock.createMock(Fileformat.class);
         EasyMock.expect(mockFileformat.read(EasyMock.anyString())).andReturn(true).anyTimes();
         EasyMock.replay(mockFileformat);
-
         prepareMocking();
     }
 
-    private void prepareMocking() throws Exception {
-        PowerMock.mockStatic(MetadatenHelper.class);
-        EasyMock.expect(MetadatenHelper.getMetaFileType(EasyMock.anyString())).andReturn("metsmods").anyTimes();
-        EasyMock.expect(MetadatenHelper.getFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class)))
-                .andReturn(mockFileformat)
-                .anyTimes();
-        PowerMock.replay(MetadatenHelper.class);
+    @AfterEach
+    public void tearDown() {
+        if (mockedHelper != null) mockedHelper.close();
+        if (mockedStepManager != null) mockedStepManager.close();
+        if (mockedPropertyManager != null) mockedPropertyManager.close();
+        if (mockedProcessManager != null) mockedProcessManager.close();
+        if (mockedMetadatenHelper != null) mockedMetadatenHelper.close();
+    }
 
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString(), EasyMock.anyObject())).andReturn(0).anyTimes();
-        PowerMock.replay(ProcessManager.class);
+    private void prepareMocking() throws Exception {
+        mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
+        mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+        mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+        mockedStepManager = Mockito.mockStatic(StepManager.class);
+        mockedHelper = Mockito.mockStatic(Helper.class);
+
+        mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
+        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(mockFileformat);
+
+        mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
 
         List<GoobiProperty> emptyProps = new ArrayList<>();
-        PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.anyObject(PropertyOwnerType.class)))
-                .andReturn(emptyProps)
-                .anyTimes();
-        PowerMock.replay(PropertyManager.class);
+        mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any(PropertyOwnerType.class))).thenReturn(emptyProps);
 
-        PowerMock.mockStatic(StepManager.class);
-        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt()))
-                .andReturn(new ArrayList<>())
-                .anyTimes();
-        PowerMock.replay(StepManager.class);
+        mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
 
-        PowerMock.mockStatic(Helper.class);
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
-        Helper.setFehlerMeldung(EasyMock.anyString());
-        EasyMock.expectLastCall().anyTimes();
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        EasyMock.expectLastCall().anyTimes();
-        PowerMock.replay(Helper.class);
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
+        mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
     }
 
     @Test
@@ -301,21 +299,8 @@ public class CopyProcessTest extends AbstractTest {
 
     @Test
     public void testTestTitleReturnsFalseForDuplicateTitle() {
-        // prepare ProcessManager so that the generated title already exists
-        PowerMock.reset(ProcessManager.class);
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString(), EasyMock.anyObject())).andReturn(1).anyTimes();
-        PowerMock.replay(ProcessManager.class);
-
-        PowerMock.reset(Helper.class);
-        PowerMock.mockStatic(Helper.class);
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
-        Helper.setFehlerMeldung(EasyMock.anyString());
-        EasyMock.expectLastCall().anyTimes();
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        EasyMock.expectLastCall().anyTimes();
-        PowerMock.replay(Helper.class);
+        // Override default stub: title already exists
+        mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(1);
 
         CopyProcess cp = new CopyProcess();
         cp.setProzessVorlage(processTemplate);

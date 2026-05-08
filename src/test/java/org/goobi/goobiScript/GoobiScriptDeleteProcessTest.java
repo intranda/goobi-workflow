@@ -18,26 +18,20 @@
 
 package org.goobi.goobiScript;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.enums.GoobiScriptResultType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
@@ -45,30 +39,25 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Helper.class, ProcessManager.class, StepManager.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class GoobiScriptDeleteProcessTest extends AbstractTest {
 
     private Process process;
 
     private Step s1;
 
-    @Before
-    public void setUp() throws Exception {
-        PowerMock.mockStatic(Helper.class);
-        PowerMock.mockStatic(ProcessManager.class);
+    private User u;
 
-        User u = new User();
+    @BeforeEach
+    public void setUp() throws Exception {
+
+        u = new User();
         u.setVorname("firstname");
         u.setNachname("lastname");
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(u).anyTimes();
-        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyObject(),
-                EasyMock.anyString());
-        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyObject(),
-                EasyMock.anyString());
-        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyObject(),
-                EasyMock.anyString());
 
         process = new Process();
         process.setId(Integer.valueOf(5));
@@ -82,69 +71,98 @@ public class GoobiScriptDeleteProcessTest extends AbstractTest {
         steps.add(s1);
         process.setSchritte(steps);
 
-        EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
-        ProcessManager.deleteProcess(EasyMock.anyObject());
-        PowerMock.replayAll();
     }
 
     @Test
     public void testConstructor() {
-        GoobiScriptDeleteProcess fixture = new GoobiScriptDeleteProcess();
-        assertNotNull(fixture);
-        assertEquals("deleteProcess", fixture.getAction());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+
+            GoobiScriptDeleteProcess fixture = new GoobiScriptDeleteProcess();
+            assertNotNull(fixture);
+            assertEquals("deleteProcess", fixture.getAction());
+    
+        }
+}
 
     @Test
     public void testSampleCall() {
-        GoobiScriptDeleteProcess fixture = new GoobiScriptDeleteProcess();
-        assertNotNull(fixture);
-        assertEquals(
-                "---\\n# This GoobiScript allows you to delete existing processes.\\naction: deleteProcess\\n\\n# Define here if just the content shall be deleted (true) or the the entire process from the database as well (false).\\ncontentOnly: false",
-                fixture.getSampleCall());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+
+            GoobiScriptDeleteProcess fixture = new GoobiScriptDeleteProcess();
+            assertNotNull(fixture);
+            assertEquals(
+                    "---\\n# This GoobiScript allows you to delete existing processes.\\naction: deleteProcess\\n\\n# Define here if just the content shall be deleted (true) or the the entire process from the database as well (false).\\ncontentOnly: false",
+                    fixture.getSampleCall());
+    
+        }
+}
 
     @Test
     public void testPrepare() {
-        List<Integer> processes = new ArrayList<>();
-        processes.add(1);
-        String command = "deleteProcess";
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("contentOnly", "true");
-        GoobiScriptDeleteProcess fixture = new GoobiScriptDeleteProcess();
-        assertNotNull(fixture);
-        List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
-        assertEquals(1, results.size());
-        assertEquals("deleteProcess", results.get(0).getCommand());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+
+            List<Integer> processes = new ArrayList<>();
+            processes.add(1);
+            String command = "deleteProcess";
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("contentOnly", "true");
+            GoobiScriptDeleteProcess fixture = new GoobiScriptDeleteProcess();
+            assertNotNull(fixture);
+            List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
+            assertEquals(1, results.size());
+            assertEquals("deleteProcess", results.get(0).getCommand());
+    
+        }
+}
 
     @Test
     public void testExecute() {
-        List<Integer> processes = new ArrayList<>();
-        processes.add(1);
-        String command = "deleteProcess";
-        // case 1: contentOnly and keep unknown false
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("contentOnly", "true");
-        parameters.put("removeUnknownFiles", "false");
-        GoobiScriptDeleteProcess fixture = new GoobiScriptDeleteProcess();
-        List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
-        fixture.execute(results.get(0));
-        assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
-        assertEquals("Content for process could be deleted successfully using GoobiScript.", results.get(0).getResultMessage());
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
 
-        // case 2: contentOnly and remove unknown false
-        parameters.put("removeUnknownFiles", "true");
-        results = fixture.prepare(processes, command, parameters);
-        fixture.execute(results.get(0));
-        assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
-        assertEquals("Content for process could be deleted successfully using GoobiScript.", results.get(0).getResultMessage());
 
-        // case 3: remove everything
-        parameters.put("contentOnly", "false");
-        results = fixture.prepare(processes, command, parameters);
-        fixture.execute(results.get(0));
-        assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
-        assertEquals("Process could be deleted successfully using GoobiScript.", results.get(0).getResultMessage());
-    }
+            List<Integer> processes = new ArrayList<>();
+            processes.add(1);
+            String command = "deleteProcess";
+            // case 1: contentOnly and keep unknown false
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("contentOnly", "true");
+            parameters.put("removeUnknownFiles", "false");
+            GoobiScriptDeleteProcess fixture = new GoobiScriptDeleteProcess();
+            List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
+            fixture.execute(results.get(0));
+            assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
+            assertEquals("Content for process could be deleted successfully using GoobiScript.", results.get(0).getResultMessage());
+
+            // case 2: contentOnly and remove unknown false
+            parameters.put("removeUnknownFiles", "true");
+            results = fixture.prepare(processes, command, parameters);
+            fixture.execute(results.get(0));
+            assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
+            assertEquals("Content for process could be deleted successfully using GoobiScript.", results.get(0).getResultMessage());
+
+            // case 3: remove everything
+            parameters.put("contentOnly", "false");
+            results = fixture.prepare(processes, command, parameters);
+            fixture.execute(results.get(0));
+            assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
+            assertEquals("Process could be deleted successfully using GoobiScript.", results.get(0).getResultMessage());
+    
+        }
+}
 
 }

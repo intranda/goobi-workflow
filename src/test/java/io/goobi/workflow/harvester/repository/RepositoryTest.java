@@ -17,39 +17,35 @@
  */
 package io.goobi.workflow.harvester.repository;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.Collections;
 
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
-import de.sub.goobi.helper.ShellScript;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryManager;
 import io.goobi.workflow.api.connection.HttpUtils;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ HttpUtils.class, HarvesterRepositoryManager.class, ShellScript.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class RepositoryTest extends AbstractTest {
 
-    @Before
+    private String dublinCoreRecord;
+
+    @BeforeEach
     public void setUp() throws Exception {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
         // for junit tests in eclipse
@@ -58,289 +54,504 @@ public class RepositoryTest extends AbstractTest {
             samplefiles = Paths.get("target/test-classes/samplefiles/"); // to run mvn test from cli or in jenkins
         }
 
-        PowerMock.mockStatic(HarvesterRepositoryManager.class);
-        PowerMock.mockStatic(HttpUtils.class);
 
-        String dublinCoreRecord = Files.readString(Paths.get(samplefiles.toString(), "oai_dc.xml"));
-        EasyMock.expect(HttpUtils.getStringFromUrl(EasyMock.anyString())).andReturn(dublinCoreRecord).anyTimes();
-        HarvesterRepositoryManager.updateLastHarvestingTime(EasyMock.anyInt(), EasyMock.anyObject());
-        EasyMock.expect(HarvesterRepositoryManager.addRecords(EasyMock.anyObject(), EasyMock.anyBoolean())).andReturn(1).anyTimes();
-
-        HarvesterRepositoryManager.changeStatusOfRepository(EasyMock.anyObject());
-
-        ShellScript script = PowerMock.createMockAndExpectNew(ShellScript.class, EasyMock.anyObject(Path.class));
-        EasyMock.expect(script.run(EasyMock.anyObject())).andReturn(0).anyTimes();
-        EasyMock.expect(script.getStdOut()).andReturn(Collections.emptyList()).anyTimes();
-
-        PowerMock.replay(script);
-        PowerMock.replay(ShellScript.class);
-
-        PowerMock.replay(HarvesterRepositoryManager.class);
-        PowerMock.replay(HttpUtils.class);
+        dublinCoreRecord = Files.readString(Paths.get(samplefiles.toString(), "oai_dc.xml"));
     }
 
     @Test
     public void testConstructor() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+    
+        }
+}
 
     @Test
     public void testAllArgsConstructor() {
-        Repository fixture = new Repository(1, "name", "url", "exportFolderPath", "scriptPath", null, 24, 0, false, false, null, null, null);
-        assertNotNull(fixture);
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository(1, "name", "url", "exportFolderPath", "scriptPath", null, 24, 0, false, false, null, null, null);
+            assertNotNull(fixture);
+    
+        }
+}
 
     @Test
     public void testId() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertNull(fixture.getId());
-        fixture.setId(1);
-        assertEquals(1, fixture.getId().intValue());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertNull(fixture.getId());
+            fixture.setId(1);
+            assertEquals(1, fixture.getId().intValue());
+    
+        }
+}
 
     @Test
     public void testName() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertNull(fixture.getName());
-        fixture.setName("fixture");
-        assertEquals("fixture", fixture.getName());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertNull(fixture.getName());
+            fixture.setName("fixture");
+            assertEquals("fixture", fixture.getName());
+    
+        }
+}
 
     @Test
     public void testUrl() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertNull(fixture.getUrl());
-        fixture.setUrl("fixture");
-        assertEquals("fixture", fixture.getUrl());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertNull(fixture.getUrl());
+            fixture.setUrl("fixture");
+            assertEquals("fixture", fixture.getUrl());
+    
+        }
+}
 
     @Test
     public void testParameter() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertTrue(fixture.getParameter().isEmpty());
-        fixture.getParameter().put("key", "value");
-        assertFalse(fixture.getParameter().isEmpty());
-        assertEquals("value", fixture.getParameter().get("key"));
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertTrue(fixture.getParameter().isEmpty());
+            fixture.getParameter().put("key", "value");
+            assertFalse(fixture.getParameter().isEmpty());
+            assertEquals("value", fixture.getParameter().get("key"));
+    
+        }
+}
 
     @Test
     public void testLastHarvest() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertNull(fixture.getLastHarvest());
-        fixture.setLastHarvest(new Timestamp(1l));
-        assertEquals(1l, fixture.getLastHarvest().getTime());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertNull(fixture.getLastHarvest());
+            fixture.setLastHarvest(new Timestamp(1l));
+            assertEquals(1l, fixture.getLastHarvest().getTime());
+    
+        }
+}
 
     @Test
     public void testFrequency() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertEquals(24, fixture.getFrequency());
-        fixture.setFrequency(1);
-        assertEquals(1, fixture.getFrequency());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertEquals(24, fixture.getFrequency());
+            fixture.setFrequency(1);
+            assertEquals(1, fixture.getFrequency());
+    
+        }
+}
 
     @Test
     public void testDelay() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertEquals(0, fixture.getDelay());
-        fixture.setDelay(1);
-        assertEquals(1, fixture.getDelay());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertEquals(0, fixture.getDelay());
+            fixture.setDelay(1);
+            assertEquals(1, fixture.getDelay());
+    
+        }
+}
 
     @Test
     public void testEnabled() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertTrue(fixture.isEnabled());
-        fixture.setEnabled(false);
-        assertFalse(fixture.isEnabled());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertTrue(fixture.isEnabled());
+            fixture.setEnabled(false);
+            assertFalse(fixture.isEnabled());
+    
+        }
+}
 
     @Test
     public void testExportFolderPath() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertNull(fixture.getExportFolderPath());
-        fixture.setExportFolderPath("fixture");
-        assertEquals("fixture", fixture.getExportFolderPath());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertNull(fixture.getExportFolderPath());
+            fixture.setExportFolderPath("fixture");
+            assertEquals("fixture", fixture.getExportFolderPath());
+    
+        }
+}
 
     @Test
     public void testScriptPath() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertNull(fixture.getScriptPath());
-        fixture.setScriptPath("fixture");
-        assertEquals("fixture", fixture.getScriptPath());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertNull(fixture.getScriptPath());
+            fixture.setScriptPath("fixture");
+            assertEquals("fixture", fixture.getScriptPath());
+    
+        }
+}
 
     @Test
     public void testAllowUpdates() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertTrue(fixture.isAllowUpdates());
-        fixture.setAllowUpdates(false);
-        assertFalse(fixture.isAllowUpdates());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertTrue(fixture.isAllowUpdates());
+            fixture.setAllowUpdates(false);
+            assertFalse(fixture.isAllowUpdates());
+    
+        }
+}
 
     @Test
     public void testAutoExport() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertTrue(fixture.isAutoExport());
-        fixture.setAutoExport(false);
-        assertFalse(fixture.isAutoExport());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertTrue(fixture.isAutoExport());
+            fixture.setAutoExport(false);
+            assertFalse(fixture.isAutoExport());
+    
+        }
+}
 
     @Test
     public void testRepositoryType() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertNull(fixture.getRepositoryType());
-        fixture.setRepositoryType("fixture");
-        assertEquals("fixture", fixture.getRepositoryType());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertNull(fixture.getRepositoryType());
+            fixture.setRepositoryType("fixture");
+            assertEquals("fixture", fixture.getRepositoryType());
+    
+        }
+}
 
     @Test
     public void testGoobiImport() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertFalse(fixture.isGoobiImport());
-        fixture.setGoobiImport(true);
-        assertTrue(fixture.isGoobiImport());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertFalse(fixture.isGoobiImport());
+            fixture.setGoobiImport(true);
+            assertTrue(fixture.isGoobiImport());
+    
+        }
+}
 
     @Test
     public void testImportProjectName() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertNull(fixture.getImportProjectName());
-        fixture.setImportProjectName("fixture");
-        assertEquals("fixture", fixture.getImportProjectName());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertNull(fixture.getImportProjectName());
+            fixture.setImportProjectName("fixture");
+            assertEquals("fixture", fixture.getImportProjectName());
+    
+        }
+}
 
     @Test
     public void testProcessTemplateName() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertNull(fixture.getProcessTemplateName());
-        fixture.setProcessTemplateName("fixture");
-        assertEquals("fixture", fixture.getProcessTemplateName());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertNull(fixture.getProcessTemplateName());
+            fixture.setProcessTemplateName("fixture");
+            assertEquals("fixture", fixture.getProcessTemplateName());
+    
+        }
+}
 
     @Test
     public void testFileformat() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertNull(fixture.getFileformat());
-        fixture.setFileformat("fixture");
-        assertEquals("fixture", fixture.getFileformat());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertNull(fixture.getFileformat());
+            fixture.setFileformat("fixture");
+            assertEquals("fixture", fixture.getFileformat());
+    
+        }
+}
 
     @Test
     public void testStatus() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertTrue(fixture.isEnabled());
-        assertEquals("deactivate", fixture.getStatus());
-        fixture.changeStatus();
-        assertFalse(fixture.isEnabled());
-        assertEquals("activate", fixture.getStatus());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertTrue(fixture.isEnabled());
+            assertEquals("deactivate", fixture.getStatus());
+            fixture.changeStatus();
+            assertFalse(fixture.isEnabled());
+            assertEquals("activate", fixture.getStatus());
+    
+        }
+}
 
     @Test
     public void testHarvest() throws Exception {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        fixture.setRepositoryType("type");
-        int val = fixture.harvest(1);
-        assertEquals(0, val);
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            fixture.setRepositoryType("type");
+            int val = fixture.harvest(1);
+            assertEquals(0, val);
+    
+        }
+}
 
     @Test
     public void testHarvestOai() throws Exception {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        fixture.setRepositoryType("oai");
-        int val = fixture.harvest(1);
-        assertEquals(1, val);
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            fixture.setRepositoryType("oai");
+            int val = fixture.harvest(1);
+            assertEquals(1, val);
+    
+        }
+}
 
     @Test
     public void testHarvestIa() throws Exception {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        fixture.setUrl("url");
-        fixture.setRepositoryType("ia");
-        int val = fixture.harvest(1);
-        assertEquals(0, val);
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            fixture.setUrl("url");
+            fixture.setRepositoryType("ia");
+            int val = fixture.harvest(1);
+            assertEquals(0, val);
+    
+        }
+}
 
     // @Test
     public void testHarvestIaCli() throws Exception {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        fixture.setUrl("url");
-        fixture.setRepositoryType("ia cli");
-        int val = fixture.harvest(1);
-        assertEquals(0, val);
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            fixture.setUrl("url");
+            fixture.setRepositoryType("ia cli");
+            int val = fixture.harvest(1);
+            assertEquals(0, val);
+    
+        }
+}
 
     @Test
     public void testTestmode() throws Exception {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertFalse(fixture.isTestMode());
-        fixture.setTestMode(true);
-        assertTrue(fixture.isTestMode());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertFalse(fixture.isTestMode());
+            fixture.setTestMode(true);
+            assertTrue(fixture.isTestMode());
+    
+        }
+}
 
 
     @Test
     public void testStartDate() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertNull(fixture.getStartDate());
-        fixture.setStartDate("fixture");
-        assertEquals("fixture", fixture.getStartDate());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertNull(fixture.getStartDate());
+            fixture.setStartDate("fixture");
+            assertEquals("fixture", fixture.getStartDate());
+    
+        }
+}
 
     @Test
     public void testEndDate() {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        assertNull(fixture.getEndDate());
-        fixture.setEndDate("fixture");
-        assertEquals("fixture", fixture.getEndDate());
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            assertNull(fixture.getEndDate());
+            fixture.setEndDate("fixture");
+            assertEquals("fixture", fixture.getEndDate());
+    
+        }
+}
 
     @Test
     public void testHarvestWithFromUntil() throws Exception {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        fixture.setRepositoryType("oai");
-        fixture.setStartDate("2020-01-01T00:00:00Z");
-        fixture.setEndDate("2020-12-31T23:59:59Z");
-        int val = fixture.harvest(1);
-        assertEquals(1, val);
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            fixture.setRepositoryType("oai");
+            fixture.setStartDate("2020-01-01T00:00:00Z");
+            fixture.setEndDate("2020-12-31T23:59:59Z");
+            int val = fixture.harvest(1);
+            assertEquals(1, val);
+    
+        }
+}
 
 
     @Test
     public void testHarvestTestmode() throws Exception {
-        Repository fixture = new Repository();
-        assertNotNull(fixture);
-        fixture.setRepositoryType("oai");
-        fixture.setTestMode(true);
-        int val = fixture.harvest(1);
-        assertEquals(1, val);
-    }
+        try (MockedStatic<HarvesterRepositoryManager> mockedHarvesterRepositoryManager = Mockito.mockStatic(HarvesterRepositoryManager.class);
+             MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.getStringFromUrl(Mockito.anyString())).thenReturn(dublinCoreRecord);
+            mockedHarvesterRepositoryManager.when(() -> HarvesterRepositoryManager.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(1);
+
+
+            Repository fixture = new Repository();
+            assertNotNull(fixture);
+            fixture.setRepositoryType("oai");
+            fixture.setTestMode(true);
+            int val = fixture.harvest(1);
+            assertEquals(1, val);
+    
+        }
+}
 }

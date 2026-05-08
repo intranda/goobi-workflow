@@ -18,106 +18,107 @@
 
 package io.goobi.workflow.ruleseteditor.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.jdom2.Element;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.ruleseteditor.RulesetValidationError;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Helper.class })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class ValidateTranslationsTest {
 
     private ValidateTranslations validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validator = new ValidateTranslations();
-        PowerMock.mockStatic(Helper.class);
     }
 
     @Test
     public void testNoErrorsWhenLanguageHasText() {
-        Element root = new Element("root");
-        Element elem = new Element("element");
-        Element lang = new Element("language");
-        lang.setText("English");
-        elem.addContent(lang);
-        Element name = new Element("Name");
-        name.setText("TestName");
-        elem.addContent(name);
-        root.addContent(elem);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
 
-        PowerMock.replay(Helper.class);
+            Element root = new Element("root");
+            Element elem = new Element("element");
+            Element lang = new Element("language");
+            lang.setText("English");
+            elem.addContent(lang);
+            Element name = new Element("Name");
+            name.setText("TestName");
+            elem.addContent(name);
+            root.addContent(elem);
 
-        List<RulesetValidationError> errors = validator.validate(root);
-        assertTrue(errors.isEmpty());
 
-        PowerMock.verify(Helper.class);
-    }
+            List<RulesetValidationError> errors = validator.validate(root);
+            assertTrue(errors.isEmpty());
+
+    
+        }
+}
 
     @Test
     public void testErrorWhenLanguageEmpty() {
-        Element root = new Element("root");
-        Element elem = new Element("element");
-        Element lang = new Element("language");
-        lang.setText("   "); // empty text
-        lang.setAttribute("goobi_lineNumber", "42");
-        elem.addContent(lang);
-        Element name = new Element("Name");
-        name.setText("TestName");
-        elem.addContent(name);
-        root.addContent(elem);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
 
-        EasyMock.expect(Helper.getTranslation("ruleset_validation_emptyTranslation", "TestName"))
-                .andReturn("Translated error message");
+            Element root = new Element("root");
+            Element elem = new Element("element");
+            Element lang = new Element("language");
+            lang.setText("   "); // empty text
+            lang.setAttribute("goobi_lineNumber", "42");
+            elem.addContent(lang);
+            Element name = new Element("Name");
+            name.setText("TestName");
+            elem.addContent(name);
+            root.addContent(elem);
 
-        PowerMock.replay(Helper.class);
+                        mockedHelper.when(() -> Helper.getTranslation("ruleset_validation_emptyTranslation", "TestName")).thenReturn("Translated error message");
 
-        List<RulesetValidationError> errors = validator.validate(root);
-        assertEquals(1, errors.size());
-        RulesetValidationError error = errors.get(0);
-        assertEquals("ERROR", error.getSeverity());
-        assertEquals("Translated error message", error.getMessage());
-        assertEquals(42, error.getLine());
 
-        PowerMock.verify(Helper.class);
-    }
+            List<RulesetValidationError> errors = validator.validate(root);
+            assertEquals(1, errors.size());
+            RulesetValidationError error = errors.get(0);
+            assertEquals("ERROR", error.getSeverity());
+            assertEquals("Translated error message", error.getMessage());
+            assertEquals(42, error.getLine());
+
+    
+        }
+}
 
     @Test
     public void testErrorWithNoLineNumber() {
-        Element root = new Element("root");
-        Element elem = new Element("element");
-        Element lang = new Element("language");
-        lang.setText(""); // empty
-        // no line number set
-        elem.addContent(lang);
-        Element name = new Element("Name");
-        name.setText("AnotherName");
-        elem.addContent(name);
-        root.addContent(elem);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
 
-        EasyMock.expect(Helper.getTranslation("ruleset_validation_emptyTranslation", "AnotherName"))
-                .andReturn("Translated error message");
+            Element root = new Element("root");
+            Element elem = new Element("element");
+            Element lang = new Element("language");
+            lang.setText(""); // empty
+            // no line number set
+            elem.addContent(lang);
+            Element name = new Element("Name");
+            name.setText("AnotherName");
+            elem.addContent(name);
+            root.addContent(elem);
 
-        PowerMock.replay(Helper.class);
+                        mockedHelper.when(() -> Helper.getTranslation("ruleset_validation_emptyTranslation", "AnotherName")).thenReturn("Translated error message");
 
-        List<RulesetValidationError> errors = validator.validate(root);
-        assertEquals(1, errors.size());
-        RulesetValidationError error = errors.get(0);
-        assertEquals(0, error.getLine()); // fallback to "0"
 
-        PowerMock.verify(Helper.class);
-    }
+            List<RulesetValidationError> errors = validator.validate(root);
+            assertEquals(1, errors.size());
+            RulesetValidationError error = errors.get(0);
+            assertEquals(0, error.getLine()); // fallback to "0"
+
+    
+        }
+}
 }

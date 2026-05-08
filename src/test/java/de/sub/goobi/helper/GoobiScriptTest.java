@@ -18,9 +18,9 @@ package de.sub.goobi.helper;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,13 +38,8 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -58,17 +53,18 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ StepManager.class, UserManager.class, UsergroupManager.class, ProcessManager.class, RulesetManager.class, Helper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
-
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class GoobiScriptTest extends AbstractTest {
 
     private List<Integer> processList;
     private Process process;
     private User user;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
         Path goobiFolder = Paths.get(template.getParent().getParent().toString()
@@ -107,87 +103,78 @@ public class GoobiScriptTest extends AbstractTest {
 
     private void prepareMocking() throws Exception {
 
+
         // swapSteps
-        PowerMock.mockStatic(StepManager.class);
-        StepManager.saveStep(EasyMock.anyObject(Step.class));
-        StepManager.saveStep(EasyMock.anyObject(Step.class));
 
-        // addUser
-        user = new User();
-        user.setLogin("test");
-        user.setId(0);
-        user.setVorname("firstname");
-        user.setNachname("lastname");
+        try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                     MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+                     MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                     MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class)) {
+            // addUser
+            user = new User();
+            user.setLogin("test");
+            user.setId(0);
+            user.setVorname("firstname");
+            user.setNachname("lastname");
 
-        List<User> userList = new ArrayList<>();
-        userList.add(user);
-        PowerMock.mockStatic(UserManager.class);
-        EasyMock.expect(UserManager.getUsers(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt(),
-                EasyMock.anyObject(Institution.class))).andReturn(userList).anyTimes();
+            List<User> userList = new ArrayList<>();
+            userList.add(user);
+                        mockedUserManager.when(() -> UserManager.getUsers(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                    Mockito.any(Institution.class))).thenReturn(userList);
 
-        // addUsergroup
-        Usergroup group = new Usergroup();
-        group.setId(1);
-        group.setTitel("title");
-        group.setBerechtigung(3);
-        List<Usergroup> usergroupList = new ArrayList<>();
-        usergroupList.add(group);
-        PowerMock.mockStatic(UsergroupManager.class);
-        EasyMock.expect(UsergroupManager.getUsergroups(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt(),
-                EasyMock.anyObject(Institution.class))).andReturn(usergroupList).anyTimes();
+            // addUsergroup
+            Usergroup group = new Usergroup();
+            group.setId(1);
+            group.setTitel("title");
+            group.setBerechtigung(3);
+            List<Usergroup> usergroupList = new ArrayList<>();
+            usergroupList.add(group);
+                        mockedUsergroupManager.when(() -> UsergroupManager.getUsergroups(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                    Mockito.any(Institution.class))).thenReturn(usergroupList);
 
-        Ruleset r = new Ruleset();
-        r.setTitel("title");
-        r.setDatei("file");
-        r.setOrderMetadataByRuleset(false);
-        List<Ruleset> rulesetList = new ArrayList<>();
-        rulesetList.add(r);
-        PowerMock.mockStatic(RulesetManager.class);
-        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt(),
-                EasyMock.anyObject(Institution.class))).andReturn(rulesetList).anyTimes();
+            Ruleset r = new Ruleset();
+            r.setTitel("title");
+            r.setDatei("file");
+            r.setOrderMetadataByRuleset(false);
+            List<Ruleset> rulesetList = new ArrayList<>();
+            rulesetList.add(r);
+                        mockedRulesetManager.when(() -> RulesetManager.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                    Mockito.any(Institution.class))).thenReturn(rulesetList);
 
-        //        PowerMock.mockStatic(ProcessManager.class);
-        //        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
-        //        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-        //        PowerMock.expectLastCall().times(0, 9);
-        //        ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
-        //        PowerMock.expectLastCall().times(0, 9);
-        //        PowerMock.replay(ProcessManager.class);
-        //
-        //        PowerMock.mockStatic(Helper.class);
-        //
-        //        SessionForm sessionForm = new SessionForm();
-        //        LoginBean loginBean = new LoginBean();
-        //
-        //        loginBean.setMyBenutzer(user);
-        //        EasyMock.expect(Helper.getManagedBeanValue("#{SessionForm}")).andReturn(sessionForm).anyTimes();
-        //        EasyMock.expect(Helper.getManagedBeanValue("#{LoginForm}")).andReturn(loginBean).anyTimes();
-        //
-        //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
-        //
-        //        PowerMock.replay(Helper.class);
-
-        PowerMock.replay(RulesetManager.class);
-
-        PowerMock.replay(UsergroupManager.class);
-        PowerMock.replay(UserManager.class);
-        PowerMock.replay(StepManager.class);
-    }
+            //        Mockito.mockStatic(ProcessManager.class);
+            //        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
+            //        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
+            //        ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
+            //        //
+            //        Mockito.mockStatic(Helper.class);
+            //
+            //        SessionForm sessionForm = new SessionForm();
+            //        LoginBean loginBean = new LoginBean();
+            //
+            //        loginBean.setMyBenutzer(user);
+            //        mockedHelper.when(() -> Helper.getManagedBeanValue("#{SessionForm}")).thenReturn(sessionForm);
+            //        mockedHelper.when(() -> Helper.getManagedBeanValue("#{LoginForm}")).thenReturn(loginBean);
+            //
+            //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+            //        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
+            //
+            //
+        }
+}
 
     @Test
     public void testConstructor() {
@@ -213,23 +200,18 @@ public class GoobiScriptTest extends AbstractTest {
     //@Test
     @SuppressWarnings("removal")
     public void testExecuteSwapStepsAction() throws Exception {
-        PowerMock.mockStatic(ProcessManager.class);
+        Mockito.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-        PowerMock.expectLastCall().times(0, 9);
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
-        PowerMock.expectLastCall().times(0, 9);
         JournalManager.saveJournalEntry(EasyMock.anyObject(JournalEntry.class));
-        PowerMock.replay(ProcessManager.class);
 
-        PowerMock.mockStatic(Helper.class);
+        Mockito.mockStatic(Helper.class);
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
 
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        PowerMock.expectLastCall().anyTimes();
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        PowerMock.replay(Helper.class);
 
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: swapSteps");
@@ -243,14 +225,11 @@ public class GoobiScriptTest extends AbstractTest {
     //@Test
     @SuppressWarnings("removal")
     public void testExecuteSwapProzessesOutAction() throws Exception {
-        PowerMock.mockStatic(ProcessManager.class);
+        Mockito.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-        PowerMock.expectLastCall().times(0, 9);
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
-        PowerMock.expectLastCall().times(0, 9);
         JournalManager.saveJournalEntry(EasyMock.anyObject(JournalEntry.class));
-        PowerMock.replay(ProcessManager.class);
 
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: swapProzessesOut");
@@ -259,16 +238,13 @@ public class GoobiScriptTest extends AbstractTest {
     //@Test
     @SuppressWarnings("removal")
     public void testExecuteSwapProzessesInAction() throws Exception {
-        PowerMock.mockStatic(ProcessManager.class);
+        Mockito.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-        PowerMock.expectLastCall().times(0, 9);
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
-        PowerMock.expectLastCall().times(0, 9);
         JournalManager.saveJournalEntry(EasyMock.anyObject(JournalEntry.class));
-        PowerMock.replay(ProcessManager.class);
 
-        PowerMock.mockStatic(Helper.class);
+        Mockito.mockStatic(Helper.class);
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
 
@@ -276,9 +252,7 @@ public class GoobiScriptTest extends AbstractTest {
 
         Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
 
-        PowerMock.expectLastCall().anyTimes();
 
-        PowerMock.replay(Helper.class);
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: swapProzessesIn");
     }
@@ -287,16 +261,13 @@ public class GoobiScriptTest extends AbstractTest {
     @SuppressWarnings("removal")
     public void testExecuteAddUserAction() throws Exception {
 
-        PowerMock.mockStatic(ProcessManager.class);
+        Mockito.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-        PowerMock.expectLastCall().anyTimes();
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
-        PowerMock.expectLastCall().anyTimes();
         JournalManager.saveJournalEntry(EasyMock.anyObject(JournalEntry.class));
-        PowerMock.replay(ProcessManager.class);
 
-        PowerMock.mockStatic(Helper.class);
+        Mockito.mockStatic(Helper.class);
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
 
@@ -305,9 +276,7 @@ public class GoobiScriptTest extends AbstractTest {
 
         Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
 
-        PowerMock.expectLastCall().anyTimes();
 
-        PowerMock.replay(Helper.class);
 
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: addUser");

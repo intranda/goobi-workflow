@@ -2,25 +2,26 @@ package de.sub.goobi.helper;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  */
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,19 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
 import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.Type;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -49,16 +44,21 @@ import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ PropertyManager.class, MetadataManager.class, Helper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+@ExtendWith(MockitoExtension.class)
 public class BatchProcessHelperTest extends AbstractTest {
 
     private List<Process> processList;
 
     private GoobiProperty pp;
 
-    @Before
+    private Process process;
+
+    @BeforeEach
     public void setUp() throws Exception {
         processList = new ArrayList<>();
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
@@ -70,7 +70,7 @@ public class BatchProcessHelperTest extends AbstractTest {
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
 
-        Process process = MockProcess.createProcess();
+        process = MockProcess.createProcess();
         process.setTitel("process");
         process.setId(1);
 
@@ -94,220 +94,311 @@ public class BatchProcessHelperTest extends AbstractTest {
         process2.setEigenschaften(pplist2);
 
         processList.add(process2);
-
-        prepareMocking();
-
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorNullValue() {
-        new BatchProcessHelper(null, null);
+        assertThrows(NullPointerException.class, () -> {
+            new BatchProcessHelper(null, null);
+        });
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testConstructorEmptyList() {
-        new BatchProcessHelper(new ArrayList<>(), null);
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            new BatchProcessHelper(new ArrayList<>(), null);
+        });
     }
 
     @Test
     public void testConstructor() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        assertNotNull(helper);
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            assertNotNull(helper);
+        }
     }
 
     @Test
     public void testCurrentProcess() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        assertNotNull(helper);
-        helper.setCurrentProcess(processList.get(0));
-        assertEquals(processList.get(0).getTitel(), helper.getCurrentProcess().getTitel());
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            assertNotNull(helper);
+            helper.setCurrentProcess(processList.get(0));
+            assertEquals(processList.get(0).getTitel(), helper.getCurrentProcess().getTitel());
+        }
     }
 
     @Test
     public void testProcesses() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        helper.setProcesses(processList);
-        assertEquals(processList.size(), helper.getProcesses().size());
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            helper.setProcesses(processList);
+            assertEquals(processList.size(), helper.getProcesses().size());
+        }
     }
 
     @Test
     public void testProcessPropertyList() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<DisplayProperty> list = new ArrayList<>();
-        DisplayProperty pp = new DisplayProperty();
-        list.add(pp);
-        helper.setProcessPropertyList(list);
-        assertEquals(list.size(), helper.getProcessPropertyList().size());
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            List<DisplayProperty> list = new ArrayList<>();
+            DisplayProperty pp = new DisplayProperty();
+            list.add(pp);
+            helper.setProcessPropertyList(list);
+            assertEquals(list.size(), helper.getProcessPropertyList().size());
+        }
     }
 
     @Test
     public void testProcessProperty() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        DisplayProperty pp = new DisplayProperty();
-        helper.setProcessProperty(pp);
-        assertEquals(pp, helper.getProcessProperty());
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
 
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            DisplayProperty pp = new DisplayProperty();
+            helper.setProcessProperty(pp);
+            assertEquals(pp, helper.getProcessProperty());
+        }
     }
 
     @Test
     public void testPropertyListSize() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<DisplayProperty> list = new ArrayList<>();
-        DisplayProperty pp = new DisplayProperty();
-        list.add(pp);
-        helper.setProcessPropertyList(list);
-        assertEquals(list.size(), helper.getPropertyListSize());
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            List<DisplayProperty> list = new ArrayList<>();
+            DisplayProperty pp = new DisplayProperty();
+            list.add(pp);
+            helper.setProcessPropertyList(list);
+            assertEquals(list.size(), helper.getPropertyListSize());
+        }
     }
 
     @Test
     public void testProcessProperties() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<DisplayProperty> list = new ArrayList<>();
-        DisplayProperty pp = new DisplayProperty();
-        list.add(pp);
-        helper.setProcessPropertyList(list);
-        assertEquals(list.size(), helper.getProcessProperties().size());
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            List<DisplayProperty> list = new ArrayList<>();
+            DisplayProperty pp = new DisplayProperty();
+            list.add(pp);
+            helper.setProcessPropertyList(list);
+            assertEquals(list.size(), helper.getProcessProperties().size());
+        }
     }
 
     @Test
     public void testProcessNameList() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
 
-        List<String> fixture = new ArrayList<>();
-        fixture.add("test");
-        helper.setProcessNameList(fixture);
-        assertEquals(fixture.size(), helper.getProcessNameList().size());
-
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            List<String> fixture = new ArrayList<>();
+            fixture.add("test");
+            helper.setProcessNameList(fixture);
+            assertEquals(fixture.size(), helper.getProcessNameList().size());
+        }
     }
 
     @Test
     public void testProcessName() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        helper.setProcessName("process");
-        assertEquals("process", helper.getProcessName());
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            helper.setProcessName("process");
+            assertEquals("process", helper.getProcessName());
+        }
     }
 
     @Test
     public void testSaveCurrentProperty() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        DisplayProperty pp = new DisplayProperty();
-        pp.setContainer("0");
-        pp.setType(Type.TEXT);
-        pp.setValue("value");
-        pp.setName("name");
-        pp.setProzesseigenschaft(this.pp);
-        helper.setProcessProperty(pp);
-        helper.saveCurrentProperty();
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            DisplayProperty pp = new DisplayProperty();
+            pp.setContainer("0");
+            pp.setType(Type.TEXT);
+            pp.setValue("value");
+            pp.setName("name");
+            pp.setProzesseigenschaft(this.pp);
+            helper.setProcessProperty(pp);
+            helper.saveCurrentProperty();
+        }
     }
 
     @Test
     public void testSaveCurrentPropertyForAll() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        DisplayProperty pp = new DisplayProperty();
-        pp.setContainer("0");
-        pp.setType(Type.TEXT);
-        pp.setValue("value");
-        pp.setName("name");
-        helper.setProcessProperty(pp);
-        helper.saveCurrentPropertyForAll();
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            DisplayProperty pp = new DisplayProperty();
+            pp.setContainer("0");
+            pp.setType(Type.TEXT);
+            pp.setValue("value");
+            pp.setName("name");
+            helper.setProcessProperty(pp);
+            helper.saveCurrentPropertyForAll();
+        }
     }
 
     @Test
     public void testContainers() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
 
-        Map<String, PropertyListObject> fixture = helper.getContainers();
-        assertEquals(2, fixture.size());
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            Map<String, PropertyListObject> fixture = helper.getContainers();
+            assertEquals(2, fixture.size());
+        }
     }
 
     @Test
     public void testContainerSize() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        assertEquals(2, helper.getContainersSize());
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            assertEquals(2, helper.getContainersSize());
+        }
     }
 
     @Test
     public void testSortedProperties() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<DisplayProperty> fixture = helper.getSortedProperties();
-        assertEquals(2, fixture.size());
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            List<DisplayProperty> fixture = helper.getSortedProperties();
+            assertEquals(2, fixture.size());
+        }
     }
 
     @Test
     public void testContainerlessProperties() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<DisplayProperty> fixture = helper.getContainerlessProperties();
-        assertEquals(1, fixture.size());
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
 
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            List<DisplayProperty> fixture = helper.getContainerlessProperties();
+            assertEquals(1, fixture.size());
+        }
     }
 
     @Test
     public void testContainer() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<DisplayProperty> list = new ArrayList<>();
-        DisplayProperty pp = new DisplayProperty();
-        pp.setContainer("1");
-        pp.setType(Type.TEXT);
-        pp.setValue("value");
-        pp.setName("name");
-        list.add(pp);
-        helper.setProcessPropertyList(list);
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
 
-        helper.setContainer("1");
-        assertEquals("1", helper.getContainer());
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            List<DisplayProperty> list = new ArrayList<>();
+            DisplayProperty pp = new DisplayProperty();
+            pp.setContainer("1");
+            pp.setType(Type.TEXT);
+            pp.setValue("value");
+            pp.setName("name");
+            list.add(pp);
+            helper.setProcessPropertyList(list);
+
+            helper.setContainer("1");
+            assertEquals("1", helper.getContainer());
+        }
     }
 
     @Test
     public void testDuplicateContainerForSingle() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<DisplayProperty> list = new ArrayList<>();
-        DisplayProperty pp = new DisplayProperty();
-        pp.setContainer("1");
-        pp.setType(Type.TEXT);
-        pp.setValue("value");
-        pp.setName("name");
-        pp.setProzesseigenschaft(this.pp);
-        list.add(pp);
-        helper.setProcessPropertyList(list);
-        helper.setContainer("1");
-        helper.duplicateContainerForSingle();
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            List<DisplayProperty> list = new ArrayList<>();
+            DisplayProperty pp = new DisplayProperty();
+            pp.setContainer("1");
+            pp.setType(Type.TEXT);
+            pp.setValue("value");
+            pp.setName("name");
+            pp.setProzesseigenschaft(this.pp);
+            list.add(pp);
+            helper.setProcessPropertyList(list);
+            helper.setContainer("1");
+            helper.duplicateContainerForSingle();
+        }
     }
 
     @Test
     public void testDuplicateContainerForAll() {
-        BatchProcessHelper helper = new BatchProcessHelper(processList, null);
-        List<DisplayProperty> list = new ArrayList<>();
-        DisplayProperty pp = new DisplayProperty();
-        pp.setContainer("1");
-        pp.setType(Type.TEXT);
-        pp.setValue("value");
-        pp.setName("name");
-        list.add(pp);
-        helper.setProcessPropertyList(list);
-        helper.setContainer("1");
-        helper.duplicateContainerForAll();
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            setupMocks(mockedPropertyManager, mockedMetadataManager, mockedHelper);
+
+            BatchProcessHelper helper = new BatchProcessHelper(processList, null);
+            List<DisplayProperty> list = new ArrayList<>();
+            DisplayProperty pp = new DisplayProperty();
+            pp.setContainer("1");
+            pp.setType(Type.TEXT);
+            pp.setValue("value");
+            pp.setName("name");
+            list.add(pp);
+            helper.setProcessPropertyList(list);
+            helper.setContainer("1");
+            helper.duplicateContainerForAll();
+        }
     }
 
-    private void prepareMocking() {
-        PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.anyObject()))
-                .andReturn(new ArrayList<>())
-                .anyTimes();
-        PropertyManager.saveProperty(EasyMock.anyObject(GoobiProperty.class));
-        PropertyManager.saveProperty(EasyMock.anyObject(GoobiProperty.class));
-
-        PowerMock.mockStatic(MetadataManager.class);
-        EasyMock.expect(MetadataManager.getAllMetadataValues(EasyMock.anyInt(), EasyMock.anyString())).andReturn(new ArrayList<>()).anyTimes();
-
-        PowerMock.mockStatic(Helper.class);
-        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
-        EasyMock.expect(Helper.getTranslation("bitteAuswaehlen")).andReturn("Please select").anyTimes();
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
-        Helper.setMeldung(EasyMock.anyString());
-        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        PowerMock.replay(Helper.class);
-
-        PowerMock.replay(MetadataManager.class);
-        PowerMock.replay(PropertyManager.class);
+    private void setupMocks(MockedStatic<PropertyManager> mockedPropertyManager,
+            MockedStatic<MetadataManager> mockedMetadataManager,
+            MockedStatic<Helper> mockedHelper) {
+        mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(new ArrayList<>());
+        mockedMetadataManager.when(() -> MetadataManager.getAllMetadataValues(Mockito.anyInt(), Mockito.anyString())).thenReturn(new ArrayList<>());
+        mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+        mockedHelper.when(() -> Helper.getTranslation("bitteAuswaehlen")).thenReturn("Please select");
+        mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
     }
 }

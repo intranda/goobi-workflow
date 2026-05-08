@@ -18,28 +18,22 @@
 
 package org.goobi.goobiScript;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.enums.GoobiScriptResultType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
@@ -48,9 +42,11 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Helper.class, ProcessManager.class, StepManager.class, PropertyManager.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class GoobiScriptChangeProcessTemplateTest extends AbstractTest {
 
     private Process process;
@@ -58,19 +54,16 @@ public class GoobiScriptChangeProcessTemplateTest extends AbstractTest {
 
     private User user;
 
-    @Before
+    private List<GoobiProperty> props;
+    private Process template;
+    private List<Step> templatesteps;
+
+    @BeforeEach
     public void setUp() throws Exception {
-        PowerMock.mockStatic(Helper.class);
-        PowerMock.mockStatic(ProcessManager.class);
-        PowerMock.mockStatic(StepManager.class);
-        PowerMock.mockStatic(PropertyManager.class);
 
         user = new User();
         user.setVorname("firstname");
         user.setNachname("lastname");
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(user).anyTimes();
-        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyObject(),
-                EasyMock.anyString());
 
         process = new Process();
         process.setTitel("fixture");
@@ -85,7 +78,7 @@ public class GoobiScriptChangeProcessTemplateTest extends AbstractTest {
         steps.add(s1);
         process.setSchritte(steps);
 
-        Process template = new Process();
+        template = new Process();
         template.setId(2);
         template.setTitel("template");
 
@@ -94,14 +87,12 @@ public class GoobiScriptChangeProcessTemplateTest extends AbstractTest {
         s2.setBearbeitungsstatusEnum(StepStatus.DONE);
         s2.setReihenfolge(1);
 
-        List<Step> templatesteps = new ArrayList<>();
+        templatesteps = new ArrayList<>();
         steps.add(s2);
         template.setSchritte(templatesteps);
 
-        EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
-        EasyMock.expect(ProcessManager.getProcessByExactTitle(EasyMock.anyString())).andReturn(template).anyTimes();
 
-        List<GoobiProperty> props = new ArrayList<>();
+        props = new ArrayList<>();
 
         GoobiProperty p1 = new GoobiProperty(PropertyOwnerType.PROCESS);
         p1.setPropertyName("Template");
@@ -112,60 +103,105 @@ public class GoobiScriptChangeProcessTemplateTest extends AbstractTest {
         props.add(p1);
         props.add(p2);
 
-        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.anyObject())).andReturn(props).anyTimes();
-        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(templatesteps).anyTimes();
-        StepManager.deleteStep(EasyMock.anyObject());
-        StepManager.deleteStep(EasyMock.anyObject());
 
-        StepManager.saveStep(EasyMock.anyObject());
-        ProcessManager.saveProcess(EasyMock.anyObject());
-        PowerMock.replayAll();
     }
 
     @Test
     public void testConstructor() {
-        GoobiScriptChangeProcessTemplate fixture = new GoobiScriptChangeProcessTemplate();
-        assertNotNull(fixture);
-        assertEquals("changeProcessTemplate", fixture.getAction());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(template);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(templatesteps);
+
+
+            GoobiScriptChangeProcessTemplate fixture = new GoobiScriptChangeProcessTemplate();
+            assertNotNull(fixture);
+            assertEquals("changeProcessTemplate", fixture.getAction());
+    
+        }
+}
 
     @Test
     public void testSampleCall() {
-        GoobiScriptChangeProcessTemplate fixture = new GoobiScriptChangeProcessTemplate();
-        assertNotNull(fixture);
-        assertEquals(
-                "---\\n# This GoobiScript allow to adapt the workflow for a process by switching to another process template.\\naction: changeProcessTemplate\\n\\n# Use the name of the process template to use for the Goobi processes.\\ntemplateName: Manuscript_workflow",
-                fixture.getSampleCall());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(template);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(templatesteps);
+
+
+            GoobiScriptChangeProcessTemplate fixture = new GoobiScriptChangeProcessTemplate();
+            assertNotNull(fixture);
+            assertEquals(
+                    "---\\n# This GoobiScript allow to adapt the workflow for a process by switching to another process template.\\naction: changeProcessTemplate\\n\\n# Use the name of the process template to use for the Goobi processes.\\ntemplateName: Manuscript_workflow",
+                    fixture.getSampleCall());
+    
+        }
+}
 
     @Test
     public void testPrepare() {
-        List<Integer> processes = new ArrayList<>();
-        processes.add(1);
-        String command = "changeProcessTemplate";
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("templateName", "templateName");
-        GoobiScriptChangeProcessTemplate fixture = new GoobiScriptChangeProcessTemplate();
-        assertNotNull(fixture);
-        List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
-        assertEquals(1, results.size());
-        assertEquals("changeProcessTemplate", results.get(0).getCommand());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(template);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(templatesteps);
+
+
+            List<Integer> processes = new ArrayList<>();
+            processes.add(1);
+            String command = "changeProcessTemplate";
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("templateName", "templateName");
+            GoobiScriptChangeProcessTemplate fixture = new GoobiScriptChangeProcessTemplate();
+            assertNotNull(fixture);
+            List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
+            assertEquals(1, results.size());
+            assertEquals("changeProcessTemplate", results.get(0).getCommand());
+    
+        }
+}
 
     @Test
     public void testExecute() {
-        List<Integer> processes = new ArrayList<>();
-        processes.add(1);
-        String command = "changeProcessTemplate";
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("templateName", "templateName");
-        GoobiScriptChangeProcessTemplate fixture = new GoobiScriptChangeProcessTemplate();
-        List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(template);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(templatesteps);
 
-        fixture.execute(results.get(0));
-        assertEquals("Changed template for process fixture", results.get(0).getResultMessage());
-        assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
 
-    }
+            List<Integer> processes = new ArrayList<>();
+            processes.add(1);
+            String command = "changeProcessTemplate";
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("templateName", "templateName");
+            GoobiScriptChangeProcessTemplate fixture = new GoobiScriptChangeProcessTemplate();
+            List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
+
+            fixture.execute(results.get(0));
+            assertEquals("Changed template for process fixture", results.get(0).getResultMessage());
+            assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
+
+    
+        }
+}
 
 }

@@ -18,8 +18,8 @@
 
 package org.goobi.api.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -35,15 +35,9 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
 import org.jdom2.Document;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -56,15 +50,15 @@ import jakarta.ws.rs.core.Response;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ProcessManager.class, ProjectManager.class, ProcessService.class, StepManager.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class MarcXmlParserTest extends AbstractTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-
-    private Path tempFolder;
+    @TempDir
+    Path tempFolder;
 
     private Path testFile;
 
@@ -77,7 +71,10 @@ public class MarcXmlParserTest extends AbstractTest {
 
     private Prefs prefs;
 
-    @Before
+    private Process process;
+    private Project project;
+
+    @BeforeEach
     public void setUp() throws Exception {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
         // for junit tests in eclipse
@@ -86,7 +83,6 @@ public class MarcXmlParserTest extends AbstractTest {
             samplefiles = Paths.get("target/test-classes/samplefiles/"); // to run mvn test from cli or in jenkins
         }
 
-        tempFolder = folder.newFolder().toPath();
         Files.createDirectories(template);
 
         rulesetFile = Paths.get(samplefiles.toString(), "ruleset.xml");
@@ -111,13 +107,10 @@ public class MarcXmlParserTest extends AbstractTest {
         EasyMock.expect(repository.getParameter()).andReturn(parameterMap).anyTimes();
 
         EasyMock.expect(repository.downloadOaiRecord(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyObject()))
-                .andReturn(anchorFile)
-                .anyTimes();
-        EasyMock.replay(repository);
-
-        Process process = PowerMock.createMock(Process.class);
+                .andReturn(anchorFile).anyTimes();
+        process = EasyMock.createMock(Process.class);
         Ruleset ruleset = EasyMock.createMock(Ruleset.class);
-        Project project = EasyMock.createMock(Project.class);
+        project = EasyMock.createMock(Project.class);
 
         EasyMock.expect(process.writeMetadataFile(EasyMock.anyObject())).andReturn(true).anyTimes();
         EasyMock.expect(process.getRegelsatz()).andReturn(ruleset).anyTimes();
@@ -126,72 +119,131 @@ public class MarcXmlParserTest extends AbstractTest {
         EasyMock.expect(process.getId()).andReturn(1).anyTimes();
 
         process.setProjekt(EasyMock.anyObject());
+        EasyMock.expectLastCall().anyTimes();
         EasyMock.expect(ruleset.getPreferences()).andReturn(prefs).anyTimes();
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
-        EasyMock.expect(ProcessManager.getProcessByExactTitle("templateName")).andReturn(process).anyTimes();
-        EasyMock.expect(ProcessManager.getProcessByExactTitle("processTitle")).andReturn(null).anyTimes();
 
-        ProcessManager.saveProcess(EasyMock.anyObject());
-        PowerMock.mockStatic(ProjectManager.class);
-        EasyMock.expect(ProjectManager.getProjectByName(EasyMock.anyObject())).andReturn(project).anyTimes();
-
-        PowerMock.mockStatic(ProcessService.class);
-        EasyMock.expect(ProcessService.prepareProcess(EasyMock.anyString(), EasyMock.anyObject())).andReturn(process).anyTimes();
-
-        PowerMock.mockStatic(StepManager.class);
-        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(Collections.emptyList()).anyTimes();
-
-        EasyMock.expectLastCall();
+        EasyMock.replay(repository);
+        EasyMock.replay(process);
+        EasyMock.replay(project);
         EasyMock.replay(ruleset);
-        PowerMock.replayAll();
+
 
     }
 
     @Test
     public void testAuthenticationMethods() {
-        MarcXmlParser fixture = new MarcXmlParser();
-        List<AuthenticationMethodDescription> desc = fixture.getAuthenticationMethods();
-        assertEquals(1, desc.size());
-        assertEquals("Upload a new marc record and create a new process", desc.get(0).getDescription());
-        assertEquals("POST", desc.get(0).getMethodType());
-        assertEquals("/metadata/marc/\\w+/\\w+/\\w+", desc.get(0).getUrl());
-    }
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessService> mockedProcessService = Mockito.mockStatic(ProcessService.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("templateName")).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("processTitle")).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.any())).thenReturn(project);
+            mockedProcessService.when(() -> ProcessService.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
+
+
+            MarcXmlParser fixture = new MarcXmlParser();
+            List<AuthenticationMethodDescription> desc = fixture.getAuthenticationMethods();
+            assertEquals(1, desc.size());
+            assertEquals("Upload a new marc record and create a new process", desc.get(0).getDescription());
+            assertEquals("POST", desc.get(0).getMethodType());
+            assertEquals("/metadata/marc/\\w+/\\w+/\\w+", desc.get(0).getUrl());
+    
+        }
+}
 
     @Test
     public void testReadMetadataFile() throws Exception {
-        MarcXmlParser fixture = new MarcXmlParser();
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessService> mockedProcessService = Mockito.mockStatic(ProcessService.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("templateName")).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("processTitle")).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.any())).thenReturn(project);
+            mockedProcessService.when(() -> ProcessService.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
-        try (InputStream in = Files.newInputStream(testFile)) {
-            Fileformat ff = fixture.readMetadataFile(in, prefs);
-            assertNotNull(ff);
-            assertEquals("Monograph", ff.getDigitalDocument().getLogicalDocStruct().getType().getName());
+
+            MarcXmlParser fixture = new MarcXmlParser();
+
+            try (InputStream in = Files.newInputStream(testFile)) {
+                Fileformat ff = fixture.readMetadataFile(in, prefs);
+                assertNotNull(ff);
+                assertEquals("Monograph", ff.getDigitalDocument().getLogicalDocStruct().getType().getName());
+            }
+    
         }
-    }
+}
 
     @Test
     public void testExtendMetadata() throws Exception {
-        MarcXmlParser fixture = new MarcXmlParser();
-        fixture.extendMetadata(repository, volumeFile);
-        Document doc = XmlTools.readDocumentFromFile(volumeFile);
-        assertEquals("collection", doc.getRootElement().getName());
-    }
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessService> mockedProcessService = Mockito.mockStatic(ProcessService.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("templateName")).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("processTitle")).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.any())).thenReturn(project);
+            mockedProcessService.when(() -> ProcessService.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
+
+
+            MarcXmlParser fixture = new MarcXmlParser();
+            fixture.extendMetadata(repository, volumeFile);
+            Document doc = XmlTools.readDocumentFromFile(volumeFile);
+            assertEquals("collection", doc.getRootElement().getName());
+    
+        }
+}
 
     @Test
     public void testReplaceMetadata() throws Exception {
-        MarcXmlParser fixture = new MarcXmlParser();
-        try (InputStream in = Files.newInputStream(testFile)) {
-            Response resp = fixture.replaceMetadata(1, in);
-            assertEquals(200, resp.getStatus());
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessService> mockedProcessService = Mockito.mockStatic(ProcessService.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("templateName")).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("processTitle")).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.any())).thenReturn(project);
+            mockedProcessService.when(() -> ProcessService.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
+
+
+            MarcXmlParser fixture = new MarcXmlParser();
+            try (InputStream in = Files.newInputStream(testFile)) {
+                Response resp = fixture.replaceMetadata(1, in);
+                assertEquals(200, resp.getStatus());
+            }
+    
         }
-    }
+}
 
     @Test
     public void testCreateNewProcess() throws Exception {
-        MarcXmlParser fixture = new MarcXmlParser();
-        try (InputStream in = Files.newInputStream(testFile)) {
-            Response resp = fixture.createNewProcess("projectName", "templateName", "processTitle", in);
-            assertEquals(204, resp.getStatus());
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessService> mockedProcessService = Mockito.mockStatic(ProcessService.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("templateName")).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("processTitle")).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.any())).thenReturn(project);
+            mockedProcessService.when(() -> ProcessService.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
+
+
+            MarcXmlParser fixture = new MarcXmlParser();
+            try (InputStream in = Files.newInputStream(testFile)) {
+                Response resp = fixture.createNewProcess("projectName", "templateName", "processTitle", in);
+                assertEquals(204, resp.getStatus());
+            }
+    
         }
-    }
+}
 }

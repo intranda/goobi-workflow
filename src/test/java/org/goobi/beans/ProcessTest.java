@@ -662,7 +662,7 @@ public class ProcessTest extends AbstractTest {
         // -> 33, 44, and 22
         // The result is then "033" + "044" + "022"
         String expected = "033044022";
-        assertEquals("Result of getFortschritt is wrong.", expected, result);
+        assertEquals(expected, result, "Result of getFortschritt is wrong.");
     }
 
     @Test

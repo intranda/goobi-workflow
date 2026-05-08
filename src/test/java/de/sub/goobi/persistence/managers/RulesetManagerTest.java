@@ -17,34 +17,30 @@
  */
 package de.sub.goobi.persistence.managers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Ruleset;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ RulesetMysqlHelper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class RulesetManagerTest extends AbstractTest {
 
     private Ruleset sampleRuleset;
     private List<Ruleset> sampleRulesets;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         sampleRuleset = new Ruleset();
         sampleRuleset.setId(1);
@@ -54,81 +50,179 @@ public class RulesetManagerTest extends AbstractTest {
         sampleRulesets = new ArrayList<>();
         sampleRulesets.add(sampleRuleset);
 
-        PowerMock.mockStatic(RulesetMysqlHelper.class);
-        EasyMock.expect(RulesetMysqlHelper.getRulesetForId(EasyMock.anyInt())).andReturn(sampleRuleset).anyTimes();
-        RulesetMysqlHelper.saveRuleset(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        RulesetMysqlHelper.deleteRuleset(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(RulesetMysqlHelper.getRulesets(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt(),
-                EasyMock.anyObject())).andReturn(sampleRulesets).anyTimes();
-        EasyMock.expect(RulesetMysqlHelper.getAllRulesets()).andReturn(sampleRulesets).anyTimes();
-        EasyMock.expect(RulesetMysqlHelper.getRulesetCount(EasyMock.anyString(), EasyMock.anyObject())).andReturn(1).anyTimes();
-        EasyMock.expect(RulesetMysqlHelper.getRulesetByName(EasyMock.anyString())).andReturn(sampleRuleset).anyTimes();
-        PowerMock.replay(RulesetMysqlHelper.class);
     }
 
     @Test
     public void testGetRulesetById() throws Exception {
-        Ruleset result = RulesetManager.getRulesetById(1);
-        assertNotNull(result);
-        assertEquals("TestRuleset", result.getTitel());
-    }
+        try (MockedStatic<RulesetMysqlHelper> mockedRulesetMysqlHelper = Mockito.mockStatic(RulesetMysqlHelper.class)) {
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetForId(Mockito.anyInt())).thenReturn(sampleRuleset);
+                        mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                Mockito.any())).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getAllRulesets()).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetByName(Mockito.anyString())).thenReturn(sampleRuleset);
+
+
+            Ruleset result = RulesetManager.getRulesetById(1);
+            assertNotNull(result);
+            assertEquals("TestRuleset", result.getTitel());
+    
+        }
+}
 
     @Test
     public void testSaveRuleset() throws Exception {
-        RulesetManager.saveRuleset(sampleRuleset);
-    }
+        try (MockedStatic<RulesetMysqlHelper> mockedRulesetMysqlHelper = Mockito.mockStatic(RulesetMysqlHelper.class)) {
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetForId(Mockito.anyInt())).thenReturn(sampleRuleset);
+                        mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                Mockito.any())).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getAllRulesets()).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetByName(Mockito.anyString())).thenReturn(sampleRuleset);
+
+
+            RulesetManager.saveRuleset(sampleRuleset);
+    
+        }
+}
 
     @Test
     public void testDeleteRuleset() throws Exception {
-        RulesetManager.deleteRuleset(sampleRuleset);
-    }
+        try (MockedStatic<RulesetMysqlHelper> mockedRulesetMysqlHelper = Mockito.mockStatic(RulesetMysqlHelper.class)) {
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetForId(Mockito.anyInt())).thenReturn(sampleRuleset);
+                        mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                Mockito.any())).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getAllRulesets()).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetByName(Mockito.anyString())).thenReturn(sampleRuleset);
+
+
+            RulesetManager.deleteRuleset(sampleRuleset);
+    
+        }
+}
 
     @Test
     public void testGetRulesets() throws Exception {
-        List<Ruleset> result = RulesetManager.getRulesets("", "", 0, 10, null);
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }
+        try (MockedStatic<RulesetMysqlHelper> mockedRulesetMysqlHelper = Mockito.mockStatic(RulesetMysqlHelper.class)) {
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetForId(Mockito.anyInt())).thenReturn(sampleRuleset);
+                        mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                Mockito.any())).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getAllRulesets()).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetByName(Mockito.anyString())).thenReturn(sampleRuleset);
+
+
+            List<Ruleset> result = RulesetManager.getRulesets("", "", 0, 10, null);
+            assertNotNull(result);
+            assertEquals(1, result.size());
+    
+        }
+}
 
     @Test
     public void testGetAllRulesets() {
-        List<Ruleset> result = RulesetManager.getAllRulesets();
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }
+        try (MockedStatic<RulesetMysqlHelper> mockedRulesetMysqlHelper = Mockito.mockStatic(RulesetMysqlHelper.class)) {
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetForId(Mockito.anyInt())).thenReturn(sampleRuleset);
+                        mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                Mockito.any())).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getAllRulesets()).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetByName(Mockito.anyString())).thenReturn(sampleRuleset);
+
+
+            List<Ruleset> result = RulesetManager.getAllRulesets();
+            assertNotNull(result);
+            assertEquals(1, result.size());
+    
+        }
+}
 
     @Test
     public void testGetList() throws Exception {
-        RulesetManager manager = new RulesetManager();
-        List<?> result = manager.getList("", "", 0, 10, null);
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }
+        try (MockedStatic<RulesetMysqlHelper> mockedRulesetMysqlHelper = Mockito.mockStatic(RulesetMysqlHelper.class)) {
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetForId(Mockito.anyInt())).thenReturn(sampleRuleset);
+                        mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                Mockito.any())).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getAllRulesets()).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetByName(Mockito.anyString())).thenReturn(sampleRuleset);
+
+
+            RulesetManager manager = new RulesetManager();
+            List<?> result = manager.getList("", "", 0, 10, null);
+            assertNotNull(result);
+            assertEquals(1, result.size());
+    
+        }
+}
 
     @Test
     public void testGetHitSize() throws Exception {
-        RulesetManager manager = new RulesetManager();
-        assertEquals(1, manager.getHitSize("", "", null));
-    }
+        try (MockedStatic<RulesetMysqlHelper> mockedRulesetMysqlHelper = Mockito.mockStatic(RulesetMysqlHelper.class)) {
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetForId(Mockito.anyInt())).thenReturn(sampleRuleset);
+                        mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                Mockito.any())).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getAllRulesets()).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetByName(Mockito.anyString())).thenReturn(sampleRuleset);
+
+
+            RulesetManager manager = new RulesetManager();
+            assertEquals(1, manager.getHitSize("", "", null));
+    
+        }
+}
 
     @Test
     public void testGetIdListReturnsNull() {
-        RulesetManager manager = new RulesetManager();
-        assertNull(manager.getIdList("", "", null));
-    }
+        try (MockedStatic<RulesetMysqlHelper> mockedRulesetMysqlHelper = Mockito.mockStatic(RulesetMysqlHelper.class)) {
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetForId(Mockito.anyInt())).thenReturn(sampleRuleset);
+                        mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                Mockito.any())).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getAllRulesets()).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetByName(Mockito.anyString())).thenReturn(sampleRuleset);
+
+
+            RulesetManager manager = new RulesetManager();
+            assertNull(manager.getIdList("", "", null));
+    
+        }
+}
 
     @Test
     public void testGetRulesetByName() throws Exception {
-        Ruleset result = RulesetManager.getRulesetByName("TestRuleset");
-        assertNotNull(result);
-        assertEquals("TestRuleset", result.getTitel());
-    }
+        try (MockedStatic<RulesetMysqlHelper> mockedRulesetMysqlHelper = Mockito.mockStatic(RulesetMysqlHelper.class)) {
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetForId(Mockito.anyInt())).thenReturn(sampleRuleset);
+                        mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                Mockito.any())).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getAllRulesets()).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetByName(Mockito.anyString())).thenReturn(sampleRuleset);
+
+
+            Ruleset result = RulesetManager.getRulesetByName("TestRuleset");
+            assertNotNull(result);
+            assertEquals("TestRuleset", result.getTitel());
+    
+        }
+}
 
     @Test
     public void testResultSetHandlersNotNull() {
-        assertNotNull(RulesetManager.resultSetToRulesetHandler);
-        assertNotNull(RulesetManager.resultSetToRulesetListHandler);
-    }
+        try (MockedStatic<RulesetMysqlHelper> mockedRulesetMysqlHelper = Mockito.mockStatic(RulesetMysqlHelper.class)) {
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetForId(Mockito.anyInt())).thenReturn(sampleRuleset);
+                        mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesets(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt(),
+                Mockito.any())).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getAllRulesets()).thenReturn(sampleRulesets);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetCount(Mockito.anyString(), Mockito.any())).thenReturn(1);
+            mockedRulesetMysqlHelper.when(() -> RulesetMysqlHelper.getRulesetByName(Mockito.anyString())).thenReturn(sampleRuleset);
+
+
+            assertNotNull(RulesetManager.resultSetToRulesetHandler);
+            assertNotNull(RulesetManager.resultSetToRulesetListHandler);
+    
+        }
+}
 }

@@ -18,25 +18,18 @@ package de.sub.goobi.export.download;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -45,20 +38,26 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.mock.MockProcess;
+import ugh.dl.Prefs;
 import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ MetadatenHelper.class, JwtHelper.class, Helper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class ExportMetsTest extends AbstractTest {
 
     private Process testProcess = null;
+    private Prefs prefs;
+    private MetsMods metsMods;
+    private MetsModsImportExport metsModsImportExport;
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    Path tempDir;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
         Path goobiFolder = Paths.get(template.getParent().getParent().toString()
@@ -70,51 +69,71 @@ public class ExportMetsTest extends AbstractTest {
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
         testProcess = MockProcess.createProcess();
+        prefs = testProcess.getRegelsatz().getPreferences();
+        metsMods = new MetsMods(prefs);
+        metsModsImportExport = new MetsModsImportExport(prefs);
 
-        PowerMock.mockStatic(MetadatenHelper.class);
-        EasyMock.expect(MetadatenHelper.getMetaFileType(EasyMock.anyString())).andReturn("metsmods").anyTimes();
-        EasyMock.expect(MetadatenHelper.getFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class)))
-                .andReturn(new MetsMods(testProcess.getRegelsatz().getPreferences()))
-                .anyTimes();
-        EasyMock.expect(MetadatenHelper.getExportFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class)))
-                .andReturn(new MetsModsImportExport(testProcess.getRegelsatz().getPreferences()))
-                .anyTimes();
-        PowerMock.replay(MetadatenHelper.class);
-
-        PowerMock.mockStatic(JwtHelper.class);
-        EasyMock.expect(JwtHelper.createApiToken(EasyMock.anyString(), EasyMock.anyObject())).andReturn("12356").anyTimes();
-        PowerMock.replay(JwtHelper.class);
-
-        PowerMock.mockStatic(Helper.class);
-
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
-        Helper.setFehlerMeldung(EasyMock.anyString());
-        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-
-        PowerMock.replay(Helper.class);
     }
 
     @Test
     public void testConstructor() {
-        ExportMets exportMets = new ExportMets();
-        assertNotNull(exportMets);
-    }
+        try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
+             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
+                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
+                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedJwtHelper.when(() -> JwtHelper.createApiToken(Mockito.anyString(), Mockito.any())).thenReturn("12356");
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
+
+
+            ExportMets exportMets = new ExportMets();
+            assertNotNull(exportMets);
+    
+        }
+}
 
     @Test
     public void testGetProblemsInitiallyEmpty() {
-        ExportMets exportMets = new ExportMets();
-        assertNotNull(exportMets.getProblems());
-        assertTrue(exportMets.getProblems().isEmpty());
-    }
+        try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
+             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
+                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
+                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedJwtHelper.when(() -> JwtHelper.createApiToken(Mockito.anyString(), Mockito.any())).thenReturn("12356");
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
+
+
+            ExportMets exportMets = new ExportMets();
+            assertNotNull(exportMets.getProblems());
+            assertTrue(exportMets.getProblems().isEmpty());
+    
+        }
+}
 
     @Test
     public void testStartExport() throws Exception {
-        Path destination = folder.newFolder("export").toPath();
-        Files.createDirectories(destination);
-        ExportMets exportMets = new ExportMets();
-        assertNotNull(exportMets);
-        exportMets.startExport(testProcess, destination.toString());
-    }
+        try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
+             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
+                        mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsMods);
+                        mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class))).thenReturn(metsModsImportExport);
+            mockedJwtHelper.when(() -> JwtHelper.createApiToken(Mockito.anyString(), Mockito.any())).thenReturn("12356");
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
+
+
+            Path destination = tempDir.resolve("export");
+            Files.createDirectories(destination);
+            ExportMets exportMets = new ExportMets();
+            assertNotNull(exportMets);
+            exportMets.startExport(testProcess, destination.toString());
+    
+        }
+}
 
 }

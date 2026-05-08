@@ -1,34 +1,30 @@
 package org.goobi.production.flow.helper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.persistence.managers.ProcessManager;
 import jakarta.faces.model.SelectItem;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(ProcessManager.class)
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class SearchResultHelperTest {
 
     private SearchResultHelper helper;
     private List<SearchColumn> columnList;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         SelectItem column1 = new SelectItem("Titel", "prozesse.Titel");
@@ -46,23 +42,19 @@ public class SearchResultHelperTest {
 
     @Test
     public void testGetResult() {
-        PowerMock.mockStatic(ProcessManager.class);
-        Object[] row1 = new Object[] { "1", "Test 1" };
-        Object[] row2 = new Object[] { "2", "Test 2" };
-        List lst = new ArrayList();
-        lst.add(row1);
-        lst.add(row2);
-        EasyMock.expect(ProcessManager.runSQL(EasyMock.anyString()))
-                .andReturn(lst)
-                .anyTimes();
-        PowerMock.replayAll();
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            Object[] row1 = new Object[] { "1", "Test 1" };
+            Object[] row2 = new Object[] { "2", "Test 2" };
+            List lst = new ArrayList();
+            lst.add(row1);
+            lst.add(row2);
+                        mockedProcessManager.when(() -> ProcessManager.runSQL(Mockito.anyString())).thenReturn(lst);
 
-        XSSFWorkbook wb = helper.getResult(columnList, "", "{process.propertyname}", true, true);
+            XSSFWorkbook wb = helper.getResult(columnList, "", "{process.propertyname}", true, true);
 
-        assertNotNull(wb);
-        assertEquals("Search results", wb.getSheetName(0));
-
-        PowerMock.verifyAll();
-    }
+            assertNotNull(wb);
+            assertEquals("Search results", wb.getSheetName(0));
+        }
+}
 
 }

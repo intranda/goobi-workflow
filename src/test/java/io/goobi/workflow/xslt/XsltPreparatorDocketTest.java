@@ -17,9 +17,9 @@
  */
 package io.goobi.workflow.xslt;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -40,13 +40,8 @@ import org.goobi.production.cli.helper.StringPair;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -64,17 +59,24 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.HttpServletRequest;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ PropertyManager.class, StepManager.class, HistoryManager.class,
-        MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class, InstitutionManager.class, UserManager.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class XsltPreparatorDocketTest extends AbstractTest {
 
     private static final Namespace XMLNS = Namespace.getNamespace("http://www.goobi.io/logfile");
 
     private Process process;
 
-    @Before
+    private List<HistoryEvent> hel;
+    private List<InstitutionConfigurationObject> icolist;
+    private List<StringPair> metadataList;
+    private List<GoobiProperty> props;
+    private List<Step> steps;
+
+    @BeforeEach
     public void setUp() throws Exception {
         process = MockProcess.createProcess();
         process.setErstellungsdatum(new Date());
@@ -92,32 +94,22 @@ public class XsltPreparatorDocketTest extends AbstractTest {
         ico.setObject_name("name");
         ico.setObject_type("type");
 
-        List<InstitutionConfigurationObject> icolist = new ArrayList<>();
+        icolist = new ArrayList<>();
         icolist.add(ico);
 
-        PowerMock.mockStatic(InstitutionManager.class);
-        EasyMock.expect(InstitutionManager.getConfiguredRulesets(EasyMock.anyInt())).andReturn(icolist).anyTimes();
-        EasyMock.expect(InstitutionManager.getConfiguredDockets(EasyMock.anyInt())).andReturn(icolist).anyTimes();
-        EasyMock.expect(InstitutionManager.getConfiguredAuthentications(EasyMock.anyInt())).andReturn(icolist).anyTimes();
 
         process.getProjekt().setInstitution(inst);
         process.setSortHelperStatus("12345567890");
 
-        PowerMock.mockStatic(PropertyManager.class);
-        PowerMock.mockStatic(StepManager.class);
-        PowerMock.mockStatic(HistoryManager.class);
-        PowerMock.mockStatic(MetadataManager.class);
-        PowerMock.mockStatic(UserManager.class);
 
-        List<GoobiProperty> props = new ArrayList<>();
+        props = new ArrayList<>();
         GoobiProperty p = new GoobiProperty(PropertyOwnerType.PROCESS);
         p.setPropertyName("title");
         p.setPropertyValue("value");
         props.add(p);
 
-        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.anyObject())).andReturn(props).anyTimes();
 
-        List<Step> steps = new ArrayList<>();
+        steps = new ArrayList<>();
         Step step = new Step();
         step.setTitel("title");
         step.setBearbeitungsstatusEnum(StepStatus.OPEN);
@@ -131,31 +123,20 @@ public class XsltPreparatorDocketTest extends AbstractTest {
         steps.add(step);
         process.setSchritte(steps);
 
-        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(steps).anyTimes();
 
-        List<HistoryEvent> hel = new ArrayList<>();
+        hel = new ArrayList<>();
         HistoryEvent he = new HistoryEvent();
         he.setHistoryType(HistoryEventType.unknown);
         he.setNumericValue(1.0);
         he.setStringValue("one");
         hel.add(he);
-        EasyMock.expect(HistoryManager.getHistoryEvents(EasyMock.anyInt())).andReturn(hel).anyTimes();
 
-        List<StringPair> metadataList = new ArrayList<>();
+        metadataList = new ArrayList<>();
         StringPair sp = new StringPair("title", "value");
         metadataList.add(sp);
-        EasyMock.expect(MetadataManager.getMetadata(EasyMock.anyInt())).andReturn(metadataList).anyTimes();
 
-        EasyMock.expect(UserManager.getAllUsers()).andReturn(Collections.emptyList()).anyTimes();
 
-        PowerMock.mockStatic(Helper.class);
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("fixture").anyTimes();
-        EasyMock.expect(Helper.getDateAsFormattedString(EasyMock.anyObject())).andReturn("date").anyTimes();
-        EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
 
-        PowerMock.mockStatic(ExternalContext.class);
-        PowerMock.mockStatic(FacesContext.class);
-        PowerMock.replayAll();
         FacesContext facesContext = EasyMock.createMock(FacesContext.class);
         FacesContextHelper.setFacesContext(facesContext);
         ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
@@ -170,167 +151,452 @@ public class XsltPreparatorDocketTest extends AbstractTest {
         EasyMock.expect(request.getServerPort()).andReturn(443).anyTimes();
         EasyMock.expect(request.getContextPath()).andReturn("/goobi").anyTimes();
 
-        EasyMock.replay(request);
-        EasyMock.replay(externalContext);
-        EasyMock.replay(facesContext);
-    }
+        EasyMock.replay(facesContext); EasyMock.replay(externalContext); EasyMock.replay(request); }
 
     @Test
     public void testStartExportToOutputStream() throws Exception {
-        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        exporter.startExport(process, bos, null);
+        try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(steps);
+            mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(hel);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedUserManager.when(() -> UserManager.getAllUsers()).thenReturn(Collections.emptyList());
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-        assertTrue(bos.size() > 0);
-        String xml = bos.toString("UTF-8");
-        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
-        assertTrue(xml.contains("testprocess"));
-    }
+
+            XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            exporter.startExport(process, bos, null);
+
+            assertTrue(bos.size() > 0);
+            String xml = bos.toString("UTF-8");
+            assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+            assertTrue(xml.contains("testprocess"));
+    
+        }
+}
 
     @Test
     public void testStartExportToOutputStreamWithIncludeImagesTrue() throws Exception {
-        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        exporter.startExport(process, bos, null, true);
+        try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(steps);
+            mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(hel);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedUserManager.when(() -> UserManager.getAllUsers()).thenReturn(Collections.emptyList());
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-        assertTrue(bos.size() > 0);
-        String xml = bos.toString("UTF-8");
-        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
-    }
+
+            XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            exporter.startExport(process, bos, null, true);
+
+            assertTrue(bos.size() > 0);
+            String xml = bos.toString("UTF-8");
+            assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+    
+        }
+}
 
     @Test
     public void testStartExportToOutputStreamWithIncludeImagesFalse() throws Exception {
-        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        exporter.startExport(process, bos, null, false);
+        try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(steps);
+            mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(hel);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedUserManager.when(() -> UserManager.getAllUsers()).thenReturn(Collections.emptyList());
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-        assertTrue(bos.size() > 0);
-        String xml = bos.toString("UTF-8");
-        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
-        assertTrue(xml.contains("testprocess"));
-    }
+
+            XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            exporter.startExport(process, bos, null, false);
+
+            assertTrue(bos.size() > 0);
+            String xml = bos.toString("UTF-8");
+            assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+            assertTrue(xml.contains("testprocess"));
+    
+        }
+}
 
     @Test
     public void testStartExportListWithoutBoolean() throws Exception {
-        List<Process> processList = new ArrayList<>();
-        processList.add(process);
+        try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(steps);
+            mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(hel);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedUserManager.when(() -> UserManager.getAllUsers()).thenReturn(Collections.emptyList());
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
-        exporter.startExport(processList, bos, null);
 
-        assertTrue(bos.size() > 0);
-        String xml = bos.toString("UTF-8");
-        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESSES));
-        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
-    }
+            List<Process> processList = new ArrayList<>();
+            processList.add(process);
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+            exporter.startExport(processList, bos, null);
+
+            assertTrue(bos.size() > 0);
+            String xml = bos.toString("UTF-8");
+            assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESSES));
+            assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+    
+        }
+}
 
     @Test
     public void testStartExportListWithIncludeImagesTrue() throws Exception {
-        List<Process> processList = new ArrayList<>();
-        processList.add(process);
+        try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(steps);
+            mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(hel);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedUserManager.when(() -> UserManager.getAllUsers()).thenReturn(Collections.emptyList());
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
-        exporter.startExport(processList, bos, null, true);
 
-        assertTrue(bos.size() > 0);
-        String xml = bos.toString("UTF-8");
-        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESSES));
-    }
+            List<Process> processList = new ArrayList<>();
+            processList.add(process);
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+            exporter.startExport(processList, bos, null, true);
+
+            assertTrue(bos.size() > 0);
+            String xml = bos.toString("UTF-8");
+            assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESSES));
+    
+        }
+}
 
     @Test
     public void testXmlTransformationWithNullFilename() throws Exception {
-        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
-        Document doc = exporter.createDocument(process, true, false);
+        try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(steps);
+            mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(hel);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedUserManager.when(() -> UserManager.getAllUsers()).thenReturn(Collections.emptyList());
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        exporter.xmlTransformation(bos, doc, null);
 
-        assertTrue(bos.size() > 0);
-        String xml = bos.toString("UTF-8");
-        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
-    }
+            XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+            Document doc = exporter.createDocument(process, true, false);
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            exporter.xmlTransformation(bos, doc, null);
+
+            assertTrue(bos.size() > 0);
+            String xml = bos.toString("UTF-8");
+            assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+    
+        }
+}
 
     @Test
     public void testXmlTransformationWithNonEmptyFilename() throws Exception {
-        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
-        Document doc = exporter.createDocument(process, true, false);
+        try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(steps);
+            mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(hel);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedUserManager.when(() -> UserManager.getAllUsers()).thenReturn(Collections.emptyList());
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        // A non-empty filename means no XSLT transformation - doc is output as-is
-        exporter.xmlTransformation(bos, doc, "somefile.xsl");
 
-        assertTrue(bos.size() > 0);
-    }
+            XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+            Document doc = exporter.createDocument(process, true, false);
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            // A non-empty filename means no XSLT transformation - doc is output as-is
+            exporter.xmlTransformation(bos, doc, "somefile.xsl");
+
+            assertTrue(bos.size() > 0);
+    
+        }
+}
 
     @Test
     public void testStartTransformation() throws Exception {
-        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        exporter.startTransformation(process, bos, null);
+        try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(steps);
+            mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(hel);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedUserManager.when(() -> UserManager.getAllUsers()).thenReturn(Collections.emptyList());
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-        assertTrue(bos.size() > 0);
-        String xml = bos.toString("UTF-8");
-        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
-    }
+
+            XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            exporter.startTransformation(process, bos, null);
+
+            assertTrue(bos.size() > 0);
+            String xml = bos.toString("UTF-8");
+            assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+    
+        }
+}
 
     @Test
     public void testStartTransformationAlternativeSignature() throws Exception {
-        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        exporter.startTransformation(bos, process, null);
+        try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(steps);
+            mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(hel);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedUserManager.when(() -> UserManager.getAllUsers()).thenReturn(Collections.emptyList());
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-        assertTrue(bos.size() > 0);
-        String xml = bos.toString("UTF-8");
-        assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
-    }
+
+            XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            exporter.startTransformation(bos, process, null);
+
+            assertTrue(bos.size() > 0);
+            String xml = bos.toString("UTF-8");
+            assertTrue(xml.contains(XsltPreparatorDocket.ELEMENT_PROCESS));
+    
+        }
+}
 
     @Test
     public void testGetProjectExportConfiguration() {
-        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
-        Namespace ns = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
-        Element projectElement = new Element(XsltPreparatorDocket.ELEMENT_PROJECT, ns);
+        try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(steps);
+            mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(hel);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedUserManager.when(() -> UserManager.getAllUsers()).thenReturn(Collections.emptyList());
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-        exporter.getProjectExportConfiguration(process, projectElement);
 
-        Element exportConfig = projectElement.getChild(XsltPreparatorDocket.ELEMENT_EXPORT_CONFIGURATION, ns);
-        assertNotNull(exportConfig);
+            XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+            Namespace ns = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
+            Element projectElement = new Element(XsltPreparatorDocket.ELEMENT_PROJECT, ns);
 
-        // useDmsImport should be present
-        String useDmsImport = exportConfig.getAttributeValue(XsltPreparatorDocket.ATTRIBUTE_USE_DMS_IMPORT);
-        assertNotNull(useDmsImport);
-        assertEquals("true", useDmsImport);
-    }
+            exporter.getProjectExportConfiguration(process, projectElement);
+
+            Element exportConfig = projectElement.getChild(XsltPreparatorDocket.ELEMENT_EXPORT_CONFIGURATION, ns);
+            assertNotNull(exportConfig);
+
+            // useDmsImport should be present
+            String useDmsImport = exportConfig.getAttributeValue(XsltPreparatorDocket.ATTRIBUTE_USE_DMS_IMPORT);
+            assertNotNull(useDmsImport);
+            assertEquals("true", useDmsImport);
+    
+        }
+}
 
     @Test
     public void testGetMetsConfiguration() {
-        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
-        Namespace ns = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
-        Element projectElement = new Element(XsltPreparatorDocket.ELEMENT_PROJECT, ns);
+        try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(steps);
+            mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(hel);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedUserManager.when(() -> UserManager.getAllUsers()).thenReturn(Collections.emptyList());
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-        exporter.getMetsConfiguration(process, projectElement);
 
-        Element metsConfig = projectElement.getChild(XsltPreparatorDocket.ELEMENT_METS_CONFIGURATION, ns);
-        assertNotNull(metsConfig);
-        assertNotNull(metsConfig.getChild(XsltPreparatorDocket.ELEMENT_METS_RIGHTS_OWNER, ns));
-        assertNotNull(metsConfig.getChild(XsltPreparatorDocket.ELEMENT_METS_DIGIPROV_REFERENCE, ns));
-        assertNotNull(metsConfig.getChild(XsltPreparatorDocket.ELEMENT_METS_POINTER_PATH, ns));
-    }
+            XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+            Namespace ns = Namespace.getNamespace(XsltPreparatorDocket.FILE_LOG);
+            Element projectElement = new Element(XsltPreparatorDocket.ELEMENT_PROJECT, ns);
+
+            exporter.getMetsConfiguration(process, projectElement);
+
+            Element metsConfig = projectElement.getChild(XsltPreparatorDocket.ELEMENT_METS_CONFIGURATION, ns);
+            assertNotNull(metsConfig);
+            assertNotNull(metsConfig.getChild(XsltPreparatorDocket.ELEMENT_METS_RIGHTS_OWNER, ns));
+            assertNotNull(metsConfig.getChild(XsltPreparatorDocket.ELEMENT_METS_DIGIPROV_REFERENCE, ns));
+            assertNotNull(metsConfig.getChild(XsltPreparatorDocket.ELEMENT_METS_POINTER_PATH, ns));
+    
+        }
+}
 
     @Test
     public void testCreateDocumentStructure() throws Exception {
-        XsltPreparatorDocket exporter = new XsltPreparatorDocket();
-        Document doc = exporter.createDocument(process, true, false);
+        try (MockedStatic<InstitutionManager> mockedInstitutionManager = Mockito.mockStatic(InstitutionManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredRulesets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredDockets(Mockito.anyInt())).thenReturn(icolist);
+            mockedInstitutionManager.when(() -> InstitutionManager.getConfiguredAuthentications(Mockito.anyInt())).thenReturn(icolist);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(steps);
+            mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(hel);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedUserManager.when(() -> UserManager.getAllUsers()).thenReturn(Collections.emptyList());
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("fixture");
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("date");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
 
-        assertNotNull(doc);
-        Element root = doc.getRootElement();
-        assertEquals(XsltPreparatorDocket.ELEMENT_PROCESS, root.getName());
-        assertEquals("1", root.getAttributeValue(XsltPreparatorDocket.ATTRIBUTE_PROCESS_ID));
 
-        Element title = root.getChild(XsltPreparatorDocket.ELEMENT_TITLE, XMLNS);
-        assertNotNull(title);
-        assertEquals("testprocess", title.getValue());
-    }
+            XsltPreparatorDocket exporter = new XsltPreparatorDocket();
+            Document doc = exporter.createDocument(process, true, false);
+
+            assertNotNull(doc);
+            Element root = doc.getRootElement();
+            assertEquals(XsltPreparatorDocket.ELEMENT_PROCESS, root.getName());
+            assertEquals("1", root.getAttributeValue(XsltPreparatorDocket.ATTRIBUTE_PROCESS_ID));
+
+            Element title = root.getChild(XsltPreparatorDocket.ELEMENT_TITLE, XMLNS);
+            assertNotNull(title);
+            assertEquals("testprocess", title.getValue());
+    
+        }
+}
 
 }

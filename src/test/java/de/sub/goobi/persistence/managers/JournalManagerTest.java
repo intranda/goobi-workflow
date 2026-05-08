@@ -17,120 +17,213 @@
  */
 package de.sub.goobi.persistence.managers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.production.enums.LogType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ JournalMysqlHelper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class JournalManagerTest extends AbstractTest {
 
     private JournalEntry sampleEntry;
     private List<JournalEntry> sampleEntries;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         sampleEntry = new JournalEntry(1, new Date(), "testUser", LogType.INFO, "Test content", EntryType.PROCESS);
         sampleEntry.setId(1);
         sampleEntries = new ArrayList<>();
         sampleEntries.add(sampleEntry);
 
-        PowerMock.mockStatic(JournalMysqlHelper.class);
-        EasyMock.expect(JournalMysqlHelper.saveLogEntry(EasyMock.anyObject())).andReturn(sampleEntry).anyTimes();
-        JournalMysqlHelper.deleteLogEntry(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        JournalMysqlHelper.deleteAllJournalEntries(EasyMock.anyObject(), EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(JournalMysqlHelper.getLogEntries(EasyMock.anyInt(), EasyMock.anyObject())).andReturn(sampleEntries).anyTimes();
-        EasyMock.expect(JournalMysqlHelper.getJournalEntryById(EasyMock.anyInt())).andReturn(sampleEntry).anyTimes();
-        PowerMock.replay(JournalMysqlHelper.class);
     }
 
     @Test
     public void testSaveJournalEntry() {
-        JournalManager.saveJournalEntry(sampleEntry);
-    }
+        try (MockedStatic<JournalMysqlHelper> mockedJournalMysqlHelper = Mockito.mockStatic(JournalMysqlHelper.class)) {
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.saveLogEntry(Mockito.any())).thenReturn(sampleEntry);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
+
+
+            JournalManager.saveJournalEntry(sampleEntry);
+    
+        }
+}
 
     @Test
     public void testDeleteJournalEntry() {
-        JournalManager.deleteJournalEntry(sampleEntry);
-    }
+        try (MockedStatic<JournalMysqlHelper> mockedJournalMysqlHelper = Mockito.mockStatic(JournalMysqlHelper.class)) {
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.saveLogEntry(Mockito.any())).thenReturn(sampleEntry);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
+
+
+            JournalManager.deleteJournalEntry(sampleEntry);
+    
+        }
+}
 
     @Test
     public void testDeleteAllJournalEntries() {
-        JournalManager.deleteAllJournalEntries(1, EntryType.PROCESS);
-    }
+        try (MockedStatic<JournalMysqlHelper> mockedJournalMysqlHelper = Mockito.mockStatic(JournalMysqlHelper.class)) {
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.saveLogEntry(Mockito.any())).thenReturn(sampleEntry);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
+
+
+            JournalManager.deleteAllJournalEntries(1, EntryType.PROCESS);
+    
+        }
+}
 
     @Test
     public void testGetLogEntriesForProcess() {
-        List<JournalEntry> result = JournalManager.getLogEntriesForProcess(1);
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }
+        try (MockedStatic<JournalMysqlHelper> mockedJournalMysqlHelper = Mockito.mockStatic(JournalMysqlHelper.class)) {
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.saveLogEntry(Mockito.any())).thenReturn(sampleEntry);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
+
+
+            List<JournalEntry> result = JournalManager.getLogEntriesForProcess(1);
+            assertNotNull(result);
+            assertEquals(1, result.size());
+    
+        }
+}
 
     @Test
     public void testGetLogEntriesForInstitution() {
-        List<JournalEntry> result = JournalManager.getLogEntriesForInstitution(1);
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }
+        try (MockedStatic<JournalMysqlHelper> mockedJournalMysqlHelper = Mockito.mockStatic(JournalMysqlHelper.class)) {
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.saveLogEntry(Mockito.any())).thenReturn(sampleEntry);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
+
+
+            List<JournalEntry> result = JournalManager.getLogEntriesForInstitution(1);
+            assertNotNull(result);
+            assertEquals(1, result.size());
+    
+        }
+}
 
     @Test
     public void testGetLogEntriesForUser() {
-        List<JournalEntry> result = JournalManager.getLogEntriesForUser(1);
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }
+        try (MockedStatic<JournalMysqlHelper> mockedJournalMysqlHelper = Mockito.mockStatic(JournalMysqlHelper.class)) {
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.saveLogEntry(Mockito.any())).thenReturn(sampleEntry);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
+
+
+            List<JournalEntry> result = JournalManager.getLogEntriesForUser(1);
+            assertNotNull(result);
+            assertEquals(1, result.size());
+    
+        }
+}
 
     @Test
     public void testGetLogEntriesForProject() {
-        List<JournalEntry> result = JournalManager.getLogEntriesForProject(1);
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }
+        try (MockedStatic<JournalMysqlHelper> mockedJournalMysqlHelper = Mockito.mockStatic(JournalMysqlHelper.class)) {
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.saveLogEntry(Mockito.any())).thenReturn(sampleEntry);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
+
+
+            List<JournalEntry> result = JournalManager.getLogEntriesForProject(1);
+            assertNotNull(result);
+            assertEquals(1, result.size());
+    
+        }
+}
 
     @Test
     public void testGetJournalEntryById() {
-        JournalEntry result = JournalManager.getJournalEntryById(1);
-        assertNotNull(result);
-        assertEquals(Integer.valueOf(1), result.getId());
-    }
+        try (MockedStatic<JournalMysqlHelper> mockedJournalMysqlHelper = Mockito.mockStatic(JournalMysqlHelper.class)) {
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.saveLogEntry(Mockito.any())).thenReturn(sampleEntry);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
 
-    @Test(expected = UnsupportedOperationException.class)
+
+            JournalEntry result = JournalManager.getJournalEntryById(1);
+            assertNotNull(result);
+            assertEquals(Integer.valueOf(1), result.getId());
+    
+        }
+}
+
+    @Test
     public void testGetHitSizeThrowsUnsupported() throws Exception {
-        new JournalManager().getHitSize("", "", null);
-    }
+        assertThrows(UnsupportedOperationException.class, () -> {
 
-    @Test(expected = UnsupportedOperationException.class)
+            try (MockedStatic<JournalMysqlHelper> mockedJournalMysqlHelper = Mockito.mockStatic(JournalMysqlHelper.class)) {
+                mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.saveLogEntry(Mockito.any())).thenReturn(sampleEntry);
+                mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
+                mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
+
+
+                new JournalManager().getHitSize("", "", null);
+    
+            }
+        });
+}
+
+    @Test
     public void testGetListThrowsUnsupported() throws Exception {
-        new JournalManager().getList("", "", 0, 10, null);
-    }
+        assertThrows(UnsupportedOperationException.class, () -> {
 
-    @Test(expected = UnsupportedOperationException.class)
+            try (MockedStatic<JournalMysqlHelper> mockedJournalMysqlHelper = Mockito.mockStatic(JournalMysqlHelper.class)) {
+                mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.saveLogEntry(Mockito.any())).thenReturn(sampleEntry);
+                mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
+                mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
+
+
+                new JournalManager().getList("", "", 0, 10, null);
+    
+            }
+        });
+}
+
+    @Test
     public void testGetIdListThrowsUnsupported() {
-        new JournalManager().getIdList("", "", null);
-    }
+        assertThrows(UnsupportedOperationException.class, () -> {
+
+            try (MockedStatic<JournalMysqlHelper> mockedJournalMysqlHelper = Mockito.mockStatic(JournalMysqlHelper.class)) {
+                mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.saveLogEntry(Mockito.any())).thenReturn(sampleEntry);
+                mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
+                mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
+
+
+                new JournalManager().getIdList("", "", null);
+    
+            }
+        });
+}
 
     @Test
     public void testResultSetToLogEntryListHandlerNotNull() {
-        assertNotNull(JournalManager.resultSetToLogEntryListHandler);
-    }
+        try (MockedStatic<JournalMysqlHelper> mockedJournalMysqlHelper = Mockito.mockStatic(JournalMysqlHelper.class)) {
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.saveLogEntry(Mockito.any())).thenReturn(sampleEntry);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getLogEntries(Mockito.anyInt(), Mockito.any())).thenReturn(sampleEntries);
+            mockedJournalMysqlHelper.when(() -> JournalMysqlHelper.getJournalEntryById(Mockito.anyInt())).thenReturn(sampleEntry);
+
+
+            assertNotNull(JournalManager.resultSetToLogEntryListHandler);
+    
+        }
+}
 }

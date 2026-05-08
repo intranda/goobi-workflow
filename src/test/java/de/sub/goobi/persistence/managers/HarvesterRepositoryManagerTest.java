@@ -18,23 +18,17 @@
 
 package de.sub.goobi.persistence.managers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import io.goobi.workflow.harvester.beans.Job;
@@ -42,162 +36,377 @@ import io.goobi.workflow.harvester.beans.Record;
 import io.goobi.workflow.harvester.export.ExportHistoryEntry;
 import io.goobi.workflow.harvester.repository.Repository;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ HarvesterRepositoryMysqlHelper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class HarvesterRepositoryManagerTest extends AbstractTest {
 
-    @Before
+    private List<String> idList;
+    private Job job;
+    private Record rec;
+    private List<Record> recordList;
+    private Repository repo;
+    private List<Repository> repoList;
+
+    @BeforeEach
     public void setUp() throws Exception {
-        PowerMock.mockStatic(HarvesterRepositoryMysqlHelper.class);
-        Repository repo = new Repository();
-        List<Repository> repoList = new ArrayList<>();
+        repo = new Repository();
+        repoList = new ArrayList<>();
         repoList.add(repo);
 
-        EasyMock.expect(HarvesterRepositoryMysqlHelper.getRepository(EasyMock.anyInt())).andReturn(repo).anyTimes();
 
-        EasyMock.expect(HarvesterRepositoryMysqlHelper.getRepositoryCount(EasyMock.anyString())).andReturn(5).anyTimes();
 
-        EasyMock.expect(HarvesterRepositoryMysqlHelper.getRepositories(EasyMock.anyString())).andReturn(repoList).anyTimes();
-        HarvesterRepositoryMysqlHelper.saveRepository(EasyMock.anyObject());
-        HarvesterRepositoryMysqlHelper.deleteRepository(EasyMock.anyObject());
 
-        Job job = new Job(1, Job.WAITING, 0, "repository", null, new Timestamp(1L));
-        EasyMock.expect(HarvesterRepositoryMysqlHelper.addNewJob(EasyMock.anyObject())).andReturn(job).anyTimes();
-        HarvesterRepositoryMysqlHelper.updateJobStatus(EasyMock.anyObject());
+        job = new Job(1, Job.WAITING, 0, "repository", null, new Timestamp(1L));
 
-        EasyMock.expect(HarvesterRepositoryMysqlHelper.getLastHarvest(EasyMock.anyInt())).andReturn(new Timestamp(1L)).anyTimes();
-        EasyMock.expect(HarvesterRepositoryMysqlHelper.addRecords(EasyMock.anyObject(), EasyMock.anyBoolean())).andReturn(5).anyTimes();
 
-        List<String> idList = new ArrayList<>();
+        idList = new ArrayList<>();
         idList.add("1");
         idList.add("2");
-        EasyMock.expect(HarvesterRepositoryMysqlHelper.getExistingIdentifier(EasyMock.anyObject())).andReturn(idList).anyTimes();
 
-        List<Record> recordList = new ArrayList<>();
-        Record rec = new Record();
+        recordList = new ArrayList<>();
+        rec = new Record();
         recordList.add(rec);
 
-        EasyMock.expect(HarvesterRepositoryMysqlHelper.getRecords(EasyMock.anyInt(), EasyMock.anyInt(), EasyMock.anyString(), EasyMock.anyBoolean(),
-                EasyMock.anyObject(), EasyMock.anyBoolean())).andReturn(recordList).anyTimes();
 
-        HarvesterRepositoryMysqlHelper.addExportHistoryEntry(EasyMock.anyObject());
-        HarvesterRepositoryMysqlHelper.updateLastHarvestingTime(EasyMock.anyInt(), EasyMock.anyObject());
-        HarvesterRepositoryMysqlHelper.setRecordExported(EasyMock.anyObject());
-        HarvesterRepositoryMysqlHelper.changeStatusOfRepository(EasyMock.anyObject());
 
-        PowerMock.replay(HarvesterRepositoryMysqlHelper.class);
     }
 
     @Test
     public void testConstructor() {
-        HarvesterRepositoryManager fixture = new HarvesterRepositoryManager();
-        assertNotNull(fixture);
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            HarvesterRepositoryManager fixture = new HarvesterRepositoryManager();
+            assertNotNull(fixture);
+    
+        }
+}
 
     @Test
     public void testGetHitSize() throws Exception {
-        HarvesterRepositoryManager fixture = new HarvesterRepositoryManager();
-        assertNotNull(fixture);
-        assertEquals(5, fixture.getHitSize("", "", null));
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            HarvesterRepositoryManager fixture = new HarvesterRepositoryManager();
+            assertNotNull(fixture);
+            assertEquals(5, fixture.getHitSize("", "", null));
+    
+        }
+}
 
     @Test
     public void testGetList() throws Exception {
-        HarvesterRepositoryManager fixture = new HarvesterRepositoryManager();
-        assertNotNull(fixture);
-        assertEquals(1, fixture.getList("", "", 0, 10, null).size());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            HarvesterRepositoryManager fixture = new HarvesterRepositoryManager();
+            assertNotNull(fixture);
+            assertEquals(1, fixture.getList("", "", 0, 10, null).size());
+    
+        }
+}
 
     @Test
     public void testGetIdList() throws Exception {
-        HarvesterRepositoryManager fixture = new HarvesterRepositoryManager();
-        assertNotNull(fixture);
-        assertTrue(fixture.getIdList("", "", null).isEmpty());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            HarvesterRepositoryManager fixture = new HarvesterRepositoryManager();
+            assertNotNull(fixture);
+            assertTrue(fixture.getIdList("", "", null).isEmpty());
+    
+        }
+}
 
     @Test
     public void testGetRepository() throws Exception {
-        Repository repo = HarvesterRepositoryManager.getRepository(1);
-        assertNotNull(repo);
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            Repository repo = HarvesterRepositoryManager.getRepository(1);
+            assertNotNull(repo);
+    
+        }
+}
 
     @Test
     public void testSaveRepository() throws Exception {
-        Repository repo = new Repository();
-        HarvesterRepositoryManager.saveRepository(repo);
-        assertNotNull(repo);
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            Repository repo = new Repository();
+            HarvesterRepositoryManager.saveRepository(repo);
+            assertNotNull(repo);
+    
+        }
+}
 
     @Test
     public void testDeleteRepository() throws Exception {
-        Repository repo = new Repository();
-        HarvesterRepositoryManager.deleteRepository(repo);
-        assertNotNull(repo);
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            Repository repo = new Repository();
+            HarvesterRepositoryManager.deleteRepository(repo);
+            assertNotNull(repo);
+    
+        }
+}
 
     @Test
     public void testChangeStatusOfRepository() throws Exception {
-        Repository repo = new Repository();
-        HarvesterRepositoryManager.changeStatusOfRepository(repo);
-        assertNotNull(repo);
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            Repository repo = new Repository();
+            HarvesterRepositoryManager.changeStatusOfRepository(repo);
+            assertNotNull(repo);
+    
+        }
+}
 
     @Test
     public void testAddRecords() throws Exception {
-        List<Record> recordList = new ArrayList<>();
-        assertEquals(5, HarvesterRepositoryManager.addRecords(recordList, false));
-        assertEquals(5, HarvesterRepositoryManager.addRecords(recordList, true));
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            List<Record> recordList = new ArrayList<>();
+            assertEquals(5, HarvesterRepositoryManager.addRecords(recordList, false));
+            assertEquals(5, HarvesterRepositoryManager.addRecords(recordList, true));
+    
+        }
+}
 
     @Test
     public void testGetExistingIdentifier() throws Exception {
-        List<String> recordList = new ArrayList<>();
-        recordList.add("1");
-        recordList.add("2");
-        recordList.add("3");
-        assertEquals(2, HarvesterRepositoryManager.getExistingIdentifier(recordList).size());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            List<String> recordList = new ArrayList<>();
+            recordList.add("1");
+            recordList.add("2");
+            recordList.add("3");
+            assertEquals(2, HarvesterRepositoryManager.getExistingIdentifier(recordList).size());
+    
+        }
+}
 
     @Test
     public void testAddNewJob() throws Exception {
-        Job job = new Job(null, Job.WAITING, 0, "repository", null, new Timestamp(1L));
-        assertNull(job.getId());
-        assertEquals(1, HarvesterRepositoryManager.addNewJob(job).getId().intValue());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            Job job = new Job(null, Job.WAITING, 0, "repository", null, new Timestamp(1L));
+            assertNull(job.getId());
+            assertEquals(1, HarvesterRepositoryManager.addNewJob(job).getId().intValue());
+    
+        }
+}
 
     @Test
     public void testUpdateJobStatus() throws Exception {
-        Job job = new Job(null, Job.WAITING, 0, "repository", null, new Timestamp(1L));
-        HarvesterRepositoryManager.updateJobStatus(job);
-        assertNotNull(job);
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            Job job = new Job(null, Job.WAITING, 0, "repository", null, new Timestamp(1L));
+            HarvesterRepositoryManager.updateJobStatus(job);
+            assertNotNull(job);
+    
+        }
+}
 
     @Test
     public void testGetRecords() throws Exception {
-        assertEquals(1, HarvesterRepositoryManager.getRecords(1, 10, "", false, null, false).size());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            assertEquals(1, HarvesterRepositoryManager.getRecords(1, 10, "", false, null, false).size());
+    
+        }
+}
 
     @Test
     public void testAddExportHistoryEntry() throws Exception {
-        Record rec = new Record();
-        ExportHistoryEntry hist = new ExportHistoryEntry(rec);
-        HarvesterRepositoryManager.addExportHistoryEntry(hist);
-        assertNotNull(hist);
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            Record rec = new Record();
+            ExportHistoryEntry hist = new ExportHistoryEntry(rec);
+            HarvesterRepositoryManager.addExportHistoryEntry(hist);
+            assertNotNull(hist);
+    
+        }
+}
 
     @Test
     public void testUpdateLastHarvestingTime() throws Exception {
-        Timestamp ts = new Timestamp(1L);
-        HarvesterRepositoryManager.updateLastHarvestingTime(1, ts);
-        assertNotNull(ts);
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            Timestamp ts = new Timestamp(1L);
+            HarvesterRepositoryManager.updateLastHarvestingTime(1, ts);
+            assertNotNull(ts);
+    
+        }
+}
 
     @Test
     public void testSetRecordExported() throws Exception {
-        Record rec = new Record();
-        HarvesterRepositoryManager.setRecordExported(rec);
-        assertNotNull(rec);
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepository(Mockito.anyInt())).thenReturn(repo);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(repoList);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addNewJob(Mockito.any())).thenReturn(job);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getLastHarvest(Mockito.anyInt())).thenReturn(new Timestamp(1L));
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.addRecords(Mockito.any(), Mockito.anyBoolean())).thenReturn(5);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getExistingIdentifier(Mockito.any())).thenReturn(idList);
+                        mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRecords(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean(),
+                Mockito.any(), Mockito.anyBoolean())).thenReturn(recordList);
+
+
+            Record rec = new Record();
+            HarvesterRepositoryManager.setRecordExported(rec);
+            assertNotNull(rec);
+    
+        }
+}
 
 }

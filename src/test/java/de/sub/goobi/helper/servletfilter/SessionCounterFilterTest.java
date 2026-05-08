@@ -25,16 +25,12 @@
  */
 package de.sub.goobi.helper.servletfilter;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
 import org.easymock.EasyMock;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -46,8 +42,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ FacesContext.class })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class SessionCounterFilterTest extends AbstractTest {
 
     @Test
@@ -59,23 +58,25 @@ public class SessionCounterFilterTest extends AbstractTest {
         ServletContext context = EasyMock.createMock(ServletContext.class);
         EasyMock.expect(conf.getServletContext()).andReturn(context).anyTimes();
 
-        EasyMock.expectLastCall();
         filter.init(conf);
 
     }
 
     @Test
     public void testDoFilter() throws IOException, ServletException {
+
         HttpServletRequest servletRequest = EasyMock.createMock(HttpServletRequest.class);
         HttpServletResponse servletResponse = EasyMock.createMock(HttpServletResponse.class);
         FilterChain filterChain = EasyMock.createMock(FilterChain.class);
-        PowerMock.mockStatic(FacesContext.class);
 
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
-        FacesContextHelper.setFacesContext(facesContext);
+        try (MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
-        SessionCounterFilter filter = new SessionCounterFilter();
-        filter.doFilter(servletRequest, servletResponse, filterChain);
-    }
+            FacesContext facesContext = EasyMock.createMock(FacesContext.class);
+            FacesContextHelper.setFacesContext(facesContext);
+
+            SessionCounterFilter filter = new SessionCounterFilter();
+            filter.doFilter(servletRequest, servletResponse, filterChain);
+        }
+}
 
 }

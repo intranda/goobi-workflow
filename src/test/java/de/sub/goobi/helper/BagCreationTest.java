@@ -19,134 +19,140 @@
 
 package de.sub.goobi.helper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
-import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ConfigurationHelper.class })
-@PowerMockIgnore({ "javax.management.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.net.ssl.*", "jdk.internal.reflect.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class BagCreationTest extends AbstractTest {
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    @TempDir
+    Path tempDir;
 
     private String bagitFolder;
 
-    @Before
-    public void setUp() throws Exception {
-        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        // for junit tests in eclipse
-        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties");
-        if (!Files.exists(goobiFolder)) {
-            goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
-        }
+    private ConfigurationHelper configurationHelper;
 
-        File tempdir = folder.newFolder("tmp");
-        tempdir.mkdirs();
-        bagitFolder = tempdir.getAbsolutePath();
-        PowerMock.mockStatic(ConfigurationHelper.class);
-        ConfigurationHelper configurationHelper = EasyMock.createMock(ConfigurationHelper.class);
-        EasyMock.expect(ConfigurationHelper.getInstance()).andReturn(configurationHelper).anyTimes();
-        EasyMock.expect(configurationHelper.getTemporaryFolder()).andReturn(tempdir.getAbsolutePath()).anyTimes();
-        EasyMock.expect(configurationHelper.useS3()).andReturn(false).anyTimes();
-        EasyMock.replay(configurationHelper);
-        PowerMock.replay(ConfigurationHelper.class);
+    @BeforeEach
+    public void setUp() throws Exception {
+        bagitFolder = tempDir.toAbsolutePath().toString();
+        configurationHelper = Mockito.mock(ConfigurationHelper.class);
+        Mockito.lenient().when(configurationHelper.getTemporaryFolder()).thenReturn(bagitFolder);
+        Mockito.lenient().when(configurationHelper.useS3()).thenReturn(false);
     }
 
     @Test
     public void testConstructor() {
-        // use a root name
-        BagCreation creation = new BagCreation(bagitFolder + "/fixture");
-        assertEquals("fixture", creation.getBagitRoot().getFileName().toString());
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(configurationHelper);
 
-        // blank root name, create a uuid
-        creation = new BagCreation("");
-        assertEquals(36, creation.getBagitRoot().getFileName().toString().length());
 
-        // null as root name, create a uuid
-        creation = new BagCreation(null);
-        assertEquals(36, creation.getBagitRoot().getFileName().toString().length());
-    }
+            // use a root name
+            BagCreation creation = new BagCreation(bagitFolder + "/fixture");
+            assertEquals("fixture", creation.getBagitRoot().getFileName().toString());
+
+            // blank root name, create a uuid
+            creation = new BagCreation("");
+            assertEquals(36, creation.getBagitRoot().getFileName().toString().length());
+
+            // null as root name, create a uuid
+            creation = new BagCreation(null);
+            assertEquals(36, creation.getBagitRoot().getFileName().toString().length());
+    
+        }
+}
 
     @Test
     public void testCreateIEFolder() {
-        BagCreation creation = new BagCreation(bagitFolder + "/fixture");
-        assertEquals("fixture", creation.getBagitRoot().getFileName().toString());
-        creation.createIEFolder("subfolder", "objects");
-        assertEquals("subfolder", creation.getIeFolder().getFileName().toString());
-        assertEquals("metadata", creation.getMetadataFolder().getFileName().toString());
-        assertEquals("objects", creation.getObjectsFolder().getFileName().toString());
-    }
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(configurationHelper);
+
+
+            BagCreation creation = new BagCreation(bagitFolder + "/fixture");
+            assertEquals("fixture", creation.getBagitRoot().getFileName().toString());
+            creation.createIEFolder("subfolder", "objects");
+            assertEquals("subfolder", creation.getIeFolder().getFileName().toString());
+            assertEquals("metadata", creation.getMetadataFolder().getFileName().toString());
+            assertEquals("objects", creation.getObjectsFolder().getFileName().toString());
+    
+        }
+}
 
     @Test
     public void testMetadata() {
-        BagCreation creation = new BagCreation(bagitFolder + "/fixture");
-        assertTrue(creation.getMetadata().isEmpty());
-        creation.addMetadata("key", "value");
-        assertFalse(creation.getMetadata().isEmpty());
-    }
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(configurationHelper);
+
+
+            BagCreation creation = new BagCreation(bagitFolder + "/fixture");
+            assertTrue(creation.getMetadata().isEmpty());
+            creation.addMetadata("key", "value");
+            assertFalse(creation.getMetadata().isEmpty());
+    
+        }
+}
 
     @Test
     public void testCreateBag() throws IOException {
-        // folder preparation
-        BagCreation creation = new BagCreation(bagitFolder + "/fixture");
-        creation.createIEFolder("subfolder", "objects");
-        // metadata prepararation
-        creation.addMetadata("Source-Organization", "example library");
-        creation.addMetadata("Contact-Email", "user@example.org");
-        creation.addMetadata("External-Description", "Main title");
-        creation.addMetadata("External-Identifier", "opac id");
-        creation.addMetadata("Internal-Sender-Identifier", "goobi id");
-        creation.addMetadata("Internal-Sender-Description", "Main title");
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(configurationHelper);
 
-        // add some files
-        Path p = Paths.get("src/test/resources/metadata/1/meta.xml");
-        if (!Files.exists(p)) {
-            p = Paths.get("target/test-classes/metadata/1/meta.xml");
+
+            // folder preparation
+            BagCreation creation = new BagCreation(bagitFolder + "/fixture");
+            creation.createIEFolder("subfolder", "objects");
+            // metadata prepararation
+            creation.addMetadata("Source-Organization", "example library");
+            creation.addMetadata("Contact-Email", "user@example.org");
+            creation.addMetadata("External-Description", "Main title");
+            creation.addMetadata("External-Identifier", "opac id");
+            creation.addMetadata("Internal-Sender-Identifier", "goobi id");
+            creation.addMetadata("Internal-Sender-Description", "Main title");
+
+            // add some files
+            Path p = Paths.get("src/test/resources/metadata/1/meta.xml");
+            if (!Files.exists(p)) {
+                p = Paths.get("target/test-classes/metadata/1/meta.xml");
+            }
+            Files.copy(p, Paths.get(creation.getMetadataFolder().toString(), "mets.xml"));
+
+            p = Paths.get("src/test/resources/file_example_TIFF_1MB.tif");
+            if (!Files.exists(p)) {
+                p = Paths.get("target/test-classes/file_example_TIFF_1MB.tif");
+            }
+            Files.copy(p, Paths.get(creation.getObjectsFolder().toString(), "example.tif"));
+
+            Path bagInfo = Paths.get(creation.getBagitRoot().toString(), "bag-info.txt");
+            Path bagit = Paths.get(creation.getBagitRoot().toString(), "bagit.txt");
+            Path manifest = Paths.get(creation.getBagitRoot().toString(), "manifest-sha256.txt");
+            Path tagmanifest = Paths.get(creation.getBagitRoot().toString(), "tagmanifest-sha256.txt");
+
+            // create bagit data
+            creation.createBag();
+
+            // this creates 4 files
+            assertTrue(Files.exists(bagInfo));
+            assertTrue(Files.exists(bagit));
+            assertTrue(Files.exists(manifest));
+            assertTrue(Files.exists(tagmanifest));
+
+    
         }
-        Files.copy(p, Paths.get(creation.getMetadataFolder().toString(), "mets.xml"));
-
-        p = Paths.get("src/test/resources/file_example_TIFF_1MB.tif");
-        if (!Files.exists(p)) {
-            p = Paths.get("target/test-classes/file_example_TIFF_1MB.tif");
-        }
-        Files.copy(p, Paths.get(creation.getObjectsFolder().toString(), "example.tif"));
-
-        Path bagInfo = Paths.get(creation.getBagitRoot().toString(), "bag-info.txt");
-        Path bagit = Paths.get(creation.getBagitRoot().toString(), "bagit.txt");
-        Path manifest = Paths.get(creation.getBagitRoot().toString(), "manifest-sha256.txt");
-        Path tagmanifest = Paths.get(creation.getBagitRoot().toString(), "tagmanifest-sha256.txt");
-
-        // create bagit data
-        creation.createBag();
-
-        // this creates 4 files
-        assertTrue(Files.exists(bagInfo));
-        assertTrue(Files.exists(bagit));
-        assertTrue(Files.exists(manifest));
-        assertTrue(Files.exists(tagmanifest));
-
-    }
+}
 }

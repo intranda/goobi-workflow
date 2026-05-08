@@ -271,7 +271,7 @@ public class PaginatorTest extends AbstractTest {
         assertEquals(sequence.length, newPaginated.length, "Unexpected number of paginated pages.");
 
         for (int i = 0; i < sequence.length; i++) {
-            assertEquals("Actual paginator value did not match expected.", sequence[i], newPaginated[i].getValue());
+            assertEquals(sequence[i], newPaginated[i].getValue(), "Actual paginator value did not match expected.");
         }
 
     }
@@ -283,7 +283,7 @@ public class PaginatorTest extends AbstractTest {
         assertNotNull(newPaginated, "Expected paginator result set.");
 
         for (Metadatum m : newPaginated) {
-            assertEquals("Actual paginator value did not match expected.", expectedValue, m.getValue());
+            assertEquals(expectedValue, m.getValue(), "Actual paginator value did not match expected.");
         }
 
     }

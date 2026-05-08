@@ -18,25 +18,19 @@
 
 package org.goobi.goobiScript;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
@@ -44,9 +38,11 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Helper.class, ProcessManager.class, StepManager.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class GoobiScriptOpenNextStepTest extends AbstractTest {
 
     private Process process;
@@ -55,17 +51,14 @@ public class GoobiScriptOpenNextStepTest extends AbstractTest {
 
     private Step s2;
 
-    @Before
-    public void setUp() throws Exception {
-        PowerMock.mockStatic(Helper.class);
-        PowerMock.mockStatic(ProcessManager.class);
+    private User u;
 
-        User u = new User();
+    @BeforeEach
+    public void setUp() throws Exception {
+
+        u = new User();
         u.setVorname("firstname");
         u.setNachname("lastname");
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(u).anyTimes();
-        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(),
-                EasyMock.anyString());
 
         process = new Process();
         process.setId(Integer.valueOf(1));
@@ -85,79 +78,108 @@ public class GoobiScriptOpenNextStepTest extends AbstractTest {
         steps.add(s2);
         process.setSchritte(steps);
 
-        EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
-        ProcessManager.saveProcess(EasyMock.anyObject());
-        PowerMock.replayAll();
 
     }
 
     @Test
     public void testConstructor() {
-        GoobiScriptOpenNextStep fixture = new GoobiScriptOpenNextStep();
-        assertNotNull(fixture);
-        assertEquals("openNextStep", fixture.getAction());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+
+            GoobiScriptOpenNextStep fixture = new GoobiScriptOpenNextStep();
+            assertNotNull(fixture);
+            assertEquals("openNextStep", fixture.getAction());
+    
+        }
+}
 
     @Test
     public void testSampleCall() {
-        GoobiScriptOpenNextStep fixture = new GoobiScriptOpenNextStep();
-        assertNotNull(fixture);
-        assertEquals("---\\n# This GoobiScript opens the first locked step, if no open/inwork/error/inflight step exists.\\naction: openNextStep",
-                fixture.getSampleCall());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+
+            GoobiScriptOpenNextStep fixture = new GoobiScriptOpenNextStep();
+            assertNotNull(fixture);
+            assertEquals("---\\n# This GoobiScript opens the first locked step, if no open/inwork/error/inflight step exists.\\naction: openNextStep",
+                    fixture.getSampleCall());
+    
+        }
+}
 
     @Test
     public void testPrepare() {
-        List<Integer> processes = new ArrayList<>();
-        processes.add(1);
-        String command = "openNextStep";
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("1", "1");
-        GoobiScriptOpenNextStep fixture = new GoobiScriptOpenNextStep();
-        assertNotNull(fixture);
-        List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
-        assertEquals(1, results.size());
-        assertEquals("openNextStep", results.get(0).getCommand());
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
 
-    }
+
+            List<Integer> processes = new ArrayList<>();
+            processes.add(1);
+            String command = "openNextStep";
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("1", "1");
+            GoobiScriptOpenNextStep fixture = new GoobiScriptOpenNextStep();
+            assertNotNull(fixture);
+            List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
+            assertEquals(1, results.size());
+            assertEquals("openNextStep", results.get(0).getCommand());
+
+    
+        }
+}
 
     @Test
     public void testExecute() {
-        //
-        GoobiScriptOpenNextStep fixture = new GoobiScriptOpenNextStep();
-        List<Integer> processes = new ArrayList<>();
-        processes.add(1);
-        String command = "openNextStep";
-        Map<String, String> parameters = new HashMap<>();
-        GoobiScriptResult result = new GoobiScriptResult(1, command, parameters, "username");
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
 
-        // first test: no locked step
-        fixture.execute(result);
-        assertEquals("No locked step found", result.getResultMessage());
 
-        // second test: one step is open
-        s2.setBearbeitungsstatusEnum(StepStatus.OPEN);
-        fixture.execute(result);
-        assertEquals("open step found: step 2", result.getResultMessage());
+            //
+            GoobiScriptOpenNextStep fixture = new GoobiScriptOpenNextStep();
+            List<Integer> processes = new ArrayList<>();
+            processes.add(1);
+            String command = "openNextStep";
+            Map<String, String> parameters = new HashMap<>();
+            GoobiScriptResult result = new GoobiScriptResult(1, command, parameters, "username");
 
-        // inflight
-        s2.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
-        fixture.execute(result);
-        assertEquals("open step found: step 2", result.getResultMessage());
+            // first test: no locked step
+            fixture.execute(result);
+            assertEquals("No locked step found", result.getResultMessage());
 
-        // inwork
-        s2.setBearbeitungsstatusEnum(StepStatus.INWORK);
-        fixture.execute(result);
-        assertEquals("open step found: step 2", result.getResultMessage());
+            // second test: one step is open
+            s2.setBearbeitungsstatusEnum(StepStatus.OPEN);
+            fixture.execute(result);
+            assertEquals("open step found: step 2", result.getResultMessage());
 
-        // error
-        s2.setBearbeitungsstatusEnum(StepStatus.ERROR);
-        fixture.execute(result);
-        assertEquals("open step found: step 2", result.getResultMessage());
+            // inflight
+            s2.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
+            fixture.execute(result);
+            assertEquals("open step found: step 2", result.getResultMessage());
 
-        // locked
-        s2.setBearbeitungsstatusEnum(StepStatus.LOCKED);
-        fixture.execute(result);
-        assertEquals("Step opened: step 2", result.getResultMessage());
-    }
+            // inwork
+            s2.setBearbeitungsstatusEnum(StepStatus.INWORK);
+            fixture.execute(result);
+            assertEquals("open step found: step 2", result.getResultMessage());
+
+            // error
+            s2.setBearbeitungsstatusEnum(StepStatus.ERROR);
+            fixture.execute(result);
+            assertEquals("open step found: step 2", result.getResultMessage());
+
+            // locked
+            s2.setBearbeitungsstatusEnum(StepStatus.LOCKED);
+            fixture.execute(result);
+            assertEquals("Step opened: step 2", result.getResultMessage());
+    
+        }
+}
 }

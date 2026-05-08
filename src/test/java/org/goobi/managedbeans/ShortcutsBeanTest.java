@@ -4,29 +4,29 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
 import org.goobi.beans.User;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * Unit tests for {@link ShortcutsBean} using JUnit4 + EasyMock.
  */
-@RunWith(PowerMockRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ShortcutsBeanTest {
 
     private ShortcutsBean bean;
     private LoginBean loginBeanMock;
     private User benutzerMock;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         bean = new ShortcutsBean();
         loginBeanMock = createMock(LoginBean.class);

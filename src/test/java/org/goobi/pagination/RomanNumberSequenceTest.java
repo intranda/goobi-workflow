@@ -34,13 +34,13 @@ public class RomanNumberSequenceTest extends AbstractTest {
     @Test
     public void generatesSequenceOfRomanNumbers() {
         RomanNumberSequence rns = new RomanNumberSequence(1, 10);
-        assertEquals("Wrong sequence", "[I, II, III, IV, V, VI, VII, VIII, IX, X]", rns.toString());
+        assertEquals("[I, II, III, IV, V, VI, VII, VIII, IX, X]", rns.toString(), "Wrong sequence");
     }
 
     @Test
     public void generatesSequenceOfRomanNumbersWithIncrement() {
         RomanNumberSequence rns = new RomanNumberSequence(1, 50, 10);
-        assertEquals("Wrong sequence", "[I, XI, XXI, XXXI, XLI]", rns.toString());
+        assertEquals("[I, XI, XXI, XXXI, XLI]", rns.toString(), "Wrong sequence");
     }
 
     @Test

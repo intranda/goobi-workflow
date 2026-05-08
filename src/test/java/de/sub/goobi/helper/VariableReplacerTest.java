@@ -19,26 +19,20 @@ package de.sub.goobi.helper;
  * 
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
@@ -49,9 +43,11 @@ import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import ugh.dl.DigitalDocument;
 import ugh.dl.Prefs;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ DateTimeHelper.class, PropertyParser.class, VocabularyAPIManager.class })
-@PowerMockIgnore({ "javax.management.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.net.ssl.*", "jdk.internal.reflect.*", "javax.crypto.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class VariableReplacerTest extends AbstractTest {
 
     private Prefs prefs;
@@ -59,7 +55,7 @@ public class VariableReplacerTest extends AbstractTest {
 
     private DigitalDocument digitalDocument;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
@@ -139,22 +135,23 @@ public class VariableReplacerTest extends AbstractTest {
 
     @Test
     public void testDateTimeReplacement() {
+
         LocalDateTime mockDate = LocalDateTime.of(2020, 11, 3, 13, 37, 55, 123456789);
 
-        PowerMock.mockStatic(DateTimeHelper.class);
-        EasyMock.expect(DateTimeHelper.localDateTimeNow()).andReturn(mockDate).anyTimes();
-        PowerMock.replayAll();
+        try (MockedStatic<DateTimeHelper> mockedDateTimeHelper = Mockito.mockStatic(DateTimeHelper.class)) {
+            mockedDateTimeHelper.when(() -> DateTimeHelper.localDateTimeNow()).thenReturn(mockDate);
 
-        VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
+            VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
 
-        assertEquals("2020", replacer.replace("{datetime.yyyy}"));
-        assertEquals("2020-11-03", replacer.replace("{datetime.yyyy-MM-dd}"));
-        assertEquals("13:37:55", replacer.replace("{datetime.HH:mm:ss}"));
-        assertEquals("03.11.2020", replacer.replace("{datetime.dd.MM.yyyy}"));
-        assertEquals("13_37_55_123456789", replacer.replace("{datetime.HH_mm_ss_n}"));
-        // Don't replace on broken pattern
-        assertEquals("{datetime.abcdefghijk}", replacer.replace("{datetime.abcdefghijk}"));
-    }
+            assertEquals("2020", replacer.replace("{datetime.yyyy}"));
+            assertEquals("2020-11-03", replacer.replace("{datetime.yyyy-MM-dd}"));
+            assertEquals("13:37:55", replacer.replace("{datetime.HH:mm:ss}"));
+            assertEquals("03.11.2020", replacer.replace("{datetime.dd.MM.yyyy}"));
+            assertEquals("13_37_55_123456789", replacer.replace("{datetime.HH_mm_ss_n}"));
+            // Don't replace on broken pattern
+            assertEquals("{datetime.abcdefghijk}", replacer.replace("{datetime.abcdefghijk}"));
+        }
+}
 
     @Test
     public void testReplaceProperties() {
@@ -166,6 +163,7 @@ public class VariableReplacerTest extends AbstractTest {
 
     @Test
     public void testVocabularyProcessProperties() {
+
         VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
 
         DisplayProperty appleProperty = new DisplayProperty();
@@ -183,56 +181,45 @@ public class VariableReplacerTest extends AbstractTest {
         fruitsProperty.setType(Type.VOCABULARYMULTIREFERENCE);
         fruitsProperty.setValue("13; 14");
 
-        ExtendedFieldInstance appleField = EasyMock.createMock(ExtendedFieldInstance.class);
-        EasyMock.expect(appleField.getFieldValue()).andReturn("Apple").anyTimes();
-        EasyMock.replay(appleField);
-        ExtendedFieldInstance appleAbbreviationField = EasyMock.createMock(ExtendedFieldInstance.class);
-        EasyMock.expect(appleAbbreviationField.getFieldValue()).andReturn("A").anyTimes();
-        EasyMock.replay(appleAbbreviationField);
-        ExtendedVocabularyRecord appleRecord = EasyMock.createMock(ExtendedVocabularyRecord.class);
-        EasyMock.expect(appleRecord.getMainValue()).andReturn("Apple").anyTimes();
-        EasyMock.expect(appleRecord.getMainField()).andReturn(Optional.of(appleField)).anyTimes();
-        EasyMock.expect(appleRecord.getFieldForDefinitionName("First Letter")).andReturn(Optional.of(appleAbbreviationField)).anyTimes();
-        EasyMock.replay(appleRecord);
+        ExtendedFieldInstance appleField = Mockito.mock(ExtendedFieldInstance.class);
+        Mockito.lenient().when(appleField.getFieldValue()).thenReturn("Apple");
+        ExtendedFieldInstance appleAbbreviationField = Mockito.mock(ExtendedFieldInstance.class);
+        Mockito.lenient().when(appleAbbreviationField.getFieldValue()).thenReturn("A");
+        ExtendedVocabularyRecord appleRecord = Mockito.mock(ExtendedVocabularyRecord.class);
+        Mockito.lenient().when(appleRecord.getMainValue()).thenReturn("Apple");
+        Mockito.lenient().when(appleRecord.getMainField()).thenReturn(Optional.of(appleField));
+        Mockito.lenient().when(appleRecord.getFieldForDefinitionName("First Letter")).thenReturn(Optional.of(appleAbbreviationField));
+        ExtendedFieldInstance bananaField = Mockito.mock(ExtendedFieldInstance.class);
+        Mockito.lenient().when(bananaField.getFieldValue()).thenReturn("Banana");
+        ExtendedVocabularyRecord bananaRecord = Mockito.mock(ExtendedVocabularyRecord.class);
+        Mockito.lenient().when(bananaRecord.getMainValue()).thenReturn("Banana");
+        Mockito.lenient().when(bananaRecord.getMainField()).thenReturn(Optional.of(bananaField));
+        VocabularyRecordAPI recordAPI = Mockito.mock(VocabularyRecordAPI.class);
+        Mockito.lenient().when(recordAPI.get(Long.parseLong(appleProperty.getValue()))).thenReturn(appleRecord);
+        Mockito.lenient().when(recordAPI.get(Long.parseLong(bananaProperty.getValue()))).thenReturn(bananaRecord);
+        VocabularyAPIManager vocabularyAPIManager = Mockito.mock(VocabularyAPIManager.class);
+        Mockito.lenient().when(vocabularyAPIManager.vocabularyRecords()).thenReturn(recordAPI);
 
-        ExtendedFieldInstance bananaField = EasyMock.createMock(ExtendedFieldInstance.class);
-        EasyMock.expect(bananaField.getFieldValue()).andReturn("Banana").anyTimes();
-        EasyMock.replay(bananaField);
-        ExtendedVocabularyRecord bananaRecord = EasyMock.createMock(ExtendedVocabularyRecord.class);
-        EasyMock.expect(bananaRecord.getMainValue()).andReturn("Banana").anyTimes();
-        EasyMock.expect(bananaRecord.getMainField()).andReturn(Optional.of(bananaField)).anyTimes();
-        EasyMock.replay(bananaRecord);
+        try (MockedStatic<VocabularyAPIManager> mockedVocabularyAPIManager = Mockito.mockStatic(VocabularyAPIManager.class);
+                     MockedStatic<PropertyParser> mockedPropertyParser = Mockito.mockStatic(PropertyParser.class)) {
+            mockedVocabularyAPIManager.when(() -> VocabularyAPIManager.getInstance()).thenReturn(vocabularyAPIManager);
 
-        VocabularyRecordAPI recordAPI = EasyMock.createMock(VocabularyRecordAPI.class);
-        EasyMock.expect(recordAPI.get(Long.parseLong(appleProperty.getValue()))).andReturn(appleRecord).anyTimes();
-        EasyMock.expect(recordAPI.get(Long.parseLong(bananaProperty.getValue()))).andReturn(bananaRecord).anyTimes();
-        EasyMock.replay(recordAPI);
+            PropertyParser parser = Mockito.mock(PropertyParser.class);
+            Mockito.lenient().when(parser.getPropertiesForProcess(process)).thenReturn(List.of(appleProperty, bananaProperty, fruitsProperty));
+            mockedPropertyParser.when(() -> PropertyParser.getInstance()).thenReturn(parser);
 
-        VocabularyAPIManager vocabularyAPIManager = EasyMock.createMock(VocabularyAPIManager.class);
-        EasyMock.expect(vocabularyAPIManager.vocabularyRecords()).andReturn(recordAPI).anyTimes();
-        EasyMock.replay(vocabularyAPIManager);
 
-        PowerMock.mockStatic(VocabularyAPIManager.class);
-        EasyMock.expect(VocabularyAPIManager.getInstance()).andReturn(vocabularyAPIManager).anyTimes();
-
-        PropertyParser parser = EasyMock.createMock(PropertyParser.class);
-        EasyMock.expect(parser.getPropertiesForProcess(process)).andReturn(List.of(appleProperty, bananaProperty, fruitsProperty)).anyTimes();
-        EasyMock.replay(parser);
-
-        PowerMock.mockStatic(PropertyParser.class);
-        EasyMock.expect(PropertyParser.getInstance()).andReturn(parser).anyTimes();
-
-        PowerMock.replayAll();
-
-        assertEquals("Apple", replacer.replace("{process.AppleProperty}"));
-        assertEquals("Banana", replacer.replace("{process.BananaProperty}"));
-        assertEquals("Apple", replacer.replace("{process.FruitsProperty}"));
-        assertEquals("Apple,Banana", replacer.replace("{processes.FruitsProperty}"));
-        assertEquals("A", replacer.replace("{process.AppleProperty.First Letter}"));
-    }
+            assertEquals("Apple", replacer.replace("{process.AppleProperty}"));
+            assertEquals("Banana", replacer.replace("{process.BananaProperty}"));
+            assertEquals("Apple", replacer.replace("{process.FruitsProperty}"));
+            assertEquals("Apple,Banana", replacer.replace("{processes.FruitsProperty}"));
+            assertEquals("A", replacer.replace("{process.AppleProperty.First Letter}"));
+        }
+}
 
     @Test
     public void testProcessProperties() {
+
         VariableReplacer replacer = new VariableReplacer(digitalDocument, prefs, process, null);
 
         DisplayProperty uniqueSingleProperty = new DisplayProperty();
@@ -255,26 +242,23 @@ public class VariableReplacerTest extends AbstractTest {
         commonPropertyTwo.setType(Type.TEXT);
         commonPropertyTwo.setValue("Two");
 
-        PropertyParser parser = EasyMock.createMock(PropertyParser.class);
-        EasyMock.expect(parser.getPropertiesForProcess(process))
-                .andReturn(
-                        List.of(uniqueSingleProperty, uniqueMultiProperty, commonPropertyOne, commonPropertyTwo))
-                .anyTimes();
-        EasyMock.replay(parser);
+        PropertyParser parser = Mockito.mock(PropertyParser.class);
+        Mockito.lenient().when(parser.getPropertiesForProcess(process))
+                .thenReturn(List.of(uniqueSingleProperty, uniqueMultiProperty, commonPropertyOne, commonPropertyTwo));
 
-        PowerMock.mockStatic(PropertyParser.class);
-        EasyMock.expect(PropertyParser.getInstance()).andReturn(parser).anyTimes();
-        PowerMock.replayAll();
+        try (MockedStatic<PropertyParser> mockedPropertyParser = Mockito.mockStatic(PropertyParser.class)) {
+            mockedPropertyParser.when(() -> PropertyParser.getInstance()).thenReturn(parser);
 
-        assertEquals("One", replacer.replace("{process.Unique Single}"));
-        assertEquals("One", replacer.replace("{process.Unique Multi}"));
-        assertEquals("One", replacer.replace("{process.Common}"));
-        assertEquals("One", replacer.replace("{processes.Unique Single}"));
-        assertEquals("One,Two", replacer.replace("{processes.Unique Multi}"));
-        assertEquals("One,Two", replacer.replace("{processes.Common}"));
-        assertEquals("", replacer.replace("{process.Missing}"));
-        assertEquals("", replacer.replace("{processes.Missing}"));
-    }
+            assertEquals("One", replacer.replace("{process.Unique Single}"));
+            assertEquals("One", replacer.replace("{process.Unique Multi}"));
+            assertEquals("One", replacer.replace("{process.Common}"));
+            assertEquals("One", replacer.replace("{processes.Unique Single}"));
+            assertEquals("One,Two", replacer.replace("{processes.Unique Multi}"));
+            assertEquals("One,Two", replacer.replace("{processes.Common}"));
+            assertEquals("", replacer.replace("{process.Missing}"));
+            assertEquals("", replacer.replace("{processes.Missing}"));
+        }
+}
 
     @Test
     public void testCombineValues() {

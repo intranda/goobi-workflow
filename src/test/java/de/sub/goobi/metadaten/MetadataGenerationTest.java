@@ -1,7 +1,7 @@
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
@@ -11,8 +11,8 @@ import org.goobi.beans.Process;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.xpath.XPathFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
@@ -22,16 +22,16 @@ import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 import ugh.fileformats.mets.ModsHelper;
 
-//@RunWith(PowerMockRunner.class)
-//@PrepareForTest({  Helper.class })
-//@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class MetadataGenerationTest extends AbstractTest {
 
     private Prefs prefs;
     private Process process;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();

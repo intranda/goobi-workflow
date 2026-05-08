@@ -25,20 +25,16 @@
  */
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.easymock.EasyMock;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.Process;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
@@ -49,8 +45,11 @@ import ugh.dl.DocStruct;
 import ugh.dl.NamePart;
 import ugh.dl.Prefs;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ViafSearch.class, Helper.class })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class MetaCorporateTest extends AbstractTest {
 
     private Prefs prefs;
@@ -58,122 +57,221 @@ public class MetaCorporateTest extends AbstractTest {
     private static final String METADATA_TYPE = "junitCorporate";
     private Corporate c;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
         c = new Corporate(prefs.getMetadataTypeByName(METADATA_TYPE));
-        ViafSearch viafSearch = PowerMock.createMock(ViafSearch.class);
-        PowerMock.expectNew(ViafSearch.class).andReturn(viafSearch).anyTimes();
-        PowerMock.replay(viafSearch);
+        ViafSearch viafSearch = EasyMock.createMock(ViafSearch.class);
+        // TODO: /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew needs manual migration to Mockito.mockConstruction
+        // /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew(ViafSearch.class).andReturn(viafSearch).anyTimes();
 
-        PowerMock.mockStatic(Helper.class);
-        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
-        EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
-        PowerMock.replay(Helper.class);
     }
 
     @Test
     public void testConstructor() {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
-        assertNotNull(fixture);
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+            assertNotNull(fixture);
+    
+        }
+}
 
     @Test
     public void testDisplaytype() {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
-        assertEquals(DisplayType.corporate, fixture.getMetadataDisplaytype());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+            assertEquals(DisplayType.corporate, fixture.getMetadataDisplaytype());
+    
+        }
+}
 
     @Test
     public void testRole() {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
-        fixture.setRole(METADATA_TYPE);
-        assertEquals(METADATA_TYPE, fixture.getRole());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+            fixture.setRole(METADATA_TYPE);
+            assertEquals(METADATA_TYPE, fixture.getRole());
+    
+        }
+}
 
     @Test
     public void testAddableRoles() throws Exception {
-        DocStruct ds = process.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
-        ds.addCorporate(c);
-        MetaCorporate fixture = new MetaCorporate(c, prefs, ds, null);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        assertEquals(1, fixture.getAddableRoles().size());
-        assertEquals(METADATA_TYPE, fixture.getAddableRoles().get(0).getValue());
-    }
+
+            DocStruct ds = process.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
+            ds.addCorporate(c);
+            MetaCorporate fixture = new MetaCorporate(c, prefs, ds, null);
+
+            assertEquals(1, fixture.getAddableRoles().size());
+            assertEquals(METADATA_TYPE, fixture.getAddableRoles().get(0).getValue());
+    
+        }
+}
 
     @Test
     public void testMainName() {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
-        fixture.setMainName("main name");
-        assertEquals("main name", fixture.getMainName());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+            fixture.setMainName("main name");
+            assertEquals("main name", fixture.getMainName());
+    
+        }
+}
 
     @Test
     public void testPartName() {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
-        fixture.setPartName("part name");
-        assertEquals("part name", fixture.getPartName());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+            fixture.setPartName("part name");
+            assertEquals("part name", fixture.getPartName());
+    
+        }
+}
 
     @Test
     public void testSubNames() {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
-        assertEquals(1, fixture.getSubNames().size());
-        fixture.getSubNames().get(0).setValue("val");
-        fixture.addSubName();
-        assertEquals(2, fixture.getSubNameSize());
-        NamePart np = fixture.getSubNames().get(1);
-        fixture.removeSubName(np);
-        assertEquals(1, fixture.getSubNameSize());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+            assertEquals(1, fixture.getSubNames().size());
+            fixture.getSubNames().get(0).setValue("val");
+            fixture.addSubName();
+            assertEquals(2, fixture.getSubNameSize());
+            NamePart np = fixture.getSubNames().get(1);
+            fixture.removeSubName(np);
+            assertEquals(1, fixture.getSubNameSize());
+    
+        }
+}
 
     @Test
     public void testGetPossibleDatabases() {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
-        assertEquals("gnd", fixture.getPossibleDatabases().get(0));
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+            assertEquals("gnd", fixture.getPossibleDatabases().get(0));
+    
+        }
+}
 
     @Test
     public void testIsNormdata() {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
-        assertTrue(fixture.isNormdata());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+            assertTrue(fixture.isNormdata());
+    
+        }
+}
 
     @Test
     public void testNormdataValue() {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
-        fixture.setNormdataValue("test");
-        assertEquals("test", fixture.getNormdataValue());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+            fixture.setNormdataValue("test");
+            assertEquals("test", fixture.getNormdataValue());
+    
+        }
+}
 
     @Test
     public void testNormDatabase() {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
-        fixture.setNormDatabase("gnd");
-        assertEquals("gnd", fixture.getNormDatabase());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+            fixture.setNormDatabase("gnd");
+            assertEquals("gnd", fixture.getNormDatabase());
+    
+        }
+}
 
     @Test
     public void testDisplayRestrictions() {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        assertFalse(fixture.isDisplayRestrictions());
-        c.getType().setAllowAccessRestriction(true);
-        assertTrue(fixture.isDisplayRestrictions());
 
-    }
+            MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+
+            assertFalse(fixture.isDisplayRestrictions());
+            c.getType().setAllowAccessRestriction(true);
+            assertTrue(fixture.isDisplayRestrictions());
+
+    
+        }
+}
 
     @Test
     public void testRestricted() {
-        MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
-        c.getType().setAllowAccessRestriction(true);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        assertFalse(fixture.isRestricted());
-        fixture.setRestricted(true);
-        assertTrue(fixture.isRestricted());
-    }
+
+            MetaCorporate fixture = new MetaCorporate(c, prefs, null, null);
+            c.getType().setAllowAccessRestriction(true);
+
+            assertFalse(fixture.isRestricted());
+            fixture.setRestricted(true);
+            assertTrue(fixture.isRestricted());
+    
+        }
+}
 
     //    search
     //    getData

@@ -18,109 +18,190 @@
 
 package de.sub.goobi.persistence.managers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.easymock.EasyMock;
 import org.goobi.goobiScript.GoobiScriptTemplate;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ GoobiScriptTemplateMysqlHelper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class GoobiScriptTemplateManagerTest extends AbstractTest {
 
-    @Before
+    private List<GoobiScriptTemplate> templates;
+    private GoobiScriptTemplate tmpl;
+
+    @BeforeEach
     public void setUp() throws Exception {
 
-        PowerMock.mockStatic(GoobiScriptTemplateMysqlHelper.class);
-        EasyMock.expect(GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateCount(EasyMock.anyString())).andReturn(10).anyTimes();
 
-        List<GoobiScriptTemplate> templates = new ArrayList<>();
-        GoobiScriptTemplate tmpl = new GoobiScriptTemplate();
+        templates = new ArrayList<>();
+        tmpl = new GoobiScriptTemplate();
         tmpl.setId(1);
         tmpl.setDescription("Desc");
         tmpl.setTitle("title");
         tmpl.setGoobiScripts("scipts");
         templates.add(tmpl);
 
-        EasyMock.expect(GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplates(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(),
-                EasyMock.anyInt())).andReturn(templates).anyTimes();
-        EasyMock.expect(GoobiScriptTemplateMysqlHelper.getAllGoobiScriptTemplates()).andReturn(templates).anyTimes();
-        EasyMock.expect(GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateById(EasyMock.anyInt())).andReturn(tmpl).anyTimes();
 
-        GoobiScriptTemplateMysqlHelper.saveGoobiScriptTemplate(EasyMock.anyObject());
-        GoobiScriptTemplateMysqlHelper.deleteGoobiScriptTemplate(EasyMock.anyObject());
-        PowerMock.replay(GoobiScriptTemplateMysqlHelper.class);
     }
 
     @Test
     public void testConstructor() {
-        GoobiScriptTemplateManager fixture = new GoobiScriptTemplateManager();
-        assertNotNull(fixture);
-    }
+        try (MockedStatic<GoobiScriptTemplateMysqlHelper> mockedGoobiScriptTemplateMysqlHelper = Mockito.mockStatic(GoobiScriptTemplateMysqlHelper.class)) {
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateCount(Mockito.anyString())).thenReturn(10);
+                        mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplates(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(),
+                Mockito.anyInt())).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getAllGoobiScriptTemplates()).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateById(Mockito.anyInt())).thenReturn(tmpl);
+
+
+            GoobiScriptTemplateManager fixture = new GoobiScriptTemplateManager();
+            assertNotNull(fixture);
+    
+        }
+}
 
     @Test
     public void testGetHitSize() throws Exception {
-        GoobiScriptTemplateManager fixture = new GoobiScriptTemplateManager();
-        assertNotNull(fixture);
-        assertEquals(10, fixture.getHitSize("", "", null));
-    }
+        try (MockedStatic<GoobiScriptTemplateMysqlHelper> mockedGoobiScriptTemplateMysqlHelper = Mockito.mockStatic(GoobiScriptTemplateMysqlHelper.class)) {
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateCount(Mockito.anyString())).thenReturn(10);
+                        mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplates(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(),
+                Mockito.anyInt())).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getAllGoobiScriptTemplates()).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateById(Mockito.anyInt())).thenReturn(tmpl);
+
+
+            GoobiScriptTemplateManager fixture = new GoobiScriptTemplateManager();
+            assertNotNull(fixture);
+            assertEquals(10, fixture.getHitSize("", "", null));
+    
+        }
+}
 
     @Test
     public void testGetList() throws Exception {
-        GoobiScriptTemplateManager fixture = new GoobiScriptTemplateManager();
-        assertNotNull(fixture);
-        assertEquals(1, fixture.getList("", "", 0, 10, null).size());
-    }
+        try (MockedStatic<GoobiScriptTemplateMysqlHelper> mockedGoobiScriptTemplateMysqlHelper = Mockito.mockStatic(GoobiScriptTemplateMysqlHelper.class)) {
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateCount(Mockito.anyString())).thenReturn(10);
+                        mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplates(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(),
+                Mockito.anyInt())).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getAllGoobiScriptTemplates()).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateById(Mockito.anyInt())).thenReturn(tmpl);
+
+
+            GoobiScriptTemplateManager fixture = new GoobiScriptTemplateManager();
+            assertNotNull(fixture);
+            assertEquals(1, fixture.getList("", "", 0, 10, null).size());
+    
+        }
+}
 
     @Test
     public void testGetIdList() throws Exception {
-        GoobiScriptTemplateManager fixture = new GoobiScriptTemplateManager();
-        assertNotNull(fixture);
-        assertNull(fixture.getIdList("", "", null));
-    }
+        try (MockedStatic<GoobiScriptTemplateMysqlHelper> mockedGoobiScriptTemplateMysqlHelper = Mockito.mockStatic(GoobiScriptTemplateMysqlHelper.class)) {
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateCount(Mockito.anyString())).thenReturn(10);
+                        mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplates(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(),
+                Mockito.anyInt())).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getAllGoobiScriptTemplates()).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateById(Mockito.anyInt())).thenReturn(tmpl);
+
+
+            GoobiScriptTemplateManager fixture = new GoobiScriptTemplateManager();
+            assertNotNull(fixture);
+            assertNull(fixture.getIdList("", "", null));
+    
+        }
+}
 
     @Test
     public void testGetGoobiScriptTemplateById() throws Exception {
-        GoobiScriptTemplate template = GoobiScriptTemplateManager.getGoobiScriptTemplateById(1);
-        assertNotNull(template);
-    }
+        try (MockedStatic<GoobiScriptTemplateMysqlHelper> mockedGoobiScriptTemplateMysqlHelper = Mockito.mockStatic(GoobiScriptTemplateMysqlHelper.class)) {
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateCount(Mockito.anyString())).thenReturn(10);
+                        mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplates(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(),
+                Mockito.anyInt())).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getAllGoobiScriptTemplates()).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateById(Mockito.anyInt())).thenReturn(tmpl);
+
+
+            GoobiScriptTemplate template = GoobiScriptTemplateManager.getGoobiScriptTemplateById(1);
+            assertNotNull(template);
+    
+        }
+}
 
     @Test
     public void testSaveGoobiScriptTemplate() throws Exception {
-        GoobiScriptTemplate template = EasyMock.createMock(GoobiScriptTemplate.class);
-        GoobiScriptTemplateManager.saveGoobiScriptTemplate(template);
-        assertNotNull(template);
-    }
+        try (MockedStatic<GoobiScriptTemplateMysqlHelper> mockedGoobiScriptTemplateMysqlHelper = Mockito.mockStatic(GoobiScriptTemplateMysqlHelper.class)) {
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateCount(Mockito.anyString())).thenReturn(10);
+                        mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplates(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(),
+                Mockito.anyInt())).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getAllGoobiScriptTemplates()).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateById(Mockito.anyInt())).thenReturn(tmpl);
+
+
+            GoobiScriptTemplate template = EasyMock.createMock(GoobiScriptTemplate.class);
+            GoobiScriptTemplateManager.saveGoobiScriptTemplate(template);
+            assertNotNull(template);
+    
+        }
+}
 
     @Test
     public void testDeleteGoobiScriptTemplate() throws Exception {
-        GoobiScriptTemplate template = EasyMock.createMock(GoobiScriptTemplate.class);
-        GoobiScriptTemplateManager.deleteGoobiScriptTemplate(template);
-        assertNotNull(template);
-    }
+        try (MockedStatic<GoobiScriptTemplateMysqlHelper> mockedGoobiScriptTemplateMysqlHelper = Mockito.mockStatic(GoobiScriptTemplateMysqlHelper.class)) {
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateCount(Mockito.anyString())).thenReturn(10);
+                        mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplates(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(),
+                Mockito.anyInt())).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getAllGoobiScriptTemplates()).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateById(Mockito.anyInt())).thenReturn(tmpl);
+
+
+            GoobiScriptTemplate template = EasyMock.createMock(GoobiScriptTemplate.class);
+            GoobiScriptTemplateManager.deleteGoobiScriptTemplate(template);
+            assertNotNull(template);
+    
+        }
+}
 
     @Test
     public void testGetGoobiScriptTemplates() throws Exception {
-        assertEquals(1, GoobiScriptTemplateManager.getGoobiScriptTemplates("", "", 0, 10).size());
-    }
+        try (MockedStatic<GoobiScriptTemplateMysqlHelper> mockedGoobiScriptTemplateMysqlHelper = Mockito.mockStatic(GoobiScriptTemplateMysqlHelper.class)) {
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateCount(Mockito.anyString())).thenReturn(10);
+                        mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplates(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(),
+                Mockito.anyInt())).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getAllGoobiScriptTemplates()).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateById(Mockito.anyInt())).thenReturn(tmpl);
+
+
+            assertEquals(1, GoobiScriptTemplateManager.getGoobiScriptTemplates("", "", 0, 10).size());
+    
+        }
+}
 
     @Test
     public void testGetAllGoobiScriptTemplates() throws Exception {
-        assertEquals(1, GoobiScriptTemplateManager.getAllGoobiScriptTemplates().size());
-    }
+        try (MockedStatic<GoobiScriptTemplateMysqlHelper> mockedGoobiScriptTemplateMysqlHelper = Mockito.mockStatic(GoobiScriptTemplateMysqlHelper.class)) {
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateCount(Mockito.anyString())).thenReturn(10);
+                        mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplates(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(),
+                Mockito.anyInt())).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getAllGoobiScriptTemplates()).thenReturn(templates);
+            mockedGoobiScriptTemplateMysqlHelper.when(() -> GoobiScriptTemplateMysqlHelper.getGoobiScriptTemplateById(Mockito.anyInt())).thenReturn(tmpl);
+
+
+            assertEquals(1, GoobiScriptTemplateManager.getAllGoobiScriptTemplates().size());
+    
+        }
+}
 
 }

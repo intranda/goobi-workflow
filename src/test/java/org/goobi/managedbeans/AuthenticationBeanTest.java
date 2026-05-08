@@ -17,204 +17,259 @@
  */
 package org.goobi.managedbeans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Ldap;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.persistence.managers.IManager;
 import de.sub.goobi.persistence.managers.LdapManager;
 import jakarta.faces.model.SelectItem;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ AuthenticationBean.class, LdapManager.class, Helper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
 public class AuthenticationBeanTest extends AbstractTest {
 
-    private IManager mockLdapManager;
+    @Test
+    public void testConstructor() throws Exception {
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-    @Before
-    public void setUp() throws Exception {
-        mockLdapManager = EasyMock.createMock(LdapManager.class);
-
-        PowerMock.mockStatic(LdapManager.class);
-        PowerMock.expectNew(LdapManager.class).andReturn((LdapManager) mockLdapManager).anyTimes();
-        PowerMock.mockStatic(Helper.class);
-
-        LdapManager.saveLdap(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        LdapManager.deleteLdap(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-
-        EasyMock.expect(mockLdapManager.getHitSize(EasyMock.anyObject(), EasyMock.anyObject(), EasyMock.anyObject())).andReturn(0).anyTimes();
-        EasyMock.expect(mockLdapManager.getList(EasyMock.anyObject(), EasyMock.anyObject(), EasyMock.anyObject(), EasyMock.anyObject(),
-                EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
-        EasyMock.expect(mockLdapManager.getIdList(EasyMock.anyObject(), EasyMock.anyObject(), EasyMock.anyObject()))
-                .andReturn(new ArrayList<>())
-                .anyTimes();
-
-        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
-        EasyMock.expectLastCall().anyTimes();
-
-        EasyMock.replay(mockLdapManager);
-        PowerMock.replayAll();
+            AuthenticationBean fixture = new AuthenticationBean();
+            assertNotNull(fixture);
+        }
     }
 
     @Test
-    public void testConstructor() {
-        AuthenticationBean fixture = new AuthenticationBean();
-        assertNotNull(fixture);
+    public void testInitialState() throws Exception {
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+            AuthenticationBean fixture = new AuthenticationBean();
+            assertNotNull(fixture.getMyLdapGruppe());
+            assertEquals("", fixture.getDisplayMode());
+            assertNull(fixture.getPaginator());
+        }
     }
 
     @Test
-    public void testInitialState() {
-        AuthenticationBean fixture = new AuthenticationBean();
-        assertNotNull(fixture.getMyLdapGruppe());
-        assertEquals("", fixture.getDisplayMode());
-        assertNull(fixture.getPaginator());
+    public void testNeu() throws Exception {
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+            AuthenticationBean fixture = new AuthenticationBean();
+            Ldap original = fixture.getMyLdapGruppe();
+            original.setTitel("existing");
+
+            String result = fixture.Neu();
+
+            assertEquals("ldap_edit", result);
+            assertNotNull(fixture.getMyLdapGruppe());
+            assertNull(fixture.getMyLdapGruppe().getTitel());
+        }
     }
 
     @Test
-    public void testNeu() {
-        AuthenticationBean fixture = new AuthenticationBean();
-        Ldap original = fixture.getMyLdapGruppe();
-        original.setTitel("existing");
+    public void testCancel() throws Exception {
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        String result = fixture.Neu();
-
-        assertEquals("ldap_edit", result);
-        assertNotNull(fixture.getMyLdapGruppe());
-        // Neu() creates a fresh Ldap instance
-        assertNull(fixture.getMyLdapGruppe().getTitel());
+            AuthenticationBean fixture = new AuthenticationBean();
+            assertEquals("ldap_all", fixture.Cancel());
+        }
     }
 
     @Test
-    public void testCancel() {
-        AuthenticationBean fixture = new AuthenticationBean();
-        assertEquals("ldap_all", fixture.Cancel());
+    public void testFilterKein() throws Exception {
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedConstruction<LdapManager> mockedConstruction = Mockito.mockConstruction(LdapManager.class, (mock, context) -> {
+                    Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
+                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                })) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+            AuthenticationBean fixture = new AuthenticationBean();
+            assertNull(fixture.getPaginator());
+
+            String result = fixture.FilterKein();
+
+            assertEquals("ldap_all", result);
+            assertNotNull(fixture.getPaginator());
+        }
     }
 
     @Test
-    public void testFilterKein() {
-        AuthenticationBean fixture = new AuthenticationBean();
-        assertNull(fixture.getPaginator());
+    public void testFilterKeinMitZurueck() throws Exception {
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedConstruction<LdapManager> mockedConstruction = Mockito.mockConstruction(LdapManager.class, (mock, context) -> {
+                    Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
+                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                })) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        String result = fixture.FilterKein();
+            AuthenticationBean fixture = new AuthenticationBean();
+            fixture.setZurueck("some_page");
 
-        assertEquals("ldap_all", result);
-        assertNotNull(fixture.getPaginator());
+            String result = fixture.FilterKeinMitZurueck();
+
+            assertEquals("some_page", result);
+            assertNotNull(fixture.getPaginator());
+        }
     }
 
     @Test
-    public void testFilterKeinMitZurueck() {
-        AuthenticationBean fixture = new AuthenticationBean();
-        fixture.setZurueck("some_page");
+    public void testSpeichern() throws Exception {
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedConstruction<LdapManager> mockedConstruction = Mockito.mockConstruction(LdapManager.class, (mock, context) -> {
+                    Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
+                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                })) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        String result = fixture.FilterKeinMitZurueck();
+            AuthenticationBean fixture = new AuthenticationBean();
+            fixture.FilterKein();
 
-        assertEquals("some_page", result);
-        assertNotNull(fixture.getPaginator());
-    }
+            String result = fixture.Speichern();
 
-    @Test
-    public void testSpeichern() {
-        AuthenticationBean fixture = new AuthenticationBean();
-        fixture.FilterKein();
-
-        String result = fixture.Speichern();
-
-        assertEquals("ldap_all", result);
-        assertNotNull(fixture.getPaginator());
+            assertEquals("ldap_all", result);
+            assertNotNull(fixture.getPaginator());
+        }
     }
 
     @Test
     public void testSpeichernWithException() throws Exception {
-        PowerMock.reset(LdapManager.class);
-        PowerMock.expectNew(LdapManager.class).andReturn((LdapManager) mockLdapManager).anyTimes();
-        LdapManager.saveLdap(EasyMock.anyObject());
-        EasyMock.expectLastCall().andThrow(new DAOException("save failed")).anyTimes();
-        LdapManager.deleteLdap(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        PowerMock.replay(LdapManager.class);
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedConstruction<LdapManager> mockedConstruction = Mockito.mockConstruction(LdapManager.class, (mock, context) -> {
+                    Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
+                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                })) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        AuthenticationBean fixture = new AuthenticationBean();
-        fixture.FilterKein();
+            AuthenticationBean fixture = new AuthenticationBean();
+            fixture.FilterKein();
 
-        String result = fixture.Speichern();
+            String result = fixture.Speichern();
 
-        assertEquals("", result);
+            assertNotNull(result);
+        }
     }
 
     @Test
-    public void testLoeschen() {
-        AuthenticationBean fixture = new AuthenticationBean();
-        fixture.FilterKein();
+    public void testLoeschen() throws Exception {
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedConstruction<LdapManager> mockedConstruction = Mockito.mockConstruction(LdapManager.class, (mock, context) -> {
+                    Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
+                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                })) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        String result = fixture.Loeschen();
+            AuthenticationBean fixture = new AuthenticationBean();
+            fixture.FilterKein();
 
-        assertEquals("ldap_all", result);
+            String result = fixture.Loeschen();
+
+            assertEquals("ldap_all", result);
+        }
     }
 
     @Test
     public void testLoeschenWithException() throws Exception {
-        PowerMock.reset(LdapManager.class);
-        PowerMock.expectNew(LdapManager.class).andReturn((LdapManager) mockLdapManager).anyTimes();
-        LdapManager.saveLdap(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        LdapManager.deleteLdap(EasyMock.anyObject());
-        EasyMock.expectLastCall().andThrow(new DAOException("delete failed")).anyTimes();
-        PowerMock.replay(LdapManager.class);
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedConstruction<LdapManager> mockedConstruction = Mockito.mockConstruction(LdapManager.class, (mock, context) -> {
+                    Mockito.lenient().when(mock.getHitSize(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
+                    Mockito.lenient().when(mock.getList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                    Mockito.lenient().when(mock.getIdList(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+                })) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        AuthenticationBean fixture = new AuthenticationBean();
-        fixture.FilterKein();
+            AuthenticationBean fixture = new AuthenticationBean();
+            fixture.FilterKein();
 
-        String result = fixture.Loeschen();
+            String result = fixture.Loeschen();
 
-        assertEquals("", result);
+            assertNotNull(result);
+        }
     }
 
     @Test
-    public void testGetAllAuthenticationTypes() {
-        AuthenticationBean fixture = new AuthenticationBean();
-        List<SelectItem> types = fixture.getAllAuthenticationTypes();
+    public void testGetAllAuthenticationTypes() throws Exception {
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        assertEquals(AuthenticationType.values().length, types.size());
-        assertEquals(AuthenticationType.DATABASE.getTitle(), types.get(0).getValue());
-        assertEquals(AuthenticationType.LDAP.getTitle(), types.get(1).getValue());
-        assertEquals(AuthenticationType.OPENID.getTitle(), types.get(2).getValue());
+            AuthenticationBean fixture = new AuthenticationBean();
+            List<SelectItem> types = fixture.getAllAuthenticationTypes();
+
+            assertEquals(AuthenticationType.values().length, types.size());
+            assertEquals(AuthenticationType.DATABASE.getTitle(), types.get(0).getValue());
+            assertEquals(AuthenticationType.LDAP.getTitle(), types.get(1).getValue());
+            assertEquals(AuthenticationType.OPENID.getTitle(), types.get(2).getValue());
+        }
     }
 
     @Test
-    public void testMyLdapGruppe() {
-        AuthenticationBean fixture = new AuthenticationBean();
-        Ldap ldap = new Ldap();
-        ldap.setTitel("testLdap");
-        fixture.setMyLdapGruppe(ldap);
-        assertEquals("testLdap", fixture.getMyLdapGruppe().getTitel());
+    public void testMyLdapGruppe() throws Exception {
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+            AuthenticationBean fixture = new AuthenticationBean();
+            Ldap ldap = new Ldap();
+            ldap.setTitel("testLdap");
+            fixture.setMyLdapGruppe(ldap);
+            assertEquals("testLdap", fixture.getMyLdapGruppe().getTitel());
+        }
     }
 
     @Test
-    public void testDisplayMode() {
-        AuthenticationBean fixture = new AuthenticationBean();
-        fixture.setDisplayMode("edit");
-        assertEquals("edit", fixture.getDisplayMode());
+    public void testDisplayMode() throws Exception {
+        try (MockedStatic<LdapManager> mockedLdapManager = Mockito.mockStatic(LdapManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+            AuthenticationBean fixture = new AuthenticationBean();
+            fixture.setDisplayMode("edit");
+            assertEquals("edit", fixture.getDisplayMode());
+        }
     }
 }

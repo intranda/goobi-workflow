@@ -17,141 +17,178 @@
  */
 package org.goobi.managedbeans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.JobType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.persistence.managers.StepManager;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ StepManager.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class JobTypesCacheTest {
 
     private JobTypesCache cache;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        PowerMock.mockStatic(StepManager.class);
-        EasyMock.expect(StepManager.getExternalQueueJobTypes()).andReturn(new ArrayList<>()).anyTimes();
-        StepManager.saveExternalQueueJobTypes(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        PowerMock.replay(StepManager.class);
-
         cache = new JobTypesCache();
-        cache.init();
     }
 
     @Test
     public void testInitialJobTypesIsEmpty() {
-        assertNotNull(cache.getJobTypes());
-        assertTrue(cache.getJobTypes().isEmpty());
-    }
+        try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedStepManager.when(() -> StepManager.getExternalQueueJobTypes()).thenReturn(new ArrayList<>());
+            cache.init();
+
+            assertNotNull(cache.getJobTypes());
+            assertTrue(cache.getJobTypes().isEmpty());
+    
+        }
+}
 
     @Test
     public void testIsStepPausedReturnsFalseForUnknownStep() {
-        assertFalse(cache.isStepPaused("unknownStep"));
-    }
+        try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedStepManager.when(() -> StepManager.getExternalQueueJobTypes()).thenReturn(new ArrayList<>());
+            cache.init();
+
+            assertFalse(cache.isStepPaused("unknownStep"));
+    
+        }
+}
 
     @Test
     public void testApplyAndPersistWithPausedJobTypePausesItsSteps() throws Exception {
-        JobType jt = new JobType();
-        jt.setName("type1");
-        jt.setPaused(true);
-        jt.getStepNames().add("step1");
-        jt.getStepNames().add("step2");
+        try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedStepManager.when(() -> StepManager.getExternalQueueJobTypes()).thenReturn(new ArrayList<>());
 
-        cache.applyAndPersist(Arrays.asList(jt));
 
-        assertTrue(cache.isStepPaused("step1"));
-        assertTrue(cache.isStepPaused("step2"));
-    }
+            JobType jt = new JobType();
+            jt.setName("type1");
+            jt.setPaused(true);
+            jt.getStepNames().add("step1");
+            jt.getStepNames().add("step2");
+
+            cache.applyAndPersist(Arrays.asList(jt));
+
+            assertTrue(cache.isStepPaused("step1"));
+            assertTrue(cache.isStepPaused("step2"));
+    
+        }
+}
 
     @Test
     public void testApplyAndPersistWithUnpausedJobTypeDoesNotPauseSteps() throws Exception {
-        JobType jt = new JobType();
-        jt.setName("type1");
-        jt.setPaused(false);
-        jt.getStepNames().add("step1");
+        try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedStepManager.when(() -> StepManager.getExternalQueueJobTypes()).thenReturn(new ArrayList<>());
 
-        cache.applyAndPersist(Arrays.asList(jt));
 
-        assertFalse(cache.isStepPaused("step1"));
-    }
+            JobType jt = new JobType();
+            jt.setName("type1");
+            jt.setPaused(false);
+            jt.getStepNames().add("step1");
+
+            cache.applyAndPersist(Arrays.asList(jt));
+
+            assertFalse(cache.isStepPaused("step1"));
+    
+        }
+}
 
     @Test
     public void testApplyAndPersistUpdatesJobTypesList() throws Exception {
-        JobType jt = new JobType();
-        jt.setName("type1");
-        jt.setPaused(false);
+        try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedStepManager.when(() -> StepManager.getExternalQueueJobTypes()).thenReturn(new ArrayList<>());
 
-        cache.applyAndPersist(Arrays.asList(jt));
 
-        assertEquals(1, cache.getJobTypes().size());
-        assertEquals("type1", cache.getJobTypes().get(0).getName());
-    }
+            JobType jt = new JobType();
+            jt.setName("type1");
+            jt.setPaused(false);
+
+            cache.applyAndPersist(Arrays.asList(jt));
+
+            assertEquals(1, cache.getJobTypes().size());
+            assertEquals("type1", cache.getJobTypes().get(0).getName());
+    
+        }
+}
 
     @Test
     public void testApplyAndPersistReturnsRestartedSteps() throws Exception {
-        // First: pause a step
-        JobType jt = new JobType();
-        jt.setName("type1");
-        jt.setPaused(true);
-        jt.getStepNames().add("step1");
-        cache.applyAndPersist(Arrays.asList(jt));
+        try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedStepManager.when(() -> StepManager.getExternalQueueJobTypes()).thenReturn(new ArrayList<>());
 
-        // Second: unpause — step1 should appear in restarted list
-        JobType jt2 = new JobType();
-        jt2.setName("type1");
-        jt2.setPaused(false);
-        jt2.getStepNames().add("step1");
-        List<String> restarted = cache.applyAndPersist(Arrays.asList(jt2));
 
-        assertTrue(restarted.contains("step1"));
-        assertFalse(cache.isStepPaused("step1"));
-    }
+            // First: pause a step
+            JobType jt = new JobType();
+            jt.setName("type1");
+            jt.setPaused(true);
+            jt.getStepNames().add("step1");
+            cache.applyAndPersist(Arrays.asList(jt));
+
+            // Second: unpause — step1 should appear in restarted list
+            JobType jt2 = new JobType();
+            jt2.setName("type1");
+            jt2.setPaused(false);
+            jt2.getStepNames().add("step1");
+            List<String> restarted = cache.applyAndPersist(Arrays.asList(jt2));
+
+            assertTrue(restarted.contains("step1"));
+            assertFalse(cache.isStepPaused("step1"));
+    
+        }
+}
 
     @Test
     public void testApplyAndPersistReturnsEmptyListWhenNoStepsRestarted() throws Exception {
-        JobType jt = new JobType();
-        jt.setName("type1");
-        jt.setPaused(false);
-        jt.getStepNames().add("step1");
+        try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedStepManager.when(() -> StepManager.getExternalQueueJobTypes()).thenReturn(new ArrayList<>());
 
-        List<String> restarted = cache.applyAndPersist(Arrays.asList(jt));
-        assertTrue(restarted.isEmpty());
-    }
+
+            JobType jt = new JobType();
+            jt.setName("type1");
+            jt.setPaused(false);
+            jt.getStepNames().add("step1");
+
+            List<String> restarted = cache.applyAndPersist(Arrays.asList(jt));
+            assertTrue(restarted.isEmpty());
+    
+        }
+}
 
     @Test
     public void testStepFromUnpausedJobTypeIsNotConsideredPaused() throws Exception {
-        JobType pausedType = new JobType();
-        pausedType.setName("paused");
-        pausedType.setPaused(true);
-        pausedType.getStepNames().add("pausedStep");
+        try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedStepManager.when(() -> StepManager.getExternalQueueJobTypes()).thenReturn(new ArrayList<>());
 
-        JobType activeType = new JobType();
-        activeType.setName("active");
-        activeType.setPaused(false);
-        activeType.getStepNames().add("activeStep");
 
-        cache.applyAndPersist(Arrays.asList(pausedType, activeType));
+            JobType pausedType = new JobType();
+            pausedType.setName("paused");
+            pausedType.setPaused(true);
+            pausedType.getStepNames().add("pausedStep");
 
-        assertTrue(cache.isStepPaused("pausedStep"));
-        assertFalse(cache.isStepPaused("activeStep"));
-    }
+            JobType activeType = new JobType();
+            activeType.setName("active");
+            activeType.setPaused(false);
+            activeType.getStepNames().add("activeStep");
+
+            cache.applyAndPersist(Arrays.asList(pausedType, activeType));
+
+            assertTrue(cache.isStepPaused("pausedStep"));
+            assertFalse(cache.isStepPaused("activeStep"));
+    
+        }
+}
 }

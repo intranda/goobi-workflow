@@ -17,35 +17,33 @@
  */
 package de.sub.goobi.media.pdf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class PDFGeneratorTest extends AbstractTest {
 
     private Process mockProcess;
     private PDFGenerator generator;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        mockProcess = PowerMock.createMock(Process.class);
+        mockProcess = EasyMock.createMock(Process.class);
         EasyMock.expect(mockProcess.getId()).andReturn(42).anyTimes();
         EasyMock.expect(mockProcess.getImagesDirectory()).andReturn("/tmp/goobi/images/").anyTimes();
         EasyMock.expect(mockProcess.getOcrAltoDirectory()).andReturn("/tmp/goobi/ocr/alto/").anyTimes();
         EasyMock.replay(mockProcess);
-
         generator = new PDFGenerator(mockProcess);
     }
 

@@ -18,656 +18,1004 @@
 
 package org.goobi.production.flow.statistics.hibernate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.easymock.EasyMock;
-import org.easymock.IAnswer;
 import org.goobi.api.rest.model.RestProcessQueryResource;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper.StepFilter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ MySQLHelper.class, Helper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*",
-        "javax.crypto.*" })
-@SuppressStaticInitializationFor("de.sub.goobi.persistence.managers.MySQLHelper")
+@ExtendWith(MockitoExtension.class)
 public class FilterHelperTest extends AbstractTest {
-
-    @Before
-    public void setUp() throws Exception {
-        PowerMock.mockStatic(Helper.class);
-        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
-
-        PowerMock.mockStatic(MySQLHelper.class);
-
-        EasyMock.expect(MySQLHelper.escapeSql(EasyMock.anyString()))
-                .andAnswer(new IAnswer<String>() {
-                    @Override
-                    public String answer() throws Throwable {
-                        return (String) EasyMock.getCurrentArguments()[0];
-                    }
-                })
-                .anyTimes();
-
-        EasyMock.expect(MySQLHelper.escapeString(EasyMock.anyString()))
-                .andAnswer(new IAnswer<String>() {
-                    @Override
-                    public String answer() throws Throwable {
-                        return (String) EasyMock.getCurrentArguments()[0];
-                    }
-                })
-                .anyTimes();
-
-        PowerMock.replay(MySQLHelper.class);
-        PowerMock.replay(Helper.class);
-    }
 
     @Test
     public void testLimitToUserAccessRights() {
-        String result = FilterHelper.limitToUserAccessRights();
-        assertEquals("", result);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+
+            String result = FilterHelper.limitToUserAccessRights();
+            assertEquals("", result);
+
+        }
     }
 
     @Test
     public void testGetStepStartWithValidParameter() {
-        String parameter = "10-20";
-        Integer result = FilterHelper.getStepStart(parameter);
-        assertEquals(10, result.intValue());
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+
+            String parameter = "10-20";
+            Integer result = FilterHelper.getStepStart(parameter);
+            assertEquals(10, result.intValue());
+
+        }
     }
 
     @Test
     public void testGetStepStartWithInvalidParameter() {
-        String parameter = "invalid-parameter";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        // It should throw NumberFormatException when the parameter is invalid
-        assertThrows(NumberFormatException.class, () -> {
-            FilterHelper.getStepStart(parameter);
-        });
+            String parameter = "invalid-parameter";
+
+            // It should throw NumberFormatException when the parameter is invalid
+            assertThrows(NumberFormatException.class, () -> {
+                FilterHelper.getStepStart(parameter);
+            });
+
+        }
     }
 
     @Test
     public void testGetStepStartWithNullParameter() {
-        String parameter = null;
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        // It should throw NullPointerException when the parameter is null
-        assertThrows(NullPointerException.class, () -> {
-            FilterHelper.getStepStart(parameter);
-        });
+            String parameter = null;
+
+            // It should throw NullPointerException when the parameter is null
+            assertThrows(NullPointerException.class, () -> {
+                FilterHelper.getStepStart(parameter);
+            });
+
+        }
     }
 
     @Test
     public void testGetStepEndWithValidParameter() {
-        String parameter = "10-20";
-        Integer result = FilterHelper.getStepEnd(parameter);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        // Assert that the method returns the correct ending integer value
-        assertEquals(20, result.intValue());
+            String parameter = "10-20";
+            Integer result = FilterHelper.getStepEnd(parameter);
+
+            // Assert that the method returns the correct ending integer value
+            assertEquals(20, result.intValue());
+
+        }
     }
 
     @Test
     public void testGetStepEndWithInvalidParameter() {
-        String parameter = "invalid-parameter";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        // It should throw NumberFormatException when the parameter is invalid
-        assertThrows(NumberFormatException.class, () -> {
-            FilterHelper.getStepEnd(parameter);
-        });
+            String parameter = "invalid-parameter";
+
+            // It should throw NumberFormatException when the parameter is invalid
+            assertThrows(NumberFormatException.class, () -> {
+                FilterHelper.getStepEnd(parameter);
+            });
+
+        }
     }
 
     @Test
     public void testGetStepEndWithNullParameter() {
-        String parameter = null;
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        // It should throw NullPointerException when the parameter is null
-        assertThrows(NullPointerException.class, () -> {
-            FilterHelper.getStepEnd(parameter);
-        });
+            String parameter = null;
+
+            // It should throw NullPointerException when the parameter is null
+            assertThrows(NullPointerException.class, () -> {
+                FilterHelper.getStepEnd(parameter);
+            });
+
+        }
     }
 
     @Test
     public void testGetStepFilterWithRangeParameter() {
-        String parameters = "10-20";
-        StepFilter result = FilterHelper.getStepFilter(parameters);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String parameters = "10-20";
+            StepFilter result = FilterHelper.getStepFilter(parameters);
 
-        // Assert that the method returns StepFilter.range for range parameters
-        assertEquals(StepFilter.range, result);
+            // Assert that the method returns StepFilter.range for range parameters
+            assertEquals(StepFilter.range, result);
+
+        }
     }
 
     @Test
     public void testGetStepFilterWithMaxParameter() {
-        String parameters = "-20";
-        StepFilter result = FilterHelper.getStepFilter(parameters);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String parameters = "-20";
+            StepFilter result = FilterHelper.getStepFilter(parameters);
 
-        // Assert that the method returns StepFilter.max for max parameter
-        assertEquals(StepFilter.max, result);
+            // Assert that the method returns StepFilter.max for max parameter
+            assertEquals(StepFilter.max, result);
+
+        }
     }
 
     @Test
     public void testGetStepFilterWithMinParameter() {
-        String parameters = "10-";
-        StepFilter result = FilterHelper.getStepFilter(parameters);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        // Assert that the method returns StepFilter.min for min parameter
-        assertEquals(StepFilter.min, result);
+            String parameters = "10-";
+            StepFilter result = FilterHelper.getStepFilter(parameters);
+
+            // Assert that the method returns StepFilter.min for min parameter
+            assertEquals(StepFilter.min, result);
+
+        }
     }
 
     @Test
     public void testGetStepFilterWithExactParameter() {
-        String parameters = "10";
-        StepFilter result = FilterHelper.getStepFilter(parameters);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        // Assert that the method returns StepFilter.exact for exact parameter
-        assertEquals(StepFilter.exact, result);
+            String parameters = "10";
+            StepFilter result = FilterHelper.getStepFilter(parameters);
+
+            // Assert that the method returns StepFilter.exact for exact parameter
+            assertEquals(StepFilter.exact, result);
+
+        }
     }
 
     @Test
     public void testGetStepFilterWithNameParameter() {
-        String parameters = "invalid";
-        StepFilter result = FilterHelper.getStepFilter(parameters);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String parameters = "invalid";
+            StepFilter result = FilterHelper.getStepFilter(parameters);
 
-        // Assert that the method returns StepFilter.name for name parameter
-        assertEquals(StepFilter.name, result);
+            // Assert that the method returns StepFilter.name for name parameter
+            assertEquals(StepFilter.name, result);
+
+        }
     }
 
     @Test
     public void testFilterStepRangeWithoutNegate() {
-        String parameters = "5-10";
-        StepStatus status = StepStatus.OPEN;
-        boolean negate = false;
-        List<String> dateFilter = new ArrayList<>();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterStepRange(parameters, status, negate, dateFilter);
+            String parameters = "5-10";
+            StepStatus status = StepStatus.OPEN;
+            boolean negate = false;
+            List<String> dateFilter = new ArrayList<>();
 
-        // Assert that the generated SQL query matches the expected query without negation
-        assertTrue(result.contains("schritte.Reihenfolge > 5"));
-        assertTrue(result.contains("schritte.Reihenfolge < 10"));
-        assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+            String result = FilterHelper.filterStepRange(parameters, status, negate, dateFilter);
+
+            // Assert that the generated SQL query matches the expected query without negation
+            assertTrue(result.contains("schritte.Reihenfolge > 5"));
+            assertTrue(result.contains("schritte.Reihenfolge < 10"));
+            assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+
+        }
     }
 
     @Test
     public void testFilterStepRangeWithNegate() {
-        String parameters = "5-10";
-        StepStatus status = StepStatus.OPEN;
-        boolean negate = true;
-        List<String> dateFilter = new ArrayList<>();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String parameters = "5-10";
+            StepStatus status = StepStatus.OPEN;
+            boolean negate = true;
+            List<String> dateFilter = new ArrayList<>();
 
-        String result = FilterHelper.filterStepRange(parameters, status, negate, dateFilter);
-        // Assert that the generated SQL query matches the expected query with negation
-        assertTrue(result.contains("not in (select schritteId from schritte"));
-        assertTrue(result.contains("schritte.Reihenfolge > 5"));
-        assertTrue(result.contains("schritte.Reihenfolge < 10"));
-        assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+            String result = FilterHelper.filterStepRange(parameters, status, negate, dateFilter);
+            // Assert that the generated SQL query matches the expected query with negation
+            assertTrue(result.contains("not in (select schritteId from schritte"));
+            assertTrue(result.contains("schritte.Reihenfolge > 5"));
+            assertTrue(result.contains("schritte.Reihenfolge < 10"));
+            assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+
+        }
     }
 
     @Test
     public void testFilterStepNameWithoutNegate() {
-        String parameters = "StepName";
-        StepStatus status = StepStatus.OPEN;
-        boolean negate = false;
-        List<String> dateFilter = new ArrayList<>();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterStepName(parameters, status, negate, dateFilter, true);
+            String parameters = "StepName";
+            StepStatus status = StepStatus.OPEN;
+            boolean negate = false;
+            List<String> dateFilter = new ArrayList<>();
 
-        // Assert that the generated SQL query matches the expected query without negation
-        assertTrue(result.contains("schritte.Titel like '%StepName%'"));
-        assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+            String result = FilterHelper.filterStepName(parameters, status, negate, dateFilter, true);
+
+            // Assert that the generated SQL query matches the expected query without negation
+            assertTrue(result.contains("schritte.Titel like '%StepName%'"));
+            assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+
+        }
     }
 
     @Test
     public void testFilterStepNameWithNegate() {
-        String parameters = "StepName";
-        StepStatus status = StepStatus.OPEN;
-        boolean negate = true;
-        List<String> dateFilter = new ArrayList<>();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String parameters = "StepName";
+            StepStatus status = StepStatus.OPEN;
+            boolean negate = true;
+            List<String> dateFilter = new ArrayList<>();
 
-        String result = FilterHelper.filterStepName(parameters, status, negate, dateFilter, true);
-        // Assert that the generated SQL query matches the expected query with negation
-        assertTrue(result.contains("schritte.Titel not like '%StepName%'"));
-        assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+            String result = FilterHelper.filterStepName(parameters, status, negate, dateFilter, true);
+            // Assert that the generated SQL query matches the expected query with negation
+            assertTrue(result.contains("schritte.Titel not like '%StepName%'"));
+            assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+
+        }
     }
 
     @Test
     public void testFilterAutomaticStepsTrue() {
-        String tok = "someToken:true";
-        List<String> dateFilter = new ArrayList<>();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterAutomaticSteps(tok, dateFilter);
+            String tok = "someToken:true";
+            List<String> dateFilter = new ArrayList<>();
 
-        // Assert that the generated SQL query matches the expected query for true case
-        assertTrue(result.contains("schritte.typAutomatisch = true"));
+            String result = FilterHelper.filterAutomaticSteps(tok, dateFilter);
+
+            // Assert that the generated SQL query matches the expected query for true case
+            assertTrue(result.contains("schritte.typAutomatisch = true"));
+
+        }
     }
 
     @Test
     public void testFilterAutomaticStepsFalse() {
-        String tok = "someToken:false";
-        List<String> dateFilter = new ArrayList<>();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String tok = "someToken:false";
+            List<String> dateFilter = new ArrayList<>();
 
-        String result = FilterHelper.filterAutomaticSteps(tok, dateFilter);
+            String result = FilterHelper.filterAutomaticSteps(tok, dateFilter);
 
-        // Assert that the generated SQL query matches the expected query for false case
-        assertTrue(result.contains("schritte.typAutomatisch = false"));
+            // Assert that the generated SQL query matches the expected query for false case
+            assertTrue(result.contains("schritte.typAutomatisch = false"));
+
+        }
     }
 
     @Test
     public void testFilterAutomaticStepsWithDateFilter() {
-        String tok = "someToken:true";
-        List<String> dateFilter = Arrays.asList("someDateFilter"); // Set date filters
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String tok = "someToken:true";
+            List<String> dateFilter = Arrays.asList("someDateFilter"); // Set date filters
 
-        String result = FilterHelper.filterAutomaticSteps(tok, dateFilter);
+            String result = FilterHelper.filterAutomaticSteps(tok, dateFilter);
 
-        // Assert that the generated SQL query includes the date filter
-        assertTrue(result.contains("AND someDateFilter"));
+            // Assert that the generated SQL query includes the date filter
+            assertTrue(result.contains("AND someDateFilter"));
+
+        }
     }
 
     @Test
     public void testFilterStepMinWithoutNegate() {
-        String parameters = "5";
-        StepStatus status = StepStatus.OPEN;
-        boolean negate = false;
-        List<String> dateFilter = new ArrayList<>();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterStepMin(parameters, status, negate, dateFilter);
+            String parameters = "5";
+            StepStatus status = StepStatus.OPEN;
+            boolean negate = false;
+            List<String> dateFilter = new ArrayList<>();
 
-        // Assert that the generated SQL query matches the expected query without negation
-        assertTrue(result.contains("schritte.Reihenfolge >= 5"));
-        assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+            String result = FilterHelper.filterStepMin(parameters, status, negate, dateFilter);
+
+            // Assert that the generated SQL query matches the expected query without negation
+            assertTrue(result.contains("schritte.Reihenfolge >= 5"));
+            assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+
+        }
     }
 
     @Test
     public void testFilterStepMinWithNegate() {
-        String parameters = "5";
-        StepStatus status = StepStatus.OPEN;
-        boolean negate = true;
-        List<String> dateFilter = new ArrayList<>();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterStepMin(parameters, status, negate, dateFilter);
+            String parameters = "5";
+            StepStatus status = StepStatus.OPEN;
+            boolean negate = true;
+            List<String> dateFilter = new ArrayList<>();
 
-        // Assert that the generated SQL query matches the expected query with negation
-        assertTrue(result.contains("not in (select schritteId from schritte"));
-        assertTrue(result.contains("schritte.Reihenfolge >= 5"));
-        assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+            String result = FilterHelper.filterStepMin(parameters, status, negate, dateFilter);
+
+            // Assert that the generated SQL query matches the expected query with negation
+            assertTrue(result.contains("not in (select schritteId from schritte"));
+            assertTrue(result.contains("schritte.Reihenfolge >= 5"));
+            assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+
+        }
     }
 
     @Test
     public void testFilterStepMaxWithoutNegate() {
-        String parameters = "5-10";
-        StepStatus status = StepStatus.OPEN;
-        boolean negate = false;
-        List<String> dateFilter = new ArrayList<>();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterStepMax(parameters, status, negate, dateFilter);
+            String parameters = "5-10";
+            StepStatus status = StepStatus.OPEN;
+            boolean negate = false;
+            List<String> dateFilter = new ArrayList<>();
 
-        // Assert that the generated SQL query matches the expected query without negation
-        assertTrue(result.contains("schritte.Reihenfolge <= 10"));
-        assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+            String result = FilterHelper.filterStepMax(parameters, status, negate, dateFilter);
+
+            // Assert that the generated SQL query matches the expected query without negation
+            assertTrue(result.contains("schritte.Reihenfolge <= 10"));
+            assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+
+        }
     }
 
     @Test
     public void testFilterStepMaxWithNegate() {
-        String parameters = "5-10";
-        StepStatus status = StepStatus.OPEN;
-        boolean negate = true;
-        List<String> dateFilter = new ArrayList<>();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String parameters = "5-10";
+            StepStatus status = StepStatus.OPEN;
+            boolean negate = true;
+            List<String> dateFilter = new ArrayList<>();
 
-        String result = FilterHelper.filterStepMax(parameters, status, negate, dateFilter);
+            String result = FilterHelper.filterStepMax(parameters, status, negate, dateFilter);
 
-        // Assert that the generated SQL query matches the expected query with negation
-        assertTrue(result.contains("not in (select schritteId from schritte"));
-        assertTrue(result.contains("schritte.Reihenfolge <= 10"));
-        assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+            // Assert that the generated SQL query matches the expected query with negation
+            assertTrue(result.contains("not in (select schritteId from schritte"));
+            assertTrue(result.contains("schritte.Reihenfolge <= 10"));
+            assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+
+        }
     }
 
     @Test
     public void testFilterStepExactWithoutNegate() {
-        String parameters = "5";
-        StepStatus status = StepStatus.OPEN;
-        boolean negate = false;
-        List<String> dateFilter = new ArrayList<>();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String parameters = "5";
+            StepStatus status = StepStatus.OPEN;
+            boolean negate = false;
+            List<String> dateFilter = new ArrayList<>();
 
-        String result = FilterHelper.filterStepExact(parameters, status, negate, dateFilter);
+            String result = FilterHelper.filterStepExact(parameters, status, negate, dateFilter);
 
-        // Assert that the generated SQL query matches the expected query without negation
-        assertTrue(result.contains("schritte.Reihenfolge = 5"));
-        assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+            // Assert that the generated SQL query matches the expected query without negation
+            assertTrue(result.contains("schritte.Reihenfolge = 5"));
+            assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+
+        }
     }
 
     @Test
     public void testFilterStepExactWithNegate() {
-        String parameters = "5";
-        StepStatus status = StepStatus.OPEN;
-        boolean negate = true;
-        List<String> dateFilter = new ArrayList<>();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterStepExact(parameters, status, negate, dateFilter);
+            String parameters = "5";
+            StepStatus status = StepStatus.OPEN;
+            boolean negate = true;
+            List<String> dateFilter = new ArrayList<>();
 
-        // Assert that the generated SQL query matches the expected query with negation
-        assertTrue(result.contains("schritte.Reihenfolge <> 5"));
-        assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+            String result = FilterHelper.filterStepExact(parameters, status, negate, dateFilter);
+
+            // Assert that the generated SQL query matches the expected query with negation
+            assertTrue(result.contains("schritte.Reihenfolge <> 5"));
+            assertTrue(result.contains("schritte.Bearbeitungsstatus = " + status.getValue().intValue()));
+
+        }
     }
 
     @Test
     public void testFilterStepDoneUser() {
-        String tok = "user:username";
-        String expectedQuery =
-                " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login = 'username'))";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String tok = "user:username";
+            String expectedQuery =
+                    " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID"
+                            + " = (select BenutzerID from benutzer where benutzer.login = 'username'))";
 
-        String result = FilterHelper.filterStepDoneUser(tok);
+            String result = FilterHelper.filterStepDoneUser(tok);
 
-        // Assert that the generated SQL query matches the expected query
-        assertEquals(expectedQuery, result);
+            // Assert that the generated SQL query matches the expected query
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterProjectWithoutNegate() {
-        String tok = "project:ProjectName";
-        String expectedQuery = " projekte.titel like '%ProjectName%'";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String tok = "project:ProjectName";
+            String expectedQuery = " projekte.titel like '%ProjectName%'";
 
-        String result = FilterHelper.filterProject(tok, false);
+            String result = FilterHelper.filterProject(tok, false);
 
-        // Assert that the generated SQL query matches the expected query without negation
-        assertEquals(expectedQuery, result);
+            // Assert that the generated SQL query matches the expected query without negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterProjectWithNegate() {
-        String tok = "project:ProjectName";
-        String expectedQuery = " projekte.titel  not like '%ProjectName%'";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String tok = "project:ProjectName";
+            String expectedQuery = " projekte.titel  not like '%ProjectName%'";
 
-        String result = FilterHelper.filterProject(tok, true);
+            String result = FilterHelper.filterProject(tok, true);
 
-        // Assert that the generated SQL query matches the expected query with negation
-        assertEquals(expectedQuery, result);
+            // Assert that the generated SQL query matches the expected query with negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterStepPropertyWithoutNegate() {
-        String tok = "stepproperty:Title:Value";
-        String expectedQuery =
-                " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select object_id from properties where object_type = 'error' AND property_value like ''%Value%'  AND property_name like '%Title%' ))";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String tok = "stepproperty:Title:Value";
+            String expectedQuery =
+                    " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in "
+                            + "(select object_id from properties where object_type = 'error' AND property_value like"
+                            + " ''%Value%'  AND property_name like '%Title%' ))";
 
-        String result = FilterHelper.filterStepProperty(tok, false);
+            String result = FilterHelper.filterStepProperty(tok, false);
 
-        // Assert that the generated SQL query matches the expected query without negation
-        assertEquals(expectedQuery, result);
+            // Assert that the generated SQL query matches the expected query without negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterStepPropertyWithNegate() {
-        String tok = "stepproperty:Title:Value";
-        String expectedQuery =
-                " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select object_id from properties where object_type = 'error' AND property_value like '%Value%'  AND property_name like '%Title%' ))";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String tok = "stepproperty:Title:Value";
+            String expectedQuery =
+                    " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in "
+                            + "(select object_id from properties where object_type = 'error' AND property_value like "
+                            + "'%Value%'  AND property_name like '%Title%' ))";
 
-        String result = FilterHelper.filterStepProperty(tok, true);
+            String result = FilterHelper.filterStepProperty(tok, true);
 
-        // Assert that the generated SQL query matches the expected query with negation
-        assertEquals(expectedQuery, result);
+            // Assert that the generated SQL query matches the expected query with negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterDateWithISOString() {
-        String dateField = "dateField";
-        String value = "2023-01-15T10:30:00Z";
-        String operand = "=";
-        String expectedQuery = "dateField= '2023-01-15 10:30:00'";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String dateField = "dateField";
+            String value = "2023-01-15T10:30:00Z";
+            String operand = "=";
+            String expectedQuery = "dateField= '2023-01-15 10:30:00'";
 
-        String result = FilterHelper.filterDate(dateField, value, operand);
+            String result = FilterHelper.filterDate(dateField, value, operand);
 
-        // Assert that the generated SQL query matches the expected query for ISO string date format
-        assertEquals(expectedQuery, result);
+            // Assert that the generated SQL query matches the expected query for ISO string date format
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterDateWithDateString() {
-        String dateField = "dateField";
-        String value = "2023-01-15";
-        String operand = "<";
-        String expectedQuery = "dateField < '2023-01-15 23:59:59' ";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String dateField = "dateField";
+            String value = "2023-01-15";
+            String operand = "<";
+            String expectedQuery = "dateField < '2023-01-15 23:59:59' ";
 
-        String result = FilterHelper.filterDate(dateField, value, operand);
+            String result = FilterHelper.filterDate(dateField, value, operand);
 
-        // Assert that the generated SQL query matches the expected query for date string format
-        assertEquals(expectedQuery, result);
+            // Assert that the generated SQL query matches the expected query for date string format
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterProcessPropertyWithoutNegate() {
-        String tok = "processproperty:Title:Value";
-        String expectedQuery =
-                " prozesse.prozesseID in (select object_id from properties where object_type = 'process' AND property_value like '%Value%'  AND property_name like '%Title%' )";
-        String result = FilterHelper.filterProcessProperty(tok, false);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String tok = "processproperty:Title:Value";
+            String expectedQuery =
+                    " prozesse.prozesseID in (select object_id from properties where object_type = 'process' AND property_"
+                            + "value like '%Value%'  AND property_name like '%Title%' )";
+            String result = FilterHelper.filterProcessProperty(tok, false);
 
-        // Assert that the generated SQL query matches the expected query without negation
-        assertEquals(expectedQuery, result);
+            // Assert that the generated SQL query matches the expected query without negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterProcessPropertyWithNegate() {
-        String tok = "processproperty:Title:Value";
-        String expectedQuery =
-                " prozesse.prozesseID in (select object_id from properties where object_type = 'process' AND property_value like '%Value%'  AND property_name like '%Title%' )";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterProcessProperty(tok, true);
+            String tok = "processproperty:Title:Value";
+            String expectedQuery =
+                    " prozesse.prozesseID in (select object_id from properties where object_type = 'process' AND property_"
+                            + "value like '%Value%'  AND property_name like '%Title%' )";
 
-        // Assert that the generated SQL query matches the expected query with negation
-        assertEquals(expectedQuery, result);
+            String result = FilterHelper.filterProcessProperty(tok, true);
+
+            // Assert that the generated SQL query matches the expected query with negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterMetadataValueWithoutNegate() {
-        String tok = "metadata:Title:Value";
-        boolean negate = false;
-        String expectedQuery =
-                "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '%Title%' AND metadata.value like '%Value%' )";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String tok = "metadata:Title:Value";
+            boolean negate = false;
+            String expectedQuery =
+                    "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '%Title%' "
+                            + "AND metadata.value like '%Value%' )";
 
-        String result = FilterHelper.filterMetadataValue(tok, negate);
+            String result = FilterHelper.filterMetadataValue(tok, negate);
 
-        // Assert that the generated SQL query matches the expected query without negation
-        assertEquals(expectedQuery, result);
+            // Assert that the generated SQL query matches the expected query without negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterMetadataValueWithNegate() {
-        String tok = "metadata:Title:Value";
-        boolean negate = true;
-        String expectedQuery =
-                "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '%Title%' AND metadata.value like '%Value%' )";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterMetadataValue(tok, negate);
+            String tok = "metadata:Title:Value";
+            boolean negate = true;
+            String expectedQuery =
+                    "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '%Title%' "
+                            + "AND metadata.value like '%Value%' )";
 
-        // Assert that the generated SQL query matches the expected query with negation
-        assertEquals(expectedQuery, result);
+            String result = FilterHelper.filterMetadataValue(tok, negate);
+
+            // Assert that the generated SQL query matches the expected query with negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterProcessJournalWithoutNegate() {
-        String tok = "log:SomeContent";
-        boolean negate = false;
-        String expectedQuery =
-                "prozesse.ProzesseID in (select distinct objectId from journal where journal.content like '%SomeContent%' and entrytype = 'process')";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String tok = "log:SomeContent";
+            boolean negate = false;
+            String expectedQuery =
+                    "prozesse.ProzesseID in (select distinct objectId from journal where journal.content like '%SomeContent%' "
+                            + "and entrytype = 'process')";
 
-        String result = FilterHelper.filterProcessJournal(tok, negate);
+            String result = FilterHelper.filterProcessJournal(tok, negate);
 
-        // Assert that the generated SQL query matches the expected query without negation
-        assertEquals(expectedQuery, result);
+            // Assert that the generated SQL query matches the expected query without negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterProcessJournalWithNegate() {
-        String tok = "log:SomeContent";
-        boolean negate = true;
-        String expectedQuery =
-                "prozesse.ProzesseID not in (select distinct objectId from journal where journal.content like '%SomeContent%' and entrytype = 'process')";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterProcessJournal(tok, negate);
+            String tok = "log:SomeContent";
+            boolean negate = true;
+            String expectedQuery =
+                    "prozesse.ProzesseID not in (select distinct objectId from journal where journal.content like '%SomeContent%'"
+                            + " and entrytype = 'process')";
 
-        // Assert that the generated SQL query matches the expected query with negation
-        assertEquals(expectedQuery, result);
+            String result = FilterHelper.filterProcessJournal(tok, negate);
+
+            // Assert that the generated SQL query matches the expected query with negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterInstitutionWithoutNegate() {
-        String tok = "institution:ShortName";
-        boolean negate = false;
-        String expectedQuery =
-                "prozesse.ProjekteID in (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '%"
-                        + MySQLHelper.escapeSql("ShortName") + "%') ";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterInstitution(tok, negate);
+            String tok = "institution:ShortName";
+            boolean negate = false;
+            String expectedQuery =
+                    "prozesse.ProjekteID in (select ProjekteID from projekte left join institution on projekte.institution_id = "
+                            + "institution.id WHERE institution.shortName LIKE '%"
+                            + MySQLHelper.escapeSql("ShortName") + "%') ";
 
-        // Assert that the generated SQL query matches the expected query without negation
-        assertEquals(expectedQuery, result);
+            String result = FilterHelper.filterInstitution(tok, negate);
+
+            // Assert that the generated SQL query matches the expected query without negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterInstitutionWithNegate() {
-        String tok = "institution:ShortName";
-        boolean negate = true;
-        String expectedQuery =
-                "prozesse.ProjekteID not in (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '%"
-                        + MySQLHelper.escapeSql("ShortName") + "%') ";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String tok = "institution:ShortName";
+            boolean negate = true;
+            String expectedQuery =
+                    "prozesse.ProjekteID not in (select ProjekteID from projekte left join institution on projekte.institution_id = "
+                            + "institution.id WHERE institution.shortName LIKE '%"
+                            + MySQLHelper.escapeSql("ShortName") + "%') ";
 
-        String result = FilterHelper.filterInstitution(tok, negate);
+            String result = FilterHelper.filterInstitution(tok, negate);
 
-        // Assert that the generated SQL query matches the expected query with negation
-        assertEquals(expectedQuery, result);
+            // Assert that the generated SQL query matches the expected query with negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterIdsWithValidIds() {
-        String tok = "someToken:1 2 3";
-        boolean negate = false;
-        String expectedQuery = " prozesse.prozesseId in (1, 2, 3)";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterIds(tok, negate);
+            String tok = "someToken:1 2 3";
+            boolean negate = false;
+            String expectedQuery = " prozesse.prozesseId in (1, 2, 3)";
 
-        // Assert that the generated SQL query matches the expected query with valid IDs and no negation
-        assertEquals(expectedQuery, result);
+            String result = FilterHelper.filterIds(tok, negate);
+
+            // Assert that the generated SQL query matches the expected query with valid IDs and no negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterIdsWithNegationAndValidIds() {
-        String tok = "someToken:4 5 6";
-        boolean negate = true;
-        String expectedQuery = " prozesse.prozesseId not in (4, 5, 6)";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterIds(tok, negate);
+            String tok = "someToken:4 5 6";
+            boolean negate = true;
+            String expectedQuery = " prozesse.prozesseId not in (4, 5, 6)";
 
-        // Assert that the generated SQL query matches the expected query with valid IDs and negation
-        assertEquals(expectedQuery, result);
+            String result = FilterHelper.filterIds(tok, negate);
+
+            // Assert that the generated SQL query matches the expected query with valid IDs and negation
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testFilterIdsWithEmptyToken() {
-        String tok = "someToken:";
-        boolean negate = false;
-        String expectedQuery = "";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.filterIds(tok, negate);
+            String tok = "someToken:";
+            boolean negate = false;
+            String expectedQuery = "";
 
-        // Assert that the generated SQL query is empty when the token is empty
-        assertEquals(expectedQuery, result);
+            String result = FilterHelper.filterIds(tok, negate);
+
+            // Assert that the generated SQL query is empty when the token is empty
+            assertEquals(expectedQuery, result);
+
+        }
     }
 
     @Test
     public void testGetStepDoneNameWithValidExpression() {
-        String myFilterExpression = "stepdone:MyStepName someOtherFilter";
-        String expectedStepName = "MyStepName";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.getStepDoneName(myFilterExpression);
+            String myFilterExpression = "stepdone:MyStepName someOtherFilter";
+            String expectedStepName = "MyStepName";
 
-        // Assert that the extracted step name matches the expected step name
-        assertEquals(expectedStepName, result);
+            String result = FilterHelper.getStepDoneName(myFilterExpression);
+
+            // Assert that the extracted step name matches the expected step name
+            assertEquals(expectedStepName, result);
+
+        }
     }
 
     @Test
     public void testGetStepDoneNameWithNoStepName() {
-        String myFilterExpression = "stepdone:";
-        String expectedStepName = "";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.getStepDoneName(myFilterExpression);
+            String myFilterExpression = "stepdone:";
+            String expectedStepName = "";
 
-        // Assert that when no step name is provided after 'stepdone:', the method returns null
-        assertEquals(expectedStepName, result);
+            String result = FilterHelper.getStepDoneName(myFilterExpression);
+
+            // Assert that when no step name is provided after 'stepdone:', the method returns null
+            assertEquals(expectedStepName, result);
+
+        }
     }
 
     @Test
     public void testGetStepDoneNameWithSpaceAfterStepName() {
-        String myFilterExpression = "stepdone:MyStepName someOtherFilter";
-        String expectedStepName = "MyStepName";
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        String result = FilterHelper.getStepDoneName(myFilterExpression);
+            String myFilterExpression = "stepdone:MyStepName someOtherFilter";
+            String expectedStepName = "MyStepName";
 
-        // Assert that the extracted step name matches the expected step name even if there's content after the step name
-        assertEquals(expectedStepName, result);
+            String result = FilterHelper.getStepDoneName(myFilterExpression);
+
+            // Assert that the extracted step name matches the expected step name even if there's content after the step name
+            assertEquals(expectedStepName, result);
+
+        }
     }
 
     @Test
     public void testGetStepDoneWithValidExpression() {
-        String myFilterExpression = "stepdone:1-5";
-        Integer expectedStartStep = 1;
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        Integer result = FilterHelper.getStepDone(myFilterExpression);
+            String myFilterExpression = "stepdone:1-5";
+            Integer expectedStartStep = 1;
 
-        // Assert that the extracted start step matches the expected start step
-        assertEquals(expectedStartStep, result);
+            Integer result = FilterHelper.getStepDone(myFilterExpression);
+
+            // Assert that the extracted start step matches the expected start step
+            assertEquals(expectedStartStep, result);
+
+        }
     }
 
     @Test
     public void testGetStepDoneWithInvalidExpression() {
-        String myFilterExpression = "stepdone";
-        Integer expectedStartStep = null;
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String myFilterExpression = "stepdone";
+            Integer expectedStartStep = null;
 
-        Integer result = FilterHelper.getStepDone(myFilterExpression);
+            Integer result = FilterHelper.getStepDone(myFilterExpression);
 
-        // Assert that when the filter expression is not in the expected format, the method returns null
-        assertEquals(expectedStartStep, result);
+            // Assert that when the filter expression is not in the expected format, the method returns null
+            assertEquals(expectedStartStep, result);
+
+        }
     }
 
     /**
-     * Verifies that multiple filter conditions joined into a single string and passed
-     * to criteriaBuilder produce valid SQL with only one WHERE clause.
+     * Verifies that multiple filter conditions joined into a single string and passed to criteriaBuilder produce valid SQL with only one WHERE
+     * clause.
      *
-     * Previously, ProcessService called criteriaBuilder per condition and concatenated
-     * with AND, producing invalid "... AND WHERE ..." SQL.
+     * Previously, ProcessService called criteriaBuilder per condition and concatenated with AND, producing invalid "... AND WHERE ..." SQL.
      */
     @Test
     public void testMultipleConditionsDoNotProduceDuplicateWhere() {
-        RestProcessQueryResource resource = new RestProcessQueryResource();
-        resource.setFilter("processproperty:Template:value'id:12819");
-        String[] conditions = resource.getConditions();
-        assertEquals(2, conditions.length);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeString(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-        // Replicate the fixed ProcessService logic: join conditions, single criteriaBuilder call
-        String combinedFilter = String.join(" ", conditions);
-        String criteria = FilterHelper.criteriaBuilder(combinedFilter, false, null, null, null, true, false);
+            RestProcessQueryResource resource = new RestProcessQueryResource();
+            resource.setFilter("processproperty:Template:value'id:12819");
+            String[] conditions = resource.getConditions();
+            assertEquals(2, conditions.length);
 
-        // Must not contain duplicate WHERE clauses
-        assertFalse("SQL criteria must not contain duplicate WHERE clauses",
-                criteria.contains("WHERE") && criteria.indexOf("WHERE") != criteria.lastIndexOf("WHERE"));
+            // Replicate the fixed ProcessService logic: join conditions, single criteriaBuilder call
+            String combinedFilter = String.join(" ", conditions);
+            String criteria = FilterHelper.criteriaBuilder(combinedFilter, false, null, null, null, true, false);
 
-        // Must contain both filter conditions
-        assertTrue("Should filter by process property", criteria.contains("property_name like"));
-        assertTrue("Should filter by process id", criteria.contains("prozesse.prozesseId in (12819)"));
+            // Must not contain duplicate WHERE clauses
+            assertFalse(
+                    criteria.contains("WHERE") && criteria.indexOf("WHERE") != criteria.lastIndexOf("WHERE"),
+                    "SQL criteria must not contain duplicate WHERE clauses");
+
+            // Must contain both filter conditions
+            assertTrue(criteria.contains("property_name like"), "Should filter by process property");
+            assertTrue(criteria.contains("prozesse.prozesseId in (12819)"), "Should filter by process id");
+
+        }
     }
 
 }

@@ -1,26 +1,22 @@
 package org.goobi.managedbeans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.DockAnchor;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.AbstractGenericPlugin;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ PluginLoader.class })
-@PowerMockIgnore({ "javax.management.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.net.ssl.*", "jdk.internal.reflect.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class GenericPluginBeanTest {
     private DummyGenericPlugin plugin;
     private GenericPluginBean bean;
@@ -45,31 +41,37 @@ public class GenericPluginBeanTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         plugin = new DummyGenericPlugin();
-
-        PowerMock.mockStatic(PluginLoader.class);
-        EasyMock.expect(PluginLoader.getPluginList(PluginType.Generic)).andReturn(List.of(plugin)).anyTimes();
-        PowerMock.replay(PluginLoader.class);
-
         bean = new GenericPluginBean();
-        bean.initialize();
     }
 
     @Test
     public void beanContainsDummyPlugin() {
-        assertEquals(1, bean.getGenericPlugins().size());
+        try (MockedStatic<PluginLoader> mockedPluginLoader = Mockito.mockStatic(PluginLoader.class)) {
+            mockedPluginLoader.when(() -> PluginLoader.getPluginList(PluginType.Generic)).thenReturn(List.of(plugin));
+            bean.initialize();
+            assertEquals(1, bean.getGenericPlugins().size());
+        }
     }
 
     @Test
     public void dummyPluginGotInitialized() {
-        assertTrue(plugin.initialized);
+        try (MockedStatic<PluginLoader> mockedPluginLoader = Mockito.mockStatic(PluginLoader.class)) {
+            mockedPluginLoader.when(() -> PluginLoader.getPluginList(PluginType.Generic)).thenReturn(List.of(plugin));
+            bean.initialize();
+            assertTrue(plugin.initialized);
+        }
     }
 
     @Test
     public void dummyPluginIsDockableEverywhere() {
-        assertTrue(plugin.isFooterDockable());
-        assertTrue(plugin.isMenuBarDockable());
+        try (MockedStatic<PluginLoader> mockedPluginLoader = Mockito.mockStatic(PluginLoader.class)) {
+            mockedPluginLoader.when(() -> PluginLoader.getPluginList(PluginType.Generic)).thenReturn(List.of(plugin));
+            bean.initialize();
+            assertTrue(plugin.isFooterDockable());
+            assertTrue(plugin.isMenuBarDockable());
+        }
     }
 }

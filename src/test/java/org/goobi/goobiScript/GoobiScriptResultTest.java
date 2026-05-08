@@ -17,27 +17,23 @@
  */
 package org.goobi.goobiScript;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.goobi.production.enums.GoobiScriptResultType;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Helper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class GoobiScriptResultTest extends AbstractTest {
 
     @Test
@@ -80,12 +76,12 @@ public class GoobiScriptResultTest extends AbstractTest {
 
     @Test
     public void testGetFormattedTimestamp() {
-        PowerMock.mockStatic(Helper.class);
-        EasyMock.expect(Helper.getDateAsFormattedString(EasyMock.anyObject())).andReturn("2024-01-01 00:00:00").anyTimes();
-        PowerMock.replayAll();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedHelper.when(() -> Helper.getDateAsFormattedString(Mockito.any())).thenReturn("2024-01-01 00:00:00");
 
-        Map<String, String> params = new HashMap<>();
-        GoobiScriptResult result = new GoobiScriptResult(1, "cmd", params, "user", 0L);
-        assertEquals("2024-01-01 00:00:00", result.getFormattedTimestamp());
-    }
+            Map<String, String> params = new HashMap<>();
+            GoobiScriptResult result = new GoobiScriptResult(1, "cmd", params, "user", 0L);
+            assertEquals("2024-01-01 00:00:00", result.getFormattedTimestamp());
+        }
+}
 }

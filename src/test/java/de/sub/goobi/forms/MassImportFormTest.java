@@ -18,12 +18,12 @@ package de.sub.goobi.forms;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
  */
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -47,16 +47,10 @@ import org.goobi.production.flow.helper.JobCreation;
 import org.goobi.production.importer.DocstructElement;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.properties.ImportProperty;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -70,36 +64,40 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
 import jakarta.servlet.http.Part;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ JobCreation.class, FacesContext.class, ExternalContext.class, Helper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+@ExtendWith(MockitoExtension.class)
 public class MassImportFormTest extends AbstractTest {
 
     private Process template;
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-
     private Step secondStep;
     private List<User> userList = new ArrayList<>();
 
-    //    private FacesContext facesContext;
-    //    private ExternalContext externalContext;
-    //    private Map<String, Object> requestMap;
+    private MockedStatic<FacesContext> mockedFacesContext;
+    private MockedStatic<ExternalContext> mockedExternalContext;
+    private MockedStatic<Helper> mockedHelper;
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         // clean up uploaded test file so it doesn't pollute src/test/resources/tmp/
         Path uploadedFile = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder(), "junit.xml");
         Files.deleteIfExists(uploadedFile);
+        if (mockedHelper != null) mockedHelper.close();
+        if (mockedExternalContext != null) mockedExternalContext.close();
+        if (mockedFacesContext != null) mockedFacesContext.close();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        Path configBase = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        Path goobiFolder = Paths.get(configBase.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
@@ -137,14 +135,15 @@ public class MassImportFormTest extends AbstractTest {
 
     @SuppressWarnings("deprecation")
     private void prepareMocking() {
-
-        PowerMock.mockStatic(FacesContext.class);
-        PowerMock.mockStatic(ExternalContext.class);
+        mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+        mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+        mockedHelper = Mockito.mockStatic(Helper.class);
 
         FacesContext facesContext = EasyMock.createMock(FacesContext.class);
         UIViewRoot root = EasyMock.createMock(UIViewRoot.class);
         Application application = EasyMock.createMock(Application.class);
         ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
+        PartialViewContext pvc = EasyMock.createMock(PartialViewContext.class);
 
         EasyMock.expect(facesContext.getApplication()).andReturn(application).anyTimes();
         List<Locale> locale = new ArrayList<>();
@@ -153,31 +152,27 @@ public class MassImportFormTest extends AbstractTest {
         EasyMock.expect(facesContext.getViewRoot()).andReturn(root).anyTimes();
 
         FacesContextHelper.setFacesContext(facesContext);
+        mockedFacesContext.when(() -> FacesContext.getCurrentInstance()).thenReturn(facesContext);
         Map<String, Object> requestMap = new HashMap<>();
-        //        FacesContextHelper.setFacesContext(facesContext);
         EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
         EasyMock.expect(externalContext.getSessionMap()).andReturn(requestMap).anyTimes();
-        //
-        //
+
         EasyMock.expect(root.getLocale()).andReturn(Locale.GERMAN).anyTimes();
         EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
-        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
-        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
+        EasyMock.expectLastCall().anyTimes();
+        EasyMock.expect(facesContext.getPartialViewContext()).andReturn(pvc).anyTimes();
+        EasyMock.expect(pvc.getRenderIds()).andReturn(new ArrayList<>()).anyTimes();
 
-        PowerMock.mockStatic(Helper.class);
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
-        Helper.setMeldung(EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString());
-
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
-        PowerMock.replay(Helper.class);
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
+        mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
 
         EasyMock.replay(root);
         EasyMock.replay(application);
         EasyMock.replay(externalContext);
+        EasyMock.replay(pvc);
         EasyMock.replay(facesContext);
     }
 

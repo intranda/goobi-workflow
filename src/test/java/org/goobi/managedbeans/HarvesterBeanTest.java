@@ -17,22 +17,16 @@
  */
 package org.goobi.managedbeans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.HarvesterRepositoryMysqlHelper;
@@ -43,149 +37,371 @@ import jakarta.faces.model.SelectItem;
 
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ HarvesterRepositoryMysqlHelper.class, Helper.class, ProjectManager.class, ProcessManager.class, FilterHelper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class HarvesterBeanTest {
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        PowerMock.mockStatic(HarvesterRepositoryMysqlHelper.class);
-        PowerMock.mockStatic(Helper.class);
-        HarvesterRepositoryMysqlHelper.saveRepository(EasyMock.anyObject());
-        HarvesterRepositoryMysqlHelper.deleteRepository(EasyMock.anyObject());
 
-        EasyMock.expect(HarvesterRepositoryMysqlHelper.getRepositoryCount(EasyMock.anyString())).andReturn(1).anyTimes();
-        EasyMock.expect(HarvesterRepositoryMysqlHelper.getRepositories(EasyMock.anyString())).andReturn(new ArrayList<>()).anyTimes();
 
-        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
 
-        PowerMock.mockStatic(ProjectManager.class);
-        EasyMock.expect(ProjectManager.getAllProjects()).andReturn(new ArrayList<>()).anyTimes();
 
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcesses(EasyMock.anyString(), EasyMock.anyString(), EasyMock.isNull()))
-                .andReturn(new ArrayList<>()).anyTimes();
 
-        PowerMock.mockStatic(FilterHelper.class);
-        EasyMock.expect(FilterHelper.criteriaBuilder(EasyMock.anyString(), EasyMock.anyBoolean(), EasyMock.isNull(),
-                EasyMock.isNull(), EasyMock.isNull(), EasyMock.anyBoolean(), EasyMock.anyBoolean()))
-                .andReturn("").anyTimes();
 
-        PowerMock.replayAll();
     }
 
     @Test
     public void testConstructor() {
-        HarvesterBean fixture = new HarvesterBean();
-        assertNotNull(fixture);
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            assertNotNull(fixture);
+    
+        }
+}
 
     @Test
     public void testRepositoryTypes() {
-        HarvesterBean fixture = new HarvesterBean();
-        assertNotNull(fixture);
-        List<SelectItem> repositoryTypes = fixture.getRepositoryTypes();
-        assertEquals(4, repositoryTypes.size());
-        assertEquals("oai", repositoryTypes.get(0).getLabel());
-        assertEquals("ia", repositoryTypes.get(1).getLabel());
-        assertEquals("ia cli", repositoryTypes.get(2).getLabel());
-        assertEquals("bach", repositoryTypes.get(3).getLabel());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            assertNotNull(fixture);
+            List<SelectItem> repositoryTypes = fixture.getRepositoryTypes();
+            assertEquals(4, repositoryTypes.size());
+            assertEquals("oai", repositoryTypes.get(0).getLabel());
+            assertEquals("ia", repositoryTypes.get(1).getLabel());
+            assertEquals("ia cli", repositoryTypes.get(2).getLabel());
+            assertEquals("bach", repositoryTypes.get(3).getLabel());
+    
+        }
+}
 
     @Test
     public void testRepository() {
-        HarvesterBean fixture = new HarvesterBean();
-        assertNotNull(fixture);
-        assertNull(fixture.getRepository());
-        Repository repo = new Repository();
-        repo.setId(1);
-        fixture.setRepository(repo);
-        assertEquals(1, fixture.getRepository().getId().intValue());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            assertNotNull(fixture);
+            assertNull(fixture.getRepository());
+            Repository repo = new Repository();
+            repo.setId(1);
+            fixture.setRepository(repo);
+            assertEquals(1, fixture.getRepository().getId().intValue());
+    
+        }
+}
 
     @Test
     public void testCreateNewRepository() {
-        HarvesterBean fixture = new HarvesterBean();
-        assertNotNull(fixture);
-        assertNull(fixture.getRepository());
-        assertEquals("repository_edit", fixture.createNewRepository());
-        assertNotNull(fixture.getRepository());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            assertNotNull(fixture);
+            assertNull(fixture.getRepository());
+            assertEquals("repository_edit", fixture.createNewRepository());
+            assertNotNull(fixture.getRepository());
+    
+        }
+}
 
     @Test
     public void testSaveRepository() {
-        HarvesterBean fixture = new HarvesterBean();
-        assertNotNull(fixture);
-        assertEquals("repository_all", fixture.saveRepository());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            assertNotNull(fixture);
+            assertEquals("repository_all", fixture.saveRepository());
+    
+        }
+}
 
     @Test
     public void testDeleteRepository() {
-        HarvesterBean fixture = new HarvesterBean();
-        assertNotNull(fixture);
-        assertEquals("repository_all", fixture.deleteRepository());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            assertNotNull(fixture);
+            assertEquals("repository_all", fixture.deleteRepository());
+    
+        }
+}
 
     @Test
     public void testCancel() {
-        HarvesterBean fixture = new HarvesterBean();
-        assertNotNull(fixture);
-        assertEquals("repository_all", fixture.cancel());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            assertNotNull(fixture);
+            assertEquals("repository_all", fixture.cancel());
+    
+        }
+}
 
     @Test
     public void testFilter() {
-        HarvesterBean fixture = new HarvesterBean();
-        assertNotNull(fixture);
-        assertEquals("repository_all", fixture.filter());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            assertNotNull(fixture);
+            assertEquals("repository_all", fixture.filter());
+    
+        }
+}
 
     @Test
     public void testSpeichern() {
-        HarvesterBean fixture = new HarvesterBean();
-        assertNotNull(fixture);
-        assertEquals("repository_all", fixture.Speichern());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            assertNotNull(fixture);
+            assertEquals("repository_all", fixture.Speichern());
+    
+        }
+}
 
     @Test
     public void testLoeschen() {
-        HarvesterBean fixture = new HarvesterBean();
-        assertNotNull(fixture);
-        assertEquals("repository_all", fixture.Loeschen());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            assertNotNull(fixture);
+            assertEquals("repository_all", fixture.Loeschen());
+    
+        }
+}
 
     @Test
     public void testGetProjectList() throws Exception {
-        HarvesterBean fixture = new HarvesterBean();
-        List<SelectItem> projects = fixture.getProjectList();
-        assertNotNull(projects);
-        assertTrue(projects.isEmpty());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            List<SelectItem> projects = fixture.getProjectList();
+            assertNotNull(projects);
+            assertTrue(projects.isEmpty());
+    
+        }
+}
 
     @Test
     public void testGetProjectListCached() throws Exception {
-        HarvesterBean fixture = new HarvesterBean();
-        List<SelectItem> first = fixture.getProjectList();
-        List<SelectItem> second = fixture.getProjectList();
-        // second call returns the cached list
-        assertEquals(first, second);
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            List<SelectItem> first = fixture.getProjectList();
+            List<SelectItem> second = fixture.getProjectList();
+            // second call returns the cached list
+            assertEquals(first, second);
+    
+        }
+}
 
     @Test
     public void testGetProcessTemplateList() {
-        HarvesterBean fixture = new HarvesterBean();
-        List<SelectItem> templates = fixture.getProcessTemplateList();
-        assertNotNull(templates);
-        assertTrue(templates.isEmpty());
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            List<SelectItem> templates = fixture.getProcessTemplateList();
+            assertNotNull(templates);
+            assertTrue(templates.isEmpty());
+    
+        }
+}
 
     @Test
     public void testGetProcessTemplateListCached() {
-        HarvesterBean fixture = new HarvesterBean();
-        List<SelectItem> first = fixture.getProcessTemplateList();
-        List<SelectItem> second = fixture.getProcessTemplateList();
-        assertEquals(first, second);
-    }
+        try (MockedStatic<HarvesterRepositoryMysqlHelper> mockedHarvesterRepositoryMysqlHelper = Mockito.mockStatic(HarvesterRepositoryMysqlHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<FilterHelper> mockedFilterHelper = Mockito.mockStatic(FilterHelper.class)) {
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositoryCount(Mockito.anyString())).thenReturn(1);
+            mockedHarvesterRepositoryMysqlHelper.when(() -> HarvesterRepositoryMysqlHelper.getRepositories(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedProjectManager.when(() -> ProjectManager.getAllProjects()).thenReturn(new ArrayList<>());
+                        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.isNull())).thenReturn(new ArrayList<>());
+                        mockedFilterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.isNull(),
+                Mockito.isNull(), Mockito.isNull(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn("");
+
+
+            HarvesterBean fixture = new HarvesterBean();
+            List<SelectItem> first = fixture.getProcessTemplateList();
+            List<SelectItem> second = fixture.getProcessTemplateList();
+            assertEquals(first, second);
+    
+        }
+}
 }

@@ -25,19 +25,14 @@
  */
 package de.sub.goobi.helper.servletfilter;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
 import org.easymock.EasyMock;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -49,9 +44,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ FacesContext.class, ExternalContext.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class SecurityCheckFilterTest extends AbstractTest {
 
     @Test
@@ -74,6 +71,7 @@ public class SecurityCheckFilterTest extends AbstractTest {
 
     @Test
     public void testDoFilterWithoutUser() throws IOException, ServletException {
+
         SecurityCheckFilter filter = new SecurityCheckFilter();
         HttpServletRequest servletRequest = EasyMock.createMock(HttpServletRequest.class);
         HttpServletResponse servletResponse = EasyMock.createMock(HttpServletResponse.class);
@@ -83,24 +81,20 @@ public class SecurityCheckFilterTest extends AbstractTest {
         EasyMock.expect(servletRequest.getSession()).andReturn(session).anyTimes();
         EasyMock.expect(session.getAttribute("LoginForm")).andReturn(null).anyTimes();
         servletResponse.sendRedirect(EasyMock.anyString());
-        PowerMock.mockStatic(ExternalContext.class);
-        PowerMock.mockStatic(FacesContext.class);
 
-        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
-        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
-        externalContext.redirect("index.xhtml");
-        FacesContextHelper.setFacesContext(facesContext);
-        EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
+        try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                     MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
 
-        EasyMock.expectLastCall();
-        EasyMock.replay(servletRequest);
-        EasyMock.replay(servletResponse);
-        EasyMock.replay(filterChain);
-        EasyMock.replay(session);
-        EasyMock.replay(externalContext);
-        EasyMock.replay(facesContext);
-        filter.doFilter(servletRequest, servletResponse, filterChain);
-    }
+            FacesContext facesContext = EasyMock.createMock(FacesContext.class);
+            ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
+            externalContext.redirect("index.xhtml");
+            FacesContextHelper.setFacesContext(facesContext);
+            EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
+
+            EasyMock.replay(servletRequest); EasyMock.replay(servletResponse); EasyMock.replay(filterChain); EasyMock.replay(session); EasyMock.replay(facesContext); EasyMock.replay(externalContext);
+            filter.doFilter(servletRequest, servletResponse, filterChain);
+        }
+}
 
     @Test
     public void testDoFilterLoggedIn() throws IOException, ServletException {
@@ -119,11 +113,7 @@ public class SecurityCheckFilterTest extends AbstractTest {
         servletResponse.sendRedirect(EasyMock.anyString());
         filterChain.doFilter(servletRequest, servletResponse);
 
-        EasyMock.expectLastCall();
-        EasyMock.replay(servletRequest);
-        EasyMock.replay(servletResponse);
-        EasyMock.replay(filterChain);
-        EasyMock.replay(session);
+        EasyMock.replay(servletRequest); EasyMock.replay(servletResponse); EasyMock.replay(filterChain); EasyMock.replay(session); EasyMock.replay(login);
         filter.doFilter(servletRequest, servletResponse, filterChain);
     }
 }

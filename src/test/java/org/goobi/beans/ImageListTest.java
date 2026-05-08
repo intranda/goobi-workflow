@@ -23,14 +23,14 @@ import static org.easymock.EasyMock.createMock;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.metadaten.Image;
 
-@RunWith(PowerMockRunner.class)
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+@ExtendWith(MockitoExtension.class)
 public class ImageListTest {
 
     private ImageList imageList;
@@ -41,7 +41,7 @@ public class ImageListTest {
 
     private List<Image> images;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         imageList = new ImageList();
 

@@ -43,6 +43,10 @@ import de.sub.goobi.config.ConfigurationHelper;
 
 public class MockProcess {
 
+    private MockProcess() {
+        // hide public constructor
+    }
+
     private static final String RULESET_NAME = "ruleset.xml";
 
     public static Process createProcess() throws Exception {

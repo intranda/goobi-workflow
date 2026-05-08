@@ -17,77 +17,82 @@
  */
 package de.sub.goobi.helper;
 
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.powermock.api.easymock.PowerMock.mockStatic;
-import static org.powermock.api.easymock.PowerMock.replay;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.config.ConfigurationHelper;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ConfigurationHelper.class })
-@PowerMockIgnore({ "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class GoobiFileComparatorTest {
-    private ConfigurationHelper configurationHelper;
     private GoobiStringFileComparator comparator;
 
-    @Before
+    @BeforeEach
     public void setup() {
-        configurationHelper = mock(ConfigurationHelper.class);
-        mockStatic(ConfigurationHelper.class);
-        expect(ConfigurationHelper.getInstance()).andReturn(configurationHelper).anyTimes();
-        replay(ConfigurationHelper.class);
         comparator = new GoobiStringFileComparator();
     }
 
     @Test
     public void verifyCorrectOrderingForNumericPrefixFileNames() {
-        List<String> correctOrder =
-                List.of("1.jpg", "002.jpg", "03.tiff", "5.jpg", "5a.jpg", "10.jpg", "10_A.jpg", "10_b.jpg", "10_C.jpg", "011.tif", "50.jpg",
-                        "000051.jpg", "51_A.jpg", "0051_b.jpg");
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
 
-        verifyComparatorOrder(correctOrder);
-    }
+            List<String> correctOrder =
+                    List.of("1.jpg", "002.jpg", "03.tiff", "5.jpg", "5a.jpg", "10.jpg", "10_A.jpg", "10_b.jpg", "10_C.jpg", "011.tif", "50.jpg",
+                            "000051.jpg", "51_A.jpg", "0051_b.jpg");
+
+            verifyComparatorOrder(correctOrder);
+    
+        }
+}
 
     @Test
     public void verifyCorrectOrderingForWeirdCase() {
-        // In a screenshot from a collegue, Windows decided to order the last three files in the following order:
-        // "000051.jpg", "0051_B.jpg", "51_A.jpg"
-        // We don't know why and our comparator behaves differently, in the way we would expect the order to be.
-        List<String> correctOrder =
-                List.of("000000009.tif", "000000009a.tif", "000000010.tif", "000051.jpg", "51_A.jpg", "0051_B.jpg");
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
 
-        verifyComparatorOrder(correctOrder);
-    }
+            // In a screenshot from a collegue, Windows decided to order the last three files in the following order:
+            // "000051.jpg", "0051_B.jpg", "51_A.jpg"
+            // We don't know why and our comparator behaves differently, in the way we would expect the order to be.
+            List<String> correctOrder =
+                    List.of("000000009.tif", "000000009a.tif", "000000010.tif", "000051.jpg", "51_A.jpg", "0051_B.jpg");
+
+            verifyComparatorOrder(correctOrder);
+    
+        }
+}
 
     @Test
     public void verifyCorrectOrderingForStringPrefixFileNames() {
-        List<String> correctOrder =
-                List.of("Adam_1.jpg", "Adam_2.jpg", "Adam_5.jpg", "Adam_06.jpg", "Adam_10.jpg", "Adam_11.jpg", "Ben1Carl.jpg", "Ben2Carl.jpeg",
-                        "Ben05Carl.tif", "Ben10Carl.bmp");
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
 
-        verifyComparatorOrder(correctOrder);
-    }
+            List<String> correctOrder =
+                    List.of("Adam_1.jpg", "Adam_2.jpg", "Adam_5.jpg", "Adam_06.jpg", "Adam_10.jpg", "Adam_11.jpg", "Ben1Carl.jpg", "Ben2Carl.jpeg",
+                            "Ben05Carl.tif", "Ben10Carl.bmp");
+
+            verifyComparatorOrder(correctOrder);
+    
+        }
+}
 
     @Test
     public void verifySemanticEquality() {
-        verifySemanticEquality("001a.jpg", "1A.TIF");
-        verifySemanticEquality("haRrY13a.jpg", "Harry00000013A.tiFF");
-        verifySemanticEquality("Catalog0000001_0.jpg", "CATALOG1_0.tif");
-    }
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+
+            verifySemanticEquality("001a.jpg", "1A.TIF");
+            verifySemanticEquality("haRrY13a.jpg", "Harry00000013A.tiFF");
+            verifySemanticEquality("Catalog0000001_0.jpg", "CATALOG1_0.tif");
+    
+        }
+}
 
     private void verifySemanticEquality(String a, String b) {
-        assertEquals("Semantic equality check failed. expected \"" + a + "\" == \"" + b + "\"\n", 0, comparator.compare(a, b));
+        assertEquals(0, comparator.compare(a, b), "Semantic equality check failed. expected \"" + a + "\" == \"" + b + "\"\n");
     }
 
     private void verifyComparatorOrder(List<String> list) {
@@ -109,8 +114,8 @@ public class GoobiFileComparatorTest {
                 if (Math.abs(actual) > 1) {
                     actual /= Math.abs(actual);
                 }
-                assertEquals("Semantic ordering check failed! expected: \"" + a + "\" " + transformComparisonIntToChar(expected) + " \"" + b
-                        + "\" but was: \"" + a + "\" " + transformComparisonIntToChar(actual) + " \"" + b + "\"\n", expected, actual);
+                assertEquals(expected, actual, "Semantic ordering check failed! expected: \"" + a + "\" " + transformComparisonIntToChar(expected) + " \"" + b
+                        + "\" but was: \"" + a + "\" " + transformComparisonIntToChar(actual) + " \"" + b + "\"\n");
             }
         }
     }

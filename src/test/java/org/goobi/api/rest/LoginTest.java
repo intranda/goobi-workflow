@@ -25,21 +25,16 @@
 
 package org.goobi.api.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 
 import org.easymock.EasyMock;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -54,23 +49,28 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Helper.class, UserManager.class, JwtHelper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class LoginTest extends AbstractTest {
 
     private Login login;
 
-    @Before
+    private DecodedJWT jwt;
+    private LoginBean lb;
+    private User user;
+
+    @BeforeEach
     public void setUp() {
         login = new Login(new SessionForm());
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("EnableHeaderLogin", "true");
         ConfigurationHelper.getInstance().setParameter("OIDCClientID", "OIDCClientID");
 
-        PowerMock.mockStatic(JwtHelper.class);
 
-        DecodedJWT jwt = EasyMock.createNiceMock(DecodedJWT.class);
+        jwt = EasyMock.createNiceMock(DecodedJWT.class);
         Claim claim1 = EasyMock.createNiceMock(Claim.class);
         EasyMock.expect(jwt.getClaim("nonce")).andReturn(claim1).anyTimes();
         EasyMock.expect(claim1.asString()).andReturn("openIDNonce").anyTimes();
@@ -83,7 +83,6 @@ public class LoginTest extends AbstractTest {
         EasyMock.expect(jwt.getClaim("email")).andReturn(claim3).anyTimes();
         EasyMock.expect(claim3.asString()).andReturn("fixture@example.com").anyTimes();
 
-        EasyMock.expect(JwtHelper.verifyOpenIdToken("id")).andReturn(jwt).anyTimes();
 
         HttpServletRequest servletRequest = EasyMock.createNiceMock(HttpServletRequest.class);
         EasyMock.expect(servletRequest.getAttribute(EasyMock.anyString())).andReturn("fixture").anyTimes();
@@ -92,28 +91,14 @@ public class LoginTest extends AbstractTest {
         EasyMock.expect(servletRequest.getSession()).andReturn(session).anyTimes();
         EasyMock.expect(session.getAttribute("openIDNonce")).andReturn("openIDNonce").anyTimes();
 
-        LoginBean lb = EasyMock.createNiceMock(LoginBean.class);
-        User user = EasyMock.createNiceMock(User.class);
+        lb = EasyMock.createNiceMock(LoginBean.class);
+        user = EasyMock.createNiceMock(User.class);
         user.lazyLoad();
-        EasyMock.replay(user);
-        PowerMock.mockStatic(Helper.class);
 
-        EasyMock.expect(Helper.getLoginBeanFromSession(EasyMock.anyObject())).andReturn(lb).anyTimes();
 
-        PowerMock.mockStatic(UserManager.class);
-        EasyMock.expect(UserManager.getUserBySsoId(EasyMock.anyString())).andReturn(user).anyTimes();
 
-        EasyMock.replay(jwt);
-        EasyMock.replay(claim1);
-        EasyMock.replay(claim2);
-        EasyMock.replay(claim3);
-
-        PowerMock.replay(Helper.class);
-        PowerMock.replay(JwtHelper.class);
-        PowerMock.replay(UserManager.class);
-        EasyMock.replay(session);
-        EasyMock.replay(servletRequest);
-
+        EasyMock.replay(jwt); EasyMock.replay(claim1); EasyMock.replay(claim2); EasyMock.replay(claim3);
+        EasyMock.replay(servletRequest); EasyMock.replay(session);
         login.setServletRequest(servletRequest);
         SessionForm sessionForm = EasyMock.createNiceMock(SessionForm.class);
         login.setSessionForm(sessionForm);
@@ -129,22 +114,62 @@ public class LoginTest extends AbstractTest {
 
     @Test
     public void testConstructor() {
-        Login login = new Login(new SessionForm());
-        assertNotNull(login);
-    }
+        try (MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class)) {
+            mockedJwtHelper.when(() -> JwtHelper.verifyOpenIdToken("id")).thenReturn(jwt);
+            mockedHelper.when(() -> Helper.getLoginBeanFromSession(Mockito.any())).thenReturn(lb);
+            mockedUserManager.when(() -> UserManager.getUserBySsoId(Mockito.anyString())).thenReturn(user);
+
+
+            Login login = new Login(new SessionForm());
+            assertNotNull(login);
+    
+        }
+}
 
     @Test
     public void testApacheHeaderLogin() throws Exception {
-        assertEquals("", login.apacheHeaderLogin());
-    }
+        try (MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class)) {
+            mockedJwtHelper.when(() -> JwtHelper.verifyOpenIdToken("id")).thenReturn(jwt);
+            mockedHelper.when(() -> Helper.getLoginBeanFromSession(Mockito.any())).thenReturn(lb);
+            mockedUserManager.when(() -> UserManager.getUserBySsoId(Mockito.anyString())).thenReturn(user);
+
+
+            assertEquals("", login.apacheHeaderLogin());
+    
+        }
+}
 
     @Test
     public void testOpenIdErrorLogin() throws Exception {
-        login.openIdLogin("error", "id");
-    }
+        try (MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class)) {
+            mockedJwtHelper.when(() -> JwtHelper.verifyOpenIdToken("id")).thenReturn(jwt);
+            mockedHelper.when(() -> Helper.getLoginBeanFromSession(Mockito.any())).thenReturn(lb);
+            mockedUserManager.when(() -> UserManager.getUserBySsoId(Mockito.anyString())).thenReturn(user);
+
+
+            login.openIdLogin("error", "id");
+    
+        }
+}
 
     @Test
     public void testOpenIdSuccessLogin() throws Exception {
-        login.openIdLogin(null, "id");
-    }
+        try (MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class)) {
+            mockedJwtHelper.when(() -> JwtHelper.verifyOpenIdToken("id")).thenReturn(jwt);
+            mockedHelper.when(() -> Helper.getLoginBeanFromSession(Mockito.any())).thenReturn(lb);
+            mockedUserManager.when(() -> UserManager.getUserBySsoId(Mockito.anyString())).thenReturn(user);
+
+
+            login.openIdLogin(null, "id");
+    
+        }
+}
 }

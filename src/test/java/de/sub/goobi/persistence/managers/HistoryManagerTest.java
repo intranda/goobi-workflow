@@ -17,37 +17,33 @@
  */
 package de.sub.goobi.persistence.managers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Process;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.enums.HistoryEventType;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ HistoryMysqlHelper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class HistoryManagerTest extends AbstractTest {
 
     private List<HistoryEvent> sampleEvents;
     private HistoryEvent sampleEvent;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         sampleEvents = new ArrayList<>();
         sampleEvent = new HistoryEvent();
@@ -60,56 +56,93 @@ public class HistoryManagerTest extends AbstractTest {
         sampleEvent.setProcess(process);
         sampleEvents.add(sampleEvent);
 
-        PowerMock.mockStatic(HistoryMysqlHelper.class);
-        EasyMock.expect(HistoryMysqlHelper.getHistoryEvents(EasyMock.anyInt())).andReturn(sampleEvents).anyTimes();
-        EasyMock.expect(HistoryMysqlHelper.getNumberOfImages(EasyMock.anyInt())).andReturn(42).anyTimes();
-        HistoryMysqlHelper.addHistory(EasyMock.anyObject(), EasyMock.anyDouble(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt());
-        EasyMock.expectLastCall().anyTimes();
-        HistoryMysqlHelper.updateHistoryEvent(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        HistoryMysqlHelper.deleteHistoryEvent(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        HistoryMysqlHelper.addAllHistoryEvents(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        PowerMock.replay(HistoryMysqlHelper.class);
     }
 
     @Test
     public void testGetHistoryEvents() {
-        List<HistoryEvent> result = HistoryManager.getHistoryEvents(1);
-        assertNotNull(result);
-        assertEquals(1, result.size());
-    }
+        try (MockedStatic<HistoryMysqlHelper> mockedHistoryMysqlHelper = Mockito.mockStatic(HistoryMysqlHelper.class)) {
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
+
+
+            List<HistoryEvent> result = HistoryManager.getHistoryEvents(1);
+            assertNotNull(result);
+            assertEquals(1, result.size());
+    
+        }
+}
 
     @Test
     public void testGetNumberOfImages() {
-        int result = HistoryManager.getNumberOfImages(1);
-        assertEquals(42, result);
-    }
+        try (MockedStatic<HistoryMysqlHelper> mockedHistoryMysqlHelper = Mockito.mockStatic(HistoryMysqlHelper.class)) {
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
+
+
+            int result = HistoryManager.getNumberOfImages(1);
+            assertEquals(42, result);
+    
+        }
+}
 
     @Test
     public void testAddHistory() {
-        HistoryManager.addHistory(new Date(), 1.0, "value", 1, 1);
-    }
+        try (MockedStatic<HistoryMysqlHelper> mockedHistoryMysqlHelper = Mockito.mockStatic(HistoryMysqlHelper.class)) {
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
+
+
+            HistoryManager.addHistory(new Date(), 1.0, "value", 1, 1);
+    
+        }
+}
 
     @Test
     public void testAddHistoryEvent() {
-        HistoryManager.addHistoryEvent(sampleEvent);
-    }
+        try (MockedStatic<HistoryMysqlHelper> mockedHistoryMysqlHelper = Mockito.mockStatic(HistoryMysqlHelper.class)) {
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
+
+
+            HistoryManager.addHistoryEvent(sampleEvent);
+    
+        }
+}
 
     @Test
     public void testUpdateHistoryEvent() {
-        HistoryManager.updateHistoryEvent(sampleEvent);
-    }
+        try (MockedStatic<HistoryMysqlHelper> mockedHistoryMysqlHelper = Mockito.mockStatic(HistoryMysqlHelper.class)) {
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
+
+
+            HistoryManager.updateHistoryEvent(sampleEvent);
+    
+        }
+}
 
     @Test
     public void testDeleteHistoryEvent() {
-        HistoryManager.deleteHistoryEvent(sampleEvent);
-    }
+        try (MockedStatic<HistoryMysqlHelper> mockedHistoryMysqlHelper = Mockito.mockStatic(HistoryMysqlHelper.class)) {
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
+
+
+            HistoryManager.deleteHistoryEvent(sampleEvent);
+    
+        }
+}
 
     @Test
     public void testAddAllEvents() {
-        HistoryManager.addAllEvents(sampleEvents);
-        assertTrue(true);
-    }
+        try (MockedStatic<HistoryMysqlHelper> mockedHistoryMysqlHelper = Mockito.mockStatic(HistoryMysqlHelper.class)) {
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getHistoryEvents(Mockito.anyInt())).thenReturn(sampleEvents);
+            mockedHistoryMysqlHelper.when(() -> HistoryMysqlHelper.getNumberOfImages(Mockito.anyInt())).thenReturn(42);
+
+
+            HistoryManager.addAllEvents(sampleEvents);
+            assertTrue(true);
+    
+        }
+}
 }

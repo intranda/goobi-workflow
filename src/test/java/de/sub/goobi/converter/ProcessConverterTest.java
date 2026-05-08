@@ -18,40 +18,37 @@ package de.sub.goobi.converter;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(ProcessManager.class)
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class ProcessConverterTest extends AbstractTest {
 
     @Test
     public void testGetAsObject() {
+
         Process process = new Process();
         process.setId(Integer.valueOf(1));
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process);
-        EasyMock.expectLastCall();
-        PowerMock.replayAll();
 
-        ProcessConverter conv = new ProcessConverter();
-        Object fixture = conv.getAsObject(null, null, "1");
-        assertNotNull(fixture);
-    }
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+            ProcessConverter conv = new ProcessConverter();
+            Object fixture = conv.getAsObject(null, null, "1");
+            assertNotNull(fixture);
+        }
+}
 
     @Test
     public void testGetAsString() {

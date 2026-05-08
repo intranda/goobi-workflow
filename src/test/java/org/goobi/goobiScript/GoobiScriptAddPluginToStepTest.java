@@ -18,26 +18,20 @@
 
 package org.goobi.goobiScript;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
@@ -45,26 +39,25 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Helper.class, ProcessManager.class, StepManager.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class GoobiScriptAddPluginToStepTest extends AbstractTest {
 
     private Process process;
 
     private Step s1;
 
-    @Before
-    public void setUp() throws Exception {
-        PowerMock.mockStatic(Helper.class);
-        PowerMock.mockStatic(ProcessManager.class);
+    private User u;
 
-        User u = new User();
+    @BeforeEach
+    public void setUp() throws Exception {
+
+        u = new User();
         u.setVorname("firstname");
         u.setNachname("lastname");
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(u).anyTimes();
-        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyObject(),
-                EasyMock.anyString());
 
         process = new Process();
         process.setId(Integer.valueOf(1));
@@ -78,59 +71,88 @@ public class GoobiScriptAddPluginToStepTest extends AbstractTest {
         steps.add(s1);
         process.setSchritte(steps);
 
-        EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
-        ProcessManager.saveProcess(EasyMock.anyObject());
-        PowerMock.replayAll();
     }
 
     @Test
     public void testConstructor() {
-        GoobiScriptAddPluginToStep fixture = new GoobiScriptAddPluginToStep();
-        assertNotNull(fixture);
-        assertEquals("addPluginToStep", fixture.getAction());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+
+            GoobiScriptAddPluginToStep fixture = new GoobiScriptAddPluginToStep();
+            assertNotNull(fixture);
+            assertEquals("addPluginToStep", fixture.getAction());
+    
+        }
+}
 
     @Test
     public void testSampleCall() {
-        GoobiScriptAddPluginToStep fixture = new GoobiScriptAddPluginToStep();
-        assertNotNull(fixture);
-        assertEquals(
-                "---\\n# This GoobiScript allows to add a plugin to a defined workflow step\\naction: addPluginToStep\\n\\n# Title of the step to adapt\\nsteptitle: TITLE_STEP\\n\\n# Name of the plugin to be assigned to the workflow step\\nplugin: PLUGIN_NAME",
-                fixture.getSampleCall());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+
+            GoobiScriptAddPluginToStep fixture = new GoobiScriptAddPluginToStep();
+            assertNotNull(fixture);
+            assertEquals(
+                    "---\\n# This GoobiScript allows to add a plugin to a defined workflow step\\naction: addPluginToStep\\n\\n# Title of the step to adapt\\nsteptitle: TITLE_STEP\\n\\n# Name of the plugin to be assigned to the workflow step\\nplugin: PLUGIN_NAME",
+                    fixture.getSampleCall());
+    
+        }
+}
 
     @Test
     public void testPrepare() {
-        List<Integer> processes = new ArrayList<>();
-        processes.add(1);
-        String command = "addPluginToStep";
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("steptitle", "step 1");
-        parameters.put("plugin", "abc");
-        GoobiScriptAddPluginToStep fixture = new GoobiScriptAddPluginToStep();
-        assertNotNull(fixture);
-        List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
-        assertEquals(1, results.size());
-        assertEquals("addPluginToStep", results.get(0).getCommand());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+
+            List<Integer> processes = new ArrayList<>();
+            processes.add(1);
+            String command = "addPluginToStep";
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("steptitle", "step 1");
+            parameters.put("plugin", "abc");
+            GoobiScriptAddPluginToStep fixture = new GoobiScriptAddPluginToStep();
+            assertNotNull(fixture);
+            List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
+            assertEquals(1, results.size());
+            assertEquals("addPluginToStep", results.get(0).getCommand());
+    
+        }
+}
 
     @Test
     public void testExecute() {
-        List<Integer> processes = new ArrayList<>();
-        processes.add(1);
-        String command = "addPluginToStep";
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("steptitle", "step 1");
-        parameters.put("plugin", "abc");
-        GoobiScriptAddPluginToStep fixture = new GoobiScriptAddPluginToStep();
-        List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
 
-        assertNull(s1.getStepPlugin());
 
-        fixture.execute(results.get(0));
+            List<Integer> processes = new ArrayList<>();
+            processes.add(1);
+            String command = "addPluginToStep";
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("steptitle", "step 1");
+            parameters.put("plugin", "abc");
+            GoobiScriptAddPluginToStep fixture = new GoobiScriptAddPluginToStep();
+            List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
 
-        assertEquals("abc", s1.getStepPlugin());
+            assertNull(s1.getStepPlugin());
 
-    }
+            fixture.execute(results.get(0));
+
+            assertEquals("abc", s1.getStepPlugin());
+
+    
+        }
+}
 
 }

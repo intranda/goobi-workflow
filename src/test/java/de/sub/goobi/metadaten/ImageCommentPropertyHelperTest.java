@@ -17,59 +17,47 @@
  */
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.ImageComment;
 import org.goobi.beans.ImageComment.ImageCommentLocation;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ PropertyManager.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class ImageCommentPropertyHelperTest extends AbstractTest {
 
     private Process process;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         process = MockProcess.createProcess();
         process.setId(1);
     }
 
-    @SuppressWarnings("deprecation")
-    private void mockPropertyManagerWithValue(String propertyValue) {
+    private List<Processproperty> propertiesWithValue(String propertyValue) {
         Processproperty property = new Processproperty();
         property.setPropertyName("image_comments");
         property.setPropertyValue(propertyValue);
-
         List<Processproperty> properties = new ArrayList<>();
         properties.add(property);
-
-        PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt()))
-                .andReturn(properties).anyTimes();
-        PropertyManager.saveProcessProperty(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        PowerMock.replay(PropertyManager.class);
+        return properties;
     }
 
     /**
@@ -87,16 +75,20 @@ public class ImageCommentPropertyHelperTest extends AbstractTest {
                 + "\"step\":\"step1\","
                 + "\"location\":\"IMAGE_COMMENT_LOCATION_METADATA_EDITOR\""
                 + "}]}";
-        mockPropertyManagerWithValue(legacyJson);
 
-        ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
-        List<ImageComment> comments = helper.getAllComments();
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            mockedPropertyManager.when(() -> PropertyManager.getProcessPropertiesForProcess(Mockito.anyInt()))
+                    .thenReturn(propertiesWithValue(legacyJson));
 
-        assertNotNull(comments);
-        assertEquals(1, comments.size());
-        assertEquals("test comment", comments.get(0).getComment());
-        assertEquals("image.tif", comments.get(0).getImageName());
-        assertNotNull("creationDate must be parsed from legacy format", comments.get(0).getCreationDate());
+            ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
+            List<ImageComment> comments = helper.getAllComments();
+
+            assertNotNull(comments);
+            assertEquals(1, comments.size());
+            assertEquals("test comment", comments.get(0).getComment());
+            assertEquals("image.tif", comments.get(0).getImageName());
+            assertNotNull(comments.get(0).getCreationDate(), "creationDate must be parsed from legacy format");
+        }
     }
 
     /**
@@ -110,16 +102,20 @@ public class ImageCommentPropertyHelperTest extends AbstractTest {
                 + "\"comment\":\"test comment\","
                 + "\"imageName\":\"image.tif\","
                 + "\"imageFolder\":\"master\","
-                + "\"creationDate\":\"Apr 14, 2026, 10:59:53\u202FAM\""
+                + "\"creationDate\":\"Apr 14, 2026, 10:59:53 AM\""
                 + "}]}";
-        mockPropertyManagerWithValue(legacyJsonThinSpace);
 
-        ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
-        List<ImageComment> comments = helper.getAllComments();
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            mockedPropertyManager.when(() -> PropertyManager.getProcessPropertiesForProcess(Mockito.anyInt()))
+                    .thenReturn(propertiesWithValue(legacyJsonThinSpace));
 
-        assertNotNull(comments);
-        assertEquals(1, comments.size());
-        assertNotNull("creationDate with U+202F thin space must be parsed", comments.get(0).getCreationDate());
+            ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
+            List<ImageComment> comments = helper.getAllComments();
+
+            assertNotNull(comments);
+            assertEquals(1, comments.size());
+            assertNotNull(comments.get(0).getCreationDate(), "creationDate with U+202F thin space must be parsed");
+        }
     }
 
     @Test
@@ -130,15 +126,19 @@ public class ImageCommentPropertyHelperTest extends AbstractTest {
                 + "\"imageFolder\":\"master\","
                 + "\"creationDate\":\"2026-04-12T11:44:50.000+0000\""
                 + "}]}";
-        mockPropertyManagerWithValue(isoJson);
 
-        ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
-        List<ImageComment> comments = helper.getAllComments();
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            mockedPropertyManager.when(() -> PropertyManager.getProcessPropertiesForProcess(Mockito.anyInt()))
+                    .thenReturn(propertiesWithValue(isoJson));
 
-        assertNotNull(comments);
-        assertEquals(1, comments.size());
-        assertEquals("iso comment", comments.get(0).getComment());
-        assertNotNull("creationDate must be parsed from ISO format", comments.get(0).getCreationDate());
+            ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
+            List<ImageComment> comments = helper.getAllComments();
+
+            assertNotNull(comments);
+            assertEquals(1, comments.size());
+            assertEquals("iso comment", comments.get(0).getComment());
+            assertNotNull(comments.get(0).getCreationDate(), "creationDate must be parsed from ISO format");
+        }
     }
 
     @Test
@@ -149,35 +149,35 @@ public class ImageCommentPropertyHelperTest extends AbstractTest {
                 + "\"imageFolder\":\"master\","
                 + "\"creationDate\":null"
                 + "}]}";
-        mockPropertyManagerWithValue(nullDateJson);
 
-        ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
-        List<ImageComment> comments = helper.getAllComments();
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            mockedPropertyManager.when(() -> PropertyManager.getProcessPropertiesForProcess(Mockito.anyInt()))
+                    .thenReturn(propertiesWithValue(nullDateJson));
 
-        assertNotNull(comments);
-        assertEquals(1, comments.size());
-        assertNull(comments.get(0).getCreationDate());
+            ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
+            List<ImageComment> comments = helper.getAllComments();
+
+            assertNotNull(comments);
+            assertEquals(1, comments.size());
+            assertNull(comments.get(0).getCreationDate());
+        }
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testSaveAndLoadComment() {
-        // Start with no existing property
-        PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getProcessPropertiesForProcess(EasyMock.anyInt()))
-                .andReturn(new ArrayList<>()).anyTimes();
-        PropertyManager.saveProcessProperty(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        PowerMock.replay(PropertyManager.class);
+        try (MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            mockedPropertyManager.when(() -> PropertyManager.getProcessPropertiesForProcess(Mockito.anyInt()))
+                    .thenReturn(new ArrayList<>());
 
-        Date now = new Date();
-        ImageComment comment = new ImageComment("comment text", "image.tif", "master", now, "user1", "step1",
-                ImageCommentLocation.IMAGE_COMMENT_LOCATION_METADATA_EDITOR);
+            Date now = new Date();
+            ImageComment comment = new ImageComment("comment text", "image.tif", "master", now, "user1", "step1",
+                    ImageCommentLocation.IMAGE_COMMENT_LOCATION_METADATA_EDITOR);
 
-        ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
-        helper.setComment(comment);
+            ImageCommentPropertyHelper helper = new ImageCommentPropertyHelper(process);
+            helper.setComment(comment);
 
-        // The saved JSON must be readable again (round-trip via getAllComments would require
-        // re-initializing the mock, so we verify setComment does not throw)
+            // The saved JSON must be readable again (round-trip via getAllComments would require
+            // re-initializing the mock, so we verify setComment does not throw)
+        }
     }
 }

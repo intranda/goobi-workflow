@@ -1,22 +1,13 @@
 package org.goobi.api.rest.model;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
@@ -24,94 +15,107 @@ import de.sub.goobi.helper.StorageProviderInterface;
 import de.sub.goobi.metadaten.Metadaten;
 import jakarta.ws.rs.core.Response;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ConfigurationHelper.class, StorageProvider.class })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class RestVideoVttResourceTest {
 
     private RestVideoVttResource resource;
     private Metadaten metadataBean;
 
-    @Before
+    private ConfigurationHelper confHelper;
+
+    @BeforeEach
     public void setUp() {
-        // Mock ConfigurationHelper static call
-        ConfigurationHelper confHelper = createMock(ConfigurationHelper.class);
-        PowerMock.mockStatic(ConfigurationHelper.class);
-        EasyMock.expect(ConfigurationHelper.getInstance()).andReturn(confHelper).anyTimes();
-        expect(confHelper.getMetadataFolder()).andReturn("/tmp/metadata").anyTimes();
-        PowerMock.replay(ConfigurationHelper.class, confHelper);
+        confHelper = Mockito.mock(ConfigurationHelper.class);
+        Mockito.lenient().when(confHelper.getMetadataFolder()).thenReturn("/tmp/metadata");
 
         resource = new RestVideoVttResource();
-        metadataBean = createMock(Metadaten.class);
+        metadataBean = Mockito.mock(Metadaten.class);
         resource.setMetadataBean(metadataBean);
     }
 
     @Test
     public void testGetChapterVttFileWithMetadataBean() {
-        EasyMock.expect(metadataBean.getChapterInformationAsVTT()).andReturn("WEBVTT CONTENT");
-        replay(metadataBean);
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(confHelper);
 
-        Response resp = resource.getChapterVttFile();
-        assertEquals(200, resp.getStatus());
-        assertTrue(resp.getEntity().toString().contains("WEBVTT CONTENT"));
-        assertTrue(resp.getHeaders().getFirst("Content-Disposition").toString().contains("video.vtt"));
+            Mockito.when(metadataBean.getChapterInformationAsVTT()).thenReturn("WEBVTT CONTENT");
 
-        verify(metadataBean);
+            Response resp = resource.getChapterVttFile();
+            assertEquals(200, resp.getStatus());
+            assertTrue(resp.getEntity().toString().contains("WEBVTT CONTENT"));
+            assertTrue(resp.getHeaders().getFirst("Content-Disposition").toString().contains("video.vtt"));
+
+            Mockito.verify(metadataBean).getChapterInformationAsVTT();
+        }
     }
 
     @Test
     public void testGetChapterVttFileWithoutMetadataBean() {
-        resource.setMetadataBean(null);
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(confHelper);
 
-        Response resp = resource.getChapterVttFile();
-        assertEquals(200, resp.getStatus());
-        assertEquals("", resp.getEntity().toString());
+            resource.setMetadataBean(null);
+
+            Response resp = resource.getChapterVttFile();
+            assertEquals(200, resp.getStatus());
+            assertEquals("", resp.getEntity().toString());
+        }
     }
 
     @Test
     public void testGetSubtitleVttFileFileExists() throws Exception {
-        // Arrange
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(confHelper);
 
-        StorageProviderInterface storageProvider = createMock(StorageProviderInterface.class);
-        PowerMock.mockStatic(StorageProvider.class);
-        EasyMock.expect(StorageProvider.getInstance()).andReturn(storageProvider).anyTimes();
+            StorageProviderInterface storageProvider = Mockito.mock(StorageProviderInterface.class);
 
-        EasyMock.expect(storageProvider.isFileExists(EasyMock.anyObject())).andReturn(true).once();
+            try (MockedStatic<StorageProvider> mockedStorageProvider = Mockito.mockStatic(StorageProvider.class)) {
+                mockedStorageProvider.when(() -> StorageProvider.getInstance()).thenReturn(storageProvider);
 
-        PowerMock.replay(StorageProvider.class, storageProvider);
+                Mockito.when(storageProvider.isFileExists(Mockito.any())).thenReturn(true);
 
-        // Act
-        Response resp = resource.getSubtitleVttFile("123", "folder", "file.vtt");
+                Response resp = resource.getSubtitleVttFile("123", "folder", "file.vtt");
 
-        // Assert
-        assertEquals(200, resp.getStatus());
-        assertTrue(resp.getHeaders().getFirst("Content-Disposition").toString().contains("file.vtt"));
-
-        PowerMock.verify(StorageProvider.class, storageProvider);
+                assertEquals(200, resp.getStatus());
+                assertTrue(resp.getHeaders().getFirst("Content-Disposition").toString().contains("file.vtt"));
+            }
+        }
     }
 
     @Test
     public void testGetSubtitleVttFileFileDoesNotExist() {
-        String process = "999";
-        String folder = "notfound";
-        String filename = "missing.vtt";
-        Path expectedPath = Paths.get("/tmp/metadata/999/ocr/notfound/missing.vtt");
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(confHelper);
 
-        StorageProviderInterface storageProvider = createMock(StorageProviderInterface.class);
-        PowerMock.mockStatic(StorageProvider.class);
-        EasyMock.expect(StorageProvider.getInstance()).andReturn(storageProvider).anyTimes();
-        EasyMock.expect(storageProvider.isFileExists(expectedPath)).andReturn(false).once();
-        PowerMock.replay(StorageProvider.class, storageProvider);
+            String process = "999";
+            String folder = "notfound";
+            String filename = "missing.vtt";
+            Path expectedPath = Paths.get("/tmp/metadata/999/ocr/notfound/missing.vtt");
 
-        Response resp = resource.getSubtitleVttFile(process, folder, filename);
-        assertEquals(200, resp.getStatus());
-        assertEquals("", resp.getEntity().toString());
+            StorageProviderInterface storageProvider = Mockito.mock(StorageProviderInterface.class);
 
-        PowerMock.verify(StorageProvider.class, storageProvider);
+            try (MockedStatic<StorageProvider> mockedStorageProvider = Mockito.mockStatic(StorageProvider.class)) {
+                mockedStorageProvider.when(() -> StorageProvider.getInstance()).thenReturn(storageProvider);
+                Mockito.when(storageProvider.isFileExists(Mockito.any())).thenReturn(false);
+
+                Response resp = resource.getSubtitleVttFile(process, folder, filename);
+                assertEquals(200, resp.getStatus());
+                assertEquals("", resp.getEntity().toString());
+            }
+        }
     }
 
     @Test
     public void testGetFilename() {
-        assertEquals("file.txt", resource.getFilename("folder/file.txt"));
-        assertEquals("justname", resource.getFilename("justname"));
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(confHelper);
+
+            assertEquals("file.txt", resource.getFilename("folder/file.txt"));
+            assertEquals("justname", resource.getFilename("justname"));
+        }
     }
 }

@@ -18,26 +18,20 @@
 
 package org.goobi.goobiScript;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
@@ -45,26 +39,25 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Helper.class, ProcessManager.class, StepManager.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class GoobiScriptAddShellScriptToStepTest extends AbstractTest {
 
     private Process process;
 
     private Step s1;
 
-    @Before
-    public void setUp() throws Exception {
-        PowerMock.mockStatic(Helper.class);
-        PowerMock.mockStatic(ProcessManager.class);
+    private User u;
 
-        User u = new User();
+    @BeforeEach
+    public void setUp() throws Exception {
+
+        u = new User();
         u.setVorname("firstname");
         u.setNachname("lastname");
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(u).anyTimes();
-        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyObject(),
-                EasyMock.anyString());
 
         process = new Process();
         process.setId(Integer.valueOf(1));
@@ -78,62 +71,91 @@ public class GoobiScriptAddShellScriptToStepTest extends AbstractTest {
         steps.add(s1);
         process.setSchritte(steps);
 
-        EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
-        ProcessManager.saveProcess(EasyMock.anyObject());
-        PowerMock.replayAll();
     }
 
     @Test
     public void testConstructor() {
-        GoobiScriptAddShellScriptToStep fixture = new GoobiScriptAddShellScriptToStep();
-        assertNotNull(fixture);
-        assertEquals("addShellScriptToStep", fixture.getAction());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+
+            GoobiScriptAddShellScriptToStep fixture = new GoobiScriptAddShellScriptToStep();
+            assertNotNull(fixture);
+            assertEquals("addShellScriptToStep", fixture.getAction());
+    
+        }
+}
 
     @Test
     public void testSampleCall() {
-        GoobiScriptAddShellScriptToStep fixture = new GoobiScriptAddShellScriptToStep();
-        assertNotNull(fixture);
-        assertEquals(
-                "---\\n# This GoobiScript allows to add a shell script to an existing workflow step.\\naction: addShellScriptToStep\\n\\n# This is the title of the workflow step to be used.\\nsteptitle: Generate MD5 Hashes\\n\\n# Define a label for the script that shall be visible for that script inside of an accepted task.\\nlabel: Hash generation\\n\\n# Define the script that shall be added here.\\nscript: /bin/bash /path/to/script.sh \"parameter with blanks\"",
-                fixture.getSampleCall());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+
+            GoobiScriptAddShellScriptToStep fixture = new GoobiScriptAddShellScriptToStep();
+            assertNotNull(fixture);
+            assertEquals(
+                    "---\\n# This GoobiScript allows to add a shell script to an existing workflow step.\\naction: addShellScriptToStep\\n\\n# This is the title of the workflow step to be used.\\nsteptitle: Generate MD5 Hashes\\n\\n# Define a label for the script that shall be visible for that script inside of an accepted task.\\nlabel: Hash generation\\n\\n# Define the script that shall be added here.\\nscript: /bin/bash /path/to/script.sh \"parameter with blanks\"",
+                    fixture.getSampleCall());
+    
+        }
+}
 
     @Test
     public void testPrepare() {
-        List<Integer> processes = new ArrayList<>();
-        processes.add(1);
-        String command = "addShellScriptToStep";
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("steptitle", "step 1");
-        parameters.put("label", "abc");
-        parameters.put("script", "xyz");
-        GoobiScriptAddShellScriptToStep fixture = new GoobiScriptAddShellScriptToStep();
-        assertNotNull(fixture);
-        List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
-        assertEquals(1, results.size());
-        assertEquals("addShellScriptToStep", results.get(0).getCommand());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+
+            List<Integer> processes = new ArrayList<>();
+            processes.add(1);
+            String command = "addShellScriptToStep";
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("steptitle", "step 1");
+            parameters.put("label", "abc");
+            parameters.put("script", "xyz");
+            GoobiScriptAddShellScriptToStep fixture = new GoobiScriptAddShellScriptToStep();
+            assertNotNull(fixture);
+            List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
+            assertEquals(1, results.size());
+            assertEquals("addShellScriptToStep", results.get(0).getCommand());
+    
+        }
+}
 
     @Test
     public void testExecute() {
-        List<Integer> processes = new ArrayList<>();
-        processes.add(1);
-        String command = "addShellScriptToStep";
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("steptitle", "step 1");
-        parameters.put("label", "abc");
-        parameters.put("script", "xyz");
-        GoobiScriptAddShellScriptToStep fixture = new GoobiScriptAddShellScriptToStep();
-        List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(u);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
 
-        assertNull(s1.getScriptname1());
-        assertNull(s1.getTypAutomatischScriptpfad());
 
-        fixture.execute(results.get(0));
+            List<Integer> processes = new ArrayList<>();
+            processes.add(1);
+            String command = "addShellScriptToStep";
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("steptitle", "step 1");
+            parameters.put("label", "abc");
+            parameters.put("script", "xyz");
+            GoobiScriptAddShellScriptToStep fixture = new GoobiScriptAddShellScriptToStep();
+            List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
 
-        assertEquals("abc", s1.getScriptname1());
-        assertEquals("xyz", s1.getTypAutomatischScriptpfad());
-    }
+            assertNull(s1.getScriptname1());
+            assertNull(s1.getTypAutomatischScriptpfad());
+
+            fixture.execute(results.get(0));
+
+            assertEquals("abc", s1.getScriptname1());
+            assertEquals("xyz", s1.getTypAutomatischScriptpfad());
+    
+        }
+}
 
 }

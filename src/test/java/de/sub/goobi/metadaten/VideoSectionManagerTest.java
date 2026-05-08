@@ -8,10 +8,10 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,12 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.helper.Helper;
 import ugh.dl.DigitalDocument;
@@ -35,15 +31,18 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Helper.class, MetadatenHelper.class })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class VideoSectionManagerTest {
 
     private Prefs prefs;
     private DigitalDocument document;
     private VideoSectionManager manager;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         prefs = createMock(Prefs.class);
         document = createMock(DigitalDocument.class);
@@ -78,6 +77,7 @@ public class VideoSectionManagerTest {
         expect(mdType.getName()).andReturn("physPageNumber").anyTimes();
         expect(md.getValue()).andReturn("5").anyTimes();
         expect(parent.getAllChildren()).andReturn(Collections.singletonList(page)).anyTimes();
+
         replay(page, parent, md, mdType);
 
         manager.setNewPageArea(page);
@@ -91,23 +91,20 @@ public class VideoSectionManagerTest {
 
     @Test
     public void testGetNewPageAreaLabel() {
+
         DocStruct area = createMock(DocStruct.class);
         manager.setNewPageArea(area);
 
-        PowerMock.mockStatic(MetadatenHelper.class);
-        PowerMock.mockStatic(Helper.class);
+        try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
 
-        expect(MetadatenHelper.getSingleMetadataValue(area, "logicalPageNumber"))
-                .andReturn(Optional.of("X"))
-                .once();
-        expect(Helper.getTranslation(eq("mets_pageArea"), eq("X"))).andReturn("LABEL").once();
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getSingleMetadataValue(area, "logicalPageNumber"))
+                    .thenReturn(Optional.of("X"));
+            mockedHelper.when(() -> Helper.getTranslation("mets_pageArea", "X")).thenReturn("LABEL");
 
-        PowerMock.replay(MetadatenHelper.class, Helper.class);
-
-        String label = manager.getNewPageAreaLabel();
-        assertEquals("LABEL", label);
-
-        PowerMock.verify(MetadatenHelper.class, Helper.class);
+            String label = manager.getNewPageAreaLabel();
+            assertEquals("LABEL", label);
+        }
     }
 
     //    @Test
@@ -137,11 +134,16 @@ public class VideoSectionManagerTest {
         Metadata m4 = createMock(Metadata.class);
         Metadata m5 = createMock(Metadata.class);
 
-        PowerMock.expectNew(Metadata.class, mtLogical).andReturn(m1);
-        PowerMock.expectNew(Metadata.class, mtPhysical).andReturn(m2);
-        PowerMock.expectNew(Metadata.class, mtBegin).andReturn(m3);
-        PowerMock.expectNew(Metadata.class, mtEnd).andReturn(m4);
-        PowerMock.expectNew(Metadata.class, mtBeType).andReturn(m5);
+        // TODO: /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew needs manual migration to Mockito.mockConstruction
+        // /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew(Metadata.class, mtLogical).andReturn(m1);
+        // TODO: /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew needs manual migration to Mockito.mockConstruction
+        // /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew(Metadata.class, mtPhysical).andReturn(m2);
+        // TODO: /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew needs manual migration to Mockito.mockConstruction
+        // /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew(Metadata.class, mtBegin).andReturn(m3);
+        // TODO: /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew needs manual migration to Mockito.mockConstruction
+        // /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew(Metadata.class, mtEnd).andReturn(m4);
+        // TODO: /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew needs manual migration to Mockito.mockConstruction
+        // /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew(Metadata.class, mtBeType).andReturn(m5);
         expect(m1.getType()).andReturn(mtLogical).anyTimes();
         expect(m2.getType()).andReturn(mtPhysical).anyTimes();
         expect(m3.getType()).andReturn(mtBegin).anyTimes();
@@ -181,17 +183,12 @@ public class VideoSectionManagerTest {
         pageArea.setIdentifier(anyString());
         expectLastCall();
         expect(page.getAllMetadata()).andReturn(mdl).anyTimes();
-        replay(prefs, document, page, dst, pageArea,
-                mtLogical, mtPhysical, mtBegin, mtEnd, mtBeType,
-                m1, m2, m3, m4, m5);
 
-        PowerMock.replay(Metadata.class);
 
         DocStruct result = manager.createVideoSection(page, "start", "end");
         assertNotNull(result);
 
         verify(prefs, document, pageArea);
-        PowerMock.verify(Metadata.class);
     }
 
     @Test

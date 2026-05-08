@@ -17,81 +17,113 @@
  */
 package de.sub.goobi.persistence.managers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.api.mq.MqStatusMessage;
 import org.goobi.beans.DatabaseObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ MQResultMysqlHelper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class MQResultManagerTest extends AbstractTest {
 
     private MqStatusMessage sampleMessage;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         sampleMessage = new MqStatusMessage("ticket-1", new Date(), MqStatusMessage.MessageStatus.DONE, "Done", "original", 0, "testQueue", 1, 1,
                 "ticketName");
 
-        PowerMock.mockStatic(MQResultMysqlHelper.class);
-        EasyMock.expect(MQResultMysqlHelper.getMessagesCount(EasyMock.anyString())).andReturn(5).anyTimes();
-        EasyMock.expect(MQResultMysqlHelper.getMessageList(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt()))
-                .andReturn(java.util.Collections.emptyList())
-                .anyTimes();
-        MQResultMysqlHelper.insertMessage(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(MQResultMysqlHelper.getAllTicketNames()).andReturn(Arrays.asList("ticket-1", "ticket-2")).anyTimes();
-        PowerMock.replay(MQResultMysqlHelper.class);
     }
 
     @Test
     public void testGetHitSize() throws Exception {
-        MQResultManager manager = new MQResultManager();
-        assertEquals(5, manager.getHitSize("", "", null));
-    }
+        try (MockedStatic<MQResultMysqlHelper> mockedMQResultMysqlHelper = Mockito.mockStatic(MQResultMysqlHelper.class)) {
+            mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getMessagesCount(Mockito.anyString())).thenReturn(5);
+                        mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getMessageList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(java.util.Collections.emptyList());
+                ;
+            mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getAllTicketNames()).thenReturn(Arrays.asList("ticket-1", "ticket-2"));
+
+
+            MQResultManager manager = new MQResultManager();
+            assertEquals(5, manager.getHitSize("", "", null));
+    
+        }
+}
 
     @Test
     public void testGetList() throws Exception {
-        MQResultManager manager = new MQResultManager();
-        List<? extends DatabaseObject> result = manager.getList("", "", 0, 10, null);
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-    }
+        try (MockedStatic<MQResultMysqlHelper> mockedMQResultMysqlHelper = Mockito.mockStatic(MQResultMysqlHelper.class)) {
+            mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getMessagesCount(Mockito.anyString())).thenReturn(5);
+                        mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getMessageList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(java.util.Collections.emptyList());
+                ;
+            mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getAllTicketNames()).thenReturn(Arrays.asList("ticket-1", "ticket-2"));
+
+
+            MQResultManager manager = new MQResultManager();
+            List<? extends DatabaseObject> result = manager.getList("", "", 0, 10, null);
+            assertNotNull(result);
+            assertTrue(result.isEmpty());
+    
+        }
+}
 
     @Test
     public void testGetIdListReturnsNull() {
-        MQResultManager manager = new MQResultManager();
-        assertNull(manager.getIdList("", "", null));
-    }
+        try (MockedStatic<MQResultMysqlHelper> mockedMQResultMysqlHelper = Mockito.mockStatic(MQResultMysqlHelper.class)) {
+            mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getMessagesCount(Mockito.anyString())).thenReturn(5);
+                        mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getMessageList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(java.util.Collections.emptyList());
+                ;
+            mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getAllTicketNames()).thenReturn(Arrays.asList("ticket-1", "ticket-2"));
+
+
+            MQResultManager manager = new MQResultManager();
+            assertNull(manager.getIdList("", "", null));
+    
+        }
+}
 
     @Test
     public void testInsertResult() {
-        MQResultManager.insertResult(sampleMessage);
-    }
+        try (MockedStatic<MQResultMysqlHelper> mockedMQResultMysqlHelper = Mockito.mockStatic(MQResultMysqlHelper.class)) {
+            mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getMessagesCount(Mockito.anyString())).thenReturn(5);
+                        mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getMessageList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(java.util.Collections.emptyList());
+                ;
+            mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getAllTicketNames()).thenReturn(Arrays.asList("ticket-1", "ticket-2"));
+
+
+            MQResultManager.insertResult(sampleMessage);
+    
+        }
+}
 
     @Test
     public void testGetAllTicketNames() {
-        List<String> result = MQResultManager.getAllTicketNames();
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertTrue(result.contains("ticket-1"));
-    }
+        try (MockedStatic<MQResultMysqlHelper> mockedMQResultMysqlHelper = Mockito.mockStatic(MQResultMysqlHelper.class)) {
+            mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getMessagesCount(Mockito.anyString())).thenReturn(5);
+                        mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getMessageList(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt())).thenReturn(java.util.Collections.emptyList());
+                ;
+            mockedMQResultMysqlHelper.when(() -> MQResultMysqlHelper.getAllTicketNames()).thenReturn(Arrays.asList("ticket-1", "ticket-2"));
+
+
+            List<String> result = MQResultManager.getAllTicketNames();
+            assertNotNull(result);
+            assertEquals(2, result.size());
+            assertTrue(result.contains("ticket-1"));
+    
+        }
+}
 }

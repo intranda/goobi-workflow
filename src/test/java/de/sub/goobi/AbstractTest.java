@@ -29,12 +29,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 
 public abstract class AbstractTest {
+
+    @AfterEach
+    public void tearDownFacesContext() {
+        FacesContextHelper.reset();
+    }
 
     @BeforeAll
     public static void setUpClass() throws Exception {

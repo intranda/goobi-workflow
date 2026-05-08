@@ -25,11 +25,11 @@
  */
 package de.sub.goobi.metadaten;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -37,12 +37,8 @@ import org.easymock.EasyMock;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.Process;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -59,15 +55,18 @@ import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ViafSearch.class, Helper.class })
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+@ExtendWith(MockitoExtension.class)
 public class MetadatumImplTest extends AbstractTest {
 
     private Prefs prefs;
     private Process process;
     private static final String METADATA_TYPE = "junitMetadata";
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         ConfigurationHelper.setImagesPath("/some/path/");
@@ -75,18 +74,11 @@ public class MetadatumImplTest extends AbstractTest {
         process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
 
-        ViafSearch viafSearch = PowerMock.createMock(ViafSearch.class);
-        PowerMock.expectNew(ViafSearch.class).andReturn(viafSearch).anyTimes();
-        PowerMock.replay(viafSearch);
+        ViafSearch viafSearch = EasyMock.createMock(ViafSearch.class);
+        // TODO: /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew needs manual migration to Mockito.mockConstruction
+        // /* TODO: migrate /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew */ /* TODO: migrate PowerMock.expectNew */ PowerMock.expectNew(ViafSearch.class).andReturn(viafSearch).anyTimes();
 
-        PowerMock.mockStatic(Helper.class);
-        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
-        EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
-        PowerMock.replay(Helper.class);
 
-        PowerMock.mockStatic(ExternalContext.class);
-        PowerMock.mockStatic(FacesContext.class);
 
         FacesContext facesContext = EasyMock.createMock(FacesContext.class);
         ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
@@ -100,202 +92,391 @@ public class MetadatumImplTest extends AbstractTest {
         EasyMock.expect(servletRequest.getServerPort()).andReturn(443).anyTimes();
         EasyMock.expect(servletRequest.getContextPath()).andReturn("goobi").anyTimes();
         EasyMock.replay(servletRequest);
-
         EasyMock.replay(externalContext);
         EasyMock.replay(facesContext);
     }
 
     @Test
     public void testMetadatumImpl() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        assertNotNull(md);
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            assertNotNull(md);
+    
+        }
+}
 
     @Test
     public void testWert() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        String value = "test";
-        md.setWert(value);
-        assertEquals(value, m.getValue());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            String value = "test";
+            md.setWert(value);
+            assertEquals(value, m.getValue());
+    
+        }
+}
 
     @Test
     public void testTyp() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        md.setTyp(METADATA_TYPE);
-        assertEquals(METADATA_TYPE, md.getTyp());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            md.setTyp(METADATA_TYPE);
+            assertEquals(METADATA_TYPE, md.getTyp());
+    
+        }
+}
 
     @Test
     public void testGetIdentifier() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        md.setIdentifier(1);
-        assertEquals(1, md.getIdentifier());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            md.setIdentifier(1);
+            assertEquals(1, md.getIdentifier());
+    
+        }
+}
 
     @Test
     public void testtMd() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        md.setMd(m);
-        assertEquals(m, md.getMd());
 
-    }
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+
+            md.setMd(m);
+            assertEquals(m, md.getMd());
+
+    
+        }
+}
 
     @Test
     public void testGetOutputType() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        assertEquals("select", md.getOutputType());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            assertEquals("select", md.getOutputType());
+    
+        }
+}
 
     @Test
     public void testGetItems() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        List<SelectItem> si = md.getItems();
-        assertNotNull(si);
-        md.setItems(si);
-        List<Item> items = md.getWert();
-        assertEquals(si.size(), items.size());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            List<SelectItem> si = md.getItems();
+            assertNotNull(si);
+            md.setItems(si);
+            List<Item> items = md.getWert();
+            assertEquals(si.size(), items.size());
+    
+        }
+}
 
     @Test
     public void testSelectedItems() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        List<String> items = md.getSelectedItems();
-        assertNotNull(items);
-        items.add("a");
-        items.add("b");
-        md.setSelectedItems(items);
-        assertEquals(2, md.getSelectedItems().size());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            List<String> items = md.getSelectedItems();
+            assertNotNull(items);
+            items.add("a");
+            items.add("b");
+            md.setSelectedItems(items);
+            assertEquals(2, md.getSelectedItems().size());
+    
+        }
+}
 
     @Test
     public void testSelectedItem() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        String item = md.getSelectedItem();
-        assertNotNull(item);
-        md.setSelectedItem("a");
-        assertEquals("a", md.getSelectedItem());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            String item = md.getSelectedItem();
+            assertNotNull(item);
+            md.setSelectedItem("a");
+            assertEquals("a", md.getSelectedItem());
+    
+        }
+}
 
     @Test
     public void testGetValue() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        md.setValue("value");
-        assertEquals("value", md.getValue());
 
-    }
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+
+            md.setValue("value");
+            assertEquals("value", md.getValue());
+
+    
+        }
+}
 
     @Test
     public void testGetPossibleDatabases() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        List<String> databases = md.getPossibleDatabases();
-        assertNotNull(databases);
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            List<String> databases = md.getPossibleDatabases();
+            assertNotNull(databases);
+    
+        }
+}
 
     @Test
     public void testGetNormdataValue() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        String id = md.getNormdataValue();
-        assertNull(id);
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            String id = md.getNormdataValue();
+            assertNull(id);
+    
+        }
+}
 
     @Test
     public void testSetNormdataValue() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        String id = md.getNormdataValue();
-        assertNull(id);
-        md.setNormdataValue("value");
-        assertEquals("value", md.getNormdataValue());
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-    }
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            String id = md.getNormdataValue();
+            assertNull(id);
+            md.setNormdataValue("value");
+            assertEquals("value", md.getNormdataValue());
+
+    
+        }
+}
 
     @Test
     public void testNormDatabase() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        List<String> databases = md.getPossibleDatabases();
-        md.setNormDatabase(databases.get(0));
-        assertEquals("gnd", md.getNormDatabase());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            List<String> databases = md.getPossibleDatabases();
+            md.setNormDatabase(databases.get(0));
+            assertEquals("gnd", md.getNormDatabase());
+    
+        }
+}
 
     @Test
     public void testIsNormdata() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        assertTrue(md.isNormdata());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            assertTrue(md.isNormdata());
+    
+        }
+}
 
     @Test
     public void testUrl() throws MetadataTypeNotAllowedException {
-        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
-        m.setAuthorityFile("gnd", "https://example.com/", "1234");
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        assertEquals("https://example.com/1234", md.getUrl());
-    }
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+            m.setAuthorityFile("gnd", "https://example.com/", "1234");
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+            assertEquals("https://example.com/1234", md.getUrl());
+    
+        }
+}
 
     @Test
     public void testGenerateValue() throws Exception {
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        Metadaten fixture = new Metadaten();
-        fixture.setMyBenutzerID("1");
-        fixture.setMyProzess(process);
-        fixture.XMLlesenStart();
 
-        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitGenerationMetadata"));
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, fixture);
-        assertEquals(DisplayType.generate.name(), md.getOutputType());
-        assertNull(md.getValue());
-        md.generateValue();
-        assertEquals("abcdef main title gehij", md.getValue());
 
-    }
+            Metadaten fixture = new Metadaten();
+            fixture.setMyBenutzerID("1");
+            fixture.setMyProzess(process);
+            fixture.XMLlesenStart();
+
+            Metadata m = new Metadata(prefs.getMetadataTypeByName("junitGenerationMetadata"));
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, fixture);
+            assertEquals(DisplayType.generate.name(), md.getOutputType());
+            assertNull(md.getValue());
+            md.generateValue();
+            assertEquals("abcdef main title gehij", md.getValue());
+
+    
+        }
+}
 
     @Test
     public void testDisplayRestrictions() throws Exception {
-        Metadaten fixture = new Metadaten();
-        fixture.setMyBenutzerID("1");
-        fixture.setMyProzess(process);
-        fixture.XMLlesenStart();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        MetadataType type = prefs.getMetadataTypeByName("junitGenerationMetadata");
-        Metadata m = new Metadata(type);
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, fixture);
 
-        assertFalse(md.isDisplayRestrictions());
-        type.setAllowAccessRestriction(true);
-        assertTrue(md.isDisplayRestrictions());
+            Metadaten fixture = new Metadaten();
+            fixture.setMyBenutzerID("1");
+            fixture.setMyProzess(process);
+            fixture.XMLlesenStart();
 
-    }
+            MetadataType type = prefs.getMetadataTypeByName("junitGenerationMetadata");
+            Metadata m = new Metadata(type);
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, fixture);
+
+            assertFalse(md.isDisplayRestrictions());
+            type.setAllowAccessRestriction(true);
+            assertTrue(md.isDisplayRestrictions());
+
+    
+        }
+}
 
     @Test
     public void testRestricted() throws Exception {
-        Metadaten fixture = new Metadaten();
-        fixture.setMyBenutzerID("1");
-        fixture.setMyProzess(process);
-        fixture.XMLlesenStart();
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+             MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
-        MetadataType type = prefs.getMetadataTypeByName("junitGenerationMetadata");
-        type.setAllowAccessRestriction(true);
-        Metadata m = new Metadata(type);
-        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, fixture);
 
-        assertFalse(md.isRestricted());
-        md.setRestricted(true);
-        assertTrue(md.isRestricted());
-    }
+            Metadaten fixture = new Metadaten();
+            fixture.setMyBenutzerID("1");
+            fixture.setMyProzess(process);
+            fixture.XMLlesenStart();
+
+            MetadataType type = prefs.getMetadataTypeByName("junitGenerationMetadata");
+            type.setAllowAccessRestriction(true);
+            Metadata m = new Metadata(type);
+            MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, fixture);
+
+            assertFalse(md.isRestricted());
+            md.setRestricted(true);
+            assertTrue(md.isRestricted());
+    
+        }
+}
 }
