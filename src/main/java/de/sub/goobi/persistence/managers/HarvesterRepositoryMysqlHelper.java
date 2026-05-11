@@ -51,6 +51,8 @@ public final class HarvesterRepositoryMysqlHelper implements Serializable {
 
     private static final DateTimeFormatter ISO8601_DATETIME_FORMATTER = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
+    static final String SET_RECORD_EXPORTED_SQL = "UPDATE record SET exported=?, exported_datestamp=? WHERE id=?";
+
     public static Repository getRepository(Integer repositoryId) throws SQLException {
         Connection connection = null;
         try {
@@ -283,23 +285,24 @@ public final class HarvesterRepositoryMysqlHelper implements Serializable {
         return counterNew;
     }
 
-    public static List<String> getExistingIdentifier(List<String> identifiers) throws SQLException {
-        StringBuilder sb = new StringBuilder();
-        for (String identifier : identifiers) {
-            if (sb.length() > 0) {
-                sb.append(", ");
+    static String buildExistingIdentifierSql(int count) {
+        StringBuilder placeholders = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            if (i > 0) {
+                placeholders.append(", ");
             }
-            sb.append("'");
-            sb.append(identifier);
-            sb.append("'");
+            placeholders.append("?");
         }
+        return "SELECT identifier from record where identifier in (" + placeholders + ")";
+    }
 
-        String sql = "SELECT identifier from record where identifier in (" + sb.toString() + ")";
+    public static List<String> getExistingIdentifier(List<String> identifiers) throws SQLException {
+        String sql = buildExistingIdentifierSql(identifiers.size());
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            return run.query(connection, sql, new ColumnListHandler<>(1));
+            return run.query(connection, sql, new ColumnListHandler<>(1), identifiers.toArray());
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -499,9 +502,8 @@ public final class HarvesterRepositoryMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            String sql = "UPDATE record SET exported='" + rec.getExported() + "', exported_datestamp='"
-                    + ISO8601_DATETIME_FORMATTER.print(rec.getExportedDatestamp().getTime()) + "' WHERE id='" + rec.getId() + "'";
-            new QueryRunner().update(connection, sql);
+            String exportedDatestamp = ISO8601_DATETIME_FORMATTER.print(rec.getExportedDatestamp().getTime());
+            new QueryRunner().update(connection, SET_RECORD_EXPORTED_SQL, rec.getExported(), exportedDatestamp, rec.getId());
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
