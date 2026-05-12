@@ -25,6 +25,7 @@
  */
 package de.sub.goobi.persistence.managers;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -33,6 +34,57 @@ import org.junit.Test;
 import de.sub.goobi.AbstractTest;
 
 public class MySQLHelperTest extends AbstractTest {
+
+    // --- prepareSortField: injection protection ---
+
+    @Test
+    public void testPrepareSortFieldRejectsSqlInjectionPayload() {
+        StringBuilder sql = new StringBuilder();
+        String result = MySQLHelper.prepareSortField("'; DROP TABLE benutzer;--", sql);
+        assertEquals("", result);
+        assertFalse(sql.toString().contains("DROP"));
+    }
+
+    @Test
+    public void testPrepareSortFieldRejectsUnknownField() {
+        String result = MySQLHelper.prepareSortField("unknownColumn", new StringBuilder());
+        assertEquals("", result);
+    }
+
+    // --- prepareSortField: user sort fields from user_all.xhtml ---
+
+    @Test
+    public void testPrepareSortFieldAcceptsUserLoginField() {
+        String result = MySQLHelper.prepareSortField("benutzer.login", new StringBuilder());
+        assertEquals("benutzer.login", result);
+    }
+
+    @Test
+    public void testPrepareSortFieldAcceptsUserStandortField() {
+        String result = MySQLHelper.prepareSortField("benutzer.standort", new StringBuilder());
+        assertEquals("benutzer.standort", result);
+    }
+
+    @Test
+    public void testPrepareSortFieldAcceptsUserNameField() {
+        String result = MySQLHelper.prepareSortField("benutzer.nachname, benutzer.vorname", new StringBuilder());
+        assertEquals("benutzer.nachname, benutzer.vorname", result);
+    }
+
+    @Test
+    public void testPrepareSortFieldAcceptsUserNameFieldDescending() {
+        String result = MySQLHelper.prepareSortField("benutzer.nachname, benutzer.vorname desc", new StringBuilder());
+        assertEquals("benutzer.nachname, benutzer.vorname desc", result);
+    }
+
+    // --- prepareSortField: already-whitelisted fields still work ---
+
+    @Test
+    public void testPrepareSortFieldAcceptsInstitutionShortName() {
+        String result = MySQLHelper.prepareSortField("institution.shortName", new StringBuilder());
+        assertEquals("institution.shortName", result);
+    }
+
     @Test
     public void testCheckMariadbVersion() {
         assertTrue(MySQLHelper.checkMariadbVersion("5.5.5-10.3.8-MariaDB-1:10.3.8+maria~xenial"));

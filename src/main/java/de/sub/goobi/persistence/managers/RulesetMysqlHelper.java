@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ruleset;
 
@@ -60,8 +61,9 @@ final class RulesetMysqlHelper implements Serializable {
             sql.append(") ");
         }
 
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
+        if (StringUtils.isNotBlank(sortfield)) {
+            sql.append(" ORDER BY " + sortfield);
         }
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);

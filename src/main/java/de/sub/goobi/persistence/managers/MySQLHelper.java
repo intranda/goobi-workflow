@@ -567,7 +567,11 @@ public final class MySQLHelper implements Serializable {
             "prioritaet desc, sortHelperImages",
             "prioritaet desc, sorthelper_last_close_date",
             "prioritaet desc, schritte.prioritaet",
-            "prioritaet desc, schritte.bearbeitungsstatus");
+            "prioritaet desc, schritte.bearbeitungsstatus",
+
+            "benutzer.login",
+            "benutzer.standort",
+            "benutzer.nachname, benutzer.vorname");
 
     public static String prepareSortField(String inOrder, StringBuilder sql) {
         String order = inOrder;

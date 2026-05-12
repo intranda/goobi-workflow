@@ -202,8 +202,10 @@ final class BackgroundJobsMysqlHelper implements Serializable {
             sb.append("%\"");
         }
 
-        sb.append("ORDER BY ");
-        sb.append(order);
+        String sortfield = MySQLHelper.prepareSortField(order, sb);
+        if (StringUtils.isNotBlank(sortfield)) {
+            sb.append(" ORDER BY " + sortfield);
+        }
 
         if (start != null && count != null) {
             sb.append(" LIMIT " + start + ", " + count);

@@ -68,8 +68,9 @@ final class ProjectMysqlHelper implements Serializable {
             sql.append("institution_id = ");
             sql.append(institution.getId());
         }
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
+        if (StringUtils.isNotBlank(sortfield)) {
+            sql.append(" ORDER BY " + sortfield);
         }
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);

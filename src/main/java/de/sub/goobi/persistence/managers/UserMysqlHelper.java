@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -53,23 +54,37 @@ final class UserMysqlHelper implements Serializable {
 
     private static final long serialVersionUID = 6133952688951728602L;
 
+    static final Set<String> ALLOWED_USER_ORDER_FIELDS = Set.of(
+            "benutzer.login",
+            "benutzer.standort",
+            "benutzer.nachname, benutzer.vorname",
+            "groups",
+            "projects",
+            "institution.shortName");
+
+    static String buildUserSortField(String order, StringBuilder sql) {
+        if (!ALLOWED_USER_ORDER_FIELDS.contains(order)) {
+            return "";
+        }
+        if ("groups".equals(order)) {
+            sql.append(" LEFT JOIN (SELECT BenutzerID, GROUP_CONCAT(titel order by titel) as groups FROM benutzergruppenmitgliedschaft LEFT JOIN ");
+            sql.append("benutzergruppen ON benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzerGruppenID GROUP BY ");
+            sql.append("BenutzerID) as grp ON grp.BenutzerID = benutzer.BenutzerID ");
+            return "case when groups = '' or groups is null then 1 else 0 end, groups";
+        } else if ("projects".equals(order)) {
+            sql.append(" LEFT JOIN (SELECT BenutzerID, GROUP_CONCAT(titel order by titel) as projects  FROM projektbenutzer LEFT JOIN projekte ON ");
+            sql.append("projektbenutzer.ProjekteID = projekte.ProjekteID GROUP BY BenutzerID) as grp ON grp.BenutzerID = benutzer.BenutzerID ");
+            return "case when projects = '' or projects is null then 1 else 0 end, projects";
+        }
+        return order;
+    }
+
     public static List<User> getUsers(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM benutzer LEFT JOIN institution ON benutzer.institution_id = institution.id ");
-        String sortField = order;
-
-        if (StringUtils.isNotBlank(order) && order.contains("groups")) {
-            sql.append(" LEFT JOIN (SELECT BenutzerID, GROUP_CONCAT(titel order by titel) as groups FROM benutzergruppenmitgliedschaft LEFT JOIN ");
-            sql.append("benutzergruppen ON benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzerGruppenID GROUP BY ");
-            sql.append("BenutzerID) as grp ON grp.BenutzerID = benutzer.BenutzerID ");
-            sortField = "case when groups = '' or groups is null then 1 else 0 end, " + order;
-        } else if (StringUtils.isNotBlank(order) && order.contains("projects")) {
-            sql.append(" LEFT JOIN (SELECT BenutzerID, GROUP_CONCAT(titel order by titel) as projects  FROM projektbenutzer LEFT JOIN projekte ON ");
-            sql.append("projektbenutzer.ProjekteID = projekte.ProjekteID GROUP BY BenutzerID) as grp ON grp.BenutzerID = benutzer.BenutzerID ");
-            sortField = "case when projects = '' or projects is null then 1 else 0 end, " + order;
-        }
+        String sortField = buildUserSortField(order, sql);
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);

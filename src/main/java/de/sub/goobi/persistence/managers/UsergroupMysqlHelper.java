@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -59,8 +60,9 @@ final class UsergroupMysqlHelper implements Serializable {
             sql.append("institution_id = ");
             sql.append(institution.getId());
         }
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
+        if (StringUtils.isNotBlank(sortfield)) {
+            sql.append(" ORDER BY " + sortfield);
         }
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);

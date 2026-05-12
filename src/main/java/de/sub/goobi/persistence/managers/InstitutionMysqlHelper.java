@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
 import org.goobi.beans.JournalEntry;
@@ -51,8 +52,9 @@ final class InstitutionMysqlHelper implements Serializable {
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
+        if (StringUtils.isNotBlank(sortfield)) {
+            sql.append(" ORDER BY " + sortfield);
         }
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);
