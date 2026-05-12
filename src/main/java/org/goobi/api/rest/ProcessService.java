@@ -136,6 +136,10 @@ public class ProcessService implements IRestAuthentication {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
+        }
         // return process resource object
         return Response.status(200).entity(new RestProcessResource(process)).build();
     }
@@ -170,6 +174,10 @@ public class ProcessService implements IRestAuthentication {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
+        }
 
         startOpenAutomaticTasks(process);
 
@@ -199,6 +207,21 @@ public class ProcessService implements IRestAuthentication {
         String criteria = FilterHelper.criteriaBuilder(combinedFilter, false, null, null, null, true, false);
 
         List<Process> processes = ProcessManager.getProcesses("prozesse.Titel", criteria, null);
+
+        AuthenticationToken authToken = request != null ? (AuthenticationToken) request.getAttribute("authToken") : null;
+        if (authToken != null) {
+            List<Process> filtered = new ArrayList<>();
+            for (Process p : processes) {
+                try {
+                    if (ProjectManager.isUserMemberOfProject(authToken.getUserId(), p.getProjekt().getId())) {
+                        filtered.add(p);
+                    }
+                } catch (DAOException e) {
+                    log.error(e);
+                }
+            }
+            processes = filtered;
+        }
 
         return Response.status(200).entity(new RestProcessQueryResult(processes)).build();
     }
@@ -237,6 +260,10 @@ public class ProcessService implements IRestAuthentication {
         // process does not exist
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
+        }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
         }
         // change project
         if (StringUtils.isNotBlank(resource.getProjectName()) && !process.getProjekt().getTitel().equals(resource.getProjectName())) {
@@ -446,6 +473,33 @@ public class ProcessService implements IRestAuthentication {
         if (resp != null) {
             // error found, break up
             return resp;
+        }
+
+        // determine target project for access check
+        Project targetProject;
+        if (StringUtils.isNotBlank(resource.getProjectName())) {
+            try {
+                targetProject = ProjectManager.getProjectByName(resource.getProjectName());
+            } catch (DAOException e) {
+                log.error(e);
+                targetProject = template.getProjekt();
+            }
+        } else {
+            targetProject = template.getProjekt();
+        }
+        AuthenticationToken authToken = request != null ? (AuthenticationToken) request.getAttribute("authToken") : null;
+        if (authToken != null) {
+            if (targetProject == null) {
+                return Response.status(403).entity("Access denied").build();
+            }
+            try {
+                if (!ProjectManager.isUserMemberOfProject(authToken.getUserId(), targetProject.getId())) {
+                    return Response.status(403).entity("Access denied").build();
+                }
+            } catch (DAOException e) {
+                log.error(e);
+                return Response.status(500).entity("Internal error").build();
+            }
         }
 
         Process process = prepareProcess(processTitle, template);
@@ -706,6 +760,10 @@ public class ProcessService implements IRestAuthentication {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
+        }
         // delete process
         try {
             StorageProvider.getInstance().deleteDir(Paths.get(process.getProcessDataDirectory()));
@@ -745,6 +803,10 @@ public class ProcessService implements IRestAuthentication {
         // process does not exist
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
+        }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
         }
 
         List<RestStepResource> stepList = new ArrayList<>();
@@ -788,6 +850,10 @@ public class ProcessService implements IRestAuthentication {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
+        }
         id = Integer.parseInt(stepid);
         Step step = StepManager.getStepById(id);
         // process does not exist
@@ -827,13 +893,20 @@ public class ProcessService implements IRestAuthentication {
         if (step == null) {
             return Response.status(404).entity("Step not found").build();
         }
+        Process stepProcess = ProcessManager.getProcessById(step.getProcessId());
+        if (stepProcess != null) {
+            Response access = checkProcessAccess(stepProcess);
+            if (access != null) {
+                return access;
+            }
+        }
 
         if (resource.getOrder() != null) {
             if (!StringUtils.isNumeric(resource.getOrder()) && !"end".equalsIgnoreCase(resource.getOrder())) {
                 return Response.status(400).entity("Order must be numeric or the keyword 'end'").build();
             }
 
-            Process process = ProcessManager.getProcessById(id);
+            Process process = ProcessManager.getProcessById(step.getProcessId());
             int orderNumber = 0;
             if ("end".equalsIgnoreCase(resource.getOrder())) {
                 orderNumber = process.getSchritte().get(process.getSchritteSize() - 1).getReihenfolge() + 1;
@@ -907,7 +980,11 @@ public class ProcessService implements IRestAuthentication {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
-        // check required fields
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
+            // check required fields
+        }
 
         if (StringUtils.isBlank(resource.getSteptitle())) {
             return Response.status(400).entity("Step name is missing").build();
@@ -991,6 +1068,13 @@ public class ProcessService implements IRestAuthentication {
         if (step == null) {
             return Response.status(404).entity("Step not found").build();
         }
+        Process stepProcess = ProcessManager.getProcessById(step.getProcessId());
+        if (stepProcess != null) {
+            Response access = checkProcessAccess(stepProcess);
+            if (access != null) {
+                return access;
+            }
+        }
         // delete step
         StepManager.deleteStep(step);
         Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step deleted using REST-API: " + step.getTitel());
@@ -1023,6 +1107,13 @@ public class ProcessService implements IRestAuthentication {
         int processId = Integer.parseInt(processid);
         // get process by id
         Process process = ProcessManager.getProcessById(processId);
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
+        }
 
         // get the list of all steps of this process
         List<Step> steps = process.getSchritteList();
@@ -1093,6 +1184,13 @@ public class ProcessService implements IRestAuthentication {
         if (step.getProcessId().intValue() != procId) {
             return Response.status(409).entity("Step belongs to a different process.").build();
         }
+        Process stepProcess = ProcessManager.getProcessById(procId);
+        if (stepProcess != null) {
+            Response access = checkProcessAccess(stepProcess);
+            if (access != null) {
+                return access;
+            }
+        }
 
         switch (step.getBearbeitungsstatusEnum()) {
             case DEACTIVATED:
@@ -1134,6 +1232,13 @@ public class ProcessService implements IRestAuthentication {
             return Response.status(400).entity("Process id is missing.").build();
         }
         int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        if (process != null) {
+            Response access = checkProcessAccess(process);
+            if (access != null) {
+                return access;
+            }
+        }
         List<JournalEntry> entries = JournalManager.getLogEntriesForProcess(id);
 
         List<RestJournalResource> answer = new ArrayList<>(entries.size());
@@ -1168,6 +1273,14 @@ public class ProcessService implements IRestAuthentication {
     public Response updateJournalEntry(@PathParam("processid") String processid, RestJournalResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
+        }
+        int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        if (process != null) {
+            Response access = checkProcessAccess(process);
+            if (access != null) {
+                return access;
+            }
         }
         Integer journalId = resource.getId();
         if (journalId == null || journalId == 0) {
@@ -1216,6 +1329,14 @@ public class ProcessService implements IRestAuthentication {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
         }
+        int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        if (process != null) {
+            Response access = checkProcessAccess(process);
+            if (access != null) {
+                return access;
+            }
+        }
 
         Date creationDate = resource.getCreationDate();
         if (creationDate == null) {
@@ -1263,6 +1384,14 @@ public class ProcessService implements IRestAuthentication {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
         }
+        int id = Integer.parseInt(processid);
+        Process process = ProcessManager.getProcessById(id);
+        if (process != null) {
+            Response access = checkProcessAccess(process);
+            if (access != null) {
+                return access;
+            }
+        }
         Integer journalId = resource.getId();
         if (journalId == null || journalId == 0) {
             return Response.status(400).entity("Journal id is missing.").build();
@@ -1301,6 +1430,13 @@ public class ProcessService implements IRestAuthentication {
     public Response getProperties(@PathParam("processid") String processid) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
+        }
+        Process process = ProcessManager.getProcessById(Integer.parseInt(processid));
+        if (process != null) {
+            Response access = checkProcessAccess(process);
+            if (access != null) {
+                return access;
+            }
         }
 
         List<GoobiProperty> properties = PropertyManager.getPropertiesForObject(Integer.parseInt(processid), PropertyOwnerType.PROCESS);
@@ -1346,6 +1482,13 @@ public class ProcessService implements IRestAuthentication {
         if (property == null) {
             return Response.status(404).entity("Property not found").build();
         }
+        Process propProcess = ProcessManager.getProcessById(property.getObjectId());
+        if (propProcess != null) {
+            Response access = checkProcessAccess(propProcess);
+            if (access != null) {
+                return access;
+            }
+        }
 
         return Response.status(200).entity(new RestPropertyResource(property)).build();
     }
@@ -1377,6 +1520,13 @@ public class ProcessService implements IRestAuthentication {
         GoobiProperty property = PropertyManager.getPropertById(resource.getId());
         if (property == null) {
             return Response.status(404).entity("Property not found").build();
+        }
+        Process propProcess = ProcessManager.getProcessById(property.getObjectId());
+        if (propProcess != null) {
+            Response access = checkProcessAccess(propProcess);
+            if (access != null) {
+                return access;
+            }
         }
         if (property.getObjectId().intValue() != Integer.parseInt(processid)) {
             return Response.status(409).entity("Property belongs to a different process.").build();
@@ -1426,6 +1576,10 @@ public class ProcessService implements IRestAuthentication {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
+        }
 
         String propertyName = resource.getName();
         String propertyValue = resource.getValue();
@@ -1462,6 +1616,13 @@ public class ProcessService implements IRestAuthentication {
         GoobiProperty property = PropertyManager.getPropertById(resource.getId());
         if (property == null) {
             return Response.status(404).entity("Property not found").build();
+        }
+        Process propProcess = ProcessManager.getProcessById(property.getObjectId());
+        if (propProcess != null) {
+            Response access = checkProcessAccess(propProcess);
+            if (access != null) {
+                return access;
+            }
         }
         if (property.getObjectId().intValue() != Integer.parseInt(processid)) {
             return Response.status(409).entity("Property belongs to a different process.").build();
@@ -1633,6 +1794,10 @@ public class ProcessService implements IRestAuthentication {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
+        }
         // load metadata file
         try {
             Fileformat fileformat = process.readMetadataFile();
@@ -1715,6 +1880,10 @@ public class ProcessService implements IRestAuthentication {
         // process does not exist
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
+        }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
         }
         // load metadata file
         try {
@@ -1807,6 +1976,10 @@ public class ProcessService implements IRestAuthentication {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
+        }
 
         try {
             // load metadata file
@@ -1873,6 +2046,10 @@ public class ProcessService implements IRestAuthentication {
         if (process == null) {
             return Response.status(404).entity("Process not found").build();
         }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
+        }
         // load metadata file
         try {
             Fileformat fileformat = process.readMetadataFile();
@@ -1920,6 +2097,22 @@ public class ProcessService implements IRestAuthentication {
             return Response.status(500).entity("Cannot read metadata").build();
         }
 
+    }
+
+    private Response checkProcessAccess(Process process) {
+        AuthenticationToken token = request != null ? (AuthenticationToken) request.getAttribute("authToken") : null;
+        if (token == null) {
+            return null;
+        }
+        try {
+            if (!ProjectManager.isUserMemberOfProject(token.getUserId(), process.getProjekt().getId())) {
+                return Response.status(403).entity("Access denied").build();
+            }
+        } catch (DAOException e) {
+            log.error(e);
+            return Response.status(500).entity("Internal error").build();
+        }
+        return null;
     }
 
     @Override

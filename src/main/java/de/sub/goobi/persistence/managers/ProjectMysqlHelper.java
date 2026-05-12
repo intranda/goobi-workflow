@@ -517,4 +517,21 @@ final class ProjectMysqlHelper implements Serializable {
             }
         }
     }
+
+    static final String IS_USER_MEMBER_OF_PROJECT_SQL =
+            "SELECT COUNT(*) FROM projektbenutzer WHERE ProjekteID = ? AND BenutzerID = ?";
+
+    static boolean isUserMemberOfProject(int userId, int projectId) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            int count = new QueryRunner().query(connection, IS_USER_MEMBER_OF_PROJECT_SQL,
+                    MySQLHelper.resultSetToIntegerHandler, projectId, userId);
+            return count > 0;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
 }

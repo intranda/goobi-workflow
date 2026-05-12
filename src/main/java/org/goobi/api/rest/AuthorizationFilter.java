@@ -88,6 +88,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 String requestUri = req.getPathInfo();
                 for (AuthenticationMethodDescription method : token.getMethods()) {
                     if (method.isSelected() && methodType.equalsIgnoreCase(method.getMethodType()) && Pattern.matches(method.getUrl(), requestUri)) {
+                        req.setAttribute("authToken", token);
                         return;
                     }
                 }

@@ -300,4 +300,13 @@ public class ProjectManager implements IManager {
         return o;
     }
 
+    public static boolean isUserMemberOfProject(int userId, int projectId) throws DAOException {
+        try {
+            return ProjectMysqlHelper.isUserMemberOfProject(userId, projectId);
+        } catch (SQLException e) {
+            log.error("error checking project membership for userId=" + userId + " projectId=" + projectId, e);
+            throw new DAOException(e);
+        }
+    }
+
 }
