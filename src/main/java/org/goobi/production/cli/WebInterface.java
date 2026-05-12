@@ -178,12 +178,18 @@ public class WebInterface extends HttpServlet {
     }
 
     private void generateHelp(HttpServletResponse resp, String forCommand) throws IOException {
-        StringBuilder allHelpBuilder = new StringBuilder();
         List<IPlugin> mycommands = PluginLoader.getPluginList(PluginType.Command);
         Collections.sort(mycommands, pluginComparator);
-        for (IPlugin iPlugin : mycommands) {
+        String message = buildHelpMessage(mycommands, forCommand);
+        generateAnswer(resp, 200, "Goobi Web API Help", message);
+    }
+
+    static String buildHelpMessage(java.util.List<IPlugin> plugins, String forCommand) {
+        StringBuilder allHelpBuilder = new StringBuilder();
+        for (IPlugin iPlugin : plugins) {
             ICommandPlugin icp = (ICommandPlugin) iPlugin;
-            if (forCommand == null || forCommand.equals(icp.help().getTitle()) || ("Command " + forCommand).equals(icp.help().getTitle())) {
+            if (forCommand == null || forCommand.equals(icp.help().getTitle())
+                    || ("Command " + forCommand).equals(icp.help().getTitle())) {
                 allHelpBuilder.append("<h4>").append(icp.help().getTitle()).append("</h4>");
                 allHelpBuilder.append(icp.help().getMessage());
                 allHelpBuilder.append("<br/><br/>");
@@ -193,8 +199,11 @@ public class WebInterface extends HttpServlet {
             allHelpBuilder.append(
                     "<h4>You are searching for a description of one command only?</h4>Use the parameter 'for' to get the help only for"
                             + " one specific command.<br/><br/>Sample: 'for=AddToProcessLog'<br/><br/>");
+        } else if (allHelpBuilder.length() == 0) {
+            allHelpBuilder.append("No help found for command: ")
+                    .append(StringEscapeUtils.escapeHtml4(forCommand));
         }
-        generateAnswer(resp, 200, "Goobi Web API Help", allHelpBuilder.toString());
+        return allHelpBuilder.toString();
     }
 
     private void generateAnswer(HttpServletResponse resp, int status, String title, String message) {
@@ -203,6 +212,14 @@ public class WebInterface extends HttpServlet {
 
     private void generateAnswer(HttpServletResponse resp, CommandResponse cr) {
         resp.setStatus(cr.getStatus());
+        try {
+            resp.getOutputStream().print(buildAnswerHtml(cr));
+        } catch (IOException e) {
+            log.error(e);
+        }
+    }
+
+    static String buildAnswerHtml(CommandResponse cr) {
         StringBuilder answer = new StringBuilder();
         answer.append("<!DOCTYPE HTML>");
         answer.append("<html>");
@@ -223,18 +240,14 @@ public class WebInterface extends HttpServlet {
         answer.append("<a href=\".\" target=\"_blank\"><img class=\"img1\" src=\"uii/template/img/webapi_1.png\"></a>");
         answer.append("<a href=\"http://www.intranda.com\" target=\"_blank\"><img class=\"img2\" src=\"uii/template/img/webapi_2.png\"></a>");
         answer.append("<h1>");
-        answer.append(cr.getTitle());
+        answer.append(StringEscapeUtils.escapeHtml4(cr.getTitle()));
         answer.append("</h1>");
         answer.append("<div class=\"content\">");
         answer.append(cr.getMessage());
         answer.append(" </div>");
         answer.append("</body>");
         answer.append("</html>");
-        try {
-            resp.getOutputStream().print(answer.toString());
-        } catch (IOException e) {
-            log.error(e);
-        }
+        return answer.toString();
     }
 
     private static Comparator<IPlugin> pluginComparator = (plugin1, plugin2) -> {
