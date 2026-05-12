@@ -1910,8 +1910,7 @@ public final class DatabaseVersion {
             for (User user : allUsers) {
                 Object salt = rng.nextBytes();
                 user.setPasswordSalt(salt.toString());
-                String oldPassword = user.getPasswortCrypt();
-                user.setEncryptedPassword(user.getPasswordHash(oldPassword));
+                user.setEncryptedPassword(user.getPasswordHash(rng.toString()));
                 user.setPasswort("");
                 UserManager.saveUser(user);
             }

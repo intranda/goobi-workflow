@@ -645,16 +645,6 @@ public class UserTest extends AbstractTest {
     }
 
     @Test
-    public void testPasswortCrypt() {
-        String password = "fixture";
-        User user = new User();
-        user.setPasswortCrypt(password);
-        String crypt = user.getPasswort();
-        assertEquals("z4DxcITxhsc=", crypt);
-        assertEquals(password, user.getPasswortCrypt());
-    }
-
-    @Test
     public void testPasswortKorrekt() {
         User user = new User();
         Ldap ldap = new Ldap();

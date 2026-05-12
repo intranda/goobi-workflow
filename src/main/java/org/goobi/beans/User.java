@@ -49,7 +49,6 @@ import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationT
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.encryption.DesEncrypter;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.persistence.managers.InstitutionManager;
@@ -314,17 +313,6 @@ public class User extends AbstractJournal implements DatabaseObject {
         } catch (DAOException e) {
             log.error("error during lazy loading of User", e);
         }
-    }
-
-    public String getPasswortCrypt() {
-        DesEncrypter encrypter = new DesEncrypter();
-        return encrypter.decrypt(this.passwort);
-    }
-
-    public void setPasswortCrypt(String inpasswort) {
-        DesEncrypter encrypter = new DesEncrypter();
-        String encrypted = encrypter.encrypt(inpasswort);
-        this.passwort = encrypted;
     }
 
     public Integer getTabellengroesse() {
