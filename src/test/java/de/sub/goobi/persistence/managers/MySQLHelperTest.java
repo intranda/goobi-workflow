@@ -27,7 +27,10 @@ package de.sub.goobi.persistence.managers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -96,5 +99,55 @@ public class MySQLHelperTest extends AbstractTest {
         assertFalse(MySQLHelper.checkMariadbVersion("10.0.34-MariaDB-0ubuntu0.16.04.1"));
         assertFalse(MySQLHelper.checkMariadbVersion("10.2.2-MariaDB-0ubuntu0.16.04.1"));
         assertTrue(MySQLHelper.checkMariadbVersion("10.3.12-MariaDB-0ubuntu0.20.04.1"));
+    }
+
+    // --- convertStringToMap: secure XML deserialization (OWASP A08 fix) ---
+
+    @Test
+    public void testConvertStringToMapParsesValidXml() {
+        String xml = "<root><key1>val1</key1><key2>val2</key2></root>";
+        Map<String, String> result = MySQLHelper.convertStringToMap(xml);
+        assertEquals("val1", result.get("key1"));
+        assertEquals("val2", result.get("key2"));
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    public void testConvertStringToMapReturnsEmptyMapForNull() {
+        Map<String, String> result = MySQLHelper.convertStringToMap(null);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testConvertStringToMapReturnsEmptyMapForBlank() {
+        Map<String, String> result = MySQLHelper.convertStringToMap("  ");
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testConvertStringToMapBlocksXxeDoctype() {
+        String xxePayload = "<?xml version=\"1.0\"?><!DOCTYPE root [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]><root><key>&xxe;</key></root>";
+        // Should not throw, and should return empty map or map without external content
+        Map<String, String> result = MySQLHelper.convertStringToMap(xxePayload);
+        // Either blocked (empty/exception caught) or returned without external content
+        assertNotNull(result);
+        // The key value must NOT contain file system content
+        if (!result.isEmpty()) {
+            for (String v : result.values()) {
+                assertFalse("XXE must be blocked — file content must not appear in result", v.contains("root:"));
+            }
+        }
+    }
+
+    @Test
+    public void testConvertRoundTrip() {
+        Map<String, String> original = new java.util.LinkedHashMap<>();
+        original.put("title", "Test Process");
+        original.put("project", "My Project");
+        String xml = MySQLHelper.convertDataToString(original);
+        Map<String, String> roundTripped = MySQLHelper.convertStringToMap(xml);
+        assertEquals(original, roundTripped);
     }
 }

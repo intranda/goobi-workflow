@@ -475,18 +475,29 @@ public final class MySQLHelper implements Serializable {
     }
 
     public static Map<String, String> convertStringToMap(String additionalData) {
-
         if (StringUtils.isNotBlank(additionalData)) {
-            XStream xstream = new XStream();
-            xstream.registerConverter(new MapToStringConverter());
-            xstream.alias("root", Map.class);
-            xstream.allowTypes(new Class[] { Map.class });
-            @SuppressWarnings("unchecked")
-
-            Map<String, String> map = (HashMap<String, String>) xstream.fromXML(additionalData);
-            return map;
+            try {
+                javax.xml.parsers.DocumentBuilderFactory factory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+                factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+                factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                factory.setExpandEntityReferences(false);
+                javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
+                org.w3c.dom.Document doc = builder.parse(new org.xml.sax.InputSource(new java.io.StringReader(additionalData)));
+                doc.getDocumentElement().normalize();
+                Map<String, String> map = new HashMap<>();
+                org.w3c.dom.NodeList children = doc.getDocumentElement().getChildNodes();
+                for (int i = 0; i < children.getLength(); i++) {
+                    org.w3c.dom.Node node = children.item(i);
+                    if (node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                        map.put(node.getNodeName(), node.getTextContent());
+                    }
+                }
+                return map;
+            } catch (Exception e) {
+                log.error("Error parsing XML map data: {}", e.getMessage(), e);
+            }
         }
-
         return new HashMap<>();
     }
 
