@@ -73,12 +73,11 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript {
 
         String couldNotFindProject = "Could not find project: ";
         try {
-            List<Project> projects = ProjectManager.getProjects(null, "titel='" + projectName + "'", null, null, null);
-            if (projects == null || projects.isEmpty()) {
+            project = ProjectManager.getProjectByName(projectName);
+            if (project == null) {
                 Helper.setFehlerMeldung(couldNotFindProject, projectName);
                 return new ArrayList<>();
             }
-            project = projects.get(0);
         } catch (DAOException e) {
             Helper.setFehlerMeldung(couldNotFindProject, projectName + " - " + e.getMessage());
             log.error("Exception during assignement of project using GoobiScript", e);

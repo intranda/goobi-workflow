@@ -78,8 +78,7 @@ public class GoobiScriptSetRulesetTest extends AbstractTest {
         process.setId(1);
         process.setTitel("Test Process");
 
-        EasyMock.expect(RulesetManager.getRulesets(EasyMock.anyObject(), EasyMock.anyObject(), EasyMock.anyObject(),
-                EasyMock.anyObject(), EasyMock.anyObject())).andReturn(rulesets).anyTimes();
+        EasyMock.expect(RulesetManager.getRulesetByName(EasyMock.anyString())).andReturn(ruleset).anyTimes();
         EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
         ProcessManager.saveProcess(EasyMock.anyObject());
         EasyMock.expectLastCall().anyTimes();

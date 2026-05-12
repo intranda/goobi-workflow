@@ -39,6 +39,9 @@ final class DocketMysqlHelper implements Serializable {
 
     private static final long serialVersionUID = 8079331483121462356L;
 
+    static final String INSERT_DOCKET_SQL = "INSERT INTO dockets (name, file) VALUES (?, ?)";
+    static final String UPDATE_DOCKET_SQL = "UPDATE dockets SET name = ?, file = ? WHERE docketID = ?";
+
     public static List<Docket> getDockets(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -138,33 +141,20 @@ final class DocketMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            StringBuilder sql = new StringBuilder();
 
             if (ro.getId() == null) {
-
-                String propNames = "name, file";
-                String propValues = "'" + ro.getName() + "','" + ro.getFile() + "'";
-                sql.append("INSERT INTO dockets (");
-                sql.append(propNames);
-                sql.append(") VALUES (");
-                sql.append(propValues);
-                sql.append(")");
                 if (log.isTraceEnabled()) {
-                    log.trace(sql.toString());
+                    log.trace(INSERT_DOCKET_SQL);
                 }
-                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+                Integer id = run.insert(connection, INSERT_DOCKET_SQL, MySQLHelper.resultSetToIntegerHandler, ro.getName(), ro.getFile());
                 if (id != null) {
                     ro.setId(id);
                 }
             } else {
-                sql.append("UPDATE dockets SET ");
-                sql.append("name = '" + ro.getName() + "', ");
-                sql.append("file = '" + ro.getFile() + "' ");
-                sql.append(" WHERE docketID = " + ro.getId() + ";");
                 if (log.isTraceEnabled()) {
-                    log.trace(sql.toString());
+                    log.trace(UPDATE_DOCKET_SQL);
                 }
-                run.update(connection, sql.toString());
+                run.update(connection, UPDATE_DOCKET_SQL, ro.getName(), ro.getFile(), ro.getId());
             }
         } finally {
             if (connection != null) {

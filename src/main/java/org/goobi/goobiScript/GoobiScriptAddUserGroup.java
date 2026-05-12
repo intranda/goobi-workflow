@@ -208,17 +208,6 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript {
     }
 
     private static Usergroup getUsergroupFromDatabase(Map<String, String> parameters) {
-        try {
-            List<Usergroup> groups = UsergroupManager.getUsergroups(null, "titel='" + parameters.get(GROUP) + "'", null, null, null);
-            if (groups != null && !groups.isEmpty()) {
-                return groups.get(0);
-            } else {
-                return null;
-            }
-        } catch (DAOException e) {
-            log.error(e);
-            Helper.setFehlerMeldung("Error in GoobiScript addusergroup", e);
-            return null;
-        }
+        return UsergroupManager.getUsergroupByName(parameters.get(GROUP));
     }
 }

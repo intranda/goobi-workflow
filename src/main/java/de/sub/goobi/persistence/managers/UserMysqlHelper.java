@@ -63,7 +63,7 @@ final class UserMysqlHelper implements Serializable {
             "institution.shortName");
 
     static String buildUserSortField(String order, StringBuilder sql) {
-        if (!ALLOWED_USER_ORDER_FIELDS.contains(order)) {
+        if (StringUtils.isBlank(order) || !ALLOWED_USER_ORDER_FIELDS.contains(order)) {
             return "";
         }
         if ("groups".equals(order)) {

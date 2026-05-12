@@ -19,6 +19,7 @@ package org.goobi.goobiScript;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -28,9 +29,8 @@ import java.util.Map;
 
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
-import org.goobi.beans.Step;
+import org.goobi.beans.Project;
 import org.goobi.beans.User;
-import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,26 +42,22 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.StepManager;
-import de.sub.goobi.persistence.managers.UsergroupManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Helper.class, ProcessManager.class, StepManager.class, UsergroupManager.class })
+@PrepareForTest({ Helper.class, ProcessManager.class, ProjectManager.class })
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*" })
-public class GoobiScriptAddUserGroupTest extends AbstractTest {
+public class GoobiScriptSetProjectTest extends AbstractTest {
 
     private Process process;
-    private Step s1;
-    private Usergroup usergroup;
+    private Project project;
 
     @Before
     public void setUp() throws Exception {
         PowerMock.mockStatic(Helper.class);
         PowerMock.mockStatic(ProcessManager.class);
-        PowerMock.mockStatic(StepManager.class);
-        PowerMock.mockStatic(UsergroupManager.class);
+        PowerMock.mockStatic(ProjectManager.class);
 
         User user = new User();
         user.setVorname("firstname");
@@ -72,28 +68,17 @@ public class GoobiScriptAddUserGroupTest extends AbstractTest {
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
         EasyMock.expectLastCall().anyTimes();
 
-        usergroup = new Usergroup();
-        usergroup.setTitel("Photographers");
-
-        List<Usergroup> groups = new ArrayList<>();
-        groups.add(usergroup);
-
-        EasyMock.expect(UsergroupManager.getUsergroupByName(EasyMock.anyString())).andReturn(usergroup).anyTimes();
+        project = new Project();
+        project.setId(1);
+        project.setTitel("Newspaper_2021");
 
         process = new Process();
         process.setId(1);
+        process.setTitel("Test Process");
 
-        s1 = new Step();
-        s1.setTitel("step 1");
-        s1.setBearbeitungsstatusEnum(StepStatus.OPEN);
-        s1.setReihenfolge(1);
-
-        List<Step> steps = new ArrayList<>();
-        steps.add(s1);
-        process.setSchritte(steps);
-
+        EasyMock.expect(ProjectManager.getProjectByName(EasyMock.anyString())).andReturn(project).anyTimes();
         EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process).anyTimes();
-        StepManager.saveStep(EasyMock.anyObject());
+        ProcessManager.saveProcess(EasyMock.anyObject());
         EasyMock.expectLastCall().anyTimes();
 
         PowerMock.replayAll();
@@ -101,16 +86,16 @@ public class GoobiScriptAddUserGroupTest extends AbstractTest {
 
     @Test
     public void testConstructor() {
-        GoobiScriptAddUserGroup fixture = new GoobiScriptAddUserGroup();
+        GoobiScriptSetProject fixture = new GoobiScriptSetProject();
         assertNotNull(fixture);
-        assertEquals("addUserGroup", fixture.getAction());
+        assertEquals("setProject", fixture.getAction());
     }
 
     @Test
     public void testSampleCall() {
-        GoobiScriptAddUserGroup fixture = new GoobiScriptAddUserGroup();
+        GoobiScriptSetProject fixture = new GoobiScriptSetProject();
         assertNotNull(fixture.getSampleCall());
-        assertTrue(fixture.getSampleCall().contains("addUserGroup"));
+        assertTrue(fixture.getSampleCall().contains("setProject"));
     }
 
     @Test
@@ -118,51 +103,34 @@ public class GoobiScriptAddUserGroupTest extends AbstractTest {
         List<Integer> processes = new ArrayList<>();
         processes.add(1);
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("steptitle", "step 1");
-        parameters.put("group", "Photographers");
-        GoobiScriptAddUserGroup fixture = new GoobiScriptAddUserGroup();
-        List<GoobiScriptResult> results = fixture.prepare(processes, "addUserGroup", parameters);
+        parameters.put("project", "Newspaper_2021");
+        GoobiScriptSetProject fixture = new GoobiScriptSetProject();
+        List<GoobiScriptResult> results = fixture.prepare(processes, "setProject", parameters);
         assertEquals(1, results.size());
-        assertEquals("addUserGroup", results.get(0).getCommand());
+        assertEquals("setProject", results.get(0).getCommand());
     }
 
     @Test
-    public void testPrepareWithMissingSteptitleReturnsEmpty() {
+    public void testPrepareWithMissingProjectReturnsEmpty() {
         List<Integer> processes = new ArrayList<>();
         processes.add(1);
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("group", "Photographers");
-        GoobiScriptAddUserGroup fixture = new GoobiScriptAddUserGroup();
-        List<GoobiScriptResult> results = fixture.prepare(processes, "addUserGroup", parameters);
+        GoobiScriptSetProject fixture = new GoobiScriptSetProject();
+        List<GoobiScriptResult> results = fixture.prepare(processes, "setProject", parameters);
         assertTrue(results.isEmpty());
     }
 
     @Test
-    public void testExecuteAddsUsergroupToStep() {
+    public void testExecuteAssignsProject() {
         List<Integer> processes = new ArrayList<>();
         processes.add(1);
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("steptitle", "step 1");
-        parameters.put("group", "Photographers");
-        GoobiScriptAddUserGroup fixture = new GoobiScriptAddUserGroup();
-        // prepare initializes the cache and is required before execute
-        List<GoobiScriptResult> results = fixture.prepare(processes, "addUserGroup", parameters);
+        parameters.put("project", "Newspaper_2021");
+        GoobiScriptSetProject fixture = new GoobiScriptSetProject();
+        List<GoobiScriptResult> results = fixture.prepare(processes, "setProject", parameters);
         fixture.execute(results.get(0));
         assertEquals(GoobiScriptResultType.OK, results.get(0).getResultType());
-        assertEquals(1, s1.getBenutzergruppen().size());
-    }
-
-    @Test
-    public void testExecuteStepNotFound() {
-        List<Integer> processes = new ArrayList<>();
-        processes.add(1);
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("steptitle", "nonexistent");
-        parameters.put("group", "Photographers");
-        GoobiScriptAddUserGroup fixture = new GoobiScriptAddUserGroup();
-        List<GoobiScriptResult> results = fixture.prepare(processes, "addUserGroup", parameters);
-        fixture.execute(results.get(0));
-        assertEquals(GoobiScriptResultType.ERROR, results.get(0).getResultType());
-        assertTrue(results.get(0).getResultMessage().contains("nonexistent"));
+        assertTrue(results.get(0).getResultMessage().contains("Project"));
+        assertSame(project, process.getProjekt());
     }
 }

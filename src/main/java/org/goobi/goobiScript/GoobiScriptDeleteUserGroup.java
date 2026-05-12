@@ -35,7 +35,6 @@ import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
@@ -141,17 +140,10 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript {
     }
 
     private Usergroup getUserGroup(String groupName) {
-        try {
-            List<Usergroup> userGroups = UsergroupManager.getUsergroups(null, "titel='" + groupName + "'", null, null, null);
-            if (userGroups != null && !userGroups.isEmpty()) {
-                return userGroups.get(0);
-            } else {
-                Helper.setFehlerMeldung("Unknown group: ", groupName);
-                return null;
-            }
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("Error in GoobiScript addusergroup", e);
-            return null;
+        Usergroup userGroup = UsergroupManager.getUsergroupByName(groupName);
+        if (userGroup == null) {
+            Helper.setFehlerMeldung("Unknown group: ", groupName);
         }
+        return userGroup;
     }
 }

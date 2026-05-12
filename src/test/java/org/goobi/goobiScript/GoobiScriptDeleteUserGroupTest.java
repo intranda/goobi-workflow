@@ -78,8 +78,7 @@ public class GoobiScriptDeleteUserGroupTest extends AbstractTest {
         List<Usergroup> groups = new ArrayList<>();
         groups.add(usergroup);
 
-        EasyMock.expect(UsergroupManager.getUsergroups(EasyMock.anyObject(), EasyMock.anyObject(), EasyMock.anyObject(),
-                EasyMock.anyObject(), EasyMock.anyObject())).andReturn(groups).anyTimes();
+        EasyMock.expect(UsergroupManager.getUsergroupByName(EasyMock.anyString())).andReturn(usergroup).anyTimes();
 
         process = new Process();
         process.setId(1);

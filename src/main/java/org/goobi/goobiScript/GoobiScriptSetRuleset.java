@@ -73,12 +73,11 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript {
 
         String couldNotFindRuleset = "Could not find ruleset: ";
         try {
-            List<Ruleset> rulesets = RulesetManager.getRulesets(null, "titel='" + rulesetName + "'", null, null, null);
-            if (rulesets == null || rulesets.isEmpty()) {
+            ruleset = RulesetManager.getRulesetByName(rulesetName);
+            if (ruleset == null) {
                 Helper.setFehlerMeldung(couldNotFindRuleset, rulesetName);
                 return new ArrayList<>();
             }
-            ruleset = rulesets.get(0);
         } catch (DAOException e) {
             Helper.setFehlerMeldung(couldNotFindRuleset, rulesetName + " - " + e.getMessage());
             log.error("Exception during assignement of ruleset using GoobiScript", e);
