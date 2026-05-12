@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -544,12 +545,35 @@ public final class MySQLHelper implements Serializable {
      * @return order statement
      */
 
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+
+            "prozesse.ProzesseID",
+            "prozesse.batchID",
+            "prozesse.titel",
+            "prozesse.erstellungsdatum",
+            "prozesse.sortHelperStatus",
+            "projekte.titel",
+            "institution.shortName",
+            "sorthelper_last_close_date",
+            "sortHelperImages",
+            "BearbeitungsBeginn",
+
+            "prioritaet desc, prozesse.ProzesseID",
+            "prioritaet desc, schritte.titel",
+            "prioritaet desc, prozesse.titel",
+            "prioritaet desc, prozesse.erstellungsdatum",
+            "prioritaet desc, projekte.titel",
+            "prioritaet desc, institution.shortName",
+            "prioritaet desc, sortHelperImages",
+            "prioritaet desc, sorthelper_last_close_date",
+            "prioritaet desc, schritte.prioritaet",
+            "prioritaet desc, schritte.bearbeitungsstatus");
+
     public static String prepareSortField(String inOrder, StringBuilder sql) {
         String order = inOrder;
-        if (StringUtils.isBlank(order) || !order.startsWith("{")) {
+        if (StringUtils.isBlank(order)) {
             return order;
         }
-
         String sortfield = "";
         boolean reverse = false;
         if (order.endsWith(" desc")) {
@@ -559,7 +583,18 @@ public final class MySQLHelper implements Serializable {
         if (order.endsWith(" asc")) {
             order = order.replace(" asc", "");
         }
+        if (ALLOWED_SORT_FIELDS.contains(order)) {
+            return inOrder;
+        }
+
+        if (!order.startsWith("{")) {
+            // unknown order
+            return "";
+        }
+
         String fieldname = order.replace("{", "").replace("}", "").substring(order.indexOf("."));
+        // validate fieldname
+
         if (order.startsWith("{db_meta")) {
             sql.append(" LEFT JOIN (SELECT processid, MAX(value) AS value FROM metadata WHERE metadata.name = '");
             sql.append(escapeSql(fieldname));

@@ -165,7 +165,11 @@ public class GetOpac {
     public GetOpac(Catalogue opac) throws ParserConfigurationException {
         this.opacClient = HttpClientBuilder.create().build();
         this.cat = opac;
-        this.docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        dbf.setFeature("http://xml.org/sax/features/external-general-entities",
+                false);
+        this.docBuilder = dbf.newDocumentBuilder();
     }
 
     // MANIPULATION (Manipulation - what the object does) ******************

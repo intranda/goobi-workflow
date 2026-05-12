@@ -936,14 +936,13 @@ public final class StepMysqlHelper implements Serializable {
         sql.append("JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("JOIN batches ON prozesse.batchID = batches.id ");
         sql.append("JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
+        
         if (filter != null && !filter.isEmpty()) {
-
             sql.append(" AND " + filter.replace(" WHERE ", ""));
         }
-
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        if (StringUtils.isNotBlank(sortfield)) {
+            sql.append(" ORDER BY " + sortfield);
         }
         Connection connection = null;
         try {
@@ -962,12 +961,14 @@ public final class StepMysqlHelper implements Serializable {
     public static List<String> getDistinctStepTitles(String order, String filter) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("select distinct schritte.titel from schritte");
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
 
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        if (StringUtils.isNotBlank(sortfield)) {
+            sql.append(" ORDER BY " + sortfield);
         }
         Connection connection = null;
         try {
@@ -1156,6 +1157,7 @@ public final class StepMysqlHelper implements Serializable {
         sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
         sql.append("LEFT JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (filter != null && filter.length() > 0) {
             sql.append(filter);
@@ -1165,8 +1167,8 @@ public final class StepMysqlHelper implements Serializable {
             sql.append(" GROUP BY " + group);
         }
 
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        if (StringUtils.isNotBlank(sortfield)) {
+            sql.append(" ORDER BY " + sortfield);
         }
 
         Connection connection = null;
@@ -1189,6 +1191,7 @@ public final class StepMysqlHelper implements Serializable {
         sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
         sql.append("LEFT JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (filter != null && filter.length() > 0) {
             sql.append(filter);
@@ -1198,8 +1201,8 @@ public final class StepMysqlHelper implements Serializable {
             sql.append(" GROUP BY " + group);
         }
 
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        if (StringUtils.isNotBlank(sortfield)) {
+            sql.append(" ORDER BY " + sortfield);
         }
 
         Connection connection = null;
@@ -1223,6 +1226,7 @@ public final class StepMysqlHelper implements Serializable {
         sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
         sql.append("LEFT JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (filter != null && filter.length() > 0) {
             sql.append(filter);
@@ -1232,8 +1236,8 @@ public final class StepMysqlHelper implements Serializable {
             sql.append(" GROUP BY " + group);
         }
 
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+        if (StringUtils.isNotBlank(sortfield)) {
+            sql.append(" ORDER BY " + sortfield);
         }
 
         Connection connection = null;
