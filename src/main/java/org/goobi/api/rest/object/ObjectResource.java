@@ -44,6 +44,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.goobi.beans.Process;
 
+import lombok.extern.log4j.Log4j2;
+
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -67,6 +69,7 @@ import jakarta.xml.ws.WebServiceException;
  */
 
 @Path("/view/object")
+@Log4j2
 public class ObjectResource {
 
     private static final String FILE_NOT_FOUND = "The file could not be found in the file system: ";
@@ -156,7 +159,13 @@ public class ObjectResource {
             try (DirectoryStream<java.nio.file.Path> folders =
                     Files.newDirectoryStream(Paths.get(process.getImagesDirectory(), foldername))) {
                 for (java.nio.file.Path folder : folders) {
-                    java.nio.file.Path filePath = folder.resolve(filename);
+                    java.nio.file.Path filePath;
+                    try {
+                        filePath = safeResolveInDirectory(folder, filename, process.getImagesDirectory());
+                    } catch (IOException e) {
+                        log.error("Path traversal attempt blocked: {}", filename);
+                        continue;
+                    }
                     if (Files.isRegularFile(filePath)) {
                         return Files.readAllLines(filePath).stream().collect(Collectors.joining("\n"));
                     }
@@ -188,7 +197,13 @@ public class ObjectResource {
             try (DirectoryStream<java.nio.file.Path> folders =
                     Files.newDirectoryStream(Paths.get(process.getImagesDirectory(), foldername))) {
                 for (java.nio.file.Path folder : folders) {
-                    java.nio.file.Path filePath = folder.resolve(filename);
+                    java.nio.file.Path filePath;
+                    try {
+                        filePath = safeResolveInDirectory(folder, filename, process.getImagesDirectory());
+                    } catch (IOException e) {
+                        log.error("Path traversal attempt blocked: {}", filename);
+                        continue;
+                    }
                     if (Files.isRegularFile(filePath)) {
                         return Files.readAllLines(filePath).stream().collect(Collectors.joining("\n"));
                     }
@@ -220,7 +235,13 @@ public class ObjectResource {
             try (DirectoryStream<java.nio.file.Path> folders =
                     Files.newDirectoryStream(Paths.get(process.getImagesDirectory(), foldername))) {
                 for (java.nio.file.Path folder : folders) {
-                    java.nio.file.Path filePath = folder.resolve(filename);
+                    java.nio.file.Path filePath;
+                    try {
+                        filePath = safeResolveInDirectory(folder, filename, process.getImagesDirectory());
+                    } catch (IOException e) {
+                        log.error("Path traversal attempt blocked: {}", filename);
+                        continue;
+                    }
                     if (Files.isRegularFile(filePath)) {
                         try (FileInputStream fis = new FileInputStream(filePath.toFile())) {
                             IOUtils.copy(fis, response.getOutputStream());
@@ -265,7 +286,13 @@ public class ObjectResource {
             try (DirectoryStream<java.nio.file.Path> folders =
                     Files.newDirectoryStream(Paths.get(process.getImagesDirectory(), foldername), filter)) {
                 for (java.nio.file.Path folder : folders) {
-                    java.nio.file.Path filePath = folder.resolve(filename);
+                    java.nio.file.Path filePath;
+                    try {
+                        filePath = safeResolveInDirectory(folder, filename, process.getImagesDirectory());
+                    } catch (IOException e) {
+                        log.error("Path traversal attempt blocked: {}", filename);
+                        continue;
+                    }
                     if (Files.isRegularFile(filePath)) {
                         return new ObjectStreamingOutput(filePath);
                     }
@@ -332,6 +359,12 @@ public class ObjectResource {
             @PathParam("subfolder2") String subfolder2, @PathParam("filename") String filename)
             throws IOException, InterruptedException, SwapException, DAOException {
         return getObjectResource(request, response, processId, foldername, subfolder1, subfolder2, filename);
+    }
+
+    static java.nio.file.Path safeResolveInDirectory(java.nio.file.Path folder, String filename, String baseDir) throws IOException {
+        java.nio.file.Path resolved = folder.resolve(filename);
+        String sanitized = NIOFileUtils.sanitizePath(resolved.toString(), baseDir);
+        return java.nio.file.Paths.get(sanitized);
     }
 
     public static class ObjectStreamingOutput implements StreamingOutput {

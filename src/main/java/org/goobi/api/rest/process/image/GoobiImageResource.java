@@ -265,11 +265,16 @@ public class GoobiImageResource {
         return Path.of(folder).getFileName().toString();
     }
 
+    static Path safeResolvePath(Path base, String filename, Path allowedRoot) throws IOException {
+        String sanitized = NIOFileUtils.sanitizePath(base.resolve(filename).toString(), allowedRoot.toString());
+        return Paths.get(sanitized);
+    }
+
     private URI createGoobiImageURI(HttpServletRequest request, Path processFolder, String folder, String filename) throws ContentLibException {
         try {
             imageFolder = Paths.get(NIOFileUtils.sanitizePath(getImagesFolder(processFolder, folder).toString(), processFolder.toString()));
 
-            Path imagePath = imageFolder.resolve(filename);
+            Path imagePath = safeResolvePath(imageFolder, filename, processFolder);
 
             if (ConfigurationHelper.getInstance().isUseImageThumbnails()) {
                 this.thumbnailFolder = processFolder.resolve("thumbs");
