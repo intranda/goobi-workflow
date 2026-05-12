@@ -20,6 +20,7 @@ package de.sub.goobi.persistence.managers;
  */
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -613,6 +614,36 @@ final class ProcessMysqlHelper implements Serializable {
             }
             return answer;
 
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static List runSQL(String sql, Object[] params) throws SQLException {
+        Connection connection = null;
+        List answer = new ArrayList();
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                if (params != null) {
+                    for (int i = 0; i < params.length; i++) {
+                        stmt.setObject(i + 1, params[i]);
+                    }
+                }
+                ResultSet rs = stmt.executeQuery();
+                int columnCount = rs.getMetaData().getColumnCount();
+                while (rs.next()) {
+                    Object[] row = new Object[columnCount];
+                    for (int i = 1; i <= columnCount; i++) {
+                        row[i - 1] = rs.getString(i);
+                    }
+                    answer.add(row);
+                }
+            }
+            return answer;
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

@@ -455,12 +455,16 @@ public final class HarvesterRepositoryMysqlHelper implements Serializable {
                 sortField = "repository_datestamp";
             } else if ("exportedDatestamp".equals(sortField)) {
                 sortField = "exported_datestamp";
+            } else {
+                sortField = null;
             }
-            String so = "ASC";
-            if (!sortOrder) {
-                so = "DESC";
+            if (sortField != null) {
+                String so = "ASC";
+                if (!sortOrder) {
+                    so = "DESC";
+                }
+                sql.append(" ORDER BY ").append(sortField).append(" ").append(so);
             }
-            sql.append(" ORDER BY ").append(sortField).append(" ").append(so);
         }
         sql.append(" LIMIT ").append(pageSize).append(" OFFSET ").append(first);
 

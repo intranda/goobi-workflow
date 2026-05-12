@@ -59,6 +59,7 @@ import com.lowagie.text.rtf.RtfWriter2;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import jakarta.faces.model.SelectItem;
@@ -336,7 +337,7 @@ public class SearchResultHelper {
         }
 
         if (propertyOrder.isPresent()) {
-            sb.append(" left join properties property on property.property_name = '" + propertyOrder.get()
+            sb.append(" left join properties property on property.property_name = '" + MySQLHelper.escapeSql(propertyOrder.get())
                     + "' and property.object_id = prozesse.ProzesseID");
         }
 
@@ -380,9 +381,12 @@ public class SearchResultHelper {
 
         if (order != null && !order.isEmpty()) {
             if (propertyOrder.isPresent()) {
-                sb.append(" ORDER BY `" + propertyOrder.get() + "` " + (order.endsWith("asc") ? "asc" : "desc"));
+                sb.append(" ORDER BY `" + MySQLHelper.escapeSql(propertyOrder.get()) + "` " + (order.endsWith("asc") ? "asc" : "desc"));
             } else {
-                sb.append(" ORDER BY " + order);
+                String preparedOrder = MySQLHelper.prepareSortField(order, sb);
+                if (StringUtils.isNotBlank(preparedOrder)) {
+                    sb.append(" ORDER BY ").append(preparedOrder);
+                }
             }
         }
         List list = ProcessManager.runSQL(sb.toString());

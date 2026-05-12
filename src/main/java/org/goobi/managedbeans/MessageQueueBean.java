@@ -352,42 +352,18 @@ public class MessageQueueBean extends BasicBean {
         }
 
         String intervall = getIntervallExpression(sourceTimeUnit);
-        StringBuilder sql = new StringBuilder("select count(objects) as volumes, sum(objects) as pages ");
-        if (StringUtils.isNotBlank(intervall)) {
-            sql.append(", ");
-            sql.append(intervall).append(" as intervall ");
-
-        }
-
-        sql.append("from mq_results where status = 'DONE' ");
-        if (sourceDateFrom != null) {
-            sql.append("and time >= '");
-            sql.append(getTimestamp(sourceDateFrom, true));
-            sql.append("' ");
-
-        }
-
-        if (sourceDateTo != null) {
-            sql.append("and time <= '");
-            sql.append(getTimestamp(sourceDateTo, false));
-            sql.append("' ");
-        }
-
-        if (StringUtils.isNotBlank(ticketType)) {
-            sql.append("and ticketName= '");
-            sql.append(ticketType);
-            sql.append("' ");
-        }
-
-        if (StringUtils.isNotBlank(intervall)) {
-            sql.append("group by intervall order by intervall");
-        }
+        String sql = buildStatisticsSql(intervall, sourceDateFrom, sourceDateTo, ticketType);
 
         // first column: number of tickets
         // second column: number of objects
         // third column (if available): time period
 
-        List<?> rows = ProcessManager.runSQL(sql.toString());
+        List<?> rows;
+        if (StringUtils.isNotBlank(ticketType)) {
+            rows = ProcessManager.runSQL(sql, new Object[] { ticketType });
+        } else {
+            rows = ProcessManager.runSQL(sql);
+        }
 
         if (rows != null && !rows.isEmpty()) {
             barModelPages = new HorizontalBarChartModel();
@@ -461,6 +437,28 @@ public class MessageQueueBean extends BasicBean {
             barModelVolumes = null;
         }
 
+    }
+
+    static String buildStatisticsSql(String intervall, java.util.Date from, java.util.Date to, String ticketType) {
+        StringBuilder sql = new StringBuilder("select count(objects) as volumes, sum(objects) as pages ");
+        if (StringUtils.isNotBlank(intervall)) {
+            sql.append(", ");
+            sql.append(intervall).append(" as intervall ");
+        }
+        sql.append("from mq_results where status = 'DONE' ");
+        if (from != null) {
+            sql.append("and time >= '").append(getTimestamp(from, true)).append("' ");
+        }
+        if (to != null) {
+            sql.append("and time <= '").append(getTimestamp(to, false)).append("' ");
+        }
+        if (StringUtils.isNotBlank(ticketType)) {
+            sql.append("and ticketName = ? ");
+        }
+        if (StringUtils.isNotBlank(intervall)) {
+            sql.append("group by intervall order by intervall");
+        }
+        return sql.toString();
     }
 
     private static String getIntervallExpression(TimeUnit timeUnit) {

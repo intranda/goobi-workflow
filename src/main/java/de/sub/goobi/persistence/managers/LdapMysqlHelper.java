@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 
@@ -62,7 +63,10 @@ final class LdapMysqlHelper implements Serializable {
         }
 
         if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
+            String preparedOrder = MySQLHelper.prepareSortField(order, sql);
+            if (StringUtils.isNotBlank(preparedOrder)) {
+                sql.append(" ORDER BY ").append(preparedOrder);
+            }
         }
         if (start != null && count != null) {
             sql.append(" LIMIT " + start + ", " + count);

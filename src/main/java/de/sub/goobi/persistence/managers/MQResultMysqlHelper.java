@@ -44,6 +44,17 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class MQResultMysqlHelper {
 
+    static final java.util.Set<String> ALLOWED_SORT_FIELDS = java.util.Collections.unmodifiableSet(
+            new java.util.HashSet<>(java.util.Arrays.asList(
+                    "ticketName", "ticketName desc", "ticketName asc",
+                    "original_message", "original_message desc", "original_message asc",
+                    "processid", "processid desc", "processid asc",
+                    "time", "time desc", "time asc",
+                    "status", "status desc", "status asc",
+                    "objects", "objects desc", "objects asc",
+                    "pages", "pages desc", "pages asc",
+                    "id", "id desc", "id asc")));
+
     public static void insertMessage(MqStatusMessage message) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO mq_results (ticket_id, time, status, message, original_message, objects, processid, stepid ");
@@ -66,7 +77,7 @@ public class MQResultMysqlHelper {
 
     }
 
-    private static ResultSetHandler<List<MqStatusMessage>> rsToStatusMessageListHandler = new ResultSetHandler<List<MqStatusMessage>>() {
+    private static ResultSetHandler<List<MqStatusMessage>> rsToStatusMessageListHandler = new ResultSetHandler<>() {
         @Override
         public List<MqStatusMessage> handle(ResultSet rs) throws SQLException {
             List<MqStatusMessage> messageList = new ArrayList<>();
@@ -111,7 +122,9 @@ public class MQResultMysqlHelper {
         StringBuilder sql = new StringBuilder("SELECT * FROM mq_results");
         appendFilter(filter, sql);
         if (StringUtils.isNotBlank(order)) {
-            sql.append(" ORDER BY ").append(order);
+            if (ALLOWED_SORT_FIELDS.contains(order)) {
+                sql.append(" ORDER BY ").append(order);
+            }
         }
         if (start != null && count != null) {
             sql.append(" LIMIT ").append(start).append(", ").append(count);

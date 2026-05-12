@@ -272,6 +272,16 @@ public class ProcessManager implements IManager {
         return new ArrayList();
     }
 
+    @SuppressWarnings("rawtypes")
+    public static List runSQL(String sql, Object[] params) {
+        try {
+            return ProcessMysqlHelper.runSQL(sql, params);
+        } catch (SQLException e) {
+            log.error("Error executing SQL query: {}", e.getMessage(), e);
+        }
+        return new ArrayList();
+    }
+
     public static int getNumberOfProcessesWithTitle(String title) {
         int answer = 0;
         try {
