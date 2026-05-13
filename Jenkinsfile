@@ -428,12 +428,17 @@ pipeline {
             if [ -n "$TAG_NAME" ]; then
               TAGS="-t $GHCR_IMAGE_BASE:$TAG_NAME -t $DOCKERHUB_IMAGE_BASE:$TAG_NAME -t $NEXUS_IMAGE_BASE:$TAG_NAME"
               SLIM_TAGS="-t $GHCR_IMAGE_BASE:$TAG_NAME-slim -t $DOCKERHUB_IMAGE_BASE:$TAG_NAME-slim -t $NEXUS_IMAGE_BASE:$TAG_NAME-slim"
+              # If this tag is the highest v* tag in the upstream repo, also publish as :latest
+              git fetch --tags --quiet origin || true
+              HIGHEST=$(git tag -l 'v*' | sort -V | tail -n 1)
+              echo "Current tag: $TAG_NAME, highest upstream v* tag: $HIGHEST"
+              if [ "$HIGHEST" = "$TAG_NAME" ]; then
+                echo "Tagging as latest"
+                TAGS="$TAGS -t $GHCR_IMAGE_BASE:latest -t $DOCKERHUB_IMAGE_BASE:latest -t $NEXUS_IMAGE_BASE:latest"
+                SLIM_TAGS="$SLIM_TAGS -t $GHCR_IMAGE_BASE:latest-slim -t $DOCKERHUB_IMAGE_BASE:latest-slim -t $NEXUS_IMAGE_BASE:latest-slim"
+              fi
             else
               case $GIT_BRANCH in
-                origin/master|master)
-                  TAGS="-t $GHCR_IMAGE_BASE:latest -t $DOCKERHUB_IMAGE_BASE:latest -t $NEXUS_IMAGE_BASE:latest"
-                  SLIM_TAGS="-t $GHCR_IMAGE_BASE:latest-slim -t $DOCKERHUB_IMAGE_BASE:latest-slim -t $NEXUS_IMAGE_BASE:latest-slim"
-                ;;
                 origin/develop|develop)
                   TAGS="-t $GHCR_IMAGE_BASE:dev -t $DOCKERHUB_IMAGE_BASE:dev -t $NEXUS_IMAGE_BASE:dev"
                   SLIM_TAGS="-t $GHCR_IMAGE_BASE:dev-slim -t $DOCKERHUB_IMAGE_BASE:dev-slim -t $NEXUS_IMAGE_BASE:dev-slim"
@@ -453,7 +458,7 @@ pipeline {
               exit 0
             fi
 
-            if [ -n "$TAG_NAME" ] || [ "$GIT_BRANCH" = "origin/master" ] || [ "$GIT_BRANCH" = "master" ]; then
+            if [ -n "$TAG_NAME" ]; then
               PLATFORMS="linux/amd64,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x"
             else
               PLATFORMS="linux/amd64,linux/arm64/v8"
