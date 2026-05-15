@@ -25,32 +25,33 @@
  */
 package org.goobi.api.rest.object;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
 
 public class ObjectResourcePathTraversalTest extends AbstractTest {
 
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+    @TempDir
+    private Path tempDir;
 
-    @Test(expected = IOException.class)
+    @Test
     public void testSafeResolveBlocksTraversal() throws Exception {
-        Path base = tempFolder.newFolder("images").toPath();
-        ObjectResource.safeResolveInDirectory(base, "../../etc/passwd", base.toString());
+        Path base = Files.createDirectory(tempDir.resolve("images"));
+        assertThrows(IOException.class,
+                () -> ObjectResource.safeResolveInDirectory(base, "../../etc/passwd", base.toString()));
     }
 
     @Test
     public void testSafeResolveAllowsValidFilename() throws Exception {
-        Path base = tempFolder.newFolder("images2").toPath();
+        Path base = Files.createDirectory(tempDir.resolve("images2"));
         Path result = ObjectResource.safeResolveInDirectory(base, "model.gltf", base.toString());
         assertNotNull(result);
     }

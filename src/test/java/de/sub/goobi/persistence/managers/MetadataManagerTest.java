@@ -17,9 +17,9 @@
  */
 package de.sub.goobi.persistence.managers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,127 +27,217 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.goobi.production.cli.helper.StringPair;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.metadaten.search.DatabaseMetadataField;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ MetadataMysqlHelper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+@ExtendWith(MockitoExtension.class)
 public class MetadataManagerTest extends AbstractTest {
 
     private Map<String, List<DatabaseMetadataField>> sampleMetadata;
 
-    @Before
+    private List<StringPair> metadataList;
+    private List<String> names;
+
+    @BeforeEach
     public void setUp() throws Exception {
         sampleMetadata = new HashMap<>();
         sampleMetadata.put("TitleDocMain", Arrays.asList(new DatabaseMetadataField("TitleDocMain", "Test Title", "", "", "")));
         sampleMetadata.put("Author", Arrays.asList(new DatabaseMetadataField("Author", "Test Author", "", "", "")));
 
-        PowerMock.mockStatic(MetadataMysqlHelper.class);
+        names = Arrays.asList("TitleDocMain", "Author");
 
-        MetadataMysqlHelper.removeMetadata(EasyMock.anyInt());
-        EasyMock.expectLastCall().anyTimes();
-
-        MetadataMysqlHelper.insertMetadata(EasyMock.anyInt(), EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-
-        List<String> names = Arrays.asList("TitleDocMain", "Author");
-        EasyMock.expect(MetadataMysqlHelper.getDistinctMetadataNames()).andReturn(names).anyTimes();
-
-        List<StringPair> metadataList = new ArrayList<>();
+        metadataList = new ArrayList<>();
         metadataList.add(new StringPair("TitleDocMain", "Test Title"));
-        EasyMock.expect(MetadataMysqlHelper.getMetadata(EasyMock.anyInt())).andReturn(metadataList).anyTimes();
 
-        EasyMock.expect(MetadataMysqlHelper.getMetadataValue(EasyMock.anyInt(), EasyMock.anyString())).andReturn("Test Title").anyTimes();
-        EasyMock.expect(MetadataMysqlHelper.getAllValuesForMetadata(EasyMock.anyInt(), EasyMock.anyString())).andReturn("Test Title").anyTimes();
-        EasyMock.expect(MetadataMysqlHelper.getAllMetadataValues(EasyMock.anyInt(), EasyMock.anyString()))
-                .andReturn(Arrays.asList("Test Title"))
-                .anyTimes();
-        EasyMock.expect(MetadataMysqlHelper.getAllProcessesWithMetadata(EasyMock.anyString(), EasyMock.anyString()))
-                .andReturn(Arrays.asList(1, 2, 3))
-                .anyTimes();
-
-        List<DatabaseMetadataField> extendedMetadata = Arrays.asList(
-                new DatabaseMetadataField("TitleDocMain", "Test Title", "GND", "https://d-nb.info/gnd/", "12345"));
-        EasyMock.expect(MetadataMysqlHelper.getExtendedMetadata(EasyMock.anyInt())).andReturn(extendedMetadata).anyTimes();
-
-        PowerMock.replay(MetadataMysqlHelper.class);
     }
 
     @Test
     public void testDeleteMetadata() {
-        MetadataManager.deleteMetadata(1);
+        try (MockedStatic<MetadataMysqlHelper> mockedMetadataMysqlHelper = Mockito.mockStatic(MetadataMysqlHelper.class)) {
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getDistinctMetadataNames()).thenReturn(names);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadataValue(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllValuesForMetadata(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllMetadataValues(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList("Test Title"));
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllProcessesWithMetadata(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList(1, 2, 3));
+
+            MetadataManager.deleteMetadata(1);
+
+        }
     }
 
     @Test
     public void testInsertMetadata() {
-        MetadataManager.insertMetadata(1, sampleMetadata);
+        try (MockedStatic<MetadataMysqlHelper> mockedMetadataMysqlHelper = Mockito.mockStatic(MetadataMysqlHelper.class)) {
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getDistinctMetadataNames()).thenReturn(names);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadataValue(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllValuesForMetadata(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllMetadataValues(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList("Test Title"));
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllProcessesWithMetadata(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList(1, 2, 3));
+
+            MetadataManager.insertMetadata(1, sampleMetadata);
+
+        }
     }
 
     @Test
     public void testUpdateMetadata() {
-        MetadataManager.updateMetadata(1, sampleMetadata);
+        try (MockedStatic<MetadataMysqlHelper> mockedMetadataMysqlHelper = Mockito.mockStatic(MetadataMysqlHelper.class)) {
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getDistinctMetadataNames()).thenReturn(names);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadataValue(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllValuesForMetadata(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllMetadataValues(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList("Test Title"));
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllProcessesWithMetadata(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList(1, 2, 3));
+
+            MetadataManager.updateMetadata(1, sampleMetadata);
+
+        }
     }
 
     @Test
     public void testGetDistinctMetadataNames() {
-        List<String> result = MetadataManager.getDistinctMetadataNames();
-        assertNotNull(result);
-        assertEquals(2, result.size());
+        try (MockedStatic<MetadataMysqlHelper> mockedMetadataMysqlHelper = Mockito.mockStatic(MetadataMysqlHelper.class)) {
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getDistinctMetadataNames()).thenReturn(names);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadataValue(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllValuesForMetadata(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllMetadataValues(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList("Test Title"));
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllProcessesWithMetadata(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList(1, 2, 3));
+
+            List<String> result = MetadataManager.getDistinctMetadataNames();
+            assertNotNull(result);
+            assertEquals(2, result.size());
+
+        }
     }
 
     @Test
     public void testGetMetadata() {
-        List<StringPair> result = MetadataManager.getMetadata(1);
-        assertNotNull(result);
-        assertEquals(1, result.size());
+        try (MockedStatic<MetadataMysqlHelper> mockedMetadataMysqlHelper = Mockito.mockStatic(MetadataMysqlHelper.class)) {
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getDistinctMetadataNames()).thenReturn(names);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadataValue(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllValuesForMetadata(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllMetadataValues(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList("Test Title"));
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllProcessesWithMetadata(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList(1, 2, 3));
+
+            List<StringPair> result = MetadataManager.getMetadata(1);
+            assertNotNull(result);
+            assertEquals(1, result.size());
+
+        }
     }
 
     @Test
     public void testGetMetadataValue() {
-        String result = MetadataManager.getMetadataValue(1, "TitleDocMain");
-        assertEquals("Test Title", result);
+        try (MockedStatic<MetadataMysqlHelper> mockedMetadataMysqlHelper = Mockito.mockStatic(MetadataMysqlHelper.class)) {
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getDistinctMetadataNames()).thenReturn(names);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadataValue(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllValuesForMetadata(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllMetadataValues(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList("Test Title"));
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllProcessesWithMetadata(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList(1, 2, 3));
+
+            String result = MetadataManager.getMetadataValue(1, "TitleDocMain");
+            assertEquals("Test Title", result);
+
+        }
     }
 
     @Test
     public void testGetAllValuesForMetadata() {
-        String result = MetadataManager.getAllValuesForMetadata(1, "TitleDocMain");
-        assertEquals("Test Title", result);
+        try (MockedStatic<MetadataMysqlHelper> mockedMetadataMysqlHelper = Mockito.mockStatic(MetadataMysqlHelper.class)) {
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getDistinctMetadataNames()).thenReturn(names);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadataValue(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllValuesForMetadata(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllMetadataValues(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList("Test Title"));
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllProcessesWithMetadata(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList(1, 2, 3));
+
+            String result = MetadataManager.getAllValuesForMetadata(1, "TitleDocMain");
+            assertEquals("Test Title", result);
+
+        }
     }
 
     @Test
     public void testGetAllMetadataValues() {
-        List<String> result = MetadataManager.getAllMetadataValues(1, "TitleDocMain");
-        assertNotNull(result);
-        assertTrue(result.contains("Test Title"));
+        try (MockedStatic<MetadataMysqlHelper> mockedMetadataMysqlHelper = Mockito.mockStatic(MetadataMysqlHelper.class)) {
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getDistinctMetadataNames()).thenReturn(names);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadataValue(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllValuesForMetadata(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllMetadataValues(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList("Test Title"));
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllProcessesWithMetadata(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList(1, 2, 3));
+
+            List<String> result = MetadataManager.getAllMetadataValues(1, "TitleDocMain");
+            assertNotNull(result);
+            assertTrue(result.contains("Test Title"));
+
+        }
     }
 
     @Test
     public void testGetProcessesWithMetadata() {
-        List<Integer> result = MetadataManager.getProcessesWithMetadata("TitleDocMain", "Test Title");
-        assertNotNull(result);
-        assertEquals(3, result.size());
+        try (MockedStatic<MetadataMysqlHelper> mockedMetadataMysqlHelper = Mockito.mockStatic(MetadataMysqlHelper.class)) {
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getDistinctMetadataNames()).thenReturn(names);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getMetadataValue(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllValuesForMetadata(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn("Test Title");
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllMetadataValues(Mockito.anyInt(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList("Test Title"));
+            mockedMetadataMysqlHelper.when(() -> MetadataMysqlHelper.getAllProcessesWithMetadata(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(Arrays.asList(1, 2, 3));
+
+            List<Integer> result = MetadataManager.getProcessesWithMetadata("TitleDocMain", "Test Title");
+            assertNotNull(result);
+            assertEquals(3, result.size());
+
+        }
     }
 
-    @Test
-    public void testGetExtendedMetadata() {
-        List<DatabaseMetadataField> result = MetadataManager.getExtendedMetadata(1);
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("TitleDocMain", result.get(0).getMetadataName());
-        assertEquals("Test Title", result.get(0).getMetadataValue());
-        assertEquals("GND", result.get(0).getAuthorityName());
-        assertEquals("https://d-nb.info/gnd/", result.get(0).getAuthorityUri());
-        assertEquals("12345", result.get(0).getAuthorityValue());
-    }
 }

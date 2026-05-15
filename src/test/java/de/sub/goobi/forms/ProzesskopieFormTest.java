@@ -2,27 +2,27 @@ package de.sub.goobi.forms;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  */
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.FileSystems;
@@ -31,9 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
@@ -42,15 +40,14 @@ import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
@@ -66,25 +63,29 @@ import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.net.ssl.*", "javax.management.*" })
-@RunWith(PowerMockRunner.class)
-
-@PrepareForTest({ PropertyManager.class, ProcessManager.class, MetadataManager.class,
-        HistoryAnalyserJob.class, StepManager.class, Helper.class })
+@ExtendWith(MockitoExtension.class)
 public class ProzesskopieFormTest extends AbstractTest {
 
     private Process template;
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+
+    @TempDir
+    private Path tempDir;
 
     private Step secondStep;
     private List<User> userList = new ArrayList<>();
 
-    @Before
+    private MockedStatic<PropertyManager> mockedPropertyManager;
+    private MockedStatic<ProcessManager> mockedProcessManager;
+    private MockedStatic<MetadataManager> mockedMetadataManager;
+    private MockedStatic<HistoryAnalyserJob> mockedHistoryAnalyserJob;
+    private MockedStatic<StepManager> mockedStepManager;
+    private MockedStatic<Helper> mockedHelper;
+
+    @BeforeEach
     public void setUp() throws Exception {
-        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        Path configBase = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
         // for junit tests in eclipse
-        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties");
+        Path goobiFolder = Paths.get(configBase.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties");
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
@@ -93,7 +94,7 @@ public class ProzesskopieFormTest extends AbstractTest {
         ConfigurationHelper.getInstance().setParameter("script_createDirMeta", "");
 
         // redirect metadata writes to a temp directory so tests don't pollute src/test/resources
-        File metadataDir = folder.newFolder("metadata");
+        File metadataDir = tempDir.toFile();
         ConfigurationHelper.getInstance().setParameter("dataFolder", metadataDir.getAbsolutePath() + FileSystems.getDefault().getSeparator());
 
         this.template = MockProcess.createProcess();
@@ -126,6 +127,28 @@ public class ProzesskopieFormTest extends AbstractTest {
 
         prepareMocking();
 
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (mockedHelper != null) {
+            mockedHelper.close();
+        }
+        if (mockedStepManager != null) {
+            mockedStepManager.close();
+        }
+        if (mockedHistoryAnalyserJob != null) {
+            mockedHistoryAnalyserJob.close();
+        }
+        if (mockedMetadataManager != null) {
+            mockedMetadataManager.close();
+        }
+        if (mockedProcessManager != null) {
+            mockedProcessManager.close();
+        }
+        if (mockedPropertyManager != null) {
+            mockedPropertyManager.close();
+        }
     }
 
     @Test
@@ -436,7 +459,7 @@ public class ProzesskopieFormTest extends AbstractTest {
         // Default doctype is "monograph", so only the first "Title" field is active.
         List<AdditionalField> fields = form.getAdditionalFields();
         assertNotNull(fields);
-        assertTrue("Expected at least 7 additional fields from test config", fields.size() >= 7);
+        assertTrue(fields.size() >= 7, "Expected at least 7 additional fields from test config");
 
         // Set values on the fields visible for the active doctype (monograph)
         // Field index 1 = "Title" (isnotdoctype=multivolume) — active for monograph
@@ -471,54 +494,34 @@ public class ProzesskopieFormTest extends AbstractTest {
         assertEquals("", form.getProzessKopie().getTitel());
     }
 
-    @SuppressWarnings("unchecked")
     private void prepareMocking() throws Exception {
 
         GoobiProperty prop = new GoobiProperty(PropertyOwnerType.PROCESS);
         List<GoobiProperty> propList = new ArrayList<>();
         propList.add(prop);
 
-        PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.anyObject())).andReturn(propList).anyTimes();
-        PowerMock.replay(PropertyManager.class);
+        mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+        mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+        mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+        mockedHistoryAnalyserJob = Mockito.mockStatic(HistoryAnalyserJob.class);
+        mockedStepManager = Mockito.mockStatic(StepManager.class);
+        mockedHelper = Mockito.mockStatic(Helper.class);
 
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString(), EasyMock.anyObject(Institution.class))).andReturn(0).anyTimes();
+        mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(propList);
 
-        PowerMock.mockStatic(MetadataManager.class);
-        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-        MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
+        mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any(Institution.class))).thenReturn(0);
 
-        PowerMock.mockStatic(HistoryAnalyserJob.class);
-        EasyMock.expect(HistoryAnalyserJob.updateHistoryForProzess(EasyMock.anyObject(Process.class))).andReturn(true);
-        ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
-        //
-        PowerMock.mockStatic(StepManager.class);
-        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(this.template.getSchritte());
-        //
-        //        PowerMock.mockStatic(FilesystemHelper.class);
-        //        FilesystemHelper.createDirectory(EasyMock.anyString());
-        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(null);
-        //        EasyMock.expectLastCall().anyTimes();
+        mockedHistoryAnalyserJob.when(() -> HistoryAnalyserJob.updateHistoryForProzess(Mockito.any(Process.class))).thenReturn(true);
 
-        PowerMock.mockStatic(Helper.class);
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
-        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
-        Helper.setFehlerMeldung(EasyMock.anyString());
-        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyObject(Exception.class));
-        //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
-        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
+        mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(this.template.getSchritte());
 
-        PowerMock.replay(Helper.class);
+        mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(null);
 
-        PowerMock.replay(ProcessManager.class);
-        PowerMock.replay(MetadataManager.class);
-        PowerMock.replay(HistoryAnalyserJob.class);
-        PowerMock.replay(StepManager.class);
-        //        PowerMock.replay(FilesystemHelper.class);
-
+        mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+        mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
     }
 
 }

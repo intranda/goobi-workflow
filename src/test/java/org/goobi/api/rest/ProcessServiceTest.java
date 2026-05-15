@@ -1,26 +1,26 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 package org.goobi.api.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.goobi.api.rest.model.RestJournalResource;
 import org.goobi.api.rest.model.RestMetadataResource;
 import org.goobi.api.rest.model.RestProcessResource;
@@ -49,14 +48,13 @@ import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.CloseStepHelper;
@@ -75,11 +73,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import jakarta.ws.rs.core.Response;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ProcessManager.class, ProjectManager.class, RulesetManager.class, DocketManager.class, PropertyManager.class, StepManager.class,
-        UsergroupManager.class, CloseStepHelper.class, JournalManager.class, Helper.class,
-        MetadataManager.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
+@ExtendWith(MockitoExtension.class)
 public class ProcessServiceTest extends AbstractTest {
 
     private ProcessService service;
@@ -89,17 +83,27 @@ public class ProcessServiceTest extends AbstractTest {
     private Step step;
     private JournalEntry entry;
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         // if process folder exists, delete it
         Path tempFolder = Paths.get(process.getProcessDataDirectory());
         if (StorageProvider.getInstance().isFileExists(tempFolder)) {
             StorageProvider.getInstance().deleteDir(tempFolder);
         }
-
     }
 
-    @Before
+    private Batch batch;
+    private Docket docket;
+    private Usergroup grp;
+    private List<JournalEntry> journal;
+    private List<StringPair> metadataList;
+    private Docket otherDocket;
+    private Project otherProject;
+    private Ruleset otherRuleset;
+    private GoobiProperty property;
+    private List<GoobiProperty> props;
+
+    @BeforeEach
     public void setUp() throws Exception {
         service = new ProcessService();
 
@@ -124,21 +128,21 @@ public class ProcessServiceTest extends AbstractTest {
 
         Files.copy(Paths.get(oldMetadata), Paths.get(newDirectory.toString(), "meta.xml"));
 
-        Project otherProject = new Project();
+        otherProject = new Project();
         otherProject.setTitel("other");
         Institution inst = new Institution();
         inst.setShortName("name");
         process.getProjekt().setInstitution(inst);
         otherProject.setInstitution(inst);
-        Ruleset otherRuleset = new Ruleset();
+        otherRuleset = new Ruleset();
         otherRuleset.setTitel("otherRuleset");
-        Docket docket = new Docket();
+        docket = new Docket();
         docket.setName("docket");
         process.setDocket(docket);
-        Docket otherDocket = new Docket();
+        otherDocket = new Docket();
         otherDocket.setName("otherDocket");
 
-        Batch batch = new Batch();
+        batch = new Batch();
         batch.setBatchId(1);
         batch.setBatchLabel("label");
 
@@ -148,7 +152,7 @@ public class ProcessServiceTest extends AbstractTest {
         step.setPrioritaet(1);
         step.setProcessId(1);
 
-        GoobiProperty property = new GoobiProperty(PropertyOwnerType.PROCESS);
+        property = new GoobiProperty(PropertyOwnerType.PROCESS);
         property.setOwner(process);
         property.setObjectId(1);
         property.setCreationDate(new Date());
@@ -156,227 +160,382 @@ public class ProcessServiceTest extends AbstractTest {
         property.setPropertyValue("value");
 
         entry = new JournalEntry(1, 1, new Date(), "user", LogType.INFO, "content", "filename", EntryType.PROCESS, null);
-        List<JournalEntry> journal = new ArrayList<>();
+        journal = new ArrayList<>();
         journal.add(entry);
 
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
-        EasyMock.expect(ProcessManager.getProcessByExactTitle(EasyMock.anyString())).andReturn(process).anyTimes();
-        EasyMock.expect(ProcessManager.getBatchById(EasyMock.anyInt())).andReturn(batch).anyTimes();
-        EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString(), EasyMock.anyObject())).andReturn(0).anyTimes();
-        ProcessManager.saveProcessInformation(EasyMock.anyObject());
-        ProcessManager.saveProcessInformation(EasyMock.anyObject());
-        ProcessManager.saveProcess(EasyMock.anyObject());
-        ProcessManager.deleteProcess(EasyMock.anyObject());
-        PowerMock.mockStatic(ProjectManager.class);
-        EasyMock.expect(ProjectManager.getProjectByName(EasyMock.anyString())).andReturn(otherProject).anyTimes();
-
-        PowerMock.mockStatic(RulesetManager.class);
-        EasyMock.expect(RulesetManager.getRulesetByName(EasyMock.anyString())).andReturn(otherRuleset).anyTimes();
-
-        PowerMock.mockStatic(DocketManager.class);
-        EasyMock.expect(DocketManager.getDocketByName(EasyMock.anyString())).andReturn(otherDocket).anyTimes();
-
-        List<GoobiProperty> props = new ArrayList<>();
+        props = new ArrayList<>();
         props.add(property);
 
-        PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.anyObject())).andReturn(props).anyTimes();
-
-        EasyMock.expect(PropertyManager.getPropertById(EasyMock.anyInt())).andReturn(property).anyTimes();
-
-        PropertyManager.saveProperty(EasyMock.anyObject());
-        PropertyManager.saveProperty(EasyMock.anyObject());
-        PropertyManager.deleteProperty(EasyMock.anyObject());
-        PropertyManager.deleteProperty(EasyMock.anyObject());
-
-        PowerMock.mockStatic(StepManager.class);
-        EasyMock.expect(StepManager.getStepsForProcess(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
-        EasyMock.expect(StepManager.getStepById(EasyMock.anyInt())).andReturn(step).anyTimes();
-        StepManager.saveStep(EasyMock.anyObject());
-        StepManager.saveStep(EasyMock.anyObject());
-        StepManager.deleteStep(EasyMock.anyObject());
-
-        PowerMock.mockStatic(UsergroupManager.class);
-        Usergroup grp = new Usergroup();
+        grp = new Usergroup();
         grp.setTitel("group");
-        EasyMock.expect(UsergroupManager.getUsergroupByName(EasyMock.anyString())).andReturn(grp).anyTimes();
 
-        PowerMock.mockStatic(CloseStepHelper.class);
-        EasyMock.expect(CloseStepHelper.closeStep(EasyMock.anyObject(), EasyMock.anyObject())).andReturn(true).anyTimes();
+        metadataList = new ArrayList<>();
 
-        PowerMock.mockStatic(JournalManager.class);
-        EasyMock.expect(JournalManager.getLogEntriesForProcess(EasyMock.anyInt())).andReturn(journal).anyTimes();
-        EasyMock.expect(JournalManager.getJournalEntryById(EasyMock.anyInt())).andReturn(entry).anyTimes();
-        JournalManager.saveJournalEntry(EasyMock.anyObject());
-        JournalManager.deleteJournalEntry(EasyMock.anyObject());
-
-        PowerMock.mockStatic(Helper.class);
-        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyString());
-        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(), EasyMock.anyString());
-
-        PowerMock.mockStatic(MetadataManager.class);
-
-        MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject());
-        List<StringPair> metadataList = new ArrayList<>();
-        EasyMock.expect(MetadataManager.getMetadata(EasyMock.anyInt())).andReturn(metadataList).anyTimes();
-
-        EasyMock.expectLastCall();
-        PowerMock.replayAll();
-
-        process.getSchritte().add(step);
+        List<Step> stepList = new ArrayList<>();
+        stepList.add(step);
+        process.setSchritte(stepList);
 
     }
 
     @Test
     public void testGetProcessData() {
-        service = new ProcessService();
-        Response response = service.getProcessData("");
-        assertEquals(400, response.getStatus());
-        response = service.getProcessData("abc");
-        assertEquals(400, response.getStatus());
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        response = service.getProcessData("1");
-        assertNotNull(response);
+            service = new ProcessService();
+            Response response = service.getProcessData("");
+            assertEquals(400, response.getStatus());
+            response = service.getProcessData("abc");
+            assertEquals(400, response.getStatus());
 
-        RestProcessResource res = (RestProcessResource) response.getEntity();
-        assertEquals(5, res.getId());
-        assertEquals("testprocess", res.getTitle());
-        assertEquals("project", res.getProjectName());
+            response = service.getProcessData("1");
+            assertNotNull(response);
+
+            RestProcessResource res = (RestProcessResource) response.getEntity();
+            assertEquals(5, res.getId());
+            assertEquals("testprocess", res.getTitle());
+            assertEquals("project", res.getProjectName());
+
+        }
     }
 
     @Test
     public void testUpdateProcess() {
-        service = new ProcessService();
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        processResource.setId(0);
-        Response response = service.updateProcess(processResource);
-        assertNotNull(response);
-        assertEquals(400, response.getStatus());
+            service = new ProcessService();
 
-        processResource.setId(5);
-        response = service.updateProcess(processResource);
-        RestProcessResource res = (RestProcessResource) response.getEntity();
-        assertEquals(5, res.getId());
-        assertEquals("testprocess", res.getTitle());
-        assertEquals(5, res.getNumberOfDocstructs().intValue());
-        assertEquals(5, res.getNumberOfImages().intValue());
-        assertEquals(5, res.getNumberOfMetadata().intValue());
-        assertEquals("050050000", res.getStatus());
-        assertEquals("project", res.getProjectName());
-        assertEquals("ruleset.xml", res.getRulesetName());
-        assertEquals("docket", res.getDocketName());
-        assertNull(res.getBatchNumber());
+            processResource.setId(0);
+            Response response = service.updateProcess(processResource);
+            assertNotNull(response);
+            assertEquals(400, response.getStatus());
 
-        processResource.setNumberOfDocstructs(10);
-        processResource.setNumberOfImages(10);
-        processResource.setNumberOfMetadata(10);
-        processResource.setStatus("100000000");
-        processResource.setProjectName("other");
-        processResource.setRulesetName("otherRuleset");
-        processResource.setDocketName("otherDocket");
-        processResource.setBatchNumber(1);
+            processResource.setId(5);
+            response = service.updateProcess(processResource);
+            RestProcessResource res = (RestProcessResource) response.getEntity();
+            assertEquals(5, res.getId());
+            assertEquals("testprocess", res.getTitle());
+            assertEquals(5, res.getNumberOfDocstructs().intValue());
+            assertEquals(5, res.getNumberOfImages().intValue());
+            assertEquals(5, res.getNumberOfMetadata().intValue());
+            assertEquals("050050000", res.getStatus());
+            assertEquals("project", res.getProjectName());
+            assertEquals("ruleset.xml", res.getRulesetName());
+            assertEquals("docket", res.getDocketName());
+            assertNull(res.getBatchNumber());
 
-        processResource.setTitle("newTitle");
+            processResource.setNumberOfDocstructs(10);
+            processResource.setNumberOfImages(10);
+            processResource.setNumberOfMetadata(10);
+            processResource.setStatus("100000000");
+            processResource.setProjectName("other");
+            processResource.setRulesetName("otherRuleset");
+            processResource.setDocketName("otherDocket");
+            processResource.setBatchNumber(1);
 
-        response = service.updateProcess(processResource);
-        res = (RestProcessResource) response.getEntity();
-        assertEquals(10, res.getNumberOfDocstructs().intValue());
-        assertEquals(10, res.getNumberOfImages().intValue());
-        assertEquals(10, res.getNumberOfMetadata().intValue());
-        assertEquals("100000000", res.getStatus());
-        assertEquals("other", res.getProjectName());
-        assertEquals("otherRuleset", res.getRulesetName());
-        assertEquals("otherDocket", res.getDocketName());
-        assertEquals(1, res.getBatchNumber().intValue());
-        assertEquals("newTitle", res.getTitle());
+            processResource.setTitle("newTitle");
+
+            response = service.updateProcess(processResource);
+            res = (RestProcessResource) response.getEntity();
+            assertEquals(10, res.getNumberOfDocstructs().intValue());
+            assertEquals(10, res.getNumberOfImages().intValue());
+            assertEquals(10, res.getNumberOfMetadata().intValue());
+            assertEquals("100000000", res.getStatus());
+            assertEquals("other", res.getProjectName());
+            assertEquals("otherRuleset", res.getRulesetName());
+            assertEquals("otherDocket", res.getDocketName());
+            assertEquals(1, res.getBatchNumber().intValue());
+            assertEquals("newTitle", res.getTitle());
+
+        }
     }
 
     @Test
     public void testCreateProcess() {
-        service = new ProcessService();
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        Response response = service.createProcess(processResource);
-        // no process template configured
-        assertEquals(400, response.getStatus());
-        processResource.setProcessTemplateName("template");
+            service = new ProcessService();
 
-        // no title configured
-        processResource.setTitle(null);
-        response = service.createProcess(processResource);
-        assertEquals(400, response.getStatus());
+            Response response = service.createProcess(processResource);
+            // no process template configured
+            assertEquals(400, response.getStatus());
+            processResource.setProcessTemplateName("template");
 
-        // invalid title configured
-        processResource.setTitle("ÖÄÜ?\"§$%%&");
-        response = service.createProcess(processResource);
-        assertEquals(406, response.getStatus());
+            // no title configured
+            processResource.setTitle(null);
+            response = service.createProcess(processResource);
+            assertEquals(400, response.getStatus());
 
-        processResource.setTitle("sample");
-        response = service.createProcess(processResource);
-        assertEquals(400, response.getStatus());
+            // invalid title configured
+            processResource.setTitle("ÖÄÜ?\"§$%%&");
+            response = service.createProcess(processResource);
+            assertEquals(406, response.getStatus());
+
+            processResource.setTitle("sample");
+            response = service.createProcess(processResource);
+            assertEquals(400, response.getStatus());
+
+        }
     }
 
     @Test
     public void testDeleteProcess() {
-        service = new ProcessService();
-        processResource.setId(0);
-        Response response = service.deleteProcess(processResource);
-        assertEquals(400, response.getStatus());
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        processResource.setId(1);
-        response = service.deleteProcess(processResource);
-        assertEquals(200, response.getStatus());
+            service = new ProcessService();
+            processResource.setId(0);
+            Response response = service.deleteProcess(processResource);
+            assertEquals(400, response.getStatus());
+
+            processResource.setId(1);
+            response = service.deleteProcess(processResource);
+            assertEquals(200, response.getStatus());
+
+        }
     }
 
     @Test
     public void testGetStepList() {
-        service = new ProcessService();
-        Response response = service.getStepList("");
-        assertEquals(400, response.getStatus());
-        response = service.getStepList("abc");
-        assertEquals(400, response.getStatus());
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        response = service.getStepList("1");
-        assertNotNull(response);
+            service = new ProcessService();
+            Response response = service.getStepList("");
+            assertEquals(400, response.getStatus());
+            response = service.getStepList("abc");
+            assertEquals(400, response.getStatus());
 
-        @SuppressWarnings("unchecked")
-        List<RestStepResource> data = (List<RestStepResource>) response.getEntity();
+            response = service.getStepList("1");
+            assertNotNull(response);
 
-        assertEquals(1, data.size());
-        assertEquals("step", data.get(0).getSteptitle());
+            @SuppressWarnings("unchecked")
+            List<RestStepResource> data = (List<RestStepResource>) response.getEntity();
+
+            assertEquals(1, data.size());
+            assertEquals("step", data.get(0).getSteptitle());
+
+        }
     }
 
     @Test
     public void testGetStep() {
-        service = new ProcessService();
-        Response response = service.getStep("", "");
-        assertEquals(400, response.getStatus());
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        response = service.getStep("1", "1");
-        assertNotNull(response);
+            service = new ProcessService();
+            Response response = service.getStep("", "");
+            assertEquals(400, response.getStatus());
 
-        RestStepResource data = (RestStepResource) response.getEntity();
+            response = service.getStep("1", "1");
+            assertNotNull(response);
 
-        assertEquals("step", data.getSteptitle());
+            RestStepResource data = (RestStepResource) response.getEntity();
+
+            assertEquals("step", data.getSteptitle());
+
+        }
     }
 
     @Test
     public void testUpdateStep() {
-        RestStepResource stepResource = new RestStepResource();
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        // no step id
-        Response response = service.updateStep("1", stepResource);
-        assertEquals(400, response.getStatus());
+            RestStepResource stepResource = new RestStepResource();
 
-        stepResource.setStepId(1);
-        stepResource.setProcessId(1);
-        response = service.updateStep("1", stepResource);
-        assertEquals(200, response.getStatus());
+            // no step id
+            Response response = service.updateStep("1", stepResource);
+            assertEquals(400, response.getStatus());
 
-        prepareStepObject(stepResource);
+            stepResource.setStepId(1);
+            stepResource.setProcessId(1);
+            response = service.updateStep("1", stepResource);
+            assertEquals(200, response.getStatus());
 
-        response = service.updateStep("1", stepResource);
-        assertEquals(200, response.getStatus());
+            prepareStepObject(stepResource);
+
+            response = service.updateStep("1", stepResource);
+            assertEquals(200, response.getStatus());
+
+        }
     }
 
     private void prepareStepObject(RestStepResource stepResource) {
@@ -419,335 +578,782 @@ public class ProcessServiceTest extends AbstractTest {
 
     @Test
     public void testCreateStep() {
-        RestStepResource stepResource = new RestStepResource();
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        // missing process id
-        Response response = service.createStep("", stepResource);
-        assertEquals(400, response.getStatus());
-        response = service.createStep("abc", stepResource);
-        assertEquals(400, response.getStatus());
+            RestStepResource stepResource = new RestStepResource();
 
-        // missing step title
-        response = service.createStep("1", stepResource);
-        assertEquals(400, response.getStatus());
-        stepResource.setSteptitle("new step");
-        // missing step order
-        response = service.createStep("1", stepResource);
-        assertEquals(400, response.getStatus());
+            // missing process id
+            Response response = service.createStep("", stepResource);
+            assertEquals(400, response.getStatus());
+            response = service.createStep("abc", stepResource);
+            assertEquals(400, response.getStatus());
 
-        // missing usergroups
-        stepResource.setOrder("10");
-        response = service.createStep("1", stepResource);
-        assertEquals(400, response.getStatus());
+            // missing step title
+            response = service.createStep("1", stepResource);
+            assertEquals(400, response.getStatus());
+            stepResource.setSteptitle("new step");
+            // missing step order
+            response = service.createStep("1", stepResource);
+            assertEquals(400, response.getStatus());
 
-        // minimum requirements fulfilled
-        stepResource.getUsergroups().add("Administration");
-        response = service.createStep("1", stepResource);
-        assertEquals(200, response.getStatus());
+            // missing usergroups
+            stepResource.setOrder("10");
+            response = service.createStep("1", stepResource);
+            assertEquals(400, response.getStatus());
 
-        // update optional parameter
-        prepareStepObject(stepResource);
-        response = service.createStep("1", stepResource);
-        assertEquals(200, response.getStatus());
+            // minimum requirements fulfilled
+            stepResource.getUsergroups().add("Administration");
+            response = service.createStep("1", stepResource);
+            assertEquals(200, response.getStatus());
 
+            // update optional parameter
+            prepareStepObject(stepResource);
+            response = service.createStep("1", stepResource);
+            assertEquals(200, response.getStatus());
+
+        }
     }
 
     @Test
     public void testDeleteStep() {
-        RestStepResource stepResource = new RestStepResource();
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        // no step id given
-        Response response = service.deleteStep("0", stepResource);
-        assertEquals(400, response.getStatus());
+            RestStepResource stepResource = new RestStepResource();
 
-        // deletion successful
-        stepResource.setStepId(1);
-        response = service.deleteStep("0", stepResource);
-        assertEquals(200, response.getStatus());
+            // no step id given
+            Response response = service.deleteStep("0", stepResource);
+            assertEquals(400, response.getStatus());
+
+            // deletion successful
+            stepResource.setStepId(1);
+            response = service.deleteStep("0", stepResource);
+            assertEquals(200, response.getStatus());
+
+        }
     }
 
     @Test
     public void testCloseStep() {
-        // missing/wrong parameter
-        Response response = service.closeStep("", "1");
-        assertEquals(400, response.getStatus());
-        response = service.closeStep("abc", "1");
-        assertEquals(400, response.getStatus());
-        response = service.closeStep("1", "");
-        assertEquals(400, response.getStatus());
-        response = service.closeStep("1", "abc");
-        assertEquals(400, response.getStatus());
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        // step belongs to a different process
-        response = service.closeStep("2", "1");
-        assertEquals(409, response.getStatus());
+            // missing/wrong parameter
+            Response response = service.closeStep("", "1");
+            assertEquals(400, response.getStatus());
+            response = service.closeStep("abc", "1");
+            assertEquals(400, response.getStatus());
+            response = service.closeStep("1", "");
+            assertEquals(400, response.getStatus());
+            response = service.closeStep("1", "abc");
+            assertEquals(400, response.getStatus());
 
-        // step has the wrong status
-        response = service.closeStep("1", "1");
-        assertEquals(409, response.getStatus());
+            // step belongs to a different process
+            response = service.closeStep("2", "1");
+            assertEquals(409, response.getStatus());
 
-        // step has the correct status
-        step.setBearbeitungsstatusEnum(StepStatus.INWORK);
-        response = service.closeStep("1", "1");
-        assertEquals(200, response.getStatus());
+            // step has the wrong status
+            response = service.closeStep("1", "1");
+            assertEquals(409, response.getStatus());
+
+            // step has the correct status
+            step.setBearbeitungsstatusEnum(StepStatus.INWORK);
+            response = service.closeStep("1", "1");
+            assertEquals(200, response.getStatus());
+
+        }
     }
 
     @Test
     public void testGetJournal() {
-        // missing/wrong parameter
-        Response response = service.getJournal("");
-        assertEquals(400, response.getStatus());
-        response = service.getJournal("abc");
-        assertEquals(400, response.getStatus());
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        response = service.getJournal("1");
-        assertEquals(200, response.getStatus());
-        @SuppressWarnings("unchecked")
-        List<RestJournalResource> data = (List<RestJournalResource>) response.getEntity();
-        assertEquals(1, data.size());
-        assertEquals("content", data.get(0).getMessage());
+            // missing/wrong parameter
+            Response response = service.getJournal("");
+            assertEquals(400, response.getStatus());
+            response = service.getJournal("abc");
+            assertEquals(400, response.getStatus());
+
+            response = service.getJournal("1");
+            assertEquals(200, response.getStatus());
+            @SuppressWarnings("unchecked")
+            List<RestJournalResource> data = (List<RestJournalResource>) response.getEntity();
+            assertEquals(1, data.size());
+            assertEquals("content", data.get(0).getMessage());
+
+        }
     }
 
     @Test
     public void testUpdateJournalEntry() {
-        RestJournalResource resource = new RestJournalResource();
-        // missing/wrong parameter
-        Response response = service.updateJournalEntry("", resource);
-        assertEquals(400, response.getStatus());
-        response = service.updateJournalEntry("abc", resource);
-        assertEquals(400, response.getStatus());
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        // no journal id
-        response = service.updateJournalEntry("1", resource);
-        assertEquals(400, response.getStatus());
+            RestJournalResource resource = new RestJournalResource();
+            // missing/wrong parameter
+            Response response = service.updateJournalEntry("", resource);
+            assertEquals(400, response.getStatus());
+            response = service.updateJournalEntry("abc", resource);
+            assertEquals(400, response.getStatus());
 
-        resource.setId(1);
-        resource.setMessage("new content");
+            // no journal id
+            response = service.updateJournalEntry("1", resource);
+            assertEquals(400, response.getStatus());
 
-        response = service.updateJournalEntry("1", resource);
-        assertEquals(200, response.getStatus());
-        assertEquals("new content", ((RestJournalResource) response.getEntity()).getMessage());
+            resource.setId(1);
+            resource.setMessage("new content");
+
+            response = service.updateJournalEntry("1", resource);
+            assertEquals(200, response.getStatus());
+            assertEquals("new content", ((RestJournalResource) response.getEntity()).getMessage());
+
+        }
     }
 
     @Test
     public void testCreateJournalEntry() {
-        RestJournalResource resource = new RestJournalResource();
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        resource.setMessage("content");
-        resource.setType("warn");
-        resource.setUserName("user");
+            RestJournalResource resource = new RestJournalResource();
 
-        Response response = service.createJournalEntry("", resource);
-        assertEquals(400, response.getStatus());
-        response = service.createJournalEntry("abc", resource);
-        assertEquals(400, response.getStatus());
+            resource.setMessage("content");
+            resource.setType("warn");
+            resource.setUserName("user");
 
-        response = service.createJournalEntry("1", resource);
-        assertEquals(200, response.getStatus());
-        assertEquals(200, response.getStatus());
-        assertEquals("content", ((RestJournalResource) response.getEntity()).getMessage());
-        assertEquals("warn", ((RestJournalResource) response.getEntity()).getType());
-        assertEquals("user", ((RestJournalResource) response.getEntity()).getUserName());
+            Response response = service.createJournalEntry("", resource);
+            assertEquals(400, response.getStatus());
+            response = service.createJournalEntry("abc", resource);
+            assertEquals(400, response.getStatus());
+
+            response = service.createJournalEntry("1", resource);
+            assertEquals(200, response.getStatus());
+            assertEquals(200, response.getStatus());
+            assertEquals("content", ((RestJournalResource) response.getEntity()).getMessage());
+            assertEquals("warn", ((RestJournalResource) response.getEntity()).getType());
+            assertEquals("user", ((RestJournalResource) response.getEntity()).getUserName());
+
+        }
     }
 
     @Test
     public void testDeleteJournalEntry() {
-        RestJournalResource resource = new RestJournalResource();
-        resource.setId(1);
-        resource.setProcessId(1);
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        // missing/wrong parameter
-        Response response = service.deleteJournalEntry("", resource);
-        assertEquals(400, response.getStatus());
-        response = service.deleteJournalEntry("abc", resource);
-        assertEquals(400, response.getStatus());
+            RestJournalResource resource = new RestJournalResource();
+            resource.setId(1);
+            resource.setProcessId(1);
 
-        // entry belongs to a different process
-        response = service.deleteJournalEntry("2", resource);
-        assertEquals(409, response.getStatus());
+            // missing/wrong parameter
+            Response response = service.deleteJournalEntry("", resource);
+            assertEquals(400, response.getStatus());
+            response = service.deleteJournalEntry("abc", resource);
+            assertEquals(400, response.getStatus());
 
-        response = service.deleteJournalEntry("1", resource);
-        assertEquals(200, response.getStatus());
+            // entry belongs to a different process
+            response = service.deleteJournalEntry("2", resource);
+            assertEquals(409, response.getStatus());
+
+            response = service.deleteJournalEntry("1", resource);
+            assertEquals(200, response.getStatus());
+
+        }
     }
 
     @Test
     public void testGetProperties() {
-        Response response = service.getProperties(null);
-        assertEquals(400, response.getStatus());
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        response = service.getProperties("1");
-        @SuppressWarnings("unchecked")
-        List<RestPropertyResource> data = (List<RestPropertyResource>) response.getEntity();
-        assertEquals("title", data.get(0).getName());
-        assertEquals("value", data.get(0).getValue());
+            Response response = service.getProperties(null);
+            assertEquals(400, response.getStatus());
+
+            response = service.getProperties("1");
+            @SuppressWarnings("unchecked")
+            List<RestPropertyResource> data = (List<RestPropertyResource>) response.getEntity();
+            assertEquals("title", data.get(0).getName());
+            assertEquals("value", data.get(0).getValue());
+
+        }
     }
 
     @Test
     public void testGetProperty() {
-        Response response = service.getProperty(null, "1");
-        assertEquals(400, response.getStatus());
-        response = service.getProperty("1", null);
-        assertEquals(400, response.getStatus());
-        response = service.getProperty("1", "1");
-        assertEquals(200, response.getStatus());
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        RestPropertyResource data = (RestPropertyResource) response.getEntity();
-        assertEquals("title", data.getName());
-        assertEquals("value", data.getValue());
+            Response response = service.getProperty(null, "1");
+            assertEquals(400, response.getStatus());
+            response = service.getProperty("1", null);
+            assertEquals(400, response.getStatus());
+            response = service.getProperty("1", "1");
+            assertEquals(200, response.getStatus());
+
+            RestPropertyResource data = (RestPropertyResource) response.getEntity();
+            assertEquals("title", data.getName());
+            assertEquals("value", data.getValue());
+
+        }
     }
 
     @Test
     public void testUpdateProperty() {
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        RestPropertyResource resource = new RestPropertyResource();
+            RestPropertyResource resource = new RestPropertyResource();
 
-        Response response = service.updateProperty(null, resource);
-        assertEquals(400, response.getStatus());
-        response = service.updateProperty("1", resource);
-        assertEquals(400, response.getStatus());
-        resource.setId(1);
-        response = service.updateProperty("2", resource);
-        assertEquals(409, response.getStatus());
-        resource.setId(1);
-        response = service.updateProperty("1", resource);
-        RestPropertyResource data = (RestPropertyResource) response.getEntity();
-        assertEquals("title", data.getName());
-        assertEquals("value", data.getValue());
+            Response response = service.updateProperty(null, resource);
+            assertEquals(400, response.getStatus());
+            response = service.updateProperty("1", resource);
+            assertEquals(400, response.getStatus());
+            resource.setId(1);
+            response = service.updateProperty("2", resource);
+            assertEquals(409, response.getStatus());
+            resource.setId(1);
+            response = service.updateProperty("1", resource);
+            RestPropertyResource data = (RestPropertyResource) response.getEntity();
+            assertEquals("title", data.getName());
+            assertEquals("value", data.getValue());
 
-        resource.setName("new name");
-        resource.setValue("new value");
+            resource.setName("new name");
+            resource.setValue("new value");
 
-        response = service.updateProperty("1", resource);
-        data = (RestPropertyResource) response.getEntity();
-        assertEquals("new name", data.getName());
-        assertEquals("new value", data.getValue());
+            response = service.updateProperty("1", resource);
+            data = (RestPropertyResource) response.getEntity();
+            assertEquals("new name", data.getName());
+            assertEquals("new value", data.getValue());
+
+        }
     }
 
     @Test
     public void testCreateProperty() {
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        RestPropertyResource resource = new RestPropertyResource();
+            RestPropertyResource resource = new RestPropertyResource();
 
-        Response response = service.createProperty("", resource);
-        assertEquals(400, response.getStatus());
-        response = service.createProperty("1", resource);
-        assertEquals(400, response.getStatus());
+            Response response = service.createProperty("", resource);
+            assertEquals(400, response.getStatus());
+            response = service.createProperty("1", resource);
+            assertEquals(400, response.getStatus());
 
-        resource.setName("name");
-        response = service.createProperty("1", resource);
-        assertEquals(400, response.getStatus());
+            resource.setName("name");
+            response = service.createProperty("1", resource);
+            assertEquals(400, response.getStatus());
 
-        resource.setValue("value");
-        response = service.createProperty("1", resource);
-        RestPropertyResource data = (RestPropertyResource) response.getEntity();
-        assertEquals("name", data.getName());
-        assertEquals("value", data.getValue());
+            resource.setValue("value");
+            response = service.createProperty("1", resource);
+            RestPropertyResource data = (RestPropertyResource) response.getEntity();
+            assertEquals("name", data.getName());
+            assertEquals("value", data.getValue());
+
+        }
     }
 
     @Test
     public void testGetMetadata() {
-        Response response = service.getMetadata(null);
-        assertEquals(400, response.getStatus());
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        response = service.getMetadata("1");
-        assertEquals(200, response.getStatus());
+            Response response = service.getMetadata(null);
+            assertEquals(400, response.getStatus());
 
-        @SuppressWarnings("unchecked")
-        List<RestMetadataResource> data = (List<RestMetadataResource>) response.getEntity();
-        assertEquals(4, data.size());
+            response = service.getMetadata("1");
+            assertEquals(200, response.getStatus());
+
+            @SuppressWarnings("unchecked")
+            List<RestMetadataResource> data = (List<RestMetadataResource>) response.getEntity();
+            assertEquals(4, data.size());
+
+        }
     }
 
     @Test
     public void testUpdateMetadata() {
-        RestMetadataResource resource = new RestMetadataResource();
-        resource.setValue("value");
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        Response response = service.updateMetadata(null, resource);
-        assertEquals(400, response.getStatus());
+            RestMetadataResource resource = new RestMetadataResource();
+            resource.setValue("value");
 
-        resource.setName("invalid");
-        response = service.updateMetadata(null, resource);
-        assertEquals(400, response.getStatus());
+            Response response = service.updateMetadata(null, resource);
+            assertEquals(400, response.getStatus());
 
-        resource.setMetadataLevel("topstruct");
-        response = service.updateMetadata(null, resource);
-        assertEquals(400, response.getStatus());
+            resource.setName("invalid");
+            response = service.updateMetadata(null, resource);
+            assertEquals(400, response.getStatus());
 
-        response = service.updateMetadata("", resource);
-        assertEquals(400, response.getStatus());
-        response = service.updateMetadata("abc", resource);
-        assertEquals(400, response.getStatus());
+            resource.setMetadataLevel("topstruct");
+            response = service.updateMetadata(null, resource);
+            assertEquals(400, response.getStatus());
 
-        response = service.updateMetadata("1", resource);
-        assertEquals(500, response.getStatus());
+            response = service.updateMetadata("", resource);
+            assertEquals(400, response.getStatus());
+            response = service.updateMetadata("abc", resource);
+            assertEquals(400, response.getStatus());
 
-        resource.setName("TitleDocMain");
-        resource.setAuthorityValue("value");
-        response = service.updateMetadata("1", resource);
-        assertEquals(200, response.getStatus());
+            response = service.updateMetadata("1", resource);
+            assertEquals(500, response.getStatus());
+
+            resource.setName("TitleDocMain");
+            resource.setAuthorityValue("value");
+            response = service.updateMetadata("1", resource);
+            assertEquals(200, response.getStatus());
+
+        }
     }
 
     @Test
     public void testCreateMetadata() {
-        RestMetadataResource resource = new RestMetadataResource();
-        resource.setValue("value");
-        resource.setAuthorityValue("value");
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        Response response = service.createMetadata(null, resource);
-        assertEquals(400, response.getStatus());
+            RestMetadataResource resource = new RestMetadataResource();
+            resource.setValue("value");
+            resource.setAuthorityValue("value");
 
-        resource.setName("invalid");
-        response = service.createMetadata(null, resource);
-        assertEquals(400, response.getStatus());
+            Response response = service.createMetadata(null, resource);
+            assertEquals(400, response.getStatus());
 
-        resource.setMetadataLevel("topstruct");
-        response = service.createMetadata(null, resource);
-        assertEquals(400, response.getStatus());
+            resource.setName("invalid");
+            response = service.createMetadata(null, resource);
+            assertEquals(400, response.getStatus());
 
-        response = service.createMetadata("", resource);
-        assertEquals(400, response.getStatus());
-        response = service.createMetadata("abc", resource);
-        assertEquals(400, response.getStatus());
+            resource.setMetadataLevel("topstruct");
+            response = service.createMetadata(null, resource);
+            assertEquals(400, response.getStatus());
 
-        response = service.createMetadata("1", resource);
-        assertEquals(400, response.getStatus());
+            response = service.createMetadata("", resource);
+            assertEquals(400, response.getStatus());
+            response = service.createMetadata("abc", resource);
+            assertEquals(400, response.getStatus());
 
-        resource.setName("TitleDocMain");
-        response = service.createMetadata("1", resource);
-        assertEquals(500, response.getStatus());
+            response = service.createMetadata("1", resource);
+            assertEquals(400, response.getStatus());
 
-        resource.setName("PublicationYear");
-        response = service.createMetadata("1", resource);
-        assertEquals(200, response.getStatus());
+            resource.setName("TitleDocMain");
+            response = service.createMetadata("1", resource);
+            assertEquals(500, response.getStatus());
+
+            resource.setName("PublicationYear");
+            response = service.createMetadata("1", resource);
+            assertEquals(200, response.getStatus());
+
+        }
     }
 
     @Test
     public void testDeleteMetadata() {
-        RestMetadataResource resource = new RestMetadataResource();
-        resource.setValue("value");
-        resource.setAuthorityValue("value");
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-        Response response = service.deleteMetadata(null, resource);
-        assertEquals(400, response.getStatus());
+            RestMetadataResource resource = new RestMetadataResource();
+            resource.setValue("value");
+            resource.setAuthorityValue("value");
 
-        resource.setName("invalid");
-        response = service.deleteMetadata(null, resource);
-        assertEquals(400, response.getStatus());
+            Response response = service.deleteMetadata(null, resource);
+            assertEquals(400, response.getStatus());
 
-        resource.setMetadataLevel("topstruct");
-        response = service.deleteMetadata(null, resource);
-        assertEquals(400, response.getStatus());
+            resource.setName("invalid");
+            response = service.deleteMetadata(null, resource);
+            assertEquals(400, response.getStatus());
 
-        response = service.deleteMetadata("", resource);
-        assertEquals(400, response.getStatus());
-        response = service.deleteMetadata("abc", resource);
-        assertEquals(400, response.getStatus());
+            resource.setMetadataLevel("topstruct");
+            response = service.deleteMetadata(null, resource);
+            assertEquals(400, response.getStatus());
 
-        response = service.deleteMetadata("1", resource);
-        assertEquals(400, response.getStatus());
+            response = service.deleteMetadata("", resource);
+            assertEquals(400, response.getStatus());
+            response = service.deleteMetadata("abc", resource);
+            assertEquals(400, response.getStatus());
 
-        resource.setName("TitleDocMain");
-        response = service.deleteMetadata("1", resource);
-        assertEquals(200, response.getStatus());
+            response = service.deleteMetadata("1", resource);
+            assertEquals(400, response.getStatus());
+
+            resource.setName("TitleDocMain");
+            response = service.deleteMetadata("1", resource);
+            assertEquals(200, response.getStatus());
+
+        }
     }
 }
