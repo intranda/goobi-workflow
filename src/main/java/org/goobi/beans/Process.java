@@ -1920,7 +1920,7 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
         }
 
         String folder = this.getImagesDirectory();
-        String folderPath;
+        String folderPath = null;
         if (folderName.contains(".")) {
             String[] split = folderName.split("\\.");
             if (split.length != 2) {
@@ -1934,7 +1934,6 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
         if (StringUtils.isNotBlank(folderPath)) {
             return folder + folderPath + FileSystems.getDefault().getSeparator();
         }
-        // TODO: fix this NPE
         return null;
     }
 
