@@ -17,12 +17,12 @@
  */
 package org.goobi.production.cli;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
@@ -31,33 +31,33 @@ public class WebInterfaceTest extends AbstractTest {
     @Test
     public void testBuildHelpMessageEscapesXssPayloadInForCommand() {
         String result = WebInterface.buildHelpMessage(Collections.emptyList(), "<script>alert(1)</script>");
-        assertFalse("XSS payload must not appear unescaped in help output", result.contains("<script>"));
+        assertFalse(result.contains("<script>"), "XSS payload must not appear unescaped in help output");
     }
 
     @Test
     public void testBuildHelpMessageContainsEscapedForCommandWhenNoPluginMatches() {
         String result = WebInterface.buildHelpMessage(Collections.emptyList(), "<script>alert(1)</script>");
-        assertTrue("Escaped forCommand must appear in output", result.contains("&lt;script&gt;"));
+        assertTrue(result.contains("&lt;script&gt;"), "Escaped forCommand must appear in output");
     }
 
     @Test
     public void testBuildHelpMessageWithNullForCommandContainsUsageHint() {
         String result = WebInterface.buildHelpMessage(Collections.emptyList(), null);
-        assertTrue("Help message with null forCommand must contain usage hint", result.contains("for="));
+        assertTrue(result.contains("for="), "Help message with null forCommand must contain usage hint");
     }
 
     @Test
     public void testBuildAnswerHtmlEscapesTitleXssPayload() {
         CommandResponse cr = new CommandResponse(200, "<script>alert(1)</script>", "message");
         String html = WebInterface.buildAnswerHtml(cr);
-        assertFalse("XSS in title must not appear unescaped", html.contains("<script>alert(1)</script>"));
-        assertTrue("Escaped title must appear in HTML", html.contains("&lt;script&gt;alert(1)&lt;/script&gt;"));
+        assertFalse(html.contains("<script>alert(1)</script>"), "XSS in title must not appear unescaped");
+        assertTrue(html.contains("&lt;script&gt;alert(1)&lt;/script&gt;"), "Escaped title must appear in HTML");
     }
 
     @Test
     public void testBuildAnswerHtmlDoesNotEscapeMessageHtml() {
         CommandResponse cr = new CommandResponse(200, "title", "<h4>Help</h4>");
         String html = WebInterface.buildAnswerHtml(cr);
-        assertTrue("Message HTML must be preserved unescaped", html.contains("<h4>Help</h4>"));
+        assertTrue(html.contains("<h4>Help</h4>"), "Message HTML must be preserved unescaped");
     }
 }

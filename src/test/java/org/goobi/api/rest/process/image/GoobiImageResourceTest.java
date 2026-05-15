@@ -25,33 +25,34 @@
  */
 package org.goobi.api.rest.process.image;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
 
 public class GoobiImageResourceTest extends AbstractTest {
 
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+    @TempDir
+    private Path tempDir;
 
-    @Test(expected = Exception.class)
+    @Test
     public void testSafeResolvePathBlocksDirectoryTraversal() throws Exception {
-        Path base = tempFolder.newFolder("images").toPath();
-        Path allowedRoot = tempFolder.getRoot().toPath();
-        GoobiImageResource.safeResolvePath(base, "../../etc/passwd", allowedRoot);
+        Path base = Files.createDirectory(tempDir.resolve("images"));
+        assertThrows(IOException.class,
+                () -> GoobiImageResource.safeResolvePath(base, "../../etc/passwd", tempDir));
     }
 
     @Test
     public void testSafeResolvePathAllowsValidFilename() throws Exception {
-        Path base = tempFolder.newFolder("images2").toPath();
-        Path allowedRoot = tempFolder.getRoot().toPath();
-        Path result = GoobiImageResource.safeResolvePath(base, "image.tif", allowedRoot);
+        Path base = Files.createDirectory(tempDir.resolve("images2"));
+        Path result = GoobiImageResource.safeResolvePath(base, "image.tif", tempDir);
         assertNotNull(result);
     }
 }

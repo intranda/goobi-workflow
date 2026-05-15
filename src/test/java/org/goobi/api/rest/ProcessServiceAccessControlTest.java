@@ -17,23 +17,21 @@
  */
 package org.goobi.api.rest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 
-import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
@@ -43,11 +41,8 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.Response;
-import org.goobi.beans.User;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ProcessManager.class, ProjectManager.class, PropertyManager.class, MetadataManager.class, Helper.class })
-@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*" })
+@ExtendWith(MockitoExtension.class)
 public class ProcessServiceAccessControlTest extends AbstractTest {
 
     private Process buildProcess(int projectId) {
@@ -82,81 +77,68 @@ public class ProcessServiceAccessControlTest extends AbstractTest {
     @Test
     public void testGetProcessDataWithoutTokenAllowsAccess() throws Exception {
         Process process = buildProcess(42);
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(5)).thenReturn(process);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(
+                    Mockito.anyInt(), Mockito.eq(PropertyOwnerType.PROCESS))).thenReturn(new ArrayList<>());
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(new ArrayList<>());
 
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(5)).andReturn(process);
-        PowerMock.mockStatic(ProjectManager.class);
-        PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.eq(PropertyOwnerType.PROCESS)))
-                .andReturn(new ArrayList<>()).anyTimes();
-        PowerMock.mockStatic(MetadataManager.class);
-        EasyMock.expect(MetadataManager.getMetadata(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
-        PowerMock.mockStatic(Helper.class);
+            HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
+            Mockito.when(mockReq.getAttribute("authToken")).thenReturn(null);
 
-        HttpServletRequest mockReq = EasyMock.createMock(HttpServletRequest.class);
-        EasyMock.expect(mockReq.getAttribute("authToken")).andReturn(null);
-        EasyMock.replay(mockReq);
+            ProcessService service = new ProcessService();
+            service.request = mockReq;
 
-        PowerMock.replayAll();
-
-        ProcessService service = new ProcessService();
-        service.request = mockReq;
-
-        Response response = service.getProcessData("5");
-        assertEquals(200, response.getStatus());
+            Response response = service.getProcessData("5");
+            assertEquals(200, response.getStatus());
+        }
     }
 
     @Test
     public void testGetProcessDataWithMemberTokenAllowsAccess() throws Exception {
         Process process = buildProcess(42);
         AuthenticationToken token = buildToken(7);
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(5)).thenReturn(process);
+            mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(7, 42)).thenReturn(true);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(
+                    Mockito.anyInt(), Mockito.eq(PropertyOwnerType.PROCESS))).thenReturn(new ArrayList<>());
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(new ArrayList<>());
 
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(5)).andReturn(process);
-        PowerMock.mockStatic(ProjectManager.class);
-        EasyMock.expect(ProjectManager.isUserMemberOfProject(7, 42)).andReturn(true);
-        PowerMock.mockStatic(PropertyManager.class);
-        EasyMock.expect(PropertyManager.getPropertiesForObject(EasyMock.anyInt(), EasyMock.eq(PropertyOwnerType.PROCESS)))
-                .andReturn(new ArrayList<>()).anyTimes();
-        PowerMock.mockStatic(MetadataManager.class);
-        EasyMock.expect(MetadataManager.getMetadata(EasyMock.anyInt())).andReturn(new ArrayList<>()).anyTimes();
-        PowerMock.mockStatic(Helper.class);
+            HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
+            Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
 
-        HttpServletRequest mockReq = EasyMock.createMock(HttpServletRequest.class);
-        EasyMock.expect(mockReq.getAttribute("authToken")).andReturn(token);
-        EasyMock.replay(mockReq);
+            ProcessService service = new ProcessService();
+            service.request = mockReq;
 
-        PowerMock.replayAll();
-
-        ProcessService service = new ProcessService();
-        service.request = mockReq;
-
-        Response response = service.getProcessData("5");
-        assertEquals(200, response.getStatus());
+            Response response = service.getProcessData("5");
+            assertEquals(200, response.getStatus());
+        }
     }
 
     @Test
     public void testGetProcessDataWithNonMemberTokenReturns403() throws Exception {
         Process process = buildProcess(42);
         AuthenticationToken token = buildToken(7);
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(5)).thenReturn(process);
+            mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(7, 42)).thenReturn(false);
 
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(5)).andReturn(process);
-        PowerMock.mockStatic(ProjectManager.class);
-        EasyMock.expect(ProjectManager.isUserMemberOfProject(7, 42)).andReturn(false);
-        PowerMock.mockStatic(Helper.class);
+            HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
+            Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
 
-        HttpServletRequest mockReq = EasyMock.createMock(HttpServletRequest.class);
-        EasyMock.expect(mockReq.getAttribute("authToken")).andReturn(token);
-        EasyMock.replay(mockReq);
+            ProcessService service = new ProcessService();
+            service.request = mockReq;
 
-        PowerMock.replayAll();
-
-        ProcessService service = new ProcessService();
-        service.request = mockReq;
-
-        Response response = service.getProcessData("5");
-        assertEquals(403, response.getStatus());
+            Response response = service.getProcessData("5");
+            assertEquals(403, response.getStatus());
+        }
     }
 
     @Test
@@ -174,54 +156,46 @@ public class ProcessServiceAccessControlTest extends AbstractTest {
         template.setProjekt(project);
 
         AuthenticationToken token = buildToken(7);
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("template")).thenReturn(template);
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
+            mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(7, 42)).thenReturn(false);
 
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessByExactTitle("template")).andReturn(template);
-        EasyMock.expect(ProcessManager.countProcessTitle(EasyMock.anyString(), EasyMock.anyObject())).andReturn(0);
-        PowerMock.mockStatic(ProjectManager.class);
-        EasyMock.expect(ProjectManager.isUserMemberOfProject(7, 42)).andReturn(false);
-        PowerMock.mockStatic(Helper.class);
+            HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
+            Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
 
-        HttpServletRequest mockReq = EasyMock.createMock(HttpServletRequest.class);
-        EasyMock.expect(mockReq.getAttribute("authToken")).andReturn(token);
-        EasyMock.replay(mockReq);
+            ProcessService service = new ProcessService();
+            service.request = mockReq;
 
-        PowerMock.replayAll();
-
-        ProcessService service = new ProcessService();
-        service.request = mockReq;
-
-        org.goobi.api.rest.model.RestProcessResource res = new org.goobi.api.rest.model.RestProcessResource();
-        res.setProcessTemplateName("template");
-        res.setTitle("newProcess");
-        Response response = service.createProcess(res);
-        assertEquals(403, response.getStatus());
+            org.goobi.api.rest.model.RestProcessResource res = new org.goobi.api.rest.model.RestProcessResource();
+            res.setProcessTemplateName("template");
+            res.setTitle("newProcess");
+            Response response = service.createProcess(res);
+            assertEquals(403, response.getStatus());
+        }
     }
 
     @Test
     public void testDeleteProcessWithNonMemberTokenReturns403() throws Exception {
         Process process = buildProcess(42);
         AuthenticationToken token = buildToken(7);
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(5)).thenReturn(process);
+            mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(7, 42)).thenReturn(false);
 
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcessById(5)).andReturn(process);
-        PowerMock.mockStatic(ProjectManager.class);
-        EasyMock.expect(ProjectManager.isUserMemberOfProject(7, 42)).andReturn(false);
-        PowerMock.mockStatic(Helper.class);
+            HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
+            Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
 
-        HttpServletRequest mockReq = EasyMock.createMock(HttpServletRequest.class);
-        EasyMock.expect(mockReq.getAttribute("authToken")).andReturn(token);
-        EasyMock.replay(mockReq);
+            ProcessService service = new ProcessService();
+            service.request = mockReq;
 
-        PowerMock.replayAll();
-
-        ProcessService service = new ProcessService();
-        service.request = mockReq;
-
-        org.goobi.api.rest.model.RestProcessResource res = new org.goobi.api.rest.model.RestProcessResource();
-        res.setId(5);
-        Response response = service.deleteProcess(res);
-        assertEquals(403, response.getStatus());
+            org.goobi.api.rest.model.RestProcessResource res = new org.goobi.api.rest.model.RestProcessResource();
+            res.setId(5);
+            Response response = service.deleteProcess(res);
+            assertEquals(403, response.getStatus());
+        }
     }
 
     @Test
@@ -235,31 +209,28 @@ public class ProcessServiceAccessControlTest extends AbstractTest {
         allProcesses.add(process2);
 
         AuthenticationToken token = buildToken(7);
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcesses(
+                    Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(allProcesses);
+            mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(7, 42)).thenReturn(true);
+            mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(7, 99)).thenReturn(false);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
 
-        PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect(ProcessManager.getProcesses(EasyMock.anyString(), EasyMock.anyObject(),
-                EasyMock.anyObject())).andReturn(allProcesses);
-        PowerMock.mockStatic(ProjectManager.class);
-        EasyMock.expect(ProjectManager.isUserMemberOfProject(7, 42)).andReturn(true);
-        EasyMock.expect(ProjectManager.isUserMemberOfProject(7, 99)).andReturn(false);
-        PowerMock.mockStatic(Helper.class);
-        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
+            HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
+            Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
 
-        HttpServletRequest mockReq = EasyMock.createMock(HttpServletRequest.class);
-        EasyMock.expect(mockReq.getAttribute("authToken")).andReturn(token);
-        EasyMock.replay(mockReq);
+            ProcessService service = new ProcessService();
+            service.request = mockReq;
 
-        PowerMock.replayAll();
-
-        ProcessService service = new ProcessService();
-        service.request = mockReq;
-
-        org.goobi.api.rest.model.RestProcessQueryResource queryRes = new org.goobi.api.rest.model.RestProcessQueryResource();
-        Response response = service.retrieveProcessesSatisfyingCondition(queryRes);
-        assertEquals(200, response.getStatus());
-        org.goobi.api.rest.model.RestProcessQueryResult result =
-                (org.goobi.api.rest.model.RestProcessQueryResult) response.getEntity();
-        assertEquals(1, result.getResults());
-        assertEquals(Integer.valueOf(1), result.getIds()[0]);
+            org.goobi.api.rest.model.RestProcessQueryResource queryRes = new org.goobi.api.rest.model.RestProcessQueryResource();
+            Response response = service.retrieveProcessesSatisfyingCondition(queryRes);
+            assertEquals(200, response.getStatus());
+            org.goobi.api.rest.model.RestProcessQueryResult result =
+                    (org.goobi.api.rest.model.RestProcessQueryResult) response.getEntity();
+            assertEquals(1, result.getResults());
+            assertEquals(Integer.valueOf(1), result.getIds()[0]);
+        }
     }
 }

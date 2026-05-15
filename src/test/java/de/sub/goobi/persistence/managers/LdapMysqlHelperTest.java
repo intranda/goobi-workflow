@@ -17,10 +17,10 @@
  */
 package de.sub.goobi.persistence.managers;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
@@ -31,7 +31,7 @@ public class LdapMysqlHelperTest extends AbstractTest {
         StringBuilder sql = new StringBuilder("SELECT * FROM ldapgruppen");
         String maliciousOrder = "1; DROP TABLE ldapgruppen--";
         String result = MySQLHelper.prepareSortField(maliciousOrder, sql);
-        assertTrue("prepareSortField must return empty string for malicious input", result.isEmpty());
+        assertTrue(result.isEmpty(), "prepareSortField must return empty string for malicious input");
     }
 
     @Test
@@ -39,7 +39,6 @@ public class LdapMysqlHelperTest extends AbstractTest {
         StringBuilder sql = new StringBuilder("SELECT * FROM ldapgruppen");
         String validOrder = "ldapgruppenID asc";
         String result = MySQLHelper.prepareSortField(validOrder, sql);
-        // Either the field is in the whitelist (non-empty) or empty — either way no injection
-        assertFalse("prepareSortField must not return the malicious literal", result.contains(";") || result.contains("DROP"));
+        assertFalse(result.contains(";") || result.contains("DROP"), "prepareSortField must not return the malicious literal");
     }
 }

@@ -17,10 +17,10 @@
  */
 package org.goobi.managedbeans;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
 
@@ -29,18 +29,18 @@ public class MessageQueueBeanTest extends AbstractTest {
     @Test
     public void testBuildStatisticsSqlWithTicketTypeUsesPlaceholder() {
         String sql = MessageQueueBean.buildStatisticsSql("year(time)", null, null, "someTicketType");
-        assertTrue("SQL must use ? placeholder for ticketType", sql.contains("?"));
+        assertTrue(sql.contains("?"), "SQL must use ? placeholder for ticketType");
     }
 
     @Test
     public void testBuildStatisticsSqlWithTicketTypeDoesNotContainLiteral() {
         String sql = MessageQueueBean.buildStatisticsSql("year(time)", null, null, "someTicketType");
-        assertFalse("SQL must not contain literal ticketType value", sql.contains("someTicketType"));
+        assertFalse(sql.contains("someTicketType"), "SQL must not contain literal ticketType value");
     }
 
     @Test
     public void testBuildStatisticsSqlWithoutTicketTypeHasNoPlaceholder() {
         String sql = MessageQueueBean.buildStatisticsSql("year(time)", null, null, null);
-        assertFalse("SQL must not contain ? when no ticketType is set", sql.contains("?"));
+        assertFalse(sql.contains("?"), "SQL must not contain ? when no ticketType is set");
     }
 }
