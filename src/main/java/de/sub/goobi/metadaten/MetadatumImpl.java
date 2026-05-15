@@ -30,6 +30,7 @@ import org.goobi.api.display.helper.MetadataGeneration;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.api.rest.model.RestMetadata;
 import org.goobi.api.rest.model.RestProcess;
+import org.goobi.api.rest.request.ProcessSearchConfiguration;
 import org.goobi.api.rest.request.SearchRequest;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
@@ -43,7 +44,6 @@ import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.dante.DanteImport;
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
-import de.sub.goobi.config.ConfigPlugins;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -107,8 +107,6 @@ import ugh.fileformats.mets.ModsHelper;
 public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     private static final String DANTE = "dante";
-
-    private static final String PROCESS_PLUGIN = "ProcessPlugin";
 
     private Metadata md;
     private int identifier;
@@ -907,7 +905,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     public void linkProcess(RestProcess rp) {
         Project p = this.getBean().getMyProzess().getProjekt();
-        XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig(PROCESS_PLUGIN);
+        XMLConfiguration xmlConf = ProcessSearchConfiguration.getPluginConfig();
         if (xmlConf == null) {
             return;
         }
@@ -1015,7 +1013,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             return;
         }
         Project p = this.getBean().getMyProzess().getProjekt();
-        XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig(PROCESS_PLUGIN);
+        XMLConfiguration xmlConf = ProcessSearchConfiguration.getPluginConfig();
         if (xmlConf == null) {
             return;
         }
@@ -1049,8 +1047,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             Project p = mdBean.getMyProzess().getProjekt();
             this.possibleFields = MetadataManager.getDistinctMetadataNames();
             if (StorageProvider.getInstance()
-                    .isFileExists(Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder(), "plugin_ProcessPlugin.xml"))) {
-                XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig(PROCESS_PLUGIN);
+                    .isFileExists(Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder(), "goobi_processMetadataSearch.xml"))) {
+                XMLConfiguration xmlConf = ProcessSearchConfiguration.getPluginConfig();
                 if (xmlConf != null) {
                     HierarchicalConfiguration use = getConfigForProject(p, xmlConf);
                     if (use != null) {
