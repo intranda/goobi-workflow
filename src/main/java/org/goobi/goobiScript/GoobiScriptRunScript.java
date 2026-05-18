@@ -29,10 +29,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.goobi.beans.Process;
+import org.goobi.beans.Script;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import de.sub.goobi.config.ConfigScripts;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.ShellScriptReturnValue;
@@ -98,9 +100,9 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript {
             if (step.getTitel().equalsIgnoreCase(steptitle)) {
                 Step so = StepManager.getStepById(step.getId());
                 if (scriptname != null) {
-                    if (step.getAllScripts().containsKey(scriptname)) {
-                        String path = step.getAllScripts().get(scriptname);
-                        ShellScriptReturnValue returncode = hs.executeScriptForStepObject(so, path, false);
+                    Script whitelistScript = ConfigScripts.getInstance().getScriptByName(scriptname);
+                    if (whitelistScript != null) {
+                        ShellScriptReturnValue returncode = hs.executeScriptForStepObject(so, whitelistScript, false);
                         String message = "Script " + info + " executed successfully";
                         Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + " using GoobiScript.", username);
                         log.info(message + " using GoobiScript for process with ID " + p.getId());

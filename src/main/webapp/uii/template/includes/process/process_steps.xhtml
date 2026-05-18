@@ -398,53 +398,38 @@
 
 													<h:outputText
 														value="#{msgs.typScriptStep}:"
-														rendered="#{item.typScriptStep and not empty item.allScriptPaths}" />
+														rendered="#{item.typScriptStep and item.hasScripts}" />
 													<h:panelGroup
-														rendered="#{item.typScriptStep and not empty item.allScriptPaths}">
+														rendered="#{item.typScriptStep and item.hasScripts}">
 
 														<h:panelGroup
 															styleClass="d-block"
-															rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}">
+															rendered="#{item.scriptname1 != null and item.scriptname1 != ''}">
 															<h:outputText value="#{item.scriptname1}" />
-															<h:outputText
-																styleClass="font-light "
-																value=" #{item.typAutomatischScriptpfad}" />
 														</h:panelGroup>
 
 														<h:panelGroup
 															styleClass="d-block"
-															rendered="#{item.typAutomatischScriptpfad2 != null and item.typAutomatischScriptpfad2 != ''}">
+															rendered="#{item.scriptname2 != null and item.scriptname2 != ''}">
 															<h:outputText value="#{item.scriptname2}" />
-															<h:outputText
-																styleClass="font-light "
-																value=" #{item.typAutomatischScriptpfad2}" />
 														</h:panelGroup>
 
 														<h:panelGroup
 															styleClass="d-block"
-															rendered="#{item.typAutomatischScriptpfad3 != null and item.typAutomatischScriptpfad3 != ''}">
+															rendered="#{item.scriptname3 != null and item.scriptname3 != ''}">
 															<h:outputText value="#{item.scriptname3}" />
-															<h:outputText
-																styleClass="font-light "
-																value=" #{item.typAutomatischScriptpfad3}" />
 														</h:panelGroup>
 
 														<h:panelGroup
 															styleClass="d-block"
-															rendered="#{item.typAutomatischScriptpfad4 != null and item.typAutomatischScriptpfad4 != ''}">
+															rendered="#{item.scriptname4 != null and item.scriptname4 != ''}">
 															<h:outputText value="#{item.scriptname4}" />
-															<h:outputText
-																styleClass="font-light "
-																value=" #{item.typAutomatischScriptpfad4}" />
 														</h:panelGroup>
 
 														<h:panelGroup
 															styleClass="d-block"
-															rendered="#{item.typAutomatischScriptpfad5 != null and item.typAutomatischScriptpfad5 != ''}">
+															rendered="#{item.scriptname5 != null and item.scriptname5 != ''}">
 															<h:outputText value="#{item.scriptname5}" />
-															<h:outputText
-																styleClass="font-light "
-																value=" #{item.typAutomatischScriptpfad5}" />
 														</h:panelGroup>
 
 													</h:panelGroup>
@@ -645,7 +630,7 @@
 										jsf:id="executeScript"
 										title="#{msgs.executeScripts}"
 										aria-label="#{msgs.executeScripts}"
-										jsf:rendered="#{item.typScriptStep and item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
+										jsf:rendered="#{item.typScriptStep and item.scriptname1 != null and item.scriptname1 != ''}"
 										jsf:action="#{HelperForm.executeScriptsForStep(item.id)}"
 										onclick="preventDoubleSubmit(this);"
 										class="btn btn-icon btn-blank me-2">

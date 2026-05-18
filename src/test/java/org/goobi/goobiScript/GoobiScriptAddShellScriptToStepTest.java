@@ -147,12 +147,10 @@ public class GoobiScriptAddShellScriptToStepTest extends AbstractTest {
             List<GoobiScriptResult> results = fixture.prepare(processes, command, parameters);
 
             assertNull(s1.getScriptname1());
-            assertNull(s1.getTypAutomatischScriptpfad());
 
             fixture.execute(results.get(0));
 
             assertEquals("abc", s1.getScriptname1());
-            assertEquals("xyz", s1.getTypAutomatischScriptpfad());
 
         }
     }

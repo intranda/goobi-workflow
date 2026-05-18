@@ -86,11 +86,6 @@ public class BeanHelper implements Serializable {
             stepneu.setScriptname4(step.getScriptname4());
             stepneu.setScriptname5(step.getScriptname5());
 
-            stepneu.setTypAutomatischScriptpfad(step.getTypAutomatischScriptpfad());
-            stepneu.setTypAutomatischScriptpfad2(step.getTypAutomatischScriptpfad2());
-            stepneu.setTypAutomatischScriptpfad3(step.getTypAutomatischScriptpfad3());
-            stepneu.setTypAutomatischScriptpfad4(step.getTypAutomatischScriptpfad4());
-            stepneu.setTypAutomatischScriptpfad5(step.getTypAutomatischScriptpfad5());
             stepneu.setBatchStep(step.getBatchStep());
             stepneu.setTypScriptStep(step.isTypScriptStep());
             stepneu.setTypBeimAnnehmenAbschliessen(step.isTypBeimAnnehmenAbschliessen());

@@ -59,6 +59,7 @@ import org.goobi.api.mail.SendMail;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
+import org.goobi.beans.Script;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.enums.LogType;
@@ -337,30 +338,34 @@ public class HelperSchritte {
 
     public ShellScriptReturnValue executeAllScriptsForStep(Step step, boolean automatic) {
         if (automatic && step.getProzess().isPauseAutomaticExecution()) {
-            return new ShellScriptReturnValue(1, "Automatic execution is disabled", ""); // return code
+            return new ShellScriptReturnValue(1, "Automatic execution is disabled", "");
         }
-        List<String> scriptpaths = step.getAllScriptPaths();
-        int count = 1;
-        int size = scriptpaths.size();
-        ShellScriptReturnValue returnParameter = null;
-        for (String script : scriptpaths) {
-            if (log.isDebugEnabled()) {
-                log.debug("Starting script " + script + " for process with ID " + step.getProcessId());
-            }
 
-            if (script != null && !" ".equals(script) && script.length() != 0) {
-                if (automatic && (count == size)) {
-                    returnParameter = executeScriptForStepObject(step, script, true);
-                } else {
-                    returnParameter = executeScriptForStepObject(step, script, false);
-                }
+        List<Script> scripts;
+        try {
+            scripts = step.getResolvedScripts();
+        } catch (IllegalStateException e) {
+            String message = "Script not found in whitelist for step '" + step.getTitel() + "'";
+            log.error(message + " for process with ID " + step.getProcessId(), e);
+            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, message + ": " + e.getMessage());
+            errorStep(step);
+            return new ShellScriptReturnValue(1, message, "");
+        }
+
+        int count = 1;
+        int size = scripts.size();
+        ShellScriptReturnValue returnParameter = new ShellScriptReturnValue(0, "", "");
+        for (Script script : scripts) {
+            if (log.isDebugEnabled()) {
+                log.debug("Starting script " + script.getScriptName() + " for process with ID " + step.getProcessId());
             }
+            boolean isLast = (count == size);
+            returnParameter = executeScriptForStepObject(step, script, automatic && isLast);
 
             if (automatic) {
                 switch (returnParameter.getReturnCode()) {
                     // return code 99 means wait for finishing
                     case 99:
-
                         break;
                     // return code 98: re-open task
                     case 98:
@@ -373,10 +378,8 @@ public class HelperSchritte {
                     default:
                         errorStep(step);
                         return returnParameter;
-
                 }
             }
-
             count++;
         }
         return returnParameter;
@@ -540,6 +543,15 @@ public class HelperSchritte {
     }
 
     public ShellScriptReturnValue executeScriptForStepObject(Step step, String script, boolean automatic) {
+        return executeScriptInternal(step, script, script, false, automatic);
+    }
+
+    public ShellScriptReturnValue executeScriptForStepObject(Step step, Script script, boolean automatic) {
+        String logLabel = script.isSuppressLogging() ? script.getScriptName() : script.getScript();
+        return executeScriptInternal(step, script.getScript(), logLabel, script.isSuppressLogging(), automatic);
+    }
+
+    private ShellScriptReturnValue executeScriptInternal(Step step, String script, String logLabel, boolean suppressDetails, boolean automatic) {
         if (script == null || script.length() == 0) {
             return new ShellScriptReturnValue(-1, null, null);
         }
@@ -558,12 +570,14 @@ public class HelperSchritte {
         }
         ShellScriptReturnValue rueckgabe = null;
         try {
-            log.info("Calling the shell: " + script + " for process with ID " + step.getProcessId());
+            log.info("Calling the shell: " + logLabel + " for process with ID " + step.getProcessId());
 
             StringBuilder message = new StringBuilder();
             message.append("Calling the shell.\n");
-            message.append("Goobi workflow: " + script + "\n");
-            message.append("Final command: " + String.join(" ", parameterList));
+            message.append("Goobi workflow: " + logLabel + "\n");
+            if (!suppressDetails) {
+                message.append("Final command: " + String.join(" ", parameterList));
+            }
 
             Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, message.toString());
 
@@ -592,7 +606,7 @@ public class HelperSchritte {
                     step.setBearbeitungsende(new Date());
                     SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
                     StepManager.saveStep(step);
-                    String scriptDidNotFinish = "Script for '" + step.getTitel() + "' did not finish successfully";
+                    String scriptDidNotFinish = "Script '" + logLabel + "' for '" + step.getTitel() + "' did not finish successfully";
                     String returned = ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText();
                     Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, scriptDidNotFinish + returned);
                     log.error(scriptDidNotFinish + " for process with ID " + step.getProcessId() + returned);

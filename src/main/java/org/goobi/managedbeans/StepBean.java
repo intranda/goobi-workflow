@@ -50,6 +50,7 @@ import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
+import org.goobi.beans.Script;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.production.cli.helper.StringPair;
@@ -72,6 +73,7 @@ import org.goobi.production.properties.Type;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
+import de.sub.goobi.config.ConfigScripts;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.TiffHeader;
@@ -942,8 +944,12 @@ public class StepBean extends BasicBean {
     }
 
     public void executeScript() {
-        new HelperSchritte().executeScriptForStepObject(mySchritt, this.scriptPath, false);
-
+        Script script = ConfigScripts.getInstance().getScriptByName(this.scriptPath);
+        if (script == null) {
+            Helper.setFehlerMeldung("Script '" + this.scriptPath + "' not found in whitelist");
+            return;
+        }
+        new HelperSchritte().executeScriptForStepObject(mySchritt, script, false);
     }
 
     /**

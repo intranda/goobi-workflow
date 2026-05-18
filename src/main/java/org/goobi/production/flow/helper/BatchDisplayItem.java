@@ -26,9 +26,9 @@ package org.goobi.production.flow.helper;
  * exception statement from your version.
  */
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+import org.goobi.beans.Script;
 import org.goobi.beans.Step;
 
 import de.sub.goobi.helper.enums.StepStatus;
@@ -41,14 +41,18 @@ public class BatchDisplayItem implements Comparable<BatchDisplayItem> {
     private String stepTitle = "";
     private Integer stepOrder = null;
     private StepStatus stepStatus = StepStatus.DONE;
-    private HashMap<String, String> scripts = new HashMap<>();
+    private List<Script> scripts = new ArrayList<>();
     private boolean exportDMS = false;
 
     public BatchDisplayItem(Step s) {
         this.stepTitle = s.getTitel();
         this.stepOrder = s.getReihenfolge();
         this.stepStatus = s.getBearbeitungsstatusEnum();
-        this.scripts.putAll(s.getAllScripts());
+        try {
+            this.scripts.addAll(s.getResolvedScripts());
+        } catch (IllegalStateException e) {
+            // Script not in whitelist, leave list empty
+        }
         this.exportDMS = s.isTypExportDMS();
     }
 
@@ -90,7 +94,9 @@ public class BatchDisplayItem implements Comparable<BatchDisplayItem> {
 
     public List<String> getScriptnames() {
         List<String> answer = new ArrayList<>();
-        answer.addAll(this.scripts.keySet());
+        for (Script s : this.scripts) {
+            answer.add(s.getScriptName());
+        }
         return answer;
     }
 }

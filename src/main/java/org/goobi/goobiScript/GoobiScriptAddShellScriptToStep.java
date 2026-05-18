@@ -29,10 +29,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.goobi.beans.Process;
+import org.goobi.beans.Script;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import de.sub.goobi.config.ConfigScripts;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -44,7 +46,6 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript {
     private static final String GOOBI_SCRIPTFIELD = "goobiScriptfield";
     private static final String STEPTITLE = "steptitle";
     private static final String SCRIPT = "script";
-    private static final String LABEL = "label";
 
     @Override
     public String getAction() {
@@ -56,10 +57,7 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to add a shell script to an existing workflow step.");
         addParameterToSampleCall(sb, STEPTITLE, "Generate MD5 Hashes", "This is the title of the workflow step to be used.");
-        addParameterToSampleCall(sb, LABEL, "Hash generation",
-                "Define a label for the script that shall be visible for that script inside of an accepted task.");
-        addParameterToSampleCall(sb, SCRIPT, "/bin/bash /path/to/script.sh \"parameter with blanks\"",
-                "Define the script that shall be added here.");
+        addParameterToSampleCall(sb, SCRIPT, "Script Alpha", "Define the whitelist name of the script to assign (as defined in goobi_scripts.xml).");
         return sb.toString();
     }
 
@@ -71,12 +69,6 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript {
         String steptitle = parameters.get(STEPTITLE);
         if (steptitle == null || "".equals(steptitle)) {
             Helper.setFehlerMeldung(missingParameter, STEPTITLE);
-            return new ArrayList<>();
-        }
-
-        String label = parameters.get(LABEL);
-        if (label == null || "".equals(label)) {
-            Helper.setFehlerMeldung(missingParameter, LABEL);
             return new ArrayList<>();
         }
 
@@ -106,10 +98,19 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript {
         if (p.getSchritte() != null) {
             for (Step s : p.getSchritte()) {
                 if (s.getTitel().equals(parameters.get(STEPTITLE))) {
-                    s.setTypAutomatischScriptpfad(parameters.get(SCRIPT));
-                    s.setScriptname1(parameters.get(LABEL));
+                    String scriptName = parameters.get(SCRIPT);
+                    Script whitelistScript = ConfigScripts.getInstance().getScriptByName(scriptName);
+                    if (whitelistScript == null) {
+                        String message = "Error: Script '" + scriptName + "' not found in whitelist";
+                        Helper.setFehlerMeldung(message);
+                        gsr.setResultMessage(message);
+                        gsr.setResultType(GoobiScriptResultType.ERROR);
+                        gsr.updateTimestamp();
+                        return;
+                    }
+                    s.setScriptname1(scriptName);
                     s.setTypScriptStep(true);
-                    String info = s.getTitel() + "' with label '" + s.getScriptname1() + "' and value '" + s.getTypAutomatischScriptpfad() + "'";
+                    String info = s.getTitel() + "' with script '" + scriptName + "'";
                     try {
                         ProcessManager.saveProcess(p);
                         String message = "Added script to step '" + info;

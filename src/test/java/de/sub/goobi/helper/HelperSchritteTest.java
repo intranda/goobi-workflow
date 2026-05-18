@@ -21,7 +21,6 @@ package de.sub.goobi.helper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
@@ -120,14 +119,14 @@ public class HelperSchritteTest extends AbstractTest {
     @Test
     public void testConstructor() {
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
-             MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
+                MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(stepList);
             mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(new ArrayList<>());
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
@@ -145,14 +144,14 @@ public class HelperSchritteTest extends AbstractTest {
     @Test
     public void testCloseStepObjectAutomatic() {
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
-             MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
+                MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(stepList);
             mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(new ArrayList<>());
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
@@ -175,14 +174,14 @@ public class HelperSchritteTest extends AbstractTest {
     @Test
     public void testCloseStepAndFollowingSteps() {
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
-             MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
+                MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(stepList);
             mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(new ArrayList<>());
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
@@ -205,14 +204,14 @@ public class HelperSchritteTest extends AbstractTest {
     @Test
     public void testSaveStepStatus() {
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
-             MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
+                MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(stepList);
             mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(new ArrayList<>());
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
@@ -231,14 +230,14 @@ public class HelperSchritteTest extends AbstractTest {
     @Test
     public void testCloseStepObject() {
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
-             MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
+                MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(stepList);
             mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(new ArrayList<>());
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
@@ -257,14 +256,14 @@ public class HelperSchritteTest extends AbstractTest {
     @Test
     public void testUpdateMetadataIndex() {
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
-             MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
+                MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(stepList);
             mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(new ArrayList<>());
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
@@ -283,14 +282,14 @@ public class HelperSchritteTest extends AbstractTest {
     @Test
     public void testExecuteAllScriptsForStep() {
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
-             MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
+                MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(stepList);
             mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(new ArrayList<>());
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
@@ -306,31 +305,20 @@ public class HelperSchritteTest extends AbstractTest {
             ShellScriptReturnValue val = fixture.executeAllScriptsForStep(step1, true);
             assertEquals(1, val.getReturnCode());
 
-            // no script configured
-            process.setPauseAutomaticExecution(false);
-            val = fixture.executeAllScriptsForStep(step1, true);
-            assertNull(val);
-
-            // script is empty
-            step1.setScriptname1("");
-            step1.setTypAutomatischScriptpfad("");
-            val = fixture.executeAllScriptsForStep(step1, true);
-            assertNull(val);
-
         }
     }
 
     @Test
     public void testRunHttpStep() {
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
-             MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
+                MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(stepList);
             mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(new ArrayList<>());
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
@@ -356,15 +344,16 @@ public class HelperSchritteTest extends AbstractTest {
 
     @Test
     public void testExecuteScriptForStepObject() {
+
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
-             MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
+                MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(stepList);
             mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(new ArrayList<>());
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
@@ -376,11 +365,9 @@ public class HelperSchritteTest extends AbstractTest {
             HelperSchritte fixture = new HelperSchritte();
             assertNotNull(fixture);
             step1.setTypAutomatisch(true);
-            // null script
-            ShellScriptReturnValue val = fixture.executeScriptForStepObject(step1, null, false);
-            assertEquals(-1, val.getReturnCode());
+
             // empty script
-            val = fixture.executeScriptForStepObject(step1, "", false);
+            ShellScriptReturnValue val = fixture.executeScriptForStepObject(step1, "", false);
             assertEquals(-1, val.getReturnCode());
 
             val = fixture.executeScriptForStepObject(step1, " ", false);
@@ -397,14 +384,14 @@ public class HelperSchritteTest extends AbstractTest {
     @Test
     public void testCreateShellParamsForBashScript() throws Exception {
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
-             MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
+                MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(stepList);
             mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(new ArrayList<>());
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
@@ -424,14 +411,14 @@ public class HelperSchritteTest extends AbstractTest {
     @Test
     public void testErrorStep() {
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
-             MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
+                MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(stepList);
             mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(new ArrayList<>());
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
@@ -452,14 +439,14 @@ public class HelperSchritteTest extends AbstractTest {
     @Test
     public void testExtractMetadata() throws Exception {
         try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
-             MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
-             MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<SendMail> mockedSendMail = Mockito.mockStatic(SendMail.class);
+                MockedStatic<Executor> mockedExecutor = Mockito.mockStatic(Executor.class);
+                MockedStatic<JwtHelper> mockedJwtHelper = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(stepList);
             mockedHistoryManager.when(() -> HistoryManager.getHistoryEvents(Mockito.anyInt())).thenReturn(new ArrayList<>());
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);

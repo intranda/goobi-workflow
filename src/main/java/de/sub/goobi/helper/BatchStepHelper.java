@@ -44,6 +44,7 @@ import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
+import org.goobi.beans.Script;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.StepBean;
@@ -57,6 +58,7 @@ import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.PropertyParser;
 
+import de.sub.goobi.config.ConfigScripts;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.helper.enums.HistoryEventType;
@@ -750,13 +752,10 @@ public class BatchStepHelper implements Serializable {
 
     public void executeScript() {
         for (Step step : this.steps) {
-
-            if (step.getAllScripts().containsKey(this.script)) {
+            Script whitelistScript = ConfigScripts.getInstance().getScriptByName(this.script);
+            if (whitelistScript != null) {
                 Step so = StepManager.getStepById(step.getId());
-                String scriptPath = step.getAllScripts().get(this.script);
-
-                new HelperSchritte().executeScriptForStepObject(so, scriptPath, false);
-
+                new HelperSchritte().executeScriptForStepObject(so, whitelistScript, false);
             }
         }
     }
@@ -886,7 +885,11 @@ public class BatchStepHelper implements Serializable {
 
     public List<String> getScriptnames() {
         List<String> answer = new ArrayList<>();
-        answer.addAll(getCurrentStep().getAllScripts().keySet());
+        try {
+            getCurrentStep().getResolvedScripts().forEach(s -> answer.add(s.getScriptName()));
+        } catch (IllegalStateException e) {
+            log.error("Script not found in whitelist: " + e.getMessage());
+        }
         return answer;
     }
 

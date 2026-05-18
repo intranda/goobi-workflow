@@ -27,12 +27,14 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.Process;
+import org.goobi.beans.Script;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import de.sub.goobi.config.ConfigScripts;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
@@ -97,24 +99,14 @@ public class RestStepResource {
         properties.put("updatemetadataindex", step.isUpdateMetadataIndex());
         properties.put("generatedocket", step.isGenerateDocket());
 
-        if (StringUtils.isNotBlank(step.getScriptname1()) && StringUtils.isNotBlank(step.getTypAutomatischScriptpfad())) {
-            scripts.put(step.getScriptname1(), step.getTypAutomatischScriptpfad());
-        }
-
-        if (StringUtils.isNotBlank(step.getScriptname2()) && StringUtils.isNotBlank(step.getTypAutomatischScriptpfad2())) {
-            scripts.put(step.getScriptname2(), step.getTypAutomatischScriptpfad2());
-        }
-
-        if (StringUtils.isNotBlank(step.getScriptname3()) && StringUtils.isNotBlank(step.getTypAutomatischScriptpfad3())) {
-            scripts.put(step.getScriptname3(), step.getTypAutomatischScriptpfad3());
-        }
-
-        if (StringUtils.isNotBlank(step.getScriptname4()) && StringUtils.isNotBlank(step.getTypAutomatischScriptpfad4())) {
-            scripts.put(step.getScriptname4(), step.getTypAutomatischScriptpfad4());
-        }
-
-        if (StringUtils.isNotBlank(step.getScriptname5()) && StringUtils.isNotBlank(step.getTypAutomatischScriptpfad5())) {
-            scripts.put(step.getScriptname5(), step.getTypAutomatischScriptpfad5());
+        String[] scriptNames = { step.getScriptname1(), step.getScriptname2(), step.getScriptname3(), step.getScriptname4(), step.getScriptname5() };
+        for (String sname : scriptNames) {
+            if (StringUtils.isNotBlank(sname)) {
+                Script s = ConfigScripts.getInstance().getScriptByName(sname);
+                if (s != null) {
+                    scripts.put(sname, s.getScript());
+                }
+            }
         }
 
         if (step.isHttpStep()) {

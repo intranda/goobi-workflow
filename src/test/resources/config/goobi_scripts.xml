@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scripts>
+    <script>
+        <name>Script Alpha</name>
+        <command>/bin/bash /opt/digiverso/goobi/scripts/alpha.sh</command>
+        <suppressLogging>false</suppressLogging>
+    </script>
+    <script>
+        <name>Script Beta</name>
+        <command>/bin/bash /opt/digiverso/goobi/scripts/beta.sh</command>
+        <suppressLogging>true</suppressLogging>
+    </script>
+</scripts>

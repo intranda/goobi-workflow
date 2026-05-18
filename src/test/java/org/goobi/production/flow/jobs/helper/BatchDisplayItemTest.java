@@ -28,22 +28,29 @@ import org.goobi.production.flow.helper.BatchDisplayItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.enums.StepStatus;
 
-public class BatchDisplayItemTest {
+public class BatchDisplayItemTest extends AbstractTest {
 
     private Step step;
 
     @BeforeEach
     public void setUp() {
+        try {
+            java.lang.reflect.Field f = de.sub.goobi.config.ConfigScripts.class.getDeclaredField("instance");
+            f.setAccessible(true);
+            f.set(null, null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         step = new Step();
         step.setId(1);
         step.setTitel("title");
         step.setReihenfolge(5);
         step.setBearbeitungsstatusEnum(StepStatus.OPEN);
 
-        step.setScriptname1("script");
-        step.setTypAutomatischScriptpfad("/bin/false");
+        step.setScriptname1("Script Alpha");
         step.setTypExportDMS(true);
     }
 
@@ -101,6 +108,6 @@ public class BatchDisplayItemTest {
     public void testScriptNames() {
         BatchDisplayItem fixture = new BatchDisplayItem(step);
         assertNotNull(fixture);
-        assertEquals("script", fixture.getScriptnames().get(0));
+        assertEquals("Script Alpha", fixture.getScriptnames().get(0));
     }
 }

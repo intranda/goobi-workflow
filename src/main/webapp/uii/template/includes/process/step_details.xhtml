@@ -228,57 +228,37 @@
 					<!-- SCRIPTS -->
 					<h:outputText
 						value="#{msgs.script}:"
-						rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and not empty ProzessverwaltungForm.mySchritt.allScriptPaths}" />
+						rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and ProzessverwaltungForm.mySchritt.hasScripts}" />
 					<h:panelGroup
-						rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and not empty ProzessverwaltungForm.mySchritt.allScriptPaths}">
+						rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and ProzessverwaltungForm.mySchritt.hasScripts}">
 						<h:panelGroup styleClass="d-block">
 							<h:outputText
 								id="nameautomatisch"
 								value="#{ProzessverwaltungForm.mySchritt.scriptname1}" />
-							<h:outputText
-								id="txtautomatisch"
-								styleClass="font-light "
-								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad}" />
 						</h:panelGroup>
 
 						<h:panelGroup styleClass="d-block">
 							<h:outputText
 								id="nameautomatisch2"
 								value="#{ProzessverwaltungForm.mySchritt.scriptname2}" />
-							<h:outputText
-								id="txtautomatisch2"
-								styleClass="font-light "
-								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad2}" />
 						</h:panelGroup>
 
 						<h:panelGroup styleClass="d-block">
 							<h:outputText
 								id="nameautomatisch3"
 								value="#{ProzessverwaltungForm.mySchritt.scriptname3}" />
-							<h:outputText
-								id="txtautomatisch3"
-								styleClass="font-light "
-								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad3}" />
 						</h:panelGroup>
 
 						<h:panelGroup styleClass="d-block">
 							<h:outputText
 								id="nameautomatisch4"
 								value="#{ProzessverwaltungForm.mySchritt.scriptname4}" />
-							<h:outputText
-								id="txtautomatisch4"
-								styleClass="font-light "
-								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad4}" />
 						</h:panelGroup>
 
 						<h:panelGroup styleClass="d-block">
 							<h:outputText
 								id="nameautomatisch5"
 								value="#{ProzessverwaltungForm.mySchritt.scriptname5}" />
-							<h:outputText
-								id="txtautomatisch5"
-								styleClass="font-light "
-								value=" #{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad5}" />
 						</h:panelGroup>
 					</h:panelGroup>
 					<!-- // SCRIPTS -->
@@ -515,95 +495,68 @@
 
 						<div id="scripttable" class="ps-5">
 							<div class="row border border-0">
-								<div class="col-3 min-vh-0">
-									<h:outputText
-										id="scriptname2"
-										value="#{msgs.scriptname}" />
+								<div class="col-12 min-vh-0">
+									<h:outputText id="scriptname2" value="#{msgs.script}" />
 								</div>
-								<div class="col-9 min-vh-0">
-									<h:outputText
-										id="scrpitpfad2"
-										value="#{msgs.scriptpath}" />
+
+								<div class="col-12">
+									<h:selectOneMenu id="nameautomatisch" forceId="true"
+									                 styleClass="form-select col-12"
+									                 value="#{ProzessverwaltungForm.mySchritt.scriptname1}">
+										<f:selectItem itemValue="" itemLabel="#{msgs.none}" />
+										<f:selectItems value="#{ProzessverwaltungForm.allScripts}"
+										               var="s"
+										               itemValue="#{s.scriptName}"
+										               itemLabel="#{s.scriptName}" />
+									</h:selectOneMenu>
 								</div>
-								<div class="col-3">
-									<h:inputText
-										id="nameautomatisch"
-										pt:aria-label="#{msgs.scriptname}"
-										forceId="true"
-										styleClass="form-control"
-										value="#{ProzessverwaltungForm.mySchritt.scriptname1}" />
+
+								<div class="col-12">
+									<h:selectOneMenu id="nameautomatisch2" forceId="true"
+									                 styleClass="form-select col-12"
+									                 value="#{ProzessverwaltungForm.mySchritt.scriptname2}">
+										<f:selectItem itemValue="" itemLabel="#{msgs.none}" />
+										<f:selectItems value="#{ProzessverwaltungForm.allScripts}"
+										               var="s"
+										               itemValue="#{s.scriptName}"
+										               itemLabel="#{s.scriptName}" />
+									</h:selectOneMenu>
 								</div>
-								<div class="col-9">
-									<h:inputText
-										id="txtautomatisch"
-										pt:aria-label="#{msgs.scriptpath}"
-										forceId="true"
-										styleClass="form-control"
-										value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad}" />
+
+								<div class="col-12">
+									<h:selectOneMenu id="nameautomatisch3" forceId="true"
+									                 styleClass="form-select col-12"
+									                 value="#{ProzessverwaltungForm.mySchritt.scriptname3}">
+										<f:selectItem itemValue="" itemLabel="#{msgs.none}" />
+										<f:selectItems value="#{ProzessverwaltungForm.allScripts}"
+										               var="s"
+										               itemValue="#{s.scriptName}"
+										               itemLabel="#{s.scriptName}" />
+									</h:selectOneMenu>
 								</div>
-								<div class="col-sm-3">
-									<h:inputText
-										id="nameautomatisch2"
-										pt:aria-label="#{msgs.scriptname}"
-										forceId="true"
-										styleClass="form-control"
-										value="#{ProzessverwaltungForm.mySchritt.scriptname2}" />
+
+								<div class="col-12">
+									<h:selectOneMenu id="nameautomatisch4" forceId="true"
+									                 styleClass="form-select col-12"
+									                 value="#{ProzessverwaltungForm.mySchritt.scriptname4}">
+										<f:selectItem itemValue="" itemLabel="#{msgs.none}" />
+										<f:selectItems value="#{ProzessverwaltungForm.allScripts}"
+										               var="s"
+										               itemValue="#{s.scriptName}"
+										               itemLabel="#{s.scriptName}" />
+									</h:selectOneMenu>
 								</div>
-								<div class="col-sm-9">
-									<h:inputText
-										id="txtautomatisch2"
-										pt:aria-label="#{msgs.scriptpath}"
-										forceId="true"
-										styleClass="form-control"
-										value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad2}" />
-								</div>
-								<div class="col-sm-3">
-									<h:inputText
-										id="nameautomatisch3"
-										pt:aria-label="#{msgs.scriptname}"
-										forceId="true"
-										styleClass="form-control"
-										value="#{ProzessverwaltungForm.mySchritt.scriptname3}" />
-								</div>
-								<div class="col-sm-9">
-									<h:inputText
-										id="txtautomatisch3"
-										pt:aria-label="#{msgs.scriptpath}"
-										forceId="true"
-										styleClass="form-control"
-										value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad3}" />
-								</div>
-								<div class="col-sm-3">
-									<h:inputText
-										id="nameautomatisch4"
-										pt:aria-label="#{msgs.scriptname}"
-										forceId="true"
-										styleClass="form-control"
-										value="#{ProzessverwaltungForm.mySchritt.scriptname4}" />
-								</div>
-								<div class="col-sm-9">
-									<h:inputText
-										id="txtautomatisch4"
-										pt:aria-label="#{msgs.scriptpath}"
-										forceId="true"
-										styleClass="form-control"
-										value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad4}" />
-								</div>
-								<div class="col-sm-3">
-									<h:inputText
-										id="nameautomatisch5"
-										pt:aria-label="#{msgs.scriptname}"
-										forceId="true"
-										styleClass="form-control"
-										value="#{ProzessverwaltungForm.mySchritt.scriptname5}" />
-								</div>
-								<div class="col-sm-9">
-									<h:inputText
-										id="txtautomatisch5"
-										pt:aria-label="#{msgs.scriptpath}"
-										forceId="true"
-										styleClass="form-control"
-										value="#{ProzessverwaltungForm.mySchritt.typAutomatischScriptpfad5}" />
+
+								<div class="col-12">
+									<h:selectOneMenu id="nameautomatisch5" forceId="true"
+									                 styleClass="form-select col-12"
+									                 value="#{ProzessverwaltungForm.mySchritt.scriptname5}">
+										<f:selectItem itemValue="" itemLabel="#{msgs.none}" />
+										<f:selectItems value="#{ProzessverwaltungForm.allScripts}"
+										               var="s"
+										               itemValue="#{s.scriptName}"
+										               itemLabel="#{s.scriptName}" />
+									</h:selectOneMenu>
 								</div>
 							</div>
 

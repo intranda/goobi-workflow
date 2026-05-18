@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map.Entry;
 
 import javax.naming.ConfigurationException;
 
@@ -41,6 +40,7 @@ import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
+import org.goobi.beans.Script;
 import org.goobi.beans.Step;
 import org.goobi.managedbeans.JobTypesCache;
 import org.goobi.production.enums.LogType;
@@ -88,7 +88,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
         if (!step.getProzess().isPauseAutomaticExecution()) {
 
             QueueType queueType = this.step.getMessageQueue();
-            if (queueType == QueueType.EXTERNAL_QUEUE && !this.step.getAllScriptPaths().isEmpty() && StringUtils.isBlank(this.step.getStepPlugin())) {
+            if (queueType == QueueType.EXTERNAL_QUEUE && this.step.hasScripts() && StringUtils.isBlank(this.step.getStepPlugin())) {
                 // check if this is a script-step and has no additional plugin set
                 // put this to the external queue and continue
                 addStepScriptsToExternalQueue(this.step);
@@ -143,12 +143,10 @@ public class ScriptThreadWithoutHibernate extends Thread {
     public void run() {
 
         boolean automatic = this.step.isTypAutomatisch();
-        List<String> scriptPaths = step.getAllScriptPaths();
         if (log.isDebugEnabled()) {
             log.debug("step is automatic: " + automatic);
-            log.debug("found " + scriptPaths.size() + " scripts");
         }
-        if (step.isTypScriptStep() && !scriptPaths.isEmpty()) {
+        if (step.isTypScriptStep() && step.hasScripts()) {
             this.hs.executeAllScriptsForStep(this.step, automatic);
         } else if (this.step.isTypExportDMS()) {
             this.hs.executeDmsExport(this.step, automatic);
@@ -195,17 +193,18 @@ public class ScriptThreadWithoutHibernate extends Thread {
         List<List<String>> listOfScripts = new ArrayList<>();
         List<String> scriptNames = new ArrayList<>();
         int counter = 0;
-        for (Entry<String, String> entry : automaticStep.getAllScripts().entrySet()) {
+        List<Script> resolvedScripts;
+        try {
+            resolvedScripts = automaticStep.getResolvedScripts();
+        } catch (IllegalStateException e) {
+            log.error("Script not found in whitelist, cannot add to external queue: " + e.getMessage());
+            return;
+        }
+        for (Script scriptEntry : resolvedScripts) {
             counter++;
-            String script = entry.getValue();
             try {
-                String scriptName = entry.getKey();
-                if (scriptName == null) {
-                    scriptNames.add("Script " + counter);
-                } else {
-                    scriptNames.add(entry.getKey());
-                }
-                List<String> params = HelperSchritte.createShellParamsForBashScript(automaticStep, script);
+                scriptNames.add(scriptEntry.getScriptName());
+                List<String> params = HelperSchritte.createShellParamsForBashScript(automaticStep, scriptEntry.getScript());
                 listOfScripts.add(params);
             } catch (PreferencesException | ReadException | WriteException | IOException | SwapException | DAOException e) {
                 log.error("error trying to put script-step to external queue: ", e);

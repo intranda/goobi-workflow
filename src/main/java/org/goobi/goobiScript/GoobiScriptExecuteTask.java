@@ -108,9 +108,8 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript {
                 continue;
             }
             foundExecutableStep = true;
-            List<String> scriptPaths = step.getAllScriptPaths();
 
-            if (step.isTypScriptStep() && !scriptPaths.isEmpty()) {
+            if (step.isTypScriptStep() && step.isHasScripts()) {
                 // This step is a script step
                 if (step.getMessageQueue() == QueueType.NONE) {
                     ShellScriptReturnValue returncode = hs.executeAllScriptsForStep(step, step.isTypAutomatisch());

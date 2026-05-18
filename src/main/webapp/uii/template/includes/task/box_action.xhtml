@@ -183,14 +183,14 @@
 							<!-- SCRIPT 1 -->
 							<button
 								jsf:id="executeScript"
-								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad != null and currentStep.typAutomatischScriptpfad != ''}"
+								jsf:rendered="#{currentStep.typScriptStep and currentStep.scriptname1 != null and currentStep.scriptname1 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link "
 								title="#{currentStep.scriptname1}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
-									value="#{currentStep.typAutomatischScriptpfad}" />
+									value="#{currentStep.scriptname1}" />
 								<span class="btn btn-blank">
 									<util:icon icon="tool" />
 								</span>
@@ -204,14 +204,14 @@
 							<!-- SCRIPT 2 -->
 							<button
 								jsf:id="executeScript2"
-								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad2 != null and currentStep.typAutomatischScriptpfad2 != ''}"
+								jsf:rendered="#{currentStep.typScriptStep and currentStep.scriptname2 != null and currentStep.scriptname2 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link "
 								title="#{currentStep.scriptname2}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
-									value="#{currentStep.typAutomatischScriptpfad2}" />
+									value="#{currentStep.scriptname2}" />
 								<span class="btn btn-blank">
 									<util:icon icon="tool" />
 								</span>
@@ -225,14 +225,14 @@
 							<!-- SCRIPT 3 -->
 							<button
 								jsf:id="executeScript3"
-								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad3 != null and currentStep.typAutomatischScriptpfad3 != ''}"
+								jsf:rendered="#{currentStep.typScriptStep and currentStep.scriptname3 != null and currentStep.scriptname3 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link "
 								title="#{currentStep.scriptname3}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
-									value="#{currentStep.typAutomatischScriptpfad3}" />
+									value="#{currentStep.scriptname3}" />
 								<span class="btn btn-blank">
 									<util:icon icon="tool" />
 								</span>
@@ -246,14 +246,14 @@
 							<!-- SCRIPT 4 -->
 							<button
 								jsf:id="executeScript4"
-								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad4 != null and currentStep.typAutomatischScriptpfad4 != ''}"
+								jsf:rendered="#{currentStep.typScriptStep and currentStep.scriptname4 != null and currentStep.scriptname4 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link "
 								title="#{currentStep.scriptname4}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
-									value="#{currentStep.typAutomatischScriptpfad4}" />
+									value="#{currentStep.scriptname4}" />
 								<span class="btn btn-blank">
 									<util:icon icon="tool" />
 								</span>
@@ -266,14 +266,14 @@
 							<!-- SCRIPT 5 -->
 							<button
 								jsf:id="executeScript5"
-								jsf:rendered="#{currentStep.typScriptStep and currentStep.typAutomatischScriptpfad5 != null and currentStep.typAutomatischScriptpfad5 != ''}"
+								jsf:rendered="#{currentStep.typScriptStep and currentStep.scriptname5 != null and currentStep.scriptname5 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link "
 								title="#{currentStep.scriptname5}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
-									value="#{currentStep.typAutomatischScriptpfad5}" />
+									value="#{currentStep.scriptname5}" />
 								<span class="btn btn-blank">
 									<util:icon icon="tool" />
 								</span>

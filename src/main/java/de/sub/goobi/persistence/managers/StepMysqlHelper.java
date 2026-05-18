@@ -325,11 +325,6 @@ public final class StepMysqlHelper implements Serializable {
         s.setTypBeimAnnehmenModul(rs.getBoolean("typBeimAnnehmenModul"));
         s.setTypBeimAnnehmenAbschliessen(rs.getBoolean("typBeimAnnehmenAbschliessen"));
         s.setTypBeimAnnehmenModulUndAbschliessen(rs.getBoolean("typBeimAnnehmenModulUndAbschliessen"));
-        String script = rs.getString("typAutomatischScriptpfad");
-        if (script != null) {
-            script = script.trim();
-        }
-        s.setTypAutomatischScriptpfad(script);
         s.setTypBeimAbschliessenVerifizieren(rs.getBoolean("typBeimAbschliessenVerifizieren"));
         s.setTypModulName(rs.getString("typModulName"));
         s.setTypBeimAnnehmenModul(rs.getBoolean("typBeimAnnehmenModul"));
@@ -344,30 +339,9 @@ public final class StepMysqlHelper implements Serializable {
         s.setTypScriptStep(rs.getBoolean("typScriptStep"));
         s.setScriptname1(rs.getString("scriptName1"));
         s.setScriptname2(rs.getString("scriptName2"));
-
-        script = rs.getString("typAutomatischScriptpfad2");
-        if (script != null) {
-            script = script.trim();
-        }
-        s.setTypAutomatischScriptpfad2(script);
         s.setScriptname3(rs.getString("scriptName3"));
-        script = rs.getString("typAutomatischScriptpfad3");
-        if (script != null) {
-            script = script.trim();
-        }
-        s.setTypAutomatischScriptpfad3(script);
         s.setScriptname4(rs.getString("scriptName4"));
-        script = rs.getString("typAutomatischScriptpfad4");
-        if (script != null) {
-            script = script.trim();
-        }
-        s.setTypAutomatischScriptpfad4(script);
         s.setScriptname5(rs.getString("scriptName5"));
-        script = rs.getString("typAutomatischScriptpfad5");
-        if (script != null) {
-            script = script.trim();
-        }
-        s.setTypAutomatischScriptpfad5(script);
         s.setBatchStep(rs.getBoolean("batchStep"));
         s.setStepPlugin(rs.getString("stepPlugin"));
         s.setValidationPlugin(rs.getString("validationPlugin"));
@@ -587,8 +561,6 @@ public final class StepMysqlHelper implements Serializable {
                     o.isTypBeimAnnehmenModul(), // typBeimAnnehmenModul
                     o.isTypBeimAnnehmenAbschliessen(), // typBeimAnnehmenAbschliessen
                     o.isTypBeimAnnehmenModulUndAbschliessen(), // typBeimAnnehmenModulUndAbschliessen
-                    (o.getTypAutomatischScriptpfad() == null || "".equals(o.getTypAutomatischScriptpfad()))
-                            ? null : o.getTypAutomatischScriptpfad(), // typAutomatischScriptpfad
                     o.isTypBeimAbschliessenVerifizieren(), // typBeimAbschliessenVerifizieren
                     (o.getTypModulName() == null || "".equals(o.getTypModulName())) ? null : o.getTypModulName(), // typModulName
                     o.getUserId() == null ? null : o.getUserId(), //BearbeitungsBenutzerID
@@ -597,17 +569,9 @@ public final class StepMysqlHelper implements Serializable {
                     o.isTypScriptStep(), //typScriptStep
                     (o.getScriptname1() == null || "".equals(o.getScriptname1())) ? null : o.getScriptname1(), //scriptName1
                     (o.getScriptname2() == null || "".equals(o.getScriptname2())) ? null : o.getScriptname2(), //scriptName2
-                    (o.getTypAutomatischScriptpfad2() == null || "".equals(o.getTypAutomatischScriptpfad2())) ? null
-                            : o.getTypAutomatischScriptpfad2(), //typAutomatischScriptpfad2
                     (o.getScriptname3() == null || "".equals(o.getScriptname3())) ? null : o.getScriptname3(), //scriptName3
-                    (o.getTypAutomatischScriptpfad3() == null || "".equals(o.getTypAutomatischScriptpfad3())) ? null
-                            : o.getTypAutomatischScriptpfad3(), //typAutomatischScriptpfad3
                     (o.getScriptname4() == null || "".equals(o.getScriptname4())) ? null : o.getScriptname4(), //scriptName4
-                    (o.getTypAutomatischScriptpfad4() == null || "".equals(o.getTypAutomatischScriptpfad4())) ? null
-                            : o.getTypAutomatischScriptpfad4(), //typAutomatischScriptpfad4
                     (o.getScriptname5() == null || "".equals(o.getScriptname5())) ? null : o.getScriptname5(), //scriptName5
-                    (o.getTypAutomatischScriptpfad5() == null || "".equals(o.getTypAutomatischScriptpfad5())) ? null
-                            : o.getTypAutomatischScriptpfad5(), //typAutomatischScriptpfad5
                     o.getBatchStep(), //batchStep
                     (o.getStepPlugin() == null || "".equals(o.getStepPlugin())) ? null : o.getStepPlugin(), // stepPlugin
                     (o.getValidationPlugin() == null || "".equals(o.getValidationPlugin())) ? null : o.getValidationPlugin(), //validationPlugin
@@ -634,7 +598,6 @@ public final class StepMysqlHelper implements Serializable {
                     o.isTypBeimAnnehmenModul(), // typBeimAnnehmenModul
                     o.isTypBeimAnnehmenAbschliessen(), // typBeimAnnehmenAbschliessen
                     o.isTypBeimAnnehmenModulUndAbschliessen(), // typBeimAnnehmenModulUndAbschliessen
-                    (o.getTypAutomatischScriptpfad() == null || "".equals(o.getTypAutomatischScriptpfad())) ? null : o.getTypAutomatischScriptpfad(),
                     o.isTypBeimAbschliessenVerifizieren(), // typBeimAbschliessenVerifizieren
                     (o.getTypModulName() == null || "".equals(o.getTypModulName())) ? null : o.getTypModulName(), // typModulName
                     o.getUserId() == null ? null : o.getUserId(), //BearbeitungsBenutzerID
@@ -643,17 +606,9 @@ public final class StepMysqlHelper implements Serializable {
                     o.isTypScriptStep(), //typScriptStep
                     (o.getScriptname1() == null || "".equals(o.getScriptname1())) ? null : o.getScriptname1(), //scriptName1
                     (o.getScriptname2() == null || "".equals(o.getScriptname2())) ? null : o.getScriptname2(), //scriptName2
-                    (o.getTypAutomatischScriptpfad2() == null || "".equals(o.getTypAutomatischScriptpfad2())) ? null
-                            : o.getTypAutomatischScriptpfad2(), //typAutomatischScriptpfad2
                     (o.getScriptname3() == null || "".equals(o.getScriptname3())) ? null : o.getScriptname3(), //scriptName3
-                    (o.getTypAutomatischScriptpfad3() == null || "".equals(o.getTypAutomatischScriptpfad3())) ? null
-                            : o.getTypAutomatischScriptpfad3(), //typAutomatischScriptpfad3
                     (o.getScriptname4() == null || "".equals(o.getScriptname4())) ? null : o.getScriptname4(), //scriptName4
-                    (o.getTypAutomatischScriptpfad4() == null || "".equals(o.getTypAutomatischScriptpfad4())) ? null
-                            : o.getTypAutomatischScriptpfad4(), //typAutomatischScriptpfad4
                     (o.getScriptname5() == null || "".equals(o.getScriptname5())) ? null : o.getScriptname5(), //scriptName5
-                    (o.getTypAutomatischScriptpfad5() == null || "".equals(o.getTypAutomatischScriptpfad5())) ? null
-                            : o.getTypAutomatischScriptpfad5(), //typAutomatischScriptpfad5
                     o.getBatchStep(), //batchStep
                     (o.getStepPlugin() == null || "".equals(o.getStepPlugin())) ? null : o.getStepPlugin(), // stepPlugin
                     (o.getValidationPlugin() == null || "".equals(o.getValidationPlugin())) ? null : o.getValidationPlugin(), //validationPlugin
@@ -665,11 +620,11 @@ public final class StepMysqlHelper implements Serializable {
 
     private static String generateValueQuery(boolean includeID) {
         if (!includeID) {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,"
-                    + " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                    + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         } else {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                    + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                    + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
     }
@@ -682,10 +637,10 @@ public final class StepMysqlHelper implements Serializable {
         answer.append("Titel, Prioritaet, Reihenfolge, Bearbeitungsstatus, BearbeitungsZeitpunkt, BearbeitungsBeginn, BearbeitungsEnde, ")
                 .append("homeverzeichnisNutzen, typMetadaten, typAutomatisch, typAutomaticThumbnail, automaticThumbnailSettingsYaml, ")
                 .append("typImportFileUpload, typExportRus, typImagesLesen, typImagesSchreiben, typExportDMS, ")
-                .append("typBeimAnnehmenModul, typBeimAnnehmenAbschliessen, typBeimAnnehmenModulUndAbschliessen, typAutomatischScriptpfad, ")
+                .append("typBeimAnnehmenModul, typBeimAnnehmenAbschliessen, typBeimAnnehmenModulUndAbschliessen, ")
                 .append("typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, ")
-                .append("scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, ")
-                .append("scriptName5, typAutomatischScriptpfad5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex, ")
+                .append("scriptName2, scriptName3, scriptName4, ")
+                .append("scriptName5, batchStep, stepPlugin, validationPlugin, delayStep, updateMetadataIndex, ")
                 .append("generateDocket, httpStep, httpMethod, httpUrl, httpJsonBody, httpCloseStep, httpEscapeBodyJson, messageQueue)")
                 .append(" VALUES ");
         return answer.toString();
@@ -714,7 +669,6 @@ public final class StepMysqlHelper implements Serializable {
         sql.append(" typBeimAnnehmenModul = ?,");
         sql.append(" typBeimAnnehmenAbschliessen = ?,");
         sql.append(" typBeimAnnehmenModulUndAbschliessen = ?,");
-        sql.append(" typAutomatischScriptpfad = ?,");
         sql.append(" typBeimAbschliessenVerifizieren = ?,");
         sql.append(" typModulName = ?,");
         sql.append(" BearbeitungsBenutzerID = ?,");
@@ -723,13 +677,9 @@ public final class StepMysqlHelper implements Serializable {
         sql.append(" typScriptStep = ?,");
         sql.append(" scriptName1 = ?,");
         sql.append(" scriptName2 = ?,");
-        sql.append(" typAutomatischScriptpfad2 = ?,");
         sql.append(" scriptName3 = ?,");
-        sql.append(" typAutomatischScriptpfad3 = ?,");
         sql.append(" scriptName4 = ?,");
-        sql.append(" typAutomatischScriptpfad4 = ?,");
         sql.append(" scriptName5 = ?,");
-        sql.append(" typAutomatischScriptpfad5 = ?,");
         sql.append(" batchStep = ?,");
         sql.append(" stepPlugin = ?,");
         sql.append(" validationPlugin = ?,");
@@ -800,7 +750,6 @@ public final class StepMysqlHelper implements Serializable {
         joinQuery.append(" typBeimAnnehmenModul = " + tablename + ".typBeimAnnehmenModul,");
         joinQuery.append(" typBeimAnnehmenAbschliessen = " + tablename + ".typBeimAnnehmenAbschliessen,");
         joinQuery.append(" typBeimAnnehmenModulUndAbschliessen = " + tablename + ".typBeimAnnehmenModulUndAbschliessen,");
-        joinQuery.append(" typAutomatischScriptpfad = " + tablename + ".typAutomatischScriptpfad,");
         joinQuery.append(" typBeimAbschliessenVerifizieren = " + tablename + ".typBeimAbschliessenVerifizieren,");
         joinQuery.append(" typModulName = " + tablename + ".typModulName,");
         joinQuery.append(" BearbeitungsBenutzerID = " + tablename + ".BearbeitungsBenutzerID,");
@@ -809,13 +758,9 @@ public final class StepMysqlHelper implements Serializable {
         joinQuery.append(" typScriptStep = " + tablename + ".typScriptStep,");
         joinQuery.append(" scriptName1 = " + tablename + ".scriptName1,");
         joinQuery.append(" scriptName2 = " + tablename + ".scriptName2,");
-        joinQuery.append(" typAutomatischScriptpfad2 = " + tablename + ".typAutomatischScriptpfad2,");
         joinQuery.append(" scriptName3 = " + tablename + ".scriptName3,");
-        joinQuery.append(" typAutomatischScriptpfad3 = " + tablename + ".typAutomatischScriptpfad3,");
         joinQuery.append(" scriptName4 = " + tablename + ".scriptName4,");
-        joinQuery.append(" typAutomatischScriptpfad4 = " + tablename + ".typAutomatischScriptpfad4,");
         joinQuery.append(" scriptName5 = " + tablename + ".scriptName5,");
-        joinQuery.append(" typAutomatischScriptpfad5 = " + tablename + ".typAutomatischScriptpfad5,");
         joinQuery.append(" batchStep = " + tablename + ".batchStep,");
         joinQuery.append(" stepPlugin = " + tablename + ".stepPlugin,");
         joinQuery.append(" validationPlugin = " + tablename + ".validationPlugin, ");
@@ -937,7 +882,7 @@ public final class StepMysqlHelper implements Serializable {
         sql.append("JOIN batches ON prozesse.batchID = batches.id ");
         sql.append("JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         String sortfield = MySQLHelper.prepareSortField(order, sql);
-        
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(" AND " + filter.replace(" WHERE ", ""));
         }
@@ -1122,20 +1067,12 @@ public final class StepMysqlHelper implements Serializable {
             List<String> answer = new ArrayList<>();
             try {
                 if (rs.next()) {
-                    if (rs.getString("typAutomatischScriptpfad") != null && rs.getString("typAutomatischScriptpfad").length() > 0) {
-                        answer.add(rs.getString("typAutomatischScriptpfad"));
-                    }
-                    if (rs.getString("typAutomatischScriptpfad2") != null && rs.getString("typAutomatischScriptpfad2").length() > 0) {
-                        answer.add(rs.getString("typAutomatischScriptpfad2"));
-                    }
-                    if (rs.getString("typAutomatischScriptpfad3") != null && rs.getString("typAutomatischScriptpfad3").length() > 0) {
-                        answer.add(rs.getString("typAutomatischScriptpfad3"));
-                    }
-                    if (rs.getString("typAutomatischScriptpfad4") != null && rs.getString("typAutomatischScriptpfad4").length() > 0) {
-                        answer.add(rs.getString("typAutomatischScriptpfad4"));
-                    }
-                    if (rs.getString("typAutomatischScriptpfad5") != null && rs.getString("typAutomatischScriptpfad5").length() > 0) {
-                        answer.add(rs.getString("typAutomatischScriptpfad5"));
+                    // script paths are now stored in scriptName1-5 columns
+                    for (String col : new String[] { "scriptName1", "scriptName2", "scriptName3", "scriptName4", "scriptName5" }) {
+                        String val = rs.getString(col);
+                        if (val != null && val.length() > 0) {
+                            answer.add(val);
+                        }
                     }
                 }
             } finally {

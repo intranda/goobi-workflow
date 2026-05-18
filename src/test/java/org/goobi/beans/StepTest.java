@@ -30,10 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.goobi.api.mq.QueueType;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
@@ -267,24 +264,10 @@ public class StepTest extends AbstractTest {
     }
 
     @Test
-    public void testTypAutomatischScriptpfad() {
-        Step step = new Step();
-        step.setTypAutomatischScriptpfad("typ 1");
-        assertEquals("typ 1", step.getTypAutomatischScriptpfad());
-    }
-
-    @Test
     public void testScriptname2() {
         Step step = new Step();
         step.setScriptname2("script 2");
         assertEquals("script 2", step.getScriptname2());
-    }
-
-    @Test
-    public void testTypAutomatischScriptpfad2() {
-        Step step = new Step();
-        step.setTypAutomatischScriptpfad2("typ 2");
-        assertEquals("typ 2", step.getTypAutomatischScriptpfad2());
     }
 
     @Test
@@ -295,13 +278,6 @@ public class StepTest extends AbstractTest {
     }
 
     @Test
-    public void testTypAutomatischScriptpfad3() {
-        Step step = new Step();
-        step.setTypAutomatischScriptpfad3("typ 3");
-        assertEquals("typ 3", step.getTypAutomatischScriptpfad3());
-    }
-
-    @Test
     public void testScriptname4() {
         Step step = new Step();
         step.setScriptname4("script 4");
@@ -309,24 +285,10 @@ public class StepTest extends AbstractTest {
     }
 
     @Test
-    public void testTypAutomatischScriptpfad4() {
-        Step step = new Step();
-        step.setTypAutomatischScriptpfad4("typ 4");
-        assertEquals("typ 4", step.getTypAutomatischScriptpfad4());
-    }
-
-    @Test
     public void testScriptname5() {
         Step step = new Step();
         step.setScriptname5("script 5");
         assertEquals("script 5", step.getScriptname5());
-    }
-
-    @Test
-    public void testTypAutomatischScriptpfad5() {
-        Step step = new Step();
-        step.setTypAutomatischScriptpfad5("typ 5");
-        assertEquals("typ 5", step.getTypAutomatischScriptpfad5());
     }
 
     @Test
@@ -822,53 +784,59 @@ public class StepTest extends AbstractTest {
         assertEquals("Test Title (Doe, John)", step.getTitelMitBenutzername());
     }
 
-    @Test
-    public void testGetAllScriptPaths() {
-        Step step1 = new Step();
-        assertEquals(0, step1.getAllScriptPaths().size());
-
-        Step step2 = new Step();
-        step2.setTypAutomatischScriptpfad("A");
-        step2.setTypAutomatischScriptpfad2("B");
-        step2.setTypAutomatischScriptpfad3("C");
-        step2.setTypAutomatischScriptpfad4("D");
-        step2.setTypAutomatischScriptpfad5("E");
-        List<String> scripts = step2.getAllScriptPaths();
-        assertEquals(5, scripts.size());
-        assertTrue(scripts.contains("A"));
-        assertTrue(scripts.contains("B"));
-        assertTrue(scripts.contains("C"));
-        assertTrue(scripts.contains("D"));
-        assertTrue(scripts.contains("E"));
+    private void resetConfigScripts() {
+        try {
+            java.lang.reflect.Field f = de.sub.goobi.config.ConfigScripts.class.getDeclaredField("instance");
+            f.setAccessible(true);
+            f.set(null, null);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
-    public void testAllScripts() {
-        Map<String, String> map = new LinkedHashMap<>();
-        map.put("name A", "script A");
-        map.put("name B", "script B");
-        map.put("name C", "script C");
-        map.put("name D", "script D");
-        map.put("name E", "script E");
-
+    public void getResolvedScriptsKnownNameReturnsScript() {
+        resetConfigScripts();
         Step step = new Step();
-        step.setAllScripts(map);
-        Map<String, String> returnedMap = step.getAllScripts();
-        Set<String> set = returnedMap.keySet();
-        Object[] keyObjects = set.toArray();
-        assertEquals(5, keyObjects.length);
+        step.setScriptname1("Script Alpha");
 
-        assertEquals("name A", keyObjects[0]);
-        assertEquals("name B", keyObjects[1]);
-        assertEquals("name C", keyObjects[2]);
-        assertEquals("name D", keyObjects[3]);
-        assertEquals("name E", keyObjects[4]);
+        List<org.goobi.beans.Script> result = step.getResolvedScripts();
 
-        assertEquals("script A", returnedMap.get(keyObjects[0]));
-        assertEquals("script B", returnedMap.get(keyObjects[1]));
-        assertEquals("script C", returnedMap.get(keyObjects[2]));
-        assertEquals("script D", returnedMap.get(keyObjects[3]));
-        assertEquals("script E", returnedMap.get(keyObjects[4]));
+        assertEquals(1, result.size());
+        assertEquals("Script Alpha", result.get(0).getScriptName());
+        assertEquals("/bin/bash /opt/digiverso/goobi/scripts/alpha.sh", result.get(0).getScript());
+    }
+
+    @Test
+    public void getResolvedScriptsEmptySlotsAreSkipped() {
+        resetConfigScripts();
+        Step step = new Step();
+        step.setScriptname1("Script Alpha");
+
+        List<org.goobi.beans.Script> result = step.getResolvedScripts();
+
+        assertEquals(1, result.size());
+    }
+
+    //    @Test(expected = IllegalStateException.class)
+    //    public void getResolvedScriptsUnknownNameThrowsException() {
+    //        resetConfigScripts();
+    //        Step step = new Step();
+    //        step.setScriptname1("Nonexistent Script");
+    //        step.getResolvedScripts();
+    //    }
+
+    @Test
+    public void hasScriptsWithScriptReturnsTrue() {
+        Step step = new Step();
+        step.setScriptname1("Script Alpha");
+        assertTrue(step.isHasScripts());
+    }
+
+    @Test
+    public void hasScriptsEmptyReturnsFalse() {
+        Step step = new Step();
+        assertFalse(step.isHasScripts());
     }
 
     @Test

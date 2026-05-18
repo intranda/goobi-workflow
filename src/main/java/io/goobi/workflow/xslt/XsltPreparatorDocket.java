@@ -71,6 +71,7 @@ import org.jdom2.transform.XSLTransformer;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
+import de.sub.goobi.config.ConfigScripts;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
@@ -79,6 +80,7 @@ import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import org.goobi.beans.Script;
 import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -1048,25 +1050,20 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         if (step.isTypScriptStep()) {
             // scriptName1
             script.setAttribute(ATTRIBUTE_SCRIPT_NAME_1, step.getScriptname1() == null ? "" : step.getScriptname1());
-            // typAutomatischScriptpfad
-            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_1, step.getTypAutomatischScriptpfad() == null ? "" : step.getTypAutomatischScriptpfad());
+            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_1, resolveScriptCommand(step.getScriptname1()));
 
             // scriptName2
             script.setAttribute(ATTRIBUTE_SCRIPT_NAME_2, step.getScriptname2() == null ? "" : step.getScriptname2());
-            // typAutomatischScriptpfad2
-            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_2, step.getTypAutomatischScriptpfad2() == null ? "" : step.getTypAutomatischScriptpfad2());
+            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_2, resolveScriptCommand(step.getScriptname2()));
             // scriptName3
             script.setAttribute(ATTRIBUTE_SCRIPT_NAME_3, step.getScriptname3() == null ? "" : step.getScriptname3());
-            // typAutomatischScriptpfad3
-            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_3, step.getTypAutomatischScriptpfad3() == null ? "" : step.getTypAutomatischScriptpfad3());
+            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_3, resolveScriptCommand(step.getScriptname3()));
             // scriptName4
             script.setAttribute(ATTRIBUTE_SCRIPT_NAME_4, step.getScriptname4() == null ? "" : step.getScriptname4());
-            // typAutomatischScriptpfad4
-            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_4, step.getTypAutomatischScriptpfad4() == null ? "" : step.getTypAutomatischScriptpfad4());
+            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_4, resolveScriptCommand(step.getScriptname4()));
             // scriptName5
             script.setAttribute(ATTRIBUTE_SCRIPT_NAME_5, step.getScriptname5() == null ? "" : step.getScriptname5());
-            // typAutomatischScriptpfad5
-            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_5, step.getTypAutomatischScriptpfad5() == null ? "" : step.getTypAutomatischScriptpfad5());
+            script.setAttribute(ATTRIBUTE_SCRIPT_PATH_5, resolveScriptCommand(step.getScriptname5()));
         }
 
         Element http = new Element(ELEMENT_HTTP_STEP, xmlns);
@@ -1585,6 +1582,14 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // prozesse.mediaFolderExists
         sorting.setAttribute(ATTRIBUTE_MEDIA_FOLDER_EXISTS, String.valueOf(process.isMediaFolderExists()));
         processElement.addContent(sorting);
+    }
+
+    private String resolveScriptCommand(String scriptName) {
+        if (scriptName == null || scriptName.isEmpty()) {
+            return "";
+        }
+        Script s = ConfigScripts.getInstance().getScriptByName(scriptName);
+        return s != null ? s.getScript() : "";
     }
 
 }

@@ -27,10 +27,8 @@ package org.goobi.beans;
  */
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mail.SendMail;
@@ -139,31 +137,16 @@ public class Step implements DatabaseObject, Comparable<Step>, IPropertyHolder {
     private String scriptname1;
     @Getter
     @Setter
-    private String typAutomatischScriptpfad;
-    @Getter
-    @Setter
     private String scriptname2;
-    @Getter
-    @Setter
-    private String typAutomatischScriptpfad2;
     @Getter
     @Setter
     private String scriptname3;
     @Getter
     @Setter
-    private String typAutomatischScriptpfad3;
-    @Getter
-    @Setter
     private String scriptname4;
     @Getter
     @Setter
-    private String typAutomatischScriptpfad4;
-    @Getter
-    @Setter
     private String scriptname5;
-    @Getter
-    @Setter
-    private String typAutomatischScriptpfad5;
     @Getter
     @Setter
     private String typModulName;
@@ -543,73 +526,46 @@ public class Step implements DatabaseObject, Comparable<Step>, IPropertyHolder {
         this.bearbeitungsstatus = Integer.parseInt(inbearbeitungsstatus);
     }
 
-    public List<String> getAllScriptPaths() {
-        List<String> answer = new ArrayList<>();
-        if (this.typAutomatischScriptpfad != null && !"".equals(this.typAutomatischScriptpfad)) {
-            answer.add(this.typAutomatischScriptpfad);
+    public List<Script> getResolvedScripts() {
+        List<String> names = new ArrayList<>();
+        if (StringUtils.isNotEmpty(scriptname1)) {
+            names.add(scriptname1);
         }
-        if (this.typAutomatischScriptpfad2 != null && !"".equals(this.typAutomatischScriptpfad2)) {
-            answer.add(this.typAutomatischScriptpfad2);
+        if (StringUtils.isNotEmpty(scriptname2)) {
+            names.add(scriptname2);
         }
-        if (this.typAutomatischScriptpfad3 != null && !"".equals(this.typAutomatischScriptpfad3)) {
-            answer.add(this.typAutomatischScriptpfad3);
+        if (StringUtils.isNotEmpty(scriptname3)) {
+            names.add(scriptname3);
         }
-        if (this.typAutomatischScriptpfad4 != null && !"".equals(this.typAutomatischScriptpfad4)) {
-            answer.add(this.typAutomatischScriptpfad4);
+        if (StringUtils.isNotEmpty(scriptname4)) {
+            names.add(scriptname4);
         }
-        if (this.typAutomatischScriptpfad5 != null && !"".equals(this.typAutomatischScriptpfad5)) {
-            answer.add(this.typAutomatischScriptpfad5);
+        if (StringUtils.isNotEmpty(scriptname5)) {
+            names.add(scriptname5);
         }
-        return answer;
+
+        de.sub.goobi.config.ConfigScripts configScripts = de.sub.goobi.config.ConfigScripts.getInstance();
+        List<org.goobi.beans.Script> result = new ArrayList<>(names.size());
+        for (String name : names) {
+            org.goobi.beans.Script s = configScripts.getScriptByName(name);
+            if (s == null) {
+                throw new IllegalStateException("Script '" + name + "' not found in whitelist");
+            }
+            result.add(s);
+        }
+        return result;
     }
 
-    public Map<String, String> getAllScripts() {
-        Map<String, String> answer = new LinkedHashMap<>();
-        if (this.typAutomatischScriptpfad != null && !"".equals(this.typAutomatischScriptpfad)) {
-            answer.put(this.scriptname1, this.typAutomatischScriptpfad);
-        }
-        if (this.typAutomatischScriptpfad2 != null && !"".equals(this.typAutomatischScriptpfad2)) {
-            answer.put(this.scriptname2, this.typAutomatischScriptpfad2);
-        }
-        if (this.typAutomatischScriptpfad3 != null && !"".equals(this.typAutomatischScriptpfad3)) {
-            answer.put(this.scriptname3, this.typAutomatischScriptpfad3);
-        }
-        if (this.typAutomatischScriptpfad4 != null && !"".equals(this.typAutomatischScriptpfad4)) {
-            answer.put(this.scriptname4, this.typAutomatischScriptpfad4);
-        }
-        if (this.typAutomatischScriptpfad5 != null && !"".equals(this.typAutomatischScriptpfad5)) {
-            answer.put(this.scriptname5, this.typAutomatischScriptpfad5);
-        }
-        return answer;
+    public boolean hasScripts() {
+        return StringUtils.isNotEmpty(scriptname1)
+                || StringUtils.isNotEmpty(scriptname2)
+                || StringUtils.isNotEmpty(scriptname3)
+                || StringUtils.isNotEmpty(scriptname4)
+                || StringUtils.isNotEmpty(scriptname5);
     }
 
-    public void setAllScripts(Map<String, String> paths) {
-        Set<String> keys = paths.keySet();
-        ArrayList<String> keyList = new ArrayList<>();
-        for (String key : keys) {
-            keyList.add(key);
-        }
-        int size = keyList.size();
-        if (size > 0) {
-            this.scriptname1 = keyList.get(0);
-            this.typAutomatischScriptpfad = paths.get(keyList.get(0));
-        }
-        if (size > 1) {
-            this.scriptname2 = keyList.get(1);
-            this.typAutomatischScriptpfad2 = paths.get(keyList.get(1));
-        }
-        if (size > 2) {
-            this.scriptname3 = keyList.get(2);
-            this.typAutomatischScriptpfad3 = paths.get(keyList.get(2));
-        }
-        if (size > 3) {
-            this.scriptname4 = keyList.get(3);
-            this.typAutomatischScriptpfad4 = paths.get(keyList.get(3));
-        }
-        if (size > 4) {
-            this.scriptname5 = keyList.get(4);
-            this.typAutomatischScriptpfad5 = paths.get(keyList.get(4));
-        }
+    public boolean isHasScripts() {
+        return hasScripts();
     }
 
     public String getListOfPaths() {

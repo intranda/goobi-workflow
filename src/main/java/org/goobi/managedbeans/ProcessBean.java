@@ -81,6 +81,7 @@ import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.beans.Ruleset;
+import org.goobi.beans.Script;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -120,6 +121,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import de.intranda.commons.chart.renderer.CSVRenderer;
 import de.intranda.commons.chart.results.DataRow;
 import de.sub.goobi.config.ConfigExportValidation;
+import de.sub.goobi.config.ConfigScripts;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.ExportMets;
@@ -2695,6 +2697,10 @@ public class ProcessBean extends BasicBean {
             myProzess = ProcessManager.getProcessById(newProcessId);
             myNewProcessTitle = myProzess.getTitel();
         }
+    }
+
+    public List<Script> getAllScripts() {
+        return ConfigScripts.getInstance().getScripts();
     }
 
 }

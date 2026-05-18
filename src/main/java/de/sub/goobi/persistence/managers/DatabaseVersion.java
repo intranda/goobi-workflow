@@ -18,6 +18,10 @@ package de.sub.goobi.persistence.managers;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,12 +31,21 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.io.FileHandler;
+import org.apache.commons.configuration2.tree.ImmutableNode;
+import org.apache.commons.configuration2.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.RandomNumberGenerator;
@@ -59,7 +72,7 @@ public final class DatabaseVersion {
         // hide implicit public constructor
     }
 
-    public static final int EXPECTED_VERSION = 62;
+    public static final int EXPECTED_VERSION = 63;
     private static final Gson GSON = new Gson();
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -494,6 +507,11 @@ public final class DatabaseVersion {
                     updateToVersion62();
                     tempVersion++;
                     //fall through
+                case 62: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 63.");
+                    updateToVersion63();
+                    tempVersion++;
+                    //fall through
                 default://NOSONAR, no break on purpose to run through all cases
                         // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -506,6 +524,110 @@ public final class DatabaseVersion {
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
         }
+    }
+
+    private static void updateToVersion63() throws SQLException {
+        // Step 1: Data migration — export scripts from DB to XML before dropping columns
+        if (checkIfColumnExists("schritte", "typAutomatischScriptpfad")) {
+            try {
+                migrateScriptsToXml();
+            } catch (IOException | SQLException e) {
+                log.error("Script migration to goobi_scripts.xml failed — skipping column drop to preserve data", e);
+                return;
+            }
+        }
+        // Step 2: Drop columns (only reached if migration succeeded or was not needed)
+        if (checkIfColumnExists("schritte", "typAutomatischScriptpfad")) {
+            runSql("ALTER TABLE schritte DROP COLUMN typAutomatischScriptpfad");
+        }
+        if (checkIfColumnExists("schritte", "typAutomatischScriptpfad2")) {
+            runSql("ALTER TABLE schritte DROP COLUMN typAutomatischScriptpfad2");
+        }
+        if (checkIfColumnExists("schritte", "typAutomatischScriptpfad3")) {
+            runSql("ALTER TABLE schritte DROP COLUMN typAutomatischScriptpfad3");
+        }
+        if (checkIfColumnExists("schritte", "typAutomatischScriptpfad4")) {
+            runSql("ALTER TABLE schritte DROP COLUMN typAutomatischScriptpfad4");
+        }
+        if (checkIfColumnExists("schritte", "typAutomatischScriptpfad5")) {
+            runSql("ALTER TABLE schritte DROP COLUMN typAutomatischScriptpfad5");
+        }
+    }
+
+    private static void migrateScriptsToXml() throws IOException, SQLException {
+        String configFolder = ConfigurationHelper.getInstance().getConfigurationFolder();
+        Path xmlPath = Paths.get(configFolder, "goobi_scripts.xml");
+
+        // Load existing entries from XML (abort if parse fails to avoid overwriting them)
+        Map<String, String> existing = new LinkedHashMap<>();
+        if (Files.exists(xmlPath)) {
+            try {
+                XMLConfiguration existingConfig = new XMLConfiguration();
+                existingConfig.setExpressionEngine(new XPathExpressionEngine());
+                new FileHandler(existingConfig).load(xmlPath.toFile());
+                for (HierarchicalConfiguration<ImmutableNode> node : existingConfig.configurationsAt("script")) {
+                    existing.put(node.getString("name"), node.getString("command"));
+                }
+            } catch (ConfigurationException e) {
+                throw new IOException("Could not read existing goobi_scripts.xml — aborting migration to preserve existing entries", e);
+            }
+        }
+
+        // Read all distinct (scriptName, scriptPath) pairs from DB
+        String sql = "SELECT DISTINCT scriptName1, typAutomatischScriptpfad FROM schritte "
+                + "WHERE typAutomatischScriptpfad IS NOT NULL AND typAutomatischScriptpfad != '' "
+                + "UNION SELECT DISTINCT scriptName2, typAutomatischScriptpfad2 FROM schritte "
+                + "WHERE typAutomatischScriptpfad2 IS NOT NULL AND typAutomatischScriptpfad2 != '' "
+                + "UNION SELECT DISTINCT scriptName3, typAutomatischScriptpfad3 FROM schritte "
+                + "WHERE typAutomatischScriptpfad3 IS NOT NULL AND typAutomatischScriptpfad3 != '' "
+                + "UNION SELECT DISTINCT scriptName4, typAutomatischScriptpfad4 FROM schritte "
+                + "WHERE typAutomatischScriptpfad4 IS NOT NULL AND typAutomatischScriptpfad4 != '' "
+                + "UNION SELECT DISTINCT scriptName5, typAutomatischScriptpfad5 FROM schritte "
+                + "WHERE typAutomatischScriptpfad5 IS NOT NULL AND typAutomatischScriptpfad5 != ''";
+
+        try (Connection connection = MySQLHelper.getInstance().getConnection();
+                java.sql.Statement stmt = connection.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+            Map<String, String> toAdd = new LinkedHashMap<>();
+            Set<String> seenCommands = new HashSet<>(existing.values());
+
+            while (rs.next()) {
+                String name = rs.getString(1);
+                String command = rs.getString(2);
+                if (command == null || command.isBlank()) {
+                    continue;
+                }
+                if (seenCommands.contains(command)) {
+                    continue;
+                }
+
+                String effectiveName = (name != null && !name.isBlank()) ? name : command;
+                int suffix = 2;
+                String uniqueName = effectiveName;
+                while (existing.containsKey(uniqueName) || toAdd.containsKey(uniqueName)) {
+                    uniqueName = effectiveName + "_" + suffix++;
+                }
+                toAdd.put(uniqueName, command);
+                seenCommands.add(command);
+            }
+
+            existing.putAll(toAdd);
+            StringBuilder xmlContent = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<scripts>\n");
+            for (Map.Entry<String, String> entry : existing.entrySet()) {
+                xmlContent.append("    <script>\n");
+                xmlContent.append("        <name>").append(escapeXml(entry.getKey())).append("</name>\n");
+                xmlContent.append("        <command>").append(escapeXml(entry.getValue())).append("</command>\n");
+                xmlContent.append("        <suppressLogging>false</suppressLogging>\n");
+                xmlContent.append("    </script>\n");
+            }
+            xmlContent.append("</scripts>\n");
+            Files.writeString(xmlPath, xmlContent.toString());
+            log.info("Migrated " + toAdd.size() + " scripts to " + xmlPath);
+        }
+    }
+
+    private static String escapeXml(String input) {
+        return input.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;");
     }
 
     private static void updateToVersion62() {

@@ -1696,27 +1696,22 @@ public class ProcessService implements IRestAuthentication {
         List<Entry<String, String>> set = new ArrayList<>(resource.getScripts().entrySet());
 
         for (int i = 0; i < set.size(); i++) {
-            Entry<String, String> entry = set.get(i);
+            String scriptName = set.get(i).getKey();
             switch (i) {
                 case 0:
-                    step.setScriptname1(entry.getKey());
-                    step.setTypAutomatischScriptpfad(entry.getValue());
+                    step.setScriptname1(scriptName);
                     break;
                 case 1:
-                    step.setScriptname2(entry.getKey());
-                    step.setTypAutomatischScriptpfad2(entry.getValue());
+                    step.setScriptname2(scriptName);
                     break;
                 case 2:
-                    step.setScriptname3(entry.getKey());
-                    step.setTypAutomatischScriptpfad3(entry.getValue());
+                    step.setScriptname3(scriptName);
                     break;
                 case 3:
-                    step.setScriptname4(entry.getKey());
-                    step.setTypAutomatischScriptpfad4(entry.getValue());
+                    step.setScriptname4(scriptName);
                     break;
                 case 4:
-                    step.setScriptname5(entry.getKey());
-                    step.setTypAutomatischScriptpfad5(entry.getValue());
+                    step.setScriptname5(scriptName);
                     break;
                 default:
                     break;
