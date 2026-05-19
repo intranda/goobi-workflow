@@ -173,7 +173,7 @@ public class LoginBean implements Serializable {
 
         // Prepare login
         log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login button was pressed");
-        AlteBilderAufraeumen();
+        cleanupFiles();
         this.myBenutzer = null;
 
         // Check valid login information
@@ -239,6 +239,9 @@ public class LoginBean implements Serializable {
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Trying to load dashboard plugin: " + dashboard);
         }
 
+        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+        HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
+        hreq.changeSessionId();
         return "";
     }
 
@@ -313,6 +316,9 @@ public class LoginBean implements Serializable {
             Helper.setFehlerMeldung("could not read database", e.getMessage());
             return "";
         }
+        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+        HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
+        hreq.changeSessionId();
         return RETURN_PAGE;
     }
 
@@ -396,6 +402,7 @@ public class LoginBean implements Serializable {
         session.setAttribute("openIDNonce", nonce);
         String applicationPath = ec.getApplicationContextPath();
         HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
+        hreq.changeSessionId();
         try {
             URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
             builder.addParameter("client_id", config.getOIDCClientID());
@@ -431,7 +438,7 @@ public class LoginBean implements Serializable {
 
         String applicationPath = ec.getApplicationContextPath();
         HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
-
+        hreq.changeSessionId();
         try {
             URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
             builder.addParameter("client_id", config.getOIDCClientID());
@@ -465,7 +472,7 @@ public class LoginBean implements Serializable {
         }
     }
 
-    private void AlteBilderAufraeumen() {
+    private void cleanupFiles() {
         /* Pages-Verzeichnis mit den temporären Images ermitteln */
         String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
 
@@ -524,7 +531,7 @@ public class LoginBean implements Serializable {
     }
 
     /**
-     * receive list of custom columns configured by current user which is sent through the VariableReplacer later on
+     * receive list of custom columns configured by current user which is sent through the VariableReplacer later on.
      *
      * @return List of Strings for each column
      */

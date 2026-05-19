@@ -786,7 +786,7 @@ public class MassImportForm implements Serializable {
             }
 
         } catch (NullPointerException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            log.error(e);
+            // ignore this error, method is not implemented
         }
         return null;
     }
