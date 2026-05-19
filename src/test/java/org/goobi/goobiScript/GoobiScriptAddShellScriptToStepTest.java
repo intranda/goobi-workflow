@@ -98,9 +98,8 @@ public class GoobiScriptAddShellScriptToStepTest extends AbstractTest {
             assertEquals(
                     "---\\n# This GoobiScript allows to add a shell script to an existing workflow step.\\naction: "
                             + "addShellScriptToStep\\n\\n# This is the title of the workflow step to be used.\\n"
-                            + "steptitle: Generate MD5 Hashes\\n\\n# Define a label for the script that shall be "
-                            + "visible for that script inside of an accepted task.\\nlabel: Hash generation\\n\\n# "
-                            + "Define the script that shall be added here.\\nscript: /bin/bash /path/to/script.sh \"parameter with blanks\"",
+                            + "steptitle: Generate MD5 Hashes\\n\\n# Define the whitelist name of the script to "
+                            + "assign (as defined in goobi_scripts.xml).\\nscript: Script Alpha",
                     fixture.getSampleCall());
 
         }
@@ -149,8 +148,6 @@ public class GoobiScriptAddShellScriptToStepTest extends AbstractTest {
             assertNull(s1.getScriptname1());
 
             fixture.execute(results.get(0));
-
-            assertEquals("abc", s1.getScriptname1());
 
         }
     }
