@@ -602,7 +602,7 @@ public final class ConfigurationHelper implements Serializable {
      */
     @Deprecated(since = "23.05", forRemoval = false)
     public String getLdapEncryption() {
-        return getLocalString("ldap_encryption", "SHA");
+        return getLocalString("ldap_encryption", "SHA256");
     }
 
     /**

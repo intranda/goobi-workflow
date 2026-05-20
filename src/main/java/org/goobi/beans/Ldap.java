@@ -64,7 +64,7 @@ public class Ldap implements DatabaseObject, IAuthenticationProvider {
     private String nextFreeUnixId = "CHANGE_ME_cn=NextFreeUnixId,o=example,c=net";
     private String pathToRootCertificate;
     private String pathToPdcCertificate;
-    private String encryptionType = "SHA";
+    private String encryptionType = "SHA256";
     private boolean useSsl;
 
     private String authenticationType;

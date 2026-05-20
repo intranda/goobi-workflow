@@ -417,7 +417,7 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testGetLdapEncryption() {
-        assertEquals("SHA", ConfigurationHelper.getInstance().getLdapEncryption());
+        assertEquals("SHA256", ConfigurationHelper.getInstance().getLdapEncryption());
     }
 
     @Test

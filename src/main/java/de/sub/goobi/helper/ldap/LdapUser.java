@@ -31,6 +31,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
@@ -148,10 +149,34 @@ public class LdapUser implements DirContext {
              * -------------------------------- Encryption of password und Base64-Enconding --------------------------------
              */
 
-            MessageDigest md = MessageDigest.getInstance(lp.getEncryptionType());
-            md.update(inPassword.getBytes());
-            String digestBase64 = new String(Base64.encodeBase64(md.digest()));
-            this.myAttrs.put("userPassword", "{" + lp.getEncryptionType() + "}" + digestBase64);
+            String encType = lp.getEncryptionType();
+            String userPasswordValue;
+            if ("SHA256".equalsIgnoreCase(encType)) {
+                byte[] salt = new byte[8];
+                new SecureRandom().nextBytes(salt);
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                md.update(inPassword.getBytes(StandardCharsets.UTF_8));
+                md.update(salt);
+                byte[] hashAndSalt = new byte[32 + salt.length];
+                System.arraycopy(md.digest(), 0, hashAndSalt, 0, 32);
+                System.arraycopy(salt, 0, hashAndSalt, 32, salt.length);
+                userPasswordValue = "{SSHA256}" + new String(Base64.encodeBase64(hashAndSalt));
+            } else if ("SHA".equalsIgnoreCase(encType)) {
+                byte[] salt = new byte[8];
+                new SecureRandom().nextBytes(salt);
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(inPassword.getBytes(StandardCharsets.UTF_8));
+                md.update(salt);
+                byte[] hashAndSalt = new byte[20 + salt.length];
+                System.arraycopy(md.digest(), 0, hashAndSalt, 0, 20);
+                System.arraycopy(salt, 0, hashAndSalt, 20, salt.length);
+                userPasswordValue = "{SSHA}" + new String(Base64.encodeBase64(hashAndSalt));
+            } else {
+                MessageDigest md = MessageDigest.getInstance(encType);
+                md.update(inPassword.getBytes());
+                userPasswordValue = "{" + encType + "}" + new String(Base64.encodeBase64(md.digest()));
+            }
+            this.myAttrs.put("userPassword", userPasswordValue);
         }
     }
 

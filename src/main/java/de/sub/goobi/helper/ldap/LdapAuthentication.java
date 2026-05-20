@@ -37,6 +37,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -580,16 +581,40 @@ public class LdapAuthentication {
                 /*
                  * -------------------------------- Encryption of password and Base64-Encoding --------------------------------
                  */
-                MessageDigest md = MessageDigest.getInstance(inBenutzer.getLdapGruppe().getEncryptionType());
-                md.update(inNewPassword.getBytes());
-                String digestBase64 = new String(Base64.encodeBase64(md.digest()));
+                String encType = inBenutzer.getLdapGruppe().getEncryptionType();
+                String userPasswordValue;
+                if ("SHA256".equalsIgnoreCase(encType)) {
+                    byte[] salt = new byte[8];
+                    new SecureRandom().nextBytes(salt);
+                    MessageDigest md = MessageDigest.getInstance("SHA-256");
+                    md.update(inNewPassword.getBytes(StandardCharsets.UTF_8));
+                    md.update(salt);
+                    byte[] hashAndSalt = new byte[32 + salt.length];
+                    System.arraycopy(md.digest(), 0, hashAndSalt, 0, 32);
+                    System.arraycopy(salt, 0, hashAndSalt, 32, salt.length);
+                    userPasswordValue = "{SSHA256}" + new String(Base64.encodeBase64(hashAndSalt));
+                } else if ("SHA".equalsIgnoreCase(encType)) {
+                    byte[] salt = new byte[8];
+                    new SecureRandom().nextBytes(salt);
+                    MessageDigest md = MessageDigest.getInstance("SHA");
+                    md.update(inNewPassword.getBytes(StandardCharsets.UTF_8));
+                    md.update(salt);
+                    byte[] hashAndSalt = new byte[20 + salt.length];
+                    System.arraycopy(md.digest(), 0, hashAndSalt, 0, 20);
+                    System.arraycopy(salt, 0, hashAndSalt, 20, salt.length);
+                    userPasswordValue = "{SSHA}" + new String(Base64.encodeBase64(hashAndSalt));
+                } else {
+                    MessageDigest md = MessageDigest.getInstance(encType);
+                    md.update(inNewPassword.getBytes());
+                    userPasswordValue = "{" + encType + "}" + new String(Base64.encodeBase64(md.digest()));
+                }
                 ModificationItem[] mods = new ModificationItem[4];
 
                 /*
                  * -------------------------------- UserPasswort-Attribut ändern --------------------------------
                  */
                 BasicAttribute userpassword =
-                        new BasicAttribute("userPassword", "{" + inBenutzer.getLdapGruppe().getEncryptionType() + "}" + digestBase64);
+                        new BasicAttribute("userPassword", userPasswordValue);
 
                 /*
                  * -------------------------------- LanMgr-Passwort-Attribut ändern --------------------------------
