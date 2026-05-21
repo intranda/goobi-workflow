@@ -30,7 +30,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import org.goobi.beans.Process;
+
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import de.unigoettingen.sub.commons.cache.ContentServerCacheManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetAction;
@@ -39,6 +44,7 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.MetsPdfResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
@@ -53,15 +59,26 @@ public class GoobiPdfResource extends MetsPdfResource {
             @Context ContainerRequestContext context, @Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") String processId)
             throws ContentLibException {
-        super(context, request, response, "pdf", getMetsFilepath(processId, GetAction.parseParameters(request, context)),
+        super(context, request, response, "pdf", getMetsFilepath(request, processId, GetAction.parseParameters(request, context)),
                 ContentServerCacheManager.getInstance());
     }
 
-    private static String getMetsFilepath(String processId, Map<String, String> parameters) throws ContentLibException {
+    private static String getMetsFilepath(HttpServletRequest request, String processId, Map<String, String> parameters) throws ContentLibException {
         if (parameters.containsKey("metsFile")) {
             return extractURI(parameters, "metsFile").toString();
         } else {
             String cleanedProcessId = Paths.get(processId).getFileName().toString();
+            Process process = ProcessManager.getProcessById(Integer.parseInt(cleanedProcessId));
+            Integer userId = (Integer) request.getAttribute("userid");
+            try {
+                if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
+                    throw new NotFoundException("Access denied");
+                }
+            } catch (DAOException e) {
+                log.error(e);
+                throw new NotFoundException("Access denied");
+            }
+
             Path path = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder(), cleanedProcessId, "meta.xml");
             try {
                 return getUriFromPath(path.toString()).toString();

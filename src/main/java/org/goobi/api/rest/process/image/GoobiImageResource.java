@@ -48,6 +48,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.goobi.beans.Process;
 
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
@@ -58,6 +59,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import de.unigoettingen.sub.commons.cache.ContentServerCacheManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
@@ -85,6 +87,8 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -124,7 +128,10 @@ public class GoobiImageResource {
     @Context
     private ContainerRequestContext context;
     @Context
+    @Setter
+    @Getter
     private HttpServletRequest request;
+
     @Context
     private HttpServletResponse response;
 
@@ -338,7 +345,7 @@ public class GoobiImageResource {
             return Image.toURI(imagePath);
 
         } catch (NumberFormatException | NullPointerException e) {
-            throw new ContentNotFoundException("No process found with id " + processFolder.getFileName().toString(), e);
+            throw new ContentNotFoundException("No process found with id " + processFolder.getFileName().toString());
         } catch (IOException | SwapException | DAOException | ContentLibException e) {
             throw new ContentNotFoundException(
                     "Error initializing image resource for  " + processFolder.getFileName().toString() + ". Reason: " + e.getMessage(), e);
@@ -605,26 +612,37 @@ public class GoobiImageResource {
     }
 
     private Path getImagesFolder(Path processFolder, String folder) throws IOException, SwapException, DAOException {
+        Process process = getGoobiProcess(processFolder.getFileName().toString());
+        Integer userId = (Integer) request.getAttribute("userid");
+        try {
+            if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
+                return null;
+            }
+        } catch (DAOException e) {
+            log.error(e);
+            return null;
+        }
+
         switch (folder.toLowerCase()) {
             case "master":
             case "orig":
-                return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesOrigDirectory(false));
+                return Paths.get(process.getImagesOrigDirectory(false));
             case "media":
             case "tif":
-                return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesTifDirectory(false));
+                return Paths.get(process.getImagesTifDirectory(false));
             case "thumbnails_large":
-                return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesDirectory(), "layoutWizzard-temp",
+                return Paths.get(process.getImagesDirectory(), "layoutWizzard-temp",
                         "thumbnails_large");
             case "thumbnails_small":
-                return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesDirectory(), "layoutWizzard-temp",
+                return Paths.get(process.getImagesDirectory(), "layoutWizzard-temp",
                         "thumbnails_small");
             case "intern":
-                return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getProcessDataDirectory(), "intern");
+                return Paths.get(process.getProcessDataDirectory(), "intern");
             case "export":
-                return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getProcessDataDirectory(), "export");
+                return Paths.get(process.getProcessDataDirectory(), "export");
             default:
                 if (!folder.contains("_")) {
-                    return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesDirectory(), folder);
+                    return Paths.get(process.getImagesDirectory(), folder);
                 } else {
                     return processFolder.resolve("images").resolve(folder);
                 }

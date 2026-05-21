@@ -169,11 +169,12 @@ public class AuthorizationFilter implements ContainerRequestFilter {
     public static boolean hasJsfContext(HttpServletRequest request) {
         if (request != null) {
             LoginBean userBean = Helper.getLoginBean();
-            return (userBean != null && userBean.getMyBenutzer() != null);
-
-        } else {
-            return false;
+            if (userBean != null && userBean.getMyBenutzer() != null) {
+                request.setAttribute("userid", userBean.getMyBenutzer().getId());
+                return true;
+            }
         }
+        return false;
     }
 
     public static boolean checkPermissions(String ip, String token, String path, String method) {

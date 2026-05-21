@@ -44,12 +44,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.goobi.beans.Process;
 
-import lombok.extern.log4j.Log4j2;
-
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
@@ -62,6 +61,9 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.StreamingOutput;
 import jakarta.xml.ws.WebServiceException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * @author Florian Alpers
@@ -71,6 +73,10 @@ import jakarta.xml.ws.WebServiceException;
 @Path("/view/object")
 @Log4j2
 public class ObjectResource {
+    @Context
+    @Setter
+    @Getter
+    private HttpServletRequest request;
 
     private static final String FILE_NOT_FOUND = "The file could not be found in the file system: ";
 
@@ -88,6 +94,16 @@ public class ObjectResource {
         Process process = ProcessManager.getProcessById(processId);
         if (process == null) {
             throw new NotFoundException("No process found with identifier " + processId);
+        }
+
+        Integer userId = (Integer) request.getAttribute("userid");
+        try {
+            if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
+                throw new NotFoundException("Access denied");
+            }
+        } catch (DAOException e) {
+            log.error(e);
+            throw new NotFoundException("Internal error");
         }
 
         try {
@@ -149,7 +165,15 @@ public class ObjectResource {
 
         String filename = filenameBase + ".js";
         Process process = ProcessManager.getProcessById(processId);
-
+        Integer userId = (Integer) request.getAttribute("userid");
+        try {
+            if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
+                throw new NotFoundException("Access denied");
+            }
+        } catch (DAOException e) {
+            log.error(e);
+            throw new NotFoundException("Internal error");
+        }
         String foldername = Paths.get(inFoldername).getFileName().toString();
         filename = Paths.get(filename).getFileName().toString();
 
@@ -191,6 +215,15 @@ public class ObjectResource {
         filename = Paths.get(filename).getFileName().toString();
 
         Process process = ProcessManager.getProcessById(processId);
+        Integer userId = (Integer) request.getAttribute("userid");
+        try {
+            if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
+                throw new NotFoundException("Access denied");
+            }
+        } catch (DAOException e) {
+            log.error(e);
+            throw new NotFoundException("Internal error");
+        }
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, filename);
         if (!objectPath.toFile().isFile()) {
 
@@ -229,6 +262,15 @@ public class ObjectResource {
         filename = Paths.get(filename).getFileName().toString();
 
         Process process = ProcessManager.getProcessById(processId);
+        Integer userId = (Integer) request.getAttribute("userid");
+        try {
+            if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
+                throw new NotFoundException("Access denied");
+            }
+        } catch (DAOException e) {
+            log.error(e);
+            throw new NotFoundException("Internal error");
+        }
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, "images", filename);
         if (!objectPath.toFile().isFile()) {
 
@@ -268,6 +310,15 @@ public class ObjectResource {
         String filename = Paths.get(inFilename).getFileName().toString();
         String foldername = Paths.get(inFoldername).getFileName().toString();
         Process process = ProcessManager.getProcessById(processId);
+        Integer userId = (Integer) request.getAttribute("userid");
+        try {
+            if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
+                throw new NotFoundException("Access denied");
+            }
+        } catch (DAOException e) {
+            log.error(e);
+            throw new NotFoundException("Internal error");
+        }
         java.nio.file.Path objectPath =
                 Paths.get(NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername, filename).toString(),
                         process.getImagesDirectory()));
@@ -313,6 +364,15 @@ public class ObjectResource {
             @PathParam("filename") final String filename) throws IOException, InterruptedException, SwapException, DAOException {
 
         Process process = ProcessManager.getProcessById(processId);
+        Integer userId = (Integer) request.getAttribute("userid");
+        try {
+            if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
+                throw new NotFoundException("Access denied");
+            }
+        } catch (DAOException e) {
+            log.error(e);
+            throw new NotFoundException("Internal error");
+        }
         java.nio.file.Path objectPath =
                 Paths.get(NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername, subfolder, filename).toString(),
                         process.getImagesDirectory()));
