@@ -146,20 +146,15 @@ public class OrderedKeyMapTest {
     }
 
     @Test
-    public void testEqualsWithSameInsertionOrderReturnsFalse() {
-        // The implementation returns !keyList.equals(otherKeyList).
-        // When both instances have the same insertion order the key lists are equal,
-        // so the method returns false for distinct instances.
+    public void testEqualsWithSameInsertionOrderReturnsTrue() {
         OrderedKeyMap<String, Integer> other = new OrderedKeyMap<>();
         map.put("a", 1);
         other.put("a", 1);
-        assertFalse(map.equals(other));
+        assertTrue(map.equals(other));
     }
 
     @Test
-    public void testEqualsWithDifferentInsertionOrderReturnsTrue() {
-        // When the same entries were inserted in a different order the key lists differ,
-        // so !keyList.equals(otherKeyList) returns true.
+    public void testEqualsWithDifferentInsertionOrderReturnsFalse() {
         OrderedKeyMap<String, Integer> map1 = new OrderedKeyMap<>();
         map1.put("a", 1);
         map1.put("b", 2);
@@ -168,6 +163,6 @@ public class OrderedKeyMapTest {
         map2.put("b", 2);
         map2.put("a", 1);
 
-        assertTrue(map1.equals(map2));
+        assertFalse(map1.equals(map2));
     }
 }

@@ -27,6 +27,7 @@ package org.goobi.production.flow.helper;
  */
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.goobi.beans.Script;
 import org.goobi.beans.Step;
@@ -70,7 +71,7 @@ public class BatchDisplayItem implements Comparable<BatchDisplayItem> {
         }
         BatchDisplayItem item = (BatchDisplayItem) (object);
         boolean equal = item.stepTitle.equals(this.stepTitle);
-        equal = equal && item.stepOrder.equals(this.stepOrder);
+        equal = equal && Objects.equals(item.stepOrder, this.stepOrder);
         equal = equal && item.stepStatus.equals(this.stepStatus);
         equal = equal && item.scripts.equals(this.scripts);
         equal = equal && item.exportDMS == this.exportDMS;
@@ -81,7 +82,7 @@ public class BatchDisplayItem implements Comparable<BatchDisplayItem> {
     public int hashCode() {
         int hashCode = super.hashCode();
         hashCode = hashCode * 71 + this.stepTitle.hashCode();
-        hashCode = hashCode * 73 + this.stepOrder.hashCode();
+        hashCode = hashCode * 73 + Objects.hashCode(this.stepOrder);
         hashCode = hashCode * 79 + this.stepStatus.hashCode();
         hashCode = hashCode * 83 + this.scripts.hashCode();
         hashCode = hashCode * (this.exportDMS ? 89 : 97);

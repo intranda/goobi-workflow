@@ -20,6 +20,7 @@ package org.goobi.production.flow.jobs.helper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -109,5 +110,33 @@ public class BatchDisplayItemTest extends AbstractTest {
         BatchDisplayItem fixture = new BatchDisplayItem(step);
         assertNotNull(fixture);
         assertEquals("Script Alpha", fixture.getScriptnames().get(0));
+    }
+
+    @Test
+    public void testEqualsWithNullStepOrderDoesNotThrowNPE() {
+        Step noScriptStep = new Step();
+        noScriptStep.setTitel("title");
+        noScriptStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
+        noScriptStep.setTypExportDMS(true);
+
+        BatchDisplayItem item1 = new BatchDisplayItem(noScriptStep);
+        item1.setStepOrder(null);
+        BatchDisplayItem item2 = new BatchDisplayItem(noScriptStep);
+        item2.setStepOrder(null);
+        BatchDisplayItem item3 = new BatchDisplayItem(noScriptStep);
+        item3.setStepOrder(5);
+
+        assertEquals(item1, item1);
+        assertEquals(item1, item2);
+        assertNotEquals(item1, item3);
+        assertNotEquals(item3, item1);
+        assertNotEquals(item1, null);
+    }
+
+    @Test
+    public void testHashCodeWithNullStepOrderDoesNotThrowNPE() {
+        BatchDisplayItem item = new BatchDisplayItem(step);
+        item.setStepOrder(null);
+        assertEquals(item.hashCode(), item.hashCode());
     }
 }

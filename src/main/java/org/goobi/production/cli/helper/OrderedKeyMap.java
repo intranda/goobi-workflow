@@ -109,7 +109,7 @@ public class OrderedKeyMap<K, V> extends HashMap<K, V> {
         }
         OrderedKeyMap<K, V> otherMap = (OrderedKeyMap<K, V>) (object);
         List<K> otherKeyList = otherMap.keyList;
-        return (!this.keyList.equals(otherKeyList));
+        return this.keyList.equals(otherKeyList);
     }
 
     @Override

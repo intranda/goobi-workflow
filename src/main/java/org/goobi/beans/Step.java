@@ -627,7 +627,7 @@ public class Step implements DatabaseObject, Comparable<Step>, IPropertyHolder {
             return true;
         }
         Step step = (Step) (object);
-        return Objects.equals(step.id, this.id);
+        return Objects.equals(step.id, this.id) && Objects.equals(step.titel, titel);
     }
 
     @Override
