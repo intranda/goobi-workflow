@@ -10,6 +10,7 @@ import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
 import org.goobi.beans.Process;
+import org.goobi.beans.Project;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.StreamingOutput;
@@ -72,13 +74,20 @@ public class ObjectResourceTest {
         Files.writeString(objectFilePath, CONTENT_GLTF);
         assertEquals(CONTENT_GLTF, Files.readString(objectFilePath));
 
+        Project project = Mockito.mock(Project.class);
+        Mockito.when(project.getId()).thenReturn(1);
+
         Process process = Mockito.mock(Process.class);
         Mockito.when(process.getImagesDirectory()).thenReturn(objectFilePath.getParent().getParent().toString());
+        Mockito.when(process.getProjekt()).thenReturn(project);
 
-        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(PROCESS_ID)).thenReturn(process);
+            mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(1, 1)).thenReturn(true);
 
             HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+            Mockito.when(request.getAttribute("userid")).thenReturn(1);
             HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
             StreamingOutput output = objectResource.getObject(request, response, PROCESS_ID, FOLDERNAME_MASTER, FILENAME_GLTF);
             try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -97,13 +106,20 @@ public class ObjectResourceTest {
         Files.writeString(objectFilePath, CONTENT_BIN);
         assertEquals(CONTENT_BIN, Files.readString(objectFilePath));
 
+        Project project = Mockito.mock(Project.class);
+        Mockito.when(project.getId()).thenReturn(1);
+
         Process process = Mockito.mock(Process.class);
         Mockito.when(process.getImagesDirectory()).thenReturn(objectFilePath.getParent().getParent().getParent().toString());
+        Mockito.when(process.getProjekt()).thenReturn(project);
 
-        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(PROCESS_ID)).thenReturn(process);
+            mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(1, 1)).thenReturn(true);
 
             HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+            Mockito.when(request.getAttribute("userid")).thenReturn(1);
             HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
             StreamingOutput output =
                     objectResource.getObjectResource(request, response, PROCESS_ID, FOLDERNAME_MASTER, FOLDERNAME_RESOURCES, FILENAME_BIN);
