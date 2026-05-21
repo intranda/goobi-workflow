@@ -38,7 +38,6 @@
                                         jsf:action="#{ProzessverwaltungForm.uploadFromHomeAlle}"
                                         jsf:id="uploadFromHome"
                                         class="btn btn-link d-block mb-2"
-                                        title="#{msgs.verzeichnisFertigAusHomeverzeichnisEntfernen}"
                                         onclick="if (!confirm('#{msgs.upload}')) return false">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="cloud-upload" />
@@ -83,7 +82,6 @@
                                             jsf:id="downloadToHomeSelection"
                                             class="btn btn-link ms-5 d-block"
                                             jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
-                                            title="#{msgs.auswahl2}"
                                             onclick="if (!confirm('#{msgs.download}')) return false">
                                             <span class="btn btn-icon btn-blank">
                                                 <util:icon icon="chevron-right" />
@@ -96,7 +94,6 @@
                                         <button
                                             jsf:action="#{ProzessverwaltungForm.downloadToHomePage}"
                                             class="btn btn-link ms-5 d-block"
-                                            title="#{msgs.trefferDieserSeite}"
                                             onclick="if (!confirm('#{msgs.download}')) return false"
                                             jsf:id="downloadToHomePage">
                                             <span class="btn btn-icon btn-blank">
@@ -110,7 +107,6 @@
                                         <button
                                             jsf:action="#{ProzessverwaltungForm.downloadToHomeHits}"
                                             class="btn btn-link ms-5 d-block"
-                                            title="#{msgs.gesamtesTrefferset}"
                                             onclick="if (!confirm('#{msgs.download}')) return false"
                                             jsf:id="downloadToHomeAll">
                                             <span class="btn btn-icon btn-blank">
@@ -160,7 +156,6 @@
                                         jsf:id="action6"
                                         jsf:action="#{ProzessverwaltungForm.exportDMSSelection}"
                                         jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
-                                        title="#{msgs.auswahl2}"
                                         onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
@@ -173,7 +168,6 @@
                                     <button
                                         class="btn btn-link ms-5 d-block"
                                         jsf:action="#{ProzessverwaltungForm.exportDMSPage}"
-                                        title="#{msgs.trefferDieserSeite}"
                                         jsf:id="action7"
                                         onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
                                         <span class="btn btn-icon btn-blank">
@@ -187,7 +181,6 @@
                                     <button
                                         class="btn btn-link ms-5 d-block"
                                         jsf:action="#{ProzessverwaltungForm.exportDMSHits}"
-                                        title="#{msgs.gesamtesTrefferset}"
                                         jsf:id="action8"
                                         onclick="if (!confirm('#{msgs.process_sureToDoMassExport}')) return false">
                                         <span class="btn btn-icon btn-blank">
@@ -442,7 +435,6 @@
                                     <button
                                         class="btn btn-link d-block"
                                         jsf:action="#{ProzessverwaltungForm.generateResultXls}"
-                                        title="#{msgs.createExcel}"
                                         jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
@@ -454,7 +446,6 @@
                                     <button
                                         class="btn btn-link d-block"
                                         jsf:action="#{ProzessverwaltungForm.generateResultDoc}"
-                                        title="#{msgs.createDoc}"
                                         jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
@@ -466,7 +457,6 @@
                                     <button
                                         class="btn btn-link d-block"
                                         jsf:action="#{ProzessverwaltungForm.generateResultRtf}"
-                                        title="#{msgs.createRtf}"
                                         jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
@@ -478,7 +468,6 @@
                                     <button
                                         class="btn btn-link d-block"
                                         jsf:action="#{ProzessverwaltungForm.generateResultAsPdf}"
-                                        title="#{msgs.createPdf}"
                                         jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
@@ -518,8 +507,7 @@
                                         jsf:id="action20"
                                         class="btn btn-link ms-5 d-block"
                                         jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesSelection}"
-                                        jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}"
-                                        title="#{msgs.auswahl2}">
+                                        jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
                                         </span>
@@ -531,8 +519,7 @@
                                     <button
                                         class="btn btn-link ms-5 d-block"
                                         jsf:id="action21"
-                                        jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesPage}"
-                                        title="#{msgs.trefferDieserSeite}">
+                                        jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesPage}">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
                                         </span>
@@ -545,7 +532,6 @@
                                         class="btn btn-link ms-5 d-block "
                                         jsf:id="action22"
                                         jsf:action="#{ProzessverwaltungForm.calcMetadataAndImagesHits}"
-                                        title="#{msgs.gesamtesTrefferset}"
                                         onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
@@ -581,8 +567,7 @@
                                         class="btn btn-link ms-5 d-block"
                                         jsf:id="action30"
                                         jsf:rendered="#{!HelperForm.anonymized}"
-                                        jsf:action="#{ProzessverwaltungForm.statisticsStatusVolumes}"
-                                        title="#{msgs.statusOfVolumes}">
+                                        jsf:action="#{ProzessverwaltungForm.statisticsStatusVolumes}">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
                                         </span>
@@ -598,8 +583,7 @@
                                         class="btn btn-link ms-5 d-block"
                                         jsf:id="action31"
                                         jsf:rendered="#{!HelperForm.anonymized}"
-                                        jsf:action="#{ProzessverwaltungForm.statisticsUsergroups}"
-                                        title="#{msgs.statusForUsers}">
+                                        jsf:action="#{ProzessverwaltungForm.statisticsUsergroups}">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
                                         </span>
@@ -615,8 +599,7 @@
                                         class="btn btn-link ms-5 d-block"
                                         jsf:id="action32"
                                         jsf:rendered="#{!HelperForm.anonymized and ProzessverwaltungForm.paginator.totalResults lt 300}"
-                                        jsf:action="#{ProzessverwaltungForm.statisticsRuntimeSteps}"
-                                        title="#{msgs.runtimeOfSteps}">
+                                        jsf:action="#{ProzessverwaltungForm.statisticsRuntimeSteps}">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
                                         </span>
@@ -632,8 +615,7 @@
                                         class="btn btn-link ms-5 d-block"
                                         jsf:id="action33"
                                         jsf:rendered="#{!HelperForm.anonymized}"
-                                        jsf:action="#{ProzessverwaltungForm.statisticsProduction}"
-                                        title="#{msgs.productionStatistics}">
+                                        jsf:action="#{ProzessverwaltungForm.statisticsProduction}">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
                                         </span>
@@ -649,8 +631,7 @@
                                         class="btn btn-link ms-5 d-block"
                                         jsf:id="action34"
                                         jsf:rendered="#{!HelperForm.anonymized}"
-                                        jsf:action="#{ProzessverwaltungForm.statisticsTroughput}"
-                                        title="#{msgs.productionThroughput}">
+                                        jsf:action="#{ProzessverwaltungForm.statisticsTroughput}">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
                                         </span>
@@ -665,8 +646,7 @@
                                     <button
                                         class="btn btn-link ms-5 d-block"
                                         jsf:id="action35"
-                                        jsf:action="#{ProzessverwaltungForm.statisticsStorage}"
-                                        title="#{msgs.storageCalculator}">
+                                        jsf:action="#{ProzessverwaltungForm.statisticsStorage}">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
                                         </span>
@@ -682,8 +662,7 @@
                                         class="btn btn-link ms-5 d-block"
                                         jsf:id="action36"
                                         jsf:rendered="#{!HelperForm.anonymized}"
-                                        jsf:action="#{ProzessverwaltungForm.statisticsCorrection}"
-                                        title="#{msgs.errorTracking}">
+                                        jsf:action="#{ProzessverwaltungForm.statisticsCorrection}">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
                                         </span>
@@ -698,8 +677,7 @@
                                     <button
                                         class="btn btn-link ms-5 d-block"
                                         jsf:id="action37"
-                                        jsf:action="#{ProzessverwaltungForm.statisticsProject}"
-                                        title="#{msgs.projectAssociation}">
+                                        jsf:action="#{ProzessverwaltungForm.statisticsProject}">
                                         <span class="btn btn-icon btn-blank">
                                             <util:icon icon="chevron-right" />
                                         </span>

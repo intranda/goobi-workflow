@@ -9,22 +9,22 @@
 
 body.accessibility-mode {
   --clr-primary-400: #1f79cc;
+  --clr-primary: var(--clr-primary-400);
   --clr-neutral-400: #767676;
   --clr-action: #cb4e00;
   --clr-box-action: #cb4e00;
   --clr-box-primary: #1f79cc;
+  --clr-success: #007838;
+  --clr-hot: #c30200;
+  --clr-badge-light-orange: var(--clr-action);
+  --clr-badge-intranda-orange: var(--clr-action);
+  --clr-badge-light-green: var(--clr-success);
+  --clr-badge-intranda-green: var(--clr-success);
+  --clr-badge-light-blue: var(--clr-primary);
+  --clr-badge-intranda-blue: var(--clr-primary);
 
   .accessibility-enhancement-text {
     display: inline;
-  }
-
-  .badge-intranda-ultralight {
-    background-color: var(--clr-neutral-400) !important;
-  }
-
-  .badge-light-orange {
-    color: var(--clr-action) !important;
-    border-color: var(--clr-action) !important;
   }
 
   // high contrast progress indicators
