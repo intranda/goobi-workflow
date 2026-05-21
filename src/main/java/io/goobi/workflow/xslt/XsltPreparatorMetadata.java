@@ -116,6 +116,39 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
         }
     }
 
+    public void startLegacyExport(Process p, String destination) throws FileNotFoundException, IOException {
+        startLegacyExport(p, new FileOutputStream(destination), null);
+    }
+
+    public void startLegacyExport(Process p, Path dest) throws FileNotFoundException, IOException {
+        startLegacyExport(p, new FileOutputStream(dest.toFile()), null);
+    }
+
+
+    /**
+     * This method exports the METS metadata as xml to a given stream.
+     *
+     * @param process the process to export
+     * @param os      the OutputStream to write the contents to
+     * @throws IOException
+     * @throws ExportFileException
+     */
+    public void startLegacyExport(Process process, OutputStream os, String xslt) throws IOException {
+        try {
+            Document doc = createLegacyDocument(process, true);
+
+            XMLOutputter outp = new XMLOutputter();
+            outp.setFormat(Format.getPrettyFormat());
+
+            outp.output(doc, os);
+            os.close();
+
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+    }
+
+
     /**
      * This method creates a new xml document with process metadata.
      * 
@@ -190,6 +223,73 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
                 addMetadataAndChildElements(logicalTopstruct, mainElement);
             }
         } catch (UGHException | IOException | SwapException e) {
+            log.error("Error while creating a pdf file", e);
+        }
+        return doc;
+    }
+
+    /**
+     * This method creates a new xml document with process metadata
+     *
+     * @param process the process to export
+     * @return a new xml document
+     * @throws ConfigurationException
+     */
+    public Document createLegacyDocument(Process process, boolean addNamespace) {
+
+        Element processElm = new Element("process");
+        Document doc = new Document(processElm);
+
+        processElm.setAttribute("processID", String.valueOf(process.getId()));
+
+        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+        processElm.setNamespace(xmlns);
+        // namespace declaration
+        if (addNamespace) {
+            Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            processElm.addNamespaceDeclaration(xsi);
+            Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd",
+                    xsi);
+            processElm.setAttribute(attSchema);
+        }
+
+        // process information
+        Element processTitle = new Element("title", xmlns);
+        processTitle.setText(process.getTitel());
+        processElm.addContent(processTitle);
+
+        Element project = new Element("project", xmlns);
+        project.setText(process.getProjekt().getTitel());
+        processElm.addContent(project);
+
+        Element date = new Element("creationDate", xmlns);
+        date.setText(String.valueOf(process.getErstellungsdatum()));
+        processElm.addContent(date);
+
+        Element pdfdate = new Element("pdfGenerationDate", xmlns);
+        pdfdate.setText(String.valueOf(new Date()));
+        processElm.addContent(pdfdate);
+
+        Element ruleset = new Element("ruleset", xmlns);
+        ruleset.setText(process.getRegelsatz().getDatei());
+        processElm.addContent(ruleset);
+
+        Element thumbnail = new Element("thumbnail", xmlns);
+        thumbnail.setText(process.getRepresentativeImageAsString());
+        processElm.addContent(thumbnail);
+
+        // add all important mets content
+        try {
+            Fileformat ff = process.readMetadataFile();
+            if (ff != null) {
+                DigitalDocument dd = ff.getDigitalDocument();
+                DocStruct logicalTopstruct = dd.getLogicalDocStruct();
+
+
+
+                addMetadataAndChildElements(logicalTopstruct, processElm);
+            }
+        } catch (Exception e) {
             log.error("Error while creating a pdf file", e);
         }
         return doc;
