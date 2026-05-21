@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -1400,7 +1401,7 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
             return true;
         }
         Process process = (Process) (object);
-        return process.id.equals(this.id);
+        return Objects.equals(process.id, this.id);
     }
 
     @Override

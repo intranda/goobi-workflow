@@ -903,6 +903,12 @@ public class StepTest extends AbstractTest {
         assertEquals(step, step);
         assertEquals(step, equalStep);
         assertNotEquals(step, differentStep);
+
+        // Null id must not throw NullPointerException:
+        Step nullIdStep = new Step();
+        assertNotEquals(step, nullIdStep);
+        assertNotEquals(nullIdStep, step);
+        assertEquals(nullIdStep, nullIdStep);
     }
 
     @Test

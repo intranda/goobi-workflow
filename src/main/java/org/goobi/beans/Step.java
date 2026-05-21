@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mail.SendMail;
@@ -626,7 +627,7 @@ public class Step implements DatabaseObject, Comparable<Step>, IPropertyHolder {
             return true;
         }
         Step step = (Step) (object);
-        return step.id.equals(this.id);
+        return Objects.equals(step.id, this.id);
     }
 
     @Override

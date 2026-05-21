@@ -819,6 +819,12 @@ public class ProcessTest extends AbstractTest {
         assertNotEquals(process1, new User());
         assertEquals(process1, process1);
         assertEquals(process1, process2);
+
+        // Null id must not throw NullPointerException:
+        Process nullIdProcess = new Process();
+        assertNotEquals(process1, nullIdProcess);
+        assertNotEquals(nullIdProcess, process1);
+        assertEquals(nullIdProcess, nullIdProcess);
     }
 
     @Test

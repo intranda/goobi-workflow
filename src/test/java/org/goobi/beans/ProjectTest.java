@@ -388,6 +388,23 @@ public class ProjectTest extends AbstractTest {
         assertEquals(project1, project1);
         assertNotEquals(project1, project2);
         assertNotEquals(project1, project3);
+
+        // Null titel must not throw NullPointerException:
+        Project nullTitelProject = new Project();
+        nullTitelProject.setInstitution(institution1);
+        assertNotEquals(project1, nullTitelProject);
+        assertNotEquals(nullTitelProject, project1);
+        assertEquals(nullTitelProject, nullTitelProject);
+
+        // Null institution must not throw NullPointerException:
+        Project nullInstitutionProject = new Project();
+        nullInstitutionProject.setTitel("Project A");
+        assertNotEquals(project1, nullInstitutionProject);
+        assertNotEquals(nullInstitutionProject, project1);
+
+        // Wrong type must not throw ClassCastException:
+        assertNotEquals(project1, new Object());
+        assertNotEquals(project1, null);
     }
 
     @Test

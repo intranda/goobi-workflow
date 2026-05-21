@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.JournalEntry.EntryType;
@@ -303,11 +304,13 @@ public class Project extends AbstractJournal implements IPropertyHolder, Databas
 
     @Override
     public boolean equals(Object obj) { // NOSONAR
-        if (obj == null) {
+        if (!(obj instanceof Project)) {
             return false;
         }
-        return this.getTitel().equals(((Project) obj).getTitel())
-                && (getInstitution().getShortName().equals(((Project) obj).getInstitution().getShortName()));
+        Project other = (Project) obj;
+        String thisShortName = getInstitution() != null ? getInstitution().getShortName() : null;
+        String otherShortName = other.getInstitution() != null ? other.getInstitution().getShortName() : null;
+        return Objects.equals(this.getTitel(), other.getTitel()) && Objects.equals(thisShortName, otherShortName);
     }
 
     @Override

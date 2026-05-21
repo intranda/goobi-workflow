@@ -28,6 +28,7 @@ package org.goobi.beans;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
@@ -159,10 +160,11 @@ public class Usergroup implements Comparable<Usergroup>, DatabaseObject {
 
     @Override
     public boolean equals(Object obj) { //NOSONAR
-        if (obj == null) {
+        if (!(obj instanceof Usergroup)) {
             return false;
         }
-        return this.getTitel().equals(((Usergroup) obj).getTitel()) && (getInstitutionId().equals(((Usergroup) obj).getInstitutionId()));
+        Usergroup other = (Usergroup) obj;
+        return Objects.equals(this.getTitel(), other.getTitel()) && Objects.equals(getInstitutionId(), other.getInstitutionId());
     }
 
     // this method is needed for ajaxPlusMinusButton.xhtml

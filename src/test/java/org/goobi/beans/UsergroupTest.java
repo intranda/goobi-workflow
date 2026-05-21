@@ -179,6 +179,17 @@ public class UsergroupTest extends AbstractTest {
         assertEquals(group2, group1);
         assertNotEquals(group1, group3); // "institutionId" is different
         assertNotEquals(group1, group4); // "titel" is different
+
+        // Null titel must not throw NullPointerException:
+        Usergroup nullTitelGroup = new Usergroup();
+        nullTitelGroup.setInstitutionId(1);
+        assertNotEquals(group1, nullTitelGroup);
+        assertNotEquals(nullTitelGroup, group1);
+        assertEquals(nullTitelGroup, nullTitelGroup);
+
+        // Wrong type must not throw ClassCastException:
+        assertNotEquals(group1, new Object());
+        assertNotEquals(group1, null);
     }
 
     @Test

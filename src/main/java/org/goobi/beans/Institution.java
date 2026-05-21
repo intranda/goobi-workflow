@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.production.enums.PluginType;
@@ -99,16 +100,16 @@ public class Institution extends AbstractJournal implements DatabaseObject, Comp
             return true;
         }
         Institution institution = (Institution) (object);
-        return institution.id.equals(this.id);
+        return Objects.equals(institution.id, this.id);
     }
 
     @Override
     public int hashCode() {
         // The numbers here are prime numbers (from 19 to 97)
         int hashCode = super.hashCode();
-        hashCode = hashCode + 19 * this.id.hashCode();
-        hashCode = hashCode + 23 * this.shortName.hashCode();
-        hashCode = hashCode + 29 * this.longName.hashCode();
+        hashCode = hashCode + 19 * Objects.hashCode(this.id);
+        hashCode = hashCode + 23 * Objects.hashCode(this.shortName);
+        hashCode = hashCode + 29 * Objects.hashCode(this.longName);
         hashCode = hashCode + (this.allowAllRulesets ? 31 : 37);
         hashCode = hashCode + (this.allowAllDockets ? 41 : 43);
         hashCode = hashCode + (this.allowAllAuthentications ? 47 : 53);
