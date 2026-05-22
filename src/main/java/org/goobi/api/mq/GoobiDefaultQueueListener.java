@@ -3,6 +3,7 @@ package org.goobi.api.mq;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -61,7 +62,8 @@ public class GoobiDefaultQueueListener {
     private ActiveMQConnection conn;
     private volatile boolean shouldStop = false;
 
-    private static Map<String, TicketHandler<PluginReturnValue>> instances = new HashMap<>();
+    private static final Object INSTANCES_LOCK = new Object();
+    private static volatile Map<String, TicketHandler<PluginReturnValue>> instances = new ConcurrentHashMap<>();
 
     public void register(String username, String password, QueueType queue) throws JMSException {
         ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory("vm://localhost");
@@ -136,7 +138,7 @@ public class GoobiDefaultQueueListener {
                     storeResult(origMessage, message, optTicket, MessageStatus.ERROR);
                 }
             }
-        } catch (JMSException e) {
+        } catch (Exception e) { //NOSONAR: catch any type of exception, so message handling doesn't stop
             if (!shouldStop) {
                 // back off a little bit, maybe we have a problem with the connection or we are shutting down
                 try {
@@ -167,7 +169,11 @@ public class GoobiDefaultQueueListener {
 
     private PluginReturnValue handleTicket(TaskTicket ticket) {
         if (!instances.containsKey(ticket.getTaskType())) {
-            getInstalledTicketHandler();
+            synchronized (INSTANCES_LOCK) {
+                if (!instances.containsKey(ticket.getTaskType())) {
+                    getInstalledTicketHandler();
+                }
+            }
         }
         TicketHandler<PluginReturnValue> handler = instances.get(ticket.getTaskType());
         if (handler == null) {
@@ -189,16 +195,17 @@ public class GoobiDefaultQueueListener {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static void getInstalledTicketHandler() {
-        instances = new HashMap<>();
+        Map<String, TicketHandler<PluginReturnValue>> newInstances = new ConcurrentHashMap<>();
         Set<Class<? extends TicketHandler>> ticketHandlers = new Reflections("org.goobi.api.mq.*").getSubTypesOf(TicketHandler.class);
         for (Class<? extends TicketHandler> clazz : ticketHandlers) {
             try {
                 TicketHandler<PluginReturnValue> handler = clazz.getDeclaredConstructor().newInstance();
-                instances.put(handler.getTicketHandlerName(), handler);
+                newInstances.put(handler.getTicketHandlerName(), handler);
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException
                     | SecurityException e) {
                 log.error(e);
             }
         }
+        instances = newInstances;
     }
 }
