@@ -8,6 +8,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.goobi.vocabulary.exchange.FieldDefinition;
@@ -20,6 +23,11 @@ import ugh.dl.Metadata;
 
 @Getter
 public class ExtendedVocabularyRecord extends VocabularyRecord {
+
+    private static final PolicyFactory SANITIZER = new HtmlPolicyBuilder()
+            .allowElements("b", "i", "em", "strong", "br", "p", "ul", "ol", "li")
+            .toFactory();
+
     private Function<Long, ExtendedVocabulary> vocabularyResolver = VocabularyAPIManager.getInstance().vocabularies()::get;
     private Function<Long, ExtendedVocabularyRecord> recordResolver = VocabularyAPIManager.getInstance().vocabularyRecords()::get;
     private Function<VocabularyRecord, VocabularySchema> schemaResolver = VocabularyAPIManager.getInstance().vocabularySchemas()::getSchema;
@@ -82,12 +90,14 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
 
     public Optional<String> getFieldValueForDefinition(FieldDefinition definition) {
         return getFieldForDefinition(definition)
-                .map(ExtendedFieldInstance::getFieldValue);
+                .map(ExtendedFieldInstance::getFieldValue)
+                .map(SANITIZER::sanitize);
     }
 
     public Optional<String> getFieldValueForDefinition(FieldDefinition definition, String language) {
         return getFieldForDefinition(definition)
-                .map(f -> f.getFieldValue(language));
+                .map(f -> f.getFieldValue(language))
+                .map(SANITIZER::sanitize);
     }
 
     public Optional<String> getFieldValueForDefinitionName(String definitionName) {
