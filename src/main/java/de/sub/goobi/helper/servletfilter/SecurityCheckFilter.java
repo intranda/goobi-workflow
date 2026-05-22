@@ -62,6 +62,19 @@ public class SecurityCheckFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
+        HttpServletResponse hres = (HttpServletResponse) response;
+        hres.setHeader("X-Content-Type-Options", "nosniff");
+        hres.setHeader("X-Frame-Options", "SAMEORIGIN");
+        hres.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+        hres.setHeader("Content-Security-Policy",
+                "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+                + "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; "
+                + "font-src 'self' data:; connect-src 'self' ws: wss:; "
+                + "frame-ancestors 'self'; form-action 'self'");
+        if (request.isSecure()) {
+            hres.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+        }
+
         HttpServletRequest hreq = (HttpServletRequest) request;
         String url = hreq.getRequestURI();
         String destination = "index.xhtml";
