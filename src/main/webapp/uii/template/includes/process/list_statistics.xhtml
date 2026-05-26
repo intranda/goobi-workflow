@@ -205,7 +205,7 @@
 									<h4 class="mt-5">
 										<h:outputText value="#{element.title}" />
 									</h4>
-									<h:outputText value="#{element.htmlTableRenderer.rendering}"
+									<h:outputText value="#{element.sanitizedRendering}"
 										escape="false" />
 
 									<button jsf:id="createExcel"
@@ -253,7 +253,7 @@
 
 										<div class="gw-table gw-table-fixed">
 										  <div class="gw-table__wrapper">
-											<h:outputText value="#{element.htmlTableRenderer.rendering}"
+											<h:outputText value="#{element.sanitizedRendering}"
 												escape="false"
 												rendered="#{element.dataTable.showableInTable}" />
 											</div>

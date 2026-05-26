@@ -62,6 +62,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.User;
@@ -318,12 +319,6 @@ public class Helper implements Serializable, ServletContextListener {
     private static void setMeldung(String control, String meldung, String beschreibung, boolean nurInfo, boolean useTranslation) {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
 
-        // Never forget: Strings are immutable
-        meldung = meldung.replace("<", "&lt;");
-        meldung = meldung.replace(">", "&gt;");
-        beschreibung = beschreibung.replace("<", "&lt;");
-        beschreibung = beschreibung.replace(">", "&gt;");
-
         String msg = meldung;
         String beschr = beschreibung;
         Locale language = Locale.ENGLISH;
@@ -342,6 +337,10 @@ public class Helper implements Serializable, ServletContextListener {
                 log.error(e);
             }
         }
+
+        // Escape after translation: prevents XSS via raw HTML or HTML entity injection
+        msg = StringEscapeUtils.escapeHtml4(msg);
+        beschr = StringEscapeUtils.escapeHtml4(beschr);
 
         String compoundMessage = msg.replaceFirst(":\\s*$", "") + ": " + beschr;
 

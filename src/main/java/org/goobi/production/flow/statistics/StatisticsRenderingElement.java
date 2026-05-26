@@ -34,6 +34,9 @@ import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
+
 import de.intranda.commons.chart.renderer.CSVRenderer;
 import de.intranda.commons.chart.renderer.ChartRenderer;
 import de.intranda.commons.chart.renderer.ExcelRenderer;
@@ -49,6 +52,13 @@ import lombok.extern.log4j.Log4j2;
 public class StatisticsRenderingElement implements Serializable {
 
     private static final long serialVersionUID = 9211752003070422596L;
+
+    private static final PolicyFactory HTML_SANITIZER = new HtmlPolicyBuilder()
+            .allowElements("table", "thead", "tbody", "tfoot", "tr", "th", "td", "p")
+            .allowAttributes("cellpadding", "cellspacing").onElements("table")
+            .allowAttributes("class").globally()
+            .toFactory();
+
     private IStatisticalQuestion myQuestion;
     @Getter
     private DataTable dataTable;
@@ -138,5 +148,16 @@ public class StatisticsRenderingElement implements Serializable {
      *************************************************************************************/
     public String getTitle() {
         return dataTable.getName() + " " + dataTable.getSubname();
+    }
+
+    public String getSanitizedRendering() {
+        if (htmlTableRenderer == null) {
+            return "";
+        }
+        Object rendering = htmlTableRenderer.getRendering();
+        if (rendering == null) {
+            return "";
+        }
+        return HTML_SANITIZER.sanitize(rendering.toString());
     }
 }

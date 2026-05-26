@@ -26,6 +26,7 @@
 package de.sub.goobi.helper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,16 +35,23 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.jdom2.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.PartialViewContext;
+import jakarta.faces.application.FacesMessage;
 
 public class HelperTest extends AbstractTest {
 
@@ -102,5 +110,53 @@ public class HelperTest extends AbstractTest {
         Helper.copyDirectoryWithCrc32Check(currentFolder, dest, 10, element);
         assertTrue(Files.exists(dest));
         assertTrue(!element.getChildren().isEmpty());
+    }
+
+    private FacesContext prepareMockedFacesContext(MockedStatic<FacesContext> mockedStatic) {
+        FacesContext facesContext = Mockito.mock(FacesContext.class);
+        jakarta.faces.context.ExternalContext externalContext = Mockito.mock(jakarta.faces.context.ExternalContext.class);
+        PartialViewContext pvc = Mockito.mock(PartialViewContext.class);
+
+        Mockito.when(facesContext.getExternalContext()).thenReturn(externalContext);
+        Mockito.when(externalContext.getContext()).thenReturn(null);
+        Mockito.when(facesContext.getPartialViewContext()).thenReturn(pvc);
+        Mockito.when(pvc.getRenderIds()).thenReturn(new ArrayList<>());
+
+        FacesContextHelper.setFacesContext(facesContext);
+        mockedStatic.when(FacesContext::getCurrentInstance).thenReturn(facesContext);
+        return facesContext;
+    }
+
+    @Test
+    public void testSetFehlerMeldungUntranslatedBlocksHtmlEntityInjection() {
+        try (MockedStatic<FacesContext> mockedStatic = Mockito.mockStatic(FacesContext.class)) {
+            FacesContext facesContext = prepareMockedFacesContext(mockedStatic);
+            ArgumentCaptor<FacesMessage> captor = ArgumentCaptor.forClass(FacesMessage.class);
+
+            // Attacker sends HTML entities as the message title (summary) – reconstructs script tag with escape=false
+            Helper.setFehlerMeldungUntranslated("&lt;script&gt;alert(1)&lt;/script&gt;");
+
+            Mockito.verify(facesContext).addMessage(Mockito.any(), captor.capture());
+            String summary = captor.getValue().getSummary();
+
+            // Simulate what the browser does when rendering with escape=false
+            String rendered = summary.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&");
+            assertFalse(rendered.contains("<script>"),
+                    "HTML entity injection must not reconstruct a script tag after browser rendering");
+        }
+    }
+
+    @Test
+    public void testSetFehlerMeldungUntranslatedPreservesLineBreaks() {
+        try (MockedStatic<FacesContext> mockedStatic = Mockito.mockStatic(FacesContext.class)) {
+            FacesContext facesContext = prepareMockedFacesContext(mockedStatic);
+            ArgumentCaptor<FacesMessage> captor = ArgumentCaptor.forClass(FacesMessage.class);
+
+            Helper.setFehlerMeldungUntranslated("line1\nline2");
+
+            Mockito.verify(facesContext).addMessage(Mockito.any(), captor.capture());
+            String summary = captor.getValue().getSummary();
+            assertTrue(summary.contains("<br"), "Newlines in messages must be rendered as HTML line breaks");
+        }
     }
 }

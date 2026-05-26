@@ -137,7 +137,7 @@
                         alt="#{element.title}" title="#{element.title}"
                         rendered="#{element.dataTable.showableInChart and (cc.attrs.Manager.targetResultOutput=='chart' or cc.attrs.Manager.targetResultOutput=='chartAndTable')}" />
 
-                    <h:outputText id="uaid34" value="#{element.htmlTableRenderer.rendering}" escape="false"
+                    <h:outputText id="uaid34" value="#{element.sanitizedRendering}" escape="false"
                         rendered="#{element.dataTable.showableInTable and (cc.attrs.Manager.targetResultOutput== 'table' or cc.attrs.Manager.targetResultOutput=='chartAndTable')}" />
 
 				<div class="box__actions justify-content-start">
