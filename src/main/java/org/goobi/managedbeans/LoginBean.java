@@ -81,6 +81,9 @@ public class LoginBean implements Serializable {
 
     private static final String HTML_LOGIN_FIELD_ID = "login";
     private static final String WRONG_LOGIN = "wrongLogin";
+    private static final String LOGIN_BLOCKED = "loginBlocked";
+
+    private static final LoginAttemptTracker ATTEMPT_TRACKER = new LoginAttemptTracker(System::currentTimeMillis);
 
     @Getter
     @Setter
@@ -176,8 +179,18 @@ public class LoginBean implements Serializable {
         cleanupFiles();
         this.myBenutzer = null;
 
+        ExternalContext ecInit = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+        String remoteIp = ((HttpServletRequest) ecInit.getRequest()).getRemoteAddr();
+
+        if (ATTEMPT_TRACKER.isBlocked(remoteIp)) {
+            Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(LOGIN_BLOCKED));
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. IP is temporarily blocked due to too many failed attempts.");
+            return "";
+        }
+
         // Check valid login information
         if (this.login == null || this.passwort == null) {
+            ATTEMPT_TRACKER.recordFailure(remoteIp);
             Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because login name or password was null.");
             return "";
@@ -195,17 +208,20 @@ public class LoginBean implements Serializable {
         }
 
         if (user == null) {
+            ATTEMPT_TRACKER.recordFailure(remoteIp);
             // Log output is done in findUserByLoginName()
             return "";
         }
         // check if user is allwed to log in
         if (user.getStatus() == User.UserStatus.REGISTERED) {
             // registration not finished, login not allowed
+            ATTEMPT_TRACKER.recordFailure(remoteIp);
             Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not activated.");
             return "";
         } else if (user.getStatus() == User.UserStatus.DELETED || user.getStatus() == User.UserStatus.INACTIVE) {
             // disabled, login not allowed
+            ATTEMPT_TRACKER.recordFailure(remoteIp);
             Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not active.");
             return "";
@@ -215,6 +231,7 @@ public class LoginBean implements Serializable {
 
         // Check the password
         if (!user.istPasswortKorrekt(this.passwort)) {
+            ATTEMPT_TRACKER.recordFailure(remoteIp);
             Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(WRONG_LOGIN));
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. Password was not correct.");
             return "";
@@ -238,6 +255,8 @@ public class LoginBean implements Serializable {
         } else {
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Trying to load dashboard plugin: " + dashboard);
         }
+
+        ATTEMPT_TRACKER.recordSuccess(remoteIp);
 
         ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
         HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
