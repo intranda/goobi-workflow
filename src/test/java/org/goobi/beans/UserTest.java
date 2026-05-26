@@ -457,8 +457,44 @@ public class UserTest extends AbstractTest {
     public void testCustomCss() {
         User user = new User();
         assertNull(user.getCustomCss());
-        user.setCustomCss("fixture");
-        assertEquals("fixture", user.getCustomCss());
+        user.setCustomCss("body { color: red; }");
+        assertEquals("body { color: red; }", user.getCustomCss());
+    }
+
+    @Test
+    public void testCustomCssStripsStyleClosingTag() {
+        User user = new User();
+        user.setCustomCss("</style><script>alert(1)</script>");
+        assertFalse(user.getCustomCss().contains("</style>"), "closing </style> tag must be removed");
+        assertFalse(user.getCustomCss().contains("</STYLE>"), "closing </STYLE> tag must be removed");
+    }
+
+    @Test
+    public void testCustomCssStripsStyleClosingTagCaseInsensitive() {
+        User user = new User();
+        user.setCustomCss("</STYLE><script>alert(1)</script>");
+        assertFalse(user.getCustomCss().toLowerCase().contains("</style"), "closing style tag must be removed regardless of case");
+    }
+
+    @Test
+    public void testCustomCssStripsJavascriptUrls() {
+        User user = new User();
+        user.setCustomCss("body { background: url('javascript:alert(1)'); }");
+        assertFalse(user.getCustomCss().contains("javascript:"), "javascript: URLs must be removed from CSS");
+    }
+
+    @Test
+    public void testCustomCssStripsExpressions() {
+        User user = new User();
+        user.setCustomCss("body { width: expression(alert(1)); }");
+        assertFalse(user.getCustomCss().contains("expression("), "CSS expression() must be removed");
+    }
+
+    @Test
+    public void testCustomCssStripsImport() {
+        User user = new User();
+        user.setCustomCss("@import url('https://evil.example.com/style.css');");
+        assertFalse(user.getCustomCss().contains("@import"), "@import must be removed from CSS");
     }
 
     @Test

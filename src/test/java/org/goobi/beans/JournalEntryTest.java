@@ -181,7 +181,55 @@ public class JournalEntryTest extends AbstractTest {
         fixture.setContent("content \n more");
         assertEquals("content \n more", fixture.getContent());
         assertEquals("content <br/> more", fixture.getFormattedContent());
+    }
 
+    @Test
+    public void testFormattedContentEscapesScriptTag() {
+        JournalEntry fixture = new JournalEntry(1, new Date(), "user", LogType.INFO, "", EntryType.PROCESS);
+        fixture.setContent("<script>alert('xss')</script>");
+        String result = fixture.getFormattedContent();
+        assertFalse(result.contains("<script>"), "script tag must be HTML-escaped in formattedContent");
+        assertTrue(result.contains("&lt;script&gt;"), "script tag must appear as escaped entity");
+    }
+
+    @Test
+    public void testFormattedContentEscapesImageWithEventHandler() {
+        JournalEntry fixture = new JournalEntry(1, new Date(), "user", LogType.INFO, "", EntryType.PROCESS);
+        fixture.setContent("<img src=x onerror=alert(1)>");
+        String result = fixture.getFormattedContent();
+        assertFalse(result.contains("<img"), "img tag must be HTML-escaped in formattedContent");
+    }
+
+    @Test
+    public void testFormattedContentEscapesAcrossLineBreakSplit() {
+        // An attacker splitting a tag across a <br/> boundary must still be escaped per fragment
+        JournalEntry fixture = new JournalEntry(1, new Date(), "user", LogType.INFO, "", EntryType.PROCESS);
+        fixture.setContent("<script<br/>></script>");
+        String result = fixture.getFormattedContent();
+        assertFalse(result.contains("<script"), "no unescaped script fragment must remain after split");
+        assertFalse(result.contains("</script>"), "no unescaped closing script tag must remain");
+    }
+
+    @Test
+    public void testFormattedContentPreservesLineBreaks() {
+        JournalEntry fixture = new JournalEntry(1, new Date(), "user", LogType.INFO, "", EntryType.PROCESS);
+        fixture.setContent("line1\nline2\nline3");
+        String result = fixture.getFormattedContent();
+        assertEquals("line1<br/>line2<br/>line3", result);
+    }
+
+    @Test
+    public void testFormattedContentPreservesExistingBrTags() {
+        JournalEntry fixture = new JournalEntry(1, new Date(), "user", LogType.INFO, "", EntryType.PROCESS);
+        fixture.setContent("line1<br/>line2");
+        String result = fixture.getFormattedContent();
+        assertEquals("line1<br/>line2", result);
+    }
+
+    @Test
+    public void testFormattedContentWithEmptyStringReturnsEmpty() {
+        JournalEntry fixture = new JournalEntry(1, new Date(), "user", LogType.INFO, "", EntryType.PROCESS);
+        assertEquals("", fixture.getFormattedContent());
     }
 
     @Test

@@ -21,6 +21,7 @@ package org.goobi.production.properties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -268,5 +269,51 @@ public class DisplayPropertyTest extends AbstractTest {
         assertTrue(comparator.compare(p1, p2) < 0);
         assertTrue(comparator.compare(p2, p1) > 0);
         assertEquals(0, comparator.compare(p1, p1));
+    }
+
+    @Test
+    public void testSetValueHtmlTypeStripsScriptTag() {
+        property.setType(Type.HTML);
+        property.setValue("<p>safe</p><script>alert('xss')</script>");
+        assertFalse(property.getValue().contains("<script>"), "script tag must be removed from html property value");
+        assertFalse(property.getReadValue().contains("<script>"), "script tag must be removed from html property readValue");
+    }
+
+    @Test
+    public void testSetValueHtmlTypeStripsEventHandlers() {
+        property.setType(Type.HTML);
+        property.setValue("<p onmouseover=\"alert(1)\">text</p>");
+        assertFalse(property.getValue().contains("onmouseover"), "event handler attributes must be removed from html property");
+        assertFalse(property.getReadValue().contains("onmouseover"), "event handler attributes must be removed from html property readValue");
+    }
+
+    @Test
+    public void testSetValueHtmlTypeStripsJavascriptHref() {
+        property.setType(Type.HTML);
+        property.setValue("<a href=\"javascript:alert(1)\">click</a>");
+        assertFalse(property.getValue().contains("javascript:"), "javascript: href must be removed from html property");
+        assertFalse(property.getReadValue().contains("javascript:"), "javascript: href must be removed from html property readValue");
+    }
+
+    @Test
+    public void testSetValueHtmlTypePreservesAllowedFormatting() {
+        property.setType(Type.HTML);
+        property.setValue("<p><b>bold</b> and <i>italic</i> and <em>emphasis</em></p>");
+        assertTrue(property.getValue().contains("<b>") || property.getValue().contains("bold"), "safe formatting must be preserved");
+    }
+
+    @Test
+    public void testSetValueNonHtmlTypeDoesNotSanitize() {
+        property.setType(Type.TEXT);
+        String raw = "<script>alert(1)</script>";
+        property.setValue(raw);
+        assertEquals(raw, property.getValue(), "non-html property values must not be modified");
+    }
+
+    @Test
+    public void testSetValueHtmlTypeWithNullDoesNotThrow() {
+        property.setType(Type.HTML);
+        property.setValue(null);
+        assertNull(property.getValue());
     }
 }

@@ -216,7 +216,6 @@ public class User extends AbstractJournal implements DatabaseObject {
     @Setter
     private String customColumns;
     @Getter
-    @Setter
     private String customCss;
 
     @Getter
@@ -395,6 +394,19 @@ public class User extends AbstractJournal implements DatabaseObject {
             String hashedPasswordBase64 = new Sha256Hash(inPasswort, passwordSalt, 10000).toBase64();
             return this.encryptedPassword.equals(hashedPasswordBase64);
         }
+    }
+
+    public void setCustomCss(String customCss) {
+        if (customCss == null) {
+            this.customCss = null;
+            return;
+        }
+        String sanitized = customCss;
+        sanitized = sanitized.replaceAll("(?i)</\\s*style", "");
+        sanitized = sanitized.replaceAll("(?i)javascript\\s*:", "");
+        sanitized = sanitized.replaceAll("(?i)expression\\s*\\(", "");
+        sanitized = sanitized.replaceAll("(?i)@import", "");
+        this.customCss = sanitized;
     }
 
     public String getPasswordHash(String plainTextPassword) {

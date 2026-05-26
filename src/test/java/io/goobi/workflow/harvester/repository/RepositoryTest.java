@@ -400,6 +400,7 @@ public class RepositoryTest extends AbstractTest {
             Repository fixture = new Repository();
             assertNotNull(fixture);
             fixture.setRepositoryType("oai");
+            fixture.getParameter().put("url", "http://example.com");
             int val = fixture.harvest(1);
             assertEquals(1, val);
 
@@ -415,7 +416,7 @@ public class RepositoryTest extends AbstractTest {
 
             Repository fixture = new Repository();
             assertNotNull(fixture);
-            fixture.setUrl("url");
+            fixture.setUrl("http://example.com");
             fixture.setRepositoryType("ia");
             int val = fixture.harvest(1);
             assertEquals(0, val);
@@ -449,6 +450,8 @@ public class RepositoryTest extends AbstractTest {
 
             Repository fixture = new Repository();
             assertNotNull(fixture);
+            fixture.getParameter().put("url", "http://example.com");
+
             assertFalse(fixture.isTestMode());
             fixture.setTestMode(true);
             assertTrue(fixture.isTestMode());
@@ -465,6 +468,8 @@ public class RepositoryTest extends AbstractTest {
 
             Repository fixture = new Repository();
             assertNotNull(fixture);
+            fixture.getParameter().put("url", "http://example.com");
+
             assertNull(fixture.getStartDate());
             fixture.setStartDate("fixture");
             assertEquals("fixture", fixture.getStartDate());
@@ -481,6 +486,8 @@ public class RepositoryTest extends AbstractTest {
 
             Repository fixture = new Repository();
             assertNotNull(fixture);
+            fixture.getParameter().put("url", "http://example.com");
+
             assertNull(fixture.getEndDate());
             fixture.setEndDate("fixture");
             assertEquals("fixture", fixture.getEndDate());
@@ -497,6 +504,7 @@ public class RepositoryTest extends AbstractTest {
 
             Repository fixture = new Repository();
             assertNotNull(fixture);
+            fixture.getParameter().put("url", "http://example.com");
             fixture.setRepositoryType("oai");
             fixture.setStartDate("2020-01-01T00:00:00Z");
             fixture.setEndDate("2020-12-31T23:59:59Z");
@@ -515,6 +523,8 @@ public class RepositoryTest extends AbstractTest {
 
             Repository fixture = new Repository();
             assertNotNull(fixture);
+            fixture.getParameter().put("url", "http://example.com");
+
             fixture.setRepositoryType("oai");
             fixture.setTestMode(true);
             int val = fixture.harvest(1);

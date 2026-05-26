@@ -47,6 +47,9 @@ import org.goobi.production.cli.helper.StringPair;
  * exception statement from your version.
  */
 
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
+
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import jakarta.faces.model.SelectItem;
@@ -58,6 +61,18 @@ import lombok.extern.log4j.Log4j2;
 public class DisplayProperty implements IProperty, Serializable {
 
     private static final long serialVersionUID = 6413183995622426678L;
+
+    private static final PolicyFactory HTML_SANITIZER = new HtmlPolicyBuilder()
+            .allowElements("p", "br", "div", "span", "blockquote", "pre",
+                    "b", "i", "u", "em", "strong", "s", "strike", "sub", "sup", "code",
+                    "h1", "h2", "h3", "h4", "h5", "h6",
+                    "ul", "ol", "li",
+                    "table", "thead", "tbody", "tfoot", "tr", "th", "td",
+                    "a")
+            .allowAttributes("href").onElements("a")
+            .allowUrlProtocols("http", "https")
+            .allowAttributes("class").globally()
+            .toFactory();
     @Getter
     @Setter
     private String name;
@@ -130,8 +145,12 @@ public class DisplayProperty implements IProperty, Serializable {
      */
     @Override
     public void setValue(String value) {
-        this.value = value;
-        this.readValue = value;
+        if (Type.HTML.equals(this.type) && value != null) {
+            this.value = HTML_SANITIZER.sanitize(value);
+        } else {
+            this.value = value;
+        }
+        this.readValue = this.value;
         if (Type.VOCABULARYREFERENCE.equals(this.type)) {
             this.readValue = readVocabularyMainValueForRecord(this.value);
         }

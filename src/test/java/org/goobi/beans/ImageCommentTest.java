@@ -79,4 +79,31 @@ public class ImageCommentTest {
     public void testImageCommentLocationEnumHasThreeValues() {
         assertEquals(3, ImageComment.ImageCommentLocation.values().length);
     }
+
+    @Test
+    public void testCommentStoresRawTextWithoutHtmlSanitization() {
+        // ImageComment stores raw text; escaping must happen at the view layer (escape="true" in XHTML).
+        // This test documents that expectation: XSS payloads must reach the getter unchanged so
+        // the JSF template can escape them correctly via the default escape="true" attribute.
+        String xssPayload = "<script>alert('xss')</script>";
+        ImageComment comment = new ImageComment(xssPayload, "page.tif", "/folder",
+                new Date(), "user", "step", ImageComment.ImageCommentLocation.IMAGE_COMMENT_LOCATION_METADATA_EDITOR);
+        assertEquals(xssPayload, comment.getComment());
+    }
+
+    @Test
+    public void testImageFolderStoresRawTextWithoutHtmlSanitization() {
+        String xssPayload = "<img src=x onerror=alert(1)>";
+        ImageComment comment = new ImageComment("text", "page.tif", xssPayload,
+                new Date(), "user", "step", ImageComment.ImageCommentLocation.IMAGE_COMMENT_LOCATION_METADATA_EDITOR);
+        assertEquals(xssPayload, comment.getImageFolder());
+    }
+
+    @Test
+    public void testImageNameStoresRawTextWithoutHtmlSanitization() {
+        String xssPayload = "\"><script>alert(1)</script>.tif";
+        ImageComment comment = new ImageComment("text", xssPayload, "/folder",
+                new Date(), "user", "step", ImageComment.ImageCommentLocation.IMAGE_COMMENT_LOCATION_METADATA_EDITOR);
+        assertEquals(xssPayload, comment.getImageName());
+    }
 }
