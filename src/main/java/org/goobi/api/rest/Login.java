@@ -108,12 +108,13 @@ public class Login {
                     } else {
                         log.debug("logging in user ");
                         User user = UserManager.getUserBySsoId(login);
-                        if (user == null) {
+                        if (user == null || !user.isActive()) {
                             userBean.setSsoError(
                                     "Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
                             servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
                             return;
                         }
+
                         userBean.setSsoError(null);
                         user.lazyLoad();
                         userBean.setMyBenutzer(user);
@@ -199,7 +200,7 @@ public class Login {
                                 } else {
                                     log.debug("logging in user ");
                                     User user = UserManager.getUserBySsoId(login);
-                                    if (user == null) {
+                                    if (user == null || !user.isActive()) {
                                         String msg = """
                                                 Could not find user in Goobi database.
                                                 Please contact your admin to add your SSO ID to the database.
@@ -270,7 +271,7 @@ public class Login {
         }
         LoginBean userBean = Helper.getLoginBeanFromSession(servletRequest.getSession());
         User user = UserManager.getUserBySsoId(ssoId);
-        if (user == null) {
+        if (user == null || !user.isActive()) {
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "There is no user with this ssoId.");
             userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
             servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
