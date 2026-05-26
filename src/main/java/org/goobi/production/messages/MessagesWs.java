@@ -35,6 +35,7 @@ import java.util.ResourceBundle;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import jakarta.websocket.CloseReason;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
@@ -51,7 +52,7 @@ import lombok.extern.log4j.Log4j2;
  *
  */
 @Log4j2
-@ServerEndpoint("/messagesws")
+@ServerEndpoint(value = "/messagesws", configurator = MessagesWsConfigurator.class)
 public class MessagesWs {
     private static Gson gson = new Gson();
     private static Map<Locale, ResourceBundle> locale2BundleMap = new HashMap<>();
@@ -77,7 +78,14 @@ public class MessagesWs {
     }
 
     @OnOpen
-    public void onOpen() {
+    public void onOpen(Session session) throws IOException {
+        Boolean authenticated = (Boolean) session.getUserProperties().get("authenticated");
+        if (authenticated == null || !authenticated) {
+            session.close(new CloseReason(
+                    CloseReason.CloseCodes.VIOLATED_POLICY,
+                    "Authentication required"));
+            return;
+        }
         log.debug("Client connected");
     }
 

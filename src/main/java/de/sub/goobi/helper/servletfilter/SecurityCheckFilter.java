@@ -68,9 +68,9 @@ public class SecurityCheckFilter implements Filter {
         hres.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
         hres.setHeader("Content-Security-Policy",
                 "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
-                + "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; "
-                + "font-src 'self' data:; connect-src 'self' ws: wss:; "
-                + "frame-ancestors 'self'; form-action 'self'");
+                        + "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; "
+                        + "font-src 'self' data:; connect-src 'self' ws: wss:; "
+                        + "frame-ancestors 'self'; form-action 'self'");
         if (request.isSecure()) {
             hres.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
         }
@@ -81,7 +81,7 @@ public class SecurityCheckFilter implements Filter {
         if (url.contains("external_index.xhtml") && ConfigurationHelper.getInstance().isEnableExternalUserLogin()) {
             chain.doFilter(request, response);
         } else if ((userBean == null || userBean.getMyBenutzer() == null) && !url.contains("jakarta.faces.resource") && !url.contains("wi?")
-                && !url.contains("currentUsers.xhtml") && !url.contains("logout.xhtml") && !url.contains("technicalBackground.xhtml")
+                && !url.contains("logout.xhtml") && !url.contains("technicalBackground.xhtml")
                 && !url.contains("mailNotificationDisabled.xhtml") && !url.contains(destination)) {
             ((HttpServletResponse) response).sendRedirect(destination);
         } else {
