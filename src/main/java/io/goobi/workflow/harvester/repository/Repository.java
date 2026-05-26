@@ -22,6 +22,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -305,6 +311,21 @@ public class Repository implements DatabaseObject {
     private int harvestIa(Integer jobId) throws HarvestException {
         StringBuilder query = new StringBuilder(getUrl());
 
+        try {
+            URL parsedUrl = new URI(getUrl()).toURL();
+            String scheme = parsedUrl.getProtocol();
+            if (!"http".equals(scheme) && !"https".equals(scheme)) {
+                throw new HarvestException("SSRF protection: URL scheme not allowed: " + scheme);
+            }
+            InetAddress address = InetAddress.getByName(parsedUrl
+                    .getHost());
+            if (address.isLoopbackAddress() || address.isLinkLocalAddress() || address.isSiteLocalAddress() || address.isAnyLocalAddress()) {
+                throw new HarvestException("SSRF protection: URL resolves to private or reserved address: " + url);
+            }
+        } catch (MalformedURLException | URISyntaxException | UnknownHostException e) {
+            throw new HarvestException("Malformed URL", e);
+        }
+
         // The Internet Archive has a 14-day delay
         if (getDelay() > 0) {
             MutableDateTime now = new MutableDateTime();
@@ -318,8 +339,24 @@ public class Repository implements DatabaseObject {
         return IaTools.querySolrToDB(query.toString(), jobId, id);
     }
 
-    private int harvestBach(Integer jobId) {
+    private int harvestBach(Integer jobId) throws HarvestException {
         String bachUrl = url;
+
+        try {
+            URL parsedUrl = new URI(bachUrl).toURL();
+            String scheme = parsedUrl.getProtocol();
+            if (!"http".equals(scheme) && !"https".equals(scheme)) {
+                throw new HarvestException("SSRF protection: URL scheme not allowed: " + scheme);
+            }
+            InetAddress address = InetAddress.getByName(parsedUrl
+                    .getHost());
+            if (address.isLoopbackAddress() || address.isLinkLocalAddress() || address.isSiteLocalAddress() || address.isAnyLocalAddress()) {
+                throw new HarvestException("SSRF protection: URL resolves to private or reserved address: " + url);
+            }
+        } catch (MalformedURLException | URISyntaxException | UnknownHostException e) {
+            throw new HarvestException("Malformed URL", e);
+        }
+
         String authenticationToken = parameter.get("authentication");
         Map<String, String> additionalMetadata = new HashMap<>();
         additionalMetadata.put("singleDigCollection", "abc");
@@ -443,7 +480,23 @@ public class Repository implements DatabaseObject {
             oai.append("&until=" + untilDateTime);
         }
 
+        try {
+            URL parsedUrl = new URI(oai.toString()).toURL();
+            String scheme = parsedUrl.getProtocol();
+            if (!"http".equals(scheme) && !"https".equals(scheme)) {
+                throw new HarvestException("SSRF protection: URL scheme not allowed: " + scheme);
+            }
+            InetAddress address = InetAddress.getByName(parsedUrl
+                    .getHost());
+            if (address.isLoopbackAddress() || address.isLinkLocalAddress() || address.isSiteLocalAddress() || address.isAnyLocalAddress()) {
+                throw new HarvestException("SSRF protection: URL resolves to private or reserved address: " + url);
+            }
+        } catch (MalformedURLException | URISyntaxException | UnknownHostException e) {
+            throw new HarvestException("Malformed URL", e);
+        }
+
         HarvesterRepositoryManager.updateLastHarvestingTime(jobId, new Timestamp(new Date().getTime()));
+
         return getOaiRecords(oai.toString(), jobId);
     }
 
