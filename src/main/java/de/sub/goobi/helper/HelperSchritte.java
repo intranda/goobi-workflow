@@ -32,9 +32,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -49,12 +46,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContexts;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
@@ -421,21 +414,16 @@ public class HelperSchritte {
             bodyStr = replacer.replace(step.getHttpJsonBody());
         }
         String url = replacer.replace(step.getHttpUrl());
-        // START dirty hack to allow testing with certs with wrong hostnames, this should be removed when we have correct hostnames/certificates
-        SSLConnectionSocketFactory scsf = null;
-        try {
-            scsf = new SSLConnectionSocketFactory(SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build(),
-                    NoopHostnameVerifier.INSTANCE);
-        } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException exception) {
-            String message = "error executing http request: " + exception.getMessage();
-            JournalEntry journalEntry = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR, message, EntryType.PROCESS);
-            JournalManager.saveJournalEntry(journalEntry);
-            errorStep(step);
-            log.error(exception);
+        if (!url.startsWith("http:") && !url.startsWith("https:")) {
+            log.error("SSRF protection: URL scheme not allowed: " + url);
+            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), HTTP_STEP, LogType.ERROR,
+                    "SSRF protection: URL scheme not allowed: " + url,
+                    EntryType.PROCESS);
+            JournalManager.saveJournalEntry(le);
             return;
         }
-        // END dirty hack
-        HttpClient httpclient = HttpClients.custom().setSSLSocketFactory(scsf).build();
+
+        HttpClient httpclient = HttpClients.createDefault();
         Executor executor = Executor.newInstance(httpclient);
         try {
             HttpResponse resp = null;
