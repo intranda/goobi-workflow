@@ -7,6 +7,8 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.goobi.production.enums.PluginReturnValue;
 import org.junit.jupiter.api.AfterEach;
@@ -18,11 +20,16 @@ import jakarta.jms.TextMessage;
 
 public class GoobiDefaultQueueListenerTest {
 
-    @AfterEach
-    void resetInstances() throws Exception {
+    @SuppressWarnings("unchecked")
+    private static AtomicReference<Map<String, TicketHandler<PluginReturnValue>>> getInstancesRef() throws Exception {
         Field instancesField = GoobiDefaultQueueListener.class.getDeclaredField("instances");
         instancesField.setAccessible(true);
-        instancesField.set(null, new HashMap<>());
+        return (AtomicReference<Map<String, TicketHandler<PluginReturnValue>>>) instancesField.get(null);
+    }
+
+    @AfterEach
+    void resetInstances() throws Exception {
+        getInstancesRef().set(new ConcurrentHashMap<>());
     }
 
     @Test
@@ -39,9 +46,7 @@ public class GoobiDefaultQueueListenerTest {
                 return "crashing_handler";
             }
         });
-        Field instancesField = GoobiDefaultQueueListener.class.getDeclaredField("instances");
-        instancesField.setAccessible(true);
-        instancesField.set(null, testInstances);
+        getInstancesRef().set(testInstances);
 
         Session mockSession = mock(Session.class);
         MessageConsumer mockConsumer = mock(MessageConsumer.class);
