@@ -121,7 +121,10 @@ public class Login {
                         userBean.setRoles(user.getAllUserRoles());
                         userBean.setMyBenutzer(user);
                         //add the user to the sessionform that holds information about all logged in users
-                        sessionForm.updateSessionUserName(servletRequest.getSession(), user);
+
+                        HttpSession sess = servletRequest.getSession();
+                        String id = sess.getId();
+                        sessionForm.updateSessionUserName(sess, user, id, id);
                     }
                 } else {
                     if (!nonce.equals(jwt.getClaim("nonce").asString())) {
@@ -215,7 +218,9 @@ public class Login {
                                     userBean.setRoles(user.getAllUserRoles());
                                     userBean.setMyBenutzer(user);
                                     //add the user to the sessionform that holds information about all logged in users
-                                    sessionForm.updateSessionUserName(servletRequest.getSession(), user);
+                                    HttpSession sess = servletRequest.getSession();
+                                    String id = sess.getId();
+                                    sessionForm.updateSessionUserName(sess, user, id, id);
                                 }
                             } else {
                                 if (!nonce.equals(jwt.getClaim("nonce").asString())) {
@@ -285,7 +290,9 @@ public class Login {
         userBean.setMyBenutzer(user);
         log.trace(LoginBean.LOGIN_LOG_PREFIX + "User is added to the session bean now.");
         //add the user to the sessionform that holds information about all logged in users
-        sessionForm.updateSessionUserName(servletRequest.getSession(), user);
+        HttpSession sess = servletRequest.getSession();
+        String id = sess.getId();
+        sessionForm.updateSessionUserName(sess, user, id, id);
         log.debug(LoginBean.LOGIN_LOG_PREFIX + "Redirecting user to start page or dashboard.");
         servletResponse.sendRedirect("/goobi/index.xhtml");
         return "";

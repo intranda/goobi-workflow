@@ -266,14 +266,15 @@ public class SessionForm implements Serializable {
      *
      * @param updatedSession The session to update
      * @param updatedUser The concerning user
+     * @param oldSessionId the old session id before regeneration
+     * @param newSessionId the new session id
      */
-    public void updateSessionUserName(HttpSession updatedSession, User updatedUser) {
+    public void updateSessionUserName(HttpSession updatedSession, User updatedUser, String oldSessionId, String newSessionId) {
         if (this.sessions == null || updatedSession == null) {
             return;
         }
 
-        String id = updatedSession.getId();
-        SessionInfo knownSession = this.getSessionInfoById(id);
+        SessionInfo knownSession = this.getSessionInfoById(oldSessionId);
 
         if (knownSession == null) {
             log.trace(LoginBean.LOGIN_LOG_PREFIX + "Created new session for user.");
@@ -297,7 +298,7 @@ public class SessionForm implements Serializable {
 
         String name = updatedUser.getNachVorname();
         int timeout = updatedUser.getSessiontimeout();
-
+        knownSession.setSessionId(newSessionId);
         knownSession.setUserName(name);
         updatedSession.setAttribute("User", name);
         knownSession.setUserId(updatedUser.getId());

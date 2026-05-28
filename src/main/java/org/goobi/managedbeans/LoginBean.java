@@ -131,7 +131,7 @@ public class LoginBean implements Serializable {
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         if (mySession != null) {
             SessionForm sessionBean = Helper.getSessionBean();
-            sessionBean.updateSessionUserName(mySession, null);
+            sessionBean.updateSessionUserName(mySession, null, mySession.getId(), null);
             mySession.invalidate();
         }
         return RETURN_PAGE;
@@ -144,7 +144,7 @@ public class LoginBean implements Serializable {
 
         this.myBenutzer = null;
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        Helper.getSessionBean().updateSessionUserName(mySession, this.myBenutzer);
+        Helper.getSessionBean().updateSessionUserName(mySession, this.myBenutzer, mySession.getId(), null);
         if (mySession != null) {
             mySession.invalidate();
         }
@@ -175,12 +175,16 @@ public class LoginBean implements Serializable {
     public String Einloggen() {
 
         // Prepare login
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login button was pressed");
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "Login button was pressed");
         cleanupFiles();
         this.myBenutzer = null;
 
         ExternalContext ecInit = FacesContextHelper.getCurrentFacesContext().getExternalContext();
-        String remoteIp = ((HttpServletRequest) ecInit.getRequest()).getRemoteAddr();
+        HttpServletRequest hreq = (HttpServletRequest) ecInit.getRequest();
+        HttpSession mySession = (HttpSession) ecInit.getSession(false);
+        String oldId = mySession.getId();
+        String newId = hreq.changeSessionId();
+        String remoteIp = hreq.getRemoteAddr();
 
         if (ATTEMPT_TRACKER.isBlocked(remoteIp)) {
             Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "", Helper.getTranslation(LOGIN_BLOCKED));
@@ -236,14 +240,14 @@ public class LoginBean implements Serializable {
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. Password was not correct.");
             return "";
         }
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Password was correct.");
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "Password was correct.");
 
         // Get the user session if this user is already logged in in an other browser tab or create a new session for the user.
         log.trace(LoginBean.LOGIN_LOG_PREFIX + "Getting available user session or creating a new session for user...");
-        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
+
         // Update or add session in the sessions manager
         log.trace(LoginBean.LOGIN_LOG_PREFIX + "Adding or replacing session in session manager...");
-        Helper.getSessionBean().updateSessionUserName(mySession, user);
+        Helper.getSessionBean().updateSessionUserName(mySession, user, oldId, newId);
 
         this.myBenutzer = user;
         this.myBenutzer.lazyLoad();
@@ -258,9 +262,6 @@ public class LoginBean implements Serializable {
 
         ATTEMPT_TRACKER.recordSuccess(remoteIp);
 
-        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
-        HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
-        hreq.changeSessionId();
         return "";
     }
 
@@ -308,6 +309,11 @@ public class LoginBean implements Serializable {
         if (!hasRole(UserRole.Admin_Users_Allow_Switch.name())) {
             return RETURN_PAGE;
         }
+        ExternalContext ecInit = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+        HttpServletRequest hreq = (HttpServletRequest) ecInit.getRequest();
+        HttpSession mySession = (HttpSession) ecInit.getSession(false);
+        String oldId = mySession.getId();
+        String newId = hreq.changeSessionId();
 
         User currentUser = this.myBenutzer;
 
@@ -328,16 +334,13 @@ public class LoginBean implements Serializable {
             this.myBenutzer.addJournalEntry();
 
             /* in der Session den Login speichern */
-            HttpSession session = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-            Helper.getSessionBean().updateSessionUserName(session, this.myBenutzer);
+            Helper.getSessionBean().updateSessionUserName(mySession, myBenutzer, oldId, newId);
             roles = this.myBenutzer.getAllUserRoles();
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not read database", e.getMessage());
             return "";
         }
-        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
-        HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
-        hreq.changeSessionId();
+
         return RETURN_PAGE;
     }
 
