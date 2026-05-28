@@ -86,7 +86,7 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
         return false;
     }
 
-    private void generateThumbnails(Process process, boolean master, boolean media, String imgDirectory, String command, int[] sizes, Step step)
+    private void generateThumbnails(Process process, boolean master, boolean media, String imgDirectory, int[] sizes, Step step)
             throws IOException, SwapException, DAOException, ContentLibException {
         String defaultImageDirectory;
         if (master) {
@@ -99,9 +99,6 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
         }
         if (!imgDirectory.isEmpty()) {
             generateThumbnailsFromDirectory(process, imgDirectory, sizes);
-        }
-        if (!command.isEmpty()) {
-            new HelperSchritte().executeScriptForStepObject(step, command, false);
         }
     }
 
@@ -145,7 +142,6 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
         boolean master = false;
         boolean media = false;
         String imgDirectory = "";
-        String scriptCommand = "";
         int[] sizes = {};
 
         if (settings.has("Master")) {
@@ -157,9 +153,7 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
         if (settings.has("Img_directory")) {
             imgDirectory = settings.getString("Img_directory");
         }
-        if (settings.has("Custom_script_command")) {
-            scriptCommand = settings.getString("Custom_script_command");
-        }
+
         if (settings.has("Sizes")) {
             JSONArray arr = settings.getJSONArray("Sizes");
             sizes = new int[arr.length()];
@@ -169,7 +163,7 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
         }
 
         try {
-            this.generateThumbnails(process, master, media, imgDirectory, scriptCommand, sizes, step);
+            this.generateThumbnails(process, master, media, imgDirectory, sizes, step);
         } catch (IOException | ContentLibException e) {
             log.error(e);
         }
