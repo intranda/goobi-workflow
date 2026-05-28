@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -63,7 +64,7 @@ public class GoobiDefaultQueueListener {
     private volatile boolean shouldStop = false;
 
     private static final Object INSTANCES_LOCK = new Object();
-    private static volatile Map<String, TicketHandler<PluginReturnValue>> instances = new ConcurrentHashMap<>();
+    private static final AtomicReference<Map<String, TicketHandler<PluginReturnValue>>> instances = new AtomicReference<>(new ConcurrentHashMap<>());
 
     public void register(String username, String password, QueueType queue) throws JMSException {
         ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory("vm://localhost");
@@ -168,14 +169,14 @@ public class GoobiDefaultQueueListener {
     }
 
     private PluginReturnValue handleTicket(TaskTicket ticket) {
-        if (!instances.containsKey(ticket.getTaskType())) {
+        if (!instances.get().containsKey(ticket.getTaskType())) {
             synchronized (INSTANCES_LOCK) {
-                if (!instances.containsKey(ticket.getTaskType())) {
+                if (!instances.get().containsKey(ticket.getTaskType())) {
                     getInstalledTicketHandler();
                 }
             }
         }
-        TicketHandler<PluginReturnValue> handler = instances.get(ticket.getTaskType());
+        TicketHandler<PluginReturnValue> handler = instances.get().get(ticket.getTaskType());
         if (handler == null) {
             return PluginReturnValue.ERROR;
         }
@@ -206,6 +207,6 @@ public class GoobiDefaultQueueListener {
                 log.error(e);
             }
         }
-        instances = newInstances;
+        instances.set(newInstances);
     }
 }

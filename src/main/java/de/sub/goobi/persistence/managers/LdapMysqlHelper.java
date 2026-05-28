@@ -21,6 +21,7 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -41,16 +42,30 @@ final class LdapMysqlHelper implements Serializable {
 
     private static final long serialVersionUID = 6697737226604394665L;
 
+    /**
+     * Builds a safe parameterized WHERE clause for LDAP title search.
+     * Returns null when filter is blank; otherwise appends the LIKE value to params.
+     */
+    static String buildLdapFilterClause(String filter, List<Object> params) {
+        if (filter == null || filter.isEmpty()) {
+            return null;
+        }
+        params.add("%" + MySQLHelper.escapeString(filter) + "%");
+        return " WHERE titel LIKE ?";
+    }
+
     public static List<Ldap> getLdaps(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM ldapgruppen");
+        List<Object> params = new ArrayList<>();
         boolean whereSet = false;
-        if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+        String filterClause = buildLdapFilterClause(filter, params);
+        if (filterClause != null) {
+            sql.append(filterClause);
             whereSet = true;
         }
-        if (institution != null && !institution.isAllowAllDockets()) {
+        if (institution != null && !institution.isAllowAllAuthentications()) {
             if (whereSet) {
                 sql.append(" AND ");
             } else {
@@ -76,7 +91,7 @@ final class LdapMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            return new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Ldap.class));
+            return new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Ldap.class), params.toArray());
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -87,11 +102,13 @@ final class LdapMysqlHelper implements Serializable {
     public static int getLdapCount(String filter, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
+        List<Object> params = new ArrayList<>();
         boolean whereSet = false;
 
         sql.append("SELECT COUNT(1) FROM ldapgruppen");
-        if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+        String filterClause = buildLdapFilterClause(filter, params);
+        if (filterClause != null) {
+            sql.append(filterClause);
             whereSet = true;
         }
         if (institution != null && !institution.isAllowAllAuthentications()) {
@@ -110,7 +127,7 @@ final class LdapMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, params.toArray());
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -259,9 +276,11 @@ final class LdapMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ldapgruppenID FROM ldapgruppen");
 
+        List<Object> params = new ArrayList<>();
         boolean whereSet = false;
-        if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+        String filterClause = buildLdapFilterClause(filter, params);
+        if (filterClause != null) {
+            sql.append(filterClause);
             whereSet = true;
         }
 
@@ -282,7 +301,7 @@ final class LdapMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler, params.toArray());
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

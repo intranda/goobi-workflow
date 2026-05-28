@@ -48,6 +48,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 final class UserMysqlHelper implements Serializable {
 
+    static final String DELETE_EMAIL_ASSIGNMENT_FOR_STEP_SQL = "DELETE FROM user_email_configuration WHERE userid=? AND stepname=? AND projectid=?";
+
     private UserMysqlHelper() {
         // hide implicit public constructor
     }
@@ -821,10 +823,8 @@ final class UserMysqlHelper implements Serializable {
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
-                String sql = "DELETE FROM user_email_configuration WHERE userid =" + user.getId() + " AND stepname = '" + stepName
-                        + "' AND projectid = " + projectID;
-
-                new QueryRunner().update(connection, sql);
+                new QueryRunner().update(connection, DELETE_EMAIL_ASSIGNMENT_FOR_STEP_SQL,
+                        user.getId(), stepName, projectID);
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);

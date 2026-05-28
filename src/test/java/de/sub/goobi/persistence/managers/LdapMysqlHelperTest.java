@@ -18,7 +18,11 @@
 package de.sub.goobi.persistence.managers;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,5 +44,36 @@ public class LdapMysqlHelperTest extends AbstractTest {
         String validOrder = "ldapgruppenID asc";
         String result = MySQLHelper.prepareSortField(validOrder, sql);
         assertFalse(result.contains(";") || result.contains("DROP"), "prepareSortField must not return the malicious literal");
+    }
+
+    @Test
+    public void testBuildLdapFilterClauseReturnsPreparedStatementPlaceholder() {
+        List<Object> params = new ArrayList<>();
+        String clause = LdapMysqlHelper.buildLdapFilterClause("admin", params);
+        assertTrue(clause.contains("?"), "Filter clause must use ? placeholder, not string concatenation");
+        assertFalse(clause.contains("admin"), "Filter value must not appear literally in the SQL clause");
+    }
+
+    @Test
+    public void testBuildLdapFilterClauseAddsValueToParams() {
+        List<Object> params = new ArrayList<>();
+        LdapMysqlHelper.buildLdapFilterClause("admin", params);
+        assertFalse(params.isEmpty(), "Filter value must be added to params list for PreparedStatement");
+        assertTrue(params.get(0).toString().contains("admin"), "Params list must contain the filter value");
+    }
+
+    @Test
+    public void testBuildLdapFilterClauseEscapesLikeWildcards() {
+        List<Object> params = new ArrayList<>();
+        LdapMysqlHelper.buildLdapFilterClause("test%hack_all", params);
+        String paramValue = (String) params.get(0);
+        assertTrue(paramValue.contains("\\%"), "Percent sign must be escaped for LIKE");
+        assertTrue(paramValue.contains("\\_"), "Underscore must be escaped for LIKE");
+    }
+
+    @Test
+    public void testBuildLdapFilterClauseReturnsNullForBlankInput() {
+        assertNull(LdapMysqlHelper.buildLdapFilterClause(null, new ArrayList<>()));
+        assertNull(LdapMysqlHelper.buildLdapFilterClause("", new ArrayList<>()));
     }
 }

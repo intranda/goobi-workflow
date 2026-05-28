@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.persistence.managers.UserMysqlHelper;
 
 public class UserMysqlHelperTest extends AbstractTest {
 
@@ -89,5 +90,12 @@ public class UserMysqlHelperTest extends AbstractTest {
         assertTrue(sql.toString().contains("projektbenutzer"));
         assertTrue(result.contains("projects"));
         assertFalse(result.isEmpty());
+    }
+
+    @Test
+    public void testDeleteEmailAssignmentSqlTemplateUsesPlaceholderForStepName() {
+        String sql = UserMysqlHelper.DELETE_EMAIL_ASSIGNMENT_FOR_STEP_SQL;
+        assertTrue(sql.contains("?"), "stepName must use ? placeholder in PreparedStatement");
+        assertFalse(sql.contains("stepname = '"), "stepName must not be string-concatenated with quotes");
     }
 }

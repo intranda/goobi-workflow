@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
@@ -43,7 +44,7 @@ public final class ConfigScripts {
     private static final String CONFIG_NAME = "goobi_scripts.xml";
 
     private final Path configPath;
-    private volatile XMLConfiguration config;
+    private final AtomicReference<XMLConfiguration> config = new AtomicReference<>();
     private volatile long lastModified;
 
     private ConfigScripts() {
@@ -67,7 +68,7 @@ public final class ConfigScripts {
         } catch (ConfigurationException | IOException e) {
             log.error(e);
         }
-        config = newConfig;
+        config.set(newConfig);
         try {
             lastModified = Files.getLastModifiedTime(configPath).toMillis();
         } catch (IOException e) {
@@ -88,7 +89,7 @@ public final class ConfigScripts {
 
     public List<Script> getScripts() {
         checkForUpdate();
-        List<HierarchicalConfiguration<ImmutableNode>> scriptNodes = config.configurationsAt("script");
+        List<HierarchicalConfiguration<ImmutableNode>> scriptNodes = config.get().configurationsAt("script");
         List<Script> result = new ArrayList<>(scriptNodes.size());
         for (HierarchicalConfiguration<ImmutableNode> node : scriptNodes) {
             String name = node.getString("name");

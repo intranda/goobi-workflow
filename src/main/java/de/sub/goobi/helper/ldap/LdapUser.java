@@ -148,12 +148,12 @@ public class LdapUser implements DirContext {
             /*
              * -------------------------------- Encryption of password und Base64-Enconding --------------------------------
              */
-
+            SecureRandom random = new SecureRandom();
             String encType = lp.getEncryptionType();
             String userPasswordValue;
             if ("SHA256".equalsIgnoreCase(encType)) {
                 byte[] salt = new byte[8];
-                new SecureRandom().nextBytes(salt);
+                random.nextBytes(salt);
                 MessageDigest md = MessageDigest.getInstance("SHA-256");
                 md.update(inPassword.getBytes(StandardCharsets.UTF_8));
                 md.update(salt);
@@ -163,7 +163,7 @@ public class LdapUser implements DirContext {
                 userPasswordValue = "{SSHA256}" + new String(Base64.encodeBase64(hashAndSalt));
             } else if ("SHA".equalsIgnoreCase(encType)) {
                 byte[] salt = new byte[8];
-                new SecureRandom().nextBytes(salt);
+                random.nextBytes(salt);
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(inPassword.getBytes(StandardCharsets.UTF_8));
                 md.update(salt);
