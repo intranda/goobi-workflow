@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scripts>
+    <script>
+        <name>Daten kopieren</name>
+        <command>/bin/bash /opt/digiverso/goobi/scripts/copyfiles.sh {origpath} {tifpath}</command>
+        <suppressLogging>false</suppressLogging>
+    </script>
+    <script>
+        <name>Tiffheader schreiben</name>
+        <command>/bin/bash /opt/digiverso/goobi/scripts/iii.sh write_tiffheader {origpath}</command>
+        <suppressLogging>false</suppressLogging>
+    </script>
+    <script>
+        <name>TIFF-Derivate erstellen</name>
+        <command>/bin/bash /opt/digiverso/goobi/scripts/iii.sh convert_images {origpath}</command>
+        <suppressLogging>false</suppressLogging>
+    </script>
+    <script>
+        <name>JPEG Derivate erstellen</name>
+        <command>/bin/bash /opt/digiverso/goobi/scripts/iii.sh convert_jpeg {tifpath}</command>
+        <suppressLogging>false</suppressLogging>
+    </script>
+    <script>
+        <name>JP2 Derivate erstellen</name>
+        <command>/bin/bash /opt/digiverso/goobi/scripts/create_jp2.sh {origpath} {tifpath}</command>
+        <suppressLogging>false</suppressLogging>
+    </script>
+    <script>
+        <name>Link für Media Ordner erstellen</name>
+        <command>/bin/ln -s {origpath} {tifpath}</command>
+        <suppressLogging>false</suppressLogging>
+    </script>
+    <script>
+        <name>LayoutWizzardSave</name>
+        <command>/usr/bin/java -jar /opt/digiverso/itm/bin/TaskClient.jar -itm http://localhost:8080/itm/service -s {origpath} -d {tifpath} -e -gid {processid} -i {stepid} -T {processtitle} -n none -t LayoutWizzardSave </command>
+        <suppressLogging>false</suppressLogging>
+    </script>
+    <script>
+        <name>LayoutWizzardAnalyse</name>
+        <command>/usr/bin/java -jar /opt/digiverso/itm/bin/TaskClient.jar -itm http://localhost:8080/itm/service -s {origpath} -d {tifpath} -e -gid {processid} -i {stepid} -T {processtitle} -n addBorder -t LayoutWizzardAnalyse</command>
+        <suppressLogging>false</suppressLogging>
+    </script>
+    <script>
+        <name>URN Generierung</name>
+        <command>/usr/bin/java -jar /opt/digiverso/goobi/scripts/urn-generator.jar -i {imagepath}/../meta.xml -c {prefs} -p /opt/digiverso/goobi/config/config_urn.xml</command>
+        <suppressLogging>false</suppressLogging>
+    </script>
+    <script>
+        <name>OCR</name>
+        <command>/usr/bin/java -jar /opt/digiverso/itm/bin/TaskClient.jar -ocr http://localhost:8080/itm/service -s {tifpath} -d {processpath} -e -i {stepid} -T {processtitle} -f {template.Schriftbild} -n template.xml</command>
+        <suppressLogging>false</suppressLogging>
+    </script>
+</scripts>
