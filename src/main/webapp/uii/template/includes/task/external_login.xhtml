@@ -20,10 +20,7 @@
             <div
                 id="login-body"
                 class="#{externalLoginBean.uiStatus != 'accountCreation' ? 'login-body' : ''} container">
-                <h:outputText
-                    style="color:red;"
-                    value="Developer Mode ON"
-                    rendered="#{DevModeBean.developerMode}" />
+
                 <ui:fragment rendered="#{!LoginForm.oidcAutoRedirect}">
                     <h1 class="page__heading m-0 mb-3" jsf:rendered="#{externalLoginBean.uiStatus != 'accountCreation'}">
                         <h:outputText

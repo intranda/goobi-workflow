@@ -95,11 +95,6 @@ public class ConfigurationHelperTest extends AbstractTest {
         // This method can not be tested because the servlet is not initialized during unit tests
     }
 
-    @Test
-    public void testDeveloping() {
-        assertFalse(ConfigurationHelper.getInstance().isDeveloping());
-    }
-
     /*
      * category in goobi_config.properties: DIRECTORIES
      */

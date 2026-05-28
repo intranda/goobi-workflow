@@ -30,7 +30,7 @@
                 <!-- BOX -->
                 <div class="login-logout-box mt-3 mb-3 p-5">
                     <div class="row w-100">
-                        <h:outputText style="color:red;" value="Developer Mode ON" rendered="#{DevModeBean.developerMode}" />
+
         				<ui:fragment rendered="#{!LoginForm.oidcAutoRedirect}">
         					<h2>
         						<h:outputText value="#{msgs.login}" />

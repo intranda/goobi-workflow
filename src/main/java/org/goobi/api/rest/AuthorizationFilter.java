@@ -113,12 +113,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
         String method = requestContext.getMethod();
 
-        // allow /developer/ prefix when devMode is on
-        if (ConfigurationHelper.getInstance().isDeveloping() && pathInfo.startsWith("/developer/")) {
-            return;
-        }
-
-        //Always open for image, 3d object, multimedia requests and messages requests
+        //Always open for image, 3d object, multimedia requests and messages requests, if user is logged in and has a right to open the process
         boolean validPath = pathInfo.startsWith("/view/object");
         validPath = validPath || pathInfo.startsWith("/view/media/");
         validPath = validPath || pathInfo.startsWith("/process/image/");

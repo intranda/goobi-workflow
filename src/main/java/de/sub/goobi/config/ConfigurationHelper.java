@@ -229,10 +229,6 @@ public final class ConfigurationHelper implements Serializable {
         return "";
     }
 
-    public boolean isDeveloping() {
-        return getLocalBoolean("developing", false);
-    }
-
     /*
      * category in goobi_config.properties: DIRECTORIES
      */
