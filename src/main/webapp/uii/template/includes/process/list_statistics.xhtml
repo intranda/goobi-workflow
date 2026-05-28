@@ -154,7 +154,6 @@
 								</h:panelGroup>
 
 								<button jsf:id="myStatisticButton" type="submit"
-									title="#{msgs.calculateStatistics}"
 									jsf:action="#{ProzessverwaltungForm.statisticsManager.calculate}"
 									class="btn btn-primary">
 									<util:icon icon="calculator" />
@@ -210,7 +209,7 @@
 
 									<button jsf:id="createExcel"
 										jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
-										title="#{msgs.download_excel}" class="btn btn-blank">
+										class="btn btn-blank">
 										<util:icon icon="device-floppy" />
 										<span>
 											<h:outputText value="#{msgs.download_excel}" />
@@ -222,7 +221,7 @@
 
 									<button jsf:id="createCsv"
 										jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
-										title="#{msgs.download_csv}" class="btn btn-blank">
+										class="btn btn-blank">
 										<util:icon icon="device-floppy" />
 										<span>
 											<h:outputText value="#{msgs.download_csv}" />
@@ -260,7 +259,6 @@
 										</div>
 										<button jsf:id="createExcel2"
 											jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
-											title="#{msgs.download_excel}"
 											jsf:rendered="#{element.dataTable.showableInTable}"
 											class="btn btn-blank">
 											<util:icon icon="device-floppy" />
@@ -274,7 +272,6 @@
 
 										<button class="btn btn-blank ms-3" jsf:id="createCsv2"
 											jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
-											title="#{msgs.download_csv}"
 											jsf:rendered="#{element.dataTable.showableInTable}">
 											<util:icon icon="device-floppy" />
 											<span>

@@ -114,8 +114,7 @@
 								class="btn btn-link"
 								jsf:id="action1"
 								jsf:rendered="#{(currentStep.prozess.benutzerGesperrt != null) and (currentStep.prozess.benutzerGesperrt.id == LoginForm.myBenutzer.id)}"
-								jsf:action="#{AktuelleSchritteForm.SperrungAufheben}"
-								title="#{msgs.oderSperrungAufheben}">
+								jsf:action="#{AktuelleSchritteForm.SperrungAufheben}">
 								<h:outputText value="#{msgs.oderSperrungAufheben}" />
 							</button>
 
@@ -169,7 +168,6 @@
 								jsf:rendered="#{currentStep.typModulName != null and currentStep.typModulName != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeModule}"
 								class="btn btn-link "
-								title="#{msgs.modulStarten} (#{currentStep.typModulName})"
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-blank">
 									<util:icon icon="settings" />
@@ -186,7 +184,6 @@
 								jsf:rendered="#{currentStep.typScriptStep and currentStep.scriptname1 != null and currentStep.scriptname1 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link "
-								title="#{currentStep.scriptname1}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
@@ -207,7 +204,6 @@
 								jsf:rendered="#{currentStep.typScriptStep and currentStep.scriptname2 != null and currentStep.scriptname2 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link "
-								title="#{currentStep.scriptname2}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
@@ -228,7 +224,6 @@
 								jsf:rendered="#{currentStep.typScriptStep and currentStep.scriptname3 != null and currentStep.scriptname3 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link "
-								title="#{currentStep.scriptname3}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
@@ -249,7 +244,6 @@
 								jsf:rendered="#{currentStep.typScriptStep and currentStep.scriptname4 != null and currentStep.scriptname4 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link "
-								title="#{currentStep.scriptname4}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
@@ -269,7 +263,6 @@
 								jsf:rendered="#{currentStep.typScriptStep and currentStep.scriptname5 != null and currentStep.scriptname5 != ''}"
 								jsf:action="#{AktuelleSchritteForm.executeScript}"
 								class="btn btn-link "
-								title="#{currentStep.scriptname5}"
 								onclick="preventDoubleSubmit(this);">
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.scriptPath}"
@@ -295,7 +288,6 @@
 									jsf:id="export"
 									jsf:action="#{AktuelleSchritteForm.exportDMS}"
 									class="btn btn-link "
-									title="#{msgs.importDms}"
 									onclick="preventDoubleSubmit(this);">
 									<span class="btn btn-blank">
 										<util:icon icon="upload" />
@@ -315,7 +307,6 @@
 								<h:commandLink
 									id="metadata"
 									action="#{Metadaten.XMLlesen}"
-									title="#{msgs.metadatenBearbeiten}"
 									rendered="#{!currentStep.prozess.temporaryMetadataFiles}"
 									onclick="preventDoubleSubmit(this); sessionStorage.removeItem('columnWidths');"
 									styleClass="btn btn-link ">
@@ -378,7 +369,6 @@
 									rendered="#{currentStep.prozess.temporaryMetadataFiles}">
 									<button
 										class="btn btn-link "
-										title="#{msgs.metadatenBearbeiten}"
 										type="button"
 										data-bs-toggle="modal"
 										data-bs-target="#myModal">
@@ -419,7 +409,6 @@
 													onclick="sessionStorage.removeItem('columnWidths');"
 													action="#{Metadaten.XMLlesen}"
 													id="action15a"
-													title="#{msgs.discard}"
 													rel="tooltip"
 													styleClass="btn btn-hot">
 													<util:icon icon="trash" />
@@ -463,7 +452,6 @@
 													onclick="sessionStorage.removeItem('columnWidths');"
 													action="#{Metadaten.XMLlesen}"
 													id="action15b"
-													title="#{msgs.overwrite}"
 													rel="tooltip"
 													styleClass="btn btn-success">
 													<util:icon icon="device-floppy" />
@@ -514,7 +502,6 @@
 								jsf:id="generateDocket"
 								jsf:action="#{currentStep.prozess.downloadDocket}"
 								class="btn btn-link "
-								title="#{msgs.laufzettelDrucken}"
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-blank">
 									<util:icon icon="printer" />
@@ -530,7 +517,6 @@
                                 jsf:rendered="#{!isBatchStep}"
                                 jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerZurueckgeben}"
                                 class="btn btn-link "
-                                title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
                                 onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-hot">
 									<util:icon icon="arrow-back-up" />
@@ -546,7 +532,6 @@
                                 jsf:rendered="#{isBatchStep}"
 								jsf:action="#{AktuelleSchritteForm.batchHelper.abortBatchEdition}"
 								class="btn btn-link "
-								title="#{msgs.bearbeitungDiesesSchrittesAbgeben}"
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-hot">
 									<util:icon icon="arrow-back-up" />
@@ -562,7 +547,6 @@
                                 jsf:id="finish"
                                 jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}"
                                 class="btn btn-link "
-                                title="#{msgs.diesenSchrittAbschliessen}"
                                 onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-success">
 									<util:icon icon="check" />
@@ -578,7 +562,6 @@
 								jsf:id="finishBatch"
 								jsf:action="#{AktuelleSchritteForm.batchHelper.finishBatchEdition}"
 								class="btn btn-link "
-								title="#{msgs.diesenSchrittAbschliessen}"
 								onclick="preventDoubleSubmit(this);">
 								<span class="btn btn-success">
 									<util:icon icon="check" />
