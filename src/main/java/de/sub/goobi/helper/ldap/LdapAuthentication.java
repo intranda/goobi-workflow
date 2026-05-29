@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.InvalidKeyException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.MessageDigest;
@@ -43,9 +42,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Hashtable;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -617,16 +613,6 @@ public class LdapAuthentication {
                         new BasicAttribute("userPassword", userPasswordValue);
 
                 /*
-                 * -------------------------------- LanMgr-Passwort-Attribut ändern --------------------------------
-                 */
-                BasicAttribute lanmgrpassword = null;
-                try {
-                    lanmgrpassword = new BasicAttribute("sambaLMPassword", LdapUser.toHexString(LdapUser.lmHash(inNewPassword)));
-                } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException e) {
-                    log.error(e);
-                }
-
-                /*
                  * -------------------------------- NTLM-Passwort-Attribut ändern --------------------------------
                  */
                 BasicAttribute ntlmpassword = null;
@@ -634,7 +620,6 @@ public class LdapAuthentication {
                 ntlmpassword = new BasicAttribute("sambaNTPassword", LdapUser.toHexString(hmm));
                 BasicAttribute sambaPwdLastSet = new BasicAttribute("sambaPwdLastSet", String.valueOf(System.currentTimeMillis() / 1000L));
                 mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, userpassword);
-                mods[1] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, lanmgrpassword);
                 mods[2] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, ntlmpassword);
                 mods[3] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, sambaPwdLastSet);
                 ctx.modifyAttributes(getUserDN(inBenutzer), mods);
