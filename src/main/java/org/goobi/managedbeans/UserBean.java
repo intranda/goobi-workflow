@@ -683,13 +683,16 @@ public class UserBean extends BasicBean {
         }
     }
 
+    // Uppercase, lowercase, digits, printable special characters (ASCII 33–126, no space)
+    private static final String PASSWORD_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            + "abcdefghijklmnopqrstuvwxyz"
+            + "0123456789"
+            + "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+
     /**
-     * This method generates a random String containing small letters. The length is determined by the parameter 'length'. Letters may occur more than
-     * one time.<br />
-     * Examples:<br />
-     * createRandomPassword(10) -> "aherizbobr"<br />
-     * createRandomPassword(4) -> "klww"<br />
-     * 
+     * This method generates a random password of the given length using uppercase letters, lowercase letters, digits, and printable special
+     * characters (ASCII 33–126). Characters may occur more than one time.
+     *
      * @param length The length of required password
      * @return The generated password
      */
@@ -697,8 +700,7 @@ public class UserBean extends BasicBean {
         SecureRandom r = new SecureRandom(); // NOSONAR: global variable to re-use is not needed as this method isn't called often
         StringBuilder password = new StringBuilder();
         while (password.length() < length) {
-            // ASCII interval: [97 + 0, 97 + 25] => [97, 122] => [a, z]
-            password.append((char) (r.nextInt(26) + 'a'));
+            password.append(PASSWORD_CHARSET.charAt(r.nextInt(PASSWORD_CHARSET.length())));
         }
         return password.toString();
     }
