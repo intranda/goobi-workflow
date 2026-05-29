@@ -573,7 +573,7 @@ public class LdapAuthentication {
 
             try {
                 DirContext ctx = new InitialDirContext(env);
-                SecureRandom random = new SecureRandom();
+                SecureRandom random = new SecureRandom(); // NOSONAR: global variable to re-use is not needed as this method isn't called often
                 /*
                  * -------------------------------- Encryption of password and Base64-Encoding --------------------------------
                  */

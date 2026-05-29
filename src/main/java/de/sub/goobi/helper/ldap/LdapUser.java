@@ -136,7 +136,7 @@ public class LdapUser implements DirContext {
             /*
              * -------------------------------- Encryption of password und Base64-Enconding --------------------------------
              */
-            SecureRandom random = new SecureRandom();
+            SecureRandom random = new SecureRandom(); // NOSONAR: global variable to re-use is not needed as this method isn't called often
             String encType = lp.getEncryptionType();
             String userPasswordValue;
             if ("SHA256".equalsIgnoreCase(encType)) {
