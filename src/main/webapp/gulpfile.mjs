@@ -336,9 +336,9 @@ function processSvg(srcDir, destDir) {
             // add id attribute to allow for external reference
             $('svg').attr('id', `icon`);
             // remove width and height attributes for easier styling
-            $('svg').attr('width', ``);
-            $('svg').attr('height', ``);
-            $('svg').attr('stroke-width', ``);
+            $('svg').removeAttr('width');
+            $('svg').removeAttr('height');
+            $('svg').removeAttr('stroke-width');
 
             file.contents = Buffer.from($.html());
 
