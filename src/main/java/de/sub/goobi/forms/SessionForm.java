@@ -262,6 +262,17 @@ public class SessionForm implements Serializable {
     }
 
     /**
+     * Legacy method for backwards compatibility.
+     *
+     * @param updatedSession
+     * @param updatedUser
+     */
+
+    public void updateSessionUserName(HttpSession updatedSession, User updatedUser) {
+        updateSessionUserName(updatedSession, updatedUser, updatedSession.getId(), updatedSession.getId());
+    }
+
+    /**
      * Updates the user information about a session in dependence of a certain user.
      *
      * @param updatedSession The session to update
