@@ -2,6 +2,11 @@
 
 set -e
 
+WORKFLOW_UID=${WORKFLOW_UID:-1000}
+WORKFLOW_GID=${WORKFLOW_GID:-1000}
+groupmod -o -g "${WORKFLOW_GID}" user
+usermod -o -u "${WORKFLOW_UID}" user
+
 [ -z "$CONFIGSOURCE" ] && CONFIGSOURCE="default"
 
 set -u
@@ -19,7 +24,7 @@ set +u
 
 export MYSQL_PWD="${DB_PASSWORD}"
 
-while ! mysqladmin ping -h "${DB_HOST}" -u "${DB_USER}" -P "${DB_PORT}" --silent; do
+while ! mysql -h "${DB_HOST}" -u "${DB_USER}" -P "${DB_PORT}" -e "SELECT 1" >/dev/null 2>&1; do
     echo "Waiting for database to boot..."
     sleep 2
 done
@@ -97,6 +102,9 @@ case $CONFIGSOURCE in
     ;;
 esac
 
+echo "Updating file ownership..."
+chown -R user:user "${CATALINA_HOME}" /opt/digiverso/goobi/
+
 echo "Starting application server..."
-exec catalina.sh run
+exec gosu user catalina.sh run
 

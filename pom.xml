@@ -29,6 +29,9 @@
         <version>3.3.2</version>
         <configuration>
           <attachClasses>true</attachClasses>
+          <!-- node_modules is build-only frontend tooling; gulp compiles it into
+               resources/uii, so it must not be packaged into the WAR (~165 MB). -->
+          <packagingExcludes>node_modules/**</packagingExcludes>
         </configuration>
       </plugin>
       <plugin>

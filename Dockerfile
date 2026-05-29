@@ -7,13 +7,16 @@ COPY ./ /workflow/
 WORKDIR /workflow
 RUN echo $build; if [ "$build" = "true" ]; then mvn clean package; elif [ -f "/workflow/target/workflow-core.war" ]; then echo "using existing workflow-core.war"; else echo "not supposed to build, but no workflow-core.war found either"; exit 1; fi
 
+RUN mkdir -p /workflow-exploded && cd /workflow-exploded && jar -xf /workflow/target/workflow-core.war
+
 # Build actual application container
 FROM tomcat:10-jre21 AS slim
 LABEL maintainer="Matthias Geerdsen <matthias.geerdsen@intranda.com>"
 
 ##### SYSTEM PACKAGE INSTALLATION AND UPDATES
 RUN apt-get update && \
-    apt-get -y install rsync \
+    apt-get -y install --no-install-recommends \
+        rsync \
         imagemagick \
         libtiff-tools \
         graphicsmagick \
@@ -23,13 +26,15 @@ RUN apt-get update && \
         file \
         gettext-base \
         libopenjp2-7 \
-        git \
         fontconfig \
         poppler-utils \
-        pdftk \
-        unzip \
         python3 \
-        mysql-client && \
+        mariadb-client-core \
+        gosu \
+        # Required recommends, listed explicitly because of --no-install-recommends: \
+        ghostscript \
+        fonts-urw-base35 \
+        poppler-data && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -37,12 +42,11 @@ RUN rm -rf ${CATALINA_HOME}/webapps/*
 # redirect / to /workflow/
 RUN mkdir ${CATALINA_HOME}/webapps/ROOT && \
     echo '<% response.sendRedirect("/workflow/"); %>' > ${CATALINA_HOME}/webapps/ROOT/index.jsp
-COPY --from=build  /workflow/target/*.war /
-RUN unzip /*.war -d /usr/local/tomcat/webapps/workflow && rm /*.war
+COPY --from=build  /workflow-exploded/ ${CATALINA_HOME}/webapps/workflow
 
 # Structure is also created again in the run.sh in case of a run bind mount to not crash the container
 RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
-RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/ /usr/local/tomcat/webapps/workflow
+RUN mkdir -p /usr/local/tomcat/conf/Catalina/localhost/
 
 
 # Prepare template configuration for Goobi workflow
@@ -72,6 +76,10 @@ COPY install/docker/log4j.xml /opt/digiverso/log4j.xml
 COPY install/docker/log4j2.xml /opt/digiverso/log4j2.xml
 COPY install/docker/run.sh /run.sh
 
+# Ubuntu 24.04 ships a default 'ubuntu' user/group at 1000;
+# remove it, then create our unprivileged 'user' at uid/gid 1000.
+RUN userdel -r ubuntu 2>/dev/null || true; groupdel ubuntu 2>/dev/null || true; \
+    groupadd -g 1000 user && useradd -u 1000 -g user -M -s /usr/sbin/nologin user
 
 EXPOSE 8080
 CMD ["/run.sh"]
