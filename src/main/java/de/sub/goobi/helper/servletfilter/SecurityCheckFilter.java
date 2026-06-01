@@ -82,7 +82,8 @@ public class SecurityCheckFilter implements Filter {
             chain.doFilter(request, response);
         } else if ((userBean == null || userBean.getMyBenutzer() == null) && !url.contains("jakarta.faces.resource") && !url.contains("wi?")
                 && !url.contains("logout.xhtml") && !url.contains("technicalBackground.xhtml")
-                && !url.contains("mailNotificationDisabled.xhtml") && !url.contains(destination)) {
+                && !url.contains("mailNotificationDisabled.xhtml") && !url.contains(destination)
+                && !url.contains("password_reset.xhtml")) {
             ((HttpServletResponse) response).sendRedirect(destination);
         } else {
             chain.doFilter(request, response);

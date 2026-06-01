@@ -34,8 +34,8 @@ Your Goobi account was activated.&lt;br /&gt;
 
 
     <resetPassword>
-        <subject>Your password has been reset</subject>
-        <body>Your password has been reset, the new password is: {password}</body>
+        <subject>Password reset</subject>
+        <body>Click the following link to set a new password:&lt;br /&gt;&lt;br /&gt;{url}&lt;br /&gt;&lt;br /&gt;The link is valid for 1 hour.</body>
     </resetPassword>
 
 </goobiMail>

@@ -34,7 +34,11 @@ import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import javax.naming.ConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -50,6 +54,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
@@ -532,6 +537,9 @@ public class LoginBean implements Serializable {
     }
 
     public boolean hasRole(String inRole) {
+        if (myBenutzer == null) {
+            return false;
+        }
         return myBenutzer.isSuperAdmin() || (roles != null && roles.contains(inRole));
     }
 
@@ -620,24 +628,40 @@ public class LoginBean implements Serializable {
             return;
         }
 
-        // generate new password
-        int passwordLength = ConfigurationHelper.getInstance().getMinimumPasswordLength();
-        String password = UserBean.createRandomPassword(passwordLength);
-        if (AuthenticationType.LDAP.equals(user.getLdapGruppe().getAuthenticationTypeEnum()) && !user.getLdapGruppe().isReadonly()) {
-
-            LdapAuthentication myLdap = new LdapAuthentication();
-            try {
-                myLdap.changeUserPassword(user, null, password);
-            } catch (NoSuchAlgorithmException e) {
-                log.error(e);
-            }
+        // create a 1-hour JWT reset token
+        Map<String, String> claims = Map.of(
+                "purpose", "passwordReset",
+                "userId", String.valueOf(user.getId()),
+                "login", user.getLogin());
+        Date expiry = new Date(System.currentTimeMillis() + 60 * 60 * 1000L);
+        String token;
+        try {
+            token = JwtHelper.createToken(claims, expiry);
+        } catch (ConfigurationException e) {
+            log.error(e);
+            Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "",
+                    Helper.getTranslation("pwReset_error_jwtConfig"));
+            return;
         }
-        UserBean.saltAndSaveUserPassword(user, password);
+
+        String apiUrl = SendMail.getInstance().getConfig().getApiUrl();
+        String resetBody = SendMail.getInstance().getConfig().getPasswordResetBody();
+        if (apiUrl == null || resetBody == null) {
+            log.error("Password reset mail configuration incomplete (apiUrl or body missing)");
+            Helper.setFehlerMeldung(HTML_LOGIN_FIELD_ID, "",
+                    Helper.getTranslation("pwReset_error_jwtConfig"));
+            return;
+        }
+
+        // build reset URL from the configured API base URL
+        String base = apiUrl.replace("/api/mails/disable", "");
+        String resetUrl = base + "/uii/password_reset.xhtml?token=" + token;
 
         // send mail
         String messageSubject = SendMail.getInstance().getConfig().getPasswordResetSubject();
-        String messageBody =
-                SendMail.getInstance().getConfig().getPasswordResetBody().replace("{password}", password).replace("{login}", user.getLogin());
+        String messageBody = resetBody
+                .replace("{url}", resetUrl)
+                .replace("{login}", user.getLogin());
         SendMail.getInstance().sendMailToUser(messageSubject, messageBody, email);
     }
 
