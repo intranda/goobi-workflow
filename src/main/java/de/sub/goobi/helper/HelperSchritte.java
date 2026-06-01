@@ -113,7 +113,7 @@ public class HelperSchritte {
 
     public void CloseStepObjectAutomatic(Step step) {
         User user = Helper.getCurrentUser();
-        closeStepAndFollowingSteps(step, user);
+        CloseStepHelper.closeStep(step, user);
     }
 
     public void closeStepAndFollowingSteps(Step step, User user) {

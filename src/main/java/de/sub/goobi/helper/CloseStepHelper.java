@@ -1,5 +1,7 @@
 package de.sub.goobi.helper;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 
@@ -40,6 +42,12 @@ public final class CloseStepHelper {
     private HelperSchritte helperSchritteInstance;
 
     /**
+     * Per-process locks to prevent concurrent close operations on the same process from racing. Using per-process granularity allows independent
+     * processes to run concurrently while ensuring that closing steps within the same process is serialized.
+     */
+    private static final ConcurrentHashMap<Integer, Object> processLocks = new ConcurrentHashMap<>();
+
+    /**
      * private constructor to prevent instantiation from outside
      */
     private CloseStepHelper() {
@@ -66,8 +74,11 @@ public final class CloseStepHelper {
      * @param user The user that requested to close the step(s)
      * @return Currently always true, this value is meant to be used for success or failure information in future versions
      */
-    public static synchronized boolean closeStep(Step step, User user) {
-        CloseStepHelper.getInstance().helperSchritteInstance.closeStepAndFollowingSteps(step, user);
+    public static boolean closeStep(Step step, User user) {
+        Object lock = processLocks.computeIfAbsent(step.getProcessId(), k -> new Object());
+        synchronized (lock) {
+            CloseStepHelper.getInstance().helperSchritteInstance.closeStepAndFollowingSteps(step, user);
+        }
         return true;
     }
 
