@@ -125,7 +125,8 @@ case $CONFIGSOURCE in
 esac
 
 echo "Updating file ownership..."
-chown -R user:user "${CATALINA_HOME}" /opt/digiverso/goobi/
+# this will cause less disk access than `chown -R`
+find "${CATALINA_HOME}" /opt/digiverso/goobi/ \! -user user \( -exec chown user:user '{}' + -o -true \)
 
 echo "Starting application server..."
 exec gosu user catalina.sh run
