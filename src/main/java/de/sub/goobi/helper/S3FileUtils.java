@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,7 +67,6 @@ import software.amazon.awssdk.services.s3.crt.S3CrtHttpConfiguration;
 import software.amazon.awssdk.services.s3.crt.S3CrtRetryConfiguration;
 import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
-import software.amazon.awssdk.services.s3.model.CopyObjectResponse;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -79,6 +79,8 @@ import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.model.S3Object;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
+import software.amazon.awssdk.transfer.s3.model.Copy;
+import software.amazon.awssdk.transfer.s3.model.CopyRequest;
 import software.amazon.awssdk.transfer.s3.model.DirectoryDownload;
 import software.amazon.awssdk.transfer.s3.model.DirectoryUpload;
 import software.amazon.awssdk.transfer.s3.model.DownloadFileRequest;
@@ -89,7 +91,7 @@ import software.amazon.awssdk.transfer.s3.model.UploadFileRequest;
 import software.amazon.awssdk.transfer.s3.progress.LoggingTransferListener;
 
 @Log4j2
-public class S3FileUtils implements StorageProviderInterface {
+public class S3FileUtils implements StorageProviderInterface, AutoCloseable {
 
     @Getter
     private S3TransferManager transferManager;
@@ -101,6 +103,8 @@ public class S3FileUtils implements StorageProviderInterface {
     private static Pattern processDirPattern;
 
     private static final long MB = 1024L * 1024L;
+
+    private static final long MULTIPART_COPY_THRESHOLD = 5L * 1024 * 1024 * 1024; // 5 GB
 
     static {
         String metadataFolder = ConfigurationHelper.getInstance().getMetadataFolder();
@@ -114,13 +118,11 @@ public class S3FileUtils implements StorageProviderInterface {
         super();
         try {
             this.s3 = createS3Client();
+            this.transferManager = S3TransferManager.builder().s3Client(s3).build();
         } catch (URISyntaxException e) {
-            log.error(e);
+            throw new IllegalStateException("Invalid S3 endpoint URI in configuration", e);
         }
-        transferManager = S3TransferManager.builder().s3Client(s3).build();
-
         this.nio = new NIOFileUtils();
-
     }
 
     @SuppressWarnings("deprecation")
@@ -147,7 +149,7 @@ public class S3FileUtils implements StorageProviderInterface {
                     .retryConfiguration(S3CrtRetryConfiguration.builder().numRetries(10).build())
                     .httpConfiguration(S3CrtHttpConfiguration.builder().connectionTimeout(Duration.ofSeconds(20)).build())
                     .targetThroughputInGbps(5.0)
-                    .minimumPartSizeInBytes(5 * MB)
+                    .minimumPartSizeInBytes(100L * MB)
                     .build();
         }
         return mys3;
@@ -192,19 +194,77 @@ public class S3FileUtils implements StorageProviderInterface {
         return ConfigurationHelper.getInstance().getS3Bucket();
     }
 
-    private void copyS3Object(String sourcePrefix, String targetPrefix, S3Object os) {
-        String sourceKey = os.key();
-        String destinationKey = targetPrefix + sourceKey.replace(sourcePrefix, "");
+    private void copyS3Key(String sourceKey, String destinationKey) {
 
-        CopyObjectRequest copyReq = CopyObjectRequest.builder()
+        long objectSize = s3
+                .headObject(r -> r.bucket(getBucket()).key(sourceKey))
+                .join()
+                .contentLength();
+        CopyObjectRequest copyObjectRequest = CopyObjectRequest.builder()
                 .sourceBucket(getBucket())
                 .sourceKey(sourceKey)
                 .destinationBucket(getBucket())
                 .destinationKey(destinationKey)
                 .build();
+        if (objectSize <= MULTIPART_COPY_THRESHOLD) {
+            s3.copyObject(copyObjectRequest).join();
 
-        CompletableFuture<CopyObjectResponse> copyRes = s3.copyObject(copyReq);
-        copyRes.join();
+        } else {
+            Copy copy = transferManager.copy(CopyRequest.builder().copyObjectRequest(copyObjectRequest).build());
+            copy.completionFuture().join();
+        }
+    }
+
+    private void copyS3Object(String sourcePrefix, String targetPrefix, S3Object os) {
+        String sourceKey = os.key();
+        String destinationKey = targetPrefix + sourceKey.replace(sourcePrefix, "");
+        copyS3Key(sourceKey, destinationKey);
+    }
+
+    private void copyS3Prefix(String sourcePrefix, String targetPrefix) {
+        String nextContinuationToken = null;
+        do {
+            ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                    .bucket(getBucket())
+                    .delimiter("/")
+                    .prefix(sourcePrefix)
+                    .continuationToken(nextContinuationToken);
+
+            ListObjectsV2Response resp = s3.listObjectsV2(requestBuilder.build()).join();
+            nextContinuationToken = resp.nextContinuationToken();
+
+            for (S3Object obj : resp.contents()) {
+                copyS3Object(sourcePrefix, targetPrefix, obj);
+            }
+            for (CommonPrefix commonPrefix : resp.commonPrefixes()) {
+                String subSource = commonPrefix.prefix();
+                String subTarget = targetPrefix + subSource.substring(sourcePrefix.length());
+                copyS3Prefix(subSource, subTarget);
+            }
+        } while (nextContinuationToken != null);
+    }
+
+    private long getS3PrefixSize(String prefix) {
+        long size = 0;
+        String nextContinuationToken = null;
+        do {
+            ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                    .prefix(prefix)
+                    .bucket(getBucket())
+                    .delimiter("/")
+                    .continuationToken(nextContinuationToken);
+
+            ListObjectsV2Response resp = s3.listObjectsV2(requestBuilder.build()).join();
+            nextContinuationToken = resp.nextContinuationToken();
+
+            for (S3Object object : resp.contents()) {
+                size += object.size();
+            }
+            for (CommonPrefix commonPrefix : resp.commonPrefixes()) {
+                size += getS3PrefixSize(commonPrefix.prefix());
+            }
+        } while (nextContinuationToken != null);
+        return size;
     }
 
     private void deletePathOnS3(Path dir) {
@@ -472,25 +532,30 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         String folderPrefix = string2Prefix(folder);
 
-        ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
-                .bucket(getBucket())
-                .delimiter("/")
-                .prefix(folderPrefix);
-
-        CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
-        ListObjectsV2Response resp = response.toCompletableFuture().join();
-
         List<String> folders = new ArrayList<>();
+        String nextContinuationToken = null;
+        do {
+            ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
+                    .bucket(getBucket())
+                    .delimiter("/")
+                    .prefix(folderPrefix)
+                    .continuationToken(nextContinuationToken);
 
-        List<CommonPrefix> prefixes = resp.commonPrefixes();
-        for (CommonPrefix pref : prefixes) {
-            String key = pref.prefix().replace(folderPrefix, "");
-            int idx = key.indexOf('/');
-            if (idx >= 0) {
-                folders.add(key.substring(0, key.indexOf('/')));
+            CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
+            ListObjectsV2Response resp = response.toCompletableFuture().join();
+
+            nextContinuationToken = resp.nextContinuationToken();
+
+            List<CommonPrefix> prefixes = resp.commonPrefixes();
+            for (CommonPrefix pref : prefixes) {
+                String key = pref.prefix().replace(folderPrefix, "");
+                int idx = key.indexOf('/');
+                if (idx >= 0) {
+                    folders.add(key.substring(0, key.indexOf('/')));
+                }
             }
+        } while (nextContinuationToken != null);
 
-        }
         Collections.sort(folders, new GoobiStringFileComparator());
         return folders;
     }
@@ -520,33 +585,7 @@ public class S3FileUtils implements StorageProviderInterface {
             downloadDirectory(source, target);
         } else {
             // copy files on s3
-            String sourcePrefix = path2Prefix(source);
-            String targetPrefix = path2Prefix(target);
-            String nextContinuationToken = null;
-            Set<S3Object> objs = new HashSet<>();
-            // we can list max 1000 objects in one request, so we need to paginate through the results
-            do {
-                ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
-                        .bucket(getBucket())
-                        .delimiter("/")
-                        .prefix(sourcePrefix)
-                        .continuationToken(nextContinuationToken);
-
-                CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
-                ListObjectsV2Response resp = response.toCompletableFuture().join();
-
-                nextContinuationToken = resp.nextContinuationToken();
-
-                List<S3Object> contents = resp.contents();
-                for (S3Object obj : contents) {
-                    objs.add(obj);
-                }
-
-            } while (nextContinuationToken != null);
-
-            for (S3Object os : objs) {
-                copyS3Object(sourcePrefix, targetPrefix, os);
-            }
+            copyS3Prefix(path2Prefix(source), path2Prefix(target));
 
         }
 
@@ -586,12 +625,6 @@ public class S3FileUtils implements StorageProviderInterface {
         String oldKey = path2Key(oldName);
         String newKey = path2Key(oldName.resolveSibling(newNameString));
 
-        CopyObjectRequest copyReq = CopyObjectRequest.builder()
-                .sourceBucket(getBucket())
-                .sourceKey(oldKey)
-                .destinationBucket(getBucket())
-                .destinationKey(newKey)
-                .build();
         ArrayList<ObjectIdentifier> toDelete = new ArrayList<>();
         toDelete.add(ObjectIdentifier.builder()
                 .key(oldKey)
@@ -601,7 +634,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 .delete(d -> d.objects(toDelete))
                 .build();
 
-        s3.copyObject(copyReq).join();
+        copyS3Key(oldKey, newKey);
 
         s3.deleteObjects(dor).join();
 
@@ -628,15 +661,8 @@ public class S3FileUtils implements StorageProviderInterface {
 
             }
         } else if (getPathStorageType(destFile) == StorageType.S3) {
-            // both on s3 => standard copy on s3
-            CopyObjectRequest copyReq = CopyObjectRequest.builder()
-                    .sourceBucket(getBucket())
-                    .sourceKey(path2Key(srcFile))
-                    .destinationBucket(getBucket())
-                    .destinationKey(path2Key(destFile))
-                    .build();
-
-            s3.copyObject(copyReq).join();
+            // both on s3 => multipart copy on s3
+            copyS3Key(path2Key(srcFile), path2Key(destFile));
 
         } else {
             // src on s3 and dest local => download file from s3 to local location
@@ -780,19 +806,19 @@ public class S3FileUtils implements StorageProviderInterface {
     public void deleteFile(Path path) throws IOException {
         if (getPathStorageType(path) == StorageType.LOCAL) {
             nio.deleteFile(path);
+        } else {
+            ArrayList<ObjectIdentifier> toDelete = new ArrayList<>();
+            toDelete.add(ObjectIdentifier.builder()
+                    .key(path2Key(path))
+                    .build());
+
+            DeleteObjectsRequest dor = DeleteObjectsRequest.builder()
+                    .bucket(getBucket())
+                    .delete(d -> d.objects(toDelete))
+                    .build();
+
+            s3.deleteObjects(dor).join();
         }
-        ArrayList<ObjectIdentifier> toDelete = new ArrayList<>();
-        toDelete.add(ObjectIdentifier.builder()
-                .key(path2Key(path))
-                .build());
-
-        DeleteObjectsRequest dor = DeleteObjectsRequest.builder()
-                .bucket(getBucket())
-                .delete(d -> d.objects(toDelete))
-                .build();
-
-        s3.deleteObjects(dor).join();
-
     }
 
     @Override
@@ -836,7 +862,7 @@ public class S3FileUtils implements StorageProviderInterface {
             s3.deleteObject(DeleteObjectRequest.builder()
                     .bucket(getBucket())
                     .key(path2Key(oldPath))
-                    .build());
+                    .build()).join();
         }
         if (oldType == StorageType.S3 && newType == StorageType.S3) {
             // copy on s3
@@ -846,15 +872,11 @@ public class S3FileUtils implements StorageProviderInterface {
                 deleteDir(oldPath);
             } else {
                 // copy single file
-                CopyObjectRequest copyReq = CopyObjectRequest.builder()
-                        .sourceBucket(getBucket())
-                        .sourceKey(path2Key(oldPath))
-                        .destinationBucket(getBucket())
-                        .destinationKey(path2Key(newPath))
-                        .build();
-
-                CompletableFuture<CopyObjectResponse> copyRes = s3.copyObject(copyReq);
-                copyRes.join();
+                copyS3Key(path2Key(oldPath), path2Key(newPath));
+                s3.deleteObject(DeleteObjectRequest.builder()
+                        .bucket(getBucket())
+                        .key(path2Key(oldPath))
+                        .build()).join();
             }
         }
     }
@@ -923,25 +945,7 @@ public class S3FileUtils implements StorageProviderInterface {
         }
 
         if (storageType == StorageType.S3 || storageType == StorageType.BOTH) {
-            String nextContinuationToken = null;
-            do {
-                ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder()
-                        .prefix(string2Prefix(path2Key(path)))
-                        .bucket(getBucket())
-                        .delimiter("/")
-                        .continuationToken(nextContinuationToken);
-
-                CompletableFuture<ListObjectsV2Response> response = s3.listObjectsV2(requestBuilder.build());
-                ListObjectsV2Response resp = response.toCompletableFuture().join();
-
-                nextContinuationToken = resp.nextContinuationToken();
-
-                List<S3Object> contents = resp.contents();
-                for (S3Object object : contents) {
-                    size += object.size();
-                }
-
-            } while (nextContinuationToken != null);
+            size += getS3PrefixSize(string2Prefix(path2Key(path)));
         }
         return size;
     }
@@ -963,7 +967,7 @@ public class S3FileUtils implements StorageProviderInterface {
             return;
         }
 
-        BlockingInputStreamAsyncRequestBody body = AsyncRequestBody.forBlockingInputStream(null); // 'null' indicates a stream will be provided later.
+        BlockingInputStreamAsyncRequestBody body = AsyncRequestBody.forBlockingInputStream(contentLength);
 
         CompletableFuture<PutObjectResponse> responseFuture = s3.putObject(r -> r.bucket(getBucket()).key(path2Key(dest)), body);
 
@@ -999,15 +1003,39 @@ public class S3FileUtils implements StorageProviderInterface {
             return nio.newOutputStream(dest);
         }
         final PipedInputStream in = new PipedInputStream(); //NOSONAR, it gets closed when PipedOutputStream gets closed
-        PipedOutputStream out = new PipedOutputStream(in);
-        new Thread(() -> {
+        final PipedOutputStream out = new PipedOutputStream(in);
+        CompletableFuture<Void> uploadFuture = CompletableFuture.runAsync(() -> {
             try {
                 StorageProvider.getInstance().uploadFile(in, dest);
             } catch (IOException e) {
-                log.error(e);
+                throw new CompletionException(e);
             }
-        }).start();
-        return out;
+        });
+        return new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                out.write(b);
+            }
+
+            @Override
+            public void write(byte[] b, int off, int len) throws IOException {
+                out.write(b, off, len);
+            }
+
+            @Override
+            public void close() throws IOException {
+                out.close();
+                try {
+                    uploadFuture.join();
+                } catch (CompletionException e) {
+                    Throwable cause = e.getCause();
+                    if (cause instanceof IOException) {
+                        throw (IOException) cause;
+                    }
+                    throw new IOException(cause);
+                }
+            }
+        };
     }
 
     @Override
@@ -1039,6 +1067,15 @@ public class S3FileUtils implements StorageProviderInterface {
     @Override
     public String getFileCreationTime(Path path) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void close() {
+        try {
+            transferManager.close();
+        } finally {
+            s3.close();
+        }
     }
 
 }
