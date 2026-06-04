@@ -313,4 +313,13 @@ public class StepManager implements IManager {
 
     }
 
+    public static boolean isStepAccessibleToUser(Step requested, User user) {
+        try {
+            return StepMysqlHelper.isStepAccessibleToUser(requested, user);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return false;
+    }
+
 }

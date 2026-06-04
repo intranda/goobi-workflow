@@ -1296,4 +1296,25 @@ public final class StepMysqlHelper implements Serializable {
 
     }
 
+    public static boolean isStepAccessibleToUser(Step requested, User user) throws SQLException {
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT schritteID FROM schritteberechtigtebenutzer WHERE ");
+        query.append("schritteID = ? AND BenutzerID = ? ");
+        query.append("UNION SELECT schritteID FROM schritteberechtigtegruppen ");
+        query.append("WHERE schritteID = ? AND BenutzerGruppenID IN (SELECT ");
+        query.append("BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE BenutzerID = ?) ");
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            Integer id = run.query(connection, query.toString(), MySQLHelper.resultSetToIntegerHandler, requested.getId(), user.getId(),
+                    requested.getId(), user.getId());
+            return id != null;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
 }

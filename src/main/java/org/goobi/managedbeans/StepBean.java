@@ -97,6 +97,7 @@ import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
@@ -1080,17 +1081,27 @@ public class StepBean extends BasicBean {
      */
     private void schrittPerParameterLaden() throws NumberFormatException {
         String param = Helper.getRequestParameter("myid");
-        if (param != null && !"".equals(param)) {
-            /*
-             * wenn bisher noch keine aktuellen Schritte ermittelt wurden, dann dies jetzt nachholen, damit die Liste vollständig ist
-             */
-            if (this.paginator == null && Helper.getCurrentUser() != null) {
-                FilterAlleStart();
-            }
+        if (StringUtils.isNotBlank(param)) {
             Integer inParam = Integer.valueOf(param);
-            if (this.mySchritt == null || this.mySchritt.getId() == null || !this.mySchritt.getId().equals(inParam)) {
-                this.mySchritt = StepManager.getStepById(inParam);
+            Step requested = StepManager.getStepById(inParam);
+            if (requested == null) {
+                return;
             }
+            User user = Helper.getCurrentUser();
+
+            try {
+                if (user == null || !StepManager.isStepAccessibleToUser(requested, user) || !ProjectManager.isUserMemberOfProject(user.getId(),
+                        requested.getProzess().getProjekt().getId())) {
+                    Helper.setFehlerMeldung("step.notAccessible");
+                    return;
+                }
+            } catch (DAOException e) {
+                log.error(e);
+                Helper.setFehlerMeldung("step.notAccessible");
+                return;
+            }
+            this.mySchritt = requested;
+
         }
     }
 
