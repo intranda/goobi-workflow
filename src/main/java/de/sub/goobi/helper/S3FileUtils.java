@@ -63,6 +63,7 @@ import software.amazon.awssdk.core.async.AsyncResponseTransformer;
 import software.amazon.awssdk.core.async.BlockingInputStreamAsyncRequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.crt.S3CrtHttpConfiguration;
 import software.amazon.awssdk.services.s3.crt.S3CrtRetryConfiguration;
 import software.amazon.awssdk.services.s3.model.CommonPrefix;
@@ -99,6 +100,8 @@ public class S3FileUtils implements StorageProviderInterface, AutoCloseable {
     @Getter
     private S3AsyncClient s3;
 
+    private S3AsyncClient standardS3;
+
     private NIOFileUtils nio;
     private static Pattern processDirPattern;
 
@@ -119,6 +122,7 @@ public class S3FileUtils implements StorageProviderInterface, AutoCloseable {
         try {
             this.s3 = createS3Client();
             this.transferManager = S3TransferManager.builder().s3Client(s3).build();
+            this.standardS3 = createStandardS3Client();
         } catch (URISyntaxException e) {
             throw new IllegalStateException("Invalid S3 endpoint URI in configuration", e);
         }
@@ -153,6 +157,24 @@ public class S3FileUtils implements StorageProviderInterface, AutoCloseable {
                     .build();
         }
         return mys3;
+    }
+
+    private static S3AsyncClient createStandardS3Client() throws URISyntaxException {
+        ConfigurationHelper conf = ConfigurationHelper.getInstance();
+        if (conf.useCustomS3()) {
+            URI endpoint = new URI(conf.getS3Endpoint());
+            AwsCredentials credentials = AwsBasicCredentials.create(conf.getS3AccessKeyID(), conf.getS3SecretAccessKey());
+            return S3AsyncClient.builder()
+                    .region(Region.US_EAST_1)
+                    .endpointOverride(endpoint)
+                    .credentialsProvider(StaticCredentialsProvider.create(credentials))
+                    .serviceConfiguration(S3Configuration.builder()
+                            .pathStyleAccessEnabled(conf.isS3UseForcePathStyle())
+                            .build())
+                    .build();
+        } else {
+            return S3AsyncClient.builder().build();
+        }
     }
 
     private String path2Prefix(Path inDir) {
@@ -207,8 +229,7 @@ public class S3FileUtils implements StorageProviderInterface, AutoCloseable {
                 .destinationKey(destinationKey)
                 .build();
         if (objectSize <= MULTIPART_COPY_THRESHOLD) {
-            s3.copyObject(copyObjectRequest).join();
-
+            standardS3.copyObject(copyObjectRequest).join();
         } else {
             Copy copy = transferManager.copy(CopyRequest.builder().copyObjectRequest(copyObjectRequest).build());
             copy.completionFuture().join();
@@ -1074,7 +1095,11 @@ public class S3FileUtils implements StorageProviderInterface, AutoCloseable {
         try {
             transferManager.close();
         } finally {
-            s3.close();
+            try {
+                s3.close();
+            } finally {
+                standardS3.close();
+            }
         }
     }
 
