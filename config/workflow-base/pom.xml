@@ -118,23 +118,24 @@
     <cdi.version>4.0.1</cdi.version>
     <commons-csv.version>1.14.1</commons-csv.version>
     <commons-dbcp2.version>2.13.0</commons-dbcp2.version>
-    <commons-io.version>2.20.0</commons-io.version>
+    <commons-io.version>2.22.0</commons-io.version>
     <!-- JXPath is used at XPathExpressionEngine from org.apache.commons.configuration2 -->
     <commons-jxpath.version>1.4.0</commons-jxpath.version>
-    <commons-net.version>3.12.0</commons-net.version>
+    <commons-net.version>3.13.0</commons-net.version>
     <commons-pool2.version>2.12.1</commons-pool2.version>
     <commons-lang3.version>3.18.0</commons-lang3.version>
     <deltaspike.version>2.0.1</deltaspike.version>
     <el-impl.version>2.2.1-b05</el-impl.version>
     <freemarker.version>2.3.34</freemarker.version>
-    <guava.version>33.4.8-jre</guava.version>
-    <gson.version>2.13.1</gson.version>
+    <guava.version>33.6.0-jre</guava.version>
+    <gson.version>2.14.0</gson.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
     <imageio-openjpeg.version>0.6.8</imageio-openjpeg.version>
     <javassist.version>3.30.2-GA</javassist.version>
-    <java-jwt.version>4.5.0</java-jwt.version>
-    <jackson.version>2.19.2</jackson.version>
+    <java-jwt.version>4.5.2</java-jwt.version>
+    <jackson.version>2.22.0</jackson.version>
+    <jackson-annotations.version>2.22</jackson-annotations.version>
     <jakarta.inject.version>2.0.1</jakarta.inject.version>
     <jena.version>5.5.0</jena.version>
     <jersey.version>3.1.11</jersey.version>
@@ -145,10 +146,10 @@
     <junit5.version>5.11.4</junit5.version>
     <mockito.version>5.23.0</mockito.version>
     <jsonpath.version>2.9.0</jsonpath.version>
-    <jwks-rsa.version>0.23.0</jwks-rsa.version>
+    <jwks-rsa.version>0.24.1</jwks-rsa.version>
     <log4j.version>2.25.1</log4j.version>
     <lombok.version>1.18.42</lombok.version>
-    <metadata-extractor.version>2.19.0</metadata-extractor.version>
+    <metadata-extractor.version>2.20.0</metadata-extractor.version>
     <mimepull.version>1.10.0</mimepull.version>
     <omnifaces.version>4.6.5</omnifaces.version>
     <openpdf.version>2.0.3</openpdf.version>
@@ -165,8 +166,8 @@
     <xmlgraphics-commons.version>2.11</xmlgraphics-commons.version>
     <xmpcore.version>6.1.11</xmpcore.version>
     <!-- used in goobi-plugin-step-barcode-scanner -->
-    <zxing.version>3.5.3</zxing.version>
-    <jsch.version>2.27.2</jsch.version>
+    <zxing.version>3.5.4</zxing.version>
+    <jsch.version>2.28.2</jsch.version>
     <slf4j.version>2.0.17</slf4j.version>
   </properties>
   <dependencies>
@@ -400,7 +401,7 @@
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.19.0</version>
+      <version>1.22.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -480,7 +481,7 @@
     <dependency>
       <groupId>commons-validator</groupId>
       <artifactId>commons-validator</artifactId>
-      <version>1.10.0</version>
+      <version>1.10.1</version>
     </dependency>
     <dependency>
       <groupId>net.openhft</groupId>
@@ -665,7 +666,7 @@
     <dependency>
       <groupId>com.amazon.ion</groupId>
       <artifactId>ion-java</artifactId>
-      <version>1.11.10</version>
+      <version>1.11.11</version>
     </dependency>
     <dependency>
       <groupId>org.netbeans.external</groupId>
@@ -675,7 +676,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>${jackson.version}</version>
+      <version>${jackson-annotations.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -780,7 +781,7 @@
     <dependency>
       <groupId>com.github.mjeanroy</groupId>
       <artifactId>exiftool-lib</artifactId>
-      <version>3.1.0</version>
+      <version>3.3.0</version>
     </dependency>
     <!-- jakarta mail api -->
     <dependency>
@@ -1580,7 +1581,7 @@
     <dependency>
       <groupId>com.konghq</groupId>
       <artifactId>unirest-java-core</artifactId>
-      <version>4.5.0</version>
+      <version>4.10.0</version>
     </dependency>
     <dependency>
       <groupId>com.konghq</groupId>
