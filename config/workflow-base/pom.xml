@@ -103,18 +103,18 @@
     <ugh-lido.version>5.0.24</ugh-lido.version>
     <ugh-json.version>1.0.2</ugh-json.version>
     <!-- Be careful with updates here -->
-    <quartz.version>2.5.0</quartz.version>
+    <quartz.version>2.5.2</quartz.version>
     <cron-expression-descriptor.version>1.2.10</cron-expression-descriptor.version>
     <antlr4.version>4.13.2</antlr4.version>
     <avalon-framework.version>4.3.1</avalon-framework.version>
     <oscache.version>2.4.1</oscache.version>
     <shiro.version>2.2.0</shiro.version>
     <activemq.version>6.2.6</activemq.version>
-    <aspectj.version>1.9.24</aspectj.version>
+    <aspectj.version>1.9.25.1</aspectj.version>
     <aws.version>1.12.580</aws.version>
     <awssdk.version>2.36.3</awssdk.version>
     <awssdk-crt.version>0.38.9</awssdk-crt.version>
-    <bouncycastle.version>1.81</bouncycastle.version>
+    <bouncycastle.version>1.84</bouncycastle.version>
     <cdi.version>4.0.1</cdi.version>
     <commons-csv.version>1.14.1</commons-csv.version>
     <commons-dbcp2.version>2.14.0</commons-dbcp2.version>
@@ -132,7 +132,7 @@
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
     <imageio-openjpeg.version>0.6.8</imageio-openjpeg.version>
-    <javassist.version>3.30.2-GA</javassist.version>
+    <javassist.version>3.31.0-GA</javassist.version>
     <java-jwt.version>4.5.2</java-jwt.version>
     <jackson.version>2.22.0</jackson.version>
     <jackson-annotations.version>2.22</jackson-annotations.version>
@@ -148,9 +148,9 @@
     <jsonpath.version>2.9.0</jsonpath.version>
     <jwks-rsa.version>0.24.1</jwks-rsa.version>
     <log4j.version>2.26.0</log4j.version>
-    <lombok.version>1.18.42</lombok.version>
+    <lombok.version>1.18.46</lombok.version>
     <metadata-extractor.version>2.20.0</metadata-extractor.version>
-    <mimepull.version>1.10.0</mimepull.version>
+    <mimepull.version>1.11.0</mimepull.version>
     <omnifaces.version>4.6.5</omnifaces.version>
     <openpdf.version>2.0.3</openpdf.version>
     <pdfbox.version>3.0.7</pdfbox.version>
@@ -671,7 +671,7 @@
     <dependency>
       <groupId>org.netbeans.external</groupId>
       <artifactId>isorelax</artifactId>
-      <version>RELEASE260</version>
+      <version>RELEASE300</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -819,7 +819,7 @@
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-runtime</artifactId>
-      <version>4.0.5</version>
+      <version>4.0.9</version>
     </dependency>
     <dependency>
       <groupId>jaxen</groupId>
@@ -829,7 +829,7 @@
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
-      <version>3.6.1.Final</version>
+      <version>3.6.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.transaction</groupId>
@@ -934,7 +934,7 @@
     <dependency>
       <groupId>org.jxls</groupId>
       <artifactId>jxls</artifactId>
-      <version>3.0.0</version>
+      <version>3.1.0</version>
       <exclusions>
         <exclusion>
           <groupId>ch.qos.logback</groupId>
@@ -945,7 +945,7 @@
     <dependency>
       <groupId>org.jxls</groupId>
       <artifactId>jxls-poi</artifactId>
-      <version>3.0.0</version>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.jxls</groupId>
@@ -1543,7 +1543,7 @@
     <dependency>
       <groupId>org.threeten</groupId>
       <artifactId>threeten-extra</artifactId>
-      <version>1.8.0</version>
+      <version>1.9.0</version>
     </dependency>
     <!-- needed for libsafe ingest -->
     <dependency>
