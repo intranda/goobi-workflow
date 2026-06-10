@@ -37,11 +37,13 @@
         <rule groupId="org.glassfish.jersey.*" artifactId="*">
             <ignoreVersions>
                 <ignoreVersion type="regex">4.*</ignoreVersion>
+                <ignoreVersion type="regex">5.*</ignoreVersion>
             </ignoreVersions>
         </rule>
         <rule groupId="org.jboss.weld.servlet" artifactId="weld-servlet-shaded">
             <ignoreVersions>
                 <ignoreVersion type="regex">6.*</ignoreVersion>
+                <ignoreVersion type="regex">7.*</ignoreVersion>
             </ignoreVersions>
         </rule>
         <rule groupId="jakarta.ws.rs" artifactId="jakarta.ws.rs-api">
