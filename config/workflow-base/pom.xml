@@ -998,6 +998,12 @@
       <groupId>opensymphony</groupId>
       <artifactId>oscache</artifactId>
       <version>${oscache.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.jms</groupId>
+          <artifactId>jms</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.poi</groupId>
@@ -1743,7 +1749,7 @@
         <version>2.18.0</version>
         <inherited>false</inherited>
         <configuration>
-          <rulesUri>file://${project.basedir}/version-number-rules.xml</rulesUri>
+          <rulesUri>file://${project.basedir}/config/workflow-base/version-number-rules.xml</rulesUri>
         </configuration>
       </plugin>
       <!-- DEPENDENCY ANALYSIS -->
