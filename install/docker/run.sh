@@ -72,9 +72,9 @@ fi
 
 if [[ -d "/workflow-template/default-plugins" ]]; then
   echo "Checking if default plugins are present"
-  cp -r --update=none /workflow-template/default-plugins/plugins/* /opt/digiverso/goobi/plugins/
+  cp -r /workflow-template/default-plugins/plugins/* /opt/digiverso/goobi/plugins/
   cp -r --update=none /workflow-template/default-plugins/config/* /opt/digiverso/goobi/config/
-  cp -r --update=none /workflow-template/default-plugins/lib/* /opt/digiverso/goobi/lib/
+  cp -r /workflow-template/default-plugins/lib/* /opt/digiverso/goobi/lib/
 fi
 
 set -u

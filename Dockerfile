@@ -39,9 +39,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN rm -rf ${CATALINA_HOME}/webapps/*
-# redirect / to /workflow/
-RUN mkdir ${CATALINA_HOME}/webapps/ROOT && \
-    echo '<% response.sendRedirect("/workflow/"); %>' > ${CATALINA_HOME}/webapps/ROOT/index.jsp
+
 COPY --from=build  /workflow-exploded/ ${CATALINA_HOME}/webapps/workflow
 
 # Structure is also created again in the run.sh in case of a run bind mount to not crash the container

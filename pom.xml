@@ -15,12 +15,6 @@
     <checkstyle.max.violations>1800</checkstyle.max.violations>
     <skipCheckstyle>false</skipCheckstyle>
   </properties>
-  <repositories>
-    <repository>
-      <id>intranda-public</id>
-      <url>https://nexus.intranda.com/repository/maven-public</url>
-    </repository>
-  </repositories>
   <build>
     <plugins>
       <plugin>
