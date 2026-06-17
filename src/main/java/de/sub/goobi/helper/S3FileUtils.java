@@ -1024,7 +1024,7 @@ public class S3FileUtils implements StorageProviderInterface, AutoCloseable {
             return nio.newOutputStream(dest);
         }
         final PipedInputStream in = new PipedInputStream(); //NOSONAR, it gets closed when PipedOutputStream gets closed
-        final PipedOutputStream out = new PipedOutputStream(in);
+        final PipedOutputStream out = new PipedOutputStream(in); //NOSONAR, closing is the responsibility of the method calling newOutputStream
         CompletableFuture<Void> uploadFuture = CompletableFuture.runAsync(() -> {
             try {
                 StorageProvider.getInstance().uploadFile(in, dest);

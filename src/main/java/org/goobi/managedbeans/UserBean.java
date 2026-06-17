@@ -684,7 +684,7 @@ public class UserBean extends BasicBean {
     }
 
     // Uppercase, lowercase, digits, printable special characters (ASCII 33–126, no space)
-    private static final String PASSWORD_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    private static final String PASSWORD_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" //NOSONAR: this is a list of allowed characters, not a password
             + "abcdefghijklmnopqrstuvwxyz"
             + "0123456789"
             + "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
