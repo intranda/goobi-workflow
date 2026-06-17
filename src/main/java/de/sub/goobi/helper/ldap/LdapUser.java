@@ -152,7 +152,7 @@ public class LdapUser implements DirContext {
             } else if ("SHA".equalsIgnoreCase(encType)) {
                 byte[] salt = new byte[8];
                 random.nextBytes(salt);
-                MessageDigest md = MessageDigest.getInstance("SHA");
+                MessageDigest md = MessageDigest.getInstance("SHA"); // NOSONAR: its here for backward compatibility, SHA-256 is default
                 md.update(inPassword.getBytes(StandardCharsets.UTF_8));
                 md.update(salt);
                 byte[] hashAndSalt = new byte[20 + salt.length];
