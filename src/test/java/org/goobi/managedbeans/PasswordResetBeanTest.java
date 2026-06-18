@@ -21,10 +21,13 @@ package org.goobi.managedbeans;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.security.NoSuchAlgorithmException;
+
 import org.goobi.beans.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,7 +39,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.JwtHelper;
+import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.persistence.managers.UserManager;
+import jakarta.faces.context.FacesContext;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
@@ -265,6 +270,149 @@ class PasswordResetBeanTest extends AbstractTest {
             mockedUserBean.verify(
                     () -> UserBean.saltAndSaveUserPassword(user, "securepass"),
                     Mockito.times(1));
+        }
+        assertTrue(bean.isPasswordSaved());
+    }
+
+    // ---- init edge-case tests ----
+
+    @Test
+    void initWithPostbackDoesNothing() {
+        try (MockedStatic<FacesContext> mockedFc = Mockito.mockStatic(FacesContext.class)) {
+            FacesContext ctx = Mockito.mock(FacesContext.class);
+            mockedFc.when(FacesContext::getCurrentInstance).thenReturn(ctx);
+            Mockito.when(ctx.isPostback()).thenReturn(true);
+            bean.setToken("some-token");
+            bean.init();
+        }
+        assertFalse(bean.isTokenValid());
+    }
+
+    @Test
+    void initWithBlankUserIdInTokenTokenInvalid() {
+        DecodedJWT jwt = buildJwtWithPurpose("passwordReset");
+        Claim userIdClaim = Mockito.mock(Claim.class);
+        Mockito.when(jwt.getClaim("userId")).thenReturn(userIdClaim);
+        Mockito.when(userIdClaim.asString()).thenReturn("  ");
+
+        try (MockedStatic<JwtHelper> mockedJwt = Mockito.mockStatic(JwtHelper.class)) {
+            mockedJwt.when(() -> JwtHelper.verifyTokenAndReturnClaims("some-token")).thenReturn(jwt);
+            bean.setToken("some-token");
+            bean.init();
+        }
+        assertFalse(bean.isTokenValid());
+    }
+
+    // ---- saveNewPassword edge-case tests ----
+
+    @Test
+    void saveNewPasswordBlankTokenDoesNotSave() {
+        bean.setToken(null);
+        bean.saveNewPassword();
+        assertFalse(bean.isPasswordSaved());
+    }
+
+    @Test
+    void saveNewPasswordWrongPurposeOnResaveDoesNotSave() {
+        DecodedJWT jwt = buildJwtWithPurpose("confirmMail");
+
+        try (MockedStatic<JwtHelper> mockedJwt = Mockito.mockStatic(JwtHelper.class)) {
+            mockedJwt.when(() -> JwtHelper.verifyTokenAndReturnClaims("t")).thenReturn(jwt);
+            bean.setToken("t");
+            bean.saveNewPassword();
+        }
+        assertFalse(bean.isPasswordSaved());
+    }
+
+    @Test
+    void saveNewPasswordNullUserDoesNotSave() {
+        DecodedJWT jwt = buildJwtWithPurpose("passwordReset");
+
+        try (MockedStatic<JwtHelper> mockedJwt = Mockito.mockStatic(JwtHelper.class)) {
+            mockedJwt.when(() -> JwtHelper.verifyTokenAndReturnClaims("t")).thenReturn(jwt);
+            bean.setToken("t");
+            bean.saveNewPassword();
+        }
+        assertFalse(bean.isPasswordSaved());
+    }
+
+    @Test
+    void saveNewPasswordLdapUserCallsChangePassword() throws Exception {
+        org.goobi.beans.Ldap ldapGroup = Mockito.mock(org.goobi.beans.Ldap.class);
+        Mockito.when(ldapGroup.getAuthenticationTypeEnum())
+                .thenReturn(org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType.LDAP);
+        Mockito.when(ldapGroup.isReadonly()).thenReturn(false);
+
+        User user = new User();
+        user.setId(1);
+        user.setLdapGruppe(ldapGroup);
+        bean.user = user;
+
+        de.sub.goobi.config.ConfigurationHelper mockConfig =
+                Mockito.mock(de.sub.goobi.config.ConfigurationHelper.class);
+        Mockito.when(mockConfig.getMinimumPasswordLength()).thenReturn(4);
+
+        DecodedJWT jwt = buildJwtWithPurpose("passwordReset");
+
+        try (MockedConstruction<LdapAuthentication> mockedLdap =
+                        Mockito.mockConstruction(LdapAuthentication.class);
+                MockedStatic<JwtHelper> mockedJwt = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<de.sub.goobi.config.ConfigurationHelper> mockedCfg =
+                        Mockito.mockStatic(de.sub.goobi.config.ConfigurationHelper.class);
+                MockedStatic<UserBean> mockedUserBean = Mockito.mockStatic(UserBean.class)) {
+            mockedJwt.when(() -> JwtHelper.verifyTokenAndReturnClaims("t")).thenReturn(jwt);
+            mockedCfg.when(de.sub.goobi.config.ConfigurationHelper::getInstance).thenReturn(mockConfig);
+
+            bean.setToken("t");
+            bean.setNewPassword("securepass");
+            bean.setConfirmPassword("securepass");
+            bean.saveNewPassword();
+
+            LdapAuthentication ldapInstance = mockedLdap.constructed().get(0);
+            Mockito.verify(ldapInstance).changeUserPassword(user, null, "securepass");
+            mockedUserBean.verify(
+                    () -> UserBean.saltAndSaveUserPassword(user, "securepass"), Mockito.times(1));
+        }
+        assertTrue(bean.isPasswordSaved());
+    }
+
+    @Test
+    void saveNewPasswordLdapUserNoSuchAlgorithmExceptionContinuesSaving() throws Exception {
+        org.goobi.beans.Ldap ldapGroup = Mockito.mock(org.goobi.beans.Ldap.class);
+        Mockito.when(ldapGroup.getAuthenticationTypeEnum())
+                .thenReturn(org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType.LDAP);
+        Mockito.when(ldapGroup.isReadonly()).thenReturn(false);
+
+        User user = new User();
+        user.setId(1);
+        user.setLdapGruppe(ldapGroup);
+        bean.user = user;
+
+        de.sub.goobi.config.ConfigurationHelper mockConfig =
+                Mockito.mock(de.sub.goobi.config.ConfigurationHelper.class);
+        Mockito.when(mockConfig.getMinimumPasswordLength()).thenReturn(4);
+
+        DecodedJWT jwt = buildJwtWithPurpose("passwordReset");
+
+        try (MockedConstruction<LdapAuthentication> mockedLdap = Mockito.mockConstruction(
+                        LdapAuthentication.class,
+                        (mock, context) -> Mockito.doThrow(new NoSuchAlgorithmException())
+                                .when(mock)
+                                .changeUserPassword(Mockito.any(), Mockito.any(), Mockito.any()));
+                MockedStatic<JwtHelper> mockedJwt = Mockito.mockStatic(JwtHelper.class);
+                MockedStatic<de.sub.goobi.config.ConfigurationHelper> mockedCfg =
+                        Mockito.mockStatic(de.sub.goobi.config.ConfigurationHelper.class);
+                MockedStatic<UserBean> mockedUserBean = Mockito.mockStatic(UserBean.class)) {
+            mockedJwt.when(() -> JwtHelper.verifyTokenAndReturnClaims("t")).thenReturn(jwt);
+            mockedCfg.when(de.sub.goobi.config.ConfigurationHelper::getInstance).thenReturn(mockConfig);
+
+            bean.setToken("t");
+            bean.setNewPassword("securepass");
+            bean.setConfirmPassword("securepass");
+            bean.saveNewPassword();
+
+            mockedUserBean.verify(
+                    () -> UserBean.saltAndSaveUserPassword(user, "securepass"), Mockito.times(1));
         }
         assertTrue(bean.isPasswordSaved());
     }
