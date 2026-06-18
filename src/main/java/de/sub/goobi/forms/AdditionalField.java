@@ -188,6 +188,7 @@ public class AdditionalField {
 
     public void setValueAsDateTime(LocalDateTime date) {
         if (date == null) {
+            wert = "";
             return;
         }
 
@@ -206,6 +207,7 @@ public class AdditionalField {
 
     public void setValueAsDate(LocalDate date) {
         if (date == null) {
+            wert = "";
             return;
         }
 

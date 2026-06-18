@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,6 +209,23 @@ public class AdditionalFieldTest extends AbstractTest {
         assertNull(af.getValueAsDate());
         af.setValueAsDate(LocalDate.of(2000, 1, 1));
         assertEquals(2000, af.getValueAsDate().getYear());
+    }
+
+    @Test
+    public void testSetValueAsDateNullClearsValue() {
+        AdditionalField af = new AdditionalField();
+        af.setValueAsDate(LocalDate.of(2023, 6, 15));
+        af.setValueAsDate(null);
+        assertNull(af.getValueAsDate());
+        assertTrue(af.getWert() == null || af.getWert().isEmpty());
+    }
+
+    @Test
+    public void testSetValueAsDateTimeNullClearsValue() {
+        AdditionalField af = new AdditionalField();
+        af.setValueAsDateTime(LocalDateTime.of(2023, 6, 15, 10, 30, 0));
+        af.setValueAsDateTime(null);
+        assertTrue(af.getWert() == null || af.getWert().isEmpty());
     }
 
 }
