@@ -109,7 +109,7 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import io.goobi.workflow.api.connection.HttpUtils;
-import jakarta.enterprise.context.SessionScoped;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -151,7 +151,7 @@ import ugh.exceptions.WriteException;
  * @version 1.00 - 17.01.2005
  */
 @Named("Metadaten")
-@SessionScoped
+@WindowScoped
 @Log4j2
 public class Metadaten implements Serializable {
 
@@ -1450,7 +1450,7 @@ public class Metadaten implements Serializable {
 
     /**
      * die MetadatenTypen zurückgeben.
-     * 
+     *
      * @return metadata list
      */
     public SelectItem[] getMetadatenTypen() {
@@ -1638,7 +1638,7 @@ public class Metadaten implements Serializable {
      * @throws SwapException
      * @throws WriteException
      * @return result
-     * 
+     *
      */
 
     public String XMLlesenStart() throws ReadException, IOException, PreferencesException, SwapException, DAOException {
@@ -3224,7 +3224,7 @@ public class Metadaten implements Serializable {
 
     /**
      * zurück zur Startseite, Metadaten vorher freigeben.
-     * 
+     *
      * @return to index
      */
     public String goMain() {
