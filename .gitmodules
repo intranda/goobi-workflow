@@ -1078,3 +1078,13 @@
 	url = ../goobi-plugin-step-read-structure-from-csv
 	branch = master
 	ignore = all
+[submodule "plugins/goobi-plugin-step-nodecreation-and-split"]
+	path = plugins/goobi-plugin-step-nodecreation-and-split
+	url = ../goobi-plugin-step-nodecreation-and-split
+	branch = master
+	ignore = all
+[submodule "plugins/goobi-plugin-step-update-archive-node"]
+	path = plugins/goobi-plugin-step-update-archive-node
+	url = ../goobi-plugin-step-update-archive-node
+    branch = master
+    ignore = all
