@@ -4,11 +4,15 @@ import './video/chapters.js';
 import '../../css/media/video-chapters.css';
 
 const initPlayer = () => {
-    // Check if video element exists
     const videoElement = document.getElementById('videoplayer');
     if (!videoElement) {
         console.warn('Video element #videoplayer not found');
         return;
+    }
+
+    // Return existing instance if Plyr is already set up on this exact element
+    if (videoElement.plyr) {
+        return videoElement.plyr;
     }
 
     videoElement.style.setProperty('--plyr-color-main', 'var(--clr-primary, #368ee0)');
@@ -24,7 +28,6 @@ const initPlayer = () => {
             console.error('Plyr player error:', event);
         });
 
-        // Initialize timestamp functionality after player is ready
         initTimestampButtons(player);
 
         return player;
@@ -159,8 +162,10 @@ const updateChapters = () => {
     if (!textTrack) return;
 
     textTrack.mode = 'hidden';
-    while (textTrack.cues?.length) {
-        textTrack.removeCue(textTrack.cues[0]);
+    // Snapshot the live cue list before removal — iterating the live list while
+    // removeCue() modifies it can exit early and leave stale cues behind.
+    for (const cue of Array.from(textTrack.cues || [])) {
+        textTrack.removeCue(cue);
     }
     for (const { start, end, text } of parseVtt(vttContent)) {
         textTrack.addCue(new VTTCue(start, end, text));
