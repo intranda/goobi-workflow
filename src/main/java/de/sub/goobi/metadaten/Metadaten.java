@@ -5317,12 +5317,14 @@ public class Metadaten implements Serializable {
      */
 
     public String getVttUrl() {
-
-        StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
-        sb.append("/api/view/video/chapter");
-
-        return sb.toString();
-
+        if (myProzess == null || image == null) {
+            return "";
+        }
+        return new HelperForm().getServletPathWithHostAsUrl()
+                + "/api/view/video/chapter/"
+                + myProzess.getId()
+                + "/"
+                + image.getImagePath().getFileName().toString();
     }
 
     public String getChapterInformationAsVTT() {

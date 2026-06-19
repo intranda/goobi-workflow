@@ -1,6 +1,6 @@
 import Plyr from 'plyr';
 import 'plyr/dist/plyr.css';
-import VideoChapters from './video/chapters.js';
+import './video/chapters.js';
 import '../../css/media/video-chapters.css';
 
 const initPlayer = () => {
@@ -116,17 +116,71 @@ const reinitTimestampButtons = () => {
     }
 };
 
+const parseVttTimestamp = (ts) => {
+    const [h, m, s] = ts.trim().split(':').map(parseFloat);
+    return h * 3600 + m * 60 + s;
+};
+
+const parseVtt = (vttText) => {
+    const cues = [];
+    for (const block of vttText.split(/\n\n+/)) {
+        const lines = block.trim().split('\n');
+        const timeLineIdx = lines.findIndex(l => l.includes('-->'));
+        if (timeLineIdx < 0) continue;
+        const [startStr, endStr] = lines[timeLineIdx].split('-->');
+        cues.push({
+            start: parseVttTimestamp(startStr),
+            end: parseVttTimestamp(endStr),
+            text: lines.slice(timeLineIdx + 1).join('\n').trim()
+        });
+    }
+    return cues;
+};
+
+/**
+ * Update chapter cues directly via the TextTrack API from inline VTT data
+ * embedded by the server in [data-role="chapter-vtt"]. This reflects the
+ * current in-memory state without requiring a save or a blob URL.
+ */
+const updateChapters = () => {
+    const dataEl = document.querySelector('[data-role="chapter-vtt"]');
+    if (!dataEl) return;
+
+    const vttContent = dataEl.textContent.trim();
+    if (!vttContent) return;
+
+    const video = document.getElementById('videoplayer');
+    if (!video) return;
+
+    let textTrack = null;
+    for (const t of video.textTracks) {
+        if (t.kind === 'chapters') { textTrack = t; break; }
+    }
+    if (!textTrack) return;
+
+    textTrack.mode = 'hidden';
+    while (textTrack.cues?.length) {
+        textTrack.removeCue(textTrack.cues[0]);
+    }
+    for (const { start, end, text } of parseVtt(vttContent)) {
+        textTrack.addCue(new VTTCue(start, end, text));
+    }
+
+    document.querySelector('video-chapters')?.refresh();
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     initPlayer();
+    setTimeout(updateChapters, 200);
 });
 
 faces.ajax.addOnEvent((data) => {
     if (data.status === 'success') {
         const player = initPlayer();
-        // Re-initialize timestamp buttons after AJAX updates
-        if (player) {
-            setTimeout(() => reinitTimestampButtons(), 100);
-        }
+        setTimeout(() => {
+            if (player) reinitTimestampButtons();
+            updateChapters();
+        }, 100);
     }
 });
 

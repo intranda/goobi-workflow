@@ -309,6 +309,11 @@ class VideoChapters extends HTMLElement {
     }
 
     // Public API methods
+    refresh() {
+        this.cleanup();
+        this.setupChapters();
+    }
+
     jumpToChapter(index) {
         if (index >= 0 && index < this.chapters.length) {
             this.videoElement.currentTime = this.chapters[index].startTime;
