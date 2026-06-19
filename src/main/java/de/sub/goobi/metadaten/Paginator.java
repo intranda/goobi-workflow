@@ -180,6 +180,9 @@ public class Paginator {
 
     @SuppressWarnings("rawtypes")
     private List addPrefixAndSuffixToSequence(List sequence) {
+        if (paginationType == Paginator.Type.UNCOUNTED || paginationType == Paginator.Type.FREETEXT) {
+            return sequence;
+        }
         List<Object> newSequence = new ArrayList<>(sequence.size());
         for (Object o : sequence) {
             StringBuilder sb = new StringBuilder();
