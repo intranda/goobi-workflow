@@ -110,7 +110,9 @@ import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import io.goobi.workflow.api.connection.HttpUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
@@ -159,6 +161,22 @@ public class Metadaten implements Serializable {
 
     private static final String REDIRECT_TO_METSEDITOR = "metseditor";
     private static final String REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT = "metseditor_timeout";
+
+    @PostConstruct
+    public void postConstruct() {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        if (fc == null) {
+            return;
+        }
+        ExternalContext ec = fc.getExternalContext();
+        if (!"GET".equalsIgnoreCase(((HttpServletRequest) ec.getRequest()).getMethod())) {
+            return;
+        }
+        String processId = ec.getRequestParameterMap().get("ProzesseID");
+        if (processId != null && !processId.isEmpty()) {
+            readXmlAndBuildTree();
+        }
+    }
 
     @Getter
     @Setter
@@ -1624,8 +1642,27 @@ public class Metadaten implements Serializable {
 
         TreeExpand();
         this.sperrung.setLocked(this.myProzess.getId().intValue(), this.myBenutzerID);
-        return REDIRECT_TO_METSEDITOR;
+        return buildMetseditorRedirectUrl();
     }
+
+    private String buildMetseditorRedirectUrl() {
+        if (myProzess == null) {
+            return REDIRECT_TO_METSEDITOR;
+        }
+        StringBuilder url = new StringBuilder("metseditor?faces-redirect=true&ProzesseID=").append(myProzess.getId());
+        myStep.ifPresent(s -> url.append("&SchrittID=").append(s.getId()));
+        if (StringUtils.isNotBlank(myBenutzerID)) {
+            url.append("&BenutzerID=").append(myBenutzerID);
+        }
+        if (StringUtils.isNotBlank(zurueck)) {
+            url.append("&zurueck=").append(zurueck);
+        }
+        if (nurLesenModus) {
+            url.append("&nurLesen=true");
+        }
+        return url.toString();
+    }
+
 
     /**
      * Metadaten Einlesen.
@@ -1733,7 +1770,7 @@ public class Metadaten implements Serializable {
         }
 
         readMetadataEditorExtensions();
-        return REDIRECT_TO_METSEDITOR;
+        return buildMetseditorRedirectUrl();
     }
 
     private void loadCurrentImages(boolean jumpToFirstPage) {
@@ -1974,7 +2011,7 @@ public class Metadaten implements Serializable {
         if (!updateLocking()) {
             return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
-        return REDIRECT_TO_METSEDITOR;
+        return buildMetseditorRedirectUrl();
     }
 
     private TreeNodeStruct3 buildTree(TreeNodeStruct3 inTree, DocStruct inLogicalTopStruct, boolean expandAll) {
@@ -2128,11 +2165,11 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- die Selektion kenntlich machen --------------------------------
          */
-        for (HashMap<String, Object> hashMap : this.tree3.getChildrenAsListAlle()) {
-
-            TreeNodeStruct3 knoten = (TreeNodeStruct3) hashMap.get("node");
-            // Selection wiederherstellen
-            knoten.setSelected(this.myDocStruct == knoten.getStruct());
+        if (this.tree3 != null) {
+            for (HashMap<String, Object> hashMap : this.tree3.getChildrenAsListAlle()) {
+                TreeNodeStruct3 knoten = (TreeNodeStruct3) hashMap.get("node");
+                knoten.setSelected(this.myDocStruct == knoten.getStruct());
+            }
         }
 
         updateLocking();
@@ -4813,6 +4850,9 @@ public class Metadaten implements Serializable {
     }
 
     public boolean isPhysicalTopstruct() {
+        if (currentTopstruct == null || physicalTopstruct == null) {
+            return false;
+        }
         return currentTopstruct.getType().getName().equals(physicalTopstruct.getType().getName());
     }
 
