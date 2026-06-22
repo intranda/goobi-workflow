@@ -54,6 +54,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -109,7 +110,6 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import io.goobi.workflow.api.connection.HttpUtils;
-import org.apache.deltaspike.core.api.scope.WindowScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -5360,9 +5360,11 @@ public class Metadaten implements Serializable {
                     area.getAllFromReferences().stream().map(Reference::getSource).filter(Objects::nonNull).collect(Collectors.toList());
             if (!referencedLogDs.isEmpty()) {
                 DocStruct ds = referencedLogDs.getLast();
-                for (Metadata md : ds.getAllMetadata()) {
-                    if ("TitleDocMain".equals(md.getType().getName())) {
-                        label = md.getValue();
+                if (ds.getAllMetadata() != null) {
+                    for (Metadata md : ds.getAllMetadata()) {
+                        if ("TitleDocMain".equals(md.getType().getName())) {
+                            label = md.getValue();
+                        }
                     }
                 }
             }
