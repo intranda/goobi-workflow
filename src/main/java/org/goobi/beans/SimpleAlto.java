@@ -118,7 +118,6 @@ public class SimpleAlto {
 
         List<Element> xmlLines = linesXpath.evaluate(doc);
 
-        createNamedEntities(doc, this);
         boolean idIsAdded = false;
         int idCounter = 1;
         for (Element xmlLine : xmlLines) {
@@ -161,6 +160,7 @@ public class SimpleAlto {
             lines.add(line);
             lineMap.put(line.getId(), line);
         }
+        createNamedEntities(doc, this);
         return idIsAdded;
     }
 
