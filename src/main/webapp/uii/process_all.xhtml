@@ -340,7 +340,7 @@
 																<f:setPropertyActionListener
 																	target="#{item.selected}"
 																	value="#{item.selected?false:true}" />
-																<f:ajax render="processAllProcessesBox:myform" />
+																<f:ajax render="@this" />
 															</button>
 														</div>
 													</td>
@@ -412,205 +412,208 @@
 													<td
 														data-label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}"
 														class="prozessVerwaltung">
-														<ui:include
-															src="template/includes/ajaxPlusMinusButton.xhtml">
-															<ui:param
-                                                                name="ajaxRender"
-                                                                value="processAllProcessesBox:myform" />
-                                                            <ui:param
-																name="tooltips"
-																value="#processTable" />
-														</ui:include>
-														<h:panelGroup rendered="#{item.panelAusgeklappt}">
+														<h:panelGroup id="processTitle">
+															<ui:include
+																src="template/includes/ajaxPlusMinusButton.xhtml">
+																<ui:param
+																	name="ajaxRender"
+																	value="processTitle" />
+																<ui:param
+																	name="tooltips"
+																	value="#processTable" />
+															</ui:include>
+															<h:panelGroup rendered="#{item.panelAusgeklappt}">
 
-															<intranda:box
-																boxScope="boxTitleDetails"
-																boxType="primary"
-																boxSmall="true"
-																boxPadding="false"
-																icon="list"
-																title="#{msgs.details}">
+																<intranda:box
+																	id="processSteps"
+																	boxScope="boxTitleDetails"
+																	boxType="primary"
+																	boxSmall="true"
+																	boxPadding="false"
+																	icon="list"
+																	title="#{msgs.details}">
 
-																<div class="gw-table">
-																	<div class="gw-table__wrapper">
+																	<div class="gw-table">
+																		<div class="gw-table__wrapper">
 
-																		<h:dataTable
-																			styleClass="table table-hover table-bordered"
-																			id="prozessdetails"
-																			var="step"
-																			value="#{item.schritteList}">
+																			<h:dataTable
+																				styleClass="table table-hover table-bordered"
+																				id="prozessdetails"
+																				var="step"
+																				value="#{item.schritteList}">
 
-																			<h:column>
-																				<f:facet name="header">
-																					<h:outputText value="#{msgs.nr}" />
-																				</f:facet>
-																				<h:outputText
-																					value="#{step.reihenfolge}"
-																					styleClass="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
-																			</h:column>
-
-																			<h:column>
-																				<f:facet name="header">
+																				<h:column>
+																					<f:facet name="header">
+																						<h:outputText value="#{msgs.nr}" />
+																					</f:facet>
 																					<h:outputText
-																						value="#{msgs.titel}"
-																						style="white-space: normal;" />
-																				</f:facet>
-																				<div class="d-flex align-items-center">
-																					<h:panelGroup rendered="#{step.typAutomatisch}">
-																						<util:icon
-																							icon="settings-cog"
-																							styleClass="icon--light me-1"
-																							title="#{msgs.automatischerSchritt}"
-																							data-bs-toggle="tooltip" />
-																					</h:panelGroup>
-																					<h:panelGroup rendered="#{not step.typAutomatisch}">
-																						<util:icon
-																							icon="user"
-																							styleClass="icon--light me-1 #{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'icon--deactivated':''}"
-																							title="#{msgs.normalerSchritt}"
-																							data-bs-toggle="tooltip" />
-																					</h:panelGroup>
-																					<h:outputText
-																						value="#{step.titelLokalisiert}"
-																						title="#{step.titel}"
-																						data-bs-toggle="tooltip"
-																						styleClass="#{step.reihenfolge}_id #{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
-																				</div>
-																			</h:column>
+																						value="#{step.reihenfolge}"
+																						styleClass="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+																				</h:column>
 
-																			<h:column>
-																				<f:facet name="header">
-																					<h:outputText value="#{msgs.status}" />
-																				</f:facet>
-
-																				<ul class="colors small13">
-																					<h:panelGroup
-																						rendered="#{step.bearbeitungsstatusEnum == 'LOCKED'}">
-																						<li
-																							class="statusSmall #{step.bearbeitungsstatusEnum.color}"
-																							title="#{msgs.statusGesperrt}"
-																							data-bs-toggle="tooltip">
-																							<h:outputText
-																								styleClass="accessibility-enhancement-text"
-																								value="#{step.bearbeitungsstatusEnum.title}" />
-																						</li>
-																					</h:panelGroup>
-																					<h:panelGroup
-																						rendered="#{step.bearbeitungsstatusEnum == 'OPEN'}">
-																						<li
-																							class="statusSmall #{step.bearbeitungsstatusEnum.color}"
-																							title="#{msgs.statusOffen}"
-																							data-bs-toggle="tooltip">
-																							<h:outputText
-																								styleClass="accessibility-enhancement-text"
-																								value="#{step.bearbeitungsstatusEnum.title}" />
-																						</li>
-																					</h:panelGroup>
-
-																					<h:panelGroup
-																						rendered="#{step.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
-																						<li
-																							class="statusSmall #{step.bearbeitungsstatusEnum.color}"
+																				<h:column>
+																					<f:facet name="header">
+																						<h:outputText
+																							value="#{msgs.titel}"
+																							style="white-space: normal;" />
+																					</f:facet>
+																					<div class="d-flex align-items-center">
+																						<h:panelGroup rendered="#{step.typAutomatisch}">
+																							<util:icon
+																								icon="settings-cog"
+																								styleClass="icon--light me-1"
+																								title="#{msgs.automatischerSchritt}"
+																								data-bs-toggle="tooltip" />
+																						</h:panelGroup>
+																						<h:panelGroup rendered="#{not step.typAutomatisch}">
+																							<util:icon
+																								icon="user"
+																								styleClass="icon--light me-1 #{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'icon--deactivated':''}"
+																								title="#{msgs.normalerSchritt}"
+																								data-bs-toggle="tooltip" />
+																						</h:panelGroup>
+																						<h:outputText
+																							value="#{step.titelLokalisiert}"
+																							title="#{step.titel}"
 																							data-bs-toggle="tooltip"
-																							title="#{step.bearbeitungsstatusEnum.title} #{step.editTypeEnum.title}">
-																							<h:outputText
-																								styleClass="accessibility-enhancement-text"
-																								value="#{step.bearbeitungsstatusEnum.title}" />
-																						</li>
-																					</h:panelGroup>
-																					<h:panelGroup
-																						rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
-																						<li
-																							class="statusSmall #{step.bearbeitungsstatusEnum.color}"
-																							data-bs-toggle="tooltip"
-																							title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}">
-																							<h:outputText
-																								styleClass="accessibility-enhancement-text"
-																								value="#{step.bearbeitungsstatusEnum.title}" />
-																						</li>
-																					</h:panelGroup>
+																							styleClass="#{step.reihenfolge}_id #{step.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+																					</div>
+																				</h:column>
 
-																					<h:panelGroup
-																						rendered="#{step.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
-																						<li
-																							class="statusSmall #{step.bearbeitungsstatusEnum.color}"
-																							data-bs-toggle="tooltip"
-																							title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}">
-																							<h:outputText
-																								styleClass="accessibility-enhancement-text"
-																								value="#{step.bearbeitungsstatusEnum.title}" />
-																						</li>
-																					</h:panelGroup>
-																					<h:panelGroup
-																						rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
-																						<li
-																							class="statusSmall #{step.bearbeitungsstatusEnum.color}"
-																							data-bs-toggle="tooltip"
-																							title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}">
-																							<h:outputText
-																								styleClass="accessibility-enhancement-text"
-																								value="#{step.bearbeitungsstatusEnum.title}" />
-																						</li>
-																					</h:panelGroup>
-																					<h:panelGroup
-																						rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
-																						<li
-																							class="statusSmall #{step.bearbeitungsstatusEnum.color}"
-																							data-bs-toggle="tooltip"
-																							title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}">
-																							<h:outputText
-																								styleClass="accessibility-enhancement-text"
-																								value="#{step.bearbeitungsstatusEnum.title}" />
-																						</li>
-																					</h:panelGroup>
-																					<h:panelGroup
-																						rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and HelperForm.anonymized}">
-																						<li
-																							class="statusSmall #{step.bearbeitungsstatusEnum.color}"
-																							data-bs-toggle="tooltip"
-																							title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}">
-																							<h:outputText
-																								styleClass="accessibility-enhancement-text"
-																								value="#{step.bearbeitungsstatusEnum.title}" />
-																						</li>
-																					</h:panelGroup>
+																				<h:column>
+																					<f:facet name="header">
+																						<h:outputText value="#{msgs.status}" />
+																					</f:facet>
 
-																					<h:panelGroup
-																						rendered="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'}">
-																						<li
-																							class="statusSmall #{step.bearbeitungsstatusEnum.color}"
-																							title="#{step.bearbeitungsstatusEnum.title}"
-																							data-bs-toggle="tooltip">
-																							<h:outputText
-																								styleClass="accessibility-enhancement-text"
-																								value="#{step.bearbeitungsstatusEnum.title}" />
-																						</li>
-																					</h:panelGroup>
+																					<ul class="colors small13">
+																						<h:panelGroup
+																							rendered="#{step.bearbeitungsstatusEnum == 'LOCKED'}">
+																							<li
+																								class="statusSmall #{step.bearbeitungsstatusEnum.color}"
+																								title="#{msgs.statusGesperrt}"
+																								data-bs-toggle="tooltip">
+																								<h:outputText
+																									styleClass="accessibility-enhancement-text"
+																									value="#{step.bearbeitungsstatusEnum.title}" />
+																							</li>
+																						</h:panelGroup>
+																						<h:panelGroup
+																							rendered="#{step.bearbeitungsstatusEnum == 'OPEN'}">
+																							<li
+																								class="statusSmall #{step.bearbeitungsstatusEnum.color}"
+																								title="#{msgs.statusOffen}"
+																								data-bs-toggle="tooltip">
+																								<h:outputText
+																									styleClass="accessibility-enhancement-text"
+																									value="#{step.bearbeitungsstatusEnum.title}" />
+																							</li>
+																						</h:panelGroup>
 
-																					<h:panelGroup
-																						rendered="#{step.bearbeitungsstatusEnum == 'INFLIGHT'}">
-																						<li
-																							class="statusSmall #{step.bearbeitungsstatusEnum.color}"
-																							title="#{msgs.statusInFlight}"
-																							data-bs-toggle="tooltip">
-																							<h:outputText
-																								styleClass="accessibility-enhancement-text"
-																								value="#{step.bearbeitungsstatusEnum.title}" />
-																						</li>
-																					</h:panelGroup>
-																				</ul>
+																						<h:panelGroup
+																							rendered="#{step.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
+																							<li
+																								class="statusSmall #{step.bearbeitungsstatusEnum.color}"
+																								data-bs-toggle="tooltip"
+																								title="#{step.bearbeitungsstatusEnum.title} #{step.editTypeEnum.title}">
+																								<h:outputText
+																									styleClass="accessibility-enhancement-text"
+																									value="#{step.bearbeitungsstatusEnum.title}" />
+																							</li>
+																						</h:panelGroup>
+																						<h:panelGroup
+																							rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
+																							<li
+																								class="statusSmall #{step.bearbeitungsstatusEnum.color}"
+																								data-bs-toggle="tooltip"
+																								title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}">
+																								<h:outputText
+																									styleClass="accessibility-enhancement-text"
+																									value="#{step.bearbeitungsstatusEnum.title}" />
+																							</li>
+																						</h:panelGroup>
 
-																			</h:column>
+																						<h:panelGroup
+																							rendered="#{step.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
+																							<li
+																								class="statusSmall #{step.bearbeitungsstatusEnum.color}"
+																								data-bs-toggle="tooltip"
+																								title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}">
+																								<h:outputText
+																									styleClass="accessibility-enhancement-text"
+																									value="#{step.bearbeitungsstatusEnum.title}" />
+																							</li>
+																						</h:panelGroup>
+																						<h:panelGroup
+																							rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
+																							<li
+																								class="statusSmall #{step.bearbeitungsstatusEnum.color}"
+																								data-bs-toggle="tooltip"
+																								title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}">
+																								<h:outputText
+																									styleClass="accessibility-enhancement-text"
+																									value="#{step.bearbeitungsstatusEnum.title}" />
+																							</li>
+																						</h:panelGroup>
+																						<h:panelGroup
+																							rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
+																							<li
+																								class="statusSmall #{step.bearbeitungsstatusEnum.color}"
+																								data-bs-toggle="tooltip"
+																								title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}">
+																								<h:outputText
+																									styleClass="accessibility-enhancement-text"
+																									value="#{step.bearbeitungsstatusEnum.title}" />
+																							</li>
+																						</h:panelGroup>
+																						<h:panelGroup
+																							rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and HelperForm.anonymized}">
+																							<li
+																								class="statusSmall #{step.bearbeitungsstatusEnum.color}"
+																								data-bs-toggle="tooltip"
+																								title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}">
+																								<h:outputText
+																									styleClass="accessibility-enhancement-text"
+																									value="#{step.bearbeitungsstatusEnum.title}" />
+																							</li>
+																						</h:panelGroup>
 
-																		</h:dataTable>
+																						<h:panelGroup
+																							rendered="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'}">
+																							<li
+																								class="statusSmall #{step.bearbeitungsstatusEnum.color}"
+																								title="#{step.bearbeitungsstatusEnum.title}"
+																								data-bs-toggle="tooltip">
+																								<h:outputText
+																									styleClass="accessibility-enhancement-text"
+																									value="#{step.bearbeitungsstatusEnum.title}" />
+																							</li>
+																						</h:panelGroup>
 
+																						<h:panelGroup
+																							rendered="#{step.bearbeitungsstatusEnum == 'INFLIGHT'}">
+																							<li
+																								class="statusSmall #{step.bearbeitungsstatusEnum.color}"
+																								title="#{msgs.statusInFlight}"
+																								data-bs-toggle="tooltip">
+																								<h:outputText
+																									styleClass="accessibility-enhancement-text"
+																									value="#{step.bearbeitungsstatusEnum.title}" />
+																							</li>
+																						</h:panelGroup>
+																					</ul>
+
+																				</h:column>
+
+																			</h:dataTable>
+
+																		</div>
+																		<!--/gw-table-->
 																	</div>
-																	<!--/gw-table-->
-																</div>
-																<!--/gw-table__wrapper-->
+																	<!--/gw-table__wrapper-->
 
-															</intranda:box>
+																</intranda:box>
 
+															</h:panelGroup>
 														</h:panelGroup>
 													</td>
 
