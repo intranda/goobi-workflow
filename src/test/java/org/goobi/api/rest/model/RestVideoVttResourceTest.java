@@ -3,6 +3,7 @@ package org.goobi.api.rest.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.goobi.beans.Process;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,53 +14,58 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.StorageProviderInterface;
-import de.sub.goobi.metadaten.Metadaten;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import jakarta.ws.rs.core.Response;
+import ugh.dl.DigitalDocument;
+import ugh.dl.DocStruct;
+import ugh.dl.Fileformat;
 
 @ExtendWith(MockitoExtension.class)
 public class RestVideoVttResourceTest {
 
     private RestVideoVttResource resource;
-    private Metadaten metadataBean;
-
     private ConfigurationHelper confHelper;
 
     @BeforeEach
     public void setUp() {
         confHelper = Mockito.mock(ConfigurationHelper.class);
         Mockito.lenient().when(confHelper.getMetadataFolder()).thenReturn("/tmp/metadata");
-
         resource = new RestVideoVttResource();
-        metadataBean = Mockito.mock(Metadaten.class);
-        resource.setMetadataBean(metadataBean);
     }
 
     @Test
-    public void testGetChapterVttFileWithMetadataBean() {
-        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
-            mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(confHelper);
+    public void testGetChapterVttFileInvalidProcessId() {
+        Response resp = resource.getChapterVttFile("notAnInt", "video.mp4");
+        assertEquals(400, resp.getStatus());
+    }
 
-            Mockito.when(metadataBean.getChapterInformationAsVTT()).thenReturn("WEBVTT CONTENT");
-
-            Response resp = resource.getChapterVttFile();
-            assertEquals(200, resp.getStatus());
-            assertTrue(resp.getEntity().toString().contains("WEBVTT CONTENT"));
-            assertTrue(resp.getHeaders().getFirst("Content-Disposition").toString().contains("video.vtt"));
-
-            Mockito.verify(metadataBean).getChapterInformationAsVTT();
+    @Test
+    public void testGetChapterVttFileProcessNotFound() {
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(999)).thenReturn(null);
+            Response resp = resource.getChapterVttFile("999", "video.mp4");
+            assertEquals(404, resp.getStatus());
         }
     }
 
     @Test
-    public void testGetChapterVttFileWithoutMetadataBean() {
-        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
-            mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(confHelper);
+    public void testGetChapterVttFileNoPages() throws Exception {
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            Process process = Mockito.mock(Process.class);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
 
-            resource.setMetadataBean(null);
+            Fileformat ff = Mockito.mock(Fileformat.class);
+            DigitalDocument dd = Mockito.mock(DigitalDocument.class);
+            DocStruct physTopStruct = Mockito.mock(DocStruct.class);
 
-            Response resp = resource.getChapterVttFile();
+            Mockito.when(process.readMetadataFile()).thenReturn(ff);
+            Mockito.when(ff.getDigitalDocument()).thenReturn(dd);
+            Mockito.when(dd.getPhysicalDocStruct()).thenReturn(physTopStruct);
+            Mockito.when(physTopStruct.getAllChildren()).thenReturn(null);
+
+            Response resp = resource.getChapterVttFile("1", "video.mp4");
             assertEquals(200, resp.getStatus());
-            assertEquals("", resp.getEntity().toString());
+            assertEquals("WEBVTT\n\n", resp.getEntity().toString());
         }
     }
 
@@ -88,17 +94,13 @@ public class RestVideoVttResourceTest {
         try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
             mockedConfigurationHelper.when(() -> ConfigurationHelper.getInstance()).thenReturn(confHelper);
 
-            String process = "999";
-            String folder = "notfound";
-            String filename = "missing.vtt";
-
             StorageProviderInterface storageProvider = Mockito.mock(StorageProviderInterface.class);
 
             try (MockedStatic<StorageProvider> mockedStorageProvider = Mockito.mockStatic(StorageProvider.class)) {
                 mockedStorageProvider.when(() -> StorageProvider.getInstance()).thenReturn(storageProvider);
                 Mockito.when(storageProvider.isFileExists(Mockito.any())).thenReturn(false);
 
-                Response resp = resource.getSubtitleVttFile(process, folder, filename);
+                Response resp = resource.getSubtitleVttFile("999", "notfound", "missing.vtt");
                 assertEquals(200, resp.getStatus());
                 assertEquals("", resp.getEntity().toString());
             }
