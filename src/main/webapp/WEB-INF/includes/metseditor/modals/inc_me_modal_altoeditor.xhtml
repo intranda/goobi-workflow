@@ -187,7 +187,7 @@
                         </button>
                     </div>
                     <h:commandButton id="saveAltoChanges" action="#{Metadaten.saveAlto}" style="display: none;">
-                        <f:ajax execute="altoChanges" render=":jsonAltoGroup" onevent="altoSaveButtonCallback"/>
+                        <f:ajax execute="altoChanges" render=":jsonAltoGroup :ocrResultGroup" onevent="altoSaveButtonCallback"/>
                     </h:commandButton>
                 </h:panelGroup>
 

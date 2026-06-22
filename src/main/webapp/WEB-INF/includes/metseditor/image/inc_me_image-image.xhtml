@@ -46,6 +46,7 @@
                     class="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and Metadaten.treeProperties.showOcr eq 'true' ? 'pb-3' : ''}">
 
                     <h:panelGroup
+                        id="ocrResultGroup"
                         styleClass="image__image-container-ocr"
                         rendered="#{Metadaten.showOcrButton and Metadaten.bildNummer != '-1' and Metadaten.treeProperties.showOcr eq 'true'}">
                         <h:outputText
