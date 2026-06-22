@@ -26,6 +26,7 @@ package org.goobi.beans;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +39,8 @@ import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
@@ -101,16 +104,23 @@ public class SimpleAlto {
         try (InputStream in = StorageProvider.getInstance().newInputStream(altoPath)) {
             doc = sax.build(in);
         }
-        readAlto(doc);
+        boolean idsAdded = readAlto(doc);
+        if (idsAdded) {
+            try (OutputStream out = StorageProvider.getInstance().newOutputStream(altoPath)) {
+                new XMLOutputter(Format.getPrettyFormat()).output(doc, out);
+            }
+        }
+
     }
 
-    public void readAlto(Document doc) {
+    public boolean readAlto(Document doc) {
         initializePatterns(doc);
 
         List<Element> xmlLines = linesXpath.evaluate(doc);
 
         createNamedEntities(doc, this);
-
+        boolean idIsAdded = false;
+        int idCounter = 1;
         for (Element xmlLine : xmlLines) {
             SimpleAltoLine line = new SimpleAltoLine();
             line.setId(xmlLine.getAttributeValue("ID"));
@@ -129,6 +139,13 @@ public class SimpleAlto {
                 word.setValue(xmlWord.getAttributeValue("CONTENT"));
                 word.setLineId(line.getId());
 
+                if (word.getId() == null) {
+                    String id = String.valueOf(idCounter++);
+                    word.setId(id);
+                    xmlWord.setAttribute("ID", id);
+                    idIsAdded = true;
+                }
+
                 word.setX((int) Double.parseDouble(xmlWord.getAttributeValue("HPOS", "0")));
                 word.setY((int) Double.parseDouble(xmlWord.getAttributeValue("VPOS", "0")));
                 word.setWidth((int) Double.parseDouble(xmlWord.getAttributeValue("WIDTH", "0")));
@@ -144,6 +161,7 @@ public class SimpleAlto {
             lines.add(line);
             lineMap.put(line.getId(), line);
         }
+        return idIsAdded;
     }
 
     public static void parseNamedEntityTagRefs(SimpleAlto alto, Element xmlWord) {
