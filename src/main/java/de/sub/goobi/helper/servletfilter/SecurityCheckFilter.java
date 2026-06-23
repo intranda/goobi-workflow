@@ -26,6 +26,7 @@ package de.sub.goobi.helper.servletfilter;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.util.List;
 
 import org.goobi.managedbeans.LoginBean;
 
@@ -61,6 +62,7 @@ public class SecurityCheckFilter implements Filter {
     /** Creates a new instance of SecurityCheckFilter. */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        String imgSrc = getImgSrcHeader();
 
         HttpServletResponse hres = (HttpServletResponse) response;
         hres.setHeader("X-Content-Type-Options", "nosniff");
@@ -68,7 +70,7 @@ public class SecurityCheckFilter implements Filter {
         hres.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
         hres.setHeader("Content-Security-Policy",
                 "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
-                        + "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; "
+                        + "style-src 'self' 'unsafe-inline'; " + imgSrc + "; "
                         + "font-src 'self' data:; connect-src 'self' ws: wss:; "
                         + "frame-ancestors 'self'; form-action 'self'");
         if (request.isSecure()) {
@@ -88,5 +90,14 @@ public class SecurityCheckFilter implements Filter {
         } else {
             chain.doFilter(request, response);
         }
+    }
+
+    private static String getImgSrcHeader() {
+        List<String> additionalImgSrc = ConfigurationHelper.getInstance().getAdditionalCspImgSrcDomains();
+        String imgSrc = "img-src 'self' data: blob:";
+        if (!additionalImgSrc.isEmpty()) {
+            imgSrc += " " + String.join(" ", additionalImgSrc);
+        }
+        return imgSrc;
     }
 }

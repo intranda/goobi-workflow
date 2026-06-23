@@ -1425,4 +1425,8 @@ public final class ConfigurationHelper implements Serializable {
     public int getMaxDatabaseConnectionRetries() {
         return getLocalInt("maxDatabaseConnectionRetries", 5);
     }
+
+    public List<String> getAdditionalCspImgSrcDomains() {
+        return getLocalList("cspImgSrcAdditionalSources");
+    }
 }
