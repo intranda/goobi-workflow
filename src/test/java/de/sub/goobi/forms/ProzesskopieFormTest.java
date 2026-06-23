@@ -30,7 +30,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.goobi.beans.Docket;
 import org.goobi.beans.GoobiProperty;
@@ -492,6 +494,47 @@ public class ProzesskopieFormTest extends AbstractTest {
 
         // process title must be cleared
         assertEquals("", form.getProzessKopie().getTitel());
+    }
+
+    @Test
+    public void testReadMetadataFromTemplateDoesNotAccumulateDigitalCollections() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
+        assertEquals("process_new1", form.prepare());
+
+        // a source process carrying two digital collection properties
+        Process source = new Process();
+        source.setId(4242);
+        source.setTitel("source");
+        source.setRegelsatz(template.getRegelsatz());
+
+        List<GoobiProperty> props = new ArrayList<>();
+        GoobiProperty c1 = new GoobiProperty(PropertyOwnerType.PROCESS);
+        c1.setPropertyName("digitalCollection");
+        c1.setPropertyValue("Collection A");
+        GoobiProperty c2 = new GoobiProperty(PropertyOwnerType.PROCESS);
+        c2.setPropertyName("digitalCollection");
+        c2.setPropertyValue("Collection B");
+        props.add(c1);
+        props.add(c2);
+        source.setEigenschaften(props);
+
+        mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(source);
+        form.setAuswahl(source.getId());
+
+        // first read populates the collections from the template's properties
+        form.readMetadataFromTemplate();
+        int sizeAfterFirstRead = form.getDigitalCollections().size();
+
+        // reading from the template a second time must not append the same values again
+        form.readMetadataFromTemplate();
+        List<String> collections = form.getDigitalCollections();
+
+        assertEquals(sizeAfterFirstRead, collections.size(),
+                "digitalCollections must not grow when reading from a template repeatedly");
+        Set<String> unique = new HashSet<>(collections);
+        assertEquals(unique.size(), collections.size(), "digitalCollections must not contain duplicate entries");
     }
 
     private void prepareMocking() throws Exception {

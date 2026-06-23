@@ -328,8 +328,8 @@ public class ProzesskopieForm implements Serializable {
     }
 
     /**
-     * Prepares the process creation form pre-filled with data from the previously created process. This allows users to quickly create multiple similar
-     * processes (e.g., volumes of the same series) without re-entering all field values.
+     * Prepares the process creation form pre-filled with data from the previously created process. This allows users to quickly create multiple
+     * similar processes (e.g., volumes of the same series) without re-entering all field values.
      *
      * @return navigation outcome for the first page of the process creation form, or "" on error
      */
@@ -804,6 +804,9 @@ public class ProzesskopieForm implements Serializable {
         Process tempProcess = ProcessManager.getProcessById(this.auswahl);
 
         if (tempProcess.getEigenschaftenSize() > 0) {
+            // reset the collection list first, otherwise the template's collections get appended to
+            // the values, making the list grow with duplicate entries on every call
+            this.digitalCollections = new ArrayList<>();
             fillTemplateFromProperties(tempProcess);
         }
 
