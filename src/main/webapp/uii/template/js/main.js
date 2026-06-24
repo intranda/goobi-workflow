@@ -11,6 +11,7 @@ import { initAutosave } from './modules/metseditor/autosave';
 import { initRaceGuard } from './modules/metseditor/raceGuard';
 import { AjaxButtonManager } from './modules/ajax/buttonManager';
 import { initNotificationToggle } from './modules/notificationToggle';
+import { focusOnLoad } from './modules/gwFocusOnLoad';
 
 // Initialize AjaxButtonManager
 const ajaxButtonManager = new AjaxButtonManager();
@@ -21,6 +22,7 @@ initNotificationToggle();
 // Initialize all functions on initial page load
 document.addEventListener('DOMContentLoaded', () => {
     initFunctions();
+    focusOnLoad();
     initSaveScrollPosition();
     restoreAllScrollPositions();
     initAutosave();
@@ -48,6 +50,9 @@ if(typeof faces !== "undefined") {
                 handleScrollPositionReset(data.source?.getAttribute('data-reset-scroll-positions'));
                 restoreAllScrollPositions();
                 initAutosave();
+                if (data.source?.hasAttribute('data-focus-on-load') || data.source?.hasAttribute('data-focus-after-load')) {
+                    focusOnLoad();
+                }
                 break;
         }
 

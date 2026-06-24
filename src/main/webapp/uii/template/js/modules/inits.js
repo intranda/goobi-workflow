@@ -1,7 +1,6 @@
 import { init as initializeResizeTable } from './gwResizableTable';
 import { init as initializeTooltips } from './gwInitTooltips';
 import { dropdownTooltips } from './gwTooltipsForDropdowns';
-import { focusOnLoad } from './gwFocusOnLoad';
 import { toggleHelp } from './gwToggleHelp';
 import { initScrollTop } from './scrollTop';
 import { initFocusOnClick } from './focusOnClick';
@@ -24,7 +23,6 @@ export const initFunctions = function initFunctions() {
     initMirrorValueTo();
     initAccessibilityModeButton();
     initHotkeys();
-    focusOnLoad();
     toggleHelp();
 
     const zoomableImage = loadImage();
