@@ -80,6 +80,19 @@ public class MySQLHelperTest extends AbstractTest {
         assertEquals("benutzer.nachname, benutzer.vorname desc", result);
     }
 
+    // --- prepareSortField: compound fields with "desc" in prefix ---
+    @Test
+    void testTaskSortDescending() {
+        String result = MySQLHelper.prepareSortField("prioritaet desc, prozesse.ProzesseID desc", new StringBuilder());
+        assertEquals("prioritaet desc, prozesse.ProzesseID desc", result);
+    }
+
+    @Test
+    void testTaskSortAscending() {
+        String result = MySQLHelper.prepareSortField("prioritaet desc, prozesse.ProzesseID asc", new StringBuilder());
+        assertEquals("prioritaet desc, prozesse.ProzesseID asc", result);
+    }
+
     // --- prepareSortField: already-whitelisted fields still work ---
 
     @Test
