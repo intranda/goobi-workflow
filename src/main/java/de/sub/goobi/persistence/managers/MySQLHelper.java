@@ -2,20 +2,20 @@ package de.sub.goobi.persistence.managers;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -101,7 +101,7 @@ public final class MySQLHelper implements Serializable {
 
     /**
      * Check if current database connection is based on H2. Otherwise it is Mysql or Mariadb
-     * 
+     *
      * @return true if h2 is used
      */
     public static boolean isUsingH2() {
@@ -117,7 +117,7 @@ public final class MySQLHelper implements Serializable {
 
     /**
      * Checks connected database for MariaDB version >=10.2.3 (from which on mariadb is json capable).
-     * 
+     *
      * @return true if MariaDB >= 10.2.3, else false
      */
     public static boolean isJsonCapable() {
@@ -133,7 +133,7 @@ public final class MySQLHelper implements Serializable {
 
     /**
      * checks if dbVersion is a valid mariadb version string for mariadb >= 10.2.3.
-     * 
+     *
      * @param dbVersion
      * @return true if mariadb version is new enough
      */
@@ -547,10 +547,10 @@ public final class MySQLHelper implements Serializable {
 
     /**
      * Prepare the SQL query and generate order statement
-     * 
+     *
      * If a regular column is used, nothing gets changed. But if a custom column is used, the query gets extended to include the data into the result
      * list, so ordering by this data is possible.
-     * 
+     *
      * @param inOrder column name to order
      * @param sql prepared sql statement, gets extended if needed
      * @return order statement
@@ -593,10 +593,10 @@ public final class MySQLHelper implements Serializable {
         boolean reverse = false;
         if (order.endsWith(" desc")) {
             reverse = true;
-            order = order.replace(" desc", "");
+            order = order.substring(0, order.length() - " desc".length());
         }
         if (order.endsWith(" asc")) {
-            order = order.replace(" asc", "");
+            order = order.substring(0, order.length() - " asc".length());
         }
         if (ALLOWED_SORT_FIELDS.contains(order)) {
             return inOrder;
