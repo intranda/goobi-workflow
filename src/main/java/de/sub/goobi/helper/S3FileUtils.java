@@ -141,7 +141,7 @@ public class S3FileUtils implements StorageProviderInterface, AutoCloseable {
 
             mys3 = S3AsyncClient.crtBuilder() // NOSONAR: false positive, region is set explicitly
                     .region(Region.US_EAST_1)
-                    .minimumPartSizeInBytes(10 * MB)
+                    .minimumPartSizeInBytes(100L * MB)
                     .targetThroughputInGbps(20.0)
                     .endpointOverride(endpoint)
                     .credentialsProvider(prov)
@@ -1000,8 +1000,7 @@ public class S3FileUtils implements StorageProviderInterface, AutoCloseable {
     }
 
     /**
-     * Get an input stream for the s3 object. To avoid memory leaks, the s3 object is downloaded into a temporary file. The input stream will use this
-     * temporary file. When the stream is closed, the file gets deleted.
+     * Get an input stream for the s3 object.
      * 
      */
     @Override

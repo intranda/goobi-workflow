@@ -244,8 +244,24 @@ public class GoobiScriptManager {
     }
 
     /**
+     * Check if there are currently any unfinished GoobiScripts in the list (status WAITING or RUNNING).
+     *
+     * @return boolean true if at least one script is still waiting or running
+     */
+    public boolean isHasUnfinishedScripts() {
+        synchronized (goobiScriptResults) {
+            for (GoobiScriptResult gsr : goobiScriptResults) {
+                if (gsr.getResultType() == GoobiScriptResultType.WAITING || gsr.getResultType() == GoobiScriptResultType.RUNNING) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Check if there are currently GoobiScripts in the list with a specific status.
-     * 
+     *
      * @param status one of the {@link GoobiScriptResultType} values
      * @return boolean if elements with this status exist
      */
