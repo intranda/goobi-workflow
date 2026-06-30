@@ -46,6 +46,12 @@
             return;
         }
 
+        // Close any existing viewer before creating a new one (guards against rapid navigation)
+        if (window.viewImage) {
+            window.viewImage.close();
+            window.viewImage = null;
+        }
+
         const viewImage = {};
         try {
             viewImage.image = new ImageView.Image(config.imageView);

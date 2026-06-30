@@ -36,8 +36,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             }
                             ajaxloader.style.display = 'block';
                             if (data?.source?.dataset.renderimage=='true'){
-                                // clean up object resources
+                                // clean up object resources (legacy viewer)
                                 goobiWorkflowJS.object.freeJSResources();
+                                // clean up new-style image viewer
+                                if (typeof window.freeJSResources === 'function') {
+                                    window.freeJSResources(data);
+                                }
                             }
                             goobiWorkflow.tinymce.renderInputFields(data);
                             break;
