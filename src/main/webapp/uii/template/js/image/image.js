@@ -14,6 +14,12 @@
         window.world = null;
     }
 
+    // Tracks the AbortController for the currently in-flight image load.
+    // Aborting it signals any pending initializeImageView call to bail out
+    // after its await completes, preventing orphaned tile requests from
+    // saturating the browser's connection pool during rapid navigation.
+    let _currentLoadAbortController = null;
+
     /**
      * Initialize image viewer with configuration
      */
@@ -46,7 +52,16 @@
             return;
         }
 
-        // Close any existing viewer before creating a new one (guards against rapid navigation)
+        // Abort any previous in-flight load so its viewer gets closed after
+        // its await resolves, which stops OpenSeadragon from requesting more tiles.
+        if (_currentLoadAbortController) {
+            _currentLoadAbortController.abort();
+        }
+        const abortController = new AbortController();
+        _currentLoadAbortController = abortController;
+
+        // Close existing viewer (guards against rapid navigation when a previous
+        // load already completed and set window.viewImage).
         if (window.viewImage) {
             window.viewImage.close();
             window.viewImage = null;
@@ -91,14 +106,27 @@
 
             await viewImage.image.load(config.tileSource);
 
+            // A newer navigation superseded this one while we were awaiting.
+            // Close the viewer to stop any tile requests it might start.
+            if (abortController.signal.aborted) {
+                viewImage.close();
+                return;
+            }
+
             $('#ajaxloader_image').fadeOut(800);
         } catch (error) {
-            console.error('Error opening image', error);
-            $('#ajaxloader_image').fadeOut(800);
-            targetElement.innerHTML = `Failed to load image: "${error}"`;
+            if (!abortController.signal.aborted) {
+                console.error('Error opening image', error);
+                $('#ajaxloader_image').fadeOut(800);
+                targetElement.innerHTML = `Failed to load image: "${error}"`;
+            }
+            return;
         }
 
         window.viewImage = viewImage;
+        if (_currentLoadAbortController === abortController) {
+            _currentLoadAbortController = null;
+        }
     };
 
     /**
@@ -153,6 +181,11 @@
      */
     const freeJSResources = (data) => {
         if (!data || data.status === 'begin') {
+            // Abort any in-flight load so it doesn't start tile requests after we leave.
+            if (_currentLoadAbortController) {
+                _currentLoadAbortController.abort();
+                _currentLoadAbortController = null;
+            }
             if (window.viewImage) {
                 window.viewImage.close();
                 window.viewImage = null;
