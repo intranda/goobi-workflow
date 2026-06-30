@@ -99,7 +99,7 @@ final class MetadataMysqlHelper implements Serializable {
             StringBuilder sb = new StringBuilder();
             Iterator<DatabaseMetadataField> iter = valueList.iterator();
             while (iter.hasNext()) {
-                sb.append(MySQLHelper.escapeSql(iter.next().getMetadataName()));
+                sb.append(MySQLHelper.escapeSql(iter.next().getMetadataValue()));
                 if (iter.hasNext()) {
                     sb.append("; ");
                 }
