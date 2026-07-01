@@ -169,8 +169,7 @@ public class SimpleAlto {
         String[] tagrefs = tagrefString.split("[\\s,;]+");
         for (String tagref : tagrefs) {
             if (StringUtils.isNotBlank(tagref)) {
-                List<String> tagWordList = alto.namedEntityMap.getOrDefault((tagref), new ArrayList<>());
-                tagWordList.add(xmlWord.getAttributeValue("ID"));
+                alto.namedEntityMap.computeIfAbsent(tagref, k -> new ArrayList<>()).add(xmlWord.getAttributeValue("ID"));
             }
         }
     }
@@ -185,7 +184,7 @@ public class SimpleAlto {
             if (StringUtils.isNotBlank(id)) {
                 NamedEntity entity = new NamedEntity(id, label, type, uri);
                 alto.namedEntities.add(entity);
-                alto.namedEntityMap.put(id, new ArrayList<>());
+                alto.namedEntityMap.putIfAbsent(id, new ArrayList<>());
             } else {
                 log.warn("Found named entity without id. Entity cannot be imported and will be ignored");
             }
