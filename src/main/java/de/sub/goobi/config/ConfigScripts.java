@@ -105,7 +105,7 @@ public final class ConfigScripts {
             return null;
         }
         for (Script s : getScripts()) {
-            if (scriptName.equalsIgnoreCase(s.getScriptName())) {
+            if (scriptName.trim().equalsIgnoreCase(s.getScriptName())) {
                 return s;
             }
         }
