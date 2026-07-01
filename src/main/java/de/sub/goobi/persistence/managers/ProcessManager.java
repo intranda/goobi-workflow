@@ -427,6 +427,30 @@ public class ProcessManager implements IManager {
     };
 
     private static Process convert(ResultSet rs) throws DAOException, SQLException {
+        // first read all plain columns (no further database access),
+        Process p = convertProcessData(rs);
+        // then resolve the associated objects, each of which needs its own database connection.
+        // This must happen here and not inside the ResultSetHandler of a lighter load, see convertLight().
+        p.setRegelsatz(RulesetManager.getRulesetById(rs.getInt("MetadatenKonfigurationID")));
+        Integer batchID = rs.getInt("batchID");
+        if (!rs.wasNull()) {
+            Batch batch = ProcessMysqlHelper.loadBatch(batchID);
+            p.setBatch(batch);
+        }
+        p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
+        p.setJournal(JournalManager.getLogEntriesForProcess(p.getId()));
+        return p;
+    }
+
+    /**
+     * Builds a {@link Process} from the result set reading only the columns of the prozesse table itself, without resolving any associated objects
+     * (ruleset, batch, docket, journal). This is important because the associated loads each borrow another database connection while the connection
+     * of the surrounding process query is still open. Doing that for many concurrent requests (e.g. rapid image navigation in the METS editor, which
+     * resolves the process for every IIIF info/tile request) can exhaust the connection pool and deadlock the application. Callers that only need the
+     * process metadata and its folders should use this variant; the lazily loaded {@link Process#getProjekt()} only needs the project id read here
+     * and acquires its connection after the process query has been closed.
+     */
+    private static Process convertProcessData(ResultSet rs) throws SQLException {
         Process p = new Process();
         p.setId(rs.getInt("ProzesseID"));
         p.setTitel(rs.getString("Titel"));
@@ -442,33 +466,52 @@ public class ProcessManager implements IManager {
             p.setErstellungsdatum(new Date(time.getTime()));
         }
         p.setProjectId(rs.getInt("ProjekteID"));
-        p.setRegelsatz(RulesetManager.getRulesetById(rs.getInt("MetadatenKonfigurationID")));
         p.setSortHelperDocstructs(rs.getInt("sortHelperDocstructs"));
         p.setSortHelperMetadata(rs.getInt("sortHelperMetadata"));
-        Integer batchID = rs.getInt("batchID");
-        if (!rs.wasNull()) {
-            Batch batch = ProcessMysqlHelper.loadBatch(batchID);
-            p.setBatch(batch);
-        }
-        p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
         String exportValidatorRs = rs.getString("exportValidator");
         if ("".equals(exportValidatorRs) || exportValidatorRs == null) {
             p.setExportValidator(null);
         } else {
             p.setExportValidator(new ExportValidator(rs.getString("exportValidator")));
         }
-
-        p.setJournal(JournalManager.getLogEntriesForProcess(p.getId()));
-
         p.setMediaFolderExists(rs.getBoolean("mediaFolderExists"));
-
         p.setPauseAutomaticExecution(rs.getBoolean("pauseAutomaticExecution"));
-
         time = rs.getTimestamp("sorthelper_last_close_date");
         if (time != null) {
             p.setSortHelperLastStepCloseDate(new Date(time.getTime()));
         }
+        return p;
+    }
 
+    /**
+     * ResultSetHandler that builds a single {@link Process} without resolving its associated objects. See {@link #convertLight(ResultSet)}.
+     */
+    public static final ResultSetHandler<Process> resultSetToLightProcessHandler = new ResultSetHandler<>() {
+        @Override
+        public Process handle(ResultSet rs) throws SQLException {
+            try {
+                if (rs.next()) { // implies that rs != null
+                    return convertProcessData(rs);
+                }
+            } finally {
+                rs.close();
+            }
+            return null;
+        }
+    };
+
+    /**
+     * Loads a process by its id without resolving the associated ruleset, batch, docket and journal. Use this in code paths that are called very
+     * frequently and concurrently and only need the process metadata and its folders (e.g. the IIIF image API), to avoid nested connection
+     * acquisition that can exhaust the connection pool. See {@link #convertLight(ResultSet)}.
+     */
+    public static Process getProcessDataById(int id) {
+        Process p = null;
+        try {
+            p = ProcessMysqlHelper.getProcessByIdLight(id);
+        } catch (SQLException e) {
+            log.error(e);
+        }
         return p;
     }
 

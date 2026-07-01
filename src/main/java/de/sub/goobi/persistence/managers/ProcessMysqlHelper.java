@@ -70,6 +70,25 @@ final class ProcessMysqlHelper implements Serializable {
         }
     }
 
+    /**
+     * Loads a process by its id without resolving its associated objects (ruleset, batch, docket, journal). Unlike {@link #getProcessById(int)} the
+     * result set handler does not perform any further database access while this connection is held, so the connection is returned to the pool before
+     * any lazily loaded association acquires a connection. See {@link ProcessManager#getProcessByIdLight(int)}.
+     */
+    public static Process getProcessByIdLight(int id) throws SQLException {
+        Connection connection = null;
+        String sql = "SELECT * FROM prozesse WHERE ProzesseID = ?";
+        Object[] param = { id };
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, sql, ProcessManager.resultSetToLightProcessHandler, param);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
     public static Process getProcessByTitle(String inTitle) throws SQLException {
         Connection connection = null;
         String sql = "SELECT * FROM prozesse WHERE Titel LIKE ?";

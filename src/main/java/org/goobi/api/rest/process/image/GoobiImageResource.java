@@ -465,9 +465,9 @@ public class GoobiImageResource {
      * @param processIdString
      * @return
      */
-    private synchronized org.goobi.beans.Process getGoobiProcess(String processIdString) {
+    private org.goobi.beans.Process getGoobiProcess(String processIdString) {
         int processId = Integer.parseInt(processIdString);
-        return ProcessManager.getProcessById(processId);
+        return ProcessManager.getProcessDataById(processId);
     }
 
     /**

@@ -77,7 +77,7 @@ public class GoobiImageFolderResource {
 
     private Process getProcess(String processIdString) {
         int processId = Integer.parseInt(processIdString);
-        return ProcessManager.getProcessById(processId);
+        return ProcessManager.getProcessDataById(processId);
     }
 
     private java.nio.file.Path getImagesFolder(Process process, String folder)
