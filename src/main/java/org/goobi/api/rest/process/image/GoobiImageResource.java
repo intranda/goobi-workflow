@@ -120,6 +120,9 @@ public class GoobiImageResource {
     private static Map<String, List<String>> availableThumbnailFolders = new ConcurrentHashMap<>();
     private static final Map<String, Long[]> FILE_LAST_EDITED_TIMES = new ConcurrentHashMap<>();
 
+    private static final long IMAGE_FOLDER_CACHE_TTL = 30000; // 30s
+    private static final Map<String, ImageFolderCacheEntry> IMAGE_FOLDER_CACHE = new ConcurrentHashMap<>();
+
     private static final Path METADATA_FOLDER = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
 
     private Path imageFolder = null;
@@ -200,9 +203,9 @@ public class GoobiImageResource {
     @Produces({ MediaType.TEXT_PLAIN })
     @ContentServerImageInfoBinding
     public Boolean isInCache(@PathParam("process") String processIdString, @PathParam("folder") String folder,
-            @PathParam("filename") String inFileName,
-            @PathParam("region") String region, @PathParam("size") String size, @PathParam("rotation") String rotation,
-            @PathParam("quality") String quality, @PathParam("format") String format, @PathParam("cacheCommand") String command)
+            @PathParam("filename") String inFileName, @PathParam("region") String region, @PathParam("size") String size,
+            @PathParam("rotation") String rotation, @PathParam("quality") String quality, @PathParam("format") String format,
+            @PathParam("cacheCommand") String command)
             throws ContentLibException {
         String filename = "";
         try {
@@ -612,8 +615,19 @@ public class GoobiImageResource {
     }
 
     private Path getImagesFolder(Path processFolder, String folder) throws IOException, SwapException, DAOException {
-        Process process = getGoobiProcess(processFolder.getFileName().toString());
         Integer userId = (Integer) request.getAttribute("userid");
+        String cacheKey = processFolder.getFileName().toString() + "|" + folder + "|" + userId;
+        ImageFolderCacheEntry cached = IMAGE_FOLDER_CACHE.get(cacheKey);
+        if (cached != null && cached.getTimestamp() > System.currentTimeMillis() - IMAGE_FOLDER_CACHE_TTL) {
+            return cached.getFolder();
+        }
+        Path resolved = resolveImagesFolder(processFolder, folder, userId);
+        cacheImageFolder(cacheKey, resolved);
+        return resolved;
+    }
+
+    private Path resolveImagesFolder(Path processFolder, String folder, Integer userId) throws IOException, SwapException, DAOException {
+        Process process = getGoobiProcess(processFolder.getFileName().toString());
         try {
             if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
                 return null;
@@ -692,6 +706,33 @@ public class GoobiImageResource {
             }
         }
         IMAGE_SIZES.put(uri, size);
+    }
+
+    private static void cacheImageFolder(String cacheKey, Path folder) {
+        if (IMAGE_FOLDER_CACHE.size() >= IMAGE_SIZES_MAX_SIZE) {
+            List<String> keysToDelete =
+                    IMAGE_FOLDER_CACHE.keySet().stream().limit(IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW).collect(Collectors.toList());
+            for (String key : keysToDelete) {
+                IMAGE_FOLDER_CACHE.remove(key);
+            }
+        }
+        IMAGE_FOLDER_CACHE.put(cacheKey, new ImageFolderCacheEntry(folder, System.currentTimeMillis()));
+    }
+
+    /**
+     * Cached result of an image folder resolution. The folder may be {@code null} to remember that the current user is not allowed to access the
+     * process (or that it could not be resolved), which avoids repeating the database lookups for denied requests during the TTL.
+     */
+    private static class ImageFolderCacheEntry {
+        @Getter
+        private final Path folder;
+        @Getter
+        private final long timestamp;
+
+        ImageFolderCacheEntry(Path folder, long timestamp) {
+            this.folder = folder;
+            this.timestamp = timestamp;
+        }
     }
 
     private Dimension getImageSize(String uri) {
