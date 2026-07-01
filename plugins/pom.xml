@@ -180,6 +180,7 @@
     <module>goobi-plugin-step-move-folder-to-master</module>
     <module>goobi-plugin-step-mpi-fulltext-generation</module>
     <module>goobi-plugin-step-mycore-ingest</module>
+    <module>goobi-plugin-step-nodecreation-and-split</module>
     <module>goobi-plugin-step-ocr-selector</module>
     <module>goobi-plugin-step-ocr-to-metadata</module>
     <module>goobi-plugin-step-oepma-class-assignement</module>
@@ -205,6 +206,7 @@
     <module>goobi-plugin-step-tif-validation</module>
     <module>goobi-plugin-step-transcription</module>
     <module>goobi-plugin-step-transkribus-collection</module>
+    <module>goobi-plugin-step-update-archive-node</module>
     <module>goobi-plugin-step-update-process-title</module>
     <module>goobi-plugin-step-urn</module>
     <module>goobi-plugin-step-user-assignment</module>
