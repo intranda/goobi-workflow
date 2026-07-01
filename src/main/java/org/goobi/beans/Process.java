@@ -82,6 +82,7 @@ import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -164,10 +165,8 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
     @Getter
     @Setter
     private Date sortHelperLastStepCloseDate;
-    @Getter
     @Setter
     private Ruleset regelsatz;
-    @Getter
     @Setter
     private Batch batch;
     private Boolean swappedOut = false;
@@ -203,6 +202,14 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
     @Getter
     @Setter
     private Integer docketId;
+    @Getter
+    @Setter
+    private Integer batchId;
+
+    // When true, the journal is loaded from the database on first access to getJournal(). It is set by ProcessManager.convert() so that a process
+    // loaded from the database resolves its journal lazily (avoiding a nested database connection during the row mapping), while a freshly created,
+    // not yet persisted process keeps its in-memory journal instead of triggering a database load.
+    private boolean journalNeedsLoading = false;
 
     private final MetadatenSperrung msp = new MetadatenSperrung();
     private Helper help = new Helper();
@@ -1381,6 +1388,44 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
             }
         }
         return docket;
+    }
+
+    public Ruleset getRegelsatz() {
+        if (regelsatz == null && metadatenKonfigurationID != null) {
+            try {
+                regelsatz = RulesetManager.getRulesetById(metadatenKonfigurationID);
+            } catch (DAOException e) {
+                log.error(e);
+            }
+        }
+        return regelsatz;
+    }
+
+    public Batch getBatch() {
+        if (batch == null && batchId != null) {
+            batch = ProcessManager.getBatchById(batchId);
+        }
+        return batch;
+    }
+
+    /**
+     * Enables lazy loading of the journal from the database on the next call to {@link #getJournal()}. Called by ProcessManager.convert() for processes
+     * read from the database, so the journal is not loaded eagerly (which would acquire a nested database connection during the row mapping).
+     */
+    public void markJournalForLazyLoading() {
+        this.journalNeedsLoading = true;
+    }
+
+    @Override
+    public List<JournalEntry> getJournal() {
+        if (journalNeedsLoading) {
+            journalNeedsLoading = false;
+            // Only load from the database if no entries were added in the meantime, so an in-memory entry is never overwritten.
+            if (getId() != null && (super.getJournal() == null || super.getJournal().isEmpty())) {
+                setJournal(JournalManager.getLogEntriesForProcess(getId()));
+            }
+        }
+        return super.getJournal();
     }
 
     public ExportValidator getExportValidator() {

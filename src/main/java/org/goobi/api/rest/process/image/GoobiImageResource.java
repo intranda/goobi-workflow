@@ -470,7 +470,7 @@ public class GoobiImageResource {
      */
     private org.goobi.beans.Process getGoobiProcess(String processIdString) {
         int processId = Integer.parseInt(processIdString);
-        return ProcessManager.getProcessDataById(processId);
+        return ProcessManager.getProcessById(processId);
     }
 
     /**

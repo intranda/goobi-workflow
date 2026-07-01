@@ -250,7 +250,9 @@ public class InstitutionManager implements IManager {
         r.setAllowAllAuthentications(rs.getBoolean("allowAllAuthentications"));
         r.setAllowAllPlugins(rs.getBoolean("allowAllPlugins"));
         r.setAdditionalData(MySQLHelper.convertStringToMap(rs.getString("additional_data")));
-        r.setJournal(JournalManager.getLogEntriesForInstitution(r.getId()));
+        // Resolve the journal lazily on first access (see Institution.getJournal()) instead of loading it here, which would acquire a nested
+        // database connection while the connection of this query is still open.
+        r.markJournalForLazyLoading();
         return r;
     }
 

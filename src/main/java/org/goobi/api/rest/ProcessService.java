@@ -2289,7 +2289,7 @@ public class ProcessService implements IRestAuthentication {
             file = URLDecoder.decode(file, StandardCharsets.UTF_8);
             file = getFilename(file);
             java.nio.file.Path dest = path.resolve(file);
-            StorageProvider.getInstance().uploadFile(fileInputStream, dest);
+            StorageProvider.getInstance().uploadFile(fileInputStream, dest, fileMetaData.getSize());
         } catch (IllegalArgumentException e) {
             return Response.status(400).entity("Invalid filename").build();
         } catch (IOException e) {

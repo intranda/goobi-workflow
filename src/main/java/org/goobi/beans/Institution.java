@@ -38,6 +38,7 @@ import org.goobi.production.plugin.PluginLoader;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.InstitutionManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,6 +49,11 @@ public class Institution extends AbstractJournal implements DatabaseObject, Comp
     @Getter
     @Setter
     private Integer id;
+
+    // When true, the journal is loaded from the database on first access to getJournal(). Set by InstitutionManager.convert() so that an institution
+    // read from the database resolves its journal lazily (avoiding a nested database connection during the row mapping), while a freshly created,
+    // not yet persisted institution keeps its in-memory journal.
+    private boolean journalNeedsLoading = false;
 
     @Getter
     @Setter
@@ -257,5 +263,26 @@ public class Institution extends AbstractJournal implements DatabaseObject, Comp
     @Override
     public void setUploadFolder(String uploadFolder) {
         // do nothing
+    }
+
+    /**
+     * Enables lazy loading of the journal from the database on the next call to {@link #getJournal()}. Called by InstitutionManager.convert() for
+     * institutions read from the database, so the journal is not loaded eagerly (which would acquire a nested database connection during the row
+     * mapping).
+     */
+    public void markJournalForLazyLoading() {
+        this.journalNeedsLoading = true;
+    }
+
+    @Override
+    public List<JournalEntry> getJournal() {
+        if (journalNeedsLoading) {
+            journalNeedsLoading = false;
+            // Only load from the database if no entries were added in the meantime, so an in-memory entry is never overwritten.
+            if (getId() != null && (super.getJournal() == null || super.getJournal().isEmpty())) {
+                setJournal(JournalManager.getLogEntriesForInstitution(getId()));
+            }
+        }
+        return super.getJournal();
     }
 }
