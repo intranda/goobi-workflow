@@ -31,11 +31,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -589,15 +587,13 @@ public final class DatabaseVersion {
                 java.sql.Statement stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
             Map<String, String> toAdd = new LinkedHashMap<>();
-            Set<String> seenCommands = new HashSet<>(existing.values());
 
             while (rs.next()) {
+
                 String name = rs.getString(1);
                 String command = rs.getString(2);
+
                 if (command == null || command.isBlank()) {
-                    continue;
-                }
-                if (seenCommands.contains(command)) {
                     continue;
                 }
 
@@ -608,9 +604,7 @@ public final class DatabaseVersion {
                     uniqueName = effectiveName + "_" + suffix++;
                 }
                 toAdd.put(uniqueName, command);
-                seenCommands.add(command);
             }
-
             existing.putAll(toAdd);
             StringBuilder xmlContent = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<scripts>\n");
             for (Map.Entry<String, String> entry : existing.entrySet()) {
