@@ -25,10 +25,11 @@ const closeLightboxViewer = () => {
 };
 
 document.body.addEventListener('click', (event) => {
-    if (event.target.classList.contains('lightbox-toggle')) {
-        openLightboxViewer(event.target);
+    const toggleEl = event.target.closest('.lightbox-toggle');
+    if (toggleEl) {
+        openLightboxViewer(toggleEl);
     }
-    if (event.target.classList.contains('lightbox-close')) {
+    if (event.target.closest('.lightbox-close')) {
         closeLightboxViewer();
     }
 });
