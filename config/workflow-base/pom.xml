@@ -88,7 +88,34 @@
     <sonar.java.source>${maven.compiler.release}</sonar.java.source>
     <sonar.java.target>${maven.compiler.release}</sonar.java.target>
     <!--        <sonar.sources>src/main/java</sonar.sources>-->
-    <sonar.exclusions>**/*.css,**/*.js,**/*.xhtml,**.*json,**/*.php,**/*.web,**/*.xml,**/*.html,**/*.scss,**/*.less,src/main/java/de/sub/goobi/validator/ExtendedDateTimeFormatParser.java,src/main/java/de/sub/goobi/validator/validator/ExtendedDateTimeFormatLexer.java,src/main/java/de/sub/goobi/validator/ExtendedDateTimeFormatBaseListener.java,src/main/java/de/sub/goobi/validator/ExtendedDateTimeFormatLexer.java</sonar.exclusions>
+    <sonar.exclusions>
+        **/*.css,
+        **/*.js,
+        **/*.xhtml,
+        **.*json,
+        **/*.php,
+        **/*.web,
+        **/*.xml,
+        **/*.html,
+        **/*.scss,
+        **/*.less,
+        **/*.eot,
+        **/*.gif,
+        **/*.ico,
+        **/*.jpg,
+        **/*.jpeg,
+        **/*.otf,
+        **/*.png,
+        **/*.svg,
+        **/*.ttf,
+        **/*.wasm,
+        **/*.woff,
+        **/*.woff2,
+        src/main/java/de/sub/goobi/validator/ExtendedDateTimeFormatParser.java,
+        src/main/java/de/sub/goobi/validator/validator/ExtendedDateTimeFormatLexer.java,
+        src/main/java/de/sub/goobi/validator/ExtendedDateTimeFormatBaseListener.java,
+        src/main/java/de/sub/goobi/validator/ExtendedDateTimeFormatLexer.java
+    </sonar.exclusions>
     <sonar.test.exclusions>**/*.css,**/*.js,**/*.xhtml,**.*json,**/*.php,**/*.web,**/*.xml,**/*.html,**/*.scss,**/*.less</sonar.test.exclusions>
     <sonar.maven.scanAll>false</sonar.maven.scanAll>
     <sonar.coverage.jacoco.xmlReportPaths>
@@ -1253,7 +1280,7 @@
       <artifactId>powermock-core</artifactId>
       <version>${powermock.version}</version>
       <scope>test</scope>
-    </dependency>    
+    </dependency>
     <!-- used to simplify pojo class tests -->
     <dependency>
       <groupId>de.a9d3.testing</groupId>
@@ -1604,7 +1631,7 @@
         <artifactId>owasp-java-html-sanitizer</artifactId>
         <version>20260313.1</version>
     </dependency>
-    
+
   </dependencies>
   <build>
     <finalName>${project.artifactId}</finalName>
