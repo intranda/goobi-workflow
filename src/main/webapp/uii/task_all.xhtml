@@ -10,7 +10,8 @@
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:util="http://goobi.io/util">
+	xmlns:util="http://goobi.io/util"
+	xmlns:section="http://goobi.io/section">
 
 	<ui:param name="myPageTitle" value="#{msgs.aktuelleSchritte}" />
 
@@ -27,7 +28,7 @@
 	<ui:define name="content">
 
 
-		<main role="main" id="tasksAll">
+		<main role="main" id="tasksAll" class="flow">
 			<c:if test="#{LoginForm.hasRole('Task_List')}">
 
 				<div class="row">
@@ -181,7 +182,7 @@
                                                         name="sorthelper_last_close_date"
                                                         sortField="prioritaet desc, sorthelper_last_close_date"
                                                         form="#{AktuelleSchritteForm}"
-                                                        ajaxRender="processAllBox:myform" />     
+                                                        ajaxRender="processAllBox:myform" />
 
 													<!-- Priority -->
 				                                    <intranda:columnheader id="sortStepPriority" name="priority"
@@ -425,7 +426,7 @@
 													</td>
 													<!-- // NUMBER OF IMAGES -->
                                                     <td
-                                                    
+
                                                         data-label="#{msgs.lastStatusUpdate}"
                                                         jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lastStatusUpdate']}">
                                                         <h:outputText value="#{item.prozess.displayLastStepCloseDate}" />
@@ -689,63 +690,60 @@
 				</div>
 
 				<!-- ACTION BOX -->
-				<div class="row mt-4" jsf:rendered="#{LoginForm.myBenutzer.mitMassendownload  and AktuelleSchritteForm.paginator.totalResults > 0 }">
+				<div class="row" jsf:rendered="#{LoginForm.myBenutzer.mitMassendownload  and AktuelleSchritteForm.paginator.totalResults > 0 }">
 					<div class="col-12">
-						<intranda:box id="boxTaskAllActions" boxType="action"
-							icon="tool" title="#{msgs.moeglicheAktionen}">
+						<section:section
+							type="action">
+							<section:header
+								icon="tool"
+								title="#{msgs.moeglicheAktionen}" />
 							<h:form id="actionForm2" prependId="false">
 
-								<!-- NUMBER OF IMAGES -->
-								<h:panelGroup styleClass="pull-right">
-									<h:outputText value="#{msgs.anzahlDerImagesAllerTreffer}:" />
-									<h:outputText id="calcNumber"
-										styleClass="mx-3"
-										value="#{AktuelleSchritteForm.allImages}" />
-									<button jsf:id="calc"
-										jsf:action="#{AktuelleSchritteForm.calcHomeImages}"
-										class="btn btn-blank btn-icon">
-										<util:icon icon="refresh" />
+								<section:body padding="true">
+									<!-- NUMBER OF IMAGES -->
+									<h:panelGroup styleClass="pull-right">
+										<h:outputText value="#{msgs.anzahlDerImagesAllerTreffer}:" />
+										<h:outputText id="calcNumber"
+											styleClass="mx-3"
+											value="#{AktuelleSchritteForm.allImages}" />
+										<button jsf:id="calc"
+											jsf:action="#{AktuelleSchritteForm.calcHomeImages}"
+											class="btn btn-blank btn-icon">
+											<util:icon icon="refresh" />
+										</button>
+									</h:panelGroup>
+								</section:body>
+								<section:footer>
+									<!-- UPLOAD FROM DONE FOLDER -->
+									<button jsf:id="uploadAll"
+										jsf:action="#{AktuelleSchritteForm.uploadFromHomeAlle}"
+										class="btn btn-neutral-600 me-auto"
+										title="#{msgs.verzeichnisFertigHochladen}"
+										onclick="if (!confirm('#{msgs.upload}')) return false">
+										<util:icon-text icon="cloud-upload" iconClass="me-1" text="#{msgs.verzeichnisFertigHochladen}" />
 									</button>
-								</h:panelGroup>
 
-								<!-- UPLOAD FROM DONE FOLDER -->
-								<button jsf:id="uploadAll"
-									jsf:action="#{AktuelleSchritteForm.uploadFromHomeAlle}"
-									class="btn btn-hot d-block"
-									title="#{msgs.verzeichnisFertigHochladen}"
-									onclick="if (!confirm('#{msgs.upload}')) return false">
-									<util:icon icon="cloud-upload" styleClass="me-1" />
-									<span>
-										<h:outputText value="#{msgs.verzeichnisFertigHochladen}" />
-									</span>
-								</button>
+									<!-- DOWNLOAD PAGE HITS INTO USERS HOME -->
+									<button jsf:id="downloadPage"
+										jsf:action="#{AktuelleSchritteForm.downloadToHomePage}"
+										class="btn btn-action"
+										title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}"
+										onclick="if (!confirm('#{msgs.upload}')) return false">
+										<util:icon-text icon="cloud-download" iconClass="me-1" text="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" />
+									</button>
 
-								<!-- DOWNLOAD PAGE HITS INTO USERS HOME -->
-								<button jsf:id="downloadPage"
-									jsf:action="#{AktuelleSchritteForm.downloadToHomePage}"
-									class="btn btn-success d-block"
-									title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}"
-									onclick="if (!confirm('#{msgs.upload}')) return false">
-									<util:icon icon="cloud-download" styleClass="me-1" />
-									<span>
-										<h:outputText value="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" />
-									</span>
-								</button>
+									<!-- DOWNLOAD ALL HITS INTO USERS HOME -->
+									<button jsf:id="downloadAll"
+										jsf:action="#{AktuelleSchritteForm.downloadToHomeHits}"
+										class="btn btn-action"
+										title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}"
+										onclick="if (!confirm('#{msgs.upload}')) return false">
+										<util:icon-text icon="cloud-download" iconClass="me-1" text="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" />
+									</button>
 
-								<!-- DOWNLOAD ALL HITS INTO USERS HOME -->
-								<button jsf:id="downloadAll"
-									jsf:action="#{AktuelleSchritteForm.downloadToHomeHits}"
-									class="btn btn-success d-block"
-									title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}"
-									onclick="if (!confirm('#{msgs.upload}')) return false">
-									<util:icon icon="cloud-download" styleClass="me-1" />
-									<span>
-										<h:outputText value="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" />
-									</span>
-								</button>
+								</section:footer>
 							</h:form>
-
-						</intranda:box>
+						</section:section>
 
 					</div>
 				</div>
