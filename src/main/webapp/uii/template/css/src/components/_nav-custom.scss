@@ -40,6 +40,13 @@
   }
 
   // Nav items
+  .nav-item--process-title {
+    min-width: 0;
+    @media screen and (max-width: 1200px) and (min-width: 992px) {
+      max-width: clamp(6rem, 20vw, 12rem);
+    }
+  }
+
   .nav-item {
     --bs-navbar-active-color: var(--text-nav, var(--text-400));
     --highlight-color: var(--clr-primary-400);
