@@ -82,9 +82,9 @@ import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
+import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import io.goobi.workflow.xslt.XsltPreparatorDocket;
@@ -968,7 +968,7 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
 
         /* prüfen, welches Format die Metadaten haben (Mets, xstream oder rdf */
         String type = MetadatenHelper.getMetaFileType(getMetadataFilePath());
-        Fileformat ff = MetadatenHelper.getFileformatByName(type, regelsatz);
+        Fileformat ff = MetadatenHelper.getFileformatByName(type, getRegelsatz());
         if (ff == null) {
             String[] parameter = { titel, type };
             Helper.setFehlerMeldung(Helper.getTranslation("MetadataFormatNotAvailable", parameter));
@@ -1019,7 +1019,7 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
         String backupMetaAnchorFileName = Process.createBackup(path, META_ANCHOR_FILE, maximumNumberOfBackups);
         Path backupMetaAnchorFile = Paths.get(path + backupMetaAnchorFileName);
 
-        Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
+        Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), getRegelsatz());
 
         synchronized (XML_WRITE_LOCK) {
             ff.setDigitalDocument(gdzfile.getDigitalDocument());
@@ -1065,7 +1065,7 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
         Process.createBackup(this.getProcessDataDirectory(), TEMP_FILE, maximumNumberOfBackups);
 
-        Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
+        Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), getRegelsatz());
         ff.setDigitalDocument(gdzfile.getDigitalDocument());
         ff.write(getProcessDataDirectory() + TEMP_FILE);
     }
@@ -1081,7 +1081,7 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
             if (log.isDebugEnabled()) {
                 log.debug("current template.xml file type: " + type);
             }
-            ff = MetadatenHelper.getFileformatByName(type, regelsatz);
+            ff = MetadatenHelper.getFileformatByName(type, getRegelsatz());
             ff.read(getTemplateFilePath());
             return ff;
         } else {
@@ -1409,8 +1409,9 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
     }
 
     /**
-     * Enables lazy loading of the journal from the database on the next call to {@link #getJournal()}. Called by ProcessManager.convert() for processes
-     * read from the database, so the journal is not loaded eagerly (which would acquire a nested database connection during the row mapping).
+     * Enables lazy loading of the journal from the database on the next call to {@link #getJournal()}. Called by ProcessManager.convert() for
+     * processes read from the database, so the journal is not loaded eagerly (which would acquire a nested database connection during the row
+     * mapping).
      */
     public void markJournalForLazyLoading() {
         this.journalNeedsLoading = true;
