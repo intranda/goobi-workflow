@@ -25,6 +25,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -46,8 +48,10 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.StreamingOutput;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -116,6 +120,86 @@ public class ProcessFileResource extends AbstractProcessResource implements IRes
                 .header("Content-Disposition", "attachment; filename=\"" + file.getFileName() + "\"")
                 .build();
 
+    }
+
+    // curl  -H 'token: XXXX' http://localhost:8080/goobi/api/process/1492/files/master/archive -o master.zip
+
+    // note: this path has a literal last segment ("archive"), JAX-RS/Jersey prefers literal path segments
+    // over template segments when matching, so this method wins over downloadFle() for ".../archive"
+    @GET
+    @Path("/{processid}/files/{folder}/archive")
+    @Operation(summary = "Download a process folder as ZIP archive", description = "Download all files of a process folder as a streamed ZIP archive")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "204", description = "No content")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "403", description = "Access denied")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Produces("application/zip")
+    @Tag(name = "file")
+    public Response downloadFolderAsArchive(@PathParam("processid") String processid, @PathParam("folder") final String folder) {
+        Process process = ProcessManager.getProcessById(Integer.parseInt(processid));
+        // process does not exist
+        if (process == null) {
+            return Response.status(404).entity("Process not found").build();
+        }
+        Response access = checkProcessAccess(process);
+        if (access != null) {
+            return access;
+        }
+
+        if (StringUtils.isBlank(folder)) {
+            return Response.status(400).entity("Folder is missing").build();
+        }
+
+        String destFolder = null;
+        try {
+            destFolder = process.getConfiguredImageFolder(folder);
+        } catch (IOException | SwapException | DAOException e) {
+            log.error(e);
+            return Response.status(500).build();
+        }
+        if (destFolder == null) {
+            return Response.status(404).entity("Folder is unknown").build();
+        }
+        java.nio.file.Path path = Paths.get(destFolder);
+        if (!StorageProvider.getInstance().isFileExists(path)) {
+            return Response.status(404).entity("Folder not found").build();
+        }
+
+        List<java.nio.file.Path> files = StorageProvider.getInstance().listFiles(destFolder);
+        List<java.nio.file.Path> filesToZip = new ArrayList<>();
+        for (java.nio.file.Path file : files) {
+            if (!StorageProvider.getInstance().isDirectory(file)) {
+                filesToZip.add(file);
+            }
+        }
+        if (filesToZip.isEmpty()) {
+            return Response.status(204).build();
+        }
+
+        StreamingOutput stream = output -> {
+            try (ZipOutputStream zos = new ZipOutputStream(output)) {
+                byte[] buffer = new byte[8192];
+                for (java.nio.file.Path file : filesToZip) {
+                    zos.putNextEntry(new ZipEntry(file.getFileName().toString()));
+                    try (InputStream in = StorageProvider.getInstance().newInputStream(file)) {
+                        int read;
+                        while ((read = in.read(buffer)) != -1) {
+                            zos.write(buffer, 0, read);
+                        }
+                    }
+                    zos.closeEntry();
+                }
+            } catch (IOException e) {
+                log.error(e);
+                throw new WebApplicationException(e);
+            }
+        };
+
+        return Response.ok(stream, "application/zip")
+                .header("Content-Disposition", "attachment; filename=\"" + process.getTitel() + ".zip\"")
+                .build();
     }
 
     // curl  -H 'token: XXXX' -H 'Accept: application/xml' http://localhost:8080/goobi/api/process/1492/files/master
@@ -320,6 +404,8 @@ public class ProcessFileResource extends AbstractProcessResource implements IRes
         md = new AuthenticationMethodDescription("POST", "Add a file to a process folder", "/process/\\d+/files/\\w+/\\w+");
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("DELETE", "Delete a file from a given process folder", "/process/\\d+/files/\\w+/\\w+");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("GET", "Download a process folder as ZIP archive", "/process/\\d+/files/\\w+/archive");
         implementedMethods.add(md);
 
         return implementedMethods;

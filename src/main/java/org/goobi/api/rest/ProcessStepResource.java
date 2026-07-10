@@ -19,13 +19,18 @@
 package org.goobi.api.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mq.QueueType;
+import org.goobi.api.rest.model.RestReportProblem;
+import org.goobi.api.rest.model.RestReportProblemResponse;
 import org.goobi.api.rest.model.RestStepQueryResource;
 import org.goobi.api.rest.model.RestStepResource;
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
@@ -33,8 +38,12 @@ import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.CloseStepHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.enums.HistoryEventType;
+import de.sub.goobi.helper.enums.PropertyType;
+import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
@@ -491,6 +500,180 @@ public class ProcessStepResource extends AbstractProcessResource implements IRes
 
     }
 
+    /*
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/120/step/413/reportproblem -d '{"destinationStepName": "Scanning", "errorText": "Image damaged"}'
+     */
+
+    @PUT
+    @Path("/{processid}/step/{stepid}/reportproblem")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Report a problem", description = "Send a step back to a correction step")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "409", description = "Step belongs to a different process.")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response reportProblem(@PathParam("processid") String processid, @PathParam("stepid") String stepid, RestReportProblem body) {
+
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        if (StringUtils.isBlank(stepid) || !StringUtils.isNumeric(stepid)) {
+            return Response.status(400).entity("Step id is missing.").build();
+        }
+        int procId = Integer.parseInt(processid);
+        int taslId = Integer.parseInt(stepid);
+        Step source = StepManager.getStepById(taslId);
+        // step does not exist
+        if (source == null) {
+            return Response.status(404).entity("Step not found").build();
+        }
+        if (source.getProcessId().intValue() != procId) {
+            return Response.status(409).entity("Step belongs to a different process.").build();
+        }
+        Process stepProcess = ProcessManager.getProcessById(procId);
+        if (stepProcess != null) {
+            Response access = checkProcessAccess(stepProcess);
+            if (access != null) {
+                return access;
+            }
+        }
+
+        String destinationStepName = body == null ? null : body.getDestinationStepName();
+        String errorMessage = body == null ? null : body.getErrorText();
+
+        Date myDate = new Date();
+        RestReportProblemResponse response = new RestReportProblemResponse();
+        response.setErrorStepId(source.getId());
+        response.setErrorStepName(source.getTitel());
+
+        source.setBearbeitungsstatusEnum(StepStatus.LOCKED);
+        source.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
+        source.setBearbeitungszeitpunkt(new Date());
+        source.setBearbeitungsbeginn(null);
+
+        Step temp = null;
+        for (Step s : source.getProzess().getSchritteList()) {
+            if (s.getTitel().equals(destinationStepName)) {
+                temp = s;
+            }
+        }
+
+        if (temp == null) {
+            response.setErrorText("Destination step not found");
+            return Response.status(400).entity(response).build();
+        }
+
+        response.setDestinationStepId(temp.getId());
+        response.setDestinationStepName(temp.getTitel());
+
+        temp.setBearbeitungsstatusEnum(StepStatus.OPEN);
+        temp.setCorrectionStep();
+        temp.setBearbeitungsende(null);
+
+        Helper.addMessageToProcessJournal(temp.getProzess().getId(), LogType.ERROR,
+                Helper.getTranslation("Korrektur notwendig") + " [automatic] " + errorMessage, "webapi");
+
+        HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(),
+                temp.getProzess().getId());
+
+        List<Step> alleSchritteDazwischen = new ArrayList<>();
+        for (Step s : source.getProzess().getSchritteList()) {
+            if (s.getReihenfolge() <= source.getReihenfolge() && s.getReihenfolge() > temp.getReihenfolge()) {
+                alleSchritteDazwischen.add(s);
+            }
+        }
+
+        for (Step step : alleSchritteDazwischen) {
+            step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
+            step.setCorrectionStep();
+            step.setBearbeitungsende(null);
+            GoobiProperty seg = new GoobiProperty(PropertyOwnerType.ERROR);
+            seg.setPropertyName(Helper.getTranslation("Korrektur notwendig"));
+            seg.setPropertyValue(Helper.getTranslation("KorrekturFuer") + temp.getTitel() + ": " + errorMessage);
+            seg.setOwnerObject(step);
+            seg.setType(PropertyType.MESSAGE_IMPORTANT);
+            seg.setCreationDate(new Date());
+            step.getEigenschaften().add(seg);
+        }
+
+        try {
+            for (Step step : alleSchritteDazwischen) {
+                StepManager.saveStep(step);
+            }
+            ProcessManager.saveProcess(source.getProzess());
+        } catch (DAOException e) {
+            log.error(e);
+            return Response.status(500).entity("Error while saving process/step: " + e.getMessage()).build();
+        }
+        response.setProcessId(source.getProzess().getId());
+        response.setProcessName(source.getProzess().getTitel());
+        response.setStatus("ok");
+
+        return Response.ok().entity(response).build();
+    }
+
+    /*
+    curl -H 'Content-Type: application/json' -X PUT http://localhost:8080/goobi/api/process/120/step/413/error
+     */
+
+    @PUT
+    @Path("/{processid}/step/{stepid}/error")
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Operation(summary = "Set a step to error status", description = "Set a step to error status")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "403", description = "Forbidden - some requirements are not fulfilled.")
+    @ApiResponse(responseCode = "404", description = "Process not found")
+    @ApiResponse(responseCode = "409", description = "Step belongs to a different process.")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Tag(name = "process")
+    public Response setStepToError(@PathParam("processid") String processid, @PathParam("stepid") String stepid) {
+
+        if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
+            return Response.status(400).entity("Process id is missing.").build();
+        }
+        if (StringUtils.isBlank(stepid) || !StringUtils.isNumeric(stepid)) {
+            return Response.status(400).entity("Step id is missing.").build();
+        }
+        int procId = Integer.parseInt(processid);
+        int taslId = Integer.parseInt(stepid);
+        Step step = StepManager.getStepById(taslId);
+        // step does not exist
+        if (step == null) {
+            return Response.status(404).entity("Step not found").build();
+        }
+        if (step.getProcessId().intValue() != procId) {
+            return Response.status(409).entity("Step belongs to a different process.").build();
+        }
+        Process stepProcess = ProcessManager.getProcessById(procId);
+        if (stepProcess != null) {
+            Response access = checkProcessAccess(stepProcess);
+            if (access != null) {
+                return access;
+            }
+        }
+
+        step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+        step.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
+        step.setBearbeitungszeitpunkt(new Date());
+        step.setBearbeitungsbeginn(null);
+        step.setBearbeitungsende(new Date());
+
+        try {
+            StepManager.saveStep(step);
+        } catch (DAOException e) {
+            log.error(e);
+            return Response.status(500).entity("Error while saving step: " + e.getMessage()).build();
+        }
+
+        return Response.ok().build();
+    }
+
     private void setStepHttpConfiguration(RestStepResource resource, Step step) {
         if (resource.getHttpStepConfiguration().size() > 0) {
             step.setHttpStep(true);
@@ -631,6 +814,11 @@ public class ProcessStepResource extends AbstractProcessResource implements IRes
         md = new AuthenticationMethodDescription("POST", "Add a new step to an existing process", "/process/\\d+/step");
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("DELETE", "Delete a step", "/process/\\d+/step");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("PUT", "Report a problem and send a step back to a correction step",
+                "/process/\\d+/step/\\d+/reportproblem");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("PUT", "Set a step to error status", "/process/\\d+/step/\\d+/error");
         implementedMethods.add(md);
 
         return implementedMethods;

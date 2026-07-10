@@ -20,15 +20,19 @@ package org.goobi.api.rest;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.goobi.api.db.RestDbHelper;
 import org.goobi.api.rest.model.RestProcessQueryResource;
 import org.goobi.api.rest.model.RestProcessQueryResult;
 import org.goobi.api.rest.model.RestProcessResource;
+import org.goobi.api.rest.model.RestProcessStatus;
+import org.goobi.api.rest.model.RestProcessStatusStep;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Institution;
@@ -412,6 +416,7 @@ public class ProcessResource extends AbstractProcessResource implements IRestAut
     <element><authorityValue>authorityValue3</authorityValue><firstName>Nicolas</firstName><lastName>Bourbaki</lastName><name>Creator</name></element>
     </metadataList></process>'
      */
+
     @POST
     @Path("/")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -701,6 +706,72 @@ public class ProcessResource extends AbstractProcessResource implements IRestAut
         return Response.ok().build();
     }
 
+    /*
+    JSON:
+    curl -H 'Accept: application/json' http://localhost:8080/goobi/api/process/identifier/PPN12345/status
+     */
+    @GET
+    @Path("/identifier/{ppn}/status")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get process status by identifier",
+            description = "Get the process status for a process identified by its catalogue identifier (PPN)")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "404", description = "No process with this identifier found")
+    @ApiResponse(responseCode = "409", description = "More than one process with this identifier found")
+    @Tag(name = "process")
+    public Response getProcessStatusForIdentifier(@PathParam("ppn") String ppn) {
+        Response response = null;
+
+        List<Integer> ids = null;
+        try {
+            ids = RestDbHelper.getProcessIdsForIdentifier(ppn);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        RestProcessStatus processStatusResponse = new RestProcessStatus();
+
+        if (ids == null || ids.isEmpty()) {
+            processStatusResponse.setResult("No proccess with identifier " + ppn + " found");
+            response = Response.status(Response.Status.NOT_FOUND).entity(processStatusResponse).build();
+        } else if (ids.size() > 1) {
+            processStatusResponse.setResult("Found more than one process with identifier " + ppn);
+            response = Response.status(Response.Status.CONFLICT).entity(processStatusResponse).build();
+        } else {
+            Process process = ProcessManager.getProcessById(ids.get(0));
+
+            createResponse(process, processStatusResponse);
+            response = Response.status(Response.Status.OK).entity(processStatusResponse).build();
+        }
+
+        return response;
+    }
+
+    private void createResponse(Process p, RestProcessStatus resp) {
+        resp.setResult("ok");
+        resp.setCreationDate(p.getErstellungsdatum());
+        resp.setId(p.getId());
+        resp.setTitle(p.getTitel());
+        if ("100000000".equals(p.getSortHelperStatus())) {
+            resp.setProcessCompleted(true);
+        } else {
+            resp.setProcessCompleted(false);
+        }
+
+        for (Step step : p.getSchritte()) {
+            RestProcessStatusStep sr = new RestProcessStatusStep();
+            resp.getStep().add(sr);
+            sr.setEndDate(step.getBearbeitungsende());
+            sr.setStartDate(step.getBearbeitungsbeginn());
+            sr.setStatus(step.getBearbeitungsstatusEnum().getTitle());
+            if (step.getBearbeitungsbenutzer() != null) {
+                sr.setUser(step.getBearbeitungsbenutzer().getNachVorname());
+            }
+            sr.setTitle(step.getTitel());
+            sr.setOrder(step.getReihenfolge());
+            sr.setId(step.getId());
+        }
+    }
+
     @Override
     public List<AuthenticationMethodDescription> getAuthenticationMethods() {
         List<AuthenticationMethodDescription> implementedMethods = new ArrayList<>();
@@ -713,6 +784,7 @@ public class ProcessResource extends AbstractProcessResource implements IRestAut
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("DELETE", "Delete an existing process", "/process");
         implementedMethods.add(md);
+        implementedMethods.add(new AuthenticationMethodDescription("GET", "Get process status by identifier", "/process/identifier/[^/]+/status"));
 
         return implementedMethods;
     }
