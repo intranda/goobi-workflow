@@ -128,13 +128,13 @@ public class PicaParserTest {
     public void testAuthenticationMethods() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
                 MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-                MockedStatic<ProcessService> mockedProcessService = Mockito.mockStatic(ProcessService.class);
+                MockedStatic<ProcessResource> mockedProcessResource = Mockito.mockStatic(ProcessResource.class);
                 MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("templateName")).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("processTitle")).thenReturn(null);
             mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.any())).thenReturn(project);
-            mockedProcessService.when(() -> ProcessService.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
+            mockedProcessResource.when(() -> ProcessResource.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
             PicaParser fixture = new PicaParser();
@@ -151,13 +151,13 @@ public class PicaParserTest {
     public void testReadMetadataFile() throws Exception {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
                 MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-                MockedStatic<ProcessService> mockedProcessService = Mockito.mockStatic(ProcessService.class);
+                MockedStatic<ProcessResource> mockedProcessResource = Mockito.mockStatic(ProcessResource.class);
                 MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("templateName")).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("processTitle")).thenReturn(null);
             mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.any())).thenReturn(project);
-            mockedProcessService.when(() -> ProcessService.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
+            mockedProcessResource.when(() -> ProcessResource.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
             PicaParser fixture = new PicaParser();
@@ -174,13 +174,13 @@ public class PicaParserTest {
     public void testExtendMetadata() throws Exception {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
                 MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-                MockedStatic<ProcessService> mockedProcessService = Mockito.mockStatic(ProcessService.class);
+                MockedStatic<ProcessResource> mockedProcessResource = Mockito.mockStatic(ProcessResource.class);
                 MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("templateName")).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("processTitle")).thenReturn(null);
             mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.any())).thenReturn(project);
-            mockedProcessService.when(() -> ProcessService.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
+            mockedProcessResource.when(() -> ProcessResource.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
             PicaParser fixture = new PicaParser();
@@ -195,13 +195,13 @@ public class PicaParserTest {
     public void testReplaceMetadata() throws Exception {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
                 MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-                MockedStatic<ProcessService> mockedProcessService = Mockito.mockStatic(ProcessService.class);
+                MockedStatic<ProcessResource> mockedProcessResource = Mockito.mockStatic(ProcessResource.class);
                 MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("templateName")).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("processTitle")).thenReturn(null);
             mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.any())).thenReturn(project);
-            mockedProcessService.when(() -> ProcessService.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
+            mockedProcessResource.when(() -> ProcessResource.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
             PicaParser fixture = new PicaParser();
@@ -217,13 +217,13 @@ public class PicaParserTest {
     public void testCreateNewProcess() throws Exception {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
                 MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-                MockedStatic<ProcessService> mockedProcessService = Mockito.mockStatic(ProcessService.class);
+                MockedStatic<ProcessResource> mockedProcessResource = Mockito.mockStatic(ProcessResource.class);
                 MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("templateName")).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("processTitle")).thenReturn(null);
             mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.any())).thenReturn(project);
-            mockedProcessService.when(() -> ProcessService.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
+            mockedProcessResource.when(() -> ProcessResource.prepareProcess(Mockito.anyString(), Mockito.any())).thenReturn(process);
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
 
             PicaParser fixture = new PicaParser();

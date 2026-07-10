@@ -76,7 +76,6 @@ import jakarta.ws.rs.core.Response;
 @ExtendWith(MockitoExtension.class)
 public class ProcessServiceTest extends AbstractTest {
 
-    private ProcessService service;
     private RestProcessResource processResource;
 
     private Process process;
@@ -105,8 +104,6 @@ public class ProcessServiceTest extends AbstractTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        service = new ProcessService();
-
         processResource = new RestProcessResource();
 
         process = MockProcess.createProcess();
@@ -207,7 +204,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-            service = new ProcessService();
+            ProcessResource service = new ProcessResource();
             Response response = service.getProcessData("");
             assertEquals(400, response.getStatus());
             response = service.getProcessData("abc");
@@ -254,7 +251,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-            service = new ProcessService();
+            ProcessResource service = new ProcessResource();
 
             processResource.setId(0);
             Response response = service.updateProcess(processResource);
@@ -331,7 +328,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-            service = new ProcessService();
+            ProcessResource service = new ProcessResource();
 
             Response response = service.createProcess(processResource);
             // no process template configured
@@ -385,7 +382,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-            service = new ProcessService();
+            ProcessResource service = new ProcessResource();
             processResource.setId(0);
             Response response = service.deleteProcess(processResource);
             assertEquals(400, response.getStatus());
@@ -427,7 +424,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-            service = new ProcessService();
+            ProcessStepResource service = new ProcessStepResource();
             Response response = service.getStepList("");
             assertEquals(400, response.getStatus());
             response = service.getStepList("abc");
@@ -475,7 +472,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
-            service = new ProcessService();
+            ProcessStepResource service = new ProcessStepResource();
             Response response = service.getStep("", "");
             assertEquals(400, response.getStatus());
 
@@ -519,6 +516,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessStepResource service = new ProcessStepResource();
             RestStepResource stepResource = new RestStepResource();
 
             // no step id
@@ -606,6 +604,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessStepResource service = new ProcessStepResource();
             RestStepResource stepResource = new RestStepResource();
 
             // missing process id
@@ -670,6 +669,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessStepResource service = new ProcessStepResource();
             RestStepResource stepResource = new RestStepResource();
 
             // no step id given
@@ -713,6 +713,8 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+
+            ProcessStepResource service = new ProcessStepResource();
 
             // missing/wrong parameter
             Response response = service.closeStep("", "1");
@@ -770,6 +772,8 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessJournalResource service = new ProcessJournalResource();
+
             // missing/wrong parameter
             Response response = service.getJournal("");
             assertEquals(400, response.getStatus());
@@ -816,6 +820,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessJournalResource service = new ProcessJournalResource();
             RestJournalResource resource = new RestJournalResource();
             // missing/wrong parameter
             Response response = service.updateJournalEntry("", resource);
@@ -867,6 +872,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessJournalResource service = new ProcessJournalResource();
             RestJournalResource resource = new RestJournalResource();
 
             resource.setMessage("content");
@@ -918,6 +924,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessJournalResource service = new ProcessJournalResource();
             RestJournalResource resource = new RestJournalResource();
             resource.setId(1);
             resource.setProcessId(1);
@@ -968,6 +975,8 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessPropertyResource service = new ProcessPropertyResource();
+
             Response response = service.getProperties(null);
             assertEquals(400, response.getStatus());
 
@@ -1009,6 +1018,8 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+
+            ProcessPropertyResource service = new ProcessPropertyResource();
 
             Response response = service.getProperty(null, "1");
             assertEquals(400, response.getStatus());
@@ -1054,6 +1065,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessPropertyResource service = new ProcessPropertyResource();
             RestPropertyResource resource = new RestPropertyResource();
 
             Response response = service.updateProperty(null, resource);
@@ -1110,6 +1122,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessPropertyResource service = new ProcessPropertyResource();
             RestPropertyResource resource = new RestPropertyResource();
 
             Response response = service.createProperty("", resource);
@@ -1160,6 +1173,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessMetadataResource service = new ProcessMetadataResource();
             Response response = service.getMetadata(null);
             assertEquals(400, response.getStatus());
 
@@ -1203,6 +1217,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessMetadataResource service = new ProcessMetadataResource();
             RestMetadataResource resource = new RestMetadataResource();
             resource.setValue("value");
 
@@ -1263,6 +1278,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessMetadataResource service = new ProcessMetadataResource();
             RestMetadataResource resource = new RestMetadataResource();
             resource.setValue("value");
             resource.setAuthorityValue("value");
@@ -1327,6 +1343,7 @@ public class ProcessServiceTest extends AbstractTest {
             mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
 
+            ProcessMetadataResource service = new ProcessMetadataResource();
             RestMetadataResource resource = new RestMetadataResource();
             resource.setValue("value");
             resource.setAuthorityValue("value");
