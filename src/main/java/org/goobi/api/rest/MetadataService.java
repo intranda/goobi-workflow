@@ -85,7 +85,7 @@ public abstract class MetadataService {
             return Response.status(Status.CONFLICT).entity("The process title is already used.").build();
         }
 
-        Process process = ProcessService.prepareProcess(processTitle, template);
+        Process process = ProcessResource.prepareProcess(processTitle, template);
         process.setProjekt(project);
         Prefs prefs = process.getRegelsatz().getPreferences();
 
