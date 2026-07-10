@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+
 package org.goobi.api.rest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +44,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.Response;
 
 @ExtendWith(MockitoExtension.class)
-public class ProcessServiceAccessControlTest extends AbstractTest {
+public class ProcessResourceAccessControlTest extends AbstractTest {
 
     private Process buildProcess(int projectId) {
         Project project = new Project();
@@ -88,7 +89,7 @@ public class ProcessServiceAccessControlTest extends AbstractTest {
             HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
             Mockito.when(mockReq.getAttribute("authToken")).thenReturn(null);
 
-            ProcessService service = new ProcessService();
+            ProcessResource service = new ProcessResource();
             service.setRequest(mockReq);
 
             Response response = service.getProcessData("5");
@@ -113,7 +114,7 @@ public class ProcessServiceAccessControlTest extends AbstractTest {
             HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
             Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
 
-            ProcessService service = new ProcessService();
+            ProcessResource service = new ProcessResource();
             service.setRequest(mockReq);
 
             Response response = service.getProcessData("5");
@@ -133,7 +134,7 @@ public class ProcessServiceAccessControlTest extends AbstractTest {
             HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
             Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
 
-            ProcessService service = new ProcessService();
+            ProcessResource service = new ProcessResource();
             service.setRequest(mockReq);
 
             Response response = service.getProcessData("5");
@@ -165,7 +166,7 @@ public class ProcessServiceAccessControlTest extends AbstractTest {
             HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
             Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
 
-            ProcessService service = new ProcessService();
+            ProcessResource service = new ProcessResource();
             service.setRequest(mockReq);
 
             org.goobi.api.rest.model.RestProcessResource res = new org.goobi.api.rest.model.RestProcessResource();
@@ -188,7 +189,7 @@ public class ProcessServiceAccessControlTest extends AbstractTest {
             HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
             Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
 
-            ProcessService service = new ProcessService();
+            ProcessResource service = new ProcessResource();
             service.setRequest(mockReq);
 
             org.goobi.api.rest.model.RestProcessResource res = new org.goobi.api.rest.model.RestProcessResource();
@@ -221,7 +222,7 @@ public class ProcessServiceAccessControlTest extends AbstractTest {
             HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
             Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
 
-            ProcessService service = new ProcessService();
+            ProcessResource service = new ProcessResource();
             service.setRequest(mockReq);
 
             org.goobi.api.rest.model.RestProcessQueryResource queryRes = new org.goobi.api.rest.model.RestProcessQueryResource();
