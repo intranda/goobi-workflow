@@ -50,8 +50,8 @@ public class JsonMessageBodyWriter implements MessageBodyWriter<OpenAPI> {
             OutputStream out) throws IOException, WebApplicationException {
 
         ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(Include.NON_NULL);
-        mapper.setSerializationInclusion(Include.NON_EMPTY);
+        mapper.setDefaultPropertyInclusion(Include.NON_NULL);
+        mapper.setDefaultPropertyInclusion(Include.NON_EMPTY);
         mapper.writeValue(out, openAPI);
 
     }

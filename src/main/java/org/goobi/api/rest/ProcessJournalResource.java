@@ -44,9 +44,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 @Path("/process")
 public class ProcessJournalResource extends AbstractProcessResource implements IRestAuthentication {
 

@@ -785,6 +785,9 @@ public class ProcessResource extends AbstractProcessResource implements IRestAut
         md = new AuthenticationMethodDescription("DELETE", "Delete an existing process", "/process");
         implementedMethods.add(md);
         implementedMethods.add(new AuthenticationMethodDescription("GET", "Get process status by identifier", "/process/identifier/[^/]+/status"));
+        implementedMethods.add(
+                new AuthenticationMethodDescription("PUT", "Start open automatic steps of a process", "/process/\\d+/startsteps"));
+        implementedMethods.add(new AuthenticationMethodDescription("PUT", "Query processes satisfying a condition", "/process/query"));
 
         return implementedMethods;
     }

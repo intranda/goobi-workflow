@@ -41,7 +41,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import lombok.extern.log4j.Log4j2;
 import ugh.dl.Corporate;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
@@ -51,7 +50,6 @@ import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.UGHException;
 
-@Log4j2
 @Path("/process")
 
 public class ProcessMetadataResource extends AbstractProcessResource implements IRestAuthentication {
@@ -71,7 +69,7 @@ public class ProcessMetadataResource extends AbstractProcessResource implements 
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "metadata")
     public Response getMetadata(@PathParam("processid") String processid) {
 
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -151,7 +149,7 @@ public class ProcessMetadataResource extends AbstractProcessResource implements 
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "metadata")
     public Response updateMetadata(@PathParam("processid") String processid, RestMetadataResource resource) {
 
         if (StringUtils.isBlank(resource.getName())) {
@@ -246,7 +244,7 @@ public class ProcessMetadataResource extends AbstractProcessResource implements 
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "metadata")
     public Response createMetadata(@PathParam("processid") String processid, RestMetadataResource resource) {
 
         if (StringUtils.isBlank(resource.getName())) {
@@ -317,7 +315,7 @@ public class ProcessMetadataResource extends AbstractProcessResource implements 
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "metadata")
     public Response deleteMetadata(@PathParam("processid") String processid, RestMetadataResource resource) {
         if (StringUtils.isBlank(resource.getName())) {
             return Response.status(400).entity("Metadata name is missing.").build();

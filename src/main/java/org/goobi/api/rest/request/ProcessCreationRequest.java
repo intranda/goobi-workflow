@@ -15,36 +15,44 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+package org.goobi.api.rest.request;
 
-package org.goobi.api.rest.model;
+import java.util.Map;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 
 @Data
-@XmlRootElement
-@JsonPropertyOrder({ "title", "status", "id", "user", "startDate", "endDate", "order" })
-public class RestProcessStatusStep {
+@XmlRootElement(name = "record")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class ProcessCreationRequest {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "CET")
-    private Date startDate;
+    private String identifier;
+    private String processtitle;
+    private String anchorDSType;
+    private String logicalDSType;
+    private Integer templateId;
+    private String templateName;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "CET")
-    private Date endDate;
+    private OpacConfig opacConfig;
 
-    private String user;
+    @XmlElementWrapper
+    @XmlElement(name = "metadata")
+    private Map<String, String> metadata;
 
-    private String status;
+    @XmlElementWrapper
+    @XmlElement(name = "anchorMetadata")
+    private Map<String, String> anchorMetadata;
 
-    private int id;
-
-    private String title;
-
-    private int order;
+    @XmlElementWrapper
+    @XmlElement(name = "property")
+    @JsonProperty("properties")
+    private Map<String, String> properties;
 
 }

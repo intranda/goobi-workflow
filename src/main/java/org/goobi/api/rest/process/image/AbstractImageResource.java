@@ -41,6 +41,7 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerResourc
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
@@ -68,6 +69,7 @@ public abstract class AbstractImageResource extends ImageResource {
     @Produces({ ContentServerResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
     @ContentServerImageInfoBinding
     @Override
+    @Tag(name = "media")
     public ImageInformation getInfoAsJson() throws ContentLibException {
         ImageInformation info = super.getInfoAsJson();
         double heightToWidthRatio = info.getHeight() / (double) info.getWidth();

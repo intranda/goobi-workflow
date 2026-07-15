@@ -45,9 +45,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 @Path("/process")
 
 public class ProcessPropertyResource extends AbstractProcessResource implements IRestAuthentication {
@@ -67,7 +65,7 @@ public class ProcessPropertyResource extends AbstractProcessResource implements 
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "property")
 
     public Response getProperties(@PathParam("processid") String processid) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -110,7 +108,7 @@ public class ProcessPropertyResource extends AbstractProcessResource implements 
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "property")
 
     public Response getProperty(@PathParam("processid") String processid, @PathParam("propertyid") String propertyid) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -151,7 +149,7 @@ public class ProcessPropertyResource extends AbstractProcessResource implements 
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "property")
     public Response updateProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -201,7 +199,7 @@ public class ProcessPropertyResource extends AbstractProcessResource implements 
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "property")
     public Response createProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();
@@ -247,7 +245,7 @@ public class ProcessPropertyResource extends AbstractProcessResource implements 
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "property")
     public Response deleteProperty(@PathParam("processid") String processid, RestPropertyResource resource) {
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
             return Response.status(400).entity("Process id is missing.").build();

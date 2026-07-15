@@ -16,35 +16,20 @@
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package org.goobi.api.rest.model;
+package org.goobi.api.rest.response;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 
 @Data
-@XmlRootElement
-@JsonPropertyOrder({ "title", "status", "id", "user", "startDate", "endDate", "order" })
-public class RestProcessStatusStep {
+public class UpdateMetadataResponse {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "CET")
-    private Date startDate;
+    private List<String> errors = new ArrayList<>();
+    private boolean error;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "CET")
-    private Date endDate;
-
-    private String user;
-
-    private String status;
-
-    private int id;
-
-    private String title;
-
-    private int order;
-
+    public void addErrorMessage(String string) {
+        this.errors.add(string);
+    }
 }
