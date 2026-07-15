@@ -18,9 +18,11 @@
 
 package org.goobi.api.rest.model;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 
 @Data
+@XmlRootElement
 public class RestReportProblemResponse {
 
     private String status;

@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
-package org.goobi.api.rest.model;
+package org.goobi.api.rest.response;
 
 import java.util.Date;
 
@@ -26,10 +25,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 
-@Data
 @XmlRootElement
-@JsonPropertyOrder({ "title", "status", "id", "user", "startDate", "endDate", "order" })
-public class RestProcessStatusStep {
+@Data
+@JsonPropertyOrder({ "title", "status", "stepStatusId", "id", "user", "startDate", "endDate", "order" })
+public class StepResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "CET")
     private Date startDate;
@@ -40,6 +39,8 @@ public class RestProcessStatusStep {
     private String user;
 
     private String status;
+
+    private int stepStatusId;
 
     private int id;
 

@@ -41,6 +41,7 @@ import io.goobi.workflow.harvester.MetadataParser;
 import io.goobi.workflow.harvester.repository.Repository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -68,6 +69,7 @@ public class PicaParser extends MetadataService implements MetadataParser, IRest
     @ApiResponse(responseCode = "409", description = "The process title is already used.")
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Override
+    @Tag(name = "metadata")
     public Response createNewProcess(@PathParam("projectName") String projectName, @PathParam("templateName") String templateName,
             @PathParam("processTitle") String processTitle, InputStream inputStream) {
         return createRecord(projectName, templateName, processTitle, inputStream);
@@ -82,6 +84,7 @@ public class PicaParser extends MetadataService implements MetadataParser, IRest
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Override
+    @Tag(name = "metadata")
     public Response replaceMetadata(@PathParam("processid") Integer processid, InputStream inputStream) {
         return replaceMetadataInProcess(processid, inputStream);
     }

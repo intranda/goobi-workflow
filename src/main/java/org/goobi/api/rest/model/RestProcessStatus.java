@@ -28,9 +28,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 
+@Data
 @XmlRootElement
 @JsonPropertyOrder({ "result", "title", "id", "creationDate", "processCompleted", "step" })
-public @Data class RestProcessStatus {
+public class RestProcessStatus {
 
     private String result; // success, error
 

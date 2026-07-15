@@ -77,6 +77,7 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
@@ -145,6 +146,7 @@ public class GoobiImageResource {
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces({ ContentServerResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
     @ContentServerImageInfoBinding
+    @Tag(name = "media")
     public ImageInformation getInfoAsJson(@PathParam("process") String processIdString, @PathParam("folder") String folder,
             @PathParam("filename") String inFileName) throws ContentLibException {
         String filename = "";

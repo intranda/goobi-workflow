@@ -31,6 +31,9 @@ import java.util.ResourceBundle;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -45,6 +48,11 @@ public class MessagesResource {
     @GET
     @Path("/{language}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get the message bundle for a language",
+            description = "Returns the translated message bundle (default bundle plus optional local overrides) for the given language code. "
+                    + "An unknown or invalid language code yields an empty map.")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @Tag(name = "messages")
     public Map<String, String> getBundleForLanguage(@PathParam("language") String language) {
         if (!language.matches("[a-zA-Z]{2,8}")) {
             return new HashMap<>();

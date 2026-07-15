@@ -82,7 +82,7 @@ public class ProcessStepResource extends AbstractProcessResource implements IRes
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "step")
     public Response getStepList(@PathParam("processid") String processid) {
         // id is empty or value is not numeric
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -125,7 +125,7 @@ public class ProcessStepResource extends AbstractProcessResource implements IRes
     @ApiResponse(responseCode = "400", description = "Bad request")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "step")
     public Response getStep(@PathParam("processid") String processid, @PathParam("stepid") String stepid) {
         // id is empty or value is not numeric
         if (StringUtils.isBlank(stepid) || !StringUtils.isNumeric(stepid)) {
@@ -172,7 +172,7 @@ public class ProcessStepResource extends AbstractProcessResource implements IRes
     @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "step")
     public Response updateStep(@PathParam("processid") String processid, RestStepResource resource) {
         Integer id = resource.getStepId();
         if (id == null || id.intValue() == 0) {
@@ -253,7 +253,7 @@ public class ProcessStepResource extends AbstractProcessResource implements IRes
     @ApiResponse(responseCode = "406", description = "New process title contains invalid character.")
     @ApiResponse(responseCode = "409", description = "New process title already exists.")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "step")
     public Response createStep(@PathParam("processid") String processid, RestStepResource resource) {
 
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -344,7 +344,7 @@ public class ProcessStepResource extends AbstractProcessResource implements IRes
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "409", description = "Step belongs to a different process.")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "query")
+    @Tag(name = "step")
     public Response deleteStep(@PathParam("processid") String processid, RestStepResource resource) {
 
         // get id from request
@@ -387,7 +387,7 @@ public class ProcessStepResource extends AbstractProcessResource implements IRes
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "step")
     public Response closeStepGivenName(@PathParam("processid") String processid, RestStepQueryResource resource) {
 
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -455,7 +455,7 @@ public class ProcessStepResource extends AbstractProcessResource implements IRes
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "step")
     public Response closeStep(@PathParam("processid") String processid, @PathParam("stepid") String stepid) {
 
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -515,7 +515,7 @@ public class ProcessStepResource extends AbstractProcessResource implements IRes
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "409", description = "Step belongs to a different process.")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "step")
     public Response reportProblem(@PathParam("processid") String processid, @PathParam("stepid") String stepid, RestReportProblem body) {
 
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -631,7 +631,7 @@ public class ProcessStepResource extends AbstractProcessResource implements IRes
     @ApiResponse(responseCode = "404", description = "Process not found")
     @ApiResponse(responseCode = "409", description = "Step belongs to a different process.")
     @ApiResponse(responseCode = "500", description = "Internal error")
-    @Tag(name = "process")
+    @Tag(name = "step")
     public Response setStepToError(@PathParam("processid") String processid, @PathParam("stepid") String stepid) {
 
         if (StringUtils.isBlank(processid) || !StringUtils.isNumeric(processid)) {
@@ -819,6 +819,10 @@ public class ProcessStepResource extends AbstractProcessResource implements IRes
                 "/process/\\d+/step/\\d+/reportproblem");
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("PUT", "Set a step to error status", "/process/\\d+/step/\\d+/error");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("PUT", "Close a step given its name", "/process/\\d+/step/close");
+        implementedMethods.add(md);
+        md = new AuthenticationMethodDescription("PUT", "Close a specific step", "/process/\\d+/step/\\d+/close");
         implementedMethods.add(md);
 
         return implementedMethods;

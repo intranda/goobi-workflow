@@ -15,10 +15,13 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+package org.goobi.api.rest.response;
 
-package org.goobi.api.rest.model;
-
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.goobi.beans.Processproperty;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -28,23 +31,36 @@ import lombok.Data;
 
 @Data
 @XmlRootElement
-@JsonPropertyOrder({ "title", "status", "id", "user", "startDate", "endDate", "order" })
-public class RestProcessStatusStep {
+@JsonPropertyOrder({ "result", "title", "id", "creationDate", "processCompleted", "project", "ruleset", "step" })
+public class ProcessStatusResponse {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "CET")
-    private Date startDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "CET")
-    private Date endDate;
-
-    private String user;
-
-    private String status;
-
-    private int id;
+    private String result; // success, error
 
     private String title;
 
-    private int order;
+    private int id;
+
+    private boolean processCompleted;
+
+    private String project;
+
+    private String ruleset;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "CET")
+    private Date creationDate;
+
+    private List<StepResponse> step = new ArrayList<>();
+
+    private List<PropertyResponse> properties = new ArrayList<>();
+
+    @SuppressWarnings("deprecation")
+    public void addProperties(List<Processproperty> propertyList) {
+        for (Processproperty property : propertyList) {
+            PropertyResponse resp = new PropertyResponse();
+            resp.setTitle(property.getTitel());
+            resp.setValue(property.getWert());
+            properties.add(resp);
+        }
+    }
 
 }

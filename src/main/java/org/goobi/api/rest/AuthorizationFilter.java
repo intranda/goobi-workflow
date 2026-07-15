@@ -111,6 +111,14 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             requestContext.abortWith(Response.status(Response.Status.NOT_FOUND).entity("Not found\n").build());
             return;
         }
+
+        // self-service unsubscribe links from notification emails carry their own
+        // signed JWT token as a path segment and are validated by the endpoint itself
+        // (MailNotificationResource via JwtHelper.validateToken), so no API token / login is required here.
+        if (pathInfo.startsWith("/mails/disable/")) {
+            return;
+        }
+
         String method = requestContext.getMethod();
 
         //Always open for image, 3d object, multimedia requests and messages requests, if user is logged in and has a right to open the process

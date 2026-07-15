@@ -39,6 +39,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.PathParam;
@@ -63,7 +64,7 @@ public class MediaResource {
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "206", description = "Partial Content")
     @ApiResponse(responseCode = "500", description = "Internal error")
-
+    @Tag(name = "media")
     public Response serveMediaContent(@PathParam("process") String processIdString, @PathParam("folder") String folder,
             @PathParam("filename") String filename, @HeaderParam("Range") String rangeHeader) {
 

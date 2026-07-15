@@ -63,9 +63,9 @@ import jakarta.ws.rs.core.MediaType;
 public class OpenApiResource {
 
     @Context
-    Application application;
+    private Application application;
     @Context
-    ServletConfig servletConfig;
+    private ServletConfig servletConfig;
 
     @GET
     @Operation(summary = "Returns the API description", description = "Returns the description about all services in the API")

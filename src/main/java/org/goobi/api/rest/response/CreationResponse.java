@@ -16,35 +16,20 @@
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-package org.goobi.api.rest.model;
-
-import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+package org.goobi.api.rest.response;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 
-@Data
 @XmlRootElement
-@JsonPropertyOrder({ "title", "status", "id", "user", "startDate", "endDate", "order" })
-public class RestProcessStatusStep {
+@Data
+public class CreationResponse {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "CET")
-    private Date startDate;
+    private String result; // success, error
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "CET")
-    private Date endDate;
+    private String errorText;
 
-    private String user;
+    private String processName;
 
-    private String status;
-
-    private int id;
-
-    private String title;
-
-    private int order;
-
+    private int processId;
 }

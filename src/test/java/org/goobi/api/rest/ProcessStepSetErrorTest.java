@@ -58,6 +58,39 @@ public class ProcessStepSetErrorTest extends AbstractTest {
     }
 
     @Test
+    public void testSetErrorNonNumericProcessIdReturns400() {
+        Response response = new ProcessStepResource().setStepToError("abc", "999");
+
+        assertEquals(400, response.getStatus());
+    }
+
+    @Test
+    public void testSetErrorNonNumericStepIdReturns400() {
+        Response response = new ProcessStepResource().setStepToError("1", "abc");
+
+        assertEquals(400, response.getStatus());
+    }
+
+    @Test
+    public void testSetErrorStepBelongsToDifferentProcessReturns409() {
+        int procId = 1;
+        int otherProcId = 2;
+        int stepId = 2;
+
+        Step step = Mockito.spy(new Step());
+        step.setId(stepId);
+        step.setTitel("test step");
+        step.setProcessId(otherProcId);
+
+        mockedStepManager = Mockito.mockStatic(StepManager.class);
+        mockedStepManager.when(() -> StepManager.getStepById(stepId)).thenReturn(step);
+
+        Response response = new ProcessStepResource().setStepToError(String.valueOf(procId), String.valueOf(stepId));
+
+        assertEquals(409, response.getStatus());
+    }
+
+    @Test
     public void testSetErrorSuccess() {
         int procId = 1;
         int stepId = 2;
@@ -72,7 +105,7 @@ public class ProcessStepSetErrorTest extends AbstractTest {
         step.setProcessId(procId);
 
         try (MockedStatic<StepManager> mockedStepManagerStatic = Mockito.mockStatic(StepManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
 
             mockedStepManagerStatic.when(() -> StepManager.getStepById(stepId)).thenReturn(step);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(procId)).thenReturn(process);

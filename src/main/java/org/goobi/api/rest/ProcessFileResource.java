@@ -401,7 +401,7 @@ public class ProcessFileResource extends AbstractProcessResource implements IRes
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("GET", "Download a single file", "/process/\\d+/files/\\w+/\\w+");
         implementedMethods.add(md);
-        md = new AuthenticationMethodDescription("POST", "Add a file to a process folder", "/process/\\d+/files/\\w+/\\w+");
+        md = new AuthenticationMethodDescription("POST", "Add a file to a process folder", "/process/\\d+/files/\\w+");
         implementedMethods.add(md);
         md = new AuthenticationMethodDescription("DELETE", "Delete a file from a given process folder", "/process/\\d+/files/\\w+/\\w+");
         implementedMethods.add(md);
