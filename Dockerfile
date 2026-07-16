@@ -31,6 +31,9 @@ RUN apt-get update && \
         python3 \
         mariadb-client-core \
         gosu \
+        netpbm \
+        djvulibre-bin \
+        mailutils \
         # Required recommends, listed explicitly because of --no-install-recommends: \
         ghostscript \
         fonts-urw-base35 \
