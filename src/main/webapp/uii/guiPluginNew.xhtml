@@ -77,6 +77,8 @@
             window["plugin_name"] = pluginTitle;
             window[pluginTitle] = options;
         </script>
+        <h:outputScript library="jakarta.faces" name="faces.js" target="head" />
+        <script src="#{HelperForm.applicationWebsiteUrl}resources/js/dist/icons.min.js?v=#{HelperForm.buildVersion}"></script>
         <c:forEach
                 items="#{AktuelleSchritteForm.myPlugin.getJsPaths()}"
                 var="jsPath"
