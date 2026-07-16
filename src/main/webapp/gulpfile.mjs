@@ -61,6 +61,7 @@ const sources = {
     ],
     prosemirror: 'uii/template/js/editor/prosemirror.js',
     codemirror: 'uii/template/js/editor/codemirror.js',
+    iconsJs: 'uii/template/js/modules/icons.js',
     media: [
         'uii/template/js/media/**/*.js',
     ],
@@ -274,6 +275,28 @@ function editors() {
     ]);
 };
 
+// standalone global-exposing bundle of the icons module, for plugins using riot tags
+function iconsJs() {
+    return rollup
+        .rollup({
+            input: sources.iconsJs,
+            plugins: [
+                cleanup(),
+            ],
+        })
+        .then(bundle => {
+            return bundle.write({
+                file: `${customLocation}${targetFolder.js}icons.min.js`,
+                format: 'iife',
+                name: 'GoobiIcons',
+                sourcemap: true,
+                plugins: [terser({
+                    mangle: true,
+                })]
+            });
+        });
+};
+
 function media() {
     const buildMedia = (inputFile, outputName) => {
     return rollup
@@ -360,6 +383,7 @@ function dev() {
     watch(sources.media, { ignoreInitial: false }, media);
     watch(sources.legacyJS, { ignoreInitial: false }, jsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
+    watch(sources.iconsJs, { ignoreInitial: false }, iconsJs);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
     watch(sources.cssGlob, { ignoreInitial: false }, devCss);
     watch(sources.staticAssets, { ignoreInitial: false }, staticAssets);
@@ -375,6 +399,7 @@ const prod = parallel(
     prodBSCss,
     prodCss,
     icons,
+    iconsJs,
     editors,
     media,
     image,
