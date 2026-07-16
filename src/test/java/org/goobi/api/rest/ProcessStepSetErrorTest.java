@@ -77,9 +77,8 @@ public class ProcessStepSetErrorTest extends AbstractTest {
         int otherProcId = 2;
         int stepId = 2;
 
-        Step step = Mockito.spy(new Step());
+        Step step = new Step();
         step.setId(stepId);
-        step.setTitel("test step");
         step.setProcessId(otherProcId);
 
         mockedStepManager = Mockito.mockStatic(StepManager.class);
@@ -99,9 +98,8 @@ public class ProcessStepSetErrorTest extends AbstractTest {
         process.setId(procId);
         process.setTitel("testprocess");
 
-        Step step = Mockito.spy(new Step());
+        Step step = new Step();
         step.setId(stepId);
-        step.setTitel("test step");
         step.setProcessId(procId);
 
         try (MockedStatic<StepManager> mockedStepManagerStatic = Mockito.mockStatic(StepManager.class);

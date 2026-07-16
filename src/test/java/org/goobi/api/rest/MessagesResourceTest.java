@@ -23,8 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.StorageProviderInterface;
 
 public class MessagesResourceTest extends AbstractTest {
 
@@ -37,5 +42,25 @@ public class MessagesResourceTest extends AbstractTest {
     public void testValidLanguageReturnsBundle() {
         Map<String, String> bundle = new MessagesResource().getBundleForLanguage("en");
         assertFalse(bundle.isEmpty());
+    }
+
+    @Test
+    public void testValidLanguageWithoutLocalOverrideReturnsDefaultBundle() {
+        ConfigurationHelper confHelper = Mockito.mock(ConfigurationHelper.class);
+        Mockito.when(confHelper.getPathForLocalMessages()).thenReturn("/nonexistent/goobi/config/");
+
+        try (MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(ConfigurationHelper::getInstance).thenReturn(confHelper);
+
+            StorageProviderInterface storageProvider = Mockito.mock(StorageProviderInterface.class);
+            Mockito.when(storageProvider.isFileExists(Mockito.any())).thenReturn(false);
+
+            try (MockedStatic<StorageProvider> mockedStorageProvider = Mockito.mockStatic(StorageProvider.class)) {
+                mockedStorageProvider.when(StorageProvider::getInstance).thenReturn(storageProvider);
+
+                Map<String, String> bundle = new MessagesResource().getBundleForLanguage("en");
+                assertFalse(bundle.isEmpty());
+            }
+        }
     }
 }

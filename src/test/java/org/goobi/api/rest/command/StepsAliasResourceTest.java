@@ -21,14 +21,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.goobi.api.rest.model.RestReportProblemResponse;
 import org.goobi.api.rest.request.ReportProblem;
+import org.goobi.beans.Process;
+import org.goobi.beans.Step;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import jakarta.ws.rs.core.Response;
 import jakarta.xml.bind.JAXBContext;
@@ -88,6 +93,40 @@ public class StepsAliasResourceTest extends AbstractTest {
         Response response = resource.getReportProblemForTask(problem);
 
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    public void testGetReportProblemForTaskWithRealStepDelegatesToProcessStepResource() {
+        int procId = 5;
+        int stepId = 42;
+
+        Process process = new Process();
+        process.setId(procId);
+        process.setTitel("aliasProcess");
+
+        Step step = Mockito.spy(new Step());
+        step.setId(stepId);
+        step.setTitel("source step");
+        step.setReihenfolge(2);
+        step.setProcessId(procId);
+
+        List<Step> steps = new ArrayList<>();
+        steps.add(step);
+        process.setSchritte(steps);
+
+        Mockito.doReturn(process).when(step).getProzess();
+
+        try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedStepManager.when(() -> StepManager.getStepById(stepId)).thenReturn(step);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(procId)).thenReturn(process);
+
+            StepsAliasResource resource = new StepsAliasResource();
+
+            Response response = resource.getReportProblemForTask(stepId, "does not exist", "Image damaged");
+
+            assertEquals(400, response.getStatus());
+        }
     }
 
     @Test

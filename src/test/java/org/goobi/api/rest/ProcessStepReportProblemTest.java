@@ -96,9 +96,9 @@ public class ProcessStepReportProblemTest extends AbstractTest {
         Mockito.doReturn(process).when(destination).getProzess();
 
         try (MockedStatic<StepManager> mockedStepManagerStatic = Mockito.mockStatic(StepManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<HistoryManager> mockedHistoryManager = Mockito.mockStatic(HistoryManager.class)) {
 
             mockedStepManagerStatic.when(() -> StepManager.getStepById(sourceStepId)).thenReturn(source);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(procId)).thenReturn(process);
@@ -149,7 +149,7 @@ public class ProcessStepReportProblemTest extends AbstractTest {
         Mockito.doReturn(process).when(source).getProzess();
 
         try (MockedStatic<StepManager> mockedStepManagerStatic = Mockito.mockStatic(StepManager.class);
-             MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
 
             mockedStepManagerStatic.when(() -> StepManager.getStepById(sourceStepId)).thenReturn(source);
             mockedProcessManager.when(() -> ProcessManager.getProcessById(procId)).thenReturn(process);
@@ -162,6 +162,35 @@ public class ProcessStepReportProblemTest extends AbstractTest {
             Response response = resource.reportProblem(String.valueOf(procId), String.valueOf(sourceStepId), body);
 
             assertEquals(400, response.getStatus());
+        }
+    }
+
+    @Test
+    public void testReportProblemNonNumericProcessIdReturns400() {
+        Response response = new ProcessStepResource().reportProblem("abc", "2", new RestReportProblem());
+
+        assertEquals(400, response.getStatus());
+    }
+
+    @Test
+    public void testReportProblemNonNumericStepIdReturns400() {
+        Response response = new ProcessStepResource().reportProblem("1", "abc", new RestReportProblem());
+
+        assertEquals(400, response.getStatus());
+    }
+
+    @Test
+    public void testReportProblemStepBelongsToDifferentProcessReturns409() {
+        Step step = Mockito.spy(new Step());
+        step.setId(2);
+        step.setProcessId(999);
+
+        try (MockedStatic<StepManager> mockedStepManagerStatic = Mockito.mockStatic(StepManager.class)) {
+            mockedStepManagerStatic.when(() -> StepManager.getStepById(2)).thenReturn(step);
+
+            Response response = new ProcessStepResource().reportProblem("1", "2", new RestReportProblem());
+
+            assertEquals(409, response.getStatus());
         }
     }
 

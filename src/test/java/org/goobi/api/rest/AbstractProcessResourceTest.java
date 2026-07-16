@@ -17,26 +17,56 @@
  */
 package org.goobi.api.rest;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-
+import org.goobi.beans.Docket;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Process;
-import org.junit.jupiter.api.Test;
-import de.sub.goobi.AbstractTest;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.core.Response;
+import org.goobi.beans.Project;
+import org.goobi.beans.Ruleset;
 import org.mockito.Mockito;
 
-public class AbstractProcessResourceTest extends AbstractTest {
-    private static class Concrete extends AbstractProcessResource {
-        Response call(Process p) { return checkProcessAccess(p); }
+import de.sub.goobi.AbstractTest;
+import jakarta.servlet.http.HttpServletRequest;
+
+public abstract class AbstractProcessResourceTest extends AbstractTest {
+
+    protected Process buildProcess(int projectId) {
+        Project project = new Project();
+        project.setId(projectId);
+        project.setTitel("testProject");
+        Institution inst = new Institution();
+        inst.setShortName("inst");
+        project.setInstitution(inst);
+
+        Ruleset ruleset = new Ruleset();
+        ruleset.setTitel("testRuleset");
+
+        Docket docket = new Docket();
+        docket.setName("testDocket");
+
+        Process process = new Process();
+        process.setId(5);
+        process.setTitel("testProcess");
+        process.setProjekt(project);
+        process.setRegelsatz(ruleset);
+        process.setDocket(docket);
+        return process;
     }
 
-    @Test
-    public void testNoTokenAllowsAccess() {
+    protected AuthenticationToken buildToken(int userId) {
+        AuthenticationToken token = new AuthenticationToken();
+        token.setUserId(userId);
+        return token;
+    }
+
+    protected HttpServletRequest mockRequestWithToken(AuthenticationToken token) {
+        HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(req.getAttribute("authToken")).thenReturn(token);
+        return req;
+    }
+
+    protected HttpServletRequest mockRequestWithoutToken() {
         HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
         Mockito.when(req.getAttribute("authToken")).thenReturn(null);
-        Concrete c = new Concrete();
-        c.setRequest(req);
-        assertNull(c.call(Mockito.mock(Process.class)));
+        return req;
     }
 }

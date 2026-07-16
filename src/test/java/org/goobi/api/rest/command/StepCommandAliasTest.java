@@ -32,6 +32,7 @@ import org.mockito.Mockito;
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import jakarta.ws.rs.core.Response;
@@ -120,6 +121,77 @@ public class StepCommandAliasTest extends AbstractTest {
 
             assertEquals(500, response.getStatus());
             mockedHelper.verifyNoInteractions();
+        }
+    }
+
+    @Test
+    public void testAddToLogUnknownTitleReturnsError() {
+        try (MockedStatic<ProcessManager> pm = Mockito.mockStatic(ProcessManager.class)) {
+            pm.when(() -> ProcessManager.getProcessByExactTitle("missing")).thenReturn(null);
+
+            Response response = new CommandAddToProcessLog().addToLogByProcessTitle("missing", "info", "msg");
+
+            assertEquals(500, response.getStatus());
+        }
+    }
+
+    @Test
+    public void testAddToLogByStepIdUnknownStepReturnsError() {
+        try (MockedStatic<StepManager> sm = Mockito.mockStatic(StepManager.class)) {
+            sm.when(() -> StepManager.getStepById(999)).thenReturn(null);
+
+            Response response = new CommandAddToProcessLog().addToLogByStepId(999, "info", "msg");
+
+            assertEquals(500, response.getStatus());
+        }
+    }
+
+    @Test
+    public void testAddToLogByStepIdWithUnknownProcessReturnsError() {
+        int stepId = 55;
+        int processId = 67890;
+
+        Step step = new Step();
+        step.setId(stepId);
+        step.setProcessId(processId);
+
+        try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+
+            mockedStepManager.when(() -> StepManager.getStepById(stepId)).thenReturn(step);
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(processId)).thenReturn(null);
+
+            Response response = new CommandAddToProcessLog().addToLogByStepId(stepId, "info", "msg");
+
+            assertEquals(500, response.getStatus());
+            mockedHelper.verifyNoInteractions();
+        }
+    }
+
+    @Test
+    public void testSetStepToErrorByNameUnknownProcessReturnsNotFound() {
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle("missing")).thenReturn(null);
+
+            Response response = new CommandSetStepToError().setStepToErrorByName("missing", "scan");
+
+            assertEquals(404, response.getStatus());
+        }
+    }
+
+    @Test
+    public void testSetStepToErrorDaoExceptionReturnsServerError() {
+        Step step = new Step();
+        step.setId(2);
+        try (MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockedStepManager.when(() -> StepManager.getStepById(2)).thenReturn(step);
+            mockedStepManager.when(() -> StepManager.saveStep(step))
+                    .thenThrow(new DAOException("boom"));
+
+            Response response = new CommandSetStepToError().setStepToError(2);
+
+            assertEquals(500, response.getStatus());
         }
     }
 }
