@@ -79,6 +79,12 @@ public class CommandStepClose {
     }
 
     private Response closeStep(String stepName, Process p) {
+        if (p == null) {
+            CloseStepResponse cr = new CloseStepResponse();
+            cr.setResult("error");
+            cr.setComment("Process not found");
+            return Response.status(Response.Status.NOT_FOUND).entity(cr).build();
+        }
         List<Step> allSteps = StepManager.getStepsForProcess(p.getId());
         Step so = null;
         for (Step step : allSteps) {

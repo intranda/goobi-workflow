@@ -343,7 +343,7 @@ public class ProcessMetadataResource extends AbstractProcessResource implements 
             Fileformat fileformat = process.readMetadataFile();
             DocStruct docstruct = fileformat.getDigitalDocument().getLogicalDocStruct();
             if (docstruct.getType().isAnchor() && "topstruct".equals(resource.getMetadataLevel())) {
-                docstruct = docstruct.getAllChildren().get(id);
+                docstruct = docstruct.getAllChildren().get(0);
             }
             boolean metadataDeleted = false;
             if (docstruct.getAllMetadata() != null) {

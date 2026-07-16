@@ -69,6 +69,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -449,6 +450,9 @@ public class ProcessesAliasResource {
     public UpdateMetadataResponse deleteMetadata(@PathParam("id") int processId, DeleteProcessMetadataReq req)
             throws ReadException, PreferencesException, WriteException, IOException, InterruptedException, SwapException, DAOException {
         Process p = ProcessManager.getProcessById(processId);
+        if (p == null) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).entity("Process not found").build());
+        }
         return req.apply(p);
     }
 
@@ -459,6 +463,9 @@ public class ProcessesAliasResource {
     public UpdateMetadataResponse addMetadata(@PathParam("id") int processId, AddProcessMetadataReq req)
             throws ReadException, PreferencesException, WriteException, IOException, InterruptedException, SwapException, DAOException {
         Process p = ProcessManager.getProcessById(processId);
+        if (p == null) {
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).entity("Process not found").build());
+        }
         return req.apply(p);
     }
 
