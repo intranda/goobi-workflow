@@ -12,8 +12,8 @@ usermod -o -u "${WORKFLOW_UID}" user
 
 set -u
 
-# Create directories if not present
-mkdir -p /opt/digiverso/goobi/plugins/{administration,command,dashboard,export,generic,GUI,import,opac,statistics,step,theme,validation,workflow}
+# Create directories if not present (because of bind mount)
+mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,generic,GUI,import,opac,statistics,step,theme,validation,workflow}}
 
 echo "Setting properties from environment variables"
 /usr/bin/python3 /config.py
