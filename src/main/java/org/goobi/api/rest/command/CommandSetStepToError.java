@@ -83,6 +83,12 @@ public class CommandSetStepToError {
     @Produces(MediaType.APPLICATION_JSON)
     public Response setStepToErrorByName(@PathParam("processtitle") String processTitle, @PathParam("stepname") String stepName) {
         Process p = ProcessManager.getProcessByExactTitle(processTitle);
+        if (p == null) {
+            CloseStepResponse cr = new CloseStepResponse();
+            cr.setResult("error");
+            cr.setComment("Process not found");
+            return Response.status(Response.Status.NOT_FOUND).entity(cr).build();
+        }
         List<Step> allSteps = StepManager.getStepsForProcess(p.getId());
         Step so = null;
         for (Step step : allSteps) {

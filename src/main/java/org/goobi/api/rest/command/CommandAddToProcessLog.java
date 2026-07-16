@@ -46,6 +46,10 @@ public class CommandAddToProcessLog {
     @Path("/processtitles/{processtitle}/{type}")
     public Response addToLogByProcessTitle(@PathParam("processtitle") String processTitle, @PathParam("type") String type, String value) {
         Process process = ProcessManager.getProcessByExactTitle(processTitle);
+        if (process == null) {
+            String message = "Could not load process with title: " + processTitle;
+            return Response.status(500).entity(message).build();
+        }
         return addToLog(type, value, process);
     }
 
@@ -64,6 +68,11 @@ public class CommandAddToProcessLog {
         }
         processId = so.getProcessId();
         process = ProcessManager.getProcessById(processId);
+
+        if (process == null) {
+            String message = "Could not load process with id: " + processId;
+            return Response.status(500).entity(message).build();
+        }
 
         return addToLog(type, value, process);
     }
