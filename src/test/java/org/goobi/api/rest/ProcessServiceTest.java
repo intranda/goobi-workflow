@@ -82,15 +82,6 @@ public class ProcessServiceTest extends AbstractTest {
     private Step step;
     private JournalEntry entry;
 
-    @AfterEach
-    public void tearDown() throws Exception {
-        // if process folder exists, delete it
-        Path tempFolder = Paths.get(process.getProcessDataDirectory());
-        if (StorageProvider.getInstance().isFileExists(tempFolder)) {
-            StorageProvider.getInstance().deleteDir(tempFolder);
-        }
-    }
-
     private Batch batch;
     private Docket docket;
     private Usergroup grp;
@@ -174,19 +165,28 @@ public class ProcessServiceTest extends AbstractTest {
 
     }
 
+    @AfterEach
+    public void tearDown() throws Exception {
+        // if process folder exists, delete it
+        Path tempFolder = Paths.get(process.getProcessDataDirectory());
+        if (StorageProvider.getInstance().isFileExists(tempFolder)) {
+            StorageProvider.getInstance().deleteDir(tempFolder);
+        }
+    }
+
     @Test
     public void testGetProcessData() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -224,16 +224,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testUpdateProcess() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -299,18 +299,60 @@ public class ProcessServiceTest extends AbstractTest {
     }
 
     @Test
+    public void testUpdateProcessTitleConflictReturns409() {
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
+            mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
+            // simulate a title that is already used by another process
+            mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(1);
+            mockedProjectManager.when(() -> ProjectManager.getProjectByName(Mockito.anyString())).thenReturn(otherProject);
+            mockedRulesetManager.when(() -> RulesetManager.getRulesetByName(Mockito.anyString())).thenReturn(otherRuleset);
+            mockedDocketManager.when(() -> DocketManager.getDocketByName(Mockito.anyString())).thenReturn(otherDocket);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertiesForObject(Mockito.anyInt(), Mockito.any())).thenReturn(props);
+            mockedPropertyManager.when(() -> PropertyManager.getPropertById(Mockito.anyInt())).thenReturn(property);
+            mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(new ArrayList<>());
+            mockedStepManager.when(() -> StepManager.getStepById(Mockito.anyInt())).thenReturn(step);
+            mockedUsergroupManager.when(() -> UsergroupManager.getUsergroupByName(Mockito.anyString())).thenReturn(grp);
+            mockedCloseStepHelper.when(() -> CloseStepHelper.closeStep(Mockito.any(), Mockito.any())).thenReturn(true);
+            mockedJournalManager.when(() -> JournalManager.getLogEntriesForProcess(Mockito.anyInt())).thenReturn(journal);
+            mockedJournalManager.when(() -> JournalManager.getJournalEntryById(Mockito.anyInt())).thenReturn(entry);
+            mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(metadataList);
+
+            ProcessResource service = new ProcessResource();
+
+            processResource.setId(5);
+            // valid characters, but countProcessTitle indicates the title is already taken
+            processResource.setTitle("conflictingTitle");
+
+            Response response = service.updateProcess(processResource);
+            assertEquals(409, response.getStatus());
+        }
+    }
+
+    @Test
     public void testCreateProcess() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -355,16 +397,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testDeleteProcess() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -397,16 +439,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testGetStepList() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -445,16 +487,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testGetStep() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -489,16 +531,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testUpdateStep() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -577,16 +619,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testCreateStep() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -642,16 +684,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testDeleteStep() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -687,16 +729,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testCloseStep() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -745,16 +787,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testGetJournal() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -793,16 +835,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testUpdateJournalEntry() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -845,16 +887,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testCreateJournalEntry() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -897,16 +939,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testDeleteJournalEntry() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -948,16 +990,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testGetProperties() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -992,16 +1034,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testGetProperty() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -1038,16 +1080,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testUpdateProperty() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -1095,16 +1137,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testCreateProperty() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -1146,16 +1188,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testGetMetadata() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -1190,16 +1232,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testUpdateMetadata() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -1251,16 +1293,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testCreateMetadata() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);
@@ -1316,16 +1358,16 @@ public class ProcessServiceTest extends AbstractTest {
     @Test
     public void testDeleteMetadata() {
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
-             MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
-             MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
-             MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
-             MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
-             MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
-             MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
-             MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
-             MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
-             MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
-             MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class);
+                MockedStatic<RulesetManager> mockedRulesetManager = Mockito.mockStatic(RulesetManager.class);
+                MockedStatic<DocketManager> mockedDocketManager = Mockito.mockStatic(DocketManager.class);
+                MockedStatic<PropertyManager> mockedPropertyManager = Mockito.mockStatic(PropertyManager.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class);
+                MockedStatic<UsergroupManager> mockedUsergroupManager = Mockito.mockStatic(UsergroupManager.class);
+                MockedStatic<CloseStepHelper> mockedCloseStepHelper = Mockito.mockStatic(CloseStepHelper.class);
+                MockedStatic<JournalManager> mockedJournalManager = Mockito.mockStatic(JournalManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getProcessByExactTitle(Mockito.anyString())).thenReturn(process);
             mockedProcessManager.when(() -> ProcessManager.getBatchById(Mockito.anyInt())).thenReturn(batch);

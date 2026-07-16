@@ -22,19 +22,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 
-import org.goobi.beans.Docket;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
-import org.goobi.beans.Ruleset;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -44,36 +41,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.Response;
 
 @ExtendWith(MockitoExtension.class)
-public class ProcessResourceAccessControlTest extends AbstractTest {
-
-    private Process buildProcess(int projectId) {
-        Project project = new Project();
-        project.setId(projectId);
-        project.setTitel("testProject");
-        Institution inst = new Institution();
-        inst.setShortName("inst");
-        project.setInstitution(inst);
-
-        Ruleset ruleset = new Ruleset();
-        ruleset.setTitel("testRuleset");
-
-        Docket docket = new Docket();
-        docket.setName("testDocket");
-
-        Process process = new Process();
-        process.setId(5);
-        process.setTitel("testProcess");
-        process.setProjekt(project);
-        process.setRegelsatz(ruleset);
-        process.setDocket(docket);
-        return process;
-    }
-
-    private AuthenticationToken buildToken(int userId) {
-        AuthenticationToken token = new AuthenticationToken();
-        token.setUserId(userId);
-        return token;
-    }
+public class ProcessResourceAccessControlTest extends AbstractProcessResourceTest {
 
     @Test
     public void testGetProcessDataWithoutTokenAllowsAccess() throws Exception {
@@ -86,8 +54,7 @@ public class ProcessResourceAccessControlTest extends AbstractTest {
                     Mockito.anyInt(), Mockito.eq(PropertyOwnerType.PROCESS))).thenReturn(new ArrayList<>());
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(new ArrayList<>());
 
-            HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
-            Mockito.when(mockReq.getAttribute("authToken")).thenReturn(null);
+            HttpServletRequest mockReq = mockRequestWithoutToken();
 
             ProcessResource service = new ProcessResource();
             service.setRequest(mockReq);
@@ -111,8 +78,7 @@ public class ProcessResourceAccessControlTest extends AbstractTest {
                     Mockito.anyInt(), Mockito.eq(PropertyOwnerType.PROCESS))).thenReturn(new ArrayList<>());
             mockedMetadataManager.when(() -> MetadataManager.getMetadata(Mockito.anyInt())).thenReturn(new ArrayList<>());
 
-            HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
-            Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
+            HttpServletRequest mockReq = mockRequestWithToken(token);
 
             ProcessResource service = new ProcessResource();
             service.setRequest(mockReq);
@@ -131,8 +97,7 @@ public class ProcessResourceAccessControlTest extends AbstractTest {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(5)).thenReturn(process);
             mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(7, 42)).thenReturn(false);
 
-            HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
-            Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
+            HttpServletRequest mockReq = mockRequestWithToken(token);
 
             ProcessResource service = new ProcessResource();
             service.setRequest(mockReq);
@@ -163,8 +128,7 @@ public class ProcessResourceAccessControlTest extends AbstractTest {
             mockedProcessManager.when(() -> ProcessManager.countProcessTitle(Mockito.anyString(), Mockito.any())).thenReturn(0);
             mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(7, 42)).thenReturn(false);
 
-            HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
-            Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
+            HttpServletRequest mockReq = mockRequestWithToken(token);
 
             ProcessResource service = new ProcessResource();
             service.setRequest(mockReq);
@@ -186,8 +150,7 @@ public class ProcessResourceAccessControlTest extends AbstractTest {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(5)).thenReturn(process);
             mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(7, 42)).thenReturn(false);
 
-            HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
-            Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
+            HttpServletRequest mockReq = mockRequestWithToken(token);
 
             ProcessResource service = new ProcessResource();
             service.setRequest(mockReq);
@@ -219,8 +182,7 @@ public class ProcessResourceAccessControlTest extends AbstractTest {
             mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(7, 99)).thenReturn(false);
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
 
-            HttpServletRequest mockReq = Mockito.mock(HttpServletRequest.class);
-            Mockito.when(mockReq.getAttribute("authToken")).thenReturn(token);
+            HttpServletRequest mockReq = mockRequestWithToken(token);
 
             ProcessResource service = new ProcessResource();
             service.setRequest(mockReq);
