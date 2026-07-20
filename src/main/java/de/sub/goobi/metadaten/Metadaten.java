@@ -43,11 +43,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
@@ -1745,8 +1747,12 @@ public class Metadaten implements Serializable {
                 imageFolderName = imageFolderName.replace("\\\\", "/");
                 int order = 1;
 
+                String shortImageFolderName = Paths.get(imageFolderName).getFileName().toString();
+                Set<String> imageFolderFilenames = new HashSet<>(
+                        StorageProvider.getInstance().list(Paths.get(myProzess.getImagesDirectory(), shortImageFolderName).toString()));
+
                 for (String imageName : dataList) {
-                    Image currentImage = new Image(myProzess, imageFolderName, imageName, order++, thumbnailSizeInPixel);
+                    Image currentImage = new Image(myProzess, imageFolderName, imageName, order++, thumbnailSizeInPixel, imageFolderFilenames);
                     allImages.add(currentImage);
                 }
                 if (jumpToFirstPage) {

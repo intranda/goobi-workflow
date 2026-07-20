@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -171,8 +172,27 @@ public class Image {
      */
     public Image(Process process, String inImageFolderName, String filename, int order, Integer thumbnailSize)
             throws IOException, SwapException, DAOException {
+        this(process, inImageFolderName, filename, order, thumbnailSize, null);
+    }
+
+    /**
+     * Same as {@link #Image(Process, String, String, int, Integer)}, but avoids a per-file storage existence check by using a pre-fetched set of
+     * filenames known to exist in the image folder. Callers that create many images from a single folder listing (e.g. the metadata editor) should
+     * list the folder once and pass that set here, turning N single-file existence requests into one directory listing. This matters for S3-backed
+     * storage where each {@code isFileExists} call is a separate request.
+     *
+     * + @param process The goobi process containing the image
+     *
+     * @param inImageFolderName The name of the image folder (typically ..._media or master_..._media)
+     * @param filename The filename of the image file
+     * @param order The order of the image within the goobi process
+     * @param thumbnailSize The size of the thumbnails to create. May be null, in which case the configured default is used
+     * @param imageFolderFilenames Filenames known to exist in the image folder; may be {@code null} to fall back to a per-file existence check
+     */
+    public Image(Process process, String inImageFolderName, String filename, int order, Integer thumbnailSize, Set<String> imageFolderFilenames)
+            throws IOException, SwapException, DAOException {
         String imageFolderName = Paths.get(inImageFolderName).getFileName().toString();
-        this.imagePath = getImagePath(process, imageFolderName, filename);
+        this.imagePath = getImagePath(process, imageFolderName, filename, imageFolderFilenames);
         this.imageName = this.imagePath.getFileName().toString();
         this.type = Type.getFromPath(imagePath);
         this.order = order;
@@ -465,8 +485,16 @@ public class Image {
 
     private static Path getImagePath(org.goobi.beans.Process process, String imageFolderName, String filename)
             throws IOException, SwapException {
+        return getImagePath(process, imageFolderName, filename, null);
+    }
+
+    private static Path getImagePath(org.goobi.beans.Process process, String imageFolderName, String filename, Set<String> imageFolderFilenames)
+            throws IOException, SwapException {
         Path path = Paths.get(process.getImagesDirectory(), imageFolderName, filename);
-        if (!StorageProvider.getInstance().isFileExists(path)) {
+        // When the caller provides the folder listing, resolve existence in memory instead of issuing one storage request per file.
+        boolean existsInImages = imageFolderFilenames != null ? imageFolderFilenames.contains(filename)
+                : StorageProvider.getInstance().isFileExists(path);
+        if (!existsInImages) {
             path = Paths.get(process.getThumbsDirectory(), imageFolderName, filename);
         }
         return path;
