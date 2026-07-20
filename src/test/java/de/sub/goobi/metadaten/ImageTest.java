@@ -33,7 +33,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.goobi.beans.Process;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,6 +117,34 @@ public class ImageTest extends AbstractTest {
             assertEquals(Type.image, image.getType());
             assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/info.json", image.getUrl());
 
+        }
+    }
+
+    @Test
+    public void testImageConstructorWithFilenameSetResolvesToImagesDir() throws Exception {
+        try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+
+            Set<String> imageFolderFilenames = new HashSet<>();
+            imageFolderFilenames.add("00000001.tif");
+
+            Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200, imageFolderFilenames);
+            assertNotNull(image);
+            assertEquals(Paths.get(process.getImagesTifDirectory(false), "00000001.tif").toString(), image.getImagePath().toString());
+        }
+    }
+
+    @Test
+    public void testImageConstructorWithFilenameSetMissingResolvesToThumbsDir() throws Exception {
+        try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class)) {
+
+            Set<String> imageFolderFilenames = Collections.emptySet();
+
+            Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200, imageFolderFilenames);
+            assertNotNull(image);
+            assertEquals(Paths.get(process.getThumbsDirectory(), "testprocess_media", "00000001.tif").toString(),
+                    image.getImagePath().toString());
         }
     }
 
