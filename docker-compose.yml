@@ -21,17 +21,8 @@ services:
       GOOBI_ApplicationHeaderTitle: "Goobi workflow"
     volumes:
       - type: bind
-        source: ./goobi/config
-        target: /opt/digiverso/goobi/config
-      - type: bind
-        source: ./goobi/plugins
-        target: /opt/digiverso/goobi/plugins
-      - type: bind
-        source: ./goobi/metadata
-        target: /opt/digiverso/goobi/metadata
-      - type: bind
-        source: ./goobi/lib
-        target: /opt/digiverso/goobi/lib
+        source: ./workflow
+        target: /opt/digiverso/goobi
       - type: bind
         source: ./logs/tomcat/workflow
         target: /usr/local/tomcat/logs
@@ -53,5 +44,5 @@ services:
       TZ: "Europe/Berlin"
     volumes:
       - type: bind
-        source: ./db/mysql
+        source: ./db/workflow
         target: /var/lib/mysql
