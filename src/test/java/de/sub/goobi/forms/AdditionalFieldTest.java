@@ -228,4 +228,27 @@ public class AdditionalFieldTest extends AbstractTest {
         assertTrue(af.getWert() == null || af.getWert().isEmpty());
     }
 
+    @Test
+    public void testGetValuesIsModifiableWhenValueIsSet() {
+        AdditionalField af = new AdditionalField();
+        af.setWert("first;second");
+
+        List<String> values = af.getValues();
+        values.add("third");
+        af.setValues(values);
+
+        assertEquals(List.of("first", "second", "third"), af.getValues());
+    }
+
+    @Test
+    public void testGetValuesIsModifiableWhenValueIsEmpty() {
+        AdditionalField af = new AdditionalField();
+
+        List<String> values = af.getValues();
+        values.add("first");
+        af.setValues(values);
+
+        assertEquals(List.of("first"), af.getValues());
+    }
+
 }

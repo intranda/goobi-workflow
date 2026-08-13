@@ -159,7 +159,8 @@ public class AdditionalField {
     public List<String> getValues() {
         if (wert != null && !wert.isEmpty()) {
             String[] parts = wert.split(";");
-            return Arrays.asList(parts);
+            // the returned list must be modifiable, callers add values to it before calling setValues()
+            return new ArrayList<>(Arrays.asList(parts));
         } else {
             return new ArrayList<>();
         }
