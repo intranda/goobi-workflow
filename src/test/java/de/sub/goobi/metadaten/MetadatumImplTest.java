@@ -36,6 +36,7 @@ import java.util.List;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.Process;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,6 +67,7 @@ public class MetadatumImplTest extends AbstractTest {
     private Prefs prefs;
     private Process process;
     private static final String METADATA_TYPE = "junitMetadata";
+    private static final String GENERATION_METADATA_TYPE = "junitGenerationMetadata";
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -86,6 +88,15 @@ public class MetadatumImplTest extends AbstractTest {
         Mockito.when(servletRequest.getServerName()).thenReturn("localhost");
         Mockito.when(servletRequest.getServerPort()).thenReturn(443);
         Mockito.when(servletRequest.getContextPath()).thenReturn("goobi");
+    }
+
+    /**
+     * Some tests switch the access restriction of a metadata type on. As the preferences are shared between all processes using the same ruleset,
+     * that change would be visible in every other test as well.
+     */
+    @AfterEach
+    public void resetSharedMetadataTypes() {
+        prefs.getMetadataTypeByName(GENERATION_METADATA_TYPE).setAllowAccessRestriction(false);
     }
 
     @Test
@@ -386,7 +397,7 @@ public class MetadatumImplTest extends AbstractTest {
             fixture.setMyProzess(process);
             fixture.XMLlesenStart();
 
-            Metadata m = new Metadata(prefs.getMetadataTypeByName("junitGenerationMetadata"));
+            Metadata m = new Metadata(prefs.getMetadataTypeByName(GENERATION_METADATA_TYPE));
             MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, fixture);
             assertEquals(DisplayType.generate.name(), md.getOutputType());
             assertNull(md.getValue());
@@ -410,7 +421,7 @@ public class MetadatumImplTest extends AbstractTest {
             fixture.setMyProzess(process);
             fixture.XMLlesenStart();
 
-            MetadataType type = prefs.getMetadataTypeByName("junitGenerationMetadata");
+            MetadataType type = prefs.getMetadataTypeByName(GENERATION_METADATA_TYPE);
             Metadata m = new Metadata(type);
             MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, fixture);
 
@@ -435,7 +446,7 @@ public class MetadatumImplTest extends AbstractTest {
             fixture.setMyProzess(process);
             fixture.XMLlesenStart();
 
-            MetadataType type = prefs.getMetadataTypeByName("junitGenerationMetadata");
+            MetadataType type = prefs.getMetadataTypeByName(GENERATION_METADATA_TYPE);
             type.setAllowAccessRestriction(true);
             Metadata m = new Metadata(type);
             MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, fixture);
