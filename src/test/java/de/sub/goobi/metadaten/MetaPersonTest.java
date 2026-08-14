@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 
 import org.goobi.beans.Process;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,7 +70,17 @@ public class MetaPersonTest extends AbstractTest {
         process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
         docstruct = process.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
+    }
 
+    /**
+     * Some tests change the metadata type they work with. As the preferences are shared between all processes using the same ruleset, those changes
+     * would be visible in every other test as well.
+     */
+    @AfterEach
+    public void resetSharedMetadataTypes() {
+        MetadataType type = prefs.getMetadataTypeByName(METADATA_TYPE);
+        type.setAllowAccessRestriction(false);
+        type.setAllowNameParts(true);
     }
 
     @Test

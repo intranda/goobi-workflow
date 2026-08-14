@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.Process;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,6 +62,15 @@ public class MetaCorporateTest extends AbstractTest {
         prefs = process.getRegelsatz().getPreferences();
         c = new Corporate(prefs.getMetadataTypeByName(METADATA_TYPE));
 
+    }
+
+    /**
+     * Some tests switch the access restriction of the metadata type on. As the preferences are shared between all processes using the same ruleset,
+     * that change would be visible in every other test as well.
+     */
+    @AfterEach
+    public void resetSharedMetadataTypes() {
+        prefs.getMetadataTypeByName(METADATA_TYPE).setAllowAccessRestriction(false);
     }
 
     @Test
