@@ -764,6 +764,8 @@ public class Helper implements Serializable, ServletContextListener {
 
             }
         }
+        // no automatic task is started any more, the ones already running are left to finish
+        AutomaticStepExecutor.getInstance().shutdown();
     }
 
     private static BeanManager getBeanManager() {

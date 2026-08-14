@@ -134,7 +134,8 @@ public class ScriptThreadWithoutHibernate extends Thread {
                     JournalManager.saveJournalEntry(errorEntry);
                 }
             } else {
-                this.start();
+                // not a raw thread: an installation closing many steps at once would start hundreds of them and run out of memory
+                AutomaticStepExecutor.getInstance().execute(this);
             }
         }
     }

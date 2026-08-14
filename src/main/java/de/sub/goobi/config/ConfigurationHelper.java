@@ -1084,6 +1084,13 @@ public final class ConfigurationHelper implements Serializable {
         return getLocalInt("MessageBrokerNumberOfParallelMessages", 1);
     }
 
+    /**
+     * @return how many automatic steps may run at the same time, the ones beyond that wait in a queue
+     */
+    public int getMaxParallelAutomaticSteps() {
+        return getLocalInt("MaxParallelAutomaticSteps", 10);
+    }
+
     public boolean isAllowExternalQueue() {
         return getLocalBoolean("allowExternalQueue", false);
     }
