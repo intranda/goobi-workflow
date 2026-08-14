@@ -80,6 +80,10 @@ public class MetadatenHelper {
     public static final int PAGENUMBER_FIRST = 0;
     public static final int PAGENUMBER_LAST = 1;
 
+    /* the results of the classpath scan for the available file formats, initialized lazily, see getFileformatImplementations() */
+    private static volatile Set<Class<? extends Fileformat>> fileformatImplementations;
+    private static volatile Set<Class<? extends ExportFileformat>> exportFileformatImplementations;
+
     private Prefs myPrefs;
     private DigitalDocument mydocument;
 
@@ -771,13 +775,50 @@ public class MetadatenHelper {
         return myList;
     }
 
-    public static Fileformat getFileformatByName(String name, Ruleset ruleset) {
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.addUrls(ClasspathHelper.forPackage("ugh.fileformats"));
-        Reflections reflections = new Reflections(builder);
+    /**
+     * Returns all known implementations of {@link Fileformat}. The classpath is scanned only once, the result cannot change at runtime. The scan
+     * itself is expensive and uses the common ForkJoinPool internally, so running it for every single call blocked all automatic export threads when
+     * many of them ran in parallel.
+     *
+     * @return the implementing classes, never null
+     */
+    static Set<Class<? extends Fileformat>> getFileformatImplementations() {
+        Set<Class<? extends Fileformat>> formats = fileformatImplementations;
+        if (formats == null) {
+            synchronized (MetadatenHelper.class) {
+                formats = fileformatImplementations;
+                if (formats == null) {
+                    ConfigurationBuilder builder = new ConfigurationBuilder();
+                    builder.addUrls(ClasspathHelper.forPackage("ugh.fileformats"));
+                    formats = new Reflections(builder).getSubTypesOf(Fileformat.class);
+                    fileformatImplementations = formats;
+                }
+            }
+        }
+        return formats;
+    }
 
-        Set<Class<? extends Fileformat>> formatSet = reflections.getSubTypesOf(Fileformat.class);
-        for (Class<? extends Fileformat> cl : formatSet) {
+    /**
+     * Returns all known implementations of {@link ExportFileformat}, see {@link #getFileformatImplementations()}.
+     *
+     * @return the implementing classes, never null
+     */
+    static Set<Class<? extends ExportFileformat>> getExportFileformatImplementations() {
+        Set<Class<? extends ExportFileformat>> formats = exportFileformatImplementations;
+        if (formats == null) {
+            synchronized (MetadatenHelper.class) {
+                formats = exportFileformatImplementations;
+                if (formats == null) {
+                    formats = new Reflections("ugh.fileformats.*").getSubTypesOf(ExportFileformat.class);
+                    exportFileformatImplementations = formats;
+                }
+            }
+        }
+        return formats;
+    }
+
+    public static Fileformat getFileformatByName(String name, Ruleset ruleset) {
+        for (Class<? extends Fileformat> cl : getFileformatImplementations()) {
             try {
                 Fileformat ff = cl.getDeclaredConstructor().newInstance();
                 if (ff.isWritable() && ff.getDisplayName().equals(name)) {
@@ -795,8 +836,7 @@ public class MetadatenHelper {
     }
 
     public static ExportFileformat getExportFileformatByName(String name, Ruleset ruleset) {
-        Set<Class<? extends ExportFileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(ExportFileformat.class);
-        for (Class<? extends ExportFileformat> cl : formatSet) {
+        for (Class<? extends ExportFileformat> cl : getExportFileformatImplementations()) {
 
             try {
                 ExportFileformat ff = cl.getDeclaredConstructor().newInstance();
