@@ -111,7 +111,7 @@ public class Ruleset implements DatabaseObject {
      * Everything else in the preferences is read only, callers must not change them. The only known exception is the legacy RDF file format, which
      * adds a few metadata types of its own when it reads an RDF file for the first time.
      */
-    private static class SharedPrefs extends Prefs {
+    private static final class SharedPrefs extends Prefs {
         private static final long serialVersionUID = 5117116382862440287L;
 
         private static final DocumentBuilderFactory DOCUMENT_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();

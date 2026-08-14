@@ -941,6 +941,11 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
+    public void testGetMaxParallelAutomaticSteps() {
+        assertEquals(10, ConfigurationHelper.getInstance().getMaxParallelAutomaticSteps());
+    }
+
+    @Test
     public void testAllowExternalQueue() {
         assertFalse(ConfigurationHelper.getInstance().isAllowExternalQueue());
     }
