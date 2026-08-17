@@ -20,7 +20,7 @@
                         <h:outputText value="#{msgs.mets_no_metadatagroups_assigned}"/>
                     </p>
                     <ui:repeat value="#{Metadaten.groups}" var="Item" varStatus="status">
-                        <h:panelGroup layout="block" styleClass="border-bottom module__box-level-#{Item.level}">
+                        <h:panelGroup layout="block" styleClass="border-bottom #{Item.level > 0 ? 'metadata-group-stacked' : ''} module__box-level-#{Item.level}">
                             <div class="p-3 d-flex gap-2 border-bottom">
                                 <h3 class="h6 me-auto">
                                     <h:outputText value="#{Item.name}"/>
