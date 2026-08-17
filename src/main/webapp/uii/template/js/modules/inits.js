@@ -1,5 +1,6 @@
 import { init as initializeResizeTable } from './gwResizableTable';
 import { init as initializeTooltips } from './gwInitTooltips';
+import { init as initializeThumbnailHoverZoom } from './thumbnailHoverZoom';
 import { dropdownTooltips } from './gwTooltipsForDropdowns';
 import { toggleHelp } from './gwToggleHelp';
 import { initScrollTop } from './scrollTop';
@@ -16,6 +17,7 @@ import { initImageFilters } from "./imageFilters.js";
 export const initFunctions = function initFunctions() {
     initializeResizeTable();
     initializeTooltips();
+    initializeThumbnailHoverZoom();
     dropdownTooltips();
     initScrollTop();
     initFocusOnClick();
