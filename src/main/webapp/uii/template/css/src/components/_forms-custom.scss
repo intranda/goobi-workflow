@@ -560,3 +560,25 @@ fieldSet:disabled .badge > a {
     }
   }
 }
+
+// Stack nested metadata groups visually
+.metadata-group-stacked {
+  border-left: 2px solid var(--bs-border-color);
+}
+
+$metadata-group-max-level: 3;
+$metadata-group-indent-step: 0.75rem;
+
+[class*="module__box-level-"] {
+  margin-left: $metadata-group-indent-step * $metadata-group-max-level;
+}
+
+.module__box-level-0 {
+  margin-left: 0;
+}
+
+@for $level from 1 through ($metadata-group-max-level - 1) {
+  .module__box-level-#{$level} {
+    margin-left: $metadata-group-indent-step * $level;
+  }
+}
