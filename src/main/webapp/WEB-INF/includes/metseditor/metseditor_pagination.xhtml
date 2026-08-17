@@ -176,7 +176,9 @@
                                             jsf:id="paginationSelection"
                                             class="btn btn-blank"
                                             jsf:action="#{Metadaten.Paginierung}"
-                                            type="button">
+                                            type="button"
+                                            data-disable-on-ajax="group"
+                                            data-ajax-group="paginationTypeButtons">
                                             <util:icon icon="file" styleClass="me-1" />
                                             <span>#{msgs.nurDieMarkiertenSeiten}</span>
                                             <f:setPropertyActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="2" target="#{Metadaten.paginierungAbSeiteOderMarkierung}"/>
@@ -186,7 +188,9 @@
                                             jsf:id="paginationAll"
                                             class="btn btn-neutral-600"
                                             jsf:action="#{Metadaten.Paginierung}"
-                                            type="button">
+                                            type="button"
+                                            data-disable-on-ajax="group"
+                                            data-ajax-group="paginationTypeButtons">
                                             <util:icon icon="files" styleClass="me-1" />
                                             <span>#{msgs.abDerErstenMarkiertenSeite}</span>
                                             <f:setPropertyActionListener property="#{Metadaten.paginierungAbSeiteOderMarkierung}" value="1" target="#{Metadaten.paginierungAbSeiteOderMarkierung}"/>
