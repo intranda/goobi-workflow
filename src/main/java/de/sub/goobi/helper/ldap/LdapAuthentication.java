@@ -604,7 +604,7 @@ public class LdapAuthentication {
                     md.update(inNewPassword.getBytes());
                     userPasswordValue = "{" + encType + "}" + new String(Base64.encodeBase64(md.digest()));
                 }
-                ModificationItem[] mods = new ModificationItem[4];
+                ModificationItem[] mods = new ModificationItem[3];
 
                 /*
                  * -------------------------------- UserPasswort-Attribut ändern --------------------------------
@@ -620,8 +620,8 @@ public class LdapAuthentication {
                 ntlmpassword = new BasicAttribute("sambaNTPassword", LdapUser.toHexString(hmm));
                 BasicAttribute sambaPwdLastSet = new BasicAttribute("sambaPwdLastSet", String.valueOf(System.currentTimeMillis() / 1000L));
                 mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, userpassword);
-                mods[2] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, ntlmpassword);
-                mods[3] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, sambaPwdLastSet);
+                mods[1] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, ntlmpassword);
+                mods[2] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, sambaPwdLastSet);
                 ctx.modifyAttributes(getUserDN(inBenutzer), mods);
 
                 // Close the context when we're done
