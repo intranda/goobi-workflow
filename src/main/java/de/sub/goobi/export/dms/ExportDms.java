@@ -327,7 +327,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 if (StorageProvider.getInstance().isDirectory(exportFile)
                         && !StorageProvider.getInstance().list(exportFile.toString()).isEmpty()) {
                     if (!exportFile.getFileName().toString().matches(".+\\.\\d+")) {
-                        String suffix = exportFile.getFileName().toString().substring(exportFile.getFileName().toString().lastIndexOf("_"));
+                        String suffix = getExportSuffix(exportFile);
                         Path destination = Paths.get(benutzerHome.toString(), atsPpnBand + suffix);
                         if (!StorageProvider.getInstance().isFileExists(destination)) {
                             StorageProvider.getInstance().createDirectories(destination);
@@ -350,6 +350,24 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
             }
         }
+    }
+
+    /**
+     * Determine the suffix a source folder is exported with. The suffix is the part of the folder name starting at its last underscore, so that the
+     * exported folder is named {@code <atsPpnBand><suffix>}.
+     *
+     * @param folder the source folder to derive the export suffix from
+     * @return the export suffix, including the leading underscore
+     * @throws IOException if the folder name contains no underscore to derive the suffix from
+     */
+    private String getExportSuffix(Path folder) throws IOException {
+        String folderName = folder.getFileName().toString();
+        int separatorIndex = folderName.lastIndexOf('_');
+        if (separatorIndex < 0) {
+            throw new IOException("The folder '" + folderName + "' in '" + folder.getParent()
+                    + "' cannot be exported, because its name contains no '_' to derive the export suffix from.");
+        }
+        return folderName.substring(separatorIndex);
     }
 
     public boolean prepareExportValidation(Process myProzess, String errorMessageTitle, String atsPpnBand, Fileformat gdzfile,
@@ -507,7 +525,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             List<Path> folder = StorageProvider.getInstance().listFiles(myProzess.getOcrDirectory());
             for (Path dir : folder) {
                 if (StorageProvider.getInstance().isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
-                    String suffix = dir.getFileName().toString().substring(dir.getFileName().toString().lastIndexOf("_"));
+                    String suffix = getExportSuffix(dir);
                     Path destination = Paths.get(benutzerHome.toString(), atsPpnBand + suffix);
                     if (!StorageProvider.getInstance().isFileExists(destination)) {
                         StorageProvider.getInstance().createDirectories(destination);

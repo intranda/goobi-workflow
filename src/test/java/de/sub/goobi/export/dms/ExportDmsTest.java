@@ -20,6 +20,7 @@ package de.sub.goobi.export.dms;
  */
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -308,6 +309,73 @@ public class ExportDmsTest extends AbstractTest {
             ExportDms dms = new ExportDms(true);
             assertEquals("ExportDms", dms.getDescription());
 
+        }
+    }
+
+    @Test
+    public void testFulltextDownloadWithOcrFolderWithoutSuffix() throws SwapException, DAOException, IOException, InterruptedException {
+        try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
+
+            // an ocr sub folder whose name carries no '_' suffix separator
+            Path ocrFolder = Paths.get(testProcess.getOcrDirectory(), "transcription");
+            Files.createDirectories(ocrFolder);
+            Files.createFile(ocrFolder.resolve("00000001.txt"));
+            try {
+                ExportDms dms = new ExportDms(false);
+                dms.setExportFulltext(true);
+                Path dest = tempDir.resolve("text");
+                Files.createDirectories(dest);
+
+                IOException exception = assertThrows(IOException.class,
+                        () -> dms.fulltextDownload(testProcess, dest, testProcess.getTitel(), "qwertzu"));
+                assertTrue(exception.getMessage().contains("transcription"));
+            } finally {
+                StorageProvider.getInstance().deleteDir(ocrFolder);
+            }
+        }
+    }
+
+    @Test
+    public void testExportFolderDownloadWithFolderWithoutSuffix() throws SwapException, DAOException, IOException, InterruptedException {
+        try (MockedStatic<MetadatenHelper> mockedMetadatenHelper = Mockito.mockStatic(MetadatenHelper.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class)) {
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getMetaFileType(Mockito.anyString())).thenReturn("metsmods");
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsMods);
+            mockedMetadatenHelper.when(() -> MetadatenHelper.getExportFileformatByName(Mockito.anyString(), Mockito.any(Ruleset.class)))
+                    .thenReturn(metsModsImportExport);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+            mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
+
+            // an export sub folder whose name carries no '_' suffix separator
+            Path exportFolder = Paths.get(testProcess.getExportDirectory(), "transcription");
+            Files.createDirectories(exportFolder);
+            Files.createFile(exportFolder.resolve("00000001.txt"));
+            try {
+                ExportDms dms = new ExportDms(false);
+                Path dest = tempDir.resolve("export");
+                Files.createDirectories(dest);
+
+                IOException exception = assertThrows(IOException.class,
+                        () -> dms.exportFolderDownload(testProcess, testProcess.getTitel(), dest));
+                assertTrue(exception.getMessage().contains("transcription"));
+            } finally {
+                StorageProvider.getInstance().deleteDir(exportFolder);
+            }
         }
     }
 }
