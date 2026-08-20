@@ -61,7 +61,11 @@ import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.core.async.AsyncResponseTransformer;
 import software.amazon.awssdk.core.async.BlockingInputStreamAsyncRequestBody;
+import software.amazon.awssdk.core.checksums.RequestChecksumCalculation;
+import software.amazon.awssdk.core.checksums.ResponseChecksumValidation;
+import software.amazon.awssdk.http.crt.AwsCrtAsyncHttpClient;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.LegacyMd5Plugin;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.crt.S3CrtHttpConfiguration;
@@ -79,6 +83,7 @@ import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.services.s3.model.S3Object;
+import software.amazon.awssdk.services.s3.multipart.MultipartConfiguration;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
 import software.amazon.awssdk.transfer.s3.model.Copy;
 import software.amazon.awssdk.transfer.s3.model.CopyRequest;
@@ -139,15 +144,32 @@ public class S3FileUtils implements StorageProviderInterface, AutoCloseable {
             AwsCredentials credentials = AwsBasicCredentials.create(conf.getS3AccessKeyID(), conf.getS3SecretAccessKey());
             AwsCredentialsProvider prov = StaticCredentialsProvider.create(credentials);
 
-            mys3 = S3AsyncClient.crtBuilder() // NOSONAR: false positive, region is set explicitly
-                    .region(Region.US_EAST_1)
-                    .minimumPartSizeInBytes(100L * MB)
-                    .targetThroughputInGbps(20.0)
-                    .endpointOverride(endpoint)
-                    .credentialsProvider(prov)
-                    .forcePathStyle(conf.isS3UseForcePathStyle())
-                    .checksumValidationEnabled(false)
-                    .build();
+            if (conf.isS3DisableMd5Check()) {
+                mys3 = S3AsyncClient.builder() // NOSONAR: false positive, region is set explicitly
+                        .httpClientBuilder(AwsCrtAsyncHttpClient.builder())
+                        .addPlugin(LegacyMd5Plugin.create())
+                        .region(Region.US_EAST_1)
+                        .multipartEnabled(true)
+                        .multipartConfiguration(MultipartConfiguration.builder()
+                                .minimumPartSizeInBytes(100L * MB)
+                                .build())
+                        .endpointOverride(endpoint)
+                        .credentialsProvider(prov)
+                        .forcePathStyle(conf.isS3UseForcePathStyle())
+                        .requestChecksumCalculation(RequestChecksumCalculation.WHEN_REQUIRED)
+                        .responseChecksumValidation(ResponseChecksumValidation.WHEN_SUPPORTED)
+                        .build();
+            } else {
+                mys3 = S3AsyncClient.crtBuilder() // NOSONAR: false positive, region is set explicitly
+                        .region(Region.US_EAST_1)
+                        .minimumPartSizeInBytes(100L * MB)
+                        .targetThroughputInGbps(20.0)
+                        .endpointOverride(endpoint)
+                        .credentialsProvider(prov)
+                        .forcePathStyle(conf.isS3UseForcePathStyle())
+                        .checksumValidationEnabled(false)
+                        .build();
+            }
         } else {
             mys3 = S3AsyncClient.crtBuilder()
                     .retryConfiguration(S3CrtRetryConfiguration.builder().numRetries(10).build())
