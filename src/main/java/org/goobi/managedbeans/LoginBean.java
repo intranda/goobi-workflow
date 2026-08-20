@@ -381,7 +381,10 @@ public class LoginBean implements Serializable {
                     && !myBenutzer.getLdapGruppe().isReadonly()) {
 
                 LdapAuthentication myLdap = new LdapAuthentication();
-                myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
+                if (!myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1)) {
+                    Helper.setFehlerMeldung("ldapPasswordChangeFailed");
+                    return "";
+                }
             }
             User currentUser = UserManager.getUserById(this.myBenutzer.getId());
 

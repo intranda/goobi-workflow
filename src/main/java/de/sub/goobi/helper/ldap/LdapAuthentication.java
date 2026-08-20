@@ -628,9 +628,7 @@ public class LdapAuthentication {
                 ctx.close();
                 return true;
             } catch (NamingException e) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Benutzeranmeldung nicht korrekt oder Passwortänderung nicht möglich", e);
-                }
+                log.error("Could not change the password of user '" + inBenutzer.getLogin() + "' in the LDAP directory", e);
                 return false;
             }
         }

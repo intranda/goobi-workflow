@@ -647,7 +647,10 @@ public class UserBean extends BasicBean {
             if (AuthenticationType.LDAP.equals(authentication) && !userToResetPassword.getLdapGruppe().isReadonly()) {
 
                 LdapAuthentication myLdap = new LdapAuthentication();
-                myLdap.changeUserPassword(userToResetPassword, null, password);
+                if (!myLdap.changeUserPassword(userToResetPassword, null, password)) {
+                    Helper.setFehlerMeldung("ldapPasswordChangeFailed");
+                    return RETURN_PAGE_ALL;
+                }
             }
             saltAndSaveUserPassword(userToResetPassword, password);
             // Show password in message box
