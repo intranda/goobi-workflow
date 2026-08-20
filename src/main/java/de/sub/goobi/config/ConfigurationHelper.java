@@ -920,6 +920,10 @@ public final class ConfigurationHelper implements Serializable {
         return getLocalBoolean("useCustomS3", false);
     }
 
+    public boolean isS3DisableMd5Check() {
+        return getLocalBoolean("S3DisableMd5Check", false);
+    }
+
     public String getS3Endpoint() {
         return getLocalString("S3Endpoint", "");
     }
