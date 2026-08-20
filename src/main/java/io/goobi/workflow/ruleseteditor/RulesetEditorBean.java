@@ -427,14 +427,16 @@ public class RulesetEditorBean implements Serializable {
         return result.toString();
     }
 
+    // Turn the <goobi_comment> elements back into real comments. An empty comment is written out as the self-closing
+    // <goobi_comment />, so that form has to be matched as well - group(1) is null for it.
     private String unmaskXmlComments(String input) {
-        Pattern commentPattern = Pattern.compile("(?s)<goobi_comment>(.*?)</goobi_comment>");
+        Pattern commentPattern = Pattern.compile("(?s)<goobi_comment(?:>(.*?)</goobi_comment>|\\s*/>)");
         Matcher matcher = commentPattern.matcher(input);
         StringBuffer result = new StringBuffer();
 
         while (matcher.find()) {
             String escapedContent = matcher.group(1);
-            String originalContent = StringEscapeUtils.unescapeXml(escapedContent);
+            String originalContent = escapedContent == null ? "" : StringEscapeUtils.unescapeXml(escapedContent);
             matcher.appendReplacement(result, "<!--" + Matcher.quoteReplacement(originalContent) + "-->");
         }
 
