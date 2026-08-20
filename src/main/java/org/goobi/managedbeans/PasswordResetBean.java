@@ -128,9 +128,14 @@ public class PasswordResetBean implements Serializable {
                 && !user.getLdapGruppe().isReadonly()) {
             LdapAuthentication ldap = new LdapAuthentication();
             try {
-                ldap.changeUserPassword(user, null, newPassword);
+                if (!ldap.changeUserPassword(user, null, newPassword)) {
+                    Helper.setFehlerMeldung("ldapPasswordChangeFailed");
+                    return;
+                }
             } catch (NoSuchAlgorithmException e) {
                 log.error(e);
+                Helper.setFehlerMeldung("ldapPasswordChangeFailed");
+                return;
             }
         }
 
