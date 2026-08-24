@@ -357,10 +357,7 @@ public class Metadaten implements Serializable {
     private int bildNummer = 0;
     @Getter
     private int myBildLetztes = 0;
-    private int myBildCounter = 0;
-    @Getter
-    @Setter
-    private int myBildGroesse = 30;
+
     private String bildNummerGeheZu = "";
     @Getter
     @Setter
@@ -3148,33 +3145,10 @@ public class Metadaten implements Serializable {
                         this.myBild = dataList.get(dataList.size() - 1);
                     }
                     /* die korrekte Seitenzahl anzeigen */
-                    this.bildNummer = pos + 1;
-                    /* Pages-Verzeichnis ermitteln */
-                    String myPfad = ConfigurationHelper.getTempImagesPathAsCompleteDirectory();
-                    /*
-                     * den Counter für die Bild-ID auf einen neuen Wert setzen, damit nichts gecacht wird
-                     */
-                    this.myBildCounter++;
+                    this.bildNummer = pos;
 
-                    /* Session ermitteln */
-                    FacesContext context = FacesContextHelper.getCurrentFacesContext();
-                    HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-                    String mySession = session.getId() + "_" + this.myBildCounter + ".png";
-
-                    /* das neue Bild zuweisen */
-                    try {
-                        String tiffconverterpfad =
-                                this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault().getSeparator() + this.myBild;
-                        if (!StorageProvider.getInstance().isFileExists(Paths.get(tiffconverterpfad))) {
-                            tiffconverterpfad = this.myProzess.getImagesTifDirectory(true) + this.myBild;
-                            Helper.setFehlerMeldung("formularOrdner:TifFolders", "",
-                                    "image " + this.myBild + " does not exist in folder " + this.currentTifFolder + ", using image from "
-                                            + Paths.get(this.myProzess.getImagesTifDirectory(true)).getFileName().toString());
-                        }
-                        this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, 0);
-                    } catch (IOException | SwapException | ContentLibException e) {
-                        Helper.setFehlerMeldung("could not find image folder", e);
-                        log.error(e);
+                    if (allImages != null && this.imageIndex >= 0 && this.imageIndex < allImages.size()) {
+                        setImage(allImages.get(this.imageIndex));
                     }
                     break;
                 }
