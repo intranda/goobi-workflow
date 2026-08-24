@@ -18,6 +18,7 @@
 package de.sub.goobi.persistence.managers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.goobi.production.cli.helper.StringPair;
+import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +38,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.metadaten.search.DatabaseMetadataField;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,6 +48,8 @@ public class MetadataManagerTest extends AbstractTest {
 
     private List<StringPair> metadataList;
     private List<String> names;
+
+    private ConfigurationHelper configurationHelper;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -57,6 +62,7 @@ public class MetadataManagerTest extends AbstractTest {
         metadataList = new ArrayList<>();
         metadataList.add(new StringPair("TitleDocMain", "Test Title"));
 
+        configurationHelper = Mockito.mock(ConfigurationHelper.class);
     }
 
     @Test
@@ -237,6 +243,65 @@ public class MetadataManagerTest extends AbstractTest {
             assertNotNull(result);
             assertEquals(3, result.size());
 
+        }
+    }
+
+    @Test
+    public void insertMetadataGeneratesIndexFieldWithConcatenatedValues() {
+        try (MockedStatic<MetadataMysqlHelper> mockedMetadataMysqlHelper = Mockito.mockStatic(MetadataMysqlHelper.class);
+                MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(ConfigurationHelper::getInstance).thenReturn(configurationHelper);
+            Mockito.when(configurationHelper.getIndexFields())
+                    .thenReturn(Arrays.asList(new SearchIndexField("index.all", Arrays.asList("TitleDocMain", "Author"))));
+
+            MetadataManager.insertMetadata(1, sampleMetadata);
+
+            List<DatabaseMetadataField> indexField = sampleMetadata.get("index.all");
+            assertNotNull(indexField, "no index field was generated");
+            assertEquals(1, indexField.size());
+            String indexValue = indexField.get(0).getMetadataValue();
+            assertFalse(indexValue.contains("DatabaseMetadataField@"), "index field contains java object identifiers: " + indexValue);
+            assertEquals("[Test Title] [Test Author]", indexValue.trim());
+        }
+    }
+
+    @Test
+    public void insertMetadataGeneratesIndexFieldWithAllValuesOfRepeatedMetadata() {
+        try (MockedStatic<MetadataMysqlHelper> mockedMetadataMysqlHelper = Mockito.mockStatic(MetadataMysqlHelper.class);
+                MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(ConfigurationHelper::getInstance).thenReturn(configurationHelper);
+            Mockito.when(configurationHelper.getIndexFields())
+                    .thenReturn(Arrays.asList(new SearchIndexField("index.author", Arrays.asList("Author"))));
+
+            sampleMetadata.put("Author", Arrays.asList(new DatabaseMetadataField("Author", "First Author", "", "", ""),
+                    new DatabaseMetadataField("Author", "Second Author", "", "", "")));
+
+            MetadataManager.insertMetadata(1, sampleMetadata);
+
+            List<DatabaseMetadataField> indexField = sampleMetadata.get("index.author");
+            assertNotNull(indexField, "no index field was generated");
+            assertEquals(1, indexField.size());
+            String indexValue = indexField.get(0).getMetadataValue();
+            assertFalse(indexValue.contains("DatabaseMetadataField@"), "index field contains java object identifiers: " + indexValue);
+            assertEquals("[First Author] [Second Author]", indexValue.trim());
+        }
+    }
+
+    @Test
+    public void insertMetadataIgnoresMissingMetadataInIndexField() {
+        try (MockedStatic<MetadataMysqlHelper> mockedMetadataMysqlHelper = Mockito.mockStatic(MetadataMysqlHelper.class);
+                MockedStatic<ConfigurationHelper> mockedConfigurationHelper = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedConfigurationHelper.when(ConfigurationHelper::getInstance).thenReturn(configurationHelper);
+            Mockito.when(configurationHelper.getIndexFields())
+                    .thenReturn(Arrays.asList(new SearchIndexField("index.title", Arrays.asList("TitleDocMain", "NotInProcess")),
+                            new SearchIndexField("index.unused", Arrays.asList("NotInProcess"))));
+
+            MetadataManager.insertMetadata(1, sampleMetadata);
+
+            List<DatabaseMetadataField> indexField = sampleMetadata.get("index.title");
+            assertNotNull(indexField, "no index field was generated");
+            assertEquals("[Test Title]", indexField.get(0).getMetadataValue().trim());
+            assertFalse(sampleMetadata.containsKey("index.unused"), "index field without any metadata must not be generated");
         }
     }
 
