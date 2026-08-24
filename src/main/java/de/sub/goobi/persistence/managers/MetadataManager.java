@@ -135,8 +135,12 @@ public final class MetadataManager implements Serializable {
                 StringBuilder sb = new StringBuilder();
                 for (String metadataName : index.getMetadataList()) {
                     if (metadata.containsKey(metadataName)) {
-                        sb.append(metadata.get(metadataName));
-                        sb.append(" ");
+
+                        List<DatabaseMetadataField> metadataFields = metadata.get(metadataName);
+                        for (DatabaseMetadataField metadataField : metadataFields) {
+                            sb.append("[" + metadataField.getMetadataValue() + "] ");
+                        }
+
                     }
                 }
                 if (StringUtils.isNotBlank(sb.toString())) {
