@@ -3145,7 +3145,7 @@ public class Metadaten implements Serializable {
                         this.myBild = dataList.get(dataList.size() - 1);
                     }
                     /* die korrekte Seitenzahl anzeigen */
-                    this.bildNummer = pos;
+                    this.bildNummer = pos + 1;
 
                     if (allImages != null && this.imageIndex >= 0 && this.imageIndex < allImages.size()) {
                         setImage(allImages.get(this.imageIndex));
