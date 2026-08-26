@@ -114,11 +114,5 @@
             <required>true</required>
             <type>java.lang.String</type>
         </attribute>
-        <attribute>
-            <description>Whether the alert should be rendered</description>
-            <name>rendered</name>
-            <required>true</required>
-            <type>java.lang.Boolean</type>
-        </attribute>
     </tag>
 </facelet-taglib>
