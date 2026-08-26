@@ -3,10 +3,10 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:util="http://goobi.io/util">
 
-    <c:if test="#{!LoginForm.hasRole(rights)}">
+    <c:if test="#{!LoginForm.hasAnyRole(rights)}">
         <util:alert type="danger" message="#{msgs.noAccessAllowed} #{rights}" />
     </c:if>
-    <c:if test="#{LoginForm.hasRole(rights)}">
+    <c:if test="#{LoginForm.hasAnyRole(rights)}">
         <ui:insert />
     </c:if>
 </ui:component>

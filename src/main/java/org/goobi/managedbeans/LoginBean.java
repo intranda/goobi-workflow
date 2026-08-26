@@ -547,6 +547,23 @@ public class LoginBean implements Serializable {
     }
 
     /**
+     * Check if the user has at least one of several roles.
+     *
+     * @param inRoles comma-separated list of role names, OR-combined
+     */
+    public boolean hasAnyRole(String inRoles) {
+        if (StringUtils.isBlank(inRoles)) {
+            return false;
+        }
+        for (String role : inRoles.split(",")) {
+            if (hasRole(role.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * check if any of the assigned roles is related to GoobiScript.
      *
      * @return true if gs is allowed
