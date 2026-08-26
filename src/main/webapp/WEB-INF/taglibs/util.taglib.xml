@@ -15,6 +15,12 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
+            <description>Inline CSS styles to pass through to the component</description>
+            <name>style</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
             <description>The icon to display</description>
             <name>icon</name>
             <required>true</required>
