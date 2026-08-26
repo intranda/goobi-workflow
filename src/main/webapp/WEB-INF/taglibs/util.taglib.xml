@@ -115,7 +115,7 @@
         <tag-name>missing-rights</tag-name>
         <source>util/missing-rights.xhtml</source>
         <attribute>
-            <description>The required rights/permission to display</description>
+            <description>The required rights/permissions to display, comma-separated for an OR check</description>
             <name>rights</name>
             <required>true</required>
             <type>java.lang.String</type>
