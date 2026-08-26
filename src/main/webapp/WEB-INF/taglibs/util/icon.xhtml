@@ -9,6 +9,7 @@
         <c:when test="#{double == true}">
             <span
                 class="icon-wrapper#{styleClass != null ? ' ' : ''}#{styleClass}"
+                style="#{style}"
                 aria-hidden="true"
                 title="#{title}"
                 data-toggle="#{title != null ? 'tooltip' : ''}">
@@ -23,6 +24,7 @@
         <c:otherwise>
             <span
                 class="icon-wrapper#{styleClass != null ? ' ' : ''}#{styleClass}"
+                style="#{style}"
                 aria-hidden="true"
                 title="#{title}"
                 data-toggle="#{title != null ? 'tooltip' : ''}">
