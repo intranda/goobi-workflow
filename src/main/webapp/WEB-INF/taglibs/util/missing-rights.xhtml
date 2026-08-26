@@ -6,4 +6,7 @@
     <c:if test="#{!LoginForm.hasRole(rights)}">
         <util:alert type="danger" message="#{msgs.noAccessAllowed} #{rights}" />
     </c:if>
+    <c:if test="#{LoginForm.hasRole(rights)}">
+        <ui:insert />
+    </c:if>
 </ui:component>
