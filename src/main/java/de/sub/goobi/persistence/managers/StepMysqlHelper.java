@@ -854,9 +854,15 @@ public final class StepMysqlHelper implements Serializable {
     public static List<Integer> getIDList(String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT SchritteId FROM schritte");
-        if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+        sql.append("SELECT DISTINCT schritte.SchritteID FROM schritte ");
+        sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
+        sql.append("LEFT JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        if (StringUtils.isNotBlank(filter)) {
+            if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
+                sql.append(" WHERE ");
+            }
+            sql.append(filter);
         }
 
         try {
