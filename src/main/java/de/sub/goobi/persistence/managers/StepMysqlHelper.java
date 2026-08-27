@@ -881,12 +881,15 @@ public final class StepMysqlHelper implements Serializable {
         }
     }
 
+    static final String DISTINCT_STEP_TITLES_AND_ORDER_SQL =
+            "select distinct schritte.titel, schritte.reihenfolge from schritte "
+                    + "JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID "
+                    + "LEFT JOIN batches ON prozesse.batchID = batches.id "
+                    + "JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ";
+
     public static List<String> getDistinctStepTitlesAndOrder(String order, String filter) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("select distinct schritte.titel, schritte.reihenfolge from schritte ");
-        sql.append("JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
-        sql.append("JOIN batches ON prozesse.batchID = batches.id ");
-        sql.append("JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append(DISTINCT_STEP_TITLES_AND_ORDER_SQL);
         String sortfield = MySQLHelper.prepareSortField(order, sql);
 
         if (StringUtils.isNotBlank(filter)) {
