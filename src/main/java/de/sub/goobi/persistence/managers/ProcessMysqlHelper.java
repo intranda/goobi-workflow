@@ -577,8 +577,11 @@ final class ProcessMysqlHelper implements Serializable {
             sql.append("and projekte.institution_id = ");
             sql.append(institution.getId());
         }
-        if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
+        if (StringUtils.isNotBlank(filter)) {
+            if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
+                sql.append(" WHERE ");
+            }
+            sql.append(filter);
         }
         sql.append(" ) ");
         if (start != null && count != null) {
