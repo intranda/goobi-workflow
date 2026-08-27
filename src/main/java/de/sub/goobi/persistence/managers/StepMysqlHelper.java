@@ -889,8 +889,11 @@ public final class StepMysqlHelper implements Serializable {
         sql.append("JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         String sortfield = MySQLHelper.prepareSortField(order, sql);
 
-        if (filter != null && !filter.isEmpty()) {
-            sql.append(" AND " + filter.replace(" WHERE ", ""));
+        if (StringUtils.isNotBlank(filter)) {
+            if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
+                sql.append(" WHERE ");
+            }
+            sql.append(filter);
         }
         if (StringUtils.isNotBlank(sortfield)) {
             sql.append(" ORDER BY " + sortfield);
