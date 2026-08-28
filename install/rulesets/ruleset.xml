@@ -6424,6 +6424,108 @@
       <!--         <field008_21>n</field008_21> -->
       <!--       </DocStruct> -->
     </Marc>
+
+    <IIIF>
+      <mappingLanguage>de</mappingLanguage>
+      <topStructType>Monograph</topStructType>
+      <childStructType>Chapter</childStructType>
+      <pageType>page</pageType>
+      <boundBookType>BoundBook</boundBookType>
+      <manifestUrlMetadata>_purl</manifestUrlMetadata>
+
+
+      <Metadata>
+        <internalName>TitleDocMain</internalName>
+        <iiifLabel>Titel</iiifLabel>
+        <iiifLabel>Title</iiifLabel>
+        <iiifLabel>MD_TITLE</iiifLabel>
+      </Metadata>
+
+      <Metadata>
+        <internalName>TitleDocSub1</internalName>
+        <iiifLabel>Untertitel</iiifLabel>
+        <iiifLabel>Subtitle</iiifLabel>
+        <iiifLabel>MD_SUBTITLE</iiifLabel>
+      </Metadata>
+
+      <Metadata>
+        <internalName>CatalogIDDigital</internalName>
+        <iiifLabel>Persistenter Identifier</iiifLabel>
+        <iiifLabel>Persistent identifier</iiifLabel>
+        <iiifLabel>PI</iiifLabel>
+      </Metadata>
+
+      <Metadata>
+        <internalName>Author</internalName>
+        <iiifLabel>Autor</iiifLabel>
+        <iiifLabel>Author</iiifLabel>
+        <iiifLabel>MD_CREATOR</iiifLabel>
+        <iiifLabel>MD_AUTHOR</iiifLabel>
+      </Metadata>
+
+      <Metadata>
+        <internalName>CorporateAuthor</internalName>
+        <iiifLabel>Körperschaft</iiifLabel>
+        <iiifLabel>Corporate body</iiifLabel>
+        <iiifLabel>MD_CORPORATION</iiifLabel>
+      </Metadata>
+
+      <Metadata>
+        <internalName>PublisherName</internalName>
+        <iiifLabel>Herausgeber</iiifLabel>
+        <iiifLabel>Publisher</iiifLabel>
+        <iiifLabel>MD_PUBLISHER</iiifLabel>
+      </Metadata>
+
+      <Metadata>
+        <internalName>PlaceOfPublication</internalName>
+        <iiifLabel>Erscheinungsort</iiifLabel>
+        <iiifLabel>Place of publication</iiifLabel>
+        <iiifLabel>MD_PLACEPUBLISH</iiifLabel>
+      </Metadata>
+
+      <Metadata>
+        <internalName>PublicationYear</internalName>
+        <iiifLabel>Erscheinungsjahr</iiifLabel>
+        <iiifLabel>Date</iiifLabel>
+        <iiifLabel>MD_YEARPUBLISH</iiifLabel>
+      </Metadata>
+
+      <Metadata>
+        <internalName>DocLanguage</internalName>
+        <iiifLabel>Sprache</iiifLabel>
+        <iiifLabel>Language</iiifLabel>
+        <iiifLabel>MD_LANGUAGE</iiifLabel>
+      </Metadata>
+
+      <Metadata>
+        <internalName>shelfmarksource</internalName>
+        <iiifLabel>Signatur</iiifLabel>
+        <iiifLabel>Shelfmark</iiifLabel>
+        <iiifLabel>MD_SHELFMARK</iiifLabel>
+      </Metadata>
+
+      <Metadata>
+        <internalName>FormatSourcePrint</internalName>
+        <iiifLabel>Umfang</iiifLabel>
+        <iiifLabel>Dimensions</iiifLabel>
+        <iiifLabel>MD_NOTESOURCEDIMENSIONS</iiifLabel>
+      </Metadata>
+      <Metadata>
+        <internalName>SizeSourcePrint</internalName>
+        <iiifLabel>Größe</iiifLabel>
+        <iiifLabel>Size</iiifLabel>
+        <iiifLabel>MD_PHYSICALDESCRIPTIONEXTENT</iiifLabel>
+      </Metadata>
+
+      <Metadata>
+        <internalName>singleDigCollection</internalName>
+        <iiifLabel>Collection</iiifLabel>
+        <iiifLabel>Sammlung</iiifLabel>
+        <iiifLabel>DC</iiifLabel>
+      </Metadata>
+    </IIIF>
+
     <!-- The ZVDD METS/MODS format
             ====================================================================================
 
