@@ -114,22 +114,6 @@ public class StepManager implements IManager {
         return answer;
     }
 
-    public static void updateBatchList(List<Step> stepList) {
-        try {
-            StepMysqlHelper.updateBatchList(stepList);
-        } catch (SQLException e) {
-            log.error(e);
-        }
-    }
-
-    public static void insertBatchStepList(List<Step> stepList) {
-        try {
-            StepMysqlHelper.insertBatchStepList(stepList);
-        } catch (SQLException e) {
-            log.error(e);
-        }
-    }
-
     public static int countSteps(String order, String filter, Institution institution) throws DAOException {
         try {
             return StepMysqlHelper.getStepCount(filter, institution);
