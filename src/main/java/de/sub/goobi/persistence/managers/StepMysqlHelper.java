@@ -1,3 +1,19 @@
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ *
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi-workflow
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *
+ */
+
 package de.sub.goobi.persistence.managers;
 
 import java.io.Serializable;
@@ -25,22 +41,6 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.cli.helper.StringPair;
 
-/**
- * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- *
- * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi-workflow
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- */
-
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -51,11 +51,17 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public final class StepMysqlHelper implements Serializable {
 
+    static final String DISTINCT_STEP_TITLES_AND_ORDER_SQL =
+            "select distinct schritte.titel, schritte.reihenfolge from schritte "
+                    + "JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID "
+                    + "LEFT JOIN batches ON prozesse.batchID = batches.id "
+                    + "JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ";
+
+    private static final long serialVersionUID = -2064912552692963L;
+
     private StepMysqlHelper() {
         // hide implicit public constructor
     }
-
-    private static final long serialVersionUID = -2064912552692963L;
 
     public static List<Step> getStepsForProcess(int processId) throws SQLException {
         Connection connection = null;
@@ -707,148 +713,6 @@ public final class StepMysqlHelper implements Serializable {
                 MySQLHelper.closeConnection(connection);
             }
         }
-
-    }
-
-    public static void updateBatchList(List<Step> stepList) throws SQLException {
-        String tablename = "a" + new Date().getTime();
-        String tempTable = "CREATE TEMPORARY TABLE IF NOT EXISTS " + tablename + " LIKE schritte;";
-
-        StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO " + tablename + " " + generateInsertQuery(true));
-        List<Object[]> paramList = new ArrayList<>();
-        for (Step o : stepList) {
-            sql.append(" " + generateValueQuery(true) + ",");
-            Object[] param = generateParameter(o, true);
-            paramList.add(param);
-        }
-        Object[][] paramArray = new Object[paramList.size()][];
-        paramList.toArray(paramArray);
-
-        String insertQuery = sql.toString();
-        insertQuery = insertQuery.substring(0, insertQuery.length() - 1);
-
-        StringBuilder joinQuery = new StringBuilder();
-
-        joinQuery.append("UPDATE schritte SET schritte.Titel = " + tablename + ".Titel, ");
-        joinQuery.append(" Prioritaet = " + tablename + ".Prioritaet,");
-        joinQuery.append(" Reihenfolge = " + tablename + ".Reihenfolge,");
-        joinQuery.append(" Bearbeitungsstatus = " + tablename + ".Bearbeitungsstatus,");
-        joinQuery.append(" BearbeitungsZeitpunkt = " + tablename + ".BearbeitungsZeitpunkt,");
-        joinQuery.append(" BearbeitungsBeginn = " + tablename + ".BearbeitungsBeginn,");
-        joinQuery.append(" BearbeitungsEnde = " + tablename + ".BearbeitungsEnde,");
-        joinQuery.append(" homeverzeichnisNutzen = " + tablename + ".homeverzeichnisNutzen,");
-        joinQuery.append(" typMetadaten = " + tablename + ".typMetadaten,");
-        joinQuery.append(" typAutomatisch = " + tablename + ".typAutomatisch,");
-        joinQuery.append(" typAutomaticThumbnail = " + tablename + ".typAutomaticThumbnail,");
-        joinQuery.append(" automaticThumbnailSettingsYaml = " + tablename + ".automaticThumbnailSettingsYaml");
-        joinQuery.append(" typImportFileUpload = " + tablename + ".typImportFileUpload,");
-        joinQuery.append(" typExportRus = " + tablename + ".typExportRus,");
-        joinQuery.append(" typImagesLesen = " + tablename + ".typImagesLesen,");
-        joinQuery.append(" typImagesSchreiben = " + tablename + ".typImagesSchreiben,");
-        joinQuery.append(" typExportDMS = " + tablename + ".typExportDMS,");
-        joinQuery.append(" typBeimAnnehmenModul = " + tablename + ".typBeimAnnehmenModul,");
-        joinQuery.append(" typBeimAnnehmenAbschliessen = " + tablename + ".typBeimAnnehmenAbschliessen,");
-        joinQuery.append(" typBeimAnnehmenModulUndAbschliessen = " + tablename + ".typBeimAnnehmenModulUndAbschliessen,");
-        joinQuery.append(" typBeimAbschliessenVerifizieren = " + tablename + ".typBeimAbschliessenVerifizieren,");
-        joinQuery.append(" typModulName = " + tablename + ".typModulName,");
-        joinQuery.append(" BearbeitungsBenutzerID = " + tablename + ".BearbeitungsBenutzerID,");
-        joinQuery.append(" ProzesseID = " + tablename + ".ProzesseID,");
-        joinQuery.append(" edittype = " + tablename + ".edittype,");
-        joinQuery.append(" typScriptStep = " + tablename + ".typScriptStep,");
-        joinQuery.append(" scriptName1 = " + tablename + ".scriptName1,");
-        joinQuery.append(" scriptName2 = " + tablename + ".scriptName2,");
-        joinQuery.append(" scriptName3 = " + tablename + ".scriptName3,");
-        joinQuery.append(" scriptName4 = " + tablename + ".scriptName4,");
-        joinQuery.append(" scriptName5 = " + tablename + ".scriptName5,");
-        joinQuery.append(" batchStep = " + tablename + ".batchStep,");
-        joinQuery.append(" stepPlugin = " + tablename + ".stepPlugin,");
-        joinQuery.append(" validationPlugin = " + tablename + ".validationPlugin, ");
-        joinQuery.append(" delayStep = " + tablename + ".delayStep");
-
-        joinQuery.append(" WHERE schritte.SchritteID= " + tablename + ".SchritteID;");
-
-        String deleteTempTable = "DROP TEMPORARY TABLE " + tablename + ";";
-
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner run = new QueryRunner();
-            // create temporary table
-            run.update(connection, tempTable);
-            // insert bulk into a temp table
-            run.batch(connection, insertQuery, paramArray);
-            // update process table using join
-            run.update(connection, joinQuery.toString());
-            // delete temporary table
-            run.update(connection, deleteTempTable);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
-    }
-
-    public static void insertBatchStepList(List<Step> stepList) throws SQLException {
-        StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO schritte " + generateInsertQuery(false));
-        List<Object[]> paramArray = new ArrayList<>();
-        for (Step o : stepList) {
-            sql.append(" " + generateValueQuery(false) + ",");
-            Object[] param = generateParameter(o, false);
-            paramArray.add(param);
-        }
-        String values = sql.toString();
-
-        values = values.substring(0, values.length() - 1);
-
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner run = new QueryRunner();
-            run.update(connection, values, paramArray);
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
-    }
-
-    public static void main(String[] args) throws SQLException {
-
-        Step s76 = StepMysqlHelper.getStepById(76);
-        Step s77 = StepMysqlHelper.getStepById(77);
-        Step s78 = StepMysqlHelper.getStepById(78);
-        Step s79 = StepMysqlHelper.getStepById(79);
-        Step s42338 = StepMysqlHelper.getStepById(42338);
-        Step s83 = StepMysqlHelper.getStepById(83);
-        Step s85 = StepMysqlHelper.getStepById(85);
-        Step s61351 = StepMysqlHelper.getStepById(61351);
-        Step s335310 = StepMysqlHelper.getStepById(335310);
-        Step s84 = StepMysqlHelper.getStepById(84);
-        Step s216 = StepMysqlHelper.getStepById(216);
-        Step s217 = StepMysqlHelper.getStepById(217);
-        Step s316611 = StepMysqlHelper.getStepById(316611);
-        Step s345846 = StepMysqlHelper.getStepById(345846);
-
-        List<Step> stepList = new ArrayList<>();
-        stepList.add(s76);
-        stepList.add(s77);
-        stepList.add(s78);
-        stepList.add(s79);
-        stepList.add(s42338);
-        stepList.add(s83);
-        stepList.add(s85);
-        stepList.add(s61351);
-        stepList.add(s335310);
-        stepList.add(s84);
-        stepList.add(s216);
-        stepList.add(s217);
-        stepList.add(s316611);
-        stepList.add(s345846);
-
-        StepMysqlHelper.updateBatchList(stepList);
-
     }
 
     public static List<Integer> getIDList(String filter) throws SQLException {
@@ -880,12 +744,6 @@ public final class StepMysqlHelper implements Serializable {
             }
         }
     }
-
-    static final String DISTINCT_STEP_TITLES_AND_ORDER_SQL =
-            "select distinct schritte.titel, schritte.reihenfolge from schritte "
-                    + "JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID "
-                    + "LEFT JOIN batches ON prozesse.batchID = batches.id "
-                    + "JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ";
 
     public static List<String> getDistinctStepTitlesAndOrder(String order, String filter) throws SQLException {
         StringBuilder sql = new StringBuilder();
