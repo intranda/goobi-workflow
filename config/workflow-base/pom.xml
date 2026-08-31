@@ -129,7 +129,7 @@
     <ugh-marc.version>5.0.35</ugh-marc.version>
     <ugh-lido.version>5.0.39</ugh-lido.version>
     <ugh-json.version>1.0.2</ugh-json.version>
-    <ugh-iiif.version>1.0.2</ugh-iiif.version>
+    <ugh-iiif.version>1.0.3</ugh-iiif.version>
     <!-- Be careful with updates here -->
     <quartz.version>2.5.2</quartz.version>
     <cron-expression-descriptor.version>1.2.10</cron-expression-descriptor.version>
