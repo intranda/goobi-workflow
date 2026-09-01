@@ -60,7 +60,7 @@ public class VocabularyBean implements Serializable {
                     VocabularyPageResult.class,
                     API.vocabularies()
                             .list(
-                                    Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()),
+                                    Optional.of(Helper.getCurrentUserTableSize()),
                                     Optional.empty(),
                                     Optional.of("name,ASC")),
                     null,

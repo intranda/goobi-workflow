@@ -31,6 +31,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
+import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
 
@@ -184,12 +185,15 @@ public class UsergroupBean extends BasicBean {
 
     public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
         List<SelectItem> institutions = new ArrayList<>();
+        User currentUser = Helper.getCurrentUser();
         List<Institution> temp = null;
-        if (Helper.getCurrentUser().isSuperAdmin()) {
+        if (currentUser != null && currentUser.isSuperAdmin()) {
             temp = InstitutionManager.getAllInstitutionsAsList();
         } else {
             temp = new ArrayList<>();
-            temp.add(Helper.getCurrentUser().getInstitution());
+            if (currentUser != null) {
+                temp.add(currentUser.getInstitution());
+            }
         }
         if (temp != null && !temp.isEmpty()) {
             for (Institution proj : temp) {

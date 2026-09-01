@@ -136,7 +136,9 @@ public class LoginBean implements Serializable {
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         if (mySession != null) {
             SessionForm sessionBean = Helper.getSessionBean();
-            sessionBean.updateSessionUserName(mySession, null, mySession.getId(), null);
+            if (sessionBean != null) {
+                sessionBean.updateSessionUserName(mySession, null, mySession.getId(), null);
+            }
             mySession.invalidate();
         }
         return RETURN_PAGE;
@@ -149,8 +151,11 @@ public class LoginBean implements Serializable {
 
         this.myBenutzer = null;
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        Helper.getSessionBean().updateSessionUserName(mySession, this.myBenutzer, mySession.getId(), null);
         if (mySession != null) {
+            SessionForm sessionBean = Helper.getSessionBean();
+            if (sessionBean != null) {
+                sessionBean.updateSessionUserName(mySession, null, mySession.getId(), null);
+            }
             mySession.invalidate();
         }
         return "external_index";

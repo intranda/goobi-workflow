@@ -347,7 +347,8 @@ public class ProcessBean extends BasicBean {
         /*
          * Vorgangsdatum generell anzeigen?
          */
-        User user = Helper.getLoginBean().getMyBenutzer();
+        LoginBean login = Helper.getLoginBean();
+        User user = login == null ? null : login.getMyBenutzer();
         if (user != null) {
 
             this.anzeigeAnpassen.put("lockings", user.isDisplayLocksColumn());
@@ -636,7 +637,9 @@ public class ProcessBean extends BasicBean {
         this.myAnzahlList = null;
 
         ProzesskopieForm pkf = Helper.getBeanByClass(ProzesskopieForm.class);
-        pkf.clearAvailableProjects();
+        if (pkf != null) {
+            pkf.clearAvailableProjects();
+        }
 
         String searchValue = filter;
         if (StringUtils.isNotBlank(additionalFilter)) {
@@ -1913,9 +1916,14 @@ public class ProcessBean extends BasicBean {
      */
 
     public void createXML() {
+        User currentUser = Helper.getCurrentUser();
+        if (currentUser == null) {
+            Helper.setFehlerMeldung("could not write logfile to home directory: no user is logged in");
+            return;
+        }
         XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         try {
-            String ziel = Helper.getCurrentUser().getHomeDir() + this.myProzess.getTitel() + LOG_XML_FILE_SUFFIX;
+            String ziel = currentUser.getHomeDir() + this.myProzess.getTitel() + LOG_XML_FILE_SUFFIX;
             xmlExport.startExport(this.myProzess, ziel);
         } catch (IOException e) {
             Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
