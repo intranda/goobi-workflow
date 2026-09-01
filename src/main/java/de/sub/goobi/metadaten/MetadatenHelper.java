@@ -81,8 +81,8 @@ public class MetadatenHelper {
     public static final int PAGENUMBER_LAST = 1;
 
     /* the results of the classpath scan for the available file formats, initialized lazily, see getFileformatImplementations() */
-    private static volatile Set<Class<? extends Fileformat>> fileformatImplementations;
-    private static volatile Set<Class<? extends ExportFileformat>> exportFileformatImplementations;
+    private static volatile Set<Class<? extends Fileformat>> fileformatImplementations; //NOSONAR volatile is required for the double-checked locking
+    private static volatile Set<Class<? extends ExportFileformat>> exportFileformatImplementations; //NOSONAR see above
 
     private Prefs myPrefs;
     private DigitalDocument mydocument;
