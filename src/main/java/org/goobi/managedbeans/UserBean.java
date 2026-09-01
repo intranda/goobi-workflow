@@ -357,26 +357,26 @@ public class UserBean extends BasicBean {
      */
     public String Loeschen() {
         User currentUser = Helper.getCurrentUser();
-        if (!currentUser.getId().equals(myClass.getId())) {
-            try {
-                Path folder = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "user", myClass.getLogin());
-                if (StorageProvider.getInstance().isFileExists(folder)) {
-                    StorageProvider.getInstance().deleteDir(folder);
-                }
-
-                UserManager.hideUser(myClass);
-                if (myClass.getLdapGruppe().getAuthenticationTypeEnum() == AuthenticationType.LDAP && !myClass.getLdapGruppe().isReadonly()) {
-                    new LdapAuthentication().deleteUser(myClass);
-                }
-                paginator.load();
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung("Error_hideUser", e.getMessage());
-                return "";
-            }
-            return FilterKein();
+        if (currentUser != null && currentUser.getId().equals(myClass.getId())) {
+            Helper.setFehlerMeldung("Error_selfDelete");
+            return "";
         }
-        Helper.setFehlerMeldung("Error_selfDelete");
-        return "";
+        try {
+            Path folder = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "user", myClass.getLogin());
+            if (StorageProvider.getInstance().isFileExists(folder)) {
+                StorageProvider.getInstance().deleteDir(folder);
+            }
+
+            UserManager.hideUser(myClass);
+            if (myClass.getLdapGruppe().getAuthenticationTypeEnum() == AuthenticationType.LDAP && !myClass.getLdapGruppe().isReadonly()) {
+                new LdapAuthentication().deleteUser(myClass);
+            }
+            paginator.load();
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("Error_hideUser", e.getMessage());
+            return "";
+        }
+        return FilterKein();
     }
 
     public String AusGruppeLoeschen() {
@@ -614,8 +614,10 @@ public class UserBean extends BasicBean {
      */
     public String createNewRandomPasswordForUser() {
         // Check for administrator rules
-        boolean userIsSuperAdmin = Helper.getCurrentUser().isSuperAdmin();
-        boolean userIsAdmin = Helper.getCurrentUser().getAllUserRoles().contains(UserRole.Admin_Users_Change_Passwords.toString());
+        User currentUser = Helper.getCurrentUser();
+        boolean userIsSuperAdmin = currentUser != null && currentUser.isSuperAdmin();
+        boolean userIsAdmin =
+                currentUser != null && currentUser.getAllUserRoles().contains(UserRole.Admin_Users_Change_Passwords.toString());
         if (!userIsSuperAdmin && !userIsAdmin) {
             Helper.setFehlerMeldung("You are not allowed to change the user's password!");
             return RETURN_PAGE_ALL;
@@ -757,12 +759,15 @@ public class UserBean extends BasicBean {
 
     public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
         List<SelectItem> institutions = new ArrayList<>();
+        User currentUser = Helper.getCurrentUser();
         List<Institution> temp = null;
-        if (Helper.getCurrentUser().isSuperAdmin()) {
+        if (currentUser != null && currentUser.isSuperAdmin()) {
             temp = InstitutionManager.getAllInstitutionsAsList();
         } else {
             temp = new ArrayList<>();
-            temp.add(Helper.getCurrentUser().getInstitution());
+            if (currentUser != null) {
+                temp.add(currentUser.getInstitution());
+            }
         }
         if (temp != null && !temp.isEmpty()) {
             for (Institution proj : temp) {
