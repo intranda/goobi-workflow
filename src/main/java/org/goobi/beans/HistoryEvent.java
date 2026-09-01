@@ -106,10 +106,9 @@ public class HistoryEvent implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        // id and process are deliberately left out, equals() does not compare them either
         result = prime * result + ((date == null) ? 0 : date.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((numericValue == null) ? 0 : numericValue.hashCode());
-        result = prime * result + ((process == null) ? 0 : process.hashCode());
         result = prime * result + ((stringValue == null) ? 0 : stringValue.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;

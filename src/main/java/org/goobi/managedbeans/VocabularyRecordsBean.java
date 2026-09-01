@@ -100,12 +100,11 @@ public class VocabularyRecordsBean implements Serializable {
     }
 
     private void loadPaginator() {
-        // TODO: Unclean to have static Helper access to user here..
         this.paginator = new HATEOASPaginator<>(
                 VocabularyRecordPageResult.class,
                 API.vocabularyRecords()
                         .list(this.vocabulary.getId())
-                        .pageSize(Optional.of(Helper.getLoginBean().getMyBenutzer().getTabellengroesse()))
+                        .pageSize(Optional.of(Helper.getCurrentUserTableSize()))
                         .request(),
                 ExtendedVocabularyRecord::getChildren,
                 ExtendedVocabularyRecord::getParentId,

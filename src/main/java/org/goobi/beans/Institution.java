@@ -111,23 +111,8 @@ public class Institution extends AbstractJournal implements DatabaseObject, Comp
 
     @Override
     public int hashCode() {
-        // The numbers here are prime numbers (from 19 to 97)
-        int hashCode = super.hashCode();
-        hashCode = hashCode + 19 * Objects.hashCode(this.id);
-        hashCode = hashCode + 23 * Objects.hashCode(this.shortName);
-        hashCode = hashCode + 29 * Objects.hashCode(this.longName);
-        hashCode = hashCode + (this.allowAllRulesets ? 31 : 37);
-        hashCode = hashCode + (this.allowAllDockets ? 41 : 43);
-        hashCode = hashCode + (this.allowAllAuthentications ? 47 : 53);
-        hashCode = hashCode + (this.allowAllPlugins ? 59 : 61);
-        hashCode = hashCode + 67 * this.allowedRulesets.hashCode();
-        hashCode = hashCode + 71 * this.allowedDockets.hashCode();
-        hashCode = hashCode + 73 * this.allowedAuthentications.hashCode();
-        hashCode = hashCode + 79 * this.allowedAdministrationPlugins.hashCode();
-        hashCode = hashCode + 83 * this.allowedStatisticsPlugins.hashCode();
-        hashCode = hashCode + 89 * this.allowedDashboardPlugins.hashCode();
-        hashCode = hashCode + 97 * this.allowedWorkflowPlugins.hashCode();
-        return hashCode;
+        // equals() only compares the id, so the hash code must not take any other field into account
+        return Objects.hashCode(this.id);
     }
 
     @Override

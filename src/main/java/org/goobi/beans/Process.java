@@ -1231,9 +1231,14 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
     }
 
     public void downloadXML() {
+        User currentUser = Helper.getCurrentUser();
+        if (currentUser == null) {
+            Helper.setFehlerMeldung("could not write logfile to home directory: no user is logged in");
+            return;
+        }
         XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         try {
-            String ziel = Helper.getCurrentUser().getHomeDir() + getTitel() + LOG_FILE_SUFFIX;
+            String ziel = currentUser.getHomeDir() + getTitel() + LOG_FILE_SUFFIX;
             xmlExport.startExport(this, ziel);
         } catch (IOException e) {
             Helper.setFehlerMeldung("could not write logfile to home directory: ", e);

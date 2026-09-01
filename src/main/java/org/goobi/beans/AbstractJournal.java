@@ -33,7 +33,6 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.JournalEntry.EntryType;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -79,10 +78,10 @@ public abstract class AbstractJournal implements IJournal {
         if (uploadedFile != null) {
             saveUploadedFile();
         } else {
-            LoginBean loginForm = Helper.getLoginBean();
+            User currentUser = Helper.getCurrentUser();
 
             JournalEntry entry =
-                    new JournalEntry(getId(), new Date(), loginForm.getMyBenutzer().getNachVorname(),
+                    new JournalEntry(getId(), new Date(), currentUser == null ? "" : currentUser.getNachVorname(),
                             priorityComment ? LogType.IMPORTANT_USER : LogType.USER, content, getEntryType());
 
             content = "";
