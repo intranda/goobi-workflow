@@ -35,8 +35,10 @@ import java.util.TimeZone;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Docket;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
+import org.goobi.beans.User;
 import org.goobi.production.GoobiVersion;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
@@ -124,8 +126,7 @@ public class HelperForm implements Serializable {
 
     public List<SelectItem> getRegelsaetze() throws DAOException {
         List<SelectItem> myPrefs = new ArrayList<>();
-        List<Ruleset> temp = RulesetManager.getRulesets("titel", null, null, null,
-                Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
+        List<Ruleset> temp = RulesetManager.getRulesets("titel", null, null, null, getInstitutionFilter());
         for (Ruleset an : temp) {
             myPrefs.add(new SelectItem(an, an.getTitel(), null));
         }
@@ -135,8 +136,7 @@ public class HelperForm implements Serializable {
     public List<SelectItem> getDockets() {
         List<SelectItem> answer = new ArrayList<>();
         try {
-            List<Docket> temp = DocketManager.getDockets("name", null, null, null,
-                    Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
+            List<Docket> temp = DocketManager.getDockets("name", null, null, null, getInstitutionFilter());
             for (Docket d : temp) {
                 answer.add(new SelectItem(d, d.getName(), null));
             }
@@ -290,7 +290,21 @@ public class HelperForm implements Serializable {
     }
 
     public boolean isPasswordIsChangable() {
-        return !Helper.getCurrentUser().getLdapGruppe().isReadonly();
+        User currentUser = Helper.getCurrentUser();
+        return currentUser != null && !currentUser.getLdapGruppe().isReadonly();
+    }
+
+    /**
+     * Restricts a list to the institution of the current user. Super admins and calls without a logged in user are not restricted at all.
+     *
+     * @return the institution to filter for, or null when everything may be shown
+     */
+    private static Institution getInstitutionFilter() {
+        User currentUser = Helper.getCurrentUser();
+        if (currentUser == null || currentUser.isSuperAdmin()) {
+            return null;
+        }
+        return currentUser.getInstitution();
     }
 
     public boolean isUseUii() {

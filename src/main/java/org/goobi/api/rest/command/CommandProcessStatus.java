@@ -86,14 +86,12 @@ public class CommandProcessStatus {
             throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("Invalid date format, expected YYYY-MM-DD").build());
         }
 
-        StringBuilder sql = new StringBuilder("IstTemplate = false AND ");
-
+        List<Integer> processIdList;
         if (end != null) {
-            sql.append("(erstellungsdatum BETWEEN '").append(start).append("' AND '").append(end).append("')");
+            processIdList = ProcessManager.getIdsForFilter(" WHERE IstTemplate = false AND (erstellungsdatum BETWEEN ? AND ?)", start, end);
         } else {
-            sql.append("erstellungsdatum > '").append(start).append("'");
+            processIdList = ProcessManager.getIdsForFilter(" WHERE IstTemplate = false AND erstellungsdatum > ?", start);
         }
-        List<Integer> processIdList = ProcessManager.getIdsForFilter(sql.toString());
 
         List<ProcessStatusResponse> processList = new LinkedList<>();
 

@@ -484,7 +484,16 @@ final class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Integer> getIDList(Optional<String> order, String filter) throws SQLException {
+    /**
+     * Reads the ids of all processes matching the given filter.
+     *
+     * @param order optional sort field
+     * @param filter SQL fragment appended to the query, may contain <code>?</code> placeholders
+     * @param parameters values bound to the placeholders of the filter, use this instead of concatenating user input into the filter
+     * @return the matching process ids
+     * @throws SQLException if the query fails
+     */
+    public static List<Integer> getIDList(Optional<String> order, String filter, Object... parameters) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id ");
@@ -504,10 +513,10 @@ final class ProcessMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Integer> ret = null;
-            ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
-
-            return ret;
+            if (parameters == null || parameters.length == 0) {
+                return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
+            }
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler, parameters);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
