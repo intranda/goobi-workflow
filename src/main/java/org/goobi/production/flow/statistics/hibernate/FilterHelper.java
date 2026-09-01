@@ -774,14 +774,11 @@ public final class FilterHelper {
      */
     public static String criteriaBuilder(String searchFilter, Boolean isTemplate, Boolean stepOpenOnly, Boolean userAssignedStepsOnly,
             Boolean hideStepsFromOtherUsers, boolean isProcess, boolean isStep) {
-        String inFilter = searchFilter;
+        String inFilter = MySQLHelper.escapeString(searchFilter);
         if (inFilter == null) {
             inFilter = "";
         }
-        inFilter = inFilter.trim();
-        inFilter = MySQLHelper.escapeString(inFilter);
-
-        inFilter = inFilter.replace("(", " ( ").replace(")", " ) ");
+        inFilter = inFilter.trim().replace("(", " ( ").replace(")", " ) ");
 
         StringBuilder whereClause = new StringBuilder();
         StringBuilder joinClause = new StringBuilder();
