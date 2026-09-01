@@ -137,7 +137,8 @@ public class ProcessCommandAliasTest extends AbstractTest {
     public void testGetProcessStatusListSingleArgWithValidStartDateReturnsEmptyList() {
 
         try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
-            mockedProcessManager.when(() -> ProcessManager.getIdsForFilter(Mockito.anyString())).thenReturn(new ArrayList<>());
+            mockedProcessManager.when(() -> ProcessManager.getIdsForFilter(Mockito.anyString(), Mockito.any(Object[].class)))
+                    .thenReturn(new ArrayList<>());
 
             CommandProcessStatus command = new CommandProcessStatus();
             List<ProcessStatusResponse> result = command.getProcessStatusList("2020-01-01");

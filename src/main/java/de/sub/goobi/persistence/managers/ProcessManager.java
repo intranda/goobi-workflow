@@ -198,6 +198,24 @@ public class ProcessManager implements IManager {
         return new ArrayList<>();
     }
 
+    /**
+     * Reads the ids of all processes matching the given filter. Values that originate from outside of Goobi must be passed as parameters and
+     * referenced with <code>?</code> placeholders in the filter, they must never be concatenated into the filter itself.
+     *
+     * @param filter SQL fragment appended to the query, containing <code>?</code> placeholders
+     * @param parameters values bound to the placeholders of the filter
+     * @return the matching process ids, an empty list if the query failed
+     */
+    public static List<Integer> getIdsForFilter(String filter, Object... parameters) {
+
+        try {
+            return ProcessMysqlHelper.getIDList(Optional.empty(), filter, parameters);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return new ArrayList<>();
+    }
+
     public static List<Batch> getBatches(int limit) {
 
         try {

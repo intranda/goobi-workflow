@@ -71,6 +71,9 @@ public class WebDav implements Serializable {
     public List<String> uploadFromHomeAll(String inVerzeichnis) {
         List<String> rueckgabe = new ArrayList<>();
         User aktuellerBenutzer = Helper.getCurrentUser();
+        if (aktuellerBenutzer == null) {
+            return rueckgabe;
+        }
         String folder;
 
         try {
@@ -96,6 +99,9 @@ public class WebDav implements Serializable {
     public void removeFromHomeAlle(List<String> inList, String inVerzeichnis) {
         String folder;
         User aktuellerBenutzer = Helper.getCurrentUser();
+        if (aktuellerBenutzer == null) {
+            return;
+        }
         try {
             folder = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
         } catch (IOException ioe) {
@@ -269,8 +275,11 @@ public class WebDav implements Serializable {
     }
 
     public int getAnzahlBaende(String inVerzeichnis) {
+        User aktuellerBenutzer = Helper.getCurrentUser();
+        if (aktuellerBenutzer == null) {
+            return 0;
+        }
         try {
-            User aktuellerBenutzer = Helper.getCurrentUser();
             String verzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
 
             return StorageProvider.getInstance().list(verzeichnisAlle, new WebDavFilter()).size();
