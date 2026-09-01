@@ -163,11 +163,17 @@ public class CommandStepClose {
 
             try {
                 ShellScript.legacyCallShell2(command, so.getProcessId());
-            } catch (java.io.IOException | InterruptedException ioe) {
+            } catch (java.io.IOException ioe) {
                 log.error("IOException UploadFromHome", ioe);
                 message = "Removing symlink from user home failed";
                 status = Response.Status.NOT_ACCEPTABLE;
                 cr.setResult("error");
+            } catch (InterruptedException ie) {
+                log.error("InterruptedException UploadFromHome", ie);
+                message = "Removing symlink from user home failed";
+                status = Response.Status.NOT_ACCEPTABLE;
+                cr.setResult("error");
+                Thread.currentThread().interrupt();
             }
         }
         if (so != null && StepStatus.DONE.equals(so.getBearbeitungsstatusEnum())) {
