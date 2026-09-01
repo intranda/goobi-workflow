@@ -663,6 +663,17 @@ public class Helper implements Serializable, ServletContextListener {
         return login == null ? null : login.getMyBenutzer();
     }
 
+    /**
+     * Returns the table size configured for the currently logged in user. Falls back to the default of 10 rows when no user is available, for
+     * instance when the call happens outside of a request scope.
+     *
+     * @return the number of rows to display per page, never null
+     */
+    public static Integer getCurrentUserTableSize() {
+        User user = getCurrentUser();
+        return user == null ? Integer.valueOf(10) : user.getTabellengroesse();
+    }
+
     public static LoginBean getLoginBean() {
         LoginBean bean = (LoginBean) getBeanByName("LoginForm", LoginBean.class);
         try {
