@@ -121,10 +121,10 @@ public final class PropertyParser {
     private static List<String> buildStringList(Process inProcess, Step step) {
         Process process = inProcess;
 
-        if (process == null) {
+        if (process == null && step != null) {
             process = step.getProzess();
         }
-        if (process.isIstTemplate()) {
+        if (process == null || process.isIstTemplate()) {
             return Collections.emptyList();
         }
 
