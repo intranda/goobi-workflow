@@ -654,9 +654,13 @@ public class User extends AbstractJournal implements DatabaseObject {
 
     public List<SelectItem> getAvailableDashboards() {
         List<SelectItem> dashboards = new ArrayList<>();
-        Institution currentInstitution = Helper.getCurrentUser().getInstitution();
-        List<InstitutionConfigurationObject> configuredDashboards = currentInstitution.getAllowedDashboardPlugins();
         dashboards.add(new SelectItem("", Helper.getTranslation("user_noDashboad")));
+        User currentUser = Helper.getCurrentUser();
+        if (currentUser == null) {
+            return dashboards;
+        }
+        Institution currentInstitution = currentUser.getInstitution();
+        List<InstitutionConfigurationObject> configuredDashboards = currentInstitution.getAllowedDashboardPlugins();
         for (InstitutionConfigurationObject ico : configuredDashboards) {
             if (currentInstitution.isAllowAllPlugins() || ico.isSelected()) {
                 dashboards.add(new SelectItem(ico.getObject_name(), Helper.getTranslation(ico.getObject_name())));

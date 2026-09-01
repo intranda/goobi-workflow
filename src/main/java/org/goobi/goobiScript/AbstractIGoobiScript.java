@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.goobi.beans.User;
+
 import de.sub.goobi.helper.Helper;
 
 public abstract class AbstractIGoobiScript implements IGoobiScript {
@@ -116,7 +118,8 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
         this.processes = processes;
         this.parameters = parameters;
         this.command = command;
-        username = Helper.getCurrentUser().getNachVorname();
+        User currentUser = Helper.getCurrentUser();
+        username = currentUser == null ? "" : currentUser.getNachVorname();
         starttime = System.currentTimeMillis();
         return new ArrayList<>();
     }
