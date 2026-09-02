@@ -86,7 +86,8 @@
                     global="false">
                     <p:ajax
                         event="complete"
-                        listener="#{Metadaten.onComplete}" />
+                        listener="#{Metadaten.onComplete}"
+                        update=":thumbnailsForm :openseadragonform :metseditorPaginationForm:meSelectPagesBox:pagePaginationList" />
                 </p:progressBar>
             </h:panelGroup>
 

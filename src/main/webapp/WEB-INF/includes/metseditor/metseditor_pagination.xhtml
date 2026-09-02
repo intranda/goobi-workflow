@@ -66,6 +66,7 @@
                                             <h:panelGroup rendered="#{page.type != 'div'}" styleClass="pagination__left__page__item">
                                                 <button jsf:id="deletePageArea" class="btn btn-outline btn-icon" title="#{msgs.mets_deletePageArea}" jsf:action="#{Metadaten.deletePageArea(page.docStruct)}" data-renderimage="true">
                                                     <util:icon icon="trash" />
+                                                    <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList :thumbnailsForm :openseadragonform"/>
                                                 </button>
                                             </h:panelGroup>
                                         </div>
@@ -222,7 +223,7 @@
                                                         <util:icon-text
                                                             icon="chevron-up"
                                                             text="#{msgs.moveSeltectedPagesUp}" />
-                                                        <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
+                                                        <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList :thumbnailsForm :openseadragonform"/>
                                                     </button>
                                                     <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split flex-grow-0" data-bs-toggle="dropdown" aria-expanded="false">
                                                         <span class="visually-hidden">Toggle Dropdown</span>
@@ -236,7 +237,7 @@
                                                                 data-disable-on-ajax="group"
                                                                 data-ajax-group="pageMoveButtons">
                                                                 10
-                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
+                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList :thumbnailsForm :openseadragonform"/>
                                                             </button>
                                                         </li>
                                                         <li>
@@ -247,7 +248,7 @@
                                                                 data-disable-on-ajax="group"
                                                                 data-ajax-group="pageMoveButtons">
                                                                 50
-                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
+                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList :thumbnailsForm :openseadragonform"/>
                                                             </button>
                                                         </li>
                                                         <li>
@@ -258,7 +259,7 @@
                                                                 data-disable-on-ajax="group"
                                                                 data-ajax-group="pageMoveButtons">
                                                                 100
-                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
+                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList :thumbnailsForm :openseadragonform"/>
                                                             </button>
                                                         </li>
                                                         <li>
@@ -269,7 +270,7 @@
                                                                 data-disable-on-ajax="group"
                                                                 data-ajax-group="pageMoveButtons">
                                                                 1000
-                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
+                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList :thumbnailsForm :openseadragonform"/>
                                                             </button>
                                                         </li>
                                                     </ol>
@@ -289,7 +290,7 @@
                                                         <util:icon-text
                                                             icon="chevron-down"
                                                             text="#{msgs.moveSeltectedPagesDown}" />
-                                                        <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
+                                                        <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList :thumbnailsForm :openseadragonform"/>
                                                     </button>
                                                     <button type="button" class="btn btn-blank dropdown-toggle dropdown-toggle-split flex-grow-0" data-bs-toggle="dropdown" aria-expanded="false">
                                                         <span class="visually-hidden">Toggle Dropdown</span>
@@ -304,7 +305,7 @@
                                                                 data-disable-on-ajax="group"
                                                                 data-ajax-group="pageMoveButtons">
                                                                 10
-                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
+                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList :thumbnailsForm :openseadragonform"/>
                                                             </button>
                                                         </li>
                                                         <li>
@@ -315,7 +316,7 @@
                                                                 data-disable-on-ajax="group"
                                                                 data-ajax-group="pageMoveButtons">
                                                                 50
-                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
+                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList :thumbnailsForm :openseadragonform"/>
                                                             </button>
                                                         </li>
                                                         <li>
@@ -326,7 +327,7 @@
                                                                 data-disable-on-ajax="group"
                                                                 data-ajax-group="pageMoveButtons">
                                                                 100
-                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
+                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList :thumbnailsForm :openseadragonform"/>
                                                             </button>
                                                         </li>
                                                         <li>
@@ -337,7 +338,7 @@
                                                                 data-disable-on-ajax="group"
                                                                 data-ajax-group="pageMoveButtons">
                                                                 1000
-                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList"/>
+                                                                <f:ajax execute="@form" render="meSelectPagesBox:pagePaginationList :thumbnailsForm :openseadragonform"/>
                                                             </button>
                                                         </li>
                                                     </ol>
