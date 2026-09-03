@@ -64,6 +64,14 @@ public class ImageTest extends AbstractTest {
 
     private Process process;
 
+    /**
+     * Image urls carry a "?v=&lt;lastModified&gt;" cache busting parameter is not stable across test
+     * runs, so comparisons against expected urls strip it first.
+     */
+    private static String withoutCacheBuster(String url) {
+        return url.replaceFirst("\\?v=\\d+$", "");
+    }
+
     @BeforeEach
     public void setUp() throws Exception {
         process = MockProcess.createProcess();
@@ -100,22 +108,24 @@ public class ImageTest extends AbstractTest {
             Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
             assertNotNull(image);
             assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/1000,/0/default.jpg",
-                    image.getBookmarkUrl());
+                    withoutCacheBuster(image.getBookmarkUrl()));
             assertEquals("00000001.tif", image.getImageName());
             assertEquals(Paths.get(process.getImagesTifDirectory(false), "00000001.tif").toString(), image.getImagePath().toString());
             assertEquals("jpeg", image.getLargeImageFormat());
             assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/600,/0/default.jpg",
-                    image.getLargeThumbnailUrl());
-            assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/info.json", image.getObjectUrl());
+                    withoutCacheBuster(image.getLargeThumbnailUrl()));
+            assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/info.json",
+                    withoutCacheBuster(image.getObjectUrl()));
             assertEquals(1, image.getOrder());
             assertEquals(640, image.getSize().getWidth(), 0);
             assertEquals(480, image.getSize().getHeight(), 0);
             assertEquals("jpeg", image.getThumbnailFormat());
             assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/200,/0/default.jpg",
-                    image.getThumbnailUrl());
+                    withoutCacheBuster(image.getThumbnailUrl()));
             assertEquals("00000001.tif", image.getTooltip());
             assertEquals(Type.image, image.getType());
-            assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/info.json", image.getUrl());
+            assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/info.json",
+                    withoutCacheBuster(image.getUrl()));
 
         }
     }
@@ -169,14 +179,14 @@ public class ImageTest extends AbstractTest {
             Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
             assertNotNull(image);
             assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/200,/0/default.jpg",
-                    image.getThumbnailUrl());
+                    withoutCacheBuster(image.getThumbnailUrl()));
             assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/600,/0/default.jpg",
-                    image.getLargeThumbnailUrl());
+                    withoutCacheBuster(image.getLargeThumbnailUrl()));
             image.createThumbnailUrls(500);
             assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/500,/0/default.jpg",
-                    image.getThumbnailUrl());
+                    withoutCacheBuster(image.getThumbnailUrl()));
             assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/1500,/0/default.jpg",
-                    image.getLargeThumbnailUrl());
+                    withoutCacheBuster(image.getLargeThumbnailUrl()));
 
         }
     }

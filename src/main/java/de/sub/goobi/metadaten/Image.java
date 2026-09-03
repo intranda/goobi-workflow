@@ -199,9 +199,9 @@ public class Image {
         this.tooltip = filename;
         //handle pdfs like images since they can be read as such by the contentServer
         if (Type.image.equals(this.type) || Type.pdf.equals(this.type)) {
-            this.bookmarkUrl = createThumbnailUrl(process, 1000, imageFolderName, filename);
-            this.objectUrl = createIIIFUrl(process, imageFolderName, filename);
-            maxUrl = createMaxUrl(process, imageFolderName, filename);
+            this.bookmarkUrl = appendCacheBuster(createThumbnailUrl(process, 1000, imageFolderName, filename), this.imagePath);
+            this.objectUrl = appendCacheBuster(createIIIFUrl(process, imageFolderName, filename), this.imagePath);
+            maxUrl = appendCacheBuster(createMaxUrl(process, imageFolderName, filename), this.imagePath);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type) || Type.object2vr.equals(this.type)) {
             this.objectUrl = create3DObjectUrl(process, imageFolderName, filename);
         } else if (Type.audio.equals(this.type) || Type.video.equals(this.type) || Type.unknown.equals(this.type)) {
@@ -287,13 +287,30 @@ public class Image {
 
     private String replaceSizeInUri(String inUuri, int size) {
         String uri = inUuri;
-        Pattern pattern = Pattern.compile("(.*\\/full\\/)\\d+,\\d*(\\/\\d+\\/\\w+\\.\\w+)");
+        Pattern pattern = Pattern.compile("(.*\\/full\\/)\\d+,\\d*(\\/\\d+\\/\\w+\\.\\w+)(\\?.*)?");
         Matcher matcher = pattern.matcher(uri);
         if (matcher.matches()) {
-            uri = matcher.group(1) + size + "," + matcher.group(2);
+            uri = matcher.group(1) + size + "," + matcher.group(2) + (matcher.group(3) != null ? matcher.group(3) : "");
         }
 
         return uri;
+    }
+
+    /**
+     * Appends a cache busting query parameter based on the image file's last modified timestamp.
+     *
+     * @param url The url to append the cache busting parameter to
+     * @param imagePath The path of the image file backing this url
+     * @return The url with an added cache busting parameter, or the unmodified url if the file's last modified date could not be determined
+     */
+    private static String appendCacheBuster(String url, Path imagePath) {
+        try {
+            long lastModified = StorageProvider.getInstance().getLastModifiedDate(imagePath);
+            return url + (url.indexOf('?') >= 0 ? "&" : "?") + "v=" + lastModified;
+        } catch (IOException e) {
+            log.debug("Could not determine last modified date of {} for cache busting", imagePath, e);
+            return url;
+        }
     }
 
     /**
@@ -307,8 +324,9 @@ public class Image {
     public void createThumbnailUrls(int size, Process process, String imageFoldername, String filename) {
         //handle pdfs like images since they can be read as such by the contentServer
         if (Type.image.equals(this.type) || Type.pdf.equals(this.type)) {
-            this.thumbnailUrl = createThumbnailUrl(process, size, imageFoldername, filename);
-            this.largeThumbnailUrl = createThumbnailUrl(process, size * LARGE_THUMBNAIL_SIZE_FACTOR, imageFoldername, filename);
+            this.thumbnailUrl = appendCacheBuster(createThumbnailUrl(process, size, imageFoldername, filename), this.imagePath);
+            this.largeThumbnailUrl =
+                    appendCacheBuster(createThumbnailUrl(process, size * LARGE_THUMBNAIL_SIZE_FACTOR, imageFoldername, filename), this.imagePath);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type) || Type.object2vr.equals(this.type)) {
             this.thumbnailUrl = PLACEHOLDER_URL_3D;
         } else if (Type.unknown.equals(this.type)) {
