@@ -19,9 +19,7 @@ package org.goobi.api.rest.request;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.goobi.api.rest.response.UpdateMetadataResponse;
 import org.goobi.beans.Process;
@@ -55,7 +53,6 @@ public class DeleteProcessMetadataReq {
     }
 
     private void deleteMetadata(Prefs prefs, DigitalDocument dd, UpdateMetadataResponse resp) {
-        Set<MetadataGroup> delGroups = new HashSet<>();
         if (deleteMetadata != null) {
             for (String name : deleteMetadata) {
                 if (name.contains("/")) {
@@ -65,11 +62,11 @@ public class DeleteProcessMetadataReq {
                     String metaName = split[1];
                     MetadataGroupType mgt = prefs.getMetadataGroupTypeByName(group);
                     List<MetadataGroup> groups = dd.getLogicalDocStruct().getAllMetadataGroupsByType(mgt);
-                    delGroups.addAll(groups);
                     for (MetadataGroup delGroup : groups) {
                         List<Metadata> allMeta = new ArrayList<>(delGroup.getMetadataByType(metaName));
                         for (Metadata inMeta : allMeta) {
-                            dd.getLogicalDocStruct().removeMetadata(inMeta);
+                            // the metadata belongs to the group, not to the doc struct
+                            delGroup.removeMetadata(inMeta, false);
                         }
                     }
                 } else {
