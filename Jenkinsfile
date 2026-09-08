@@ -19,6 +19,7 @@ pipeline {
 
   parameters {
     string(name: 'RUN_SONAR_ANALYSIS', defaultValue: 'false', description: 'Manually trigger sonar analysis (tags always do it nonetheless)')
+    booleanParam(name: 'BUILD_DOCKER_IMAGE', defaultValue: false, description: 'Build & push the Docker image')
   }
 
   stages {
@@ -33,8 +34,6 @@ pipeline {
         script {
           if (env.TAG_NAME) {
             env.BUILD_VERSION = env.TAG_NAME.replaceAll('^v', '')
-          } else if (env.BRANCH_NAME == 'master') {
-            env.BUILD_VERSION = 'latest-SNAPSHOT'
           } else {
             env.BUILD_VERSION = 'dev-SNAPSHOT'
           }
@@ -80,7 +79,7 @@ pipeline {
             sh "mvn -f plugins/pom.xml clean install -U -T 1C -DskipTests -Dcheckstyle.skip=true -Djacoco.skip=true -Drevision=\$BUILD_VERSION -P '!local-development' --no-transfer-progress -fae"
             // Collect default plugin JARs into a staging dir for the Docker image (release only)
             script {
-              if (env.TAG_NAME || env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop' || env.BRANCH_NAME?.endsWith('_docker') || env.BRANCH_NAME?.startsWith('release')) {
+              if (env.TAG_NAME || env.BRANCH_NAME == 'master' || params.BUILD_DOCKER_IMAGE || env.BRANCH_NAME?.endsWith('_docker') || env.BRANCH_NAME?.startsWith('release')) {
                 sh '''#!/bin/bash -xe
                     mkdir -p target/default-plugins/plugins/{opac,GUI,step,dashboard,statistics} \
                              target/default-plugins/lib \
@@ -276,7 +275,7 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          branch 'v*'
+          tag 'v*'
           branch 'release*'
           expression { return params.RUN_SONAR_ANALYSIS == 'true' }
         }
@@ -294,9 +293,8 @@ pipeline {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 5. DEPLOY  (base + core + plugins to Nexus)
-    //    core:    master, develop
-    //    plugins: master
+    // 5. DEPLOY  (base + core to Nexus)
+    //    core:    master
     // ─────────────────────────────────────────────────────────────────────────
     stage('deploy') {
       agent {
@@ -310,7 +308,6 @@ pipeline {
         beforeAgent true
         anyOf {
           branch 'master'
-          branch 'develop'
         }
       }
       steps {
@@ -321,22 +318,7 @@ pipeline {
           ALT_REPO="-DaltDeploymentRepository=${NEXUS_BASE}/${NEXUS_PUBLIC_REPO}-releases -DaltSnapshotDeploymentRepository=${NEXUS_BASE}/${NEXUS_PUBLIC_REPO}-snapshots"
           mvn deploy -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U $ALT_REPO --no-transfer-progress
           mvn deploy -f config/workflow-base/pom.xml -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U $ALT_REPO --no-transfer-progress
-        '''
-        script {
-          if (env.BRANCH_NAME == 'master') {
-            sh "sed -i '/<parent>/,/<\\/parent>/s|<version>dev-SNAPSHOT</version>|<version>'\$BUILD_VERSION'</version>|' plugins/goobi-plugin-*/pom.xml"
-            sh '''#!/bin/bash -xe
-                ALT_REPO="-DaltDeploymentRepository=${NEXUS_BASE}/${NEXUS_PUBLIC_REPO}-releases -DaltSnapshotDeploymentRepository=${NEXUS_BASE}/${NEXUS_PUBLIC_REPO}-snapshots"
-                for plugin_dir in plugins/goobi-plugin-*/; do
-                  [ -f "${plugin_dir}module-lib/pom.xml" ] || continue
-                  mvn -f "${plugin_dir}pom.xml" -N deploy \
-                    -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U $ALT_REPO --no-transfer-progress
-                  mvn -f "${plugin_dir}module-lib/pom.xml" deploy \
-                    -Dmaven.main.skip=true -Dmaven.test.skip=true -Drevision=$BUILD_VERSION -U $ALT_REPO --no-transfer-progress
-                done
-            '''
-          }
-        }
+          '''
       }
     }
 
@@ -347,10 +329,8 @@ pipeline {
     stage('update-collection') {
       when {
         beforeAgent true
-        anyOf {
-          branch 'master'
-          branch 'develop'
-          branch 'release*'
+        not {
+          tag 'v*'
         }
       }
       agent any
@@ -373,10 +353,11 @@ pipeline {
                 rm -rf "$WORK_DIR"
               '''
             }
+          } else {
+            build job: 'goobi-workflow/goobi-workflow-collection/master',
+                    parameters: [string(name: 'UPSTREAM_BRANCH', value: env.BRANCH_NAME)],
+                    wait: false
           }
-          build job: 'goobi-workflow/goobi-workflow-collection/master',
-                  parameters: [string(name: 'UPSTREAM_BRANCH', value: env.BRANCH_NAME)],
-                  wait: false
         }
       }
     }
@@ -389,9 +370,9 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          branch 'develop'
           branch 'release*'
-          branch 'v*'
+          tag 'v*'
+          expression { return params.BUILD_DOCKER_IMAGE }
           expression { return env.BRANCH_NAME =~ /_docker$/ }
         }
       }
@@ -439,7 +420,7 @@ pipeline {
               fi
             else
               case $GIT_BRANCH in
-                origin/develop|develop)
+                origin/master|master)
                   TAGS="-t $GHCR_IMAGE_BASE:dev -t $DOCKERHUB_IMAGE_BASE:dev -t $NEXUS_IMAGE_BASE:dev"
                   SLIM_TAGS="-t $GHCR_IMAGE_BASE:dev-slim -t $DOCKERHUB_IMAGE_BASE:dev-slim -t $NEXUS_IMAGE_BASE:dev-slim"
                 ;;
@@ -499,7 +480,7 @@ pipeline {
       }
       when {
         beforeAgent true
-        branch 'v*'
+        tag 'v*'
       }
       steps {
         withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314',
