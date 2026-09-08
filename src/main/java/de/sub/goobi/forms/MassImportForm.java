@@ -36,6 +36,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
@@ -406,8 +407,7 @@ public class MassImportForm implements Serializable {
 
             // if not runnable as GoobiScript run it in the regular MassImport GUI
             List<ImportObject> answer = new ArrayList<>();
-            Batch localBatch = null; // I modified this variable's name so that it won't hide the field declared at line 164 anymore.
-            // But I've no idea WTH we would need this, given that the field itself was also used at line 364. - Zehong
+            Batch localBatch = null;
             // found list with ids
             Prefs prefs = this.template.getRegelsatz().getPreferences();
             String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
@@ -453,13 +453,20 @@ public class MassImportForm implements Serializable {
 
             }
 
-            if (answer.size() > 1) {
+            if (answer.size() > 1 && answer.stream().noneMatch(io -> io.getBatch() != null)) {
+                // the import plugin did not assign any batch, create a single batch for the complete import
                 localBatch = new Batch();
                 ProcessManager.saveBatch(localBatch);
             }
+
+            // batches assigned by the import plugin, they are saved on their first usage to get an id
+            Map<String, Batch> pluginBatches = new HashMap<>();
+
             for (ImportObject io : answer) {
 
-                if (localBatch != null && localBatch.getBatchId() != null) {
+                if (io.getBatch() != null) {
+                    io.setBatch(getSavedBatch(io.getBatch(), pluginBatches));
+                } else if (localBatch != null && localBatch.getBatchId() != null) {
                     io.setBatch(localBatch);
                 }
                 if (ImportReturnValue.ExportFinished.equals(io.getImportReturnValue())) {
@@ -517,6 +524,35 @@ public class MassImportForm implements Serializable {
         }
         this.records = "";
         return "process_import_3";
+    }
+
+    /**
+     * Make sure that the given batch is stored in the database, so that it has an id. Batches are compared by their label or name. All import objects
+     * using the same batch get the same batch instance and therefore the same batch id. When a batch is used for the first time, for instance because
+     * a new request was used, it gets saved to get its own id.
+     *
+     * @param batchToUse the batch that was assigned to an import object by the import plugin
+     * @param knownBatches all batches that have already been saved during the current import, identified by label or name
+     * @return the saved batch to use for the import object
+     */
+    private Batch getSavedBatch(Batch batchToUse, Map<String, Batch> knownBatches) {
+        String identifier = StringUtils.isNotBlank(batchToUse.getBatchLabel()) ? batchToUse.getBatchLabel() : batchToUse.getBatchName();
+        if (StringUtils.isBlank(identifier)) {
+            // the batch cannot be compared with other batches, save it individually
+            if (batchToUse.getBatchId() == null) {
+                ProcessManager.saveBatch(batchToUse);
+            }
+            return batchToUse;
+        }
+        Batch knownBatch = knownBatches.get(identifier);
+        if (knownBatch != null) {
+            return knownBatch;
+        }
+        if (batchToUse.getBatchId() == null) {
+            ProcessManager.saveBatch(batchToUse);
+        }
+        knownBatches.put(identifier, batchToUse);
+        return batchToUse;
     }
 
     /**
