@@ -556,6 +556,21 @@
                                 </span>
                             </button>
 
+                            <!-- FINISH CURRENTLY DISPLAYED TASK OF BATCH -->
+                            <button
+                                jsf:rendered="#{AktuelleSchritteForm.enableFinalizeButton and isBatchStep}"
+                                jsf:id="finishSingleStepOfBatch"
+                                jsf:action="#{AktuelleSchritteForm.batchHelper.finishSingleStepOfBatch}"
+                                class="btn btn-link "
+                                onclick="preventDoubleSubmit(this);">
+                                <span class="btn btn-success">
+                                    <util:icon icon="check" />
+                                </span>
+                                <span>
+                                    <h:outputText value="#{msgs.diesenSchrittAbschliessen}" />
+                                </span>
+                            </button>
+
                             <!-- FINISH ALL TASKS OF BATCH -->
 							<button
 								jsf:rendered="#{AktuelleSchritteForm.enableFinalizeButton and isBatchStep}"

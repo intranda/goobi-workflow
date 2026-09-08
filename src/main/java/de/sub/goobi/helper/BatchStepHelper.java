@@ -817,70 +817,121 @@ public class BatchStepHelper implements Serializable {
     public String finishBatchEdition() {
         HelperSchritte helper = new HelperSchritte();
         for (Step s : this.steps) {
-            boolean error = false;
-            if (s.getValidationPlugin() != null && s.getValidationPlugin().length() > 0) {
-                IValidatorPlugin ivp = (IValidatorPlugin) PluginLoader.getPluginByTitle(PluginType.Validation, s.getValidationPlugin());
-                if (ivp != null) {
-                    ivp.setStep(s);
-                    if (!ivp.validate()) {
-                        error = true;
-                    }
-                } else {
-                    Helper.setFehlerMeldung("ErrorLoadingValidationPlugin");
-                }
-            }
-
-            if (s.isTypImagesSchreiben()) {
-                try {
-                    HistoryAnalyserJob.updateHistory(s.getProzess());
-                } catch (IOException | SwapException | DAOException e) {
-                    Helper.setFehlerMeldung("Error while calculation of storage and images", e);
-                }
-            }
-
-            if (s.isTypBeimAbschliessenVerifizieren()) {
-                if (s.isTypMetadaten() && ConfigurationHelper.getInstance().isUseMetadataValidation()) {
-                    MetadatenVerifizierung mv = new MetadatenVerifizierung();
-                    mv.setAutoSave(true);
-                    if (!mv.validate(s.getProzess())) {
-                        error = true;
-                    }
-                }
-                if (s.isTypImagesSchreiben()) {
-                    MetadatenImagesHelper mih = new MetadatenImagesHelper(null, null);
-                    try {
-                        if (!mih.checkIfImagesValid(s.getProzess().getTitel(), s.getProzess().getImagesOrigDirectory(false))) {
-                            error = true;
-                        }
-                    } catch (IOException | SwapException | DAOException e) {
-                        Helper.setFehlerMeldung("Error on image validation: ", e);
-                    }
-                }
-
-                loadProcessProperties(s);
-
-                for (DisplayProperty prop : processPropertyList) {
-
-                    if (AccessCondition.WRITEREQUIRED.equals(prop.getCurrentStepAccessCondition())
-                            && (prop.getValue() == null || "".equals(prop.getValue()))) {
-                        String[] parameter = { prop.getName(), s.getProzess().getTitel() };
-                        Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyEmpty", parameter));
-                        error = true;
-                    } else if (!prop.isValid()) {
-                        String[] parameter = { prop.getName(), s.getProzess().getTitel() };
-                        Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyValidation", parameter));
-                        error = true;
-                    }
-                }
-            }
-            if (!error) {
-                this.myDav.uploadFromHome(s.getProzess());
-                Step so = StepManager.getStepById(s.getId());
-                so.setEditTypeEnum(StepEditType.MANUAL_MULTI);
-                helper.CloseStepObjectAutomatic(so);
-            }
+            finishStep(s, helper);
         }
         return sb.FilterAlleStart();
+    }
+
+    /**
+     * Finish only the step that is currently displayed. The step is removed from the list of steps of the batch and the next step is displayed
+     * afterwards. If the last step of the batch was finished, the task list is displayed again.
+     *
+     * @return the navigation outcome
+     */
+    public String finishSingleStepOfBatch() {
+        Step stepToFinish = this.currentStep;
+        if (!finishStep(stepToFinish, new HelperSchritte())) {
+            // validation failed, error messages were created, stay on the current step
+            return "";
+        }
+
+        int index = this.steps.indexOf(stepToFinish);
+        if (index < 0) {
+            index = 0;
+        } else {
+            this.steps.remove(index);
+            if (index < this.processNameList.size()) {
+                this.processNameList.remove(index);
+            }
+        }
+
+        // it was the last step of the batch, nothing left to edit
+        if (this.steps.isEmpty()) {
+            return sb.FilterAlleStart();
+        }
+
+        // display the next step of the batch, if the finished one was the last of the list, display the new last one
+        Step nextStep = this.steps.get(Math.min(index, this.steps.size() - 1));
+        this.currentStep = nextStep;
+        this.processName = nextStep.getProzess().getTitel();
+        loadProcessProperties(nextStep);
+        loadDisplayableMetadata(nextStep);
+        // try to load the same step in step-managed-bean
+        sb.setMySchritt(nextStep);
+        return "";
+    }
+
+    /**
+     * Validate and close a single step of the batch
+     *
+     * @param s the step to close
+     * @param helper helper class used to close the step
+     * @return true if the step was closed, false if a validation error occurred
+     */
+    private boolean finishStep(Step s, HelperSchritte helper) {
+        boolean error = false;
+        if (s.getValidationPlugin() != null && s.getValidationPlugin().length() > 0) {
+            IValidatorPlugin ivp = (IValidatorPlugin) PluginLoader.getPluginByTitle(PluginType.Validation, s.getValidationPlugin());
+            if (ivp != null) {
+                ivp.setStep(s);
+                if (!ivp.validate()) {
+                    error = true;
+                }
+            } else {
+                Helper.setFehlerMeldung("ErrorLoadingValidationPlugin");
+            }
+        }
+
+        if (s.isTypImagesSchreiben()) {
+            try {
+                HistoryAnalyserJob.updateHistory(s.getProzess());
+            } catch (IOException | SwapException | DAOException e) {
+                Helper.setFehlerMeldung("Error while calculation of storage and images", e);
+            }
+        }
+
+        if (s.isTypBeimAbschliessenVerifizieren()) {
+            if (s.isTypMetadaten() && ConfigurationHelper.getInstance().isUseMetadataValidation()) {
+                MetadatenVerifizierung mv = new MetadatenVerifizierung();
+                mv.setAutoSave(true);
+                if (!mv.validate(s.getProzess())) {
+                    error = true;
+                }
+            }
+            if (s.isTypImagesSchreiben()) {
+                MetadatenImagesHelper mih = new MetadatenImagesHelper(null, null);
+                try {
+                    if (!mih.checkIfImagesValid(s.getProzess().getTitel(), s.getProzess().getImagesOrigDirectory(false))) {
+                        error = true;
+                    }
+                } catch (IOException | SwapException | DAOException e) {
+                    Helper.setFehlerMeldung("Error on image validation: ", e);
+                }
+            }
+
+            loadProcessProperties(s);
+
+            for (DisplayProperty prop : processPropertyList) {
+
+                if (AccessCondition.WRITEREQUIRED.equals(prop.getCurrentStepAccessCondition())
+                        && (prop.getValue() == null || "".equals(prop.getValue()))) {
+                    String[] parameter = { prop.getName(), s.getProzess().getTitel() };
+                    Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyEmpty", parameter));
+                    error = true;
+                } else if (!prop.isValid()) {
+                    String[] parameter = { prop.getName(), s.getProzess().getTitel() };
+                    Helper.setFehlerMeldung(Helper.getTranslation("BatchPropertyValidation", parameter));
+                    error = true;
+                }
+            }
+        }
+        if (!error) {
+            this.myDav.uploadFromHome(s.getProzess());
+            Step so = StepManager.getStepById(s.getId());
+            so.setEditTypeEnum(StepEditType.MANUAL_MULTI);
+            helper.CloseStepObjectAutomatic(so);
+        }
+        return !error;
     }
 
     public List<String> getScriptnames() {
