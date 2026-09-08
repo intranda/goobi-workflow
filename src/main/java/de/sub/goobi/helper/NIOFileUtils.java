@@ -267,7 +267,7 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     public static final DirectoryStream.Filter<Path> imageOrPdfNameFilter =
-            path -> checkImageType(path.getFileName().toString()) || checkPdfType(path.toString());
+            path -> checkImageType(path.getFileName().toString()) || checkPdfType(path.getFileName().toString());
 
     public static final DirectoryStream.Filter<Path> imageNameFilter = path -> checkImageType(path.getFileName().toString());
 
