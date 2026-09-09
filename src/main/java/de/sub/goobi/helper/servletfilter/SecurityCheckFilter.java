@@ -26,8 +26,13 @@ package de.sub.goobi.helper.servletfilter;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.managedbeans.LoginBean;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -40,7 +45,9 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class SecurityCheckFilter implements Filter {
 
     @Inject // NOSONAR needs to be a field injection, as the been constructor does not allow arguments
@@ -63,6 +70,7 @@ public class SecurityCheckFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         String imgSrc = getImgSrcHeader();
+        String formAction = getFormActionHeader();
 
         HttpServletResponse hres = (HttpServletResponse) response;
         hres.setHeader("X-Content-Type-Options", "nosniff");
@@ -72,7 +80,7 @@ public class SecurityCheckFilter implements Filter {
                 "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
                         + "style-src 'self' 'unsafe-inline'; " + imgSrc + "; "
                         + "font-src 'self' data:; connect-src 'self' ws: wss:; "
-                        + "frame-ancestors 'self'; form-action 'self'");
+                        + "frame-ancestors 'self'; " + formAction);
         if (request.isSecure()) {
             hres.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
         }
@@ -99,5 +107,48 @@ public class SecurityCheckFilter implements Filter {
             imgSrc += " " + String.join(" ", additionalImgSrc);
         }
         return imgSrc;
+    }
+
+    /**
+     * Builds the form-action directive. Besides the own host it contains the origins of the configured OpenID Connect endpoints, as the login and
+     * logout buttons are rendered inside of a JSF form. The browser enforces form-action on the complete redirect chain of a form submission, so a
+     * redirect to the identity provider would be blocked otherwise.
+     */
+    private static String getFormActionHeader() {
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+        Set<String> sources = new LinkedHashSet<>();
+        if (config.isUseOpenIDConnect()) {
+            addOrigin(sources, config.getOIDCAuthEndpoint());
+            addOrigin(sources, config.getOIDCLogoutEndpoint());
+        }
+        sources.addAll(config.getAdditionalCspFormActionDomains());
+
+        String formAction = "form-action 'self'";
+        if (!sources.isEmpty()) {
+            formAction += " " + String.join(" ", sources);
+        }
+        return formAction;
+    }
+
+    /**
+     * Reduces an endpoint url to its origin (scheme, host and - if given - port) and adds it to the given collection.
+     */
+    private static void addOrigin(Set<String> sources, String endpoint) {
+        if (StringUtils.isBlank(endpoint)) {
+            return;
+        }
+        try {
+            URI uri = new URI(endpoint.trim());
+            if (uri.getScheme() == null || uri.getHost() == null) {
+                return;
+            }
+            StringBuilder origin = new StringBuilder(uri.getScheme()).append("://").append(uri.getHost());
+            if (uri.getPort() != -1) {
+                origin.append(':').append(uri.getPort());
+            }
+            sources.add(origin.toString());
+        } catch (URISyntaxException e) {
+            log.warn("Cannot use '{}' as CSP form-action source, it is not a valid url.", endpoint);
+        }
     }
 }

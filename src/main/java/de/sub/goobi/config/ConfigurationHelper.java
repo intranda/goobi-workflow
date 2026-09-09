@@ -1440,4 +1440,8 @@ public final class ConfigurationHelper implements Serializable {
     public List<String> getAdditionalCspImgSrcDomains() {
         return getLocalList("cspImgSrcAdditionalSources");
     }
+
+    public List<String> getAdditionalCspFormActionDomains() {
+        return getLocalList("cspFormActionAdditionalSources");
+    }
 }
