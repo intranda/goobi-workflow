@@ -134,6 +134,14 @@ public class EasydbResponseObject {
             if (value != null) {
                 if (value instanceof LinkedHashMap) {
                     readObjectValues(prefix + key + ".", (LinkedHashMap<String, Object>) value);
+                } else if (value instanceof List) {
+                    List<Object> list = (List<Object>) value;
+                    for (int i = 0; i < list.size(); i++) {
+                        Object item = list.get(i);
+                        if (item instanceof LinkedHashMap) {
+                            readObjectValues(prefix + key + "." + i + ".", (LinkedHashMap<String, Object>) item);
+                        }
+                    }
                 } else if (value instanceof String) {
                     metadata.put(prefix + key, (String) value);
                 } else if (value instanceof Integer) {

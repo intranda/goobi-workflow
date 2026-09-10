@@ -22,7 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -108,6 +110,78 @@ public class EasydbResponseObjectTest {
         // nested map is traversed recursively: "nested_obj.label"
         assertEquals("My Label", obj.getMetadata().get("item.nested_obj.label"));
         assertEquals("5", obj.getMetadata().get("item.nested_obj.count"));
+    }
+
+    @Test
+    public void testArrayOfObjectsIsIndexed() {
+        Map<String, Object> objectMap = new LinkedHashMap<>();
+        objectMap.put("_objecttype", "artefact_new");
+        objectMap.put("_uuid", "uuid-1");
+        objectMap.put("_global_object_id", "gid-1");
+        objectMap.put("_system_object_id", 1);
+
+        Map<String, Object> title0 = new LinkedHashMap<>();
+        title0.put("title", "Piratenflagge");
+        Map<String, Object> title1 = new LinkedHashMap<>();
+        title1.put("title", "234234");
+        List<Object> titles = new ArrayList<>();
+        titles.add(title0);
+        titles.add(title1);
+
+        Map<String, Object> artefactData = new LinkedHashMap<>();
+        artefactData.put("_nested:artefact_new__titles", titles);
+        artefactData.put("artefact_description", "Artefaktbeschreibung");
+        artefactData.put("reference_number", "Referenznummer");
+        objectMap.put("artefact_new", artefactData);
+
+        EasydbResponseObject obj = new EasydbResponseObject(objectMap);
+
+        assertEquals("Piratenflagge", obj.getMetadata().get("artefact_new._nested:artefact_new__titles.0.title"));
+        assertEquals("234234", obj.getMetadata().get("artefact_new._nested:artefact_new__titles.1.title"));
+        assertEquals("Artefaktbeschreibung", obj.getMetadata().get("artefact_new.artefact_description"));
+        assertEquals("Referenznummer", obj.getMetadata().get("artefact_new.reference_number"));
+    }
+
+    @Test
+    public void testEmptyArrayProducesNoMetadataEntries() {
+        Map<String, Object> objectMap = new LinkedHashMap<>();
+        objectMap.put("_objecttype", "artefact_new");
+        objectMap.put("_uuid", "uuid-2");
+        objectMap.put("_global_object_id", "gid-2");
+        objectMap.put("_system_object_id", 2);
+
+        Map<String, Object> artefactData = new LinkedHashMap<>();
+        artefactData.put("_nested:artefact_new__titles", new ArrayList<>());
+        artefactData.put("name", "Test");
+        objectMap.put("artefact_new", artefactData);
+
+        EasydbResponseObject obj = new EasydbResponseObject(objectMap);
+
+        assertFalse(obj.getMetadata().containsKey("artefact_new._nested:artefact_new__titles.0.title"));
+        assertEquals("Test", obj.getMetadata().get("artefact_new.name"));
+    }
+
+    @Test
+    public void testArrayWithSingleEntryUsesIndexZero() {
+        Map<String, Object> objectMap = new LinkedHashMap<>();
+        objectMap.put("_objecttype", "artefact_new");
+        objectMap.put("_uuid", "uuid-3");
+        objectMap.put("_global_object_id", "gid-3");
+        objectMap.put("_system_object_id", 3);
+
+        Map<String, Object> entry = new LinkedHashMap<>();
+        entry.put("title", "only title");
+        List<Object> titles = new ArrayList<>();
+        titles.add(entry);
+
+        Map<String, Object> artefactData = new LinkedHashMap<>();
+        artefactData.put("_nested:artefact_new__titles", titles);
+        objectMap.put("artefact_new", artefactData);
+
+        EasydbResponseObject obj = new EasydbResponseObject(objectMap);
+
+        assertEquals("only title", obj.getMetadata().get("artefact_new._nested:artefact_new__titles.0.title"));
+        assertFalse(obj.getMetadata().containsKey("artefact_new._nested:artefact_new__titles.1.title"));
     }
 
     @Test
