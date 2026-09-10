@@ -141,18 +141,18 @@
                                         <div class="form-group form-group--flex #{Metadaten.paginierungArt eq '6' ? 'px-0' : ''}">
                                             <div class="row justify-content-between">
                                                 <div class="#{Metadaten.paginierungArt eq '6' ? 'd-none' : 'col ps-1'}">
-                                                    <label for="paginationPrefix" class="visually-hidden">#{msgs.Prefix}</label>
+                                                    <label for="paginationPrefix" class="visually-hidden">#{msgs.prefix}</label>
                                                     <h:inputText id="paginationPrefix" styleClass="form-control" value="#{Metadaten.paginationPrefix}">
-                                                        <f:passThroughAttribute name="placeholder" value="#{msgs.Prefix}"/>
+                                                        <f:passThroughAttribute name="placeholder" value="#{msgs.prefix}"/>
                                                     </h:inputText>
                                                 </div>
                                                 <div class="#{Metadaten.paginierungArt eq '6' ? 'col' : 'col-4 ps-1'}">
                                                     <h:inputText id="paginierungWert" pt:aria-label="#{msgs.wert}" styleClass="form-control" forceId="true" value="#{Metadaten.paginierungWert}"/>
                                                 </div>
                                                 <div class="#{Metadaten.paginierungArt eq '6' ? 'd-none' : 'col pe-1'}">
-                                                    <label for="paginationSuffix" class="visually-hidden">#{msgs.Suffix}</label>
+                                                    <label for="paginationSuffix" class="visually-hidden">#{msgs.suffix}</label>
                                                     <h:inputText id="paginationSuffix" styleClass="form-control" value="#{Metadaten.paginationSuffix}">
-                                                        <f:passThroughAttribute name="placeholder" value="#{msgs.Suffix}"/>
+                                                        <f:passThroughAttribute name="placeholder" value="#{msgs.suffix}"/>
                                                     </h:inputText>
                                                 </div>
                                             </div>
