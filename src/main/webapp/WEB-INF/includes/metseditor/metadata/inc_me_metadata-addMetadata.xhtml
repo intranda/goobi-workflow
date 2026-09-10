@@ -112,11 +112,10 @@
                                             </div>
                                             <div class="col-1" style="text-align: center;">
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'dante'}">
-                                                    <button type="button" jsf:id="openDanteSearchModal" class="btn danteIndexTrigger" title="#{msgs.search}" onclick="$('#danteSearchBox').modal('show');">
-                                                        <img class="color-icon" style="width: 16px;" alt="Dante" src="template/img/Icons_Dante_color.png"/>
-                                                        <f:setPropertyActionListener value="#{Metadaten.metadatum}" target="#{Metadaten.currentMetadataToPerformSearch}"/>
-                                                        <f:ajax execute="@this" render=":danteModalContent"/>
-                                                    </button>
+                                                    <intranda:danteSearchButton metadata="#{Metadaten.metadatum}" favorites="#{[
+                        {'label': 'English', 'value': 'http://id.loc.gov/vocabulary/iso639-2/eng'},
+                        {'label': 'German', 'value': 'http://id.loc.gov/vocabulary/iso639-2/deu'},
+                        {'label': 'French', 'value': 'http://id.loc.gov/vocabulary/iso639-2/fre'}]}" />
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'easydb'}">
                                                     <button type="button" jsf:id="openEasyDbSearchModal" class="btn easydbIndexTrigger" title="#{msgs.search}" onclick="$('#easydbSearchBox').modal('show');">

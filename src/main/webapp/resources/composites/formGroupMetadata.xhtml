@@ -8,7 +8,8 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:form="http://goobi.io/form"
-    xmlns:util="http://goobi.io/util">
+    xmlns:util="http://goobi.io/util"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <composite:interface>
         <composite:attribute name="metadata" />
@@ -452,31 +453,7 @@
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
-                            <button
-                                jsf:id="danteSearch"
-                                class="btn danteIndexTrigger metadataButton"
-                                title="#{msgs.NORM_danteSearch}"
-                                aria-label="#{msgs.NORM_danteSearch}"
-                                jsf:onclick="$('#danteSearchBox').modal('show');"
-                                type="button">
-                                <img
-                                    class="color-icon"
-                                    style="width: 16px;"
-                                    alt="Dante"
-                                    src="template/img/Icons_Dante_color.png" />
-                                <f:setPropertyActionListener
-                                    value="#{cc.attrs.metadata}"
-                                    target="#{Metadaten.currentMetadataToPerformSearch}" />
-                                <f:ajax
-                                    execute="@this"
-                                    render=":danteModalContent" />
-                                <f:passThroughAttribute
-                                    name="data-bs-toggle"
-                                    value="tooltip" />
-                                <f:passThroughAttribute
-                                    name="data-bs-placement"
-                                    value="top" />
-                            </button>
+                            <intranda:danteSearchButton metadata="#{cc.attrs.metadata}" favorites="#{[{'label': 'English', 'value': 'http://id.loc.gov/vocabulary/iso639-2/eng'},{'label': 'German', 'value': 'http://id.loc.gov/vocabulary/iso639-2/deu'},{'label': 'French', 'value': 'http://id.loc.gov/vocabulary/iso639-2/fre'}]}" />
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'kulturnav'}">

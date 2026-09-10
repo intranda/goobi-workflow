@@ -1,0 +1,69 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <composite:interface>
+        <composite:attribute name="metadata" />
+        <composite:attribute name="favorites" />
+    </composite:interface>
+
+    <composite:implementation>
+        <!-- DANTE SEARCH DROPDOWN -->
+        <div
+            class="dropdown d-inline align-self-stretch"
+            title="#{msgs.NORM_danteSearch}"
+            data-bs-toggle="tooltip">
+            <button
+                jsf:id="danteDropdownToggle"
+                type="button"
+                class="btn danteIndexTrigger metadataButton dropdown-toggle color-icon h-100"
+                aria-label="#{msgs.NORM_danteSearch}"
+                aria-haspopup="true"
+                aria-expanded="false"
+                data-bs-toggle="dropdown">
+                <span class="visually-hidden">#{msgs.NORM_danteSearch}</span>
+                <img
+                    aria-hidden="true"
+                    style="width: 16px; height: 16px;"
+                    alt=""
+                    src="template/img/Icons_Dante_color.png" />
+            </button>
+            <ul class="dropdown-menu">
+                <ui:repeat
+                    var="favorite"
+                    value="#{cc.attrs.favorites}">
+                    <li>
+                        <button
+                            jsf:id="danteFavorite"
+                            type="button"
+                            class="dropdown-item"
+                            data-value="#{favorite.value}">
+                            #{favorite.label}
+                        </button>
+                    </li>
+                </ui:repeat>
+                <li>
+                    <hr class="dropdown-divider" />
+                </li>
+                <li>
+                    <button
+                        jsf:id="danteSearch"
+                        type="button"
+                        class="dropdown-item"
+                        jsf:onclick="$('#danteSearchBox').modal('show');">
+                        #{msgs.NORM_danteSearch}
+                        <f:setPropertyActionListener
+                            value="#{cc.attrs.metadata}"
+                            target="#{Metadaten.currentMetadataToPerformSearch}" />
+                        <f:ajax
+                            execute="@this"
+                            render=":danteModalContent" />
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </composite:implementation>
+</ui:composition>
