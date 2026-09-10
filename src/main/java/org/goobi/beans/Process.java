@@ -1604,7 +1604,11 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
                     images = StorageProvider.getInstance().listFiles(getImagesOrigDirectory(true), NIOFileUtils.imageOrPdfNameFilter);
                 }
                 if (images != null && !images.isEmpty()) {
-                    representativeImage = images.get(imageNo).toString();
+                    int validatedImageNo = resolveImageIndex(imageNo, images.size());
+                    if (validatedImageNo != imageNo) {
+                        log.warn("Invalid representative image index {} for process {}, falling back to first image", imageNo + 1, this.getId());
+                    }
+                    representativeImage = images.get(validatedImageNo).toString();
                 } else {
                     images = StorageProvider.getInstance().listFiles(getImagesTifDirectory(true), NIOFileUtils.objectNameFilter);
                     if (images == null || images.isEmpty()) {
@@ -1623,6 +1627,21 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
             }
         }
         return representativeImage;
+    }
+
+    /**
+     * Validate a requested representative image index against the number of available images, falling back to the first image (index 0) if the
+     * requested index is negative or too large.
+     *
+     * @param imageNo requested, zero-based image index
+     * @param numberOfImages number of available images
+     * @return a valid, zero-based image index in range [0, numberOfImages)
+     */
+    static int resolveImageIndex(int imageNo, int numberOfImages) {
+        if (imageNo < 0 || imageNo >= numberOfImages) {
+            return 0;
+        }
+        return imageNo;
     }
 
     public Map<Path, List<Path>> getAllFolderAndFiles() {

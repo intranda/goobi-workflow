@@ -940,4 +940,19 @@ public class ProcessTest extends AbstractTest {
         Process process = new Process();
         assertEquals("", process.getDisplayLastStepCloseDate());
     }
+
+    @Test
+    public void testResolveImageIndexClampsNegativeIndex() {
+        assertEquals(0, Process.resolveImageIndex(-1, 5));
+    }
+
+    @Test
+    public void testResolveImageIndexClampsTooLargeIndex() {
+        assertEquals(0, Process.resolveImageIndex(5, 5));
+    }
+
+    @Test
+    public void testResolveImageIndexKeepsValidIndex() {
+        assertEquals(2, Process.resolveImageIndex(2, 5));
+    }
 }
