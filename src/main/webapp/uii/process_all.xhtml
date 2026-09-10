@@ -190,13 +190,13 @@
                                                                 addClass="header__custom-column header__col-m"
                                                                 form="#{ProzessverwaltungForm}"
                                                                 ajaxRender="processAllProcessesBox:myform"
-                                                                value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
+                                                                value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn:indexOf(var,'.') - 1)]}"
                                                                 sortField="#{var}"
                                                                 rendered="#{LoginForm.isDisplaySortfield(var)}" />
                                                             <intranda:columnheader
                                                                 addClass="header__custom-column header__col-m"
                                                                 sortable="false"
-                                                                value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
+                                                                value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn:indexOf(var,'.') - 1)]}"
                                                                 rendered="#{!LoginForm.isDisplaySortfield(var)}" />
                                                         </c:forEach>
                                                     </ui:fragment>
@@ -623,7 +623,7 @@
     														items="#{LoginForm.listOfCustomColumns}"
     														var="var">
     														<td
-    															data-label="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}">
+    															data-label="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn:indexOf(var,'.') - 1)]}">
     															<h:outputText value="#{item.getReplacedVariable(var)}" />
     														</td>
     													</c:forEach>

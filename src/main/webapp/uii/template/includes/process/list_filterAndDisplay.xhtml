@@ -73,7 +73,7 @@
                             <button
                                 jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                                 class="dropdown-item d-flex justify-content-between">
-                                <h:outputText value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}" />
+                                <h:outputText value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn:indexOf(var,'.') - 1)]}" />
                                 <util:icon icon="#{ProzessverwaltungForm.sortField == fn:join(fn:split(var, ' '), ' ') += ' asc' ? 'sort-ascending' : ProzessverwaltungForm.sortField == fn:join(fn:split(var, ' '), ' ') += ' desc' ? 'sort-descending' : 'arrows-sort'}" />
                                 <f:setPropertyActionListener
                                     target="#{ProzessverwaltungForm.sortField}"
