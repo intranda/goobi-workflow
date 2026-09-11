@@ -7,6 +7,7 @@ import {
     restoreAllScrollPositions,
     saveAllScrollPositions,
 } from './modules/saveScrollPosition';
+import { scrollAllToBottom } from './modules/scrollToBottom';
 import { initAutosave } from './modules/metseditor/autosave';
 import { initRaceGuard } from './modules/metseditor/raceGuard';
 import { AjaxButtonManager } from './modules/ajax/buttonManager';
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     focusOnLoad();
     initSaveScrollPosition();
     restoreAllScrollPositions();
+    scrollAllToBottom();
     initAutosave();
     initRaceGuard();
 });
@@ -49,6 +51,7 @@ if(typeof faces !== "undefined") {
                 initSaveScrollPosition();
                 handleScrollPositionReset(data.source?.getAttribute('data-reset-scroll-positions'));
                 restoreAllScrollPositions();
+                scrollAllToBottom();
                 initAutosave();
                 if (data.source?.hasAttribute('data-focus-on-load') || data.source?.hasAttribute('data-focus-after-load')) {
                     focusOnLoad();
