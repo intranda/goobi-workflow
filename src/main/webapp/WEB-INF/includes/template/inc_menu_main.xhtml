@@ -299,13 +299,16 @@
                                         rendered="#{LoginForm.hasRole('Admin_ruleset_editor') and NavigationForm.showConfigEditor}"
                                         icon="file-pencil"/>
 
-                                <!-- SWAGGER-API -->
-                                <intranda:menuItem
-                                        id="a153"
-                                        parentMenu="menu_administration"
-                                        label="#{msgs.apiDescription}"
-                                        action="restApi.xhtml"
-                                        icon="terminal"/>
+                                <!-- API description - a standalone page without the Goobi template, so it opens in its own tab -->
+                                <li>
+                                    <a id="a153"
+                                            class="dropdown-item"
+                                            href="#{request.contextPath}/uii/restApi.xhtml"
+                                            target="_blank"
+                                            rel="noopener">
+                                        <util:icon-text icon="terminal" text="#{msgs.apiDescription}" />
+                                    </a>
+                                </li>
 
                                 <!-- Superadmin -->
                                 <intranda:menuItem

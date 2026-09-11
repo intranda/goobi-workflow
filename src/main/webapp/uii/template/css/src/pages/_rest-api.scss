@@ -1,6 +1,0 @@
-// the API documentation brings its own sidebar/content layout and scrolls inside itself,
-// so it needs a defined height rather than growing the page
-#scalar-container {
-  height: calc(100vh - 13rem);
-  min-height: 40rem;
-}

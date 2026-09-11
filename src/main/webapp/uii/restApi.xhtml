@@ -1,37 +1,50 @@
-<ui:composition
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-  xmlns:h="http://xmlns.jcp.org/jsf/html"
-  xmlns:f="http://xmlns.jcp.org/jsf/core"
-  template="/uii/template/template.html"
-  xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-  >
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+    The API reference is a standalone page, opened in its own tab from the administration menu.
 
-    <ui:param name="myPageTitle" value="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" />
-    <ui:define name="breadcrumb">
-        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" noSeparator="#{true}" />
-    </ui:define>
+    It deliberately loads none of Goobi's stylesheets. Scalar ships its styles inside CSS
+    cascade layers, and unlayered rules beat layered ones no matter how specific they are, so
+    anything of Goobi's that matched a Scalar element would win - Bootstrap's viewport-relative
+    heading sizes and its .lead utility in particular.
 
-    <ui:define name="info">
-    </ui:define>
+    It is served by the Faces servlet like every other .xhtml, so SecurityCheckFilter still
+    guards it and still sets the Content-Security-Policy.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>#{msgs.apiDescription} - Goobi workflow</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="scalar-container"></div>
 
-    <ui:define name="content">
-
-    <h:outputScript name="js/dist/scalar.standalone.js?v=#{HelperForm.buildVersion}" />
-
-  		<div id="scalar-container"></div>
-
-        <script>
-	        fetch("#{request.contextPath}/api/swagger/openapi.json")
-	        .then(res => res.json())
-	        .then(json => {
-	            Scalar.createApiReference('#scalar-container', {
-	                content: json,
-	                // the Content-Security-Policy only allows fonts from 'self', so the bundled web fonts cannot be loaded
-	                withDefaultFonts: false,
-	            });
-	        })
-        </script>
-
-    </ui:define>
-</ui:composition>
+    <script src="#{request.contextPath}/resources/js/dist/scalar.standalone.js?v=#{HelperForm.buildVersion}"></script>
+    <script>
+        fetch("#{request.contextPath}/api/swagger/openapi.json")
+            .then(res => res.json())
+            .then(json => {
+                Scalar.createApiReference('#scalar-container', {
+                    content: json,
+                    // the Content-Security-Policy only allows fonts from 'self', so the bundled web fonts cannot be loaded
+                    withDefaultFonts: false,
+                    // Scalar's hosted features default to being on for localhost and the reserved
+                    // development domains, which means developers get a page users never see: an
+                    // "Ask AI" agent that uploads the OpenAPI document to api.scalar.com, and a
+                    // Developer Tools / Configure / Share / Deploy toolbar. Turn both off everywhere.
+                    agent: { disabled: true },
+                    showDeveloperTools: 'never',
+                    telemetry: false,
+                });
+            });
+    </script>
+</body>
+</html>
