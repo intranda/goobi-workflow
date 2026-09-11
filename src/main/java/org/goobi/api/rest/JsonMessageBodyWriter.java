@@ -23,9 +23,7 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.models.OpenAPI;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
@@ -49,10 +47,10 @@ public class JsonMessageBodyWriter implements MessageBodyWriter<OpenAPI> {
             MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
             OutputStream out) throws IOException, WebApplicationException {
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setDefaultPropertyInclusion(Include.NON_NULL);
-        mapper.setDefaultPropertyInclusion(Include.NON_EMPTY);
-        mapper.writeValue(out, openAPI);
+        // Json.mapper() is the mapper swagger-core configures for OpenAPI documents. A plain ObjectMapper writes the swagger enums by their Java
+        // name ("APIKEY" instead of "apiKey"), drops security requirements whose scope list is empty and leaks swagger-internal fields, none of
+        // which the API documentation UI can read.
+        Json.mapper().writeValue(out, openAPI);
 
     }
 
