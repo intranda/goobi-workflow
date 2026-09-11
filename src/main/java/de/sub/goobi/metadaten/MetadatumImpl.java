@@ -181,6 +181,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     private List<MetadataGeneration> generationRules = new ArrayList<>();
 
+    private Item favorite;
+
     /**
      * Allgemeiner Konstruktor.
      *
@@ -360,7 +362,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 MetadataGeneration mg = (MetadataGeneration) item.getAdditionalData();
                 generationRules.add(mg);
             }
-
         }
     }
 
@@ -1124,5 +1125,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     @Override
     public void setRestricted(boolean restricted) {
         md.setAccessRestrict(restricted);
+    }
+
+    public void selectDanteFavorite() {
+        md.setValue(favorite.getLabel());
+        md.setAuthorityFile(DANTE, "https://uri.gbv.de/terminology/dante/", favorite.getField());
     }
 }

@@ -112,10 +112,7 @@
                                             </div>
                                             <div class="col-1" style="text-align: center;">
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'dante'}">
-                                                    <intranda:danteSearchButton metadata="#{Metadaten.metadatum}" favorites="#{[
-                        {'label': 'English', 'value': 'http://id.loc.gov/vocabulary/iso639-2/eng'},
-                        {'label': 'German', 'value': 'http://id.loc.gov/vocabulary/iso639-2/deu'},
-                        {'label': 'French', 'value': 'http://id.loc.gov/vocabulary/iso639-2/fre'}]}" />
+                                                    <intranda:danteSearchButton metadata="#{Metadaten.metadatum}" favorites="#{Metadaten.metadatum.myValues.itemList}" />
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'easydb'}">
                                                     <button type="button" jsf:id="openEasyDbSearchModal" class="btn easydbIndexTrigger" title="#{msgs.search}" onclick="$('#easydbSearchBox').modal('show');">

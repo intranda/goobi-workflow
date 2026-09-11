@@ -453,7 +453,9 @@
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
-                            <intranda:danteSearchButton metadata="#{cc.attrs.metadata}" favorites="#{[{'label': 'English', 'value': 'http://id.loc.gov/vocabulary/iso639-2/eng'},{'label': 'German', 'value': 'http://id.loc.gov/vocabulary/iso639-2/deu'},{'label': 'French', 'value': 'http://id.loc.gov/vocabulary/iso639-2/fre'}]}" />
+                            <intranda:danteSearchButton
+                                metadata="#{cc.attrs.metadata}"
+                                favorites="#{cc.attrs.metadata.myValues.itemList}" />
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'kulturnav'}">

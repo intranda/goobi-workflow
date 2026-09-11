@@ -3,7 +3,8 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <composite:interface>
         <composite:attribute name="metadata" />
@@ -12,58 +13,89 @@
 
     <composite:implementation>
         <!-- DANTE SEARCH DROPDOWN -->
-        <div
-            class="dropdown d-inline align-self-stretch"
-            title="#{msgs.NORM_danteSearch}"
-            data-bs-toggle="tooltip">
-            <button
-                jsf:id="danteDropdownToggle"
-                type="button"
-                class="btn danteIndexTrigger metadataButton dropdown-toggle color-icon h-100"
-                aria-label="#{msgs.NORM_danteSearch}"
-                aria-haspopup="true"
-                aria-expanded="false"
-                data-bs-toggle="dropdown">
-                <span class="visually-hidden">#{msgs.NORM_danteSearch}</span>
-                <img
-                    aria-hidden="true"
-                    style="width: 16px; height: 16px;"
-                    alt=""
-                    src="template/img/Icons_Dante_color.png" />
-            </button>
-            <ul class="dropdown-menu">
-                <ui:repeat
-                    var="favorite"
-                    value="#{cc.attrs.favorites}">
+        <ui:fragment rendered="#{cc.attrs.favorites.size()> 1}">
+            <div
+                class="dropdown d-inline align-self-stretch"
+                title="#{msgs.NORM_danteSearch}"
+                data-bs-toggle="tooltip">
+                <button
+                    jsf:id="danteDropdownToggle"
+                    type="button"
+                    class="btn danteIndexTrigger metadataButton dropdown-toggle color-icon h-100"
+                    aria-label="#{msgs.NORM_danteSearch}"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    data-bs-toggle="dropdown">
+                    <span class="visually-hidden">#{msgs.NORM_danteSearch}</span>
+                    <img
+                        aria-hidden="true"
+                        style="width: 16px; height: 16px;"
+                        alt=""
+                        src="template/img/Icons_Dante_color.png" />
+                </button>
+                <ul class="dropdown-menu">
+                    <ui:repeat
+                        var="favorite"
+                        value="#{cc.attrs.favorites}">
+                        <li>
+                            <button
+                                jsf:id="danteFavorite"
+                                type="button"
+                                class="dropdown-item"
+                                jsf:action="#{cc.attrs.metadata.selectDanteFavorite}">
+                                #{favorite.label}
+                                <f:ajax
+                                    execute="@this"
+                                    render="@form" />
+                                <f:setPropertyActionListener
+                                    value="#{favorite}"
+                                    target="#{cc.attrs.metadata.favorite}" />
+                            </button>
+                        </li>
+                    </ui:repeat>
+                    <li>
+                        <hr class="dropdown-divider" />
+                    </li>
                     <li>
                         <button
-                            jsf:id="danteFavorite"
+                            jsf:id="danteSearch"
                             type="button"
                             class="dropdown-item"
-                            data-value="#{favorite.value}">
-                            #{favorite.label}
+                            jsf:onclick="$('#danteSearchBox').modal('show');">
+                            #{msgs.NORM_danteSearch}
+                            <f:setPropertyActionListener
+                                value="#{cc.attrs.metadata}"
+                                target="#{Metadaten.currentMetadataToPerformSearch}" />
+                            <f:ajax
+                                execute="@this"
+                                render=":danteModalContent" />
                         </button>
                     </li>
-                </ui:repeat>
-                <li>
-                    <hr class="dropdown-divider" />
-                </li>
-                <li>
-                    <button
-                        jsf:id="danteSearch"
-                        type="button"
-                        class="dropdown-item"
-                        jsf:onclick="$('#danteSearchBox').modal('show');">
-                        #{msgs.NORM_danteSearch}
-                        <f:setPropertyActionListener
-                            value="#{cc.attrs.metadata}"
-                            target="#{Metadaten.currentMetadataToPerformSearch}" />
-                        <f:ajax
-                            execute="@this"
-                            render=":danteModalContent" />
-                    </button>
-                </li>
-            </ul>
-        </div>
+                </ul>
+            </div>
+        </ui:fragment>
+        <ui:fragment rendered="#{cc.attrs.favorites.size() == 1}">
+            <button
+                jsf:id="danteSearchBtn"
+                class="btn danteIndexTrigger metadataButton"
+                title="#{msgs.NORM_danteSearch}"
+                aria-label="#{msgs.NORM_danteSearch}"
+                jsf:onclick="$('#danteSearchBox').modal('show');"
+                type="button">
+                <img
+                    class="color-icon"
+                    style="width: 16px;"
+                    alt="Dante"
+                    src="template/img/Icons_Dante_color.png" />
+                <f:setPropertyActionListener
+                    value="#{cc.attrs.metadata}"
+                    target="#{Metadaten.currentMetadataToPerformSearch}" />
+                <f:ajax
+                    execute="@this"
+                    render=":danteModalContent" />
+            </button>
+
+        </ui:fragment>
+
     </composite:implementation>
 </ui:composition>
