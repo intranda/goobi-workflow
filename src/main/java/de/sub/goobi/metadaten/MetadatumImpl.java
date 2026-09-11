@@ -1129,6 +1129,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     public void selectDanteFavorite() {
         md.setValue(favorite.getLabel());
-        md.setAuthorityFile(DANTE, "https://uri.gbv.de/terminology/dante/", favorite.getField());
+        md.setAuthorityFile(DANTE, "https://uri.gbv.de/terminology/dante/", favorite.getValue());
     }
 }
