@@ -35,6 +35,7 @@ const sources = {
         'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
         'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js.map',
     ],
+    scalarJS: 'node_modules/@scalar/api-reference/dist/browser/standalone.js',
     css: 'uii/template/css/src/',
     cssAccessibility: 'uii/template/css/src/accessibility.scss',
     cssGlob: [
@@ -133,6 +134,14 @@ function BSCss() {
 
 function BsJs() {
     return src(sources.bsJS)
+        .pipe(dest(`${customLocation}${targetFolder.js}`));
+};
+
+// prebuilt, self-contained bundle for the API documentation on restApi.xhtml
+// the Content-Security-Policy only allows scripts from 'self', so it cannot be loaded from a CDN
+function scalarJs() {
+    return src(sources.scalarJS)
+        .pipe(rename('scalar.standalone.js'))
         .pipe(dest(`${customLocation}${targetFolder.js}`));
 };
 
@@ -379,6 +388,7 @@ function dev() {
     loadConfig();
     icons();
     BsJs();
+    scalarJs();
     watch(sources.editors, { ignoreInitial: false }, editors);
     watch(sources.media, { ignoreInitial: false }, media);
     watch(sources.legacyJS, { ignoreInitial: false }, jsLegacy);
@@ -394,6 +404,7 @@ function dev() {
 };
 const prod = parallel(
     BsJs,
+    scalarJs,
     jsLegacy,
     prodJsRollup,
     prodBSCss,

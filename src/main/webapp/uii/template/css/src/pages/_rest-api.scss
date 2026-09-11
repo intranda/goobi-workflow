@@ -1,17 +1,6 @@
-.swagger-ui {
-  .scheme-container {
-    padding: 0 !important;
-    margin: 0 !important;
-    box-shadow: none !important;
-  }
-
-  .info {
-    margin-top: 2rem !important;
-    margin-bottom: 0 !important;
-  }
-
-  .servers-title,
-  .servers {
-    display: none;
-  }
+// the API documentation brings its own sidebar/content layout and scrolls inside itself,
+// so it needs a defined height rather than growing the page
+#scalar-container {
+  height: calc(100vh - 13rem);
+  min-height: 40rem;
 }
