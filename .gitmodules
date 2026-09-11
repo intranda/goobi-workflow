@@ -1086,5 +1086,5 @@
 [submodule "plugins/goobi-plugin-step-update-archive-node"]
 	path = plugins/goobi-plugin-step-update-archive-node
 	url = ../goobi-plugin-step-update-archive-node
-    branch = master
-    ignore = all
+	branch = master
+	ignore = all
