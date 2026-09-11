@@ -46,7 +46,7 @@
                                 #{favorite.label}
                                 <f:ajax
                                     execute="@this"
-                                    render="@form" />
+                                    render="#{cc.parent.namingContainer.clientId}:inputTextDante #{cc.parent.namingContainer.clientId}:danteValue" />
                                 <f:setPropertyActionListener
                                     value="#{favorite}"
                                     target="#{cc.attrs.metadata.favorite}" />
