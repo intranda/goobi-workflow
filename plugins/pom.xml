@@ -108,6 +108,7 @@
     <module>goobi-plugin-rest-wellcome</module>
     <module>goobi-plugin-rest-wellcome-counterscript</module>
     <module>goobi-plugin-rest-wellcome-photos</module>
+    <module>goobi-plugin-statistics-basel</module>
     <module>goobi-plugin-statistics-intranda</module>
     <module>goobi-plugin-statistics-sudan-memory</module>
     <module>goobi-plugin-statistics-user-throughput</module>

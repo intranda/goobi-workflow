@@ -1088,3 +1088,8 @@
 	url = ../goobi-plugin-step-update-archive-node
 	branch = master
 	ignore = all
+[submodule "plugins/goobi-plugin-statistics-basel"]
+	path = plugins/goobi-plugin-statistics-basel
+	url = ../goobi-plugin-statistics-basel
+	branch = master
+	ignore = all
