@@ -34,6 +34,9 @@
 
 	<application>
 
+		<!-- turns navigation into post/redirect/get so the browser URL matches the rendered page -->
+		<navigation-handler>de.sub.goobi.helper.GoobiNavigationHandler</navigation-handler>
+
 		<resource-bundle>
 			<base-name>org.goobi.production.messages.MyRessourceBundle</base-name>
 			<var>msgs</var>
