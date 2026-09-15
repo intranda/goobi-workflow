@@ -1955,10 +1955,7 @@ public class Metadaten implements Serializable {
         corporates = lsCorp;
         this.myMetadaten = lsMeta;
         this.myPersonen = lsPers;
-        for (MetadataGroupImpl impl : metaGroups) {
-            this.groups.addAll(impl.getAsFlatList());
-
-        }
+        this.groups.addAll(metaGroups);
 
         /*
          * -------------------------------- die zugehörigen Seiten ermitteln --------------------------------

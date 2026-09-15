@@ -24,7 +24,6 @@ package de.sub.goobi.metadaten;
  ***************************************************************/
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.goobi.beans.Process;
@@ -160,16 +159,6 @@ public class MetadataGroupImpl {
 
     public boolean isHasGroups() {
         return !groupList.isEmpty();
-    }
-
-    public List<MetadataGroupImpl> getAsFlatList() {
-        List<MetadataGroupImpl> list = new LinkedList<>();
-        list.add(this);
-        for (MetadataGroupImpl child : groupList) {
-            list.addAll(child.getAsFlatList());
-        }
-
-        return list;
     }
 
 }
