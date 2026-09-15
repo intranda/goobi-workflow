@@ -20,7 +20,16 @@ package org.goobi.beans;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.PluginLoader;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+import de.sub.goobi.persistence.managers.InstitutionManager;
 
 public class InstitutionTest {
 
@@ -57,5 +66,56 @@ public class InstitutionTest {
         // Null fields must not throw NullPointerException:
         Institution nullFieldsInst = new Institution();
         assertEquals(nullFieldsInst.hashCode(), nullFieldsInst.hashCode());
+    }
+
+    /**
+     * The configured plugins used to be cached with an isEmpty() check, so an empty result was looked up again on every single call - and the menu
+     * asks for it once per plugin entry and request.
+     */
+    @Test
+    public void testEmptyPluginConfigurationIsLookedUpOnlyOnce() {
+        try (MockedStatic<PluginLoader> pluginLoader = Mockito.mockStatic(PluginLoader.class);
+                MockedStatic<InstitutionManager> manager = Mockito.mockStatic(InstitutionManager.class)) {
+            pluginLoader.when(() -> PluginLoader.getListOfPlugins(Mockito.any())).thenReturn(new ArrayList<>(List.of("plugin")));
+            manager.when(() -> InstitutionManager.getConfiguredDashboardPlugins(Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+            manager.when(() -> InstitutionManager.getConfiguredWorkflowPlugins(Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+            manager.when(() -> InstitutionManager.getConfiguredAdministrationPlugins(Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+            manager.when(() -> InstitutionManager.getConfiguredStatisticsPlugins(Mockito.any(), Mockito.any())).thenReturn(new ArrayList<>());
+
+            Institution institution = new Institution();
+            institution.setId(1);
+
+            institution.getAllowedDashboardPlugins();
+            institution.getAllowedDashboardPlugins();
+            institution.getAllowedWorkflowPlugins();
+            institution.getAllowedWorkflowPlugins();
+            institution.getAllowedAdministrationPlugins();
+            institution.getAllowedAdministrationPlugins();
+            institution.getAllowedStatisticsPlugins();
+            institution.getAllowedStatisticsPlugins();
+
+            manager.verify(() -> InstitutionManager.getConfiguredDashboardPlugins(Mockito.any(), Mockito.any()), Mockito.times(1));
+            manager.verify(() -> InstitutionManager.getConfiguredWorkflowPlugins(Mockito.any(), Mockito.any()), Mockito.times(1));
+            manager.verify(() -> InstitutionManager.getConfiguredAdministrationPlugins(Mockito.any(), Mockito.any()), Mockito.times(1));
+            manager.verify(() -> InstitutionManager.getConfiguredStatisticsPlugins(Mockito.any(), Mockito.any()), Mockito.times(1));
+        }
+    }
+
+    /**
+     * Without any installed plugins there is nothing to configure, so the plugin folder must not be scanned again on every call.
+     */
+    @Test
+    public void testPluginFolderIsNotScannedAgainWhenNoPluginsAreInstalled() {
+        try (MockedStatic<PluginLoader> pluginLoader = Mockito.mockStatic(PluginLoader.class)) {
+            pluginLoader.when(() -> PluginLoader.getListOfPlugins(PluginType.Dashboard)).thenReturn(new ArrayList<>());
+
+            Institution institution = new Institution();
+            institution.setId(1);
+
+            institution.getAllowedDashboardPlugins();
+            institution.getAllowedDashboardPlugins();
+
+            pluginLoader.verify(() -> PluginLoader.getListOfPlugins(PluginType.Dashboard), Mockito.times(1));
+        }
     }
 }

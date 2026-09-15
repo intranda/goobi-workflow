@@ -26,58 +26,67 @@
 package org.goobi.managedbeans;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.io.Serializable;
 
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.User;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.context.ExternalContext;
 import jakarta.inject.Named;
-import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 @Named("DashboardForm")
-@RequestScoped
+@WindowScoped
 @Log4j2
 public class DashboardBean implements Serializable {
 
     private static final long serialVersionUID = -8555010017712925180L;
 
-    @Getter
     private IDashboardPlugin plugin = null;
 
-    private boolean notInitializedYet = true;
+    // the plugin name the current plugin was loaded for, so that a changed user setting is picked up without another lookup per request
+    private String loadedPluginName = null;
 
     @PostConstruct
     public void initializePlugins() {
         User user = Helper.getCurrentUser();
-        if (user != null) {
-            String pluginName = user.getDashboardPlugin();
+        if (user == null) {
+            return;
+        }
+        String pluginName = user.getDashboardPlugin();
+        loadedPluginName = pluginName;
+        plugin = null;
 
-            if (StringUtils.isNotBlank(pluginName)
-                    && (user.getInstitution().isAllowAllPlugins() || user.getInstitution().isDashboardPluginAllowed(pluginName))) {
-                IDashboardPlugin newPlugin = (IDashboardPlugin) PluginLoader.getPluginByTitle(PluginType.Dashboard, pluginName);
-                if (newPlugin != null) {
-                    this.plugin = newPlugin;
-                }
-            }
-            notInitializedYet = false;
+        if (StringUtils.isNotBlank(pluginName)
+                && (user.getInstitution().isAllowAllPlugins() || user.getInstitution().isDashboardPluginAllowed(pluginName))) {
+            plugin = (IDashboardPlugin) PluginLoader.getPluginByTitle(PluginType.Dashboard, pluginName);
         }
     }
 
-    public String getPluginUi() {
-        if (notInitializedYet) {
+    /**
+     * Looking a plugin up scans the plugin folder, so it is only repeated when the user configured a different dashboard plugin - or when nobody was
+     * logged in yet as this bean was created.
+     */
+    public IDashboardPlugin getPlugin() {
+        User user = Helper.getCurrentUser();
+        String configuredPluginName = user == null ? null : user.getDashboardPlugin();
+        if (!Objects.equals(configuredPluginName, loadedPluginName)) {
             initializePlugins();
         }
+        return plugin;
+    }
 
+    public String getPluginUi() {
+        IDashboardPlugin plugin = getPlugin();
         if (plugin == null) {
             return "";
         }

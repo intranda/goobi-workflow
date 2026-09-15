@@ -27,8 +27,10 @@ package org.goobi.beans;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import java.util.Objects;
 
@@ -81,6 +83,9 @@ public class Institution extends AbstractJournal implements DatabaseObject, Comp
     private List<InstitutionConfigurationObject> allowedDockets = new ArrayList<>();
 
     private List<InstitutionConfigurationObject> allowedAuthentications = new ArrayList<>();
+
+    // remembers which plugin configurations were read already, so that an empty result is not looked up again on every call
+    private final Set<PluginType> loadedPluginConfigurations = EnumSet.noneOf(PluginType.class);
 
     private List<InstitutionConfigurationObject> allowedAdministrationPlugins = new ArrayList<>();
     private List<InstitutionConfigurationObject> allowedStatisticsPlugins = new ArrayList<>();
@@ -143,7 +148,7 @@ public class Institution extends AbstractJournal implements DatabaseObject, Comp
     }
 
     public List<InstitutionConfigurationObject> getAllowedAdministrationPlugins() {
-        if (allowedAdministrationPlugins.isEmpty()) {
+        if (loadedPluginConfigurations.add(PluginType.Administration)) {
             List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Administration);
             if (!pluginNames.isEmpty()) {
                 allowedAdministrationPlugins = InstitutionManager.getConfiguredAdministrationPlugins(id, pluginNames);
@@ -153,7 +158,7 @@ public class Institution extends AbstractJournal implements DatabaseObject, Comp
     }
 
     public List<InstitutionConfigurationObject> getAllowedStatisticsPlugins() {
-        if (allowedStatisticsPlugins.isEmpty()) {
+        if (loadedPluginConfigurations.add(PluginType.Statistics)) {
             List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Statistics);
             if (!pluginNames.isEmpty()) {
                 allowedStatisticsPlugins = InstitutionManager.getConfiguredStatisticsPlugins(id, pluginNames);
@@ -163,7 +168,7 @@ public class Institution extends AbstractJournal implements DatabaseObject, Comp
     }
 
     public List<InstitutionConfigurationObject> getAllowedDashboardPlugins() {
-        if (allowedDashboardPlugins.isEmpty()) {
+        if (loadedPluginConfigurations.add(PluginType.Dashboard)) {
             List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Dashboard);
             if (!pluginNames.isEmpty()) {
                 allowedDashboardPlugins = InstitutionManager.getConfiguredDashboardPlugins(id, pluginNames);
@@ -173,7 +178,7 @@ public class Institution extends AbstractJournal implements DatabaseObject, Comp
     }
 
     public List<InstitutionConfigurationObject> getAllowedWorkflowPlugins() {
-        if (allowedWorkflowPlugins.isEmpty()) {
+        if (loadedPluginConfigurations.add(PluginType.Workflow)) {
             List<String> pluginNames = PluginLoader.getListOfPlugins(PluginType.Workflow);
             if (!pluginNames.isEmpty()) {
                 allowedWorkflowPlugins = InstitutionManager.getConfiguredWorkflowPlugins(id, pluginNames);
