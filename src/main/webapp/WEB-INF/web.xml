@@ -36,6 +36,7 @@
             /WEB-INF/taglibs/image.taglib.xml;
             /WEB-INF/taglibs/layout.taglib.xml;
             /WEB-INF/taglibs/media.taglib.xml;
+            /WEB-INF/taglibs/metadata.taglib.xml;
             /WEB-INF/taglibs/notification.taglib.xml;
             /WEB-INF/taglibs/properties.taglib.xml;
             /WEB-INF/taglibs/section.taglib.xml;

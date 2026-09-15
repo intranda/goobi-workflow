@@ -561,9 +561,14 @@ fieldSet:disabled .badge > a {
   }
 }
 
-// Stack nested metadata groups visually
-.metadata-group-stacked {
-  border-left: 2px solid var(--bs-border-color);
+// Each metadata group renders as its own row (see WEB-INF/taglibs/metadata/group-box.xhtml):
+// top-level groups (level 0) as an outline box, nested groups as a field-set (same
+// .field-set/.field-set-legend pattern as formGroupPerson.xhtml/formGroupCorporate.xhtml).
+// Metadaten.groups is a flattened, depth-first list (MetadataGroupImpl#getAsFlatList) -
+// nesting beyond that one distinction is shown via indentation (module__box-level-*)
+// rather than real DOM nesting.
+.metadata-group-box + .metadata-group-box {
+  margin-top: 0.75rem;
 }
 
 $metadata-group-max-level: 3;
