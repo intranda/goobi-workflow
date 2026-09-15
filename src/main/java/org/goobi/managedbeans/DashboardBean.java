@@ -33,7 +33,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.goobi.beans.User;
 import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
-import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 
@@ -41,11 +40,20 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.context.ExternalContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import lombok.extern.log4j.Log4j2;
 
+/**
+ * Provides the dashboard plugin the main menu and the dashboard page work with.
+ *
+ * The scope is a compromise. Looking a plugin up builds a new plugin manager and scans the plugin folder, and the bean is referenced from the main
+ * menu, so request scope repeated that scan for every request. A longer scope is not an option either: the plugin instance is what holds the
+ * dashboard data, and plugins compute it in their constructor or cache it in lazy getters, so anything beyond a single view would show the numbers
+ * of the first page load until the session ends. View scope does the lookup once per rendered page and hands out fresh data on every reload.
+ */
 @Named("DashboardForm")
-@WindowScoped
+@ViewScoped
 @Log4j2
 public class DashboardBean implements Serializable {
 
@@ -53,7 +61,7 @@ public class DashboardBean implements Serializable {
 
     private IDashboardPlugin plugin = null;
 
-    // the plugin name the current plugin was loaded for, so that a changed user setting is picked up without another lookup per request
+    // the plugin name the current plugin was loaded for, so that a changed user setting is picked up without another lookup per view
     private String loadedPluginName = null;
 
     @PostConstruct
@@ -66,10 +74,22 @@ public class DashboardBean implements Serializable {
         loadedPluginName = pluginName;
         plugin = null;
 
-        if (StringUtils.isNotBlank(pluginName)
-                && (user.getInstitution().isAllowAllPlugins() || user.getInstitution().isDashboardPluginAllowed(pluginName))) {
+        if (isDashboardAvailable()) {
             plugin = (IDashboardPlugin) PluginLoader.getPluginByTitle(PluginType.Dashboard, pluginName);
         }
+    }
+
+    /**
+     * Tells whether a dashboard is to be shown at all. The main menu and the breadcrumb of every single page need to know this, and they must not
+     * pay for it: looking the plugin up scans the plugin folder, and building it runs whatever the plugin does in its constructor, which for the
+     * extended dashboard means several database queries. Only the dashboard page itself asks for the plugin, through {@link #getPlugin()}.
+     */
+    public boolean isDashboardAvailable() {
+        User user = Helper.getCurrentUser();
+        if (user == null || StringUtils.isBlank(user.getDashboardPlugin())) {
+            return false;
+        }
+        return user.getInstitution().isDashboardPluginAvailable(user.getDashboardPlugin());
     }
 
     /**

@@ -13,7 +13,7 @@
 <ui:param name="myPageTitle" value="#{msgs.goobiScriptTemplates}" />
 
 <ui:define name="breadcrumb">
-<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+<intranda:breadcrumb id="index" label="#{DashboardForm.dashboardAvailable?msgs.dashboard:msgs.startseite}" action="index" navId="a0" />
 <intranda:breadcrumb id="template_all" label="#{myPageTitle}" action="template_all" noSeparator="#{true}" />
 </ui:define>
 

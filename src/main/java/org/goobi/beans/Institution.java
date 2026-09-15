@@ -235,6 +235,22 @@ public class Institution extends AbstractJournal implements DatabaseObject, Comp
         return false;
     }
 
+    /**
+     * Tells whether the named dashboard plugin is both installed and allowed for this institution. Unlike
+     * {@link #isDashboardPluginAllowed(String)} this does not pass an institution that allows all plugins straight through, because the list of
+     * allowed plugins is built from the plugins actually found in the plugin folder. It is the same condition
+     * {@link org.goobi.beans.User#getAvailableDashboards()} uses to offer a dashboard for selection, so a name that was never selectable does not
+     * count as available either.
+     */
+    public boolean isDashboardPluginAvailable(String pluginName) {
+        for (InstitutionConfigurationObject ico : getAllowedDashboardPlugins()) {
+            if (ico.getObject_name().equals(pluginName)) {
+                return isAllowAllPlugins() || ico.isSelected();
+            }
+        }
+        return false;
+    }
+
     @Override
     public EntryType getEntryType() {
         return EntryType.INSTITUTION;

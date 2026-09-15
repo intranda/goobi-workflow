@@ -20,7 +20,7 @@
                 <ul id="main-menu-set-class" class="navbar-nav">
                     <!-- Dropdown-Menü: "Startseite" / "Home page" -->
                     <li class="nav-item #{NavigationForm.parentMenu == 'menu_start' ? 'active' : ''}">
-                        <h:commandLink rendered="#{DashboardForm.plugin == null}"
+                        <h:commandLink rendered="#{!DashboardForm.dashboardAvailable}"
                                        action="index"
                                        id="start"
                                        styleClass="nav-link">
@@ -36,7 +36,7 @@
                                     value="menu_start"/>
                         </h:commandLink>
 
-                        <h:commandLink rendered="#{DashboardForm.plugin != null}"
+                        <h:commandLink rendered="#{DashboardForm.dashboardAvailable}"
                                        action="index"
                                        id="dashboard"
                                        styleClass="nav-link">

@@ -18,7 +18,9 @@
 package org.goobi.beans;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,6 +118,56 @@ public class InstitutionTest {
             institution.getAllowedDashboardPlugins();
 
             pluginLoader.verify(() -> PluginLoader.getListOfPlugins(PluginType.Dashboard), Mockito.times(1));
+        }
+    }
+
+    private Institution institutionWithInstalledDashboards(MockedStatic<PluginLoader> pluginLoader, MockedStatic<InstitutionManager> manager,
+            String... selectedNames) {
+        List<String> installed = List.of("intranda_dashboard_extended", "intranda_dashboard_barcode");
+        List<InstitutionConfigurationObject> configured = new ArrayList<>();
+        for (String name : installed) {
+            InstitutionConfigurationObject ico = new InstitutionConfigurationObject();
+            ico.setObject_name(name);
+            ico.setSelected(List.of(selectedNames).contains(name));
+            configured.add(ico);
+        }
+        pluginLoader.when(() -> PluginLoader.getListOfPlugins(PluginType.Dashboard)).thenReturn(new ArrayList<>(installed));
+        manager.when(() -> InstitutionManager.getConfiguredDashboardPlugins(Mockito.any(), Mockito.any())).thenReturn(configured);
+
+        Institution institution = new Institution();
+        institution.setId(1);
+        return institution;
+    }
+
+    /**
+     * The menu and the breadcrumb of every page ask whether a dashboard is available, so the answer has to come from the configuration instead of
+     * from building the plugin. It has to match what the user was offered for selection: allowed by the institution and actually installed.
+     */
+    @Test
+    public void testDashboardPluginIsAvailableWhenItIsInstalledAndSelected() {
+        try (MockedStatic<PluginLoader> pluginLoader = Mockito.mockStatic(PluginLoader.class);
+                MockedStatic<InstitutionManager> manager = Mockito.mockStatic(InstitutionManager.class)) {
+            Institution institution = institutionWithInstalledDashboards(pluginLoader, manager, "intranda_dashboard_extended");
+
+            assertTrue(institution.isDashboardPluginAvailable("intranda_dashboard_extended"));
+            assertFalse(institution.isDashboardPluginAvailable("intranda_dashboard_barcode"), "the institution did not select it");
+        }
+    }
+
+    /**
+     * An institution that allows everything still only gets the plugins that are installed - unlike isDashboardPluginAllowed(), which answers true
+     * for any name at all.
+     */
+    @Test
+    public void testDashboardPluginOfAnInstitutionAllowingEverythingStillHasToBeInstalled() {
+        try (MockedStatic<PluginLoader> pluginLoader = Mockito.mockStatic(PluginLoader.class);
+                MockedStatic<InstitutionManager> manager = Mockito.mockStatic(InstitutionManager.class)) {
+            Institution institution = institutionWithInstalledDashboards(pluginLoader, manager);
+            institution.setAllowAllPlugins(true);
+
+            assertTrue(institution.isDashboardPluginAvailable("intranda_dashboard_barcode"), "nothing is selected, but everything is allowed");
+            assertFalse(institution.isDashboardPluginAvailable("intranda_dashboard_removed"), "the plugin is not installed");
+            assertTrue(institution.isDashboardPluginAllowed("intranda_dashboard_removed"), "the old check cannot tell");
         }
     }
 }

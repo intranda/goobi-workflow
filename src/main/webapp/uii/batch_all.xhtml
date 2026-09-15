@@ -20,7 +20,7 @@
 <ui:define name="breadcrumb">
 <intranda:breadcrumb
     id="dashboard"
-    label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+    label="#{DashboardForm.dashboardAvailable?msgs.dashboard:msgs.startseite}"
     action="index"
     navId="a0" />
 <intranda:breadcrumb

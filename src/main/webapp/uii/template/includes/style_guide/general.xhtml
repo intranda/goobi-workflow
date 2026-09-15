@@ -37,7 +37,7 @@
 			<ui:define name="breadcrumb">
 				<intranda:breadcrumb
 					id="index"
-					label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+					label="#{DashboardForm.dashboardAvailable?msgs.dashboard:msgs.startseite}"
 					action="index"
 					navId="a0" />
 				<intranda:breadcrumb
@@ -108,7 +108,7 @@
 	&lt;ui:define name=&quot;breadcrumb&quot;&gt;
 		&lt;intranda:breadcrumb
 			id=&quot;index&quot;
-			label=&quot;#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}&quot;
+			label=&quot;#{DashboardForm.dashboardAvailable?msgs.dashboard:msgs.startseite}&quot;
 			action=&quot;index&quot;
 			navId=&quot;a0&quot; /&gt;
 		&lt;intranda:breadcrumb

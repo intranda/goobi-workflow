@@ -14,7 +14,7 @@
     <ui:param name="myPageTitle" value="#{msgs.administrationsaufgaben}" />
 
     <ui:define name="breadcrumb">
-        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb id="index" label="#{DashboardForm.dashboardAvailable?msgs.dashboard:msgs.startseite}" action="index" navId="a0" />
         <intranda:breadcrumb id="admin" label="#{msgs.administrationsaufgaben}" action="admin.xhtml" noSeparator="#{true}" />
     </ui:define>
 
