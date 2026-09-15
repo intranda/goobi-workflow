@@ -1,0 +1,64 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:metadata="http://goobi.io/metadata"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <!-- Shared body of one metadata group: its own metadata/person/corporate fields, the "add" actions
+         (only rendered when editable - i.e. inside the group-edit modal, see group-edit-modal.xhtml) and
+         the recursive descent into child groups via metadata:group-box, which keeps propagating the same
+         editable flag down the tree.
+
+         Used both by group-box.xhtml (level 0 and level > 0 branches) and directly by group-edit-modal.xhtml
+         for the group currently being edited, so this same group can legitimately appear twice in the
+         component tree at once (once inline with editable=false, once inside the modal with editable=true) -
+         see the idSuffix handling here and in group-box.xhtml. -->
+    <c:set var="idSuffix" value="#{editable ? '-modal' : ''}" />
+
+    <ui:repeat value="#{group.metadataList}" var="metadata" varStatus="status">
+        <intranda:formGroupMetadata id="grpMetadata-#{group.metadataGroupId}#{idSuffix}" metadata="#{metadata}" renderDelete="true" renderDuplicate="true"/>
+    </ui:repeat>
+    <ui:repeat value="#{group.personList}" var="currentPerson">
+        <intranda:formGroupPerson id="grpPerson-#{group.metadataGroupId}#{idSuffix}" person="#{currentPerson}" renderDelete="true"/>
+    </ui:repeat>
+    <ui:repeat value="#{group.corporateList}" var="currentCorporate" varStatus="status">
+        <intranda:formGroupCorporate id="grpCorporate-#{group.metadataGroupId}#{idSuffix}" corporate="#{currentCorporate}" renderDelete="true" changeRole="false" index="#{status.index}"/>
+    </ui:repeat>
+
+    <ui:fragment rendered="#{editable and (group.metadataAddable or group.corporateAddable or group.personAddable or group.groupAddable)}">
+        <div class="p-3 d-flex justify-content-end gap-2">
+            <button class="btn btn-blank addable" jsf:action="#{Metadaten.Hinzufuegen}" jsf:rendered="#{group.metadataAddable}" type="button">
+                #{msgs.neuesMetadatumAnlegen}
+                <f:setPropertyActionListener value="#{group}" target="#{Metadaten.currentGroup}"/>
+                <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                <f:ajax render=":pageContentCenter" onevent="(data) => { if (data.status === 'success') { meGroupModalOpen(); } }"/>
+            </button>
+            <button class="btn btn-blank addable" jsf:action="#{Metadaten.AddCorporate}" jsf:rendered="#{group.corporateAddable}" type="button">
+                #{msgs.mets_corporate_createCorporate}
+                <f:setPropertyActionListener value="#{group}" target="#{Metadaten.currentGroup}"/>
+                <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                <f:ajax render=":pageContentCenter" onevent="(data) => { if (data.status === 'success') { meGroupModalOpen(); } }"/>
+            </button>
+            <button class="btn btn-blank addable" jsf:action="#{Metadaten.HinzufuegenPerson}" jsf:rendered="#{group.personAddable}" type="button">
+                #{msgs.neuePersonAnlegen}
+                <f:setPropertyActionListener value="#{group}" target="#{Metadaten.currentGroup}"/>
+                <f:ajax render=":pageContentCenter" onevent="(data) => { if (data.status === 'success') { meGroupModalOpen(); } }"/>
+            </button>
+            <button class="btn btn-blank addable" jsf:action="#{Metadaten.AddGroup}" jsf:rendered="#{group.groupAddable}" type="button">
+                #{msgs.AddNewGroup}
+                <f:setPropertyActionListener value="#{group}" target="#{Metadaten.currentGroup}"/>
+                <f:ajax render=":pageContentCenter" onevent="(data) => { if (data.status === 'success') { meGroupModalOpen(); } }"/>
+            </button>
+        </div>
+    </ui:fragment>
+
+    <ui:fragment rendered="#{group.hasGroups}">
+        <c:forEach items="#{group.groupList}" var="childGroup">
+            <metadata:group-box group="#{childGroup}" editable="#{editable}"/>
+        </c:forEach>
+    </ui:fragment>
+</ui:composition>

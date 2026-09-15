@@ -13,5 +13,30 @@
             <name>group</name>
             <required>true</required>
         </attribute>
+        <attribute>
+            <description>Whether to offer "add metadata/person/corporate/subgroup" actions for this group and its descendants. The normal inline metadata view passes false; the group-edit modal passes true.</description>
+            <name>editable</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>group-fields</tag-name>
+        <source>metadata/group-fields.xhtml</source>
+        <attribute>
+            <description>The metadata group (de.sub.goobi.metadaten.MetadataGroupImpl) whose own fields (and, recursively, whose child groups) to render</description>
+            <name>group</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <description>Whether to offer "add metadata/person/corporate/subgroup" actions for this group and its descendants</description>
+            <name>editable</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+    <tag>
+        <tag-name>group-edit-modal</tag-name>
+        <source>metadata/group-edit-modal.xhtml</source>
     </tag>
 </facelet-taglib>

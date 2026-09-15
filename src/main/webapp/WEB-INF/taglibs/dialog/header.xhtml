@@ -7,13 +7,19 @@
 >
         <section:header icon="#{icon}" title="#{title}">
             <ui:insert />
-            <form method="dialog">
-                <button
-                    class="btn btn-icon button-modal-close"
-                    aria-label="#{msgs.abbrechen}"
-                >
-                    <util:icon icon="x" />
-                </button>
-            </form>
+            <!-- Plain button, not <form method="dialog"> - a <form> nested inside the surrounding h:form is
+                 invalid HTML. Browsers ignore the nested <form> start tag but still act on its </form> end
+                 tag, which closes the OUTER (real) JSF form early - everything rendered after this point then
+                 ends up outside the form in the parsed DOM (no ViewState, ajax requests from it fail with
+                 "Form has no view state element"). closest('dialog').close() gets the same native close
+                 behavior without introducing a nested form. -->
+            <button
+                type="button"
+                class="btn btn-icon button-modal-close"
+                aria-label="#{msgs.abbrechen}"
+                onclick="this.closest('dialog').close();"
+            >
+                <util:icon icon="x" />
+            </button>
         </section:header>
 </ui:composition>

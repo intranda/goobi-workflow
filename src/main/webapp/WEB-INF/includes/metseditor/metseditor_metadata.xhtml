@@ -18,7 +18,7 @@
 
         <h:form id="metadataform" prependId="false" styleClass="mh-100 overflow-y-scroll" pt:data-save-scroll-position="true">
             <ui:include src="metadata/inc_me_metadata-placeholder.xhtml" />
-            <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddGroup) and (not Metadaten.modeAddCorporate)}">
+            <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddCorporate)}">
                 <!-- EXISTING PERSON -->
                 <ui:include src="metadata/inc_me_metadata-existingPerson.xhtml" />
 
@@ -40,9 +40,6 @@
 
             <!-- ADD CORPORATE -->
             <ui:include src="metadata/inc_me_metadata-addCorporate.xhtml" />
-
-            <!-- ADD GROUP -->
-            <ui:include src="metadata/inc_me_metadata-addGroup.xhtml" />
         </h:form>
     </composite:implementation>
 </ui:composition>
