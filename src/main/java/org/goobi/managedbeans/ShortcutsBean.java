@@ -100,6 +100,7 @@ public class ShortcutsBean implements Serializable {
         shortcuts.put("space", "shortcut_toggleCheckboxPagination");
         shortcuts.put("enter", "shortcut_saveMets");
         shortcuts.put("v", "shortcut_validate");
+        shortcuts.put("d", "shortcut_toggleDeveloperTools");
         return shortcuts;
     }
 }

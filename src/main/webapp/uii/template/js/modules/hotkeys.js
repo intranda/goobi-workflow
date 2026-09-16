@@ -84,29 +84,37 @@ const initHotkeysHelper = () => {
     ];
     const scope = hotkeys.getScope();
     const hotkeyHelpButton = document.querySelector('#shortcutsHelpButton');
-    if (scope === 'global' && hotkeyHelpButton) {
-        hotkeyHelpButton.classList.add('d-none');
-        return;
-    }
     if (hotkeyHelpButton) {
         hotkeyHelpButton.classList.remove('d-none');
     }
+
+    let visibleHotkeys = 0;
     if (scope === 'metseditor') {
-        hotkeyTermsMetseditor.forEach(term => showHotkeyHelpers(term));
-        return;
+        hotkeyTermsMetseditor.forEach(term => { visibleHotkeys += showHotkeyHelpers(term); });
+    } else if (scope === 'paginator') {
+        hotkeyTermsPaginator.forEach(term => { visibleHotkeys += showHotkeyHelpers(term); });
     }
-    if (scope === 'paginator') {
-        hotkeyTermsPaginator.forEach(term => showHotkeyHelpers(term));
-        return;
+
+    // The developer tools hotkey is registered in every scope, but only on pages that offer them
+    if (document.querySelectorAll('[data-developer-tool]').length > 0) {
+        visibleHotkeys += showHotkeyHelpers('shortcut_toggleDeveloperTools');
+    }
+
+    // Tell the user when the current view has no hotkeys at all
+    const emptyHint = document.querySelector('#shortcutsHelpEmpty');
+    if (emptyHint) {
+        emptyHint.classList.toggle('d-none', visibleHotkeys > 0);
     }
 };
 
 const showHotkeyHelpers = (hotkey) => {
     const hotkeyElement = document.querySelector(`[data-shortcut-helper="${hotkey}"]`);
-    if (hotkeyElement) {
-        const descriptionElement = hotkeyElement.parentElement;
-        const termElement = descriptionElement.previousElementSibling;
-        termElement.classList.remove('d-none');
-        descriptionElement.classList.remove('d-none');
+    if (!hotkeyElement) {
+        return 0;
     }
+    const descriptionElement = hotkeyElement.parentElement;
+    const termElement = descriptionElement.previousElementSibling;
+    termElement.classList.remove('d-none');
+    descriptionElement.classList.remove('d-none');
+    return 1;
 };

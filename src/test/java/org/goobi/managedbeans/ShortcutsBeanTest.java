@@ -68,9 +68,10 @@ public class ShortcutsBeanTest {
     public void testGetShortcutKeys() {
         Map<String, String> shortcuts = bean.getShortcutKeys();
         assertNotNull(shortcuts);
-        assertEquals(9, shortcuts.size());
+        assertEquals(10, shortcuts.size());
         assertTrue(shortcuts.containsKey("arrow-up"));
         assertEquals("shortcut_saveMets", shortcuts.get("enter"));
+        assertEquals("shortcut_toggleDeveloperTools", shortcuts.get("d"));
     }
 
     // Helper method to inject mock into private field
