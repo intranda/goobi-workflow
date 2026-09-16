@@ -20,6 +20,7 @@ package de.sub.goobi.helper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -159,5 +160,20 @@ class GoobiNavigationHandlerTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(wrapped).handleNavigation(eq(context), eq(null), captor.capture(), eq("flow-id"));
         assertEquals("task_all?faces-redirect=true", captor.getValue());
+    }
+
+    /**
+     * Mojarra dereferences the flash info of the previous request without a null check when messages are kept before the render response phase. That
+     * info is missing whenever the flash cookie of the browser cannot be decoded, for example after a restart of the application. Losing the messages
+     * of one navigation is acceptable, losing the whole page is not.
+     */
+    @Test
+    void shouldRedirectEvenWhenTheFlashIsUnusable() {
+        expectNavigationCase("task_all", "/uii/task_all.xhtml");
+        doThrow(new NullPointerException("flashInfo is null")).when(flash).setKeepMessages(true);
+
+        handler.handleNavigation(context, null, "task_all");
+
+        assertEquals("task_all?faces-redirect=true", delegatedOutcome());
     }
 }

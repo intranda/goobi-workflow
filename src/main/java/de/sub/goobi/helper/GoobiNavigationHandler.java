@@ -24,6 +24,7 @@ import jakarta.faces.application.NavigationCase;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Turns every navigation that leaves the current view into a redirect (post/redirect/get). Without this, JSF forwards to the new view while the
@@ -31,6 +32,7 @@ import jakarta.faces.context.FacesContext;
  *
  * Navigation that stays on the current view keeps the forward, which preserves view scoped state and request scoped messages.
  */
+@Log4j2
 public class GoobiNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
     private static final String REDIRECT_PARAMETER = "faces-redirect=true";
@@ -66,8 +68,22 @@ public class GoobiNavigationHandler extends ConfigurableNavigationHandlerWrapper
         if (targetViewId == null || (viewRoot != null && targetViewId.equals(viewRoot.getViewId()))) {
             return outcome;
         }
-        // messages are request scoped and would be lost on the redirect
-        context.getExternalContext().getFlash().setKeepMessages(true);
+        keepMessagesAcrossRedirect(context);
         return outcome + (outcome.contains("?") ? "&" : "?") + REDIRECT_PARAMETER;
+    }
+
+    /**
+     * Messages are request scoped and would be lost on the redirect, so they are handed over through the flash.
+     *
+     * This can fail without any fault of ours: before the render response phase Mojarra dereferences the flash info of the previous request without a
+     * null check, and that info is missing whenever the flash cookie of the browser cannot be decoded - after a restart of the application the key
+     * that encrypted the cookie is gone, for instance. Losing the messages of a single navigation is much better than answering with an error page.
+     */
+    private void keepMessagesAcrossRedirect(FacesContext context) {
+        try {
+            context.getExternalContext().getFlash().setKeepMessages(true);
+        } catch (RuntimeException e) {
+            log.debug("Messages are not kept across the redirect, the flash of this request is unusable", e);
+        }
     }
 }
