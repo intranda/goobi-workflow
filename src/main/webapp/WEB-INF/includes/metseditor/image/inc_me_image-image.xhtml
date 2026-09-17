@@ -104,12 +104,12 @@
                         </ui:fragment>
 
                         <!-- 3D CONTROLS -->
-                        <ui:fragment rendered="#{Metadaten.image.type == 'object'}">
-                            <div
-                                id="mainImage"
-                                class="image__main-image"
-                                style="z-index: -1">
-                            </div>
+                        <ui:fragment rendered="#{Metadaten.image.type == 'object' or Metadaten.image.type == 'x3dom'}">
+                                <div
+                                    id="mainImage"
+                                    class="image__main-image above-overlay border"
+                                    style="width: 100%; height: 100%;">
+                                </div>
                             <ui:include src="inc_me_image-objectControls.xhtml" />
                         </ui:fragment>
 

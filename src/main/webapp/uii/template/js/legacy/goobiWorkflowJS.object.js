@@ -162,43 +162,50 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
             else if ( _mediaType == 'object' ) {
                 $( '#imageLoader' ).show();
-                _world = WorldGenerator.create(_worldConfig);
-                _world.loadObject( {
-                    url: $( '#objectUrl' ).val(),
-                    position: { x: 0, y: 0, z: 0 },
-                    rotation: { x: 0, y: 0, z: 0 },
-                    size: 10,
-                    material: {
-                        color: 0x44bb33
-                    },
-                    focus: true,
-//                    onTick: function ( object, time ) {
-//                        if ( object ) {
-//                            object.rotation.set( 0, Math.PI / 180 * time, 0 );
+                // Defer until after layout so #mainImage has its final size;
+                // otherwise the container can still measure 0x0 and the
+                // renderer/camera get permanently locked to that size.
+                requestAnimationFrame( function () {
+                    _world = WorldGenerator.create(_worldConfig);
+                    _world.loadObject( {
+                        url: $( '#objectUrl' ).val(),
+                        position: { x: 0, y: 0, z: 0 },
+                        rotation: { x: 0, y: 0, z: 0 },
+                        size: 10,
+                        material: {
+                            color: 0x44bb33
+                        },
+                        focus: true,
+//                        onTick: function ( object, time ) {
+//                            if ( object ) {
+//                                object.rotation.set( 0, Math.PI / 180 * time, 0 );
+//                            }
 //                        }
-//                    }
-                }).then( function ( object ) {
-                    $( '#imageLoader' ).fadeOut( 2000 );
-                    console.info( 'imageLoadHandler: loaded', object );
-                    _world.render();
-                }).catch( function ( error ) {
-                    $( '#imageLoader' ).fadeOut( 2000 );
-                    console.error( 'imageLoadHandler: failed to load: ', error );
-                })
+                    }).then( function ( object ) {
+                        $( '#imageLoader' ).fadeOut( 2000 );
+                        console.info( 'imageLoadHandler: loaded', object );
+                        _world.render();
+                    }).catch( function ( error ) {
+                        $( '#imageLoader' ).fadeOut( 2000 );
+                        console.error( 'imageLoadHandler: failed to load: ', error );
+                    })
+                });
             }
             else if ( _mediaType == 'x3dom' ) {
                 var objectUrl = $( '#objectUrl' ).val();
                 $( '#imageLoader' ).show();
-                new X3DLoader().load( $( '#mainImage' ), objectUrl, function () {
-                    $( '#imageLoader' ).fadeOut( 2000 );
-                    console.info( 'imageLoadHandler: loaded' );
-                },
-                function () {
-                    console.info( 'imageLoadHandler: progress' );
-                },
-                function ( error ) {
-                    $( '#imageLoader' ).fadeOut( 2000 );
-                    console.info( 'imageLoadHandler: error', error );
+                requestAnimationFrame( function () {
+                    new X3DLoader().load( $( '#mainImage' ), objectUrl, function () {
+                        $( '#imageLoader' ).fadeOut( 2000 );
+                        console.info( 'imageLoadHandler: loaded' );
+                    },
+                    function () {
+                        console.info( 'imageLoadHandler: progress' );
+                    },
+                    function ( error ) {
+                        $( '#imageLoader' ).fadeOut( 2000 );
+                        console.info( 'imageLoadHandler: error', error );
+                    });
                 });
             }
         },

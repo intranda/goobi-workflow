@@ -2,6 +2,7 @@
 const _debug = false;
 
 const settings = {
+    mediaType: "#mediaType",
     tileSources: "#tileSource",
     persistence: "#persistenceId",
     controls: {
@@ -26,9 +27,9 @@ const settings = {
     }
 }
 
-var loadedImage; 
+var loadedImage;
 var zoomControl;
-var rotationControl; 
+var rotationControl;
 var viewPersistence;
 
 var eventListeners = new Map();
@@ -38,8 +39,9 @@ export const loadImage = function() {
     if(typeof ImageView === "undefined" || !document.querySelector(settings.imageView.element)) {
         return;
     }
-    
-    if(!document.querySelector(settings.imageView.element)) {
+
+    const mediaType = getValue(settings.mediaType);
+    if(mediaType && mediaType !== "image" && mediaType !== "pdf") {
         return;
     }
 
@@ -75,7 +77,7 @@ export const loadImage = function() {
     const turnRightEvent = () => rotationControl.rotateRight();
     const resetEvent = () => {
         rotationControl.rotateTo(0);
-        zoomControl.goHome(); 
+        zoomControl.goHome();
     };
 
     eventListeners = new Map();
