@@ -27,13 +27,13 @@
                         <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                         <f:ajax execute="@this" render=":pageContentCenter" onevent="(data) => { if (data.status === 'success') { meGroupModalOpen(); } }"/>
                     </button>
-                    <button jsf:id="grpduplicate-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.mets_duplicateMetadataGroup}" class="btn" jsf:action="#{Metadaten.CopyGroup}" title="#{msgs.mets_duplicateMetadataGroup}" type="button">
+                    <button jsf:id="grpduplicate-#{group.metadataGroupId}#{idSuffix}" jsf:rendered="#{group.groupDuplicatable}" aria-label="#{msgs.mets_duplicateMetadataGroup}" class="btn" jsf:action="#{Metadaten.CopyGroup}" title="#{msgs.mets_duplicateMetadataGroup}" type="button">
                         <util:icon icon="copy" styleClass="icon--lg" />
                         <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{group}" target="#{Metadaten.currentGroup}"/>
                         <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                         <f:ajax execute="@form" render="@form"/>
                     </button>
-                    <button jsf:id="grpdelete-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.mets_deleteMetadataGroup}" class="btn" jsf:action="#{Metadaten.deleteGroup}" title="#{msgs.mets_deleteMetadataGroup}" type="button">
+                    <button jsf:id="grpdelete-#{group.metadataGroupId}#{idSuffix}" jsf:rendered="#{group.groupDeletable}" aria-label="#{msgs.mets_deleteMetadataGroup}" class="btn" jsf:action="#{Metadaten.deleteGroup}" title="#{msgs.mets_deleteMetadataGroup}" type="button">
                         <util:icon icon="trash" styleClass="icon--lg" />
                         <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{group}" target="#{Metadaten.currentGroup}"/>
                         <f:passThroughAttribute name="data-toggle" value="tooltip"/>
@@ -53,13 +53,13 @@
                 #{group.name}
                 <span class="d-inline-flex flex-wrap justify-content-end">
                     <span class="d-inline-flex flex-wrap justify-content-end">
-                        <button jsf:id="grpduplicateNested-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.mets_duplicateMetadataGroup}" class="btn font-light" jsf:action="#{Metadaten.CopyGroup}" title="#{msgs.mets_duplicateMetadataGroup}" type="button">
+                        <button jsf:id="grpduplicateNested-#{group.metadataGroupId}#{idSuffix}" jsf:rendered="#{group.groupDuplicatable}" aria-label="#{msgs.mets_duplicateMetadataGroup}" class="btn font-light" jsf:action="#{Metadaten.CopyGroup}" title="#{msgs.mets_duplicateMetadataGroup}" type="button">
                             <util:icon icon="copy" styleClass="icon--lg" />
                             <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{group}" target="#{Metadaten.currentGroup}"/>
                             <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                             <f:ajax execute="@form" render="#{editable ? '@form:@id(groupEditModalBody)' : '@form'}"/>
                         </button>
-                        <button jsf:id="grpdeleteNested-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.mets_deleteMetadataGroup}" class="btn font-light" jsf:action="#{Metadaten.deleteGroup}" title="#{msgs.mets_deleteMetadataGroup}" type="button">
+                        <button jsf:id="grpdeleteNested-#{group.metadataGroupId}#{idSuffix}" jsf:rendered="#{group.groupDeletable}" aria-label="#{msgs.mets_deleteMetadataGroup}" class="btn font-light" jsf:action="#{Metadaten.deleteGroup}" title="#{msgs.mets_deleteMetadataGroup}" type="button">
                             <util:icon icon="trash" styleClass="icon--lg" />
                             <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{group}" target="#{Metadaten.currentGroup}"/>
                             <f:passThroughAttribute name="data-toggle" value="tooltip"/>

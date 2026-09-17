@@ -32,14 +32,20 @@ import de.sub.goobi.helper.Helper;
 import jakarta.faces.model.SelectItem;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+import ugh.dl.AllowedMetadataGroupType;
 import ugh.dl.Corporate;
+import ugh.dl.DocStruct;
+import ugh.dl.HoldingElement;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.MetadataGroupType;
 import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
+import ugh.exceptions.MetadataTypeNotAllowedException;
 
+@Log4j2
 public class MetadataGroupImpl {
     @Getter
     @Setter
@@ -92,9 +98,12 @@ public class MetadataGroupImpl {
         this.parentGroupId = parentGroupId;
         this.level = level;
         metadataGroup.checkDefaultDisplayMetadata();
+        addMandatoryMetadata(metadataGroup);
 
         for (Metadata md : metadataGroup.getMetadataList()) {
             MetadatumImpl mdum = new MetadatumImpl(md, counter++, myPrefs, myProcess, bean);
+            mdum.setValidationErrorPresent(md.isValidationErrorPresent());
+            mdum.setValidationMessage(md.getValidationMessage());
             metadataList.add(mdum);
         }
         for (Person p : metadataGroup.getPersonList()) {
@@ -131,6 +140,42 @@ public class MetadataGroupImpl {
             for (String typeName : allAddableGroupTypeNames) {
                 MetadataGroupType mgt = prefs.getMetadataGroupTypeByName(typeName);
                 addableGroupTypes.add(new SelectItem(typeName, getMetadataGroupTypeLanguage(mgt)));
+            }
+        }
+    }
+
+    /**
+     * Creates an empty instance for every metadata/person/corporate type of this group whose cardinality in the ruleset is mandatory ("1m" or "+")
+     * and that isn't already present, so mandatory fields show up in the editor without requiring the user to add them manually first.
+     */
+    private void addMandatoryMetadata(MetadataGroup metadataGroup) {
+        MetadataGroupType type = metadataGroup.getType();
+        List<MetadataType> allTypes = type.getMetadataTypeList();
+        if (allTypes == null) {
+            return;
+        }
+        for (MetadataType mdt : allTypes) {
+            String num = type.getNumberOfMetadataType(mdt);
+            if (!("1m".equals(num) || "+".equals(num))) {
+                continue;
+            }
+            if (mdt.getName().startsWith("_") || metadataGroup.countMDofthisType(mdt.getName()) > 0) {
+                continue;
+            }
+            try {
+                if (mdt.getIsPerson()) {
+                    Person p = new Person(mdt);
+                    p.setRole(mdt.getName());
+                    metadataGroup.addPerson(p);
+                } else if (mdt.isCorporate()) {
+                    Corporate c = new Corporate(mdt);
+                    c.setRole(mdt.getName());
+                    metadataGroup.addCorporate(c);
+                } else {
+                    metadataGroup.addMetadata(new Metadata(mdt));
+                }
+            } catch (MetadataTypeNotAllowedException e) {
+                log.error("Error creating mandatory field '{}' in group '{}'", mdt.getName(), type.getName(), e);
             }
         }
     }
@@ -177,6 +222,52 @@ public class MetadataGroupImpl {
 
     public boolean isHasGroups() {
         return !groupList.isEmpty();
+    }
+
+    /**
+     * Whether this group instance may be duplicated, based on the maximum cardinality configured for its type in the ruleset ("1m"/"1o" allow only
+     * one instance, which already exists as this group).
+     */
+    public boolean isGroupDuplicatable() {
+        String maxNumberAllowed = getMaxNumberOfSiblingGroupsAllowed();
+        return "*".equals(maxNumberAllowed) || "+".equals(maxNumberAllowed);
+    }
+
+    /**
+     * Whether this group instance may be deleted, based on the minimum cardinality configured for its type in the ruleset ("1m"/"+" require at
+     * least one instance to remain).
+     */
+    public boolean isGroupDeletable() {
+        String maxNumberAllowed = getMaxNumberOfSiblingGroupsAllowed();
+        if (!("1m".equals(maxNumberAllowed) || "+".equals(maxNumberAllowed))) {
+            return true;
+        }
+        return countSiblingGroupsOfSameType() > 1;
+    }
+
+    private String getMaxNumberOfSiblingGroupsAllowed() {
+        HoldingElement parent = metadataGroup.getParent();
+        MetadataGroupType type = metadataGroup.getType();
+        if (parent instanceof DocStruct) {
+            return ((DocStruct) parent).getType().getNumberOfMetadataGroups(type);
+        }
+        if (parent instanceof MetadataGroup) {
+            AllowedMetadataGroupType allowedType = ((MetadataGroup) parent).getType().getAllowedMetadataGroupTypeByName(type.getName());
+            return allowedType == null ? null : allowedType.getNumAllowed();
+        }
+        return null;
+    }
+
+    private int countSiblingGroupsOfSameType() {
+        HoldingElement parent = metadataGroup.getParent();
+        String typeName = metadataGroup.getType().getName();
+        if (parent instanceof DocStruct) {
+            return ((DocStruct) parent).countMDofthisType(typeName);
+        }
+        if (parent instanceof MetadataGroup) {
+            return ((MetadataGroup) parent).countMDofthisType(typeName);
+        }
+        return 0;
     }
 
 }
