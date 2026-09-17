@@ -11,38 +11,6 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:util="http://goobi.io/util">
 
-    <!-- Renders one metadata group AND recurses into its child groups (group.groupList), so a nested group
-         actually sits inside its parent's box/fieldset in the DOM, not just visually indented below it.
-
-         Top-level groups (level 0) render as an outline box (hand-rolled markup, not section:section - that tag
-         derives its DOM id/state key from the JSF component tree, which breaks once instantiated repeatedly/
-         recursively; see chat history for three different failure modes).
-         Nested groups (level > 0) render as a field-set, same pattern as formGroupPerson.xhtml/formGroupCorporate.xhtml,
-         nested field-sets inside field-sets are an already-styled case (see .field-set .field-set in _forms-custom.scss).
-
-         Recursion uses c:forEach, not ui:repeat: c:forEach unrolls at view-build time with no runtime iteration
-         state to trip over (that's what caused the ui:repeat/_TRACKED_IDS overflow previously). Because c:forEach
-         does NOT auto-disambiguate ids the way ui:repeat does, every explicit id below is suffixed with the
-         group's own metadataGroupId (already unique per group instance, see MetadataGroupImpl) to avoid collisions
-         between sibling/recursive invocations.
-
-         The level==0/level>0 branches below use c:if, not ui:fragment: ui:fragment's `rendered` only skips
-         encoding, not component-tree construction, so with ui:fragment BOTH branches (and therefore both copies
-         of the child-group recursion) were built for every single group, silently doubling every id further down
-         the tree. c:if is a view-build-time tag (like c:forEach) and skips building the untaken branch entirely.
-
-         editable: whether "add metadata/person/corporate/subgroup" actions are offered for this group and its
-         descendants (see group-fields.xhtml). The normal inline metadata view always passes editable=false -
-         adding things now only happens inside the group-edit modal (metadata:group-edit-modal), which renders
-         this same group/its children again with editable=true. Because the same group can therefore legitimately
-         appear twice in the component tree at once, every explicit id below carries an idSuffix that differs
-         between the two so their ids don't collide.
-
-         Duplicate/delete call meGroupModalStopReopen() on click: both CopyGroup()/deleteGroup() rebuild the
-         entire Metadaten.groups tree server-side, so a currentGroup reference set from inside the modal
-         (duplicating/deleting a subgroup) would otherwise become a stale/orphaned object once the modal tries
-         to reopen against it. Letting the modal just close here (inline view already refreshes correctly) is
-         simpler and safer than trying to keep it open pointed at something that may no longer be live. -->
     <c:set var="idSuffix" value="#{editable ? '-modal' : ''}" />
 
     <c:if test="#{group.level == 0}">
@@ -55,18 +23,17 @@
                 <div class="actions section-header-actions">
                     <button jsf:id="grpedit-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.bearbeiten}" class="btn" title="#{msgs.bearbeiten}" type="button">
                         <util:icon icon="pencil" styleClass="icon--lg" />
-                        <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{group}" target="#{Metadaten.currentGroup}"/>
-                        <f:setPropertyActionListener value="#{false}" target="#{Metadaten.modeAddGroup}"/>
+                        <f:setPropertyActionListener value="#{group}" target="#{Metadaten.groupEditTarget}"/>
                         <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                         <f:ajax execute="@this" render=":pageContentCenter" onevent="(data) => { if (data.status === 'success') { meGroupModalOpen(); } }"/>
                     </button>
-                    <button jsf:id="grpduplicate-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.mets_duplicateMetadataGroup}" class="btn" jsf:action="#{Metadaten.CopyGroup}" onclick="meGroupModalStopReopen();" title="#{msgs.mets_duplicateMetadataGroup}" type="button">
+                    <button jsf:id="grpduplicate-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.mets_duplicateMetadataGroup}" class="btn" jsf:action="#{Metadaten.CopyGroup}" title="#{msgs.mets_duplicateMetadataGroup}" type="button">
                         <util:icon icon="copy" styleClass="icon--lg" />
                         <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{group}" target="#{Metadaten.currentGroup}"/>
                         <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                         <f:ajax execute="@form" render="@form"/>
                     </button>
-                    <button jsf:id="grpdelete-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.mets_deleteMetadataGroup}" class="btn" jsf:action="#{Metadaten.deleteGroup}" onclick="meGroupModalStopReopen();" title="#{msgs.mets_deleteMetadataGroup}" type="button">
+                    <button jsf:id="grpdelete-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.mets_deleteMetadataGroup}" class="btn" jsf:action="#{Metadaten.deleteGroup}" title="#{msgs.mets_deleteMetadataGroup}" type="button">
                         <util:icon icon="trash" styleClass="icon--lg" />
                         <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{group}" target="#{Metadaten.currentGroup}"/>
                         <f:passThroughAttribute name="data-toggle" value="tooltip"/>
@@ -81,21 +48,97 @@
     </c:if>
 
     <c:if test="#{group.level > 0}">
-        <fieldset class="field-set metadata-group-box module__box-level-#{group.level}">
+        <fieldset class="field-set metadata-group-box #{group.level > 1 ? 'metadata-group-box--nested' : ''} module__box-level-#{group.level}">
             <form:legend>
                 #{group.name}
-                <button jsf:id="grpduplicateNested-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.mets_duplicateMetadataGroup}" class="btn font-light" jsf:action="#{Metadaten.CopyGroup}" onclick="meGroupModalStopReopen();" title="#{msgs.mets_duplicateMetadataGroup}" type="button">
-                    <util:icon icon="copy" styleClass="icon--lg" />
-                    <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{group}" target="#{Metadaten.currentGroup}"/>
-                    <f:passThroughAttribute name="data-toggle" value="tooltip"/>
-                    <f:ajax execute="@form" render="@form"/>
-                </button>
-                <button jsf:id="grpdeleteNested-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.mets_deleteMetadataGroup}" class="btn font-light" jsf:action="#{Metadaten.deleteGroup}" onclick="meGroupModalStopReopen();" title="#{msgs.mets_deleteMetadataGroup}" type="button">
-                    <util:icon icon="trash" styleClass="icon--lg" />
-                    <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{group}" target="#{Metadaten.currentGroup}"/>
-                    <f:passThroughAttribute name="data-toggle" value="tooltip"/>
-                    <f:ajax execute="@form" render="@form"/>
-                </button>
+                <span class="d-inline-flex flex-wrap justify-content-end">
+                    <span class="d-inline-flex flex-wrap justify-content-end">
+                        <button jsf:id="grpduplicateNested-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.mets_duplicateMetadataGroup}" class="btn font-light" jsf:action="#{Metadaten.CopyGroup}" title="#{msgs.mets_duplicateMetadataGroup}" type="button">
+                            <util:icon icon="copy" styleClass="icon--lg" />
+                            <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{group}" target="#{Metadaten.currentGroup}"/>
+                            <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                            <f:ajax execute="@form" render="#{editable ? '@form:@id(groupEditModalBody)' : '@form'}"/>
+                        </button>
+                        <button jsf:id="grpdeleteNested-#{group.metadataGroupId}#{idSuffix}" aria-label="#{msgs.mets_deleteMetadataGroup}" class="btn font-light" jsf:action="#{Metadaten.deleteGroup}" title="#{msgs.mets_deleteMetadataGroup}" type="button">
+                            <util:icon icon="trash" styleClass="icon--lg" />
+                            <f:setPropertyActionListener property="#{Metadaten.currentGroup}" value="#{group}" target="#{Metadaten.currentGroup}"/>
+                            <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                            <f:ajax execute="@form" render="#{editable ? '@form:@id(groupEditModalBody)' : '@form'}"/>
+                        </button>
+                    </span>
+                    <span class="d-inline-flex flex-wrap justify-content-end">
+                        <ui:fragment rendered="#{editable and (group.metadataAddable or group.corporateAddable or group.personAddable or group.groupAddable)}">
+                            <div class="dropdown" jsf:rendered="#{group.metadataAddable}">
+                                <button type="button" class="btn font-light addable dropdown-toggle" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-haspopup="true" aria-expanded="false">
+                                    <util:icon icon="plus" />
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <c:forEach items="#{group.addableMetadata}" var="item" varStatus="status">
+                                        <li>
+                                            <button type="button" class="dropdown-item" jsf:id="addMetadatum-#{group.metadataGroupId}#{idSuffix}-#{status.index}" jsf:action="#{Metadaten.groupEdit.addMetadata}">
+                                                #{item.label}
+                                                <f:setPropertyActionListener value="#{group}" target="#{Metadaten.groupEdit.actionTarget}"/>
+                                                <f:setPropertyActionListener value="#{item.value}" target="#{Metadaten.groupEdit.actionTypeName}"/>
+                                                <f:ajax execute="@this" render="@form:@id(groupEditModalBody)"/>
+                                            </button>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                            <div class="dropdown" jsf:rendered="#{group.corporateAddable}">
+                                <button type="button" class="btn font-light addable dropdown-toggle" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-haspopup="true" aria-expanded="false">
+                                    <util:icon icon="home-plus" />
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <c:forEach items="#{group.addableCorporations}" var="item" varStatus="status">
+                                        <li>
+                                            <button type="button" class="dropdown-item" jsf:id="addCorporate-#{group.metadataGroupId}#{idSuffix}-#{status.index}" jsf:action="#{Metadaten.groupEdit.addCorporate}">
+                                                #{item.label}
+                                                <f:setPropertyActionListener value="#{group}" target="#{Metadaten.groupEdit.actionTarget}"/>
+                                                <f:setPropertyActionListener value="#{item.value}" target="#{Metadaten.groupEdit.actionTypeName}"/>
+                                                <f:ajax execute="@this" render="@form:@id(groupEditModalBody)"/>
+                                            </button>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                            <div class="dropdown" jsf:rendered="#{group.personAddable}">
+                                <button type="button" class="btn font-light addable dropdown-toggle" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-haspopup="true" aria-expanded="false">
+                                    <util:icon icon="user-plus" />
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <c:forEach items="#{group.addablePersons}" var="item" varStatus="status">
+                                        <li>
+                                            <button type="button" class="dropdown-item" jsf:id="addPerson-#{group.metadataGroupId}#{idSuffix}-#{status.index}" jsf:action="#{Metadaten.groupEdit.addPerson}">
+                                                #{item.label}
+                                                <f:setPropertyActionListener value="#{group}" target="#{Metadaten.groupEdit.actionTarget}"/>
+                                                <f:setPropertyActionListener value="#{item.value}" target="#{Metadaten.groupEdit.actionTypeName}"/>
+                                                <f:ajax execute="@this" render="@form:@id(groupEditModalBody)"/>
+                                            </button>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                            <div class="dropdown" jsf:rendered="#{group.groupAddable}">
+                                <button type="button" class="btn font-light addable dropdown-toggle" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-haspopup="true" aria-expanded="false">
+                                    <util:icon icon="library-plus" />
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <c:forEach items="#{group.addableGroupTypes}" var="item" varStatus="status">
+                                        <li>
+                                            <button type="button" class="dropdown-item" jsf:id="addGroup-#{group.metadataGroupId}#{idSuffix}-#{status.index}" jsf:action="#{Metadaten.groupEdit.addGroup}">
+                                                #{item.label}
+                                                <f:setPropertyActionListener value="#{group}" target="#{Metadaten.groupEdit.actionTarget}"/>
+                                                <f:setPropertyActionListener value="#{item.value}" target="#{Metadaten.groupEdit.actionTypeName}"/>
+                                                <f:ajax execute="@this" render="@form:@id(groupEditModalBody)"/>
+                                            </button>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                        </ui:fragment>
+                    </span>
+                </span>
             </form:legend>
             <form:fieldset-content>
                 <metadata:group-fields group="#{group}" editable="#{editable}"/>

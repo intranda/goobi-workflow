@@ -524,7 +524,7 @@ public class MetadatenTest extends AbstractTest {
             fixture.XMLlesenStart();
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
 
             Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
             m.setAuthorityFile("id", "uri", "value");
@@ -819,7 +819,7 @@ public class MetadatenTest extends AbstractTest {
             c.setAuthorityFile("id", "uri", "value");
             c.addSubName(new NamePart("type", "value"));
             md.addCorporate(c);
-            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             fixture.setSelectedGroup(mdg);
 
             assertEquals("", fixture.saveGroup());
@@ -891,7 +891,7 @@ public class MetadatenTest extends AbstractTest {
             fixture.setTempMetadataGroupType("junitgrp");
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             fixture.getDocument().getLogicalDocStruct().addMetadataGroup(md);
             fixture.setSelectedGroup(mdg);
             fixture.saveGroup();
@@ -1141,7 +1141,7 @@ public class MetadatenTest extends AbstractTest {
             assertEquals("Author", list.get(0).getLabel());
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
 
             fixture.setCurrentGroup(mdg);
             list = fixture.getAddableRollen();
@@ -1178,7 +1178,7 @@ public class MetadatenTest extends AbstractTest {
             assertEquals("junitCorporate", list.get(0).getLabel());
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
 
             fixture.setCurrentGroup(mdg);
             list = fixture.getAddableCorporateRoles();
@@ -1321,7 +1321,7 @@ public class MetadatenTest extends AbstractTest {
             assertEquals(15, fixture.getAddableMetadataTypes().size());
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             fixture.setCurrentGroup(mdg);
             assertEquals(1, fixture.getAddableMetadataTypes().size());
 
@@ -1353,7 +1353,7 @@ public class MetadatenTest extends AbstractTest {
             assertEquals(1, fixture.getAddableMetadataGroupTypes().size());
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             fixture.setCurrentGroup(mdg);
             assertEquals(0, fixture.getAddableMetadataGroupTypes().size());
 

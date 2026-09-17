@@ -115,6 +115,7 @@ import io.goobi.workflow.api.connection.HttpUtils;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.model.SelectItem;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletResponse;
@@ -197,6 +198,12 @@ public class Metadaten implements Serializable {
     @Getter
     @Setter
     private transient MetadataGroupImpl currentGroup;
+    @Getter
+    private transient GroupEditSession groupEdit;
+    private transient MetadataGroupIdRegistry groupIdRegistry;
+    @Getter
+    @Setter
+    private transient String tempAddTypeName;
     private transient MetadataGroupImpl selectedGroup;
     @Getter
     @Setter
@@ -783,11 +790,7 @@ public class Metadaten implements Serializable {
         } catch (MetadataTypeNotAllowedException e) {
             log.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e);
         }
-        MetadatenalsBeanSpeichern(this.myDocStruct);
-        if (!updateLocking()) {
-            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
-        }
-        return "";
+        return rebuildAfterGroupChange(false);
     }
 
     public String Kopieren() {
@@ -972,8 +975,10 @@ public class Metadaten implements Serializable {
     }
 
     public String saveGroup() {
+        MetadataGroup md = null;
+        boolean newTopLevelGroup = currentGroup == null;
         try {
-            MetadataGroup md = new MetadataGroup(this.myPrefs.getMetadataGroupTypeByName(this.tempGroupType));
+            md = new MetadataGroup(this.myPrefs.getMetadataGroupTypeByName(this.tempGroupType));
             for (MetadatumImpl mdi : selectedGroup.getMetadataList()) {
                 if (StringUtils.isNotBlank(mdi.getMd().getValue())) {
                     Metadata metadata = new Metadata(mdi.getMd().getType());
@@ -1020,11 +1025,143 @@ public class Metadaten implements Serializable {
 
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
+
+        if (newTopLevelGroup && md != null) {
+            openGroupEdit(md);
+        }
+
         if (!updateLocking()) {
             return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
         }
         readMetadataTree1(this.tree3, this.currentTopstruct, false);
         return "";
+    }
+
+    String addEmptyMetadata(MetadataGroupImpl target, String typeName) {
+        try {
+            Metadata md = new Metadata(this.myPrefs.getMetadataTypeByName(typeName));
+            if (target != null) {
+                target.getMetadataGroup().addMetadata(md);
+            } else {
+                this.myDocStruct.addMetadata(md);
+            }
+        } catch (MetadataTypeNotAllowedException e) {
+            log.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
+        }
+        return rebuildAfterGroupChange(target == null);
+    }
+
+    public String addEmptyMetadata() {
+        return addEmptyMetadata(currentGroup, tempAddTypeName);
+    }
+
+    String addEmptyPerson(MetadataGroupImpl target, String typeName) {
+        try {
+            Person per = new Person(this.myPrefs.getMetadataTypeByName(typeName));
+            per.setRole(typeName);
+            if (target != null) {
+                target.getMetadataGroup().addPerson(per);
+            } else {
+                this.myDocStruct.addPerson(per);
+            }
+        } catch (IncompletePersonObjectException e) {
+            Helper.setFehlerMeldung("Incomplete data for person", "");
+            return "";
+        } catch (MetadataTypeNotAllowedException e) {
+            Helper.setFehlerMeldung("Person is for this structure not allowed", "");
+            return "";
+        }
+        return rebuildAfterGroupChange(false);
+    }
+
+    public String addEmptyPerson() {
+        return addEmptyPerson(currentGroup, tempAddTypeName);
+    }
+
+    String addEmptyCorporate(MetadataGroupImpl target, String typeName) {
+        try {
+            Corporate corporate = new Corporate(this.myPrefs.getMetadataTypeByName(typeName));
+            if (target != null) {
+                target.getMetadataGroup().addCorporate(corporate);
+            } else {
+                this.myDocStruct.addCorporate(corporate);
+            }
+        } catch (MetadataTypeNotAllowedException e) {
+            Helper.setFehlerMeldung("Person is for this structure not allowed", "");
+            return "";
+        }
+        return rebuildAfterGroupChange(false);
+    }
+
+    public String addEmptyCorporate() {
+        return addEmptyCorporate(currentGroup, tempAddTypeName);
+    }
+
+    String addEmptyGroup(MetadataGroupImpl target, String typeName) {
+        MetadataGroup md = null;
+        try {
+            md = new MetadataGroup(this.myPrefs.getMetadataGroupTypeByName(typeName));
+            if (target != null) {
+                target.getMetadataGroup().addMetadataGroup(md);
+            } else {
+                this.myDocStruct.addMetadataGroup(md);
+            }
+        } catch (MetadataTypeNotAllowedException e) {
+            log.error("Error while adding metadata group (MetadataTypeNotAllowedException): " + e.getMessage());
+        }
+        String outcome = rebuildAfterGroupChange(target == null);
+        if (target == null && md != null) {
+            openGroupEdit(md);
+        }
+        return outcome;
+    }
+
+    public String addEmptyGroup() {
+        return addEmptyGroup(currentGroup, tempAddTypeName);
+    }
+
+    public void onTopLevelGroupTypeSelected(AjaxBehaviorEvent event) {
+        addEmptyGroup(null, tempAddTypeName);
+    }
+
+    private String rebuildAfterGroupChange(boolean rebuildStructureTree) {
+        MetadatenalsBeanSpeichern(this.myDocStruct);
+        if (!updateLocking()) {
+            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
+        }
+        if (rebuildStructureTree) {
+            readMetadataTree1(this.tree3, this.currentTopstruct, false);
+        }
+        return "";
+    }
+
+    private void openGroupEdit(MetadataGroup group) {
+        this.groupEdit = group == null ? null : new GroupEditSession(this, group);
+    }
+
+    public MetadataGroupImpl getGroupEditTarget() {
+        return groupEdit == null ? null : groupEdit.getRoot();
+    }
+
+    public void setGroupEditTarget(MetadataGroupImpl group) {
+        openGroupEdit(group == null ? null : group.getMetadataGroup());
+    }
+
+    public String openNewTopLevelGroup() {
+        this.groupEdit = new GroupEditSession(this, null);
+        return "";
+    }
+
+    public String closeGroupEdit() {
+        this.groupEdit = null;
+        return "";
+    }
+
+    MetadataGroupIdRegistry getGroupIdRegistry() {
+        if (groupIdRegistry == null) {
+            groupIdRegistry = new MetadataGroupIdRegistry();
+        }
+        return groupIdRegistry;
     }
 
     public String loadRightFrame() {
@@ -1087,11 +1224,7 @@ public class Metadaten implements Serializable {
     public String deleteGroup() {
         MetadataGroup mg = currentGroup.getMetadataGroup();
         mg.getParent().removeMetadataGroup(mg, true);
-        MetadatenalsBeanSpeichern(this.myDocStruct);
-        if (!updateLocking()) {
-            return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
-        }
-        return "";
+        return rebuildAfterGroupChange(false);
     }
 
     public String Loeschen() {
@@ -1429,7 +1562,7 @@ public class Metadaten implements Serializable {
             myList.add(new SelectItem(mdt.getName(), this.metahelper.getMetadataGroupTypeLanguage(mdt)));
             try {
                 MetadataGroup md = new MetadataGroup(mdt);
-                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md, this, metahelper.getMetadataGroupTypeLanguage(mdt), null, 0);
+                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md, this, null, null, 0);
                 this.tempMetadataGroups.add(mdum);
 
             } catch (MetadataTypeNotAllowedException e) {
@@ -1437,6 +1570,21 @@ public class Metadaten implements Serializable {
             }
         }
         return myList;
+    }
+
+    public List<SelectItem> getAddableTopLevelGroupTypes() {
+        List<SelectItem> result = new ArrayList<>();
+        List<MetadataGroupType> types = this.myDocStruct.getAddableMetadataGroupTypes();
+        if (types == null) {
+            return result;
+        }
+        HelperComparator c = new HelperComparator();
+        c.setSortierart("MetadatenGroupTypes");
+        Collections.sort(types, c);
+        for (MetadataGroupType mdt : types) {
+            result.add(new SelectItem(mdt.getName(), this.metahelper.getMetadataGroupTypeLanguage(mdt)));
+        }
+        return result;
     }
 
     public List<MetadataGroupImpl> getTempMetadataGroupList() {
@@ -1658,6 +1806,8 @@ public class Metadaten implements Serializable {
         if (gdzfile == null) {
             return null;
         }
+        closeGroupEdit();
+        getGroupIdRegistry().clear();
         this.document = this.gdzfile.getDigitalDocument();
 
         this.document.addAllContentFiles();
@@ -1899,6 +2049,9 @@ public class Metadaten implements Serializable {
      */
 
     private void MetadatenalsBeanSpeichern(DocStruct inStrukturelement) {
+        if (this.myDocStruct != inStrukturelement) {
+            closeGroupEdit();
+        }
         this.myDocStruct = inStrukturelement;
         addableMetadataTypes.clear();
         groups.clear();
@@ -1946,9 +2099,8 @@ public class Metadaten implements Serializable {
         List<MetadataGroup> metadataGroups =
                 this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), this.myProzess);
         if (metadataGroups != null) {
-            int counter = 1;
             for (MetadataGroup mg : metadataGroups) {
-                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this, "" + counter++, null, 0));
+                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this, getGroupIdRegistry(), null, 0));
             }
         }
 
@@ -1956,6 +2108,14 @@ public class Metadaten implements Serializable {
         this.myMetadaten = lsMeta;
         this.myPersonen = lsPers;
         this.groups.addAll(metaGroups);
+
+        if (groupEdit != null) {
+            if (groupEdit.isOrphaned()) {
+                closeGroupEdit();
+            } else {
+                groupEdit.refresh();
+            }
+        }
 
         /*
          * -------------------------------- die zugehörigen Seiten ermitteln --------------------------------
@@ -3846,7 +4006,7 @@ public class Metadaten implements Serializable {
             MetadataGroupType mdt = this.myPrefs.getMetadataGroupTypeByName(tempTyp);
             try {
                 MetadataGroup md = new MetadataGroup(mdt);
-                this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, this, metahelper.getMetadataGroupTypeLanguage(mdt), null, 0);
+                this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, this, null, null, 0);
             } catch (MetadataTypeNotAllowedException e) {
                 log.error(e.getMessage());
             }

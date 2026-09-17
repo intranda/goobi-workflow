@@ -561,29 +561,40 @@ fieldSet:disabled .badge > a {
   }
 }
 
-// Each metadata group renders as its own row (see WEB-INF/taglibs/metadata/group-box.xhtml):
-// top-level groups (level 0) as an outline box, nested groups as a field-set (same
-// .field-set/.field-set-legend pattern as formGroupPerson.xhtml/formGroupCorporate.xhtml).
-// Metadaten.groups is a flattened, depth-first list (MetadataGroupImpl#getAsFlatList) -
-// nesting beyond that one distinction is shown via indentation (module__box-level-*)
-// rather than real DOM nesting.
-.metadata-group-box + .metadata-group-box {
-  margin-top: 0.75rem;
+#metadataGroupSection_body > .metadata-group-box {
+  > .section-body {
+    > .form-row, > .field-set {
+      &:last-child {
+        border-block-end: 0;
+      }
+    }
+  }
+  + .metadata-group-box {
+    margin-top: 0.75rem;
+  }
 }
 
-$metadata-group-max-level: 3;
-$metadata-group-indent-step: 0.75rem;
-
-[class*="module__box-level-"] {
-  margin-left: $metadata-group-indent-step * $metadata-group-max-level;
+.metadata-group-box {
+  .field-set-legend {
+    align-items: start;
+    justify-content: space-between;
+  }
 }
 
-.module__box-level-0 {
-  margin-left: 0;
+.metadata-group-box--nested.field-set {
+    padding-block-start: 0 !important;
 }
 
-@for $level from 1 through ($metadata-group-max-level - 1) {
-  .module__box-level-#{$level} {
-    margin-left: $metadata-group-indent-step * $level;
+.metadata-group-box.module__box-level-1  .field-set {
+  border-block-start: 1px solid var(--clr-neutral-300);
+  .field-set + .field-set {
+    padding-block-start: 0;
+  }
+  .field-set-legend {
+    max-width: 25%;
+  }
+  .field-set-content {
+    border: 0 !important;
+    background: white;
   }
 }

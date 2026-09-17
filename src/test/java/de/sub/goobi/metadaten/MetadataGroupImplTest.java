@@ -73,7 +73,7 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             assertNotNull(fixture);
 
         }
@@ -91,7 +91,7 @@ public class MetadataGroupImplTest extends AbstractTest {
             p.setLastname("junit");
             md.addPerson(p);
 
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
 
             List<MetaPerson> personList = fixture.getPersonList();
             assertFalse(personList.isEmpty());
@@ -113,7 +113,7 @@ public class MetadataGroupImplTest extends AbstractTest {
             p.setLastname("junit");
             md.addPerson(p);
 
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
 
             assertFalse(fixture.getPersonList().isEmpty());
             fixture.setPersonList(new ArrayList<>());
@@ -132,7 +132,7 @@ public class MetadataGroupImplTest extends AbstractTest {
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
             Metadata metadata = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
             md.addMetadata(metadata);
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             List<MetadatumImpl> metadataList = fixture.getMetadataList();
             assertFalse(metadataList.isEmpty());
             MetadatumImpl mp = metadataList.get(0);
@@ -152,7 +152,7 @@ public class MetadataGroupImplTest extends AbstractTest {
             Metadata metadata = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
             md.addMetadata(metadata);
 
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             assertFalse(fixture.getMetadataList().isEmpty());
             fixture.setMetadataList(new ArrayList<>());
             assertTrue(fixture.getMetadataList().isEmpty());
@@ -168,7 +168,7 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             assertEquals(prefs, fixture.getMyPrefs());
 
         }
@@ -182,7 +182,7 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             fixture.setMyPrefs(null);
             assertNull(fixture.getMyPrefs());
 
@@ -197,7 +197,7 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             assertEquals(process, fixture.getMyProcess());
 
         }
@@ -211,7 +211,7 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             fixture.setMyProcess(null);
             assertNull(fixture.getMyProcess());
 
@@ -226,7 +226,7 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             fixture.setMetadataGroup(md);
             assertEquals(md, fixture.getMetadataGroup());
 
@@ -241,7 +241,7 @@ public class MetadataGroupImplTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
 
             MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+            MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, null, null, 0);
             assertEquals("junitgrp", fixture.getName());
 
         }

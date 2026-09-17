@@ -22,11 +22,10 @@
                     <c:forEach items="#{Metadaten.groups}" var="Item">
                         <metadata:group-box group="#{Item}" editable="false"/>
                     </c:forEach>
-                    <h:panelGroup rendered="#{Metadaten.sizeOfMetadataGroups!=0}" layout="block" styleClass="p-3 d-flex justify-content-end">
-                        <button jsf:id="addGroup" class="btn btn-neutral-600" jsf:action="#{Metadaten.AddGroup}" type="button">
+                    <h:panelGroup rendered="#{!empty Metadaten.addableTopLevelGroupTypes}" layout="block" styleClass="p-3 d-flex justify-content-end">
+                        <button type="button" class="btn btn-neutral-600" jsf:id="addTopLevelGroupOpen" jsf:action="#{Metadaten.openNewTopLevelGroup}">
                             #{msgs.AddNewGroup}
-                            <f:setPropertyActionListener value="" target="#{Metadaten.currentGroup}"/>
-                            <f:ajax render=":pageContentCenter" onevent="(data) => { if (data.status === 'success') { meGroupModalOpen(); } }"/>
+                            <f:ajax execute="@this" render=":pageContentCenter" onevent="(data) => { if (data.status === 'success') { meGroupModalOpen(); } }"/>
                         </button>
                     </h:panelGroup>
                 </section:body>

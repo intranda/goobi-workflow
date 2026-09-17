@@ -19,46 +19,104 @@
          see the idSuffix handling here and in group-box.xhtml. -->
     <c:set var="idSuffix" value="#{editable ? '-modal' : ''}" />
 
-    <ui:repeat value="#{group.metadataList}" var="metadata" varStatus="status">
-        <intranda:formGroupMetadata id="grpMetadata-#{group.metadataGroupId}#{idSuffix}" metadata="#{metadata}" renderDelete="true" renderDuplicate="true"/>
-    </ui:repeat>
-    <ui:repeat value="#{group.personList}" var="currentPerson">
-        <intranda:formGroupPerson id="grpPerson-#{group.metadataGroupId}#{idSuffix}" person="#{currentPerson}" renderDelete="true"/>
-    </ui:repeat>
-    <ui:repeat value="#{group.corporateList}" var="currentCorporate" varStatus="status">
-        <intranda:formGroupCorporate id="grpCorporate-#{group.metadataGroupId}#{idSuffix}" corporate="#{currentCorporate}" renderDelete="true" changeRole="false" index="#{status.index}"/>
-    </ui:repeat>
+    <div class="#{editable and group.level == 0 ? 'dialog-body--scroll' : ''}">
+        <ui:repeat value="#{group.metadataList}" var="metadata" varStatus="status">
+            <intranda:formGroupMetadata id="grpMetadata-#{group.metadataGroupId}#{idSuffix}" metadata="#{metadata}" renderDelete="true" renderDuplicate="true"/>
+        </ui:repeat>
+        <ui:repeat value="#{group.personList}" var="currentPerson">
+            <intranda:formGroupPerson id="grpPerson-#{group.metadataGroupId}#{idSuffix}" person="#{currentPerson}" renderDelete="true"/>
+        </ui:repeat>
+        <ui:repeat value="#{group.corporateList}" var="currentCorporate" varStatus="status">
+            <intranda:formGroupCorporate id="grpCorporate-#{group.metadataGroupId}#{idSuffix}" corporate="#{currentCorporate}" renderDelete="true" changeRole="false" index="#{status.index}"/>
+        </ui:repeat>
 
-    <ui:fragment rendered="#{editable and (group.metadataAddable or group.corporateAddable or group.personAddable or group.groupAddable)}">
-        <div class="p-3 d-flex justify-content-end gap-2">
-            <button class="btn btn-blank addable" jsf:action="#{Metadaten.Hinzufuegen}" jsf:rendered="#{group.metadataAddable}" type="button">
-                #{msgs.neuesMetadatumAnlegen}
-                <f:setPropertyActionListener value="#{group}" target="#{Metadaten.currentGroup}"/>
-                <f:passThroughAttribute name="data-toggle" value="tooltip"/>
-                <f:ajax render=":pageContentCenter" onevent="(data) => { if (data.status === 'success') { meGroupModalOpen(); } }"/>
-            </button>
-            <button class="btn btn-blank addable" jsf:action="#{Metadaten.AddCorporate}" jsf:rendered="#{group.corporateAddable}" type="button">
-                #{msgs.mets_corporate_createCorporate}
-                <f:setPropertyActionListener value="#{group}" target="#{Metadaten.currentGroup}"/>
-                <f:passThroughAttribute name="data-toggle" value="tooltip"/>
-                <f:ajax render=":pageContentCenter" onevent="(data) => { if (data.status === 'success') { meGroupModalOpen(); } }"/>
-            </button>
-            <button class="btn btn-blank addable" jsf:action="#{Metadaten.HinzufuegenPerson}" jsf:rendered="#{group.personAddable}" type="button">
-                #{msgs.neuePersonAnlegen}
-                <f:setPropertyActionListener value="#{group}" target="#{Metadaten.currentGroup}"/>
-                <f:ajax render=":pageContentCenter" onevent="(data) => { if (data.status === 'success') { meGroupModalOpen(); } }"/>
-            </button>
-            <button class="btn btn-blank addable" jsf:action="#{Metadaten.AddGroup}" jsf:rendered="#{group.groupAddable}" type="button">
-                #{msgs.AddNewGroup}
-                <f:setPropertyActionListener value="#{group}" target="#{Metadaten.currentGroup}"/>
-                <f:ajax render=":pageContentCenter" onevent="(data) => { if (data.status === 'success') { meGroupModalOpen(); } }"/>
-            </button>
-        </div>
-    </ui:fragment>
+        <ui:fragment rendered="#{group.hasGroups}">
+            <c:forEach items="#{group.groupList}" var="childGroup">
+                <metadata:group-box group="#{childGroup}" editable="#{editable}"/>
+            </c:forEach>
+        </ui:fragment>
+    </div>
 
-    <ui:fragment rendered="#{group.hasGroups}">
-        <c:forEach items="#{group.groupList}" var="childGroup">
-            <metadata:group-box group="#{childGroup}" editable="#{editable}"/>
-        </c:forEach>
-    </ui:fragment>
+    <c:if test="#{group.level == 0}">
+        <h:panelGroup rendered="#{editable}" layout="block" class="p-3 d-flex justify-content-end flex-wrap gap-2">
+            <ui:fragment rendered="#{group.metadataAddable or group.corporateAddable or group.personAddable or group.groupAddable}">
+                <div class="dropdown" jsf:rendered="#{group.metadataAddable}">
+                    <button type="button" class="btn btn-blank addable dropdown-toggle" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-haspopup="true" aria-expanded="false">
+                        #{msgs.neuesMetadatumAnlegen}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <c:forEach items="#{group.addableMetadata}" var="item" varStatus="status">
+                            <li>
+                                <button type="button" class="dropdown-item" jsf:id="addMetadatum-#{group.metadataGroupId}#{idSuffix}-#{status.index}" jsf:action="#{Metadaten.groupEdit.addMetadata}">
+                                    #{item.label}
+                                    <f:setPropertyActionListener value="#{Metadaten.groupEdit.root}" target="#{Metadaten.groupEdit.actionTarget}"/>
+                                    <f:setPropertyActionListener value="#{item.value}" target="#{Metadaten.groupEdit.actionTypeName}"/>
+                                    <f:ajax execute="@this" render="@form:@id(groupEditModalBody)"/>
+                                </button>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </div>
+                <div class="dropdown" jsf:rendered="#{group.corporateAddable}">
+                    <button type="button" class="btn btn-blank addable dropdown-toggle" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-haspopup="true" aria-expanded="false">
+                        #{msgs.mets_corporate_createCorporate}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <c:forEach items="#{group.addableCorporations}" var="item" varStatus="status">
+                            <li>
+                                <button type="button" class="dropdown-item" jsf:id="addCorporate-#{group.metadataGroupId}#{idSuffix}-#{status.index}" jsf:action="#{Metadaten.groupEdit.addCorporate}">
+                                    #{item.label}
+                                    <f:setPropertyActionListener value="#{Metadaten.groupEdit.root}" target="#{Metadaten.groupEdit.actionTarget}"/>
+                                    <f:setPropertyActionListener value="#{item.value}" target="#{Metadaten.groupEdit.actionTypeName}"/>
+                                    <f:ajax execute="@this" render="@form:@id(groupEditModalBody)"/>
+                                </button>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </div>
+                <div class="dropdown" jsf:rendered="#{group.personAddable}">
+                    <button type="button" class="btn btn-blank addable dropdown-toggle" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-haspopup="true" aria-expanded="false">
+                        #{msgs.neuePersonAnlegen}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <c:forEach items="#{group.addablePersons}" var="item" varStatus="status">
+                            <li>
+                                <button type="button" class="dropdown-item" jsf:id="addPerson-#{group.metadataGroupId}#{idSuffix}-#{status.index}" jsf:action="#{Metadaten.groupEdit.addPerson}">
+                                    #{item.label}
+                                    <f:setPropertyActionListener value="#{Metadaten.groupEdit.root}" target="#{Metadaten.groupEdit.actionTarget}"/>
+                                    <f:setPropertyActionListener value="#{item.value}" target="#{Metadaten.groupEdit.actionTypeName}"/>
+                                    <f:ajax execute="@this" render="@form:@id(groupEditModalBody)"/>
+                                </button>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </div>
+                <div class="dropdown" jsf:rendered="#{group.groupAddable}">
+                    <button type="button" class="btn btn-blank addable dropdown-toggle" data-bs-toggle="dropdown" data-bs-popper-config='{"strategy":"fixed"}' aria-haspopup="true" aria-expanded="false">
+                        #{msgs.AddNewGroup}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <c:forEach items="#{group.addableGroupTypes}" var="item" varStatus="status">
+                            <li>
+                                <button type="button" class="dropdown-item" jsf:id="addGroup-#{group.metadataGroupId}#{idSuffix}-#{status.index}" jsf:action="#{Metadaten.groupEdit.addGroup}">
+                                    #{item.label}
+                                    <f:setPropertyActionListener value="#{Metadaten.groupEdit.root}" target="#{Metadaten.groupEdit.actionTarget}"/>
+                                    <f:setPropertyActionListener value="#{item.value}" target="#{Metadaten.groupEdit.actionTypeName}"/>
+                                    <f:ajax execute="@this" render="@form:@id(groupEditModalBody)"/>
+                                </button>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </div>
+            </ui:fragment>
+            <button
+                type="button"
+                class="btn btn-blank"
+                aria-label="#{msgs.abbrechen}"
+                onclick="this.closest('dialog').close();"
+            >
+                #{msgs.close}
+            </button>
+        </h:panelGroup>
+    </c:if>
 </ui:composition>
