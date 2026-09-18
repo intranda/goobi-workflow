@@ -598,19 +598,19 @@ public class MetadatenVerifizierung {
                 validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                         + Helper.getTranslation(METADATA_MISSING_ERROR) + " " + real + " " + Helper.getTranslation(METADATA_TIMES_ERROR);
                 inList.add(validationErrorMessage);
-                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
+                addMessageToMetadatumByMetadataType(inStruct, ll, validationErrorMessage);
             }
             if ("1o".equals(number) && real > 1) {
                 validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                         + Helper.getTranslation(METADATA_TO_MANY_ERROR) + " " + real + " " + Helper.getTranslation(METADATA_TIMES_ERROR);
                 inList.add(validationErrorMessage);
-                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
+                addMessageToMetadatumByMetadataType(inStruct, ll, validationErrorMessage);
             }
             if ("+".equals(number) && real == 0) {
                 validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                         + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR);
                 inList.add(validationErrorMessage);
-                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
+                addMessageToMetadatumByMetadataType(inStruct, ll, validationErrorMessage);
             }
         }
         for (MetadataGroupType mgt : dst.getAllMetadataGroupTypes()) {
@@ -658,13 +658,13 @@ public class MetadatenVerifizierung {
                                 + Helper.getTranslation(METADATA_TO_MANY_ERROR) + " " + numberOfExistingFields + " "
                                 + Helper.getTranslation(METADATA_TIMES_ERROR);
                         inList.add(validationErrorMessage);
-                        addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
+                        addMessageToMetadatumByMetadataType(inStruct, mg.getMetadataByType(mdt.getName()), validationErrorMessage);
                     } else if (("1m".equals(expected) || "+".equals(expected)) && numberOfExistingFields == 0) {
                         // required field empty
                         validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR);
                         inList.add(validationErrorMessage);
-                        addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
+                        addMessageToMetadatumByMetadataType(inStruct, mg.getMetadataByType(mdt.getName()), validationErrorMessage);
                     } else if ("1m".equals(expected) || "+".equals(expected)) {
                         // check if first field is filled
                         if (mdt.getIsPerson()) {
@@ -674,7 +674,7 @@ public class MetadatenVerifizierung {
                                 validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                         + Helper.getTranslation(METADATA_EMPTY_ERROR);
                                 inList.add(validationErrorMessage);
-                                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
+                                addErrorToDocStructAndMetadata(inStruct, p, validationErrorMessage);
                             }
                         } else if (mdt.isCorporate()) {
                             Corporate c = mg.getCorporateByType(mdt.getName()).get(0);
@@ -682,7 +682,7 @@ public class MetadatenVerifizierung {
                                 validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                         + Helper.getTranslation(METADATA_EMPTY_ERROR);
                                 inList.add(validationErrorMessage);
-                                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
+                                addErrorToDocStructAndMetadata(inStruct, c, validationErrorMessage);
                             }
                         } else {
                             Metadata md = mg.getMetadataByType(mdt.getName()).get(0);
@@ -690,7 +690,7 @@ public class MetadatenVerifizierung {
                                 validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                         + Helper.getTranslation(METADATA_EMPTY_ERROR);
                                 inList.add(validationErrorMessage);
-                                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
+                                addErrorToDocStructAndMetadata(inStruct, md, validationErrorMessage);
                             }
                         }
                     }
@@ -906,7 +906,7 @@ public class MetadatenVerifizierung {
         }
     }
 
-    private void addErrorToDocStructAndMetadata(DocStruct myStruct, Metadata md, String errorMessage) {
+    private void addErrorToDocStruct(DocStruct myStruct, String errorMessage) {
         myStruct.setValidationErrorPresent(true);
         if (myStruct.getValidationMessage() != null && !myStruct.getValidationMessage().contains(errorMessage)) {
             myStruct.setValidationMessage(
@@ -914,6 +914,10 @@ public class MetadatenVerifizierung {
         } else {
             myStruct.setValidationMessage(Helper.getTranslation(errorMessage));
         }
+    }
+
+    private void addErrorToDocStructAndMetadata(DocStruct myStruct, Metadata md, String errorMessage) {
+        addErrorToDocStruct(myStruct, errorMessage);
         md.setValidationErrorPresent(true);
         if (md.getValidationMessage() != null && !md.getValidationMessage().contains(errorMessage)) {
             md.setValidationMessage(md.getValidationMessage() + " & " + errorMessage);
@@ -968,12 +972,18 @@ public class MetadatenVerifizierung {
         }
     }
 
-    private void addMessageToMetadatumByMetadataType(DocStruct struct, MetadataType mdt, String message) {
-        try {
-            Metadata md = new Metadata(mdt);
+    /**
+     * Marks the given error message on every already existing metadata instance of the affected type, so the concrete field is highlighted in the
+     * UI. When no such instance exists (e.g. a mandatory field that has never been created), the error is only recorded on the enclosing
+     * {@link DocStruct}, since there is no real {@link Metadata} object to attach it to.
+     */
+    private void addMessageToMetadatumByMetadataType(DocStruct struct, List<? extends Metadata> existingMetadata, String message) {
+        if (existingMetadata == null || existingMetadata.isEmpty()) {
+            addErrorToDocStruct(struct, message);
+            return;
+        }
+        for (Metadata md : existingMetadata) {
             addErrorToDocStructAndMetadata(struct, md, message);
-        } catch (MetadataTypeNotAllowedException e) {
-            log.error(e);
         }
     }
 
