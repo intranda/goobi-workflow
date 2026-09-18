@@ -11,6 +11,11 @@
     </context-param>
 
     <context-param>
+        <param-name>jakarta.faces.FACELETS_VIEW_MAPPINGS</param-name>
+        <param-value>*.xhtml;*.html</param-value>
+    </context-param>
+
+    <context-param>
         <param-name>org.omnifaces.SOCKET_ENDPOINT_ENABLED</param-name>
         <param-value>true</param-value>
     </context-param>
