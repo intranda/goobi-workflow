@@ -225,6 +225,38 @@ public class MetadataGroupImpl {
     }
 
     /**
+     * Whether this group, any of its persons/corporates, or any of its (nested) subgroups currently carries a validation error. Used to flag the
+     * group as a whole in views that don't display every field inline (e.g. the collapsed level-0 group box).
+     */
+    public boolean isValidationErrorPresent() {
+        for (MetadatumImpl md : metadataList) {
+            if (md.isValidationErrorPresent()) {
+                return true;
+            }
+        }
+        for (MetaPerson mp : personList) {
+            if (mp.getP().isValidationErrorPresent()) {
+                return true;
+            }
+        }
+        for (MetaCorporate mc : corporateList) {
+            if (mc.getCorporate().isValidationErrorPresent()) {
+                return true;
+            }
+        }
+        for (MetadataGroupImpl mg : groupList) {
+            if (mg.isValidationErrorPresent()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isValid() {
+        return !isValidationErrorPresent();
+    }
+
+    /**
      * Whether this group instance may be duplicated, based on the maximum cardinality configured for its type in the ruleset ("1m"/"1o" allow only
      * one instance, which already exists as this group).
      */

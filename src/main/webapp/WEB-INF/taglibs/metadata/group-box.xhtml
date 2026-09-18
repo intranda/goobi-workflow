@@ -14,10 +14,10 @@
     <c:set var="idSuffix" value="#{editable ? '-modal' : ''}" />
 
     <c:if test="#{group.level == 0}">
-        <div class="box box--outline section metadata-group-box module__box-level-0">
+        <div class="box box--#{!editable and group.validationErrorPresent ? 'hot' : 'outline'} section metadata-group-box module__box-level-0">
             <div class="box__title section-header">
                 <h2>
-                    <util:icon icon="stack-2" />
+                    <util:icon icon="#{!editable and group.validationErrorPresent ? 'alert-triangle' : 'stack-2'}" />
                     #{group.name}
                 </h2>
                 <div class="actions section-header-actions">
