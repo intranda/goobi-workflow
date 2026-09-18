@@ -15,8 +15,8 @@
             <section:section type="#{empty Metadaten.groups ? 'outline' : 'neutral' }" id="metadataGroupSection" collapsible="true">
                 <section:header icon="menu-2" title="#{msgs.metadataGroups}">
                 </section:header>
-                <section:body>
-                    <p class="p-3 m-0 border-bottom" jsf:rendered="#{empty Metadaten.groups}">
+                <section:body padding="true">
+                    <p class="m-0 border-bottom" jsf:rendered="#{empty Metadaten.groups}">
                         <h:outputText value="#{msgs.mets_no_metadatagroups_assigned}"/>
                     </p>
                     <c:forEach items="#{Metadaten.groups}" var="Item">
