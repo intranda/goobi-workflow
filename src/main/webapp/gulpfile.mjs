@@ -63,6 +63,7 @@ const sources = {
     prosemirror: 'uii/template/js/editor/prosemirror.js',
     codemirror: 'uii/template/js/editor/codemirror.js',
     iconsJs: 'uii/template/js/modules/icons.js',
+    objectViewBackgroundFixJs: 'uii/template/js/modules/objectViewBackgroundFix.js',
     media: [
         'uii/template/js/media/**/*.js',
     ],
@@ -306,6 +307,28 @@ function iconsJs() {
         });
 };
 
+// standalone bundle of the objectViewBackgroundFix module, for plugin pages
+// that load objectView.min.js directly instead of via the main.js bundle
+function objectViewBackgroundFixJs() {
+    return rollup
+        .rollup({
+            input: sources.objectViewBackgroundFixJs,
+            plugins: [
+                cleanup(),
+            ],
+        })
+        .then(bundle => {
+            return bundle.write({
+                file: `${customLocation}${targetFolder.js}objectViewBackgroundFix.min.js`,
+                format: 'iife',
+                sourcemap: true,
+                plugins: [terser({
+                    mangle: true,
+                })]
+            });
+        });
+};
+
 function media() {
     const buildMedia = (inputFile, outputName) => {
     return rollup
@@ -394,6 +417,7 @@ function dev() {
     watch(sources.legacyJS, { ignoreInitial: false }, jsLegacy);
     watch(sources.js, { ignoreInitial: false }, devJsRollup);
     watch(sources.iconsJs, { ignoreInitial: false }, iconsJs);
+    watch(sources.objectViewBackgroundFixJs, { ignoreInitial: false }, objectViewBackgroundFixJs);
     watch(sources.bsCss, { ignoreInitial: false }, devBSCss);
     watch(sources.cssGlob, { ignoreInitial: false }, devCss);
     watch(sources.staticAssets, { ignoreInitial: false }, staticAssets);
@@ -411,6 +435,7 @@ const prod = parallel(
     prodCss,
     icons,
     iconsJs,
+    objectViewBackgroundFixJs,
     editors,
     media,
     image,

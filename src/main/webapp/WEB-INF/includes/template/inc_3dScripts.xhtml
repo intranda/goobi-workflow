@@ -1,0 +1,21 @@
+<ui:composition
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <!-- 3D-MODELS -->
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/three.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/OBJLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/MTLLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/PLYLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/STLLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/FBXLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/TDSLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/DRACOLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/GLTFLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/controls/OrbitControls.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/dependencies/inflate.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/x3dom/x3dom.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/objectView.min.js?v=#{HelperForm.buildVersion}"></script>
+
+    <!-- custom script to load 3D objects with their final background -->
+    <script src="#{request.contextPath}/resources/js/dist/objectViewBackgroundFix.min.js?v=#{HelperForm.buildVersion}"></script>
+</ui:composition>

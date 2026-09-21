@@ -9,20 +9,8 @@
     <!-- Load all dependencies with regular script tags for guaranteed load order -->
     <script src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/static/reactiveX/rxjs.umd.min.js"></script>
     <script src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/static/openseadragon/openseadragon.min.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/three.min.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/OBJLoader.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/MTLLoader.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/PLYLoader.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/STLLoader.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/FBXLoader.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/TDSLoader.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/DRACOLoader.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/loaders/GLTFLoader.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/controls/OrbitControls.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/three/dependencies/inflate.min.js"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/x3dom/x3dom.js"></script>
     <script src="#{request.contextPath}/resources/js/dist/imageView.min.js?v=#{HelperForm.buildVersion}"></script>
-    <script src="#{HelperForm.applicationWebsiteUrl}uii/template/js/static/objectView.min.js"></script>
+    <ui:include src="/WEB-INF/includes/template/inc_3dScripts.xhtml" />
 
     <h:panelGroup
         id="lightbox"
