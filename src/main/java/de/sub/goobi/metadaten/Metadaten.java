@@ -5480,7 +5480,7 @@ public class Metadaten implements Serializable {
         List<String> startTimeList = new ArrayList<>();
         List<String> endTimeList = new ArrayList<>();
         List<String> labelList = new ArrayList<>();
-        if (page.getAllChildren() != null) {
+        if (page != null && page.getAllChildren() != null) {
             for (DocStruct area : page.getAllChildren()) {
                 String start = "";
                 String end = "";
