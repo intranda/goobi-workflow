@@ -5480,34 +5480,35 @@ public class Metadaten implements Serializable {
         List<String> startTimeList = new ArrayList<>();
         List<String> endTimeList = new ArrayList<>();
         List<String> labelList = new ArrayList<>();
-
-        for (DocStruct area : page.getAllChildren()) {
-            String start = "";
-            String end = "";
-            String label = "";
-            for (Metadata md : area.getAllMetadata()) {
-                if ("_BEGIN".equals(md.getType().getName())) {
-                    start = md.getValue();
-                } else if ("_END".equals(md.getType().getName())) {
-                    end = md.getValue();
+        if (page.getAllChildren() != null) {
+            for (DocStruct area : page.getAllChildren()) {
+                String start = "";
+                String end = "";
+                String label = "";
+                for (Metadata md : area.getAllMetadata()) {
+                    if ("_BEGIN".equals(md.getType().getName())) {
+                        start = md.getValue();
+                    } else if ("_END".equals(md.getType().getName())) {
+                        end = md.getValue();
+                    }
                 }
-            }
 
-            List<DocStruct> referencedLogDs =
-                    area.getAllFromReferences().stream().map(Reference::getSource).filter(Objects::nonNull).collect(Collectors.toList());
-            if (!referencedLogDs.isEmpty()) {
-                DocStruct ds = referencedLogDs.getLast();
-                if (ds.getAllMetadata() != null) {
-                    for (Metadata md : ds.getAllMetadata()) {
-                        if ("TitleDocMain".equals(md.getType().getName())) {
-                            label = md.getValue();
+                List<DocStruct> referencedLogDs =
+                        area.getAllFromReferences().stream().map(Reference::getSource).filter(Objects::nonNull).collect(Collectors.toList());
+                if (!referencedLogDs.isEmpty()) {
+                    DocStruct ds = referencedLogDs.getLast();
+                    if (ds.getAllMetadata() != null) {
+                        for (Metadata md : ds.getAllMetadata()) {
+                            if ("TitleDocMain".equals(md.getType().getName())) {
+                                label = md.getValue();
+                            }
                         }
                     }
                 }
+                startTimeList.add(start);
+                endTimeList.add(end);
+                labelList.add(label);
             }
-            startTimeList.add(start);
-            endTimeList.add(end);
-            labelList.add(label);
         }
 
         // for each:
