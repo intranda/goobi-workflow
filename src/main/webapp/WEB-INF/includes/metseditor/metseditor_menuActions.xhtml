@@ -207,37 +207,23 @@
                 <!-- SAVE -->
                 <c:if test="#{not Metadaten.nurLesenModus}">
                     <li class="nav-item d-none d-md-block">
-                        <!-- This button and the hidden button below have to
-                        work together to get the wanted effect here. This button
-                        is responsible for FIRST UNFOCUSING the currently
-                        focused input field and THEN SENDING the content to the
-                        belonging java bean. Because JSF has no reliable
-                        execution order between onclick() and the call of the
-                        belonging Java bean (it does not wait until Javascript
-                        terminates), the javascript of this button is used to do
-                        the unfocus-task first and then simulate the click of
-                        the other button (below, hidden) AFTER UNFOCUSING the
-                        currently focused field.-->
-                        <!-- This button should not submit the form. Otherwise there will be two submits,
-                        from this button and from #saveMetsFileButton. In Firefox only the second submit is sent, resulting
-                        in the desired behaviour. In Chromium-browsers, the first submit is sent, resulting in Metadaten.Reload
-                        not being called (Florian 06-10-2022) -->
+                        <!-- The save request has to be an ajax request: it is then enqueued in the faces ajax queue
+                        behind pending valueChange requests (e.g. of the field that loses focus by clicking this
+                        button or of the group edit modal). 
+                        A regular form submit bypasses the queue and can overtake them, so the last changes would not be saved.
+                        -->
                         <button
                             type="button"
                             class="nav-link"
-                            id="saveMetsFileButtonSimulation"
-                            onclick="document.activeElement.blur();document.getElementById('meMenuActionsForm:saveMetsFileButton').click();"
+                            jsf:id="saveMetsFileButton"
+                            jsf:action="#{Metadaten.Reload}"
                             title="#{msgs.speichern}"
                             data-bs-toggle="tooltip"
                             data-bs-placement="bottom"
                             data-save-scroll-positions="true"
                         >
                             <util:icon icon="device-floppy" styleClass="icon--lg" />
-                        </button>
-                        <!-- This button may not be removed or merged into the
-                        button above. It is called AFTER the javascript of the
-                        button above has terminated. -->
-                        <button style="display: none" jsf:id="saveMetsFileButton" jsf:action="#{Metadaten.Reload}">
+                            <f:ajax execute="@this" render="@form :pageContentCenter :treeform" />
                         </button>
 
                         <h:panelGroup style="display:none" styleClass="navigationitem" id="saveMetsFileImage">
