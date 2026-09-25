@@ -209,7 +209,7 @@
                     <li class="nav-item d-none d-md-block">
                         <!-- The save request has to be an ajax request: it is then enqueued in the faces ajax queue
                         behind pending valueChange requests (e.g. of the field that loses focus by clicking this
-                        button or of the group edit modal). 
+                        button or of the group edit modal).
                         A regular form submit bypasses the queue and can overtake them, so the last changes would not be saved.
                         -->
                         <button
@@ -222,8 +222,8 @@
                             data-bs-placement="bottom"
                             data-save-scroll-positions="true"
                         >
-                            <util:icon icon="device-floppy" styleClass="icon--lg" />
-                            <f:ajax execute="@this" render="@form :pageContentCenter :treeform" />
+                            <util:icon icon="device-floppy" />
+                            <f:ajax execute="@this" render=":pageContentCenter" />
                         </button>
 
                         <h:panelGroup style="display:none" styleClass="navigationitem" id="saveMetsFileImage">
