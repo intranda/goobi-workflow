@@ -49,6 +49,8 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.goobi.beans.Process;
+import org.goobi.beans.Project;
+import org.goobi.beans.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -109,6 +111,8 @@ public class MetadatenTest extends AbstractTest {
         ConfigurationHelper.setImagesPath("/some/path/");
 
         process = MockProcess.createProcess();
+        // other tests may leave a metadata lock on the mock process behind
+        MetadatenSperrung.unlockProcess(process.getId());
 
         // redirect metadata writes to a temp directory so tests don't pollute src/test/resources
         String resourcesFolder = "src/test/resources/";
@@ -1488,16 +1492,133 @@ public class MetadatenTest extends AbstractTest {
             mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
-            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(createUser(1, 666));
             mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
+
+            Metadaten fixture = new Metadaten();
+            String data = fixture.XMLlesen();
+            assertEquals("metseditor", data);
+            assertEquals("1", new MetadatenSperrung().getLockBenutzer(1));
+            // project member without metadata editor role gets read access only
+            assertTrue(fixture.isNurLesenModus());
+            fixture.goZurueck();
+        }
+    }
+
+    @Test
+    public void testXMLlesenIgnoresUserIdFromRequest() throws Exception {
+        try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockXMLlesenEnvironment(mockedProcessManager, mockedHelper, mockedStepManager, createUser(5, 666));
+
+            Metadaten fixture = new Metadaten();
+            assertEquals("metseditor", fixture.XMLlesen());
+            // request contains BenutzerID=1, the lock must belong to the logged in user
+            assertEquals("5", new MetadatenSperrung().getLockBenutzer(1));
+            fixture.goZurueck();
+        }
+    }
+
+    @Test
+    public void testXMLlesenDeniesForeignProject() throws Exception {
+        try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockXMLlesenEnvironment(mockedProcessManager, mockedHelper, mockedStepManager, createUser(1, 777));
+
+            Metadaten fixture = new Metadaten();
+            // returns the value of the 'zurueck' parameter
+            assertEquals("1", fixture.XMLlesen());
+            assertNull(fixture.getMyProzess());
+            assertFalse(MetadatenSperrung.isLocked(1));
+        }
+    }
+
+    @Test
+    public void testXMLlesenDeniesWithoutUser() throws Exception {
+        try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockXMLlesenEnvironment(mockedProcessManager, mockedHelper, mockedStepManager, null);
+
+            Metadaten fixture = new Metadaten();
+            assertEquals("1", fixture.XMLlesen());
+            assertNull(fixture.getMyProzess());
+        }
+    }
+
+    @Test
+    public void testXMLlesenDeniesProcessLockedByOtherUser() throws Exception {
+        try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockXMLlesenEnvironment(mockedProcessManager, mockedHelper, mockedStepManager, createUser(1, 666));
+            MetadatenSperrung lock = new MetadatenSperrung();
+            lock.setLocked(1, "99");
+            try {
+                Metadaten fixture = new Metadaten();
+                assertEquals("1", fixture.XMLlesen());
+                assertNull(fixture.getMyProzess());
+                assertEquals("99", lock.getLockBenutzer(1));
+            } finally {
+                lock.setFree(1);
+            }
+        }
+    }
+
+    @Test
+    public void testXMLschreibenInReadOnlyMode() throws Exception {
+        try (MockedStatic<ExternalContext> mockedExternalContext = Mockito.mockStatic(ExternalContext.class);
+                MockedStatic<FacesContext> mockedFacesContext = Mockito.mockStatic(FacesContext.class);
+                MockedStatic<MetadataManager> mockedMetadataManager = Mockito.mockStatic(MetadataManager.class);
+                MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<StepManager> mockedStepManager = Mockito.mockStatic(StepManager.class)) {
+            mockXMLlesenEnvironment(mockedProcessManager, mockedHelper, mockedStepManager, createUser(1, 666));
 
             Metadaten fixture = new Metadaten();
             fixture.setMyBenutzerID("1");
             fixture.setMyProzess(process);
-            String data = fixture.XMLlesen();
-            assertEquals("metseditor", data);
-
+            fixture.XMLlesenStart();
+            fixture.setNurLesenModus(true);
+            assertEquals("", fixture.XMLschreiben());
+            assertEquals("", fixture.Reload());
+            mockedProcessManager.verify(() -> ProcessManager.saveProcess(Mockito.any()), Mockito.never());
         }
+    }
+
+    private void mockXMLlesenEnvironment(MockedStatic<ProcessManager> mockedProcessManager, MockedStatic<Helper> mockedHelper,
+            MockedStatic<StepManager> mockedStepManager, User user) {
+        mockedProcessManager.when(() -> ProcessManager.getProcessById(Mockito.anyInt())).thenReturn(process);
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString())).thenReturn("");
+        mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString())).thenReturn("");
+        mockedHelper.when(() -> Helper.getMetadataLanguage()).thenReturn("en");
+        mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+        mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
+        mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(user);
+        mockedStepManager.when(() -> StepManager.getStepsForProcess(Mockito.anyInt())).thenReturn(Collections.emptyList());
+    }
+
+    private static User createUser(int userId, int projectId) {
+        Project project = new Project();
+        project.setId(projectId);
+        User user = new User();
+        user.setId(userId);
+        user.setProjekte(new ArrayList<>(List.of(project)));
+        return user;
     }
 
     @Test

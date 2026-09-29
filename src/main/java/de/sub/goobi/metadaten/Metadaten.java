@@ -51,6 +51,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
@@ -70,6 +71,7 @@ import org.goobi.beans.ImageComment;
 import org.goobi.beans.Process;
 import org.goobi.beans.SimpleAlto;
 import org.goobi.beans.Step;
+import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.OrderedKeyMap;
 import org.goobi.production.enums.PluginType;
@@ -636,6 +638,9 @@ public class Metadaten implements Serializable {
 
         if (!updateLocking()) {
             return REDIRECT_TO_METSEDITOR_AFTER_TIMEOUT;
+        } else if (this.nurLesenModus) {
+            Helper.setFehlerMeldung("metseditorAccessDenied");
+            return "";
         } else {
             try {
                 processHasNewTemporaryMetadataFiles = false;
@@ -716,7 +721,9 @@ public class Metadaten implements Serializable {
     }
 
     public String automaticSave() {
-
+        if (this.nurLesenModus) {
+            return "";
+        }
         try {
             processHasNewTemporaryMetadataFiles = true;
             updateRepresentativePage();
@@ -1716,12 +1723,33 @@ public class Metadaten implements Serializable {
         String parameterOverwriteChanges = "overwriteChanges";
         String parameterProcessId = "ProzesseID";
         String parameterStepId = "SchrittID";
-        String parameterUserId = "BenutzerID";
 
+        // the user is always taken from the session, never from the request
+        User currentUser = Helper.getCurrentUser();
+        Process requestedProcess;
         try {
             Integer id = Integer.valueOf(Helper.getRequestParameter(parameterProcessId));
-            this.myProzess = ProcessManager.getProcessById(id);
+            requestedProcess = ProcessManager.getProcessById(id);
+        } catch (NumberFormatException e1) {
+            Helper.setFehlerMeldung("error while loading process data " + e1.getMessage());
+            log.error(e1);
+            return Helper.getRequestParameter(parameterBack);
+        }
 
+        Predicate<String> hasRole = Metadaten::currentUserHasRole;
+        if (!MetadataEditorAccess.canRead(currentUser, requestedProcess, hasRole)) {
+            Helper.setFehlerMeldung("metseditorAccessDenied");
+            return Helper.getRequestParameter(parameterBack);
+        }
+        String userId = String.valueOf(currentUser.getId());
+        int requestedProcessId = requestedProcess.getId().intValue();
+        if (MetadatenSperrung.isLocked(requestedProcessId) && !userId.equals(this.sperrung.getLockBenutzer(requestedProcessId))) {
+            Helper.setFehlerMeldung("gesperrt");
+            return Helper.getRequestParameter(parameterBack);
+        }
+
+        this.myProzess = requestedProcess;
+        try {
             String rawStepId = Helper.getRequestParameter(parameterStepId);
             if (rawStepId == null || "".equals(rawStepId)) {
                 this.myStep = Optional.empty();
@@ -1735,11 +1763,13 @@ public class Metadaten implements Serializable {
             return Helper.getRequestParameter(parameterBack);
         }
         processHasNewTemporaryMetadataFiles = false;
-        this.myBenutzerID = Helper.getRequestParameter(parameterUserId);
+        this.myBenutzerID = userId;
         this.pageSelectionFirstPage = "";
         this.pageSelectionLastPage = "";
         this.zurueck = Helper.getRequestParameter(parameterBack);
-        this.nurLesenModus = "true".equals(Helper.getRequestParameter(parameterReadOnly));
+        // the request parameter may only restrict the access, never extend it
+        this.nurLesenModus = "true".equals(Helper.getRequestParameter(parameterReadOnly))
+                || !MetadataEditorAccess.canWrite(currentUser, requestedProcess, hasRole);
         this.neuesElementWohin = "4";
         this.tree3 = null;
         image = null;
@@ -1747,9 +1777,10 @@ public class Metadaten implements Serializable {
         dataList = null;
         treeProperties.put("showThumbnails", false);
         treeProperties.put("showOcr", false);
-        if ("true".equals(Helper.getRequestParameter(parameterDiscardChanges))) {
+        // temporary files must neither be discarded nor applied without write access
+        if (!this.nurLesenModus && "true".equals(Helper.getRequestParameter(parameterDiscardChanges))) {
             myProzess.removeTemporaryMetadataFiles();
-        } else if ("true".equals(Helper.getRequestParameter(parameterOverwriteChanges))) {
+        } else if (!this.nurLesenModus && "true".equals(Helper.getRequestParameter(parameterOverwriteChanges))) {
             myProzess.overwriteMetadata();
             myProzess.removeTemporaryMetadataFiles();
         }
@@ -2004,6 +2035,10 @@ public class Metadaten implements Serializable {
      * @return result
      */
     public String XMLschreiben() {
+        if (this.nurLesenModus) {
+            Helper.setFehlerMeldung("metseditorAccessDenied");
+            return "";
+        }
         XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
 
         this.myProzess.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.DOCSTRUCT));
@@ -3347,6 +3382,11 @@ public class Metadaten implements Serializable {
         return true;
     }
 
+    private static boolean currentUserHasRole(String role) {
+        LoginBean login = Helper.getLoginBean();
+        return login != null && login.hasRole(role);
+    }
+
     private void unlock() {
         int processId = this.myProzess.getId().intValue();
         if (MetadatenSperrung.isLocked(processId) && this.sperrung.getLockBenutzer(processId).equals(this.myBenutzerID)) {
@@ -3380,7 +3420,9 @@ public class Metadaten implements Serializable {
     }
 
     public String discard() {
-        myProzess.removeTemporaryMetadataFiles();
+        if (!this.nurLesenModus) {
+            myProzess.removeTemporaryMetadataFiles();
+        }
         unlock();
         return this.zurueck;
     }
@@ -4734,6 +4776,10 @@ public class Metadaten implements Serializable {
 
     public void filterMyProcess() {
         filteredProcess = ProcessManager.getProcessByTitle(filterProcessTitle);
+        if (filteredProcess != null && !MetadataEditorAccess.canRead(Helper.getCurrentUser(), filteredProcess, Metadaten::currentUserHasRole)) {
+            // do not reveal the existence of processes the user may not see
+            filteredProcess = null;
+        }
         if (filteredProcess == null) {
             Helper.setFehlerMeldung("kein Vorgang gefunden");
         } else if (!filteredProcess.getRegelsatz().getId().equals(myProzess.getRegelsatz().getId())) {
