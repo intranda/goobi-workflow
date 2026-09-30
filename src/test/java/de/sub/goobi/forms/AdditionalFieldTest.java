@@ -30,8 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.helper.Helper;
 import jakarta.faces.model.SelectItem;
 
 public class AdditionalFieldTest extends AbstractTest {
@@ -251,4 +254,72 @@ public class AdditionalFieldTest extends AbstractTest {
         assertEquals(List.of("first"), af.getValues());
     }
 
+    private static AdditionalField vocabularyField() {
+        AdditionalField af = new AdditionalField();
+        af.setSelectList(List.of(new SelectItem("Book", "Buch")));
+        af.setKeepUnknownValues(true);
+        return af;
+    }
+
+    private static MockedStatic<Helper> notInVocabularyTranslation() {
+        MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class);
+        helper.when(() -> Helper.getTranslation(Mockito.eq("mets_vocabularyValueNotInVocabulary"), Mockito.<String> any()))
+                .thenAnswer(invocation -> invocation.getArgument(1) + " (not in vocabulary)");
+        return helper;
+    }
+
+    /**
+     * A vocabulary field can be prefilled with a value that is not the language independent value of any record, from a catalogue import or a
+     * template. The dropdown has no option for it, so submitting the form would replace it; it is offered as a marked entry of its own instead.
+     */
+    @Test
+    public void testSelectListKeepsAValueOutsideTheVocabulary() {
+        AdditionalField af = vocabularyField();
+        af.setWert("Buch");
+
+        try (MockedStatic<Helper> helper = notInVocabularyTranslation()) {
+            List<SelectItem> selectList = af.getSelectList();
+
+            assertEquals(2, selectList.size());
+            assertEquals("Book", selectList.get(0).getValue());
+            assertEquals("Buch", selectList.get(1).getValue());
+            assertEquals("Buch (not in vocabulary)", selectList.get(1).getLabel());
+        }
+    }
+
+    @Test
+    public void testSelectListIsUnchangedForAValueInTheVocabulary() {
+        AdditionalField af = vocabularyField();
+        af.setWert("Book");
+
+        try (MockedStatic<Helper> helper = notInVocabularyTranslation()) {
+            assertEquals(1, af.getSelectList().size());
+        }
+    }
+
+    @Test
+    public void testSelectListKeepsEveryUnknownValueOfAMultiselect() {
+        AdditionalField af = vocabularyField();
+        af.setMultiselect(true);
+        af.setValues(List.of("Book", "Buch"));
+
+        try (MockedStatic<Helper> helper = notInVocabularyTranslation()) {
+            List<SelectItem> selectList = af.getSelectList();
+
+            assertEquals(2, selectList.size());
+            assertEquals("Buch", selectList.get(1).getValue());
+        }
+    }
+
+    /**
+     * A select list configured in goobi_projects.xml keeps its behaviour, only vocabulary fields offer unknown values.
+     */
+    @Test
+    public void testConfiguredSelectListDoesNotOfferUnknownValues() {
+        AdditionalField af = new AdditionalField();
+        af.setSelectList(List.of(new SelectItem("value", "label")));
+        af.setWert("other");
+
+        assertEquals(1, af.getSelectList().size());
+    }
 }

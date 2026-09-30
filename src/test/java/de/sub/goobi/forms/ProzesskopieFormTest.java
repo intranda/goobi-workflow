@@ -62,6 +62,8 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import jakarta.faces.model.SelectItem;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 
@@ -567,4 +569,26 @@ public class ProzesskopieFormTest extends AbstractTest {
         mockedHelper.when(() -> Helper.getTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn("");
     }
 
+    private static ExtendedVocabularyRecord vocabularyRecord(String displayedValue, String languageIndependentValue) {
+        ExtendedVocabularyRecord vocabularyRecord = Mockito.mock(ExtendedVocabularyRecord.class);
+        Mockito.when(vocabularyRecord.getMainValue()).thenReturn(displayedValue);
+        Mockito.when(vocabularyRecord.getLanguageIndependentMainValue()).thenReturn(languageIndependentValue);
+        return vocabularyRecord;
+    }
+
+    /**
+     * A field with a vocabulary shows each record in the language of the user interface, sorted as it is shown, but the value written into the
+     * metadata of the new process is the language independent one.
+     */
+    @Test
+    public void testVocabularySelectListShowsTheDisplayedValueAndStoresTheLanguageIndependentOne() {
+        List<SelectItem> selectList = ProzesskopieForm.createVocabularySelectList(
+                List.of(vocabularyRecord("Karte", "Map"), vocabularyRecord("Buch", "Book")));
+
+        assertEquals(2, selectList.size());
+        assertEquals("Buch", selectList.get(0).getLabel());
+        assertEquals("Book", selectList.get(0).getValue());
+        assertEquals("Karte", selectList.get(1).getLabel());
+        assertEquals("Map", selectList.get(1).getValue());
+    }
 }

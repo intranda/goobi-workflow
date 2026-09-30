@@ -35,6 +35,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 
+import de.sub.goobi.helper.Helper;
 import jakarta.faces.model.SelectItem;
 import lombok.Getter;
 import lombok.Setter;
@@ -52,9 +53,14 @@ public class AdditionalField {
     @Getter
     @Setter
     private boolean property;
-    @Getter
     @Setter
     private List<SelectItem> selectList;
+    /**
+     * Set for fields with a vocabulary: a current value that is not in the select list is offered as an entry of its own, so it is not
+     * replaced when the form is submitted.
+     */
+    @Setter
+    private boolean keepUnknownValues = false;
     @Setter
     @Getter
     private boolean ughbinding = false;
@@ -110,6 +116,19 @@ public class AdditionalField {
         } else {
             this.wert = this.initStart + newValue + this.initEnd;
         }
+    }
+
+    public List<SelectItem> getSelectList() {
+        if (!keepUnknownValues || selectList == null) {
+            return selectList;
+        }
+        List<SelectItem> result = new ArrayList<>(selectList);
+        for (String value : getValues()) {
+            if (StringUtils.isNotBlank(value) && selectList.stream().noneMatch(i -> value.equals(i.getValue()))) {
+                result.add(new SelectItem(value, Helper.getTranslation("mets_vocabularyValueNotInVocabulary", value)));
+            }
+        }
+        return result;
     }
 
     public void setDocstruct(String docstruct) {

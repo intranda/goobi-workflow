@@ -36,6 +36,7 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -604,14 +605,21 @@ public class ProzesskopieForm implements Serializable {
                     .all()
                     .request()
                     .getContent();
-            fa.setSelectList(
-                    records.stream()
-                            .map(ExtendedVocabularyRecord::getMainValue)
-                            .sorted()
-                            .map(v -> new SelectItem(v, v))
-                            .collect(Collectors.toList()));
+            fa.setSelectList(createVocabularySelectList(records));
+            fa.setKeepUnknownValues(true);
         }
         return fa;
+    }
+
+    /**
+     * The entries of a field with a vocabulary: each record is shown in the language of the user interface, but its value is the language
+     * independent one, so the metadata of the new process does not depend on who created it.
+     */
+    static List<SelectItem> createVocabularySelectList(List<ExtendedVocabularyRecord> records) {
+        return records.stream()
+                .sorted(Comparator.comparing(ExtendedVocabularyRecord::getMainValue))
+                .map(r -> new SelectItem(r.getLanguageIndependentMainValue(), r.getMainValue()))
+                .collect(Collectors.toList());
     }
 
     /* =============================================================== */
