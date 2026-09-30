@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -265,6 +266,27 @@ public class DisplayProperty implements IProperty, Serializable {
         return getValueList().stream()
                 .map(this::readVocabularyMainValueForRecord)
                 .toList();
+    }
+
+    /**
+     * The value a display condition of another property is compared to. For a vocabulary reference, that is the language independent main
+     * value of the referenced record, so a condition in the property configuration works whatever the language of the user interface.
+     *
+     * @return the value, empty if the vocabulary reference is not a record id
+     */
+    public Optional<String> getConditionValue() {
+        if (!Type.VOCABULARYREFERENCE.equals(getType())) {
+            return Optional.ofNullable(getValue());
+        }
+        try {
+            return Optional.of(VocabularyAPIManager.getInstance()
+                    .vocabularyRecords()
+                    .get(Long.parseLong(getValue()))
+                    .getLanguageIndependentMainValue());
+        } catch (NumberFormatException e) {
+            log.error("Unable to read ID \"{}\"", getValue());
+            return Optional.empty();
+        }
     }
 
     private String readVocabularyMainValueForRecord(String ref) {

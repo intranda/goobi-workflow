@@ -28,11 +28,17 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import de.sub.goobi.AbstractTest;
+import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 
 public class DisplayPropertyTest extends AbstractTest {
 
@@ -315,5 +321,43 @@ public class DisplayPropertyTest extends AbstractTest {
         property.setType(Type.HTML);
         property.setValue(null);
         assertNull(property.getValue());
+    }
+
+    /**
+     * A display condition on a vocabulary reference compares the language independent value of the referenced record, so a condition in the
+     * property configuration works for every user, whatever the language of the user interface.
+     */
+    @Test
+    public void testConditionValueOfAVocabularyReferenceIsLanguageIndependent() {
+        ExtendedVocabularyRecord vocabularyRecord = Mockito.mock(ExtendedVocabularyRecord.class);
+        Mockito.when(vocabularyRecord.getMainValue()).thenReturn("Buch");
+        Mockito.when(vocabularyRecord.getLanguageIndependentMainValue()).thenReturn("Book");
+        VocabularyAPIManager manager = Mockito.mock(VocabularyAPIManager.class, Answers.RETURNS_DEEP_STUBS);
+        Mockito.when(manager.vocabularyRecords().get(7L)).thenReturn(vocabularyRecord);
+
+        property.setType(Type.VOCABULARYREFERENCE);
+        property.setValue("7");
+
+        try (MockedStatic<VocabularyAPIManager> api = Mockito.mockStatic(VocabularyAPIManager.class)) {
+            api.when(VocabularyAPIManager::getInstance).thenReturn(manager);
+
+            assertEquals(Optional.of("Book"), property.getConditionValue());
+        }
+    }
+
+    @Test
+    public void testConditionValueOfABrokenVocabularyReferenceIsEmpty() {
+        property.setType(Type.VOCABULARYREFERENCE);
+        property.setValue("not an id");
+
+        assertEquals(Optional.empty(), property.getConditionValue());
+    }
+
+    @Test
+    public void testConditionValueOfAPlainPropertyIsItsValue() {
+        property.setType(Type.TEXT);
+        property.setValue("Buch");
+
+        assertEquals(Optional.of("Buch"), property.getConditionValue());
     }
 }

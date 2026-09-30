@@ -69,7 +69,6 @@ import org.goobi.production.properties.DisplayProperty;
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.ShowStepCondition;
-import org.goobi.production.properties.Type;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
@@ -100,7 +99,6 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import lombok.Getter;
@@ -1210,19 +1208,7 @@ public class StepBean extends BasicBean {
                     for (StringPair sp : cond.getDisplayCondition()) {
                         for (DisplayProperty other : processPropertyList) {
                             if (other.getName().equals(sp.getOne())) {
-                                Optional<String> otherValue = Optional.empty();
-                                if (Type.VOCABULARYREFERENCE.equals(other.getType())) {
-                                    try {
-                                        otherValue = Optional.of(VocabularyAPIManager.getInstance()
-                                                .vocabularyRecords()
-                                                .get(Long.parseLong(other.getValue()))
-                                                .getMainValue());
-                                    } catch (NumberFormatException e) {
-                                        log.error("Unable to read ID \"{}\"", other.getValue());
-                                    }
-                                } else {
-                                    otherValue = Optional.ofNullable(other.getValue());
-                                }
+                                Optional<String> otherValue = other.getConditionValue();
                                 if (otherValue.orElse("").equals(sp.getTwo())) {
                                     match = true;
                                 }
@@ -1378,19 +1364,7 @@ public class StepBean extends BasicBean {
                         for (StringPair sp : cond.getDisplayCondition()) {
                             for (DisplayProperty other : processPropertyList) {
                                 if (other.getName().equals(sp.getOne())) {
-                                    Optional<String> otherValue = Optional.empty();
-                                    if (Type.VOCABULARYREFERENCE.equals(other.getType())) {
-                                        try {
-                                            otherValue = Optional.of(VocabularyAPIManager.getInstance()
-                                                    .vocabularyRecords()
-                                                    .get(Long.parseLong(other.getValue()))
-                                                    .getMainValue());
-                                        } catch (NumberFormatException e) {
-                                            log.error("Unable to read ID \"{}\"", other.getValue());
-                                        }
-                                    } else {
-                                        otherValue = Optional.ofNullable(other.getValue());
-                                    }
+                                    Optional<String> otherValue = other.getConditionValue();
                                     if (otherValue.orElse("").equals(sp.getTwo())) {
                                         match = true;
                                     }
@@ -1428,19 +1402,7 @@ public class StepBean extends BasicBean {
                             for (StringPair sp : cond.getDisplayCondition()) {
                                 for (DisplayProperty other : processPropertyList) {
                                     if (other.getName().equals(sp.getOne())) {
-                                        Optional<String> otherValue = Optional.empty();
-                                        if (Type.VOCABULARYREFERENCE.equals(other.getType())) {
-                                            try {
-                                                otherValue = Optional.of(VocabularyAPIManager.getInstance()
-                                                        .vocabularyRecords()
-                                                        .get(Long.parseLong(other.getValue()))
-                                                        .getMainValue());
-                                            } catch (NumberFormatException e) {
-                                                log.error("Unable to read ID \"{}\"", other.getValue());
-                                            }
-                                        } else {
-                                            otherValue = Optional.ofNullable(other.getValue());
-                                        }
+                                        Optional<String> otherValue = other.getConditionValue();
                                         if (otherValue.orElse("").equals(sp.getTwo())) {
                                             match = true;
                                         }
