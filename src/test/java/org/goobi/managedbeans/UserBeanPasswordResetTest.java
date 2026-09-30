@@ -19,10 +19,13 @@
 package org.goobi.managedbeans;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.goobi.beans.Ldap;
 import org.goobi.beans.User;
+import org.goobi.production.enums.UserRole;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -111,6 +114,55 @@ class UserBeanPasswordResetTest extends AbstractTest {
 
             mockedUserManager.verify(() -> UserManager.saveUser(userToReset), Mockito.times(1));
             mockedHelper.verify(() -> Helper.setMeldung(Mockito.anyString()), Mockito.times(1));
+        }
+    }
+
+    @Test
+    void adminCannotResetPasswordOfSuperAdmin() {
+        userToReset.setSuperAdmin(true);
+        userToReset.setInstitutionId(1);
+        assertPasswordReset(createPasswordAdmin(1), false);
+    }
+
+    @Test
+    void adminCannotResetPasswordOfUserFromOtherInstitution() {
+        userToReset.setInstitutionId(2);
+        assertPasswordReset(createPasswordAdmin(1), false);
+    }
+
+    @Test
+    void adminCanResetPasswordOfUserFromOwnInstitution() {
+        userToReset.setInstitutionId(1);
+        assertPasswordReset(createPasswordAdmin(1), true);
+    }
+
+    private User createPasswordAdmin(Integer institutionId) {
+        User admin = Mockito.mock(User.class);
+        Mockito.when(admin.isSuperAdmin()).thenReturn(false);
+        Mockito.when(admin.getInstitutionId()).thenReturn(institutionId);
+        Mockito.when(admin.getAllUserRoles()).thenReturn(List.of(UserRole.Admin_Users_Change_Passwords.toString()));
+        return admin;
+    }
+
+    private void assertPasswordReset(User currentUser, boolean expectedReset) {
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<UserManager> mockedUserManager = Mockito.mockStatic(UserManager.class);
+                MockedStatic<ConfigurationHelper> mockedConfig = Mockito.mockStatic(ConfigurationHelper.class);
+                MockedConstruction<LdapAuthentication> mockedLdap = Mockito.mockConstruction(LdapAuthentication.class,
+                        (mock, context) -> Mockito.when(mock.changeUserPassword(Mockito.any(), Mockito.any(), Mockito.any()))
+                                .thenReturn(true))) {
+
+            mockedHelper.when(Helper::getCurrentUser).thenReturn(currentUser);
+            mockedHelper.when(() -> Helper.getRequestParameter("ID")).thenReturn("5");
+            mockedUserManager.when(() -> UserManager.getUserById(5)).thenReturn(userToReset);
+            mockedConfig.when(ConfigurationHelper::getInstance).thenReturn(config);
+
+            bean.createNewRandomPasswordForUser();
+
+            int times = expectedReset ? 1 : 0;
+            mockedUserManager.verify(() -> UserManager.saveUser(userToReset), Mockito.times(times));
+            mockedHelper.verify(() -> Helper.setMeldung(Mockito.anyString()), Mockito.times(times));
+            Assertions.assertEquals(times, mockedLdap.constructed().size());
         }
     }
 }

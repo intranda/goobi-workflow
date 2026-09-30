@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -636,6 +637,13 @@ public class UserBean extends BasicBean {
         // This should never happen
         if (userToResetPassword == null) {
             Helper.setFehlerMeldung("The selected user account is invalid in the database.");
+            return RETURN_PAGE_ALL;
+        }
+
+        // Only superadmins may reset the password of superadmins or of users from other institutions
+        if (!userIsSuperAdmin
+                && (userToResetPassword.isSuperAdmin() || !Objects.equals(currentUser.getInstitutionId(), userToResetPassword.getInstitutionId()))) {
+            Helper.setFehlerMeldung("You are not allowed to change the user's password!");
             return RETURN_PAGE_ALL;
         }
 
