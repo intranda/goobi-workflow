@@ -401,6 +401,15 @@ public class ObjectResource {
             throws IOException, InterruptedException, SwapException, DAOException {
 
         Process process = ProcessManager.getProcessById(processId);
+        Integer userId = (Integer) request.getAttribute("userid");
+        try {
+            if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
+                throw new NotFoundException("Access denied");
+            }
+        } catch (DAOException e) {
+            log.error(e);
+            throw new NotFoundException("Internal error");
+        }
         java.nio.file.Path objectPath =
                 Paths.get(NIOFileUtils.sanitizePath(Paths.get(process.getImagesDirectory(), foldername, subfolder1, subfolder2, filename).toString(),
                         process.getImagesDirectory()));

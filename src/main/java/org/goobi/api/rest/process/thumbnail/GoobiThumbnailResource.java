@@ -33,13 +33,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.goobi.api.rest.process.image.AbstractImageResource;
+import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.Image;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
@@ -57,12 +62,39 @@ public class GoobiThumbnailResource extends AbstractImageResource {
             @Context HttpServletResponse response, @PathParam("processId") String processId, @PathParam("foldername") String foldername,
             @PathParam("filename") String filename) throws IllegalRequestException {
         super(context, request, response, "-", filename);
+        checkProcessAccess(request, processId);
         createResourceURI(request, processId, foldername, filename);
         createImageURI(processId, foldername, filename);
     }
 
+    private static void checkProcessAccess(HttpServletRequest request, String processId) {
+        Process process;
+        try {
+            process = ProcessManager.getProcessById(Integer.parseInt(processId));
+        } catch (NumberFormatException e) {
+            throw new NotFoundException("No process found with identifier " + processId);
+        }
+        if (process == null) {
+            throw new NotFoundException("No process found with identifier " + processId);
+        }
+        Integer userId = request != null ? (Integer) request.getAttribute("userid") : null;
+        try {
+            if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
+                throw new NotFoundException("Access denied");
+            }
+        } catch (DAOException e) {
+            log.error(e);
+            throw new NotFoundException("Internal error");
+        }
+    }
+
     public void createImageURI(String processId, String foldername, String filename) {
-        Path imagePath = METADATA_PATH.resolve(processId).resolve("thumbs").resolve(foldername).resolve(filename);
+        Path thumbsFolder = METADATA_PATH.resolve(processId).resolve("thumbs").toAbsolutePath().normalize();
+        Path imagePath = thumbsFolder.resolve(foldername).resolve(filename).normalize();
+        // only thumbs/{foldername}/{filename} is allowed, no path traversal
+        if (!imagePath.startsWith(thumbsFolder) || thumbsFolder.relativize(imagePath).getNameCount() != 2) {
+            throw new NotFoundException("Access denied");
+        }
         this.imageURI = Image.toURI(imagePath);
 
     }

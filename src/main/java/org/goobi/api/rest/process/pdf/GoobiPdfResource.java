@@ -24,15 +24,17 @@
  */
 package org.goobi.api.rest.process.pdf;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 import org.goobi.beans.Process;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
@@ -55,6 +57,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class GoobiPdfResource extends MetsPdfResource {
 
+    private static final List<String> PATH_PARAMETERS = List.of("metsFile", "imageSource", "pdfSource", "altoSource");
+
     public GoobiPdfResource(
             @Context ContainerRequestContext context, @Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") String processId)
@@ -64,27 +68,72 @@ public class GoobiPdfResource extends MetsPdfResource {
     }
 
     private static String getMetsFilepath(HttpServletRequest request, String processId, Map<String, String> parameters) throws ContentLibException {
+        String cleanedProcessId = Paths.get(processId).getFileName().toString();
+        Process process;
+        try {
+            process = ProcessManager.getProcessById(Integer.parseInt(cleanedProcessId));
+        } catch (NumberFormatException e) {
+            throw new NotFoundException("No process found with identifier " + processId);
+        }
+        if (process == null) {
+            throw new NotFoundException("No process found with identifier " + processId);
+        }
+        Path processFolder;
+        try {
+            processFolder = Paths.get(process.getProcessDataDirectoryIgnoreSwapping()).toAbsolutePath().normalize();
+        } catch (IOException e) {
+            throw new ContentLibException(e);
+        }
+        Integer userId = (Integer) request.getAttribute("userid");
+
+        // all file sources the pdf is created from must belong to the requested process
+        for (String parameterName : PATH_PARAMETERS) {
+            if (parameters.containsKey(parameterName)) {
+                checkInsideProcessFolder(extractURI(parameters, parameterName), processFolder);
+            }
+        }
+
         if (parameters.containsKey("metsFile")) {
+            // requests without a user session are internal calls (e.g. ExportPdf), already authorised by the AuthorizationFilter
+            if (userId != null) {
+                checkProjectMembership(userId, process);
+            }
             return extractURI(parameters, "metsFile").toString();
         } else {
-            String cleanedProcessId = Paths.get(processId).getFileName().toString();
-            Process process = ProcessManager.getProcessById(Integer.parseInt(cleanedProcessId));
-            Integer userId = (Integer) request.getAttribute("userid");
-            try {
-                if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
-                    throw new NotFoundException("Access denied");
-                }
-            } catch (DAOException e) {
-                log.error(e);
+            if (userId == null) {
                 throw new NotFoundException("Access denied");
             }
+            checkProjectMembership(userId, process);
 
-            Path path = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder(), cleanedProcessId, "meta.xml");
+            Path path = processFolder.resolve("meta.xml");
             try {
                 return getUriFromPath(path.toString()).toString();
             } catch (URISyntaxException e) {
                 throw new ContentLibException(e);
             }
+        }
+    }
+
+    static void checkInsideProcessFolder(URI uri, Path processFolder) {
+        Path path;
+        try {
+            path = Paths.get(uri).toAbsolutePath().normalize();
+        } catch (IllegalArgumentException | FileSystemNotFoundException e) {
+            throw new NotFoundException("Access denied");
+        }
+        if (!path.startsWith(processFolder)) {
+            throw new NotFoundException("Access denied");
+        }
+    }
+
+    private static void checkProjectMembership(Integer userId, Process process) {
+        try {
+            if (!ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
+                throw new NotFoundException("Access denied");
+            }
+        } catch (DAOException e) {
+            log.error(e);
+            throw new NotFoundException("Access denied");
         }
     }
 

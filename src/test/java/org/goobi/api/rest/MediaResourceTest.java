@@ -25,24 +25,46 @@
 
 package org.goobi.api.rest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import org.goobi.beans.Process;
+import org.goobi.beans.Project;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import de.sub.goobi.AbstractTest;
-import de.sub.goobi.mock.MockProcess;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.Response;
 
 public class MediaResourceTest extends AbstractTest {
+
+    private static final int PROCESS_ID = 42;
+    private static final int PROJECT_ID = 7;
+    private static final String FILENAME = "00000001.mp4";
+
+    @TempDir
+    private Path mediaFolder;
 
     private Process process;
 
     @BeforeEach
     public void setUp() throws Exception {
+        Files.writeString(mediaFolder.resolve(FILENAME), "video");
 
-        process = MockProcess.createProcess();
+        Project project = Mockito.mock(Project.class);
+        Mockito.when(project.getId()).thenReturn(PROJECT_ID);
+        process = Mockito.mock(Process.class);
+        Mockito.when(process.getProjekt()).thenReturn(project);
+        Mockito.when(process.getImagesTifDirectory(false)).thenReturn(mediaFolder.toString());
     }
 
     @Test
@@ -52,13 +74,45 @@ public class MediaResourceTest extends AbstractTest {
     }
 
     @Test
-    public void testServeMediaContent() {
-        MediaResource res = new MediaResource();
-        Response response =
-                res.serveMediaContent("" + process.getId(), "testprocess_media",
-                        "00000001.tif", null);
+    public void testServeMediaContentForProjectMember() {
+        Response response = serve(1, true);
+        assertEquals(200, response.getStatus());
+    }
 
-        assertNotNull(response);
+    @Test
+    public void testServeMediaContentDeniedForNonMember() {
+        Response response = serve(1, false);
+        assertEquals(404, response.getStatus());
+    }
+
+    @Test
+    public void testServeMediaContentDeniedWithoutUser() {
+        Response response = serve(null, false);
+        assertEquals(404, response.getStatus());
+    }
+
+    @Test
+    public void testServeMediaContentUnknownProcess() {
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(PROCESS_ID)).thenReturn(null);
+            MediaResource res = new MediaResource();
+            res.setRequest(Mockito.mock(HttpServletRequest.class));
+            assertEquals(404, res.serveMediaContent(String.valueOf(PROCESS_ID), "media", FILENAME, null).getStatus());
+        }
+    }
+
+    private Response serve(Integer userId, boolean member) {
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(PROCESS_ID)).thenReturn(process);
+            mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(Mockito.anyInt(), Mockito.eq(PROJECT_ID))).thenReturn(member);
+
+            HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+            Mockito.when(request.getAttribute("userid")).thenReturn(userId);
+            MediaResource res = new MediaResource();
+            res.setRequest(request);
+            return res.serveMediaContent(String.valueOf(PROCESS_ID), "media", FILENAME, null);
+        }
     }
 
 }

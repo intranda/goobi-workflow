@@ -37,17 +37,22 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.ProjectManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -55,6 +60,11 @@ import lombok.extern.log4j.Log4j2;
 public class MediaResource {
 
     private static final Path METADATA_FOLDER = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
+
+    @Context
+    @Setter
+    @Getter
+    private HttpServletRequest request;
 
     @GET
     @jakarta.ws.rs.Path("{process}/{folder}/{filename}")
@@ -73,6 +83,19 @@ public class MediaResource {
             processId = Integer.parseInt(processIdString);
         } catch (NumberFormatException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
+        if (process == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        Integer userId = (Integer) request.getAttribute("userid");
+        try {
+            if (userId == null || !ProjectManager.isUserMemberOfProject(userId, process.getProjekt().getId())) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        } catch (DAOException e) {
+            log.error(e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         Path processFolder = METADATA_FOLDER.resolve(String.valueOf(processId));
 

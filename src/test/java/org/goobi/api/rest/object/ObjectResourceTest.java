@@ -1,6 +1,7 @@
 package org.goobi.api.rest.object;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.StreamingOutput;
 
 @ExtendWith(MockitoExtension.class)
@@ -140,13 +142,20 @@ public class ObjectResourceTest {
         Files.writeString(objectFilePath, CONTENT_SURFACE);
         assertEquals(CONTENT_SURFACE, Files.readString(objectFilePath));
 
+        Project project = Mockito.mock(Project.class);
+        Mockito.when(project.getId()).thenReturn(1);
+
         Process process = Mockito.mock(Process.class);
         Mockito.when(process.getImagesDirectory()).thenReturn(objectFilePath.getParent().getParent().getParent().getParent().toString());
+        Mockito.when(process.getProjekt()).thenReturn(project);
 
-        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class)) {
             mockedProcessManager.when(() -> ProcessManager.getProcessById(PROCESS_ID)).thenReturn(process);
+            mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(1, 1)).thenReturn(true);
 
             HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+            Mockito.when(request.getAttribute("userid")).thenReturn(1);
             HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
             StreamingOutput output = objectResource.getObjectResource(request, response, PROCESS_ID, FOLDERNAME_MASTER, FOLDERNAME_RESOURCES,
                     FOLDERNAME_RESOURCES_IMAGES, FILENAME_SURFACE);
@@ -154,6 +163,41 @@ public class ObjectResourceTest {
                 output.write(out);
                 assertEquals(CONTENT_SURFACE, out.toString(Charset.defaultCharset()));
             }
+        }
+    }
+
+    @Test
+    public void testGetSecondaryObjectResourceDeniedForNonMember() {
+        Project project = Mockito.mock(Project.class);
+        Mockito.when(project.getId()).thenReturn(1);
+
+        Process process = Mockito.mock(Process.class);
+        Mockito.when(process.getProjekt()).thenReturn(project);
+
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<ProjectManager> mockedProjectManager = Mockito.mockStatic(ProjectManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(PROCESS_ID)).thenReturn(process);
+            mockedProjectManager.when(() -> ProjectManager.isUserMemberOfProject(2, 1)).thenReturn(false);
+
+            HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+            Mockito.when(request.getAttribute("userid")).thenReturn(2);
+            HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+            assertThrows(NotFoundException.class, () -> objectResource.getObjectResource(request, response, PROCESS_ID, FOLDERNAME_MASTER,
+                    FOLDERNAME_RESOURCES, FOLDERNAME_RESOURCES_IMAGES, FILENAME_SURFACE));
+        }
+    }
+
+    @Test
+    public void testGetSecondaryObjectResourceDeniedWithoutUser() {
+        Process process = Mockito.mock(Process.class);
+
+        try (MockedStatic<ProcessManager> mockedProcessManager = Mockito.mockStatic(ProcessManager.class)) {
+            mockedProcessManager.when(() -> ProcessManager.getProcessById(PROCESS_ID)).thenReturn(process);
+
+            HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+            HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+            assertThrows(NotFoundException.class, () -> objectResource.getObjectResource(request, response, PROCESS_ID, FOLDERNAME_MASTER,
+                    FOLDERNAME_RESOURCES, FOLDERNAME_RESOURCES_IMAGES, FILENAME_SURFACE));
         }
     }
 
