@@ -67,6 +67,16 @@ export const loadImage = function() {
     rotationControl = new ImageView.Controls.Rotation(loadedImage);
     zoomControl = new ImageView.Controls.Zoom(loadedImage);
     zoomControl.setInput(settings.controls.zoomInput);
+
+    // avoid form submit from zoom input
+    const zoomInput = document.querySelector(settings.controls.zoomInput);
+    zoomInput?.addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            zoomInput.dispatchEvent(new Event("change", {bubbles: true}));
+        }
+    });
+
     viewPersistence = new ImageView.ViewPersistence(zoomControl, "metadata_image_" + getValue(settings.persistence));
 
     eventListeners.forEach((listener, element) => {
