@@ -319,23 +319,27 @@ public class LoginBean implements Serializable {
         if (!hasRole(UserRole.Admin_Users_Allow_Switch.name())) {
             return RETURN_PAGE;
         }
-        ExternalContext ecInit = FacesContextHelper.getCurrentFacesContext().getExternalContext();
-        HttpServletRequest hreq = (HttpServletRequest) ecInit.getRequest();
-        HttpSession mySession = (HttpSession) ecInit.getSession(false);
-        String oldId = mySession.getId();
-        String newId = hreq.changeSessionId();
-
         User currentUser = this.myBenutzer;
-
-        this.myBenutzer = null;
         Integer loginID = Integer.valueOf(Helper.getRequestParameter("ID"));
         try {
-            this.myBenutzer = UserManager.getUserById(loginID);
+            // load the target user into a local variable first, so a failed check does not leave the session running as the target user
+            User targetUser = UserManager.getUserById(loginID);
+            if (targetUser == null) {
+                return "";
+            }
 
-            if (!currentUser.isSuperAdmin() && this.myBenutzer.isSuperAdmin()) {
+            if (!currentUser.isSuperAdmin() && targetUser.isSuperAdmin()) {
                 Helper.setFehlerMeldung("Non-superadmin users are not allowed to log in as superadmin users!");
                 return "";
             }
+
+            ExternalContext ecInit = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+            HttpServletRequest hreq = (HttpServletRequest) ecInit.getRequest();
+            HttpSession mySession = (HttpSession) ecInit.getSession(false);
+            String oldId = mySession.getId();
+            String newId = hreq.changeSessionId();
+
+            this.myBenutzer = targetUser;
 
             // Creating journal entry
             currentUser.setContent("Log in as user '" + this.myBenutzer.getNachVorname() + "'.");
