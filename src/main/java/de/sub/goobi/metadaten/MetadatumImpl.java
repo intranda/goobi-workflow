@@ -331,28 +331,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                             .request()
                             .getContent();
 
-                    ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
-                    List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
-
-                    String defaultLabel = myValues.getItemList().get(0).getLabel();
-                    if (StringUtils.isNotBlank(defaultLabel)) {
-                        List<String> defaultitems = new ArrayList<>();
-                        defaultitems.add(defaultLabel);
-                        setDefaultItems(defaultitems);
-                    }
-                    itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
-                    selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
-
-                    for (ExtendedVocabularyRecord vr : recordList) {
-                        selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
-                        Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
-                        if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
-                            item.setSelected(true);
-                        }
-                        itemList.add(item);
-                    }
-                    setPossibleItems(selectItems);
-                    myValues.setItemList(itemList);
+                    initializeVocabularyListItems(recordList);
                 }
             } catch (APIException e) {
                 Helper.setFehlerMeldung(e);
@@ -365,6 +344,48 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         }
     }
 
+    private void initializeVocabularyListItems(List<ExtendedVocabularyRecord> recordList) {
+        String defaultValue = myValues.getItemList().get(0).getLabel();
+        if (StringUtils.isNotBlank(defaultValue)) {
+            List<String> defaultitems = new ArrayList<>();
+            defaultitems.add(defaultValue);
+            setDefaultItems(defaultitems);
+        }
+        List<Item> itemList = createVocabularyListItems(recordList, md.getValue(), defaultValue);
+        // the dropdown submits the label, setSelectedItem() maps it back to the value
+        setPossibleItems(itemList.stream()
+                .map(i -> new SelectItem(i.getLabel(), i.getLabel()))
+                .collect(Collectors.toList()));
+        myValues.setItemList(itemList);
+    }
+
+    /**
+     * The entries of a vocabularyList dropdown. Each record is shown in the language of the user interface, but its value is the language
+     * independent one, so the metadata does not depend on who edited it. A stored value the vocabulary does not know is offered as an entry of
+     * its own with a marked label, so it is shown and kept on the next save instead of being replaced; validation still reports it.
+     *
+     * @param recordList the records of the vocabulary
+     * @param storedValue the current value of the metadata
+     * @param defaultValue the default configured in the display rules, compared to the language independent value
+     * @return the entries, starting with the empty "please select" entry
+     */
+    static List<Item> createVocabularyListItems(List<ExtendedVocabularyRecord> recordList, String storedValue, String defaultValue) {
+        List<Item> itemList = new ArrayList<>(recordList.size() + 2);
+        itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
+        for (ExtendedVocabularyRecord vr : recordList) {
+            String value = vr.getLanguageIndependentMainValue();
+            Item item = new Item(vr.getMainValue(), value, false, "", "");
+            if (StringUtils.isNotBlank(defaultValue) && defaultValue.equals(value)) {
+                item.setSelected(true);
+            }
+            itemList.add(item);
+        }
+        if (StringUtils.isNotBlank(storedValue) && !MetadatenVerifizierung.isInVocabulary(recordList, storedValue)) {
+            itemList.add(new Item(Helper.getTranslation("mets_vocabularyValueNotInVocabulary", storedValue), storedValue, false, "", ""));
+        }
+        return itemList;
+    }
+
     private void searchInVocabulary(String vocabularyTitle, Vocabulary currentVocabulary) {
         try {
             List<ExtendedVocabularyRecord> recordList = vocabularyAPI.vocabularyRecords()
@@ -372,28 +393,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     .all()
                     .request()
                     .getContent();
-            ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
-            List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
-
-            String defaultLabel = myValues.getItemList().get(0).getLabel();
-            if (StringUtils.isNotBlank(defaultLabel)) {
-                List<String> defaultitems = new ArrayList<>();
-                defaultitems.add(defaultLabel);
-                setDefaultItems(defaultitems);
-            }
-            itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
-            selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
-
-            for (ExtendedVocabularyRecord vr : recordList) {
-                selectItems.add(new SelectItem(vr.getMainValue(), vr.getMainValue()));
-                Item item = new Item(vr.getMainValue(), vr.getMainValue(), false, "", "");
-                if (StringUtils.isNotBlank(defaultLabel) && defaultLabel.equals(vr.getMainValue())) {
-                    item.setSelected(true);
-                }
-                itemList.add(item);
-            }
-            setPossibleItems(selectItems);
-            myValues.setItemList(itemList);
+            initializeVocabularyListItems(recordList);
         } catch (APIException e) {
             Helper.setFehlerMeldung(
                     Helper.getTranslation("mets_error_configuredVocabularyInvalid", md.getType().getName(), vocabularyTitle));

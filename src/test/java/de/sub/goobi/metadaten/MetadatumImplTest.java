@@ -51,6 +51,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.mock.MockProcess;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
@@ -455,6 +456,80 @@ public class MetadatumImplTest extends AbstractTest {
             md.setRestricted(true);
             assertTrue(md.isRestricted());
 
+        }
+    }
+
+    private static ExtendedVocabularyRecord vocabularyRecord(String displayedValue, String languageIndependentValue) {
+        ExtendedVocabularyRecord vocabularyRecord = Mockito.mock(ExtendedVocabularyRecord.class);
+        Mockito.when(vocabularyRecord.getMainValue()).thenReturn(displayedValue);
+        Mockito.when(vocabularyRecord.getLanguageIndependentMainValue()).thenReturn(languageIndependentValue);
+        return vocabularyRecord;
+    }
+
+    private static MockedStatic<Helper> vocabularyListTranslations() {
+        MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class);
+        helper.when(() -> Helper.getTranslation("bitteAuswaehlen")).thenReturn("please select");
+        helper.when(() -> Helper.getTranslation(Mockito.eq("mets_vocabularyValueNotInVocabulary"), Mockito.<String> any()))
+                .thenAnswer(invocation -> invocation.getArgument(1) + " (not in vocabulary)");
+        return helper;
+    }
+
+    /**
+     * A vocabularyList dropdown shows each record in the language of the user interface, but what it writes into the metadata is the language
+     * independent value, so the METS file does not depend on who edited it.
+     */
+    @Test
+    public void testVocabularyListItemsShowTheDisplayedValueAndStoreTheLanguageIndependentOne() {
+        try (MockedStatic<Helper> helper = vocabularyListTranslations()) {
+            List<Item> items = MetadatumImpl.createVocabularyListItems(List.of(vocabularyRecord("Buch", "Book")), "", "");
+
+            assertEquals(2, items.size());
+            assertEquals("please select", items.get(0).getLabel());
+            assertEquals("", items.get(0).getValue());
+            assertEquals("Buch", items.get(1).getLabel());
+            assertEquals("Book", items.get(1).getValue());
+        }
+    }
+
+    @Test
+    public void testVocabularyListItemsAreTheRecordsWhenTheStoredValueIsLanguageIndependent() {
+        try (MockedStatic<Helper> helper = vocabularyListTranslations()) {
+            List<Item> items = MetadatumImpl.createVocabularyListItems(List.of(vocabularyRecord("Buch", "Book")), "Book", "");
+
+            assertEquals(2, items.size());
+        }
+    }
+
+    /**
+     * A value that is not the language independent value of any record - written in another language before this was fixed, by an import, or
+     * left behind by a changed vocabulary - is offered as an entry of its own, so the dropdown shows it and the next save does not replace it.
+     * Its label is marked, because the dropdown submits labels: a plain "Buch" would be indistinguishable from the record whose German
+     * translation is "Buch", and that record could then never be chosen.
+     */
+    @Test
+    public void testVocabularyListItemsKeepAStoredValueOutsideTheVocabulary() {
+        try (MockedStatic<Helper> helper = vocabularyListTranslations()) {
+            List<Item> items = MetadatumImpl.createVocabularyListItems(List.of(vocabularyRecord("Buch", "Book")), "Buch", "");
+
+            assertEquals(3, items.size());
+            assertEquals("Buch", items.get(1).getLabel());
+            assertEquals("Book", items.get(1).getValue());
+            assertEquals("Buch (not in vocabulary)", items.get(2).getLabel());
+            assertEquals("Buch", items.get(2).getValue());
+        }
+    }
+
+    /**
+     * The default configured in metadataDisplayRules is a stored value as well, so it is compared to the language independent value.
+     */
+    @Test
+    public void testVocabularyListItemsSelectTheConfiguredDefault() {
+        try (MockedStatic<Helper> helper = vocabularyListTranslations()) {
+            List<Item> items = MetadatumImpl.createVocabularyListItems(
+                    List.of(vocabularyRecord("Buch", "Book"), vocabularyRecord("Karte", "Map")), "", "Map");
+
+            assertFalse(items.get(1).isSelected());
+            assertTrue(items.get(2).isSelected());
         }
     }
 }

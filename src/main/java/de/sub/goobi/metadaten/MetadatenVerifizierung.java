@@ -506,6 +506,18 @@ public class MetadatenVerifizierung {
         return inList;
     }
 
+    /**
+     * @param records the records of a vocabulary
+     * @param value a metadata value
+     * @return true if the value is the language independent main value of one of the records; the translation shown in the user interface
+     *         does not count, a metadata value must not depend on the language it was edited in
+     */
+    static boolean isInVocabulary(List<ExtendedVocabularyRecord> records, String value) {
+        return records.stream()
+                .map(ExtendedVocabularyRecord::getLanguageIndependentMainValue)
+                .anyMatch(v -> v.equals(value));
+    }
+
     private List<String> checkSelectFromVocabularyList(Process inProcess, DocStruct inStruct, ArrayList<String> inList, String language) {
         String projectTitle = inProcess.getProjekt().getTitel();
         ConfigDisplayRules displayRules = ConfigDisplayRules.getInstance();
@@ -525,9 +537,6 @@ public class MetadatenVerifizierung {
                         .all()
                         .request()
                         .getContent();
-                List<String> allowedValues = records.stream()
-                        .map(ExtendedVocabularyRecord::getMainValue)
-                        .collect(Collectors.toList());
 
                 List<? extends Metadata> ll = null;
                 ll = inStruct.getAllMetadataByType(mdt);
@@ -536,7 +545,7 @@ public class MetadatenVerifizierung {
                     if (StringUtils.isBlank(actualValue)) {
                         continue;
                     }
-                    if (!allowedValues.contains(actualValue)) {
+                    if (!isInVocabulary(records, actualValue)) {
                         String errorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + ": "
                                 + Helper.getTranslation("VocabularySelectionInvalid", actualValue, allowedItems.get(0).getSource());
                         inList.add(errorMessage);

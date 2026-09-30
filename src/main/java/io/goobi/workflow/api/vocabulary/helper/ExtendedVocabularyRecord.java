@@ -38,6 +38,11 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
     @JsonIgnore
     private ExtendedFieldInstance mainField;
     private String mainValue;
+    /**
+     * The main value in the fallback translation. Metadata values are written with it, so they do not depend on the language of the user
+     * interface.
+     */
+    private String languageIndependentMainValue;
     private List<String> titleValues;
     private List<ExtendedFieldInstance> extendedFields;
     private List<ExtendedVocabularyRecord> parents;
@@ -76,6 +81,9 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
         this.mainValue = getMainField()
                 .map(ExtendedFieldInstance::getFieldValue)
                 .orElse(""); // TODO: Make mainValue optional?
+        this.languageIndependentMainValue = getMainField()
+                .map(f -> f.getFieldValue(null))
+                .orElse("");
         prepareEmpty();
     }
 
@@ -124,7 +132,7 @@ public class ExtendedVocabularyRecord extends VocabularyRecord {
 
     public void writeReferenceMetadata(Metadata meta) {
         ExtendedVocabulary vocabulary = vocabularyResolver.apply(getVocabularyId());
-        meta.setValue(getMainValue());
+        meta.setValue(getLanguageIndependentMainValue());
         meta.setAuthorityFile(vocabulary.getName(), vocabulary.get_links().get("self").getHref(), get_links().get("self").getHref());
     }
 

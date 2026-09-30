@@ -53,6 +53,7 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import jakarta.faces.application.Application;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
@@ -373,5 +374,28 @@ public class MetadatenVerifizierungTest extends AbstractTest {
         mockedHelper.when(() -> Helper.getRequestParameter(Mockito.anyString())).thenReturn("1");
         mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
 
+    }
+
+    private static ExtendedVocabularyRecord vocabularyRecord(String displayedValue, String languageIndependentValue) {
+        ExtendedVocabularyRecord vocabularyRecord = Mockito.mock(ExtendedVocabularyRecord.class);
+        Mockito.when(vocabularyRecord.getMainValue()).thenReturn(displayedValue);
+        Mockito.when(vocabularyRecord.getLanguageIndependentMainValue()).thenReturn(languageIndependentValue);
+        return vocabularyRecord;
+    }
+
+    /**
+     * A vocabularyList value is valid when it is the language independent value of a record, whatever the language of the user interface.
+     */
+    @Test
+    public void testLanguageIndependentValueIsInVocabulary() {
+        assertTrue(MetadatenVerifizierung.isInVocabulary(List.of(vocabularyRecord("Buch", "Book")), "Book"));
+    }
+
+    /**
+     * A translation that is not the language independent one is kept by the metadata editor, but it is not a valid value.
+     */
+    @Test
+    public void testDisplayedTranslationIsNotInVocabulary() {
+        assertFalse(MetadatenVerifizierung.isInVocabulary(List.of(vocabularyRecord("Buch", "Book")), "Buch"));
     }
 }
