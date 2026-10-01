@@ -1277,8 +1277,8 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         Path xsltfile = Paths.get(rootpath, DOCKET_FILE);
 
-        if (docket != null) {
-            xsltfile = Paths.get(rootpath, docket.getFile());
+        if (getDocket() != null) {
+            xsltfile = Paths.get(rootpath, getDocket().getFile());
             if (!StorageProvider.getInstance().isFileExists(xsltfile)) {
                 Helper.setFehlerMeldung("docketMissing");
                 return "";
