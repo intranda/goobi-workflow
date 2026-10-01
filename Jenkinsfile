@@ -322,8 +322,9 @@ pipeline {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 6. UPDATE COLLECTION  (master: advance core submodule pointer in collection;
-    //                        master, release* & develop: trigger downstream collection build)
+    // 6. UPDATE COLLECTION  (master & release_*: advance core submodule pointer on the
+    //                        same-named collection branch, creating it from master if missing;
+    //                        other branches: trigger downstream collection build)
     // ─────────────────────────────────────────────────────────────────────────
     stage('update-collection') {
       when {
@@ -335,17 +336,30 @@ pipeline {
       agent any
       steps {
         script {
-          if (env.BRANCH_NAME == 'master') {
+          if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME.startsWith("release_")) {
             withCredentials([gitUsernamePassword(credentialsId: '93f7e7d3-8f74-4744-a785-518fc4d55314', gitToolName: 'git-tool')]) {
               sh '''#!/bin/bash -xe
                 WORK_DIR=$(mktemp -d)
-                git clone --depth 1 --branch master "$COLLECTION_REPO_URL" "$WORK_DIR"
-                cd "$WORK_DIR"
-                git submodule update --init --remote -- goobi-workflow-core
+                NEW_BRANCH=false
+                if git ls-remote --exit-code --heads "$COLLECTION_REPO_URL" "$BRANCH_NAME" > /dev/null; then
+                  git clone --depth 1 --branch "$BRANCH_NAME" "$COLLECTION_REPO_URL" "$WORK_DIR"
+                  cd "$WORK_DIR"
+                else
+                  echo "Branch $BRANCH_NAME does not exist in collection yet, creating it from master."
+                  git clone --depth 1 --branch master "$COLLECTION_REPO_URL" "$WORK_DIR"
+                  cd "$WORK_DIR"
+                  git checkout -b "$BRANCH_NAME"
+                  NEW_BRANCH=true
+                fi
+                git submodule update --init -- goobi-workflow-core
+                git -C goobi-workflow-core fetch origin "$BRANCH_NAME"
+                git -C goobi-workflow-core checkout --detach FETCH_HEAD
                 if git status --porcelain --ignore-submodules=none -- goobi-workflow-core | grep -q .; then
                   git add goobi-workflow-core
-                  git commit -m "Update goobi-workflow-core to latest master"
-                  git push origin master
+                  git commit -m "Update goobi-workflow-core to latest $BRANCH_NAME"
+                  git push origin "$BRANCH_NAME"
+                elif [ "$NEW_BRANCH" = true ]; then
+                  git push origin "$BRANCH_NAME"
                 else
                   echo "Submodule already up to date."
                 fi
