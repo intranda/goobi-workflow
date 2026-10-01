@@ -2,6 +2,7 @@ package io.goobi.workflow.api.vocabulary;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +29,9 @@ public class VocabularyRecordAPI {
     private static final String IN_VOCABULARY_RECORDS_ENDPOINT = "/api/v1/vocabularies/{{0}}/records";
     private static final String METADATA_ENDPOINT = "/api/v1/vocabularies/{{0}}/metadata";
     private static final String INSTANCE_ENDPOINT = "/api/v1/records/{{0}}";
+    // ids keep the subtrees of records with the same main value apart
+    private static final Comparator<ExtendedVocabularyRecord> SIBLING_ORDER =
+            Comparator.comparing(ExtendedVocabularyRecord::getMainValue).thenComparing(ExtendedVocabularyRecord::getId);
 
     private final RESTAPI restApi;
     private final CachedLookup<Long, ExtendedVocabularyRecord> singleLookupCache;
@@ -92,6 +96,10 @@ public class VocabularyRecordAPI {
         public VocabularyRecordQueryBuilder all() {
             this.all = Optional.of(true);
             return this;
+        }
+
+        public boolean hasSearch() {
+            return this.search.isPresent();
         }
 
         public VocabularyRecordPageResult request() {
@@ -306,12 +314,48 @@ public class VocabularyRecordAPI {
     }
 
     public List<ExtendedVocabularyRecord> getAllHierarchicalRecords(VocabularyRecordQueryBuilder query) {
-        List<ExtendedVocabularyRecord> topRecords = query
+        List<ExtendedVocabularyRecord> records = query
                 .all()
                 .request()
                 .getContent();
-        topRecords.sort(Comparator.comparing(ExtendedVocabularyRecord::getMainValue));
-        return fullyLoadChildren(topRecords);
+        if (query.hasSearch()) {
+            return arrangeSearchHits(records);
+        }
+        // without a search, the records are the top level records
+        records.sort(Comparator.comparing(ExtendedVocabularyRecord::getMainValue));
+        return fullyLoadChildren(records);
+    }
+
+    /**
+     * A search returns every matching record, at any level of a hierarchical vocabulary, so the hits are all records to offer: loading their
+     * children as well would list matching children twice and offer children that do not match. The hits are sorted by their path in the
+     * hierarchy, so that each hit follows its ancestors and records below the same parent are sorted by their main value.
+     *
+     * @param hits the records found by a search
+     * @return the hits in hierarchical order
+     */
+    static List<ExtendedVocabularyRecord> arrangeSearchHits(List<ExtendedVocabularyRecord> hits) {
+        return hits.stream()
+                .sorted(VocabularyRecordAPI::compareHierarchyPaths)
+                .toList();
+    }
+
+    private static int compareHierarchyPaths(ExtendedVocabularyRecord a, ExtendedVocabularyRecord b) {
+        List<ExtendedVocabularyRecord> pathA = hierarchyPath(a);
+        List<ExtendedVocabularyRecord> pathB = hierarchyPath(b);
+        for (int i = 0; i < Math.min(pathA.size(), pathB.size()); i++) {
+            int result = SIBLING_ORDER.compare(pathA.get(i), pathB.get(i));
+            if (result != 0) {
+                return result;
+            }
+        }
+        return Integer.compare(pathA.size(), pathB.size());
+    }
+
+    private static List<ExtendedVocabularyRecord> hierarchyPath(ExtendedVocabularyRecord r) {
+        List<ExtendedVocabularyRecord> path = new ArrayList<>(r.getParents() == null ? Collections.emptyList() : r.getParents());
+        path.add(r);
+        return path;
     }
 
     public List<ExtendedVocabularyRecord> fullyLoadChildren(List<ExtendedVocabularyRecord> records) {
