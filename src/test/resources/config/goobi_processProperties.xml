@@ -17,6 +17,24 @@
         <type>text</type>
         <defaultvalue>a</defaultvalue>
     </property>
+    <property name="FilteredDelivery" container="2">
+        <project>Vocabulary filter</project>
+        <showStep name="vocabulary" access="write" />
+        <type>vocabularyreference</type>
+        <vocabulary filter="Aktiv=Ja">Delivery</vocabulary>
+    </property>
+    <property name="UnfilteredDelivery" container="2">
+        <project>Vocabulary filter</project>
+        <showStep name="vocabulary" access="write" />
+        <type>vocabularyreference</type>
+        <vocabulary>Delivery</vocabulary>
+    </property>
+    <property name="MisconfiguredDelivery" container="2">
+        <project>Vocabulary filter</project>
+        <showStep name="vocabulary" access="write" />
+        <type>vocabularyreference</type>
+        <vocabulary filter="Active=Ja">Delivery</vocabulary>
+    </property>
     <metadata name="DocStruct">
         <project>*</project>
         <workflow>*</workflow>

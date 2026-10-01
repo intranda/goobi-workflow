@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -44,8 +45,13 @@ import org.goobi.production.cli.helper.StringPair;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.APIException;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
+import io.goobi.workflow.api.vocabulary.VocabularyRecordAPI;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabulary;
+import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import io.goobi.workflow.api.vocabulary.helper.VocabularyFilter;
 import jakarta.faces.model.SelectItem;
 import lombok.extern.log4j.Log4j2;
 
@@ -326,6 +332,7 @@ public final class PropertyParser {
                 }
             }
         }
+        properties.forEach(this::addMissingVocabularyValues);
         return properties;
     }
 
@@ -460,6 +467,7 @@ public final class PropertyParser {
                 }
             }
         }
+        properties.forEach(this::addMissingVocabularyValues);
         // add 'eigenschaft' to all ProcessProperties
         for (DisplayProperty pp : properties) {
             if (pp.getProzesseigenschaft() != null) {
@@ -569,19 +577,58 @@ public final class PropertyParser {
 
     }
 
-    private void populatePossibleValuesWithVocabulary(String property, DisplayProperty pp) {
+    /**
+     * A filter of the vocabulary can exclude records a process already references, e.g. a delivery that is no longer active. Add these records to
+     * the possible values, so the stored value is still shown and kept.
+     *
+     * @param pp a property with its stored value
+     */
+    void addMissingVocabularyValues(DisplayProperty pp) {
+        List<String> references;
+        if (Type.VOCABULARYREFERENCE.equals(pp.getType())) {
+            references = StringUtils.isBlank(pp.getValue()) ? Collections.emptyList() : List.of(pp.getValue());
+        } else if (Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {
+            references = pp.getValueList();
+        } else {
+            return;
+        }
+        for (String reference : references) {
+            boolean offered = pp.getPossibleValues().stream().anyMatch(item -> reference.equals(item.getValue()));
+            if (offered) {
+                continue;
+            }
+            try {
+                ExtendedVocabularyRecord rec = VocabularyAPIManager.getInstance().vocabularyRecords().get(Long.parseLong(reference));
+                pp.getPossibleValues().add(new SelectItem(reference, rec.getSelectItemLabel()));
+            } catch (NumberFormatException | APIException e) {
+                log.warn("Unable to resolve vocabulary record reference \"{}\" of property \"{}\"", reference, pp.getName());
+            }
+        }
+    }
+
+    void populatePossibleValuesWithVocabulary(String property, DisplayProperty pp) {
         String vocabularyName = config.getString(property + "/vocabulary");
+        String filter = config.getString(property + "/vocabulary/@filter");
         try {
-            long vocabularyId = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName).getId();
+            ExtendedVocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyName);
+            Optional<String> searchQuery = Optional.empty();
+            if (StringUtils.isNotBlank(filter)) {
+                try {
+                    VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(vocabulary.getSchemaId());
+                    searchQuery = VocabularyFilter.toSearchQuery(schema, filter);
+                } catch (IllegalArgumentException e) {
+                    log.error("Invalid filter \"{}\" on vocabulary \"{}\" of property \"{}\", all records are offered", filter, vocabularyName,
+                            property);
+                }
+            }
             pp.setPossibleValues(new LinkedList<>());
             // this "Please select" element is only required for non drop-down badge components, as this component handles it itself
             if (Type.VOCABULARYREFERENCE.equals(pp.getType())) {
                 pp.getPossibleValues().add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
             }
+            VocabularyRecordAPI records = VocabularyAPIManager.getInstance().vocabularyRecords();
             pp.getPossibleValues()
-                    .addAll(VocabularyAPIManager.getInstance()
-                            .vocabularyRecords()
-                            .getRecordSelectItems(vocabularyId));
+                    .addAll(records.getRecordSelectItems(records.list(vocabulary.getId()).search(searchQuery)));
         } catch (APIException e) {
             log.warn("Unable to parse vocabulary (multi) reference property \"{}\"", property, e);
         }
