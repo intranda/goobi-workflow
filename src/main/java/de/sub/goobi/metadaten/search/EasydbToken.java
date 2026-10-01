@@ -1,6 +1,7 @@
 package de.sub.goobi.metadaten.search;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -39,7 +40,7 @@ import lombok.NoArgsConstructor;
 public class EasydbToken {
     //CHECKSTYLE:OFF
     // spelling is needed for automatic json conversion
-    private LocalDateTime creationDate = LocalDateTime.now();
+    private LocalDateTime creationDate = LocalDateTime.now(ZoneId.systemDefault());
 
     private String access_token;
     private long expires_in;

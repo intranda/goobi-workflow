@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -246,7 +247,7 @@ final class BackgroundJobsMysqlHelper implements Serializable {
     }
 
     public static void clearHistoryOlderThan30Days() throws SQLException {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
         String clearBackgroundJobs = "DELETE FROM background_job WHERE lastAltered < ? ";
         Connection connection = null;
         try {

@@ -27,6 +27,7 @@
 package org.goobi.production.flow.jobs;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class BackgroundJob implements DatabaseObject {
     @Getter
     @Setter
     // last change date
-    private LocalDateTime lastUpdateTime = LocalDateTime.now();
+    private LocalDateTime lastUpdateTime = LocalDateTime.now(ZoneId.systemDefault());
 
     @Getter
     @Setter

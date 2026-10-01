@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -158,10 +159,10 @@ public class GoobiScriptManager {
     public void pushUpdateToUsers(boolean force) {
         //check if the last update was longer than three seconds ago. Some GoobiScripts are really fast,
         //so we could end up sending updates every 2ms or so, which would put high load on the server (which we don't want)
-        if (force || lastPush == null || LocalDateTime.now().minus(3L, ChronoUnit.SECONDS).isAfter(lastPush)) {
+        if (force || lastPush == null || LocalDateTime.now(ZoneId.systemDefault()).minus(3L, ChronoUnit.SECONDS).isAfter(lastPush)) {
             this.hasErrors = this.goobiScriptHasResults("ERROR");
             goobiscriptUpdateChannel.send("update");
-            lastPush = LocalDateTime.now();
+            lastPush = LocalDateTime.now(ZoneId.systemDefault());
         }
     }
 

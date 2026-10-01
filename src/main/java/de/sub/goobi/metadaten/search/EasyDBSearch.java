@@ -1,6 +1,7 @@
 package de.sub.goobi.metadaten.search;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -132,7 +133,7 @@ public class EasyDBSearch {
         try (Client client = setupClient()) {
             WebTarget easydbRoot = client.target(url);
 
-            if (token == null || LocalDateTime.now().isAfter(token.getCreationDate().plusSeconds(token.getExpires_in()))) {
+            if (token == null || LocalDateTime.now(ZoneId.systemDefault()).isAfter(token.getCreationDate().plusSeconds(token.getExpires_in()))) {
                 if (useLegacyAuthentication) {
                     authenticate(easydbRoot);
                 } else {

@@ -1,6 +1,7 @@
 package de.sub.goobi.helper;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 /**
  * Due to PowerMock mocking issues of LocalDateTime.now(), this class is used to retrieve local dates and times and mocked in testing.
@@ -14,6 +15,6 @@ public final class DateTimeHelper {
     }
 
     public static LocalDateTime localDateTimeNow() {
-        return LocalDateTime.now();
+        return LocalDateTime.now(ZoneId.systemDefault());
     }
 }
