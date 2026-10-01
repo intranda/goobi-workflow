@@ -237,7 +237,7 @@ public class ConfigFileEditorBean implements Serializable {
             return;
         }
         this.setConfigFile(index);
-        if (!this.currentConfigFile.isWritable()) {
+        if (this.currentConfigFile != null && !this.currentConfigFile.isWritable()) {
             String key = "plugin_administration_config_file_editor_file_not_writable_check_permissions";
             Helper.setMeldung(Helper.getTranslation(key), "");
         }
