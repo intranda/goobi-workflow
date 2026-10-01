@@ -87,6 +87,9 @@ public class Image {
     private static final String PLACEHOLDER_URL_NOTFOUND = "/uii/template/img/goobi_placeholder_notFound_large.png?version=1";
 
     private static final String FILE_TYPE_NOT_IMPLEMENTED_ERROR = "Filetype handling not implemented at ";
+    private static final String IIIF_FULL_REGION = "/full/";
+    // size, rotation and quality.format part of an IIIF image url, e.g. "800,/0/default.jpg"
+    private static final Pattern IIIF_SIZE_PATTERN = Pattern.compile("\\d+,\\d*(/\\d+/\\w+\\.\\w+)");
 
     /**
      * The image format of the thumbnail urls. 'jpeg' per default
@@ -285,14 +288,20 @@ public class Image {
         }
     }
 
-    private String replaceSizeInUri(String inUuri, int size) {
-        String uri = inUuri;
-        Pattern pattern = Pattern.compile("(.*\\/full\\/)\\d+,\\d*(\\/\\d+\\/\\w+\\.\\w+)(\\?.*)?");
-        Matcher matcher = pattern.matcher(uri);
-        if (matcher.matches()) {
-            uri = matcher.group(1) + size + "," + matcher.group(2) + (matcher.group(3) != null ? matcher.group(3) : "");
+    private String replaceSizeInUri(String uri, int size) {
+        // split off the query manually instead of using leading/trailing wildcards in the pattern, to avoid backtracking
+        int queryStart = uri.indexOf('?');
+        String path = queryStart < 0 ? uri : uri.substring(0, queryStart);
+        String query = queryStart < 0 ? "" : uri.substring(queryStart);
+        int fullIndex = path.lastIndexOf(IIIF_FULL_REGION);
+        if (fullIndex < 0) {
+            return uri;
         }
-
+        int sizeStart = fullIndex + IIIF_FULL_REGION.length();
+        Matcher matcher = IIIF_SIZE_PATTERN.matcher(path.substring(sizeStart));
+        if (matcher.matches()) {
+            return path.substring(0, sizeStart) + size + "," + matcher.group(1) + query;
+        }
         return uri;
     }
 
