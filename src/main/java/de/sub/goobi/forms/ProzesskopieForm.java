@@ -107,11 +107,11 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
-import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.Vocabulary;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
+import io.goobi.workflow.api.vocabulary.helper.VocabularyFilter;
 import jakarta.enterprise.inject.Default;
 import jakarta.faces.model.SelectItem;
 import jakarta.inject.Named;
@@ -572,29 +572,17 @@ public class ProzesskopieForm implements Serializable {
         }
 
         String vocabularyTitle = item.getString("@vocabulary");
-        Optional<String> filter = Optional.ofNullable(item.getString("@vocabulary-filter"));
-        Optional<String> filterQuery = Optional.empty();
+        String filter = item.getString("@vocabulary-filter");
         if (StringUtils.isNotBlank(vocabularyTitle)) {
             Vocabulary vocabulary = VocabularyAPIManager.getInstance().vocabularies().findByName(vocabularyTitle);
             VocabularySchema schema = VocabularyAPIManager.getInstance().vocabularySchemas().get(vocabulary.getSchemaId());
 
-            if (filter.isPresent() && filter.get().contains("=")) {
-                String[] parts = filter.get().split("=");
-                String field = parts[0];
-                String value = parts[1];
-
-                String finalFieldName = field;
-                Optional<FieldDefinition> searchField = schema.getDefinitions()
-                        .stream()
-                        .filter(d -> d.getName().equals(finalFieldName))
-                        .findFirst();
-
-                if (searchField.isEmpty()) {
-                    Helper.setFehlerMeldung("Field " + field + " not found in vocabulary " + vocabulary.getName());
-                    return fa;
-                }
-
-                filterQuery = Optional.of(searchField.get().getId() + ":" + value);
+            Optional<String> filterQuery;
+            try {
+                filterQuery = VocabularyFilter.toSearchQuery(schema, filter);
+            } catch (IllegalArgumentException e) {
+                Helper.setFehlerMeldung(e.getMessage() + " in vocabulary " + vocabulary.getName());
+                return fa;
             }
 
             List<ExtendedVocabularyRecord> records = VocabularyAPIManager.getInstance()
