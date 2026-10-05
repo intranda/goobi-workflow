@@ -890,6 +890,8 @@ public class BatchStepHelper implements Serializable {
             }
         }
 
+        loadProcessProperties(s);
+
         if (s.isTypBeimAbschliessenVerifizieren()) {
             if (s.isTypMetadaten() && ConfigurationHelper.getInstance().isUseMetadataValidation()) {
                 MetadatenVerifizierung mv = new MetadatenVerifizierung();
@@ -909,8 +911,6 @@ public class BatchStepHelper implements Serializable {
                 }
             }
 
-            loadProcessProperties(s);
-
             for (DisplayProperty prop : processPropertyList) {
 
                 if (AccessCondition.WRITEREQUIRED.equals(prop.getCurrentStepAccessCondition())
@@ -926,6 +926,9 @@ public class BatchStepHelper implements Serializable {
             }
         }
         if (!error) {
+            for (DisplayProperty prop : processPropertyList) {
+                prop.saveUnstoredRequiredValue();
+            }
             this.myDav.uploadFromHome(s.getProzess());
             Step so = StepManager.getStepById(s.getId());
             so.setEditTypeEnum(StepEditType.MANUAL_MULTI);

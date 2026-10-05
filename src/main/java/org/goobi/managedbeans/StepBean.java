@@ -556,6 +556,9 @@ public class StepBean extends BasicBean {
                     return "";
                 }
             }
+            for (DisplayProperty prop : processPropertyList) {
+                prop.saveUnstoredRequiredValue();
+            }
         }
 
         /*

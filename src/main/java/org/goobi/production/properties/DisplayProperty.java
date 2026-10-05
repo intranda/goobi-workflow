@@ -51,6 +51,7 @@ import org.goobi.production.cli.helper.StringPair;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 
+import de.sub.goobi.persistence.managers.PropertyManager;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 import jakarta.faces.model.SelectItem;
@@ -201,6 +202,17 @@ public class DisplayProperty implements IProperty, Serializable {
 
     public void save(Step step) {
         // TODO: Is this method required?
+    }
+
+    /**
+     * Persists the value of a required property that was never saved, e.g. its untouched default value, so closing the step keeps it.
+     */
+    public void saveUnstoredRequiredValue() {
+        if (AccessCondition.WRITEREQUIRED.equals(currentStepAccessCondition) && prozesseigenschaft != null && prozesseigenschaft.getId() == null
+                && StringUtils.isNotBlank(value)) {
+            transfer();
+            PropertyManager.saveProperty(prozesseigenschaft);
+        }
     }
 
     /*

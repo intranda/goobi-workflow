@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
@@ -37,6 +39,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.persistence.managers.PropertyManager;
 import io.goobi.workflow.api.vocabulary.VocabularyAPIManager;
 import io.goobi.workflow.api.vocabulary.helper.ExtendedVocabularyRecord;
 
@@ -359,5 +362,62 @@ public class DisplayPropertyTest extends AbstractTest {
         property.setValue("Buch");
 
         assertEquals(Optional.of("Buch"), property.getConditionValue());
+    }
+
+    @Test
+    public void testUnstoredDefaultValueOfWriteRequiredPropertyIsSaved() {
+        GoobiProperty stored = unstoredProperty(AccessCondition.WRITEREQUIRED, "normal");
+
+        try (MockedStatic<PropertyManager> propertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            property.saveUnstoredRequiredValue();
+
+            propertyManager.verify(() -> PropertyManager.saveProperty(stored));
+        }
+        assertEquals("Priority", stored.getPropertyName());
+        assertEquals("normal", stored.getPropertyValue());
+    }
+
+    @Test
+    public void testAlreadyStoredWriteRequiredPropertyIsNotSavedAgain() {
+        GoobiProperty stored = unstoredProperty(AccessCondition.WRITEREQUIRED, "normal");
+        stored.setId(7);
+
+        try (MockedStatic<PropertyManager> propertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            property.saveUnstoredRequiredValue();
+
+            propertyManager.verifyNoInteractions();
+        }
+    }
+
+    @Test
+    public void testUnstoredValueOfWritablePropertyIsNotSaved() {
+        unstoredProperty(AccessCondition.WRITE, "normal");
+
+        try (MockedStatic<PropertyManager> propertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            property.saveUnstoredRequiredValue();
+
+            propertyManager.verifyNoInteractions();
+        }
+    }
+
+    @Test
+    public void testBlankWriteRequiredPropertyIsNotSaved() {
+        unstoredProperty(AccessCondition.WRITEREQUIRED, "");
+
+        try (MockedStatic<PropertyManager> propertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            property.saveUnstoredRequiredValue();
+
+            propertyManager.verifyNoInteractions();
+        }
+    }
+
+    private GoobiProperty unstoredProperty(AccessCondition access, String value) {
+        GoobiProperty stored = new GoobiProperty(PropertyOwnerType.PROCESS);
+        property.setName("Priority");
+        property.setContainer("0");
+        property.setCurrentStepAccessCondition(access);
+        property.setValue(value);
+        property.setProzesseigenschaft(stored);
+        return stored;
     }
 }
