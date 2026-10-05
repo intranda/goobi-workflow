@@ -26,6 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.goobi.beans.GoobiProperty;
+import org.goobi.beans.GoobiProperty.PropertyOwnerType;
+import org.goobi.beans.Process;
+import org.goobi.beans.Project;
+import org.goobi.beans.Step;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +38,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.persistence.managers.PropertyManager;
 import io.goobi.vocabulary.exchange.FieldDefinition;
 import io.goobi.vocabulary.exchange.VocabularySchema;
 import io.goobi.workflow.api.vocabulary.VocabularyAPI;
@@ -171,6 +177,62 @@ public class PropertyParserTest extends AbstractTest {
         PropertyParser.getInstance().addMissingVocabularyValues(property);
 
         assertEquals(List.of("", "1"), values(property.getPossibleValues()));
+    }
+
+    @Test
+    public void testDefaultValueOfWriteRequiredListPropertyIsSet() {
+        DisplayProperty property = stepProperty("required", "Priority", List.of());
+
+        assertEquals("normal", property.getReadValue());
+    }
+
+    @Test
+    public void testDefaultValueOfWriteRequiredTextPropertyIsSet() {
+        DisplayProperty property = stepProperty("required", "Remark", List.of());
+
+        assertEquals("none", property.getReadValue());
+    }
+
+    @Test
+    public void testDefaultValueOfWritablePropertyIsOnlyPreselected() {
+        DisplayProperty property = stepProperty("optional", "Priority", List.of());
+
+        assertEquals("normal", property.getValue());
+        assertEquals("", property.getReadValue());
+    }
+
+    @Test
+    public void testStoredValueOfWriteRequiredPropertyWinsOverDefaultValue() {
+        GoobiProperty stored = new GoobiProperty(PropertyOwnerType.PROCESS);
+        stored.setPropertyName("Priority");
+        stored.setPropertyValue("urgent");
+        stored.setContainer("0");
+
+        DisplayProperty property = stepProperty("required", "Priority", List.of(stored));
+
+        assertEquals("urgent", property.getReadValue());
+    }
+
+    private static DisplayProperty stepProperty(String stepTitle, String propertyName, List<GoobiProperty> storedProperties) {
+        Project project = new Project();
+        project.setTitel("Default values");
+        Process process = new Process();
+        process.setId(42);
+        process.setProjekt(project);
+        Step step = new Step();
+        step.setTitel(stepTitle);
+        step.setProzess(process);
+
+        try (MockedStatic<PropertyManager> propertyManager = Mockito.mockStatic(PropertyManager.class)) {
+            propertyManager.when(() -> PropertyManager.getPropertiesForObject(42, PropertyOwnerType.PROCESS))
+                    .thenReturn(new ArrayList<>(storedProperties));
+            return PropertyParser.getInstance()
+                    .getPropertiesForStep(step)
+                    .stream()
+                    .filter(p -> propertyName.equals(p.getName()))
+                    .findFirst()
+                    .orElseThrow();
+        }
     }
 
     private static DisplayProperty vocabularyReference() {

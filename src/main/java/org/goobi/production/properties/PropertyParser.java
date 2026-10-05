@@ -282,7 +282,10 @@ public final class PropertyParser {
                         pp.setValue(metadata);
                     } else {
                         pp.setValue(defaultValue);
-                        pp.setReadValue("");
+                        // a required property counts as filled with its default, others only preselect it in the edit dialog
+                        if (StringUtils.isBlank(defaultValue) || !AccessCondition.WRITEREQUIRED.equals(pp.getCurrentStepAccessCondition())) {
+                            pp.setReadValue("");
+                        }
                     }
 
                     if (Type.VOCABULARYREFERENCE.equals(pp.getType()) || Type.VOCABULARYMULTIREFERENCE.equals(pp.getType())) {

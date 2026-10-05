@@ -35,6 +35,21 @@
         <type>vocabularyreference</type>
         <vocabulary filter="Active=Ja">Delivery</vocabulary>
     </property>
+    <property name="Priority" container="0">
+        <project>Default values</project>
+        <showStep name="required" access="writerequired" />
+        <showStep name="optional" access="write" />
+        <type>list</type>
+        <defaultvalue>normal</defaultvalue>
+        <value>normal</value>
+        <value>urgent</value>
+    </property>
+    <property name="Remark" container="0">
+        <project>Default values</project>
+        <showStep name="required" access="writerequired" />
+        <type>text</type>
+        <defaultvalue>none</defaultvalue>
+    </property>
     <metadata name="DocStruct">
         <project>*</project>
         <workflow>*</workflow>
