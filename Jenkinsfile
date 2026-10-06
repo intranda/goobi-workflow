@@ -106,9 +106,6 @@ pipeline {
                     cp plugins/goobi-plugin-dashboard-extended/module-lib/target/plugin-dashboard-extended-lib.jar   target/default-plugins/lib/
                     cp plugins/goobi-plugin-dashboard-extended/install/plugin_intranda_dashboard_extended.xml        target/default-plugins/config/
 
-                    # rest-intranda
-                    cp plugins/goobi-plugin-rest-intranda/module-api/target/plugin-rest-intranda-api.jar target/default-plugins/lib/
-
                     # statistics-intranda
                     cp plugins/goobi-plugin-statistics-intranda/module-gui/target/plugin-statistics-intranda-gui.jar   target/default-plugins/plugins/GUI/
                     cp plugins/goobi-plugin-statistics-intranda/module-base/target/plugin-statistics-intranda-base.jar target/default-plugins/plugins/statistics/
