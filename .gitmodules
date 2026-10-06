@@ -43,9 +43,9 @@
 	url = ../goobi-plugin-statistics-intranda
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-rest-intranda"]
-	path = plugins/goobi-plugin-rest-intranda
-	url = ../goobi-plugin-rest-intranda
+[submodule "plugins/goobi-plugin-rest-stanford"]
+	path = plugins/goobi-plugin-rest-stanford
+	url = ../goobi-plugin-rest-stanford
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-step-display-metadata"]

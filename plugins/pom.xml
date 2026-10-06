@@ -101,7 +101,7 @@
     <module>goobi-plugin-opac-weimar-sru</module>
     <module>goobi-plugin-quartz-bka-wohnbau</module>
     <module>goobi-plugin-quartz-heris</module>
-    <module>goobi-plugin-rest-intranda</module>
+    <module>goobi-plugin-rest-stanford</module>
     <module>goobi-plugin-rest-marc-delivery</module>
     <module>goobi-plugin-rest-nle</module>
     <module>goobi-plugin-rest-user-creation</module>
