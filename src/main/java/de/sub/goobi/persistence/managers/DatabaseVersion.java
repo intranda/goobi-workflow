@@ -70,7 +70,7 @@ public final class DatabaseVersion {
         // hide implicit public constructor
     }
 
-    public static final int EXPECTED_VERSION = 63;
+    public static final int EXPECTED_VERSION = 64;
     private static final Gson GSON = new Gson();
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -510,6 +510,11 @@ public final class DatabaseVersion {
                     updateToVersion63();
                     tempVersion++;
                     //fall through
+                case 63: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 64.");
+                    updateToVersion64();
+                    tempVersion++;
+                    //fall through
                 default://NOSONAR, no break on purpose to run through all cases
                         // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -521,6 +526,17 @@ public final class DatabaseVersion {
             log.error(e);
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
+        }
+    }
+
+    static void updateToVersion64() {
+        // search for a metadata value of a given name, e.g. the REST lookup of a process by its identifier
+        if (!checkIfIndexExists("metadata", "idx_metadata_name_value")) {
+            createIndexOnTable("metadata", "idx_metadata_name_value", "name, value(50), processid", null);
+        }
+        // process property search and sorting by a process property
+        if (!checkIfIndexExists("properties", "idx_properties_type_name_object")) {
+            createIndexOnTable("properties", "idx_properties_type_name_object", "object_type, property_name, object_id", null);
         }
     }
 

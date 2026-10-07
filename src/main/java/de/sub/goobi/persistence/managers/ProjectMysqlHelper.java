@@ -469,7 +469,7 @@ final class ProjectMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder("SELECT count(1) from projekte WHERE titel = ?");
 
         if (institution != null) {
-            sql.append(" AND insitution_id = ").append(institution.getId());
+            sql.append(" AND institution_id = ").append(institution.getId());
         }
         Connection connection = null;
         try {

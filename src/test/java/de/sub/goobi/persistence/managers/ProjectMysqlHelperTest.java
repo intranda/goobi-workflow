@@ -20,6 +20,7 @@ package de.sub.goobi.persistence.managers;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.goobi.beans.Institution;
 import org.junit.jupiter.api.Test;
 
 import de.sub.goobi.AbstractTest;
@@ -40,5 +41,15 @@ public class ProjectMysqlHelperTest extends AbstractTest {
     @Test
     public void testIsUserMemberOfProjectSqlContainsNoStringLiterals() {
         assertFalse(ProjectMysqlHelper.IS_USER_MEMBER_OF_PROJECT_SQL.contains("'"));
+    }
+
+    @Test
+    public void testCountProjectTitleRestrictsToInstitution() throws Exception {
+        Institution institution = new Institution();
+        institution.setId(3);
+        try (SqlCapture capture = new SqlCapture(0)) {
+            ProjectMysqlHelper.countProjectTitle("Project A", institution);
+            assertTrue(capture.lastStatement().contains(" AND institution_id = 3"), capture.lastStatement());
+        }
     }
 }

@@ -131,14 +131,8 @@ final class BackgroundJobsMysqlHelper implements Serializable {
 
             if (prop.getId() == null) {
 
-                sql.append("INSERT INTO background_job_properties (job_id, title, value) VALUES (");
-                sql.append(jobId);
-                sql.append(", ");
-                sql.append(prop.getTitle());
-                sql.append(", ");
-                sql.append(prop.getValue());
-                sql.append(")");
-                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+                sql.append("INSERT INTO background_job_properties (job_id, title, value) VALUES (?, ?, ?)");
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, jobId, prop.getTitle(), prop.getValue());
                 if (id != null) {
                     prop.setId(id);
                 }

@@ -278,6 +278,8 @@ final class ProcessMysqlHelper implements Serializable {
             sql.append(institution.getId());
         }
 
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
+
         if (StringUtils.isNotBlank(filter)) {
             if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
                 sql.append(" WHERE ");
@@ -285,7 +287,6 @@ final class ProcessMysqlHelper implements Serializable {
 
             sql.append(filter);
         }
-        String sortfield = MySQLHelper.prepareSortField(order, sql);
         if (StringUtils.isNotBlank(sortfield)) {
             sql.append(" ORDER BY " + sortfield);
         }
@@ -310,10 +311,11 @@ final class ProcessMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT ProzesseID FROM prozesse left join batches on prozesse.batchID = batches.id ");
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+
+        String sortfield = MySQLHelper.prepareSortField(order, sql);
         if (filter != null && !filter.isEmpty()) {
             sql.append(filter);
         }
-        String sortfield = MySQLHelper.prepareSortField(order, sql);
         if (StringUtils.isNotBlank(sortfield)) {
             sql.append(" ORDER BY " + sortfield);
         }
@@ -499,14 +501,13 @@ final class ProcessMysqlHelper implements Serializable {
         sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id ");
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
 
+        String sortfield = order.isPresent() ? MySQLHelper.prepareSortField(order.get(), sql) : null;
+
         if (filter != null && !filter.isEmpty()) {
             sql.append(filter);
         }
-        if (order.isPresent()) {
-            String sortfield = MySQLHelper.prepareSortField(order.get(), sql);
-            if (StringUtils.isNotBlank(sortfield)) {
-                sql.append(" ORDER BY " + sortfield);
-            }
+        if (StringUtils.isNotBlank(sortfield)) {
+            sql.append(" ORDER BY " + sortfield);
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();

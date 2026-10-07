@@ -93,6 +93,87 @@ public class MySQLHelperTest extends AbstractTest {
         assertEquals("prioritaet desc, prozesse.ProzesseID asc", result);
     }
 
+    // --- prepareSortField: sort fields used by the task list, step lists and admin lists ---
+
+    @Test
+    public void testPrepareSortFieldAcceptsTaskListDefaultSort() {
+        // default task list sorting of every user: taskListDefaultSortingField + taskListDefaultSortOrder
+        assertEquals("prioritaet desc", MySQLHelper.prepareSortField("prioritaet desc", new StringBuilder()));
+    }
+
+    @Test
+    public void testPrepareSortFieldAcceptsTaskListBatchSort() {
+        String order = "prioritaet desc, prozesse.batchID desc";
+        assertEquals(order, MySQLHelper.prepareSortField(order, new StringBuilder()));
+    }
+
+    @Test
+    public void testPrepareSortFieldAcceptsStepOrder() {
+        assertEquals("Reihenfolge desc", MySQLHelper.prepareSortField("Reihenfolge desc", new StringBuilder()));
+        assertEquals("Reihenfolge", MySQLHelper.prepareSortField("Reihenfolge", new StringBuilder()));
+        assertEquals("schritte.reihenfolge", MySQLHelper.prepareSortField("schritte.reihenfolge", new StringBuilder()));
+    }
+
+    @Test
+    public void testPrepareSortFieldAcceptsBackgroundJobColumns() {
+        assertEquals("lastAltered desc", MySQLHelper.prepareSortField("lastAltered desc", new StringBuilder()));
+        assertEquals("jobname asc", MySQLHelper.prepareSortField("jobname asc", new StringBuilder()));
+        assertEquals("jobstatus desc", MySQLHelper.prepareSortField("jobstatus desc", new StringBuilder()));
+        assertEquals("retrycount asc", MySQLHelper.prepareSortField("retrycount asc", new StringBuilder()));
+    }
+
+    @Test
+    public void testPrepareSortFieldAcceptsTitleAndNameColumns() {
+        assertEquals("titel", MySQLHelper.prepareSortField("titel", new StringBuilder()));
+        assertEquals("Titel", MySQLHelper.prepareSortField("Titel", new StringBuilder()));
+        assertEquals("schritte.titel", MySQLHelper.prepareSortField("schritte.titel", new StringBuilder()));
+        assertEquals("name", MySQLHelper.prepareSortField("name", new StringBuilder()));
+    }
+
+    @Test
+    public void testPrepareSortFieldIgnoresCaseAndSurroundingWhitespace() {
+        assertEquals(" prozesse.titel", MySQLHelper.prepareSortField(" prozesse.titel", new StringBuilder()));
+        assertEquals("prozesse.Titel", MySQLHelper.prepareSortField("prozesse.Titel", new StringBuilder()));
+    }
+
+    // --- prepareSortField: custom columns from metadata and process properties ---
+
+    @Test
+    public void testPrepareSortFieldSortsByMetadataWithCorrelatedSubquery() {
+        StringBuilder sql = new StringBuilder();
+        String result = MySQLHelper.prepareSortField("{db_meta.TitleDocMain}", sql);
+        // no join over the aggregated values of all processes
+        assertEquals("", sql.toString());
+        assertTrue(result.contains("(SELECT MAX(value) FROM metadata WHERE metadata.name = 'TitleDocMain' "
+                + "AND metadata.processid = prozesse.ProzesseID)"), result);
+    }
+
+    @Test
+    public void testPrepareSortFieldSortsByProcessPropertyWithCorrelatedSubquery() {
+        StringBuilder sql = new StringBuilder();
+        String result = MySQLHelper.prepareSortField("{process.DocType} desc", sql);
+        assertEquals("", sql.toString());
+        assertTrue(result.contains("properties.object_type = 'process' AND properties.property_name = 'DocType' "
+                + "AND properties.object_id = prozesse.ProzesseID"), result);
+        assertTrue(result.trim().endsWith("desc"), result);
+    }
+
+    @Test
+    public void testPrepareSortFieldKeepsEmptyValuesLast() {
+        String result = MySQLHelper.prepareSortField("{db_meta.TitleDocMain} desc", new StringBuilder());
+        // empty values are sorted last in both directions, only the value itself is sorted descending
+        assertTrue(result.trim().startsWith("COALESCE((SELECT"), result);
+        assertTrue(result.contains("), '') = '', (SELECT"), result);
+    }
+
+    @Test
+    public void testPrepareSortFieldIgnoresUnsupportedCustomColumns() {
+        StringBuilder sql = new StringBuilder();
+        assertEquals("", MySQLHelper.prepareSortField("{product.Title}", sql));
+        assertEquals("", MySQLHelper.prepareSortField("{template.Title} desc", sql));
+        assertEquals("", sql.toString());
+    }
+
     // --- prepareSortField: already-whitelisted fields still work ---
 
     @Test

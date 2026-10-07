@@ -35,10 +35,13 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang3.StringUtils;
@@ -548,15 +551,16 @@ public final class MySQLHelper implements Serializable {
     /**
      * Prepare the SQL query and generate order statement
      *
-     * If a regular column is used, nothing gets changed. But if a custom column is used, the query gets extended to include the data into the result
-     * list, so ordering by this data is possible.
+     * If a regular column is used, nothing gets changed. If a custom column ({db_meta.name} or {process.name}) is used, the order statement reads
+     * the value with a subquery for each process.
      *
      * @param inOrder column name to order
-     * @param sql prepared sql statement, gets extended if needed
+     * @param sql prepared sql statement
      * @return order statement
      */
 
-    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+    // compared case-insensitively, see prepareSortField
+    private static final Set<String> ALLOWED_SORT_FIELDS = Stream.of(
 
             "prozesse.ProzesseID",
             "prozesse.batchID",
@@ -579,16 +583,35 @@ public final class MySQLHelper implements Serializable {
             "prioritaet desc, sorthelper_last_close_date",
             "prioritaet desc, schritte.prioritaet",
             "prioritaet desc, schritte.bearbeitungsstatus",
+            "prioritaet desc, prozesse.batchID",
+            "prioritaet",
+
+            // step order, used for step lists of a single process and the project workflow overview
+            "Reihenfolge",
+            "schritte.reihenfolge",
+            "schritte.titel",
+
+            // background jobs
+            "lastAltered",
+            "jobname",
+            "jobstatus",
+            "retrycount",
+
+            // projects, user groups, rulesets, authentication, dockets
+            "titel",
+            "name",
 
             "benutzer.login",
             "benutzer.standort",
-            "benutzer.nachname, benutzer.vorname");
+            "benutzer.nachname, benutzer.vorname")
+            .map(field -> field.toLowerCase(Locale.ROOT))
+            .collect(Collectors.toUnmodifiableSet());
 
     public static String prepareSortField(String inOrder, StringBuilder sql) {
-        String order = inOrder;
-        if (StringUtils.isBlank(order)) {
-            return order;
+        if (StringUtils.isBlank(inOrder)) {
+            return inOrder;
         }
+        String order = inOrder.trim();
         String sortfield = "";
         boolean reverse = false;
         if (order.endsWith(" desc")) {
@@ -598,7 +621,7 @@ public final class MySQLHelper implements Serializable {
         if (order.endsWith(" asc")) {
             order = order.substring(0, order.length() - " asc".length());
         }
-        if (ALLOWED_SORT_FIELDS.contains(order)) {
+        if (ALLOWED_SORT_FIELDS.contains(order.toLowerCase(Locale.ROOT))) {
             return inOrder;
         }
 
@@ -610,20 +633,24 @@ public final class MySQLHelper implements Serializable {
         String fieldname = order.replace("{", "").replace("}", "").substring(order.indexOf("."));
         // validate fieldname
 
+
+        String value;
         if (order.startsWith("{db_meta")) {
-            sql.append(" LEFT JOIN (SELECT processid, MAX(value) AS value FROM metadata WHERE metadata.name = '");
-            sql.append(escapeSql(fieldname));
-            sql.append("' GROUP BY processid) AS field ON field.processid = prozesse.prozesseID ");
+            value = "(SELECT MAX(value) FROM metadata WHERE metadata.name = '" + escapeSql(fieldname)
+                    + "' AND metadata.processid = prozesse.ProzesseID)";
         } else if (order.startsWith("{process.")) {
-            sql.append(" LEFT JOIN (SELECT object_id, MAX(property_value) AS value FROM properties ");
-            sql.append("WHERE properties.object_type='process' AND properties.property_name = '");
-            sql.append(escapeSql(fieldname));
-            sql.append("' GROUP BY object_id) AS field ON field.object_id = prozesse.prozesseID ");
-        }
-        if (reverse) {
-            sortfield = " case when field.value = '' or field.value is null then 1 else 0 end, field.value desc ";
+            value = "(SELECT MAX(property_value) FROM properties WHERE properties.object_type = 'process' AND properties.property_name = '"
+                    + escapeSql(fieldname) + "' AND properties.object_id = prozesse.ProzesseID)";
         } else {
-            sortfield = " case when field.value = '' or field.value is null then 1 else 0 end, field.value ";
+            // unsupported custom column
+            return "";
+        }
+        // empty values last
+        sortfield = " COALESCE(" + value + ", '') = '', " + value;
+        if (reverse) {
+            sortfield = sortfield + " desc ";
+        } else {
+            sortfield = sortfield + " ";
         }
         return sortfield;
     }

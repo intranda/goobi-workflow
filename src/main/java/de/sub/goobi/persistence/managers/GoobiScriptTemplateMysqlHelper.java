@@ -52,7 +52,7 @@ public final class GoobiScriptTemplateMysqlHelper {
     public static GoobiScriptTemplate getGoobiScriptTemplateById(int id) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(1) FROM goobiscript_template WHERE id = ?");
+        sql.append("SELECT * FROM goobiscript_template WHERE id = ?");
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
