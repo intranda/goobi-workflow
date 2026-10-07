@@ -36,6 +36,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.MySQLHelper;
@@ -585,7 +586,7 @@ public class FilterHelperTest extends AbstractTest {
             String expectedQuery =
                     " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in "
                             + "(select object_id from properties where object_type = 'error' AND property_value like"
-                            + " ''%Value%'  AND property_name like '%Title%' ))";
+                            + " '%Value%'  AND property_name like '%Title%' ))";
 
             String result = FilterHelper.filterStepProperty(tok, false);
 
@@ -613,6 +614,23 @@ public class FilterHelperTest extends AbstractTest {
             // Assert that the generated SQL query matches the expected query with negation
             assertEquals(expectedQuery, result);
 
+        }
+    }
+
+    @Test
+    public void testStepFilterByOrderSelectsStepIds() {
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeString(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+
+            // task list filter "step:5": tasks whose step is at position 5 and open, in work or in error
+            String criteria = FilterHelper.criteriaBuilder("step:5", false, null, null, null, false, true);
+
+            assertTrue(criteria.contains("schritte.SchritteID IN (select schritte.SchritteID from schritte where schritte.Reihenfolge = 5"),
+                    "step ids must be compared with step ids: " + criteria);
         }
     }
 
@@ -666,7 +684,7 @@ public class FilterHelperTest extends AbstractTest {
             String tok = "processproperty:Title:Value";
             String expectedQuery =
                     " prozesse.prozesseID in (select object_id from properties where object_type = 'process' AND property_"
-                            + "value like '%Value%'  AND property_name like '%Title%' )";
+                            + "value like '%Value%'  AND property_name = 'Title' )";
             String result = FilterHelper.filterProcessProperty(tok, false);
 
             // Assert that the generated SQL query matches the expected query without negation
@@ -686,7 +704,7 @@ public class FilterHelperTest extends AbstractTest {
             String tok = "processproperty:Title:Value";
             String expectedQuery =
                     " prozesse.prozesseID in (select object_id from properties where object_type = 'process' AND property_"
-                            + "value like '%Value%'  AND property_name like '%Title%' )";
+                            + "value like '%Value%'  AND property_name = 'Title' )";
 
             String result = FilterHelper.filterProcessProperty(tok, true);
 
@@ -706,7 +724,7 @@ public class FilterHelperTest extends AbstractTest {
             String tok = "metadata:Title:Value";
             boolean negate = false;
             String expectedQuery =
-                    "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '%Title%' "
+                    "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name = 'Title' "
                             + "AND metadata.value like '%Value%' )";
 
             String result = FilterHelper.filterMetadataValue(tok, negate);
@@ -714,6 +732,66 @@ public class FilterHelperTest extends AbstractTest {
             // Assert that the generated SQL query matches the expected query without negation
             assertEquals(expectedQuery, result);
 
+        }
+    }
+
+    @Test
+    public void testFilterProcessPropertyFulltextMatchesExactName() {
+        assertEquals("prozesse.ProzesseID IN (select object_id from properties where object_type = 'process' AND property_name = 'Title' "
+                + "AND MATCH (property_value) AGAINST ('+Value* ' IN BOOLEAN MODE))", processPropertyWithFulltext("BOOLEAN MODE"));
+    }
+
+    @Test
+    public void testFilterProcessPropertyNaturalLanguageSearchesForValue() {
+        assertEquals("prozesse.ProzesseID IN (select object_id from properties where object_type = 'process' AND property_name = 'Title' "
+                + "AND MATCH (property_value) AGAINST ('Value' IN NATURAL LANGUAGE MODE))", processPropertyWithFulltext("NATURAL LANGUAGE MODE"));
+    }
+
+    private static String processPropertyWithFulltext(String mode) {
+        ConfigurationHelper config = Mockito.mock(ConfigurationHelper.class);
+        Mockito.when(config.isUseFulltextSearch()).thenReturn(true);
+        Mockito.when(config.getFulltextSearchMode()).thenReturn(mode);
+        try (MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class);
+                MockedStatic<ConfigurationHelper> mockedConfig = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            mockedConfig.when(ConfigurationHelper::getInstance).thenReturn(config);
+            return FilterHelper.filterProcessProperty("processproperty:Title:Value", false);
+        }
+    }
+
+    @Test
+    public void testFilterMetadataNameOnlyMatchesExactName() {
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+
+            // "meta:Title" finds processes having metadata 'Title'
+            assertEquals("prozesse.ProzesseID in (select distinct processid from metadata where metadata.name = 'Title') ",
+                    FilterHelper.filterMetadataValue("meta:Title", false));
+            assertEquals("prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name = 'Title' )",
+                    FilterHelper.filterMetadataValue("meta:Title", true));
+        }
+    }
+
+    @Test
+    public void testFilterMetadataValueFulltextMatchesExactName() {
+        ConfigurationHelper config = Mockito.mock(ConfigurationHelper.class);
+        Mockito.when(config.isUseFulltextSearch()).thenReturn(true);
+        Mockito.when(config.getFulltextSearchMode()).thenReturn("BOOLEAN MODE");
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class);
+                MockedStatic<ConfigurationHelper> mockedConfig = Mockito.mockStatic(ConfigurationHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            mockedConfig.when(ConfigurationHelper::getInstance).thenReturn(config);
+
+            String result = FilterHelper.filterMetadataValue("meta:Title:Value", false);
+
+            assertEquals("prozesse.ProzesseID IN (SELECT DISTINCT processid FROM metadata WHERE metadata.name = 'Title' AND "
+                    + "MATCH (value) AGAINST ('+Value* ' IN BOOLEAN MODE))", result);
         }
     }
 
@@ -728,7 +806,7 @@ public class FilterHelperTest extends AbstractTest {
             String tok = "metadata:Title:Value";
             boolean negate = true;
             String expectedQuery =
-                    "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '%Title%' "
+                    "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name = 'Title' "
                             + "AND metadata.value like '%Value%' )";
 
             String result = FilterHelper.filterMetadataValue(tok, negate);
@@ -1011,7 +1089,7 @@ public class FilterHelperTest extends AbstractTest {
                     "SQL criteria must not contain duplicate WHERE clauses");
 
             // Must contain both filter conditions
-            assertTrue(criteria.contains("property_name like"), "Should filter by process property");
+            assertTrue(criteria.contains("property_name = 'Template'"), "Should filter by process property");
             assertTrue(criteria.contains("prozesse.prozesseId in (12819)"), "Should filter by process id");
 
         }

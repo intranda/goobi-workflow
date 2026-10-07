@@ -168,7 +168,7 @@ public class SearchRequest {
             b.append("JOIN projekte pr ON prozesse.ProjekteID = pr.ProjekteID ");
         }
         if ((this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) || (this.propName != null && !this.propName.isEmpty())) {
-            b.append("LEFT JOIN properties ON prozesse.prozesseID = properties.object_id AND properties.object_type = 'process'");
+            b.append("LEFT JOIN properties ON prozesse.prozesseID = properties.object_id AND properties.object_type = 'process' ");
         }
         if (this.stepName != null && !this.stepName.isEmpty()) {
             b.append("LEFT JOIN schritte ON prozesse.prozesseID = schritte.ProzesseID ");
@@ -186,24 +186,35 @@ public class SearchRequest {
 
     private void createWhere(StringBuilder b) {
 
-        boolean firstWhere = true;
         String conj = metadataConjunctive ? "AND " : "OR ";
 
-        b.append("WHERE ");
+        StringBuilder where = new StringBuilder();
+        boolean firstWhere = addFilters(where, true);
 
-        firstWhere = addFilters(b, firstWhere);
-
-        if (!firstWhere) {
-            b.append("AND ");
-        }
-
-        for (int i = 0; i < metadataFilters.size(); i++) {
-            SearchGroup sg = metadataFilters.get(i);
-            sg.createSqlClause(b);
-            if (i + 1 < metadataFilters.size()) {
-                b.append(conj);
+        // groups are combined with OR/AND, keep them together so they do not bind to the other filters
+        StringBuilder metadataClause = new StringBuilder();
+        for (SearchGroup sg : metadataFilters) {
+            StringBuilder groupClause = new StringBuilder();
+            sg.createSqlClause(groupClause);
+            if (StringUtils.isBlank(groupClause)) {
+                continue;
             }
+            if (metadataClause.length() > 0) {
+                metadataClause.append(conj);
+            }
+            metadataClause.append("(").append(groupClause).append(") ");
         }
+        if (metadataClause.length() > 0) {
+            if (!firstWhere) {
+                where.append("AND ");
+            }
+            where.append("(").append(metadataClause).append(") ");
+        }
+        if (where.length() > 0) {
+            b.append("WHERE ");
+            b.append(where);
+        }
+
         if (StringUtils.isNotBlank(sortField)) {
             b.append(" ORDER BY sort_meta.sortField ");
             b.append(sortDescending ? "DESC " : "ASC ");
@@ -242,6 +253,12 @@ public class SearchRequest {
         if (this.filterProjects != null) {
             for (String project : this.filterProjects) {
                 params.add(project);
+            }
+        }
+
+        if (this.filterTemplateIDs != null) {
+            for (Integer templateId : this.filterTemplateIDs) {
+                params.add(String.valueOf(templateId));
             }
         }
 

@@ -246,4 +246,69 @@ public class SearchRequestTest extends AbstractTest {
 
         assertEquals(0, req.getNumGroups());
     }
+
+    @Test
+    public void testCreateSqlWithoutFiltersHasNoEmptyWhere() {
+        SearchRequest req = new SearchRequest();
+
+        String sql = req.createSql();
+
+        assertFalse(sql.contains("WHERE"), sql);
+        assertTrue(sql.contains("ORDER BY prozesse.ProzesseID ASC"), sql);
+    }
+
+    @Test
+    public void testCreateSqlWithProjectFilterOnlyHasNoDanglingAnd() {
+        SearchRequest req = new SearchRequest();
+        req.setFilterProjects(Arrays.asList("ProjectA"));
+
+        String sql = req.createSql();
+
+        assertTrue(sql.contains("WHERE pr.Titel IN (?)"), sql);
+        assertFalse(sql.matches("(?s).*AND\\s+ORDER BY.*"), sql);
+    }
+
+    @Test
+    public void testTemplateFilterBindsAllPlaceholders() {
+        SearchRequest req = new SearchRequest();
+        req.setFilterProjects(Arrays.asList("ProjectA"));
+        req.setFilterTemplateIDs(Arrays.asList(1, 2));
+
+        String sql = req.createSql();
+        Object[] params = req.createSqlParams();
+
+        assertEquals(sql.chars().filter(c -> c == '?').count(), params.length, sql);
+        assertEquals("ProjectA", params[0]);
+        assertEquals("1", params[1]);
+        assertEquals("2", params[2]);
+    }
+
+    @Test
+    public void testMetadataGroupsDoNotBindToOtherFilters() {
+        SearchRequest req = new SearchRequest();
+        req.setFilterProjects(Arrays.asList("ProjectA"));
+        req.setMetadataConjunctive(false);
+        SearchGroup first = new SearchGroup();
+        first.addFilter(new SearchQuery("title", "a", RelationalOperator.LIKE));
+        SearchGroup second = new SearchGroup();
+        second.addFilter(new SearchQuery("title", "b", RelationalOperator.LIKE));
+        req.addSearchGroup(first);
+        req.addSearchGroup(second);
+
+        String sql = req.createSql();
+
+        // "project AND (group1 OR group2)", not "(project AND group1) OR group2"
+        assertTrue(sql.contains("pr.Titel IN (?) AND (("), sql);
+    }
+
+    @Test
+    public void testEmptyMetadataGroupIsIgnored() {
+        SearchRequest req = new SearchRequest();
+        req.addSearchGroup(new SearchGroup());
+
+        String sql = req.createSql();
+
+        assertFalse(sql.contains("()"), sql);
+        assertFalse(sql.contains("WHERE"), sql);
+    }
 }
