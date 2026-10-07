@@ -421,7 +421,7 @@ public final class FilterHelper {
         if (!negate) {
             if (ts.length > 1) {
                 sb.append(" prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in ");
-                sb.append("(select object_id from properties where object_type = 'error' AND property_value like ''");
+                sb.append("(select object_id from properties where object_type = 'error' AND property_value like '");
                 sb.append(leftTruncationCharacter);
                 sb.append(MySQLHelper.escapeSql(ts[1]));
                 sb.append(rightTruncationCharacter);
@@ -524,16 +524,15 @@ public final class FilterHelper {
     private static String filterProperty(String tok, boolean negate, String propertyType) {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
         StringBuilder sb = new StringBuilder();
+        // property names are compared exactly, a leading wildcard would prevent the use of the index on property_name
         if (!negate) {
             // use performant fulltext search
             if (ConfigurationHelper.getInstance().isUseFulltextSearch()) {
                 sb.append("prozesse.ProzesseID IN ");
                 sb.append("(select object_id from properties where object_type = '").append(propertyType).append("' AND ");
                 if (ts.length > 1) {
-                    sb.append("property_name LIKE  '");
-                    sb.append(leftTruncationCharacter);
+                    sb.append("property_name = '");
                     sb.append(MySQLHelper.escapeSql(ts[0]));
-                    sb.append(rightTruncationCharacter);
                     sb.append("' AND MATCH (property_value) AGAINST ('");
                     if ("BOOLEAN MODE".equals(ConfigurationHelper.getInstance().getFulltextSearchMode())) {
                         String[] words = ts[1].split(" ");
@@ -541,7 +540,7 @@ public final class FilterHelper {
                             sb.append("+" + w + "* ");
                         }
                     } else {
-                        sb.append(ts[0]);
+                        sb.append(ts[1]);
                     }
                     sb.append("' IN ");
                     sb.append(ConfigurationHelper.getInstance().getFulltextSearchMode());
@@ -556,10 +555,8 @@ public final class FilterHelper {
                 sb.append(leftTruncationCharacter);
                 sb.append(MySQLHelper.escapeSql(ts[1]));
                 sb.append(rightTruncationCharacter);
-                sb.append("'  AND property_name like '");
-                sb.append(leftTruncationCharacter);
+                sb.append("'  AND property_name = '");
                 sb.append(MySQLHelper.escapeSql(ts[0]));
-                sb.append(rightTruncationCharacter);
                 sb.append("' )");
             } else {
                 sb.append(" prozesse.prozesseID in ");
@@ -576,10 +573,8 @@ public final class FilterHelper {
             sb.append(leftTruncationCharacter);
             sb.append(MySQLHelper.escapeSql(ts[1]));
             sb.append(rightTruncationCharacter);
-            sb.append("'  AND property_name like '");
-            sb.append(leftTruncationCharacter);
+            sb.append("'  AND property_name = '");
             sb.append(MySQLHelper.escapeSql(ts[0]));
-            sb.append(rightTruncationCharacter);
             sb.append("' )");
         } else {
             sb.append(" prozesse.prozesseID in ");
@@ -614,10 +609,8 @@ public final class FilterHelper {
                 StringBuilder sb = new StringBuilder();
                 sb.append("prozesse.ProzesseID IN (SELECT DISTINCT processid FROM metadata WHERE ");
                 if (StringUtils.isNotBlank(title)) {
-                    sb.append("metadata.name LIKE  '");
-                    sb.append(leftTruncationCharacter);
+                    sb.append("metadata.name = '");
                     sb.append(MySQLHelper.escapeSql(title));
-                    sb.append(rightTruncationCharacter);
                     sb.append("' AND ");
                 }
                 sb.append("MATCH (value) AGAINST ('");
@@ -636,20 +629,20 @@ public final class FilterHelper {
                 return sb.toString();
             }
             if (StringUtils.isNotBlank(title)) {
-                return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                        + MySQLHelper.escapeSql(title) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
+                return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name = '"
+                        + MySQLHelper.escapeSql(title) + "' AND metadata.value like '" + leftTruncationCharacter
                         + MySQLHelper.escapeSql(value) + rightTruncationCharacter + "' )";
             } else {
-                return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                        + MySQLHelper.escapeSql(value) + rightTruncationCharacter + "') ";
+                return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name = '"
+                        + MySQLHelper.escapeSql(value) + "') ";
             }
         } else if (StringUtils.isNotBlank(title)) {
-            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                    + MySQLHelper.escapeSql(title) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
+            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name = '"
+                    + MySQLHelper.escapeSql(title) + "' AND metadata.value like '" + leftTruncationCharacter
                     + MySQLHelper.escapeSql(value) + rightTruncationCharacter + "' )";
         } else {
-            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                    + MySQLHelper.escapeSql(value) + rightTruncationCharacter + "' )";
+            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name = '"
+                    + MySQLHelper.escapeSql(value) + "' )";
         }
     }
 
@@ -1300,7 +1293,7 @@ public final class FilterHelper {
 
             }
         }
-        return " schritte.SchritteID IN (select ProzesseID from schritte where schritte.Reihenfolge = " + stepReihenfolge
+        return " schritte.SchritteID IN (select schritte.SchritteID from schritte where schritte.Reihenfolge = " + stepReihenfolge
                 + " AND (schritte.Bearbeitungsstatus = 1 OR schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4))";
 
     }
