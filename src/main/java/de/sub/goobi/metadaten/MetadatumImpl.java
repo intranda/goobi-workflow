@@ -239,9 +239,10 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             setSource(myValues.getItemList().get(0).getSource());
             setField(myValues.getItemList().get(0).getField());
 
-        } else if (myValues.getItemList().size() == 1) {
+        } else if (!myValues.getItemList().isEmpty()) {
+            // all items of a rule share its source and field, e.g. dante favorites must not widen the search to the whole of dante
             Item item = myValues.getItemList().get(0);
-            if (item.isSelected()) {
+            if (myValues.getItemList().size() == 1 && item.isSelected()) {
                 setDefaultValue(item.getValue());
             }
             setSource(item.getSource());
@@ -360,9 +361,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     /**
-     * The entries of a vocabularyList dropdown. Each record is shown in the language of the user interface, but its value is the language
-     * independent one, so the metadata does not depend on who edited it. A stored value the vocabulary does not know is offered as an entry of
-     * its own with a marked label, so it is shown and kept on the next save instead of being replaced; validation still reports it.
+     * The entries of a vocabularyList dropdown. Each record is shown in the language of the user interface, but its value is the language independent
+     * one, so the metadata does not depend on who edited it. A stored value the vocabulary does not know is offered as an entry of its own with a
+     * marked label, so it is shown and kept on the next save instead of being replaced; validation still reports it.
      *
      * @param recordList the records of the vocabulary
      * @param storedValue the current value of the metadata
