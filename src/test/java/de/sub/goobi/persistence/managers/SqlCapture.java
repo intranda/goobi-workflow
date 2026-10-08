@@ -65,6 +65,13 @@ class SqlCapture implements AutoCloseable {
         }));
     }
 
+    /**
+     * for additional stubbing of static MySQLHelper methods
+     */
+    MockedStatic<MySQLHelper> mySQLHelper() {
+        return mySQLHelper;
+    }
+
     String lastStatement() {
         return statements.get(statements.size() - 1);
     }

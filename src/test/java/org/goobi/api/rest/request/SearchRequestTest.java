@@ -81,13 +81,18 @@ public class SearchRequestTest extends AbstractTest {
 
         String sql = req.createSql();
 
-        assertTrue(sql.contains("JOIN projekte"));
-        assertTrue(sql.contains("LEFT JOIN properties"));
-        assertTrue(sql.contains("LEFT JOIN schritte"));
+        // filters on properties and steps must not join the rows, a process would be returned once per matching row
+        assertFalse(sql.contains("JOIN properties"), sql);
+        assertFalse(sql.contains("JOIN schritte"), sql);
 
-        assertTrue(sql.contains("pr.Titel IN"));
-        assertTrue(sql.contains("properties.property_name=\"templateID\""));
-        assertTrue(sql.contains("schritte.Titel IN"));
+        assertTrue(sql.contains("prozesse.ProjekteID IN (SELECT ProjekteID FROM projekte WHERE Titel IN (?, ?))"), sql);
+        assertTrue(sql.contains("EXISTS (SELECT 1 FROM properties tp WHERE tp.object_type = 'process' AND tp.property_name = 'templateID' "
+                + "AND tp.object_id = prozesse.ProzesseID AND tp.property_value IN (?, ?))"), sql);
+        assertTrue(sql.contains("EXISTS (SELECT 1 FROM properties pp WHERE pp.object_type = 'process' AND pp.property_name = ? "
+                + "AND pp.object_id = prozesse.ProzesseID AND pp.property_value = ?)"), sql);
+        assertTrue(sql.contains("EXISTS (SELECT 1 FROM schritte s WHERE s.ProzesseID = prozesse.ProzesseID AND s.Titel = ? "
+                + "AND s.Bearbeitungsstatus = ?)"), sql);
+        assertEquals(sql.chars().filter(c -> c == '?').count(), req.createSqlParams().length, sql);
     }
 
     @Test
@@ -102,9 +107,9 @@ public class SearchRequestTest extends AbstractTest {
 
         String sql = req.createSql();
 
-        assertTrue(sql.contains("LEFT JOIN"));
-        assertTrue(sql.contains("WHERE name = ?"));
-        assertTrue(sql.contains("ORDER BY sort_meta.sortField DESC"));
+        assertFalse(sql.contains("JOIN metadata"), sql);
+        assertTrue(sql.contains("ORDER BY (SELECT MAX(value) FROM metadata WHERE metadata.name = ? "
+                + "AND metadata.processid = prozesse.ProzesseID) DESC, prozesse.ProzesseID DESC"), sql);
         assertTrue(sql.contains("LIMIT ? OFFSET ?"));
 
         Object[] params = req.createSqlParams();
@@ -124,7 +129,7 @@ public class SearchRequestTest extends AbstractTest {
 
         String sql = req.createSql();
 
-        assertTrue(sql.contains("ORDER BY sort_meta.sortField ASC"));
+        assertTrue(sql.contains("metadata.processid = prozesse.ProzesseID) ASC, prozesse.ProzesseID ASC"), sql);
         assertFalse(sql.contains("ORDER BY prozesse.ProzesseID ASC"));
     }
 
@@ -173,7 +178,7 @@ public class SearchRequestTest extends AbstractTest {
 
         req.setFilterProjects(filterList);
         sql = req.createSql();
-        assertTrue(sql.contains("pr.Titel IN (?)"));
+        assertTrue(sql.contains("prozesse.ProjekteID IN (SELECT ProjekteID FROM projekte WHERE Titel IN (?))"), sql);
 
         // template filter
         List<Integer> idList = new ArrayList<>();
@@ -181,7 +186,7 @@ public class SearchRequestTest extends AbstractTest {
         req.setFilterTemplateIDs(idList);
 
         sql = req.createSql();
-        assertTrue(sql.contains("properties.property_name=\"templateID\""));
+        assertTrue(sql.contains("tp.property_name = 'templateID'"), sql);
 
     }
 
@@ -264,7 +269,7 @@ public class SearchRequestTest extends AbstractTest {
 
         String sql = req.createSql();
 
-        assertTrue(sql.contains("WHERE pr.Titel IN (?)"), sql);
+        assertTrue(sql.contains("WHERE prozesse.ProjekteID IN (SELECT ProjekteID FROM projekte WHERE Titel IN (?))"), sql);
         assertFalse(sql.matches("(?s).*AND\\s+ORDER BY.*"), sql);
     }
 
@@ -298,7 +303,7 @@ public class SearchRequestTest extends AbstractTest {
         String sql = req.createSql();
 
         // "project AND (group1 OR group2)", not "(project AND group1) OR group2"
-        assertTrue(sql.contains("pr.Titel IN (?) AND (("), sql);
+        assertTrue(sql.contains("prozesse.ProjekteID IN (SELECT ProjekteID FROM projekte WHERE Titel IN (?)) AND (("), sql);
     }
 
     @Test
@@ -310,5 +315,62 @@ public class SearchRequestTest extends AbstractTest {
 
         assertFalse(sql.contains("()"), sql);
         assertFalse(sql.contains("WHERE"), sql);
+    }
+
+    @Test
+    public void testResolvedProjectIdsAreUsedDirectly() {
+        SearchRequest req = new SearchRequest();
+        req.setFilterProjects(Arrays.asList("ProjectA", "ProjectB"));
+        req.setFilterProjectIds(Arrays.asList(2, 5));
+
+        String sql = req.createSql();
+        Object[] params = req.createSqlParams();
+
+        // constant ids let MariaDB use the index on prozesse.ProjekteID
+        assertTrue(sql.contains("WHERE prozesse.ProjekteID IN (?, ?)"), sql);
+        assertFalse(sql.contains("projekte"), sql);
+        assertEquals(2, params.length);
+        assertEquals(2, params[0]);
+        assertEquals(5, params[1]);
+    }
+
+    @Test
+    public void testSortParameterFollowsFilterParameters() {
+        SearchRequest req = new SearchRequest();
+        req.setFilterProjectIds(Arrays.asList(2));
+        SearchGroup group = new SearchGroup();
+        group.addFilter(new SearchQuery("CatalogIDDigital", "PPN1", RelationalOperator.EQUAL));
+        req.addSearchGroup(group);
+        req.setSortField("TitleDocMain");
+        req.setLimit(10);
+        req.setOffset(20);
+
+        String sql = req.createSql();
+        Object[] params = req.createSqlParams();
+
+        assertEquals(sql.chars().filter(c -> c == '?').count(), params.length, sql);
+        assertEquals(Arrays.asList(2, "CatalogIDDigital", "PPN1", "TitleDocMain", 10, 20), Arrays.asList(params));
+    }
+
+    @Test
+    public void testStepFilterNeedsNameAndStatus() {
+        SearchRequest req = new SearchRequest();
+        req.setStepName("Scanning");
+
+        String sql = req.createSql();
+
+        assertFalse(sql.contains("schritte"), sql);
+        assertEquals(0, req.createSqlParams().length);
+    }
+
+    @Test
+    public void testPropertyFilterNeedsNameAndValue() {
+        SearchRequest req = new SearchRequest();
+        req.setPropName("DocType");
+
+        String sql = req.createSql();
+
+        assertFalse(sql.contains("properties"), sql);
+        assertEquals(0, req.createSqlParams().length);
     }
 }

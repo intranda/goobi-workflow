@@ -26,6 +26,7 @@ package org.goobi.api.rest.request;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -42,6 +43,8 @@ public class SearchRequest {
     private List<SearchGroup> metadataFilters = new ArrayList<>();
     private boolean metadataConjunctive;
     private List<String> filterProjects;
+    // ids of filterProjects, resolved before the search so that MariaDB can use the index on prozesse.ProjekteID
+    private List<Integer> filterProjectIds;
     private List<Integer> filterTemplateIDs;
     private String filterStep;
     private String structureType;
@@ -100,49 +103,56 @@ public class SearchRequest {
 
     private boolean addFilters(StringBuilder b, boolean inFirstWhere) {
         boolean firstWhere = inFirstWhere;
-        if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
+        if (this.filterProjectIds != null && !this.filterProjectIds.isEmpty()) {
+            // constant ids let MariaDB use the index on prozesse.ProjekteID
             firstWhere = false;
-            b.append("pr.Titel IN (");
-            for (int i = 0; i < this.filterProjects.size(); i++) {
-                b.append("?");
-                if (i + 1 < this.filterProjects.size()) {
-                    b.append(", ");
-                }
-            }
-            b.append(") ");
+            b.append("prozesse.ProjekteID IN (").append(placeholders(this.filterProjectIds.size())).append(") ");
+        } else if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
+            firstWhere = false;
+            b.append("prozesse.ProjekteID IN (SELECT ProjekteID FROM projekte WHERE Titel IN (")
+                    .append(placeholders(this.filterProjects.size()))
+                    .append(")) ");
         }
+        // properties and steps are checked with EXISTS, a join would return a process once per matching row
         if (this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) {
             if (!firstWhere) {
                 b.append("AND ");
             }
             firstWhere = false;
-            b.append("properties.property_name=\"templateID\" AND properties.property_value IN (");
-            for (int i = 0; i < this.filterTemplateIDs.size(); i++) {
-                b.append("?");
-                if (i + 1 < this.filterTemplateIDs.size()) {
-                    b.append(", ");
-                }
-            }
-            b.append(") ");
+            b.append("EXISTS (SELECT 1 FROM properties tp WHERE tp.object_type = 'process' AND tp.property_name = 'templateID' ");
+            b.append("AND tp.object_id = prozesse.ProzesseID AND tp.property_value IN (");
+            b.append(placeholders(this.filterTemplateIDs.size()));
+            b.append(")) ");
         }
-        if (this.propName != null && this.propValue != null) {
-
+        if (hasPropertyFilter()) {
             if (!firstWhere) {
                 b.append("AND ");
             }
             firstWhere = false;
-            b.append("properties.property_name IN (?) AND properties.property_value IN (?) ");
+            b.append("EXISTS (SELECT 1 FROM properties pp WHERE pp.object_type = 'process' AND pp.property_name = ? ");
+            b.append("AND pp.object_id = prozesse.ProzesseID AND pp.property_value = ?) ");
         }
-        if (this.stepName != null && this.stepStatus != null) {
-
+        if (hasStepFilter()) {
             if (!firstWhere) {
                 b.append("AND ");
             }
             firstWhere = false;
-            b.append("schritte.Titel IN (?) AND schritte.Bearbeitungsstatus IN (?) ");
+            b.append("EXISTS (SELECT 1 FROM schritte s WHERE s.ProzesseID = prozesse.ProzesseID AND s.Titel = ? AND s.Bearbeitungsstatus = ?) ");
         }
 
         return firstWhere;
+    }
+
+    private static String placeholders(int count) {
+        return String.join(", ", Collections.nCopies(count, "?"));
+    }
+
+    private boolean hasPropertyFilter() {
+        return this.propName != null && this.propValue != null;
+    }
+
+    private boolean hasStepFilter() {
+        return this.stepName != null && this.stepStatus != null;
     }
 
     public String createSql() {
@@ -160,28 +170,8 @@ public class SearchRequest {
     }
 
     private void createFrom(StringBuilder b) {
-
         b.append("FROM prozesse JOIN metadatenkonfigurationen ");
         b.append("ON metadatenkonfigurationen.MetadatenKonfigurationID = prozesse.MetadatenKonfigurationID ");
-
-        if (this.filterProjects != null && !this.filterProjects.isEmpty()) {
-            b.append("JOIN projekte pr ON prozesse.ProjekteID = pr.ProjekteID ");
-        }
-        if ((this.filterTemplateIDs != null && !this.filterTemplateIDs.isEmpty()) || (this.propName != null && !this.propName.isEmpty())) {
-            b.append("LEFT JOIN properties ON prozesse.prozesseID = properties.object_id AND properties.object_type = 'process' ");
-        }
-        if (this.stepName != null && !this.stepName.isEmpty()) {
-            b.append("LEFT JOIN schritte ON prozesse.prozesseID = schritte.ProzesseID ");
-        }
-        if (StringUtils.isNotBlank(sortField)) {
-            b.append(" ");
-            b.append("LEFT JOIN ( ");
-            b.append("SELECT processid, MAX(value) AS sortField ");
-            b.append("FROM metadata ");
-            b.append("WHERE name = ? ");
-            b.append("GROUP BY processid ");
-            b.append(") sort_meta ON sort_meta.processid = prozesse.ProzesseID ");
-        }
     }
 
     private void createWhere(StringBuilder b) {
@@ -216,8 +206,10 @@ public class SearchRequest {
         }
 
         if (StringUtils.isNotBlank(sortField)) {
-            b.append(" ORDER BY sort_meta.sortField ");
-            b.append(sortDescending ? "DESC " : "ASC ");
+            // the subquery only reads the sort value of the matching processes, the process id keeps the order stable for paging
+            String direction = sortDescending ? "DESC" : "ASC";
+            b.append(" ORDER BY (SELECT MAX(value) FROM metadata WHERE metadata.name = ? AND metadata.processid = prozesse.ProzesseID) ");
+            b.append(direction).append(", prozesse.ProzesseID ").append(direction).append(" ");
         } else {
             b.append(" ORDER BY prozesse.ProzesseID ASC ");
         }
@@ -246,14 +238,10 @@ public class SearchRequest {
     }
 
     private void addLegacyWhereParams(List<Object> params) {
-        if (StringUtils.isNotBlank(sortField)) {
-            params.add(sortField);
-        }
-
-        if (this.filterProjects != null) {
-            for (String project : this.filterProjects) {
-                params.add(project);
-            }
+        if (this.filterProjectIds != null && !this.filterProjectIds.isEmpty()) {
+            params.addAll(this.filterProjectIds);
+        } else if (this.filterProjects != null) {
+            params.addAll(this.filterProjects);
         }
 
         if (this.filterTemplateIDs != null) {
@@ -262,12 +250,12 @@ public class SearchRequest {
             }
         }
 
-        if (this.propName != null) {
+        if (hasPropertyFilter()) {
             params.add(this.propName);
             params.add(this.propValue);
         }
 
-        if (this.stepName != null) {
+        if (hasStepFilter()) {
             params.add(this.stepName);
             params.add(resolveStepStatusValue(this.stepStatus));
         }
@@ -276,6 +264,9 @@ public class SearchRequest {
             for (SearchGroup sg : metadataFilters) {
                 sg.addParams(params);
             }
+        }
+        if (StringUtils.isNotBlank(sortField)) {
+            params.add(sortField);
         }
         if (limit != 0) {
             params.add(limit);

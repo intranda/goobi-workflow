@@ -27,6 +27,8 @@ package org.goobi.api.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
@@ -43,12 +45,19 @@ public final class RestDbHelper {
 
     public static List<RestProcess> searchProcesses(SearchRequest req) throws SQLException {
         List<RestProcess> results = null;
-        String sql = req.createSql();
-        Object[] params = req.createSqlParams();
         try (Connection conn = MySQLHelper.getInstance().getConnection()) {
             QueryRunner run = new QueryRunner();
-            results = run.query(conn, sql, new JsonResultSetToRestProcessList(), params);
-
+            if (req.getFilterProjects() != null && !req.getFilterProjects().isEmpty()) {
+                // filtering by project ids instead of titles lets MariaDB use the index on prozesse.ProjekteID
+                String projectSql = "SELECT ProjekteID FROM projekte WHERE Titel IN ("
+                        + String.join(", ", Collections.nCopies(req.getFilterProjects().size(), "?")) + ")";
+                List<Integer> projectIds = run.query(conn, projectSql, MySQLHelper.resultSetToIntegerListHandler, req.getFilterProjects().toArray());
+                if (projectIds.isEmpty()) {
+                    return new ArrayList<>();
+                }
+                req.setFilterProjectIds(projectIds);
+            }
+            results = run.query(conn, req.createSql(), new JsonResultSetToRestProcessList(), req.createSqlParams());
         }
         return results;
     }
