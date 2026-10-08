@@ -270,28 +270,29 @@ final class ProcessMysqlHelper implements Serializable {
 
     public static List<Process> getProcesses(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         Connection connection = null;
+        MySQLHelper.CustomSortField customSortField = MySQLHelper.getCustomSortField(order);
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT prozesse.* FROM prozesse left join batches on prozesse.batchID = batches.id ");
-        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        if (institution != null) {
-            sql.append("and projekte.institution_id = ");
-            sql.append(institution.getId());
-        }
-
-        String sortfield = MySQLHelper.prepareSortField(order, sql);
-
-        if (StringUtils.isNotBlank(filter)) {
-            if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
-                sql.append(" WHERE ");
+        if (customSortField != null && start != null && count != null) {
+            // a custom column is read with a subquery for every matching process. Determine the page on ids and sort values only and read the
+            // process rows of this page afterwards, so the sort does not have to move the complete rows of all matching processes
+            String value = customSortField.valueExpression();
+            String direction = customSortField.descending() ? " desc" : "";
+            sql.append("SELECT prozesse.* FROM prozesse JOIN (SELECT prozesse.ProzesseID AS id, ").append(value).append(" AS sortvalue ");
+            appendProcessListFromAndWhere(sql, filter, institution);
+            sql.append(" ORDER BY COALESCE(sortvalue, '') = '', sortvalue").append(direction).append(", prozesse.ProzesseID");
+            sql.append(" LIMIT ").append(start).append(", ").append(count);
+            sql.append(") page ON page.id = prozesse.ProzesseID");
+            sql.append(" ORDER BY COALESCE(page.sortvalue, '') = '', page.sortvalue").append(direction).append(", prozesse.ProzesseID");
+        } else {
+            sql.append("SELECT prozesse.* ");
+            appendProcessListFromAndWhere(sql, filter, institution);
+            String sortfield = MySQLHelper.prepareSortField(order, sql);
+            if (StringUtils.isNotBlank(sortfield)) {
+                sql.append(" ORDER BY " + sortfield);
             }
-
-            sql.append(filter);
-        }
-        if (StringUtils.isNotBlank(sortfield)) {
-            sql.append(" ORDER BY " + sortfield);
-        }
-        if (start != null && count != null) {
-            sql.append(" LIMIT " + start + ", " + count);
+            if (start != null && count != null) {
+                sql.append(" LIMIT " + start + ", " + count);
+            }
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -303,6 +304,21 @@ final class ProcessMysqlHelper implements Serializable {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
+        }
+    }
+
+    private static void appendProcessListFromAndWhere(StringBuilder sql, String filter, Institution institution) {
+        sql.append("FROM prozesse left join batches on prozesse.batchID = batches.id ");
+        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        if (institution != null) {
+            sql.append("and projekte.institution_id = ");
+            sql.append(institution.getId());
+        }
+        if (StringUtils.isNotBlank(filter)) {
+            if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
+                sql.append(" WHERE ");
+            }
+            sql.append(filter);
         }
     }
 

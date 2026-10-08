@@ -17,6 +17,7 @@
  */
 package de.sub.goobi.persistence.managers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -53,6 +54,33 @@ public class ProcessMysqlHelperSqlTest extends AbstractTest {
         try (SqlCapture capture = new SqlCapture(new ArrayList<>())) {
             ProcessMysqlHelper.getIDList(Optional.of(METADATA_SORT), FILTER);
             assertJoinBeforeWhere(capture.lastStatement());
+        }
+    }
+
+    @Test
+    public void testGetProcessesSortsOnlyIdsForCustomSort() throws Exception {
+        try (SqlCapture capture = new SqlCapture(new ArrayList<>())) {
+            ProcessMysqlHelper.getProcesses("{process.DocType} desc", FILTER, 20, 10, null);
+            String sql = capture.lastStatement().replaceAll("\\s+", " ");
+
+            // the page is determined on ids and sort values only, the process rows are read for this page afterwards
+            assertTrue(sql.startsWith("SELECT prozesse.* FROM prozesse JOIN (SELECT prozesse.ProzesseID AS id, (SELECT MAX(property_value)"), sql);
+            assertTrue(sql.contains("WHERE prozesse.istTemplate = false"), sql);
+            assertTrue(sql.contains("LIMIT 20, 10) page ON page.id = prozesse.ProzesseID"), sql);
+            // the sort value is read once per process
+            assertEquals(1, sql.split("SELECT MAX\\(property_value\\)", -1).length - 1, sql);
+            assertTrue(sql.endsWith("ORDER BY COALESCE(page.sortvalue, '') = '', page.sortvalue desc, prozesse.ProzesseID"), sql);
+        }
+    }
+
+    @Test
+    public void testGetProcessesWithoutLimitSortsDirectly() throws Exception {
+        try (SqlCapture capture = new SqlCapture(new ArrayList<>())) {
+            ProcessMysqlHelper.getProcesses("{process.DocType}", FILTER, null, null, null);
+            String sql = capture.lastStatement();
+
+            assertFalse(sql.contains(" page "), sql);
+            assertTrue(sql.contains("ORDER BY"), sql);
         }
     }
 

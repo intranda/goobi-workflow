@@ -49,6 +49,7 @@ class SqlCapture implements AutoCloseable {
         mySQLHelper = Mockito.mockStatic(MySQLHelper.class);
         mySQLHelper.when(MySQLHelper::getInstance).thenReturn(helper);
         mySQLHelper.when(() -> MySQLHelper.prepareSortField(Mockito.any(), Mockito.any())).thenCallRealMethod();
+        mySQLHelper.when(() -> MySQLHelper.getCustomSortField(Mockito.any())).thenCallRealMethod();
         mySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.any())).thenCallRealMethod();
 
         queryRunner = Mockito.mockConstruction(QueryRunner.class, Mockito.withSettings().defaultAnswer(invocation -> {

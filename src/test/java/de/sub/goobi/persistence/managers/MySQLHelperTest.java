@@ -28,6 +28,7 @@ package de.sub.goobi.persistence.managers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
@@ -172,6 +173,28 @@ public class MySQLHelperTest extends AbstractTest {
         assertEquals("", MySQLHelper.prepareSortField("{product.Title}", sql));
         assertEquals("", MySQLHelper.prepareSortField("{template.Title} desc", sql));
         assertEquals("", sql.toString());
+    }
+
+    @Test
+    public void testCustomSortFieldForProcessProperty() {
+        MySQLHelper.CustomSortField field = MySQLHelper.getCustomSortField("{process.DocType} desc");
+        assertTrue(field.valueExpression().contains("properties.property_name = 'DocType'"), field.valueExpression());
+        assertTrue(field.descending());
+    }
+
+    @Test
+    public void testCustomSortFieldForMetadata() {
+        MySQLHelper.CustomSortField field = MySQLHelper.getCustomSortField("{db_meta.TitleDocMain}");
+        assertTrue(field.valueExpression().contains("metadata.name = 'TitleDocMain'"), field.valueExpression());
+        assertFalse(field.descending());
+    }
+
+    @Test
+    public void testCustomSortFieldIsMissingForOtherOrders() {
+        assertNull(MySQLHelper.getCustomSortField("prozesse.titel"));
+        assertNull(MySQLHelper.getCustomSortField("{product.Title}"));
+        assertNull(MySQLHelper.getCustomSortField(""));
+        assertNull(MySQLHelper.getCustomSortField(null));
     }
 
     // --- prepareSortField: already-whitelisted fields still work ---

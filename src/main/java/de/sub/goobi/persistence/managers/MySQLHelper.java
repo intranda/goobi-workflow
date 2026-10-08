@@ -607,15 +607,55 @@ public final class MySQLHelper implements Serializable {
             .map(field -> field.toLowerCase(Locale.ROOT))
             .collect(Collectors.toUnmodifiableSet());
 
+    /**
+     * Sort value of a custom column
+     *
+     * @param valueExpression subquery that reads the value of the current process
+     * @param descending true, if the values are sorted in descending order
+     */
+    public record CustomSortField(String valueExpression, boolean descending) {
+    }
+
+    /**
+     * Get the sort value of a custom column ({db_meta.name} or {process.name})
+     *
+     * @param inOrder order statement, optionally followed by asc or desc
+     * @return the sort value or null, if the order does not use a supported custom column
+     */
+    public static CustomSortField getCustomSortField(String inOrder) {
+        if (StringUtils.isBlank(inOrder)) {
+            return null;
+        }
+        String order = inOrder.trim();
+        boolean reverse = false;
+        if (order.endsWith(" desc")) {
+            reverse = true;
+            order = order.substring(0, order.length() - " desc".length());
+        }
+        if (order.endsWith(" asc")) {
+            order = order.substring(0, order.length() - " asc".length());
+        }
+        if (!order.startsWith("{")) {
+            return null;
+        }
+        String fieldname = order.replace("{", "").replace("}", "").substring(order.indexOf("."));
+        if (order.startsWith("{db_meta")) {
+            return new CustomSortField("(SELECT MAX(value) FROM metadata WHERE metadata.name = '" + escapeSql(fieldname)
+                    + "' AND metadata.processid = prozesse.ProzesseID)", reverse);
+        } else if (order.startsWith("{process.")) {
+            return new CustomSortField("(SELECT MAX(property_value) FROM properties WHERE properties.object_type = 'process' "
+                    + "AND properties.property_name = '" + escapeSql(fieldname) + "' AND properties.object_id = prozesse.ProzesseID)", reverse);
+        }
+        // unsupported custom column
+        return null;
+    }
+
     public static String prepareSortField(String inOrder, StringBuilder sql) {
         if (StringUtils.isBlank(inOrder)) {
             return inOrder;
         }
         String order = inOrder.trim();
-        String sortfield = "";
-        boolean reverse = false;
         if (order.endsWith(" desc")) {
-            reverse = true;
             order = order.substring(0, order.length() - " desc".length());
         }
         if (order.endsWith(" asc")) {
@@ -625,34 +665,14 @@ public final class MySQLHelper implements Serializable {
             return inOrder;
         }
 
-        if (!order.startsWith("{")) {
+        CustomSortField customSortField = getCustomSortField(inOrder);
+        if (customSortField == null) {
             // unknown order
             return "";
         }
-
-        String fieldname = order.replace("{", "").replace("}", "").substring(order.indexOf("."));
-        // validate fieldname
-
-
-        String value;
-        if (order.startsWith("{db_meta")) {
-            value = "(SELECT MAX(value) FROM metadata WHERE metadata.name = '" + escapeSql(fieldname)
-                    + "' AND metadata.processid = prozesse.ProzesseID)";
-        } else if (order.startsWith("{process.")) {
-            value = "(SELECT MAX(property_value) FROM properties WHERE properties.object_type = 'process' AND properties.property_name = '"
-                    + escapeSql(fieldname) + "' AND properties.object_id = prozesse.ProzesseID)";
-        } else {
-            // unsupported custom column
-            return "";
-        }
         // empty values last
-        sortfield = " COALESCE(" + value + ", '') = '', " + value;
-        if (reverse) {
-            sortfield = sortfield + " desc ";
-        } else {
-            sortfield = sortfield + " ";
-        }
-        return sortfield;
+        String value = customSortField.valueExpression();
+        return " COALESCE(" + value + ", '') = '', " + value + (customSortField.descending() ? " desc " : " ");
     }
 
     public static String escapeSql(String value) {
