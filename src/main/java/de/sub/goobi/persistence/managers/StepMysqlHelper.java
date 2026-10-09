@@ -40,6 +40,7 @@ import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.cli.helper.StringPair;
+import org.goobi.production.flow.statistics.StepTitleStatistics;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.PropertyType;
@@ -50,6 +51,13 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public final class StepMysqlHelper implements Serializable {
+
+    static final String STEP_STATISTICS_PER_TITLE_SQL =
+            "SELECT schritte.titel, AVG(schritte.reihenfolge), COUNT(schritte.SchritteID), SUM(schritte.Bearbeitungsstatus = 3), "
+                    + "SUM(CASE WHEN schritte.Bearbeitungsstatus = 3 THEN prozesse.sortHelperImages ELSE 0 END) FROM schritte "
+                    + "JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID "
+                    + "LEFT JOIN batches ON prozesse.batchID = batches.id "
+                    + "JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ";
 
     static final String DISTINCT_STEP_TITLES_AND_ORDER_SQL =
             "select distinct schritte.titel, schritte.reihenfolge from schritte "
@@ -766,6 +774,42 @@ public final class StepMysqlHelper implements Serializable {
                 log.trace(sql.toString());
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    /**
+     * Get the number of steps, done steps and images of the done steps per step title with a single query
+     *
+     * @param filter filter on the processes, e.g. the processes of a project
+     * @return one entry per step title
+     */
+    public static List<StepTitleStatistics> getStepStatisticsPerTitle(String filter) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append(STEP_STATISTICS_PER_TITLE_SQL);
+        if (StringUtils.isNotBlank(filter)) {
+            if (!filter.trim().toLowerCase().startsWith("where") && !filter.trim().toLowerCase().startsWith("join")) {
+                sql.append(" WHERE ");
+            }
+            sql.append(filter);
+        }
+        sql.append(" GROUP BY schritte.titel");
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            return new QueryRunner().query(connection, sql.toString(), rs -> {
+                List<StepTitleStatistics> answer = new ArrayList<>();
+                while (rs.next()) {
+                    answer.add(new StepTitleStatistics(rs.getString(1), rs.getDouble(2), rs.getLong(3), rs.getLong(4), rs.getLong(5)));
+                }
+                return answer;
+            });
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

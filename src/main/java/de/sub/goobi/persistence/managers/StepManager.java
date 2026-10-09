@@ -30,6 +30,7 @@ import org.goobi.beans.JobType;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.production.flow.statistics.StepTitleStatistics;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -220,6 +221,15 @@ public class StepManager implements IManager {
         } catch (SQLException e) {
             log.error(e);
         }
+    }
+
+    public static List<StepTitleStatistics> getStepStatisticsPerTitle(String filter) {
+        try {
+            return StepMysqlHelper.getStepStatisticsPerTitle(filter);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return new ArrayList<>();
     }
 
     public static long getCountOfFieldValue(String columnname, String filter, String order, String group) {

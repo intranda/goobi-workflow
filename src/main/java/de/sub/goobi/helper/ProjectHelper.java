@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.goobi.beans.Project;
 import org.goobi.production.flow.statistics.StepInformation;
+import org.goobi.production.flow.statistics.StepTitleStatistics;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.persistence.managers.MySQLHelper;
@@ -70,41 +71,17 @@ public final class ProjectHelper {
         Long totalNumberOfProc = ProcessManager.getCountOfFieldValue("ProzesseID", projectFilter);
         Long totalNumberOfImages = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
 
-        List<String> stepTitleList = StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter);
-
         List<StepInformation> workFlow = new ArrayList<>();
-
-        for (String title : stepTitleList) {
-            Double averageStepOrder = StepManager.getAverageOfFieldValue("schritte.reihenfolge",
-                    projectFilter + " AND schritte.titel = '" + title + "'", null, "schritte.titel");
-            Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID", projectFilter + " AND schritte.titel = '" + title + "'",
-                    null, "schritte.titel");
-
+        // all numbers per step title are read with a single query
+        for (StepTitleStatistics statistics : StepManager.getStepStatisticsPerTitle(projectFilter)) {
             // in this step we only take the steps which are present in each of the workflows
-            if (numberOfSteps.equals(totalNumberOfProc)) {
-                StepInformation newStep = new StepInformation(title, averageStepOrder);
+            if (statistics.numberOfSteps() == totalNumberOfProc.longValue()) {
+                StepInformation newStep = new StepInformation(statistics.title(), statistics.averageStepOrder());
                 newStep.setNumberOfTotalImages(totalNumberOfImages.intValue());
                 newStep.setNumberOfTotalSteps(totalNumberOfProc.intValue());
+                newStep.setNumberOfStepsDone((int) statistics.numberOfStepsDone());
+                newStep.setNumberOfImagesDone((int) statistics.numberOfImagesDone());
                 workFlow.add(newStep);
-            }
-        }
-
-        List<String> stepDoneTitleList =
-                StepManager.getDistinctStepTitlesAndOrder("schritte.reihenfolge", projectFilter + " AND Bearbeitungsstatus = 3");
-
-        for (String stepDoneTitle : stepDoneTitleList) {
-            Long numberOfSteps = StepManager.getCountOfFieldValue("schritte.SchritteID",
-                    projectFilter + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
-            Long numberOfImages = StepManager.getSumOfFieldValue("prozesse.sortHelperImages",
-                    projectFilter + " AND Bearbeitungsstatus = 3 AND schritte.titel = '" + stepDoneTitle + "'", null, "schritte.titel");
-
-            // getting from the workflow collection the collection which represents step <title>
-            // we only created one for each step holding the counts of processes
-            for (StepInformation currentStep : workFlow) {
-                if (currentStep.getTitle().equals(stepDoneTitle)) {
-                    currentStep.setNumberOfStepsDone(numberOfSteps.intValue());
-                    currentStep.setNumberOfImagesDone(numberOfImages.intValue());
-                }
             }
         }
         Comparator<StepInformation> comp = new CompareWorkflowSteps();

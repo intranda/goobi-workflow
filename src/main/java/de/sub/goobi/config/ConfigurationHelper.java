@@ -794,6 +794,20 @@ public final class ConfigurationHelper implements Serializable {
         return getLocalString("SqlTasksIndexname", null);
     }
 
+    /**
+     * Time in seconds to keep the number of hits of a process or task list, 0 disables the cache
+     */
+    public int getHitSizeCacheSeconds() {
+        return getLocalInt("HitSizeCacheSeconds", 60);
+    }
+
+    /**
+     * Only counts that took at least this time in milliseconds are kept, cheaper counts are always exact
+     */
+    public int getHitSizeCacheThresholdMillis() {
+        return getLocalInt("HitSizeCacheThresholdMillis", 1000);
+    }
+
     public List<SearchIndexField> getIndexFields() {
         List<SearchIndexField> list = new ArrayList<>();
         Iterator<String> it = getLocalKeys("index");

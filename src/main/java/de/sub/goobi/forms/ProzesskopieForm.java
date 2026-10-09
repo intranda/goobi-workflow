@@ -148,6 +148,9 @@ public class ProzesskopieForm implements Serializable {
      *
      */
     private static final long serialVersionUID = 2579641488883675182L;
+
+    // selectable processes of the process creation page, loaded once per process creation
+    private transient List<SelectItem> processTemplates;
     private Helper help = new Helper();
     private transient UghHelper ughHelper = new UghHelper();
     private transient BeanHelper bHelper = new BeanHelper();
@@ -263,6 +266,7 @@ public class ProzesskopieForm implements Serializable {
     private boolean showExistingProcessButton;
 
     public String prepare() {
+        processTemplates = null;
 
         currentCatalogue = null;
         opacKatalog = "";
@@ -334,6 +338,7 @@ public class ProzesskopieForm implements Serializable {
      * @return navigation outcome for the first page of the process creation form, or "" on error
      */
     public String prepareDuplicate() {
+        processTemplates = null;
         // snapshot current field values by index before prepare() reinitializes everything.
         // Using index instead of field title because the project config can define multiple
         // fields with the same title for different doc types (e.g. "Title" for monograph and
@@ -612,6 +617,10 @@ public class ProzesskopieForm implements Serializable {
     /* =============================================================== */
 
     public List<SelectItem> getProzessTemplates() {
+        // JSF evaluates the getter several times per request, the query reads all processes
+        if (processTemplates != null) {
+            return processTemplates;
+        }
         List<SelectItem> myProcessTemplates = new ArrayList<>();
         StringBuilder filter = new StringBuilder(" istTemplate = false AND inAuswahllisteAnzeigen = true ");
 
@@ -637,6 +646,7 @@ public class ProzesskopieForm implements Serializable {
         for (Process proz : selectList) {
             myProcessTemplates.add(new SelectItem(proz.getId(), proz.getTitel(), null));
         }
+        processTemplates = myProcessTemplates;
         return myProcessTemplates;
     }
 

@@ -69,7 +69,7 @@ public class DatabasePaginator implements Serializable {
         this.filter = filter;
         this.manager = manager;
         try {
-            totalResults = manager.getHitSize(order, filter, institution);
+            totalResults = HitSizeCache.getInstance().getHitSize(manager, order, filter, institution);
 
             load();
         } catch (DAOException e) {

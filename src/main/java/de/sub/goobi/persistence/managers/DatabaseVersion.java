@@ -538,6 +538,14 @@ public final class DatabaseVersion {
         if (!checkIfIndexExists("properties", "idx_properties_type_name_object")) {
             createIndexOnTable("properties", "idx_properties_type_name_object", "object_type, property_name, object_id", null);
         }
+        // processes offered for selection on the process creation page
+        if (!checkIfIndexExists("prozesse", "idx_prozesse_selection")) {
+            createIndexOnTable("prozesse", "idx_prozesse_selection", "inAuswahllisteAnzeigen, IstTemplate", null);
+        }
+        // step filters of the process list (e.g. stepdone:export) collect the processes from steps with a status and a title
+        if (!checkIfIndexExists("schritte", "idx_schritte_status_title_process")) {
+            createIndexOnTable("schritte", "idx_schritte_status_title_process", "Bearbeitungsstatus, titel, ProzesseID", null);
+        }
     }
 
     private static void updateToVersion63() throws SQLException {

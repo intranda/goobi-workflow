@@ -539,6 +539,24 @@ public class ProzesskopieFormTest extends AbstractTest {
         assertEquals(unique.size(), collections.size(), "digitalCollections must not contain duplicate entries");
     }
 
+    @Test
+    public void testProcessTemplatesAreLoadedOncePerProcessCreation() {
+        Process selectable = new Process();
+        selectable.setId(7);
+        selectable.setTitel("selectable process");
+        mockedProcessManager.when(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+                .thenReturn(List.of(selectable));
+        ProzesskopieForm form = new ProzesskopieForm();
+
+        // JSF evaluates the getter several times per request
+        form.getProzessTemplates();
+        List<SelectItem> items = form.getProzessTemplates();
+
+        assertEquals(1, items.size());
+        assertEquals("selectable process", items.get(0).getLabel());
+        mockedProcessManager.verify(() -> ProcessManager.getProcesses(Mockito.anyString(), Mockito.anyString(), Mockito.any()), Mockito.times(1));
+    }
+
     private void prepareMocking() throws Exception {
 
         GoobiProperty prop = new GoobiProperty(PropertyOwnerType.PROCESS);
