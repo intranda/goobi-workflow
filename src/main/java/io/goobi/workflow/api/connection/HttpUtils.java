@@ -35,6 +35,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.config.RequestConfig.Builder;
@@ -176,6 +177,55 @@ public final class HttpUtils {
             }
         }
         return response;
+    }
+
+    /**
+     * Downloads the content of an url, using the proxy configuration of Goobi.
+     *
+     * @param url http or https url
+     * @param timeoutSeconds timeout for connecting, getting a connection and for inactivity while reading, in seconds
+     * @param maxBytes maximum size of the content, larger downloads are aborted
+     * @return content of the response, empty if the response has no content
+     * @throws HttpResponseException if the status code is not 200
+     * @throws IOException if the url is invalid or can not be read, or if the content is larger than maxBytes
+     */
+    public static byte[] getBytesFromUrl(String url, int timeoutSeconds, long maxBytes) throws IOException {
+        HttpGet method;
+        try {
+            method = new HttpGet(url);
+        } catch (IllegalArgumentException e) {
+            throw new IOException("Invalid url: " + url, e);
+        }
+        setupProxy(url, method);
+        int timeout = timeoutSeconds * 1000;
+        Builder builder = method.getConfig() == null ? RequestConfig.custom() : RequestConfig.copy(method.getConfig());
+        method.setConfig(builder.setConnectTimeout(timeout).setConnectionRequestTimeout(timeout).setSocketTimeout(timeout).build());
+
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            return client.execute(method, response -> {
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode != HttpStatus.SC_OK) {
+                    // abort, otherwise the client reads the complete body of the error response
+                    method.abort();
+                    throw new HttpResponseException(statusCode, WRONG_STATUS_CODE_PREFIX + statusCode);
+                }
+                HttpEntity entity = response.getEntity();
+                if (entity == null) {
+                    return new byte[0];
+                }
+                try (InputStream content = entity.getContent()) {
+                    byte[] data = content.readNBytes((int) Math.min(maxBytes + 1, Integer.MAX_VALUE - 8L));
+                    if (data.length > maxBytes) {
+                        // abort, otherwise closing the stream would read the remaining content
+                        method.abort();
+                        throw new IOException("Content of " + url + " is larger than " + maxBytes + " bytes");
+                    }
+                    return data;
+                }
+            });
+        } finally {
+            method.releaseConnection();
+        }
     }
 
     /**
