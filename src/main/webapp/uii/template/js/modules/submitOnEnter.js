@@ -144,12 +144,13 @@ const attachEventListeners = (element, targetSelector) => {
 };
 
 export const initSubmitOnEnter = () => {
-    const elements = document.querySelectorAll('[data-submit-on-enter]');
+    const elements = document.querySelectorAll('[data-submit-on-enter]:not([data-submit-on-enter-init])');
     if (elements.length === 0) {
         return;
     }
 
     elements.forEach(element => {
+        element.setAttribute('data-submit-on-enter-init', '');
         const targetSelector = element.getAttribute('data-submit-on-enter');
         attachEventListeners(element, targetSelector);
     });
