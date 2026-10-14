@@ -648,33 +648,50 @@ public final class DatabaseVersion {
         return input.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;");
     }
 
-    private static void updateToVersion62() {
-        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
-            DatabaseVersion.runSql("alter table metadata add column authority_name varchar(255) DEFAULT null;");
-            DatabaseVersion.runSql("alter table metadata add column authority_uri varchar(255) DEFAULT null;");
-            DatabaseVersion.runSql("alter table metadata add column authority_value varchar(255) DEFAULT null;");
-            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_metadata_name_value_proc ON metadata(name, processid, value(50));");
-        } catch (SQLException e) {
-            log.error(e);
+    private static void updateToVersion62() throws SQLException {
+        if (!checkIfColumnExists("metadata", "authority_name")) {
+            runSql("ALTER TABLE metadata ADD COLUMN authority_name varchar(255) DEFAULT NULL");
         }
-
+        if (!checkIfColumnExists("metadata", "authority_uri")) {
+            runSql("ALTER TABLE metadata ADD COLUMN authority_uri varchar(255) DEFAULT NULL");
+        }
+        if (!checkIfColumnExists("metadata", "authority_value")) {
+            runSql("ALTER TABLE metadata ADD COLUMN authority_value varchar(255) DEFAULT NULL");
+        }
+        if (!checkIfIndexExists("metadata", "idx_metadata_name_value_proc")) {
+            createIndexOnTable("metadata", "idx_metadata_name_value_proc", "name, processid, value(50)", null);
+        }
     }
 
     private static void updateToVersion61() {
-        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
-            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_step_user ON schritteberechtigtegruppen(SchritteID, BenutzerGruppenID);");
-            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_user_grp ON benutzergruppenmitgliedschaft (BenutzerID, BenutzerGruppenID);");
-            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_user_step ON schritteberechtigtebenutzer (BenutzerID, SchritteID);");
-            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_user_project ON projektbenutzer (BenutzerID, ProjekteID);");
-            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_status_process ON schritte (Bearbeitungsstatus, ProzesseID);");
-            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_project_template ON prozesse (ProjekteID, IstTemplate);");
-            DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS idx_sort ON schritte (Prioritaet, SchritteID);");
-            DatabaseVersion.runSql("ALTER TABLE properties ADD FULLTEXT ft_value (property_value);");
-            DatabaseVersion.runSql("ALTER TABLE metadata ADD FULLTEXT ft_meta (value);");
-        } catch (SQLException e) {
-            log.error(e);
+        if (!checkIfIndexExists("schritteberechtigtegruppen", "idx_step_user")) {
+            createIndexOnTable("schritteberechtigtegruppen", "idx_step_user", "SchritteID, BenutzerGruppenID", null);
         }
-
+        if (!checkIfIndexExists("benutzergruppenmitgliedschaft", "idx_user_grp")) {
+            createIndexOnTable("benutzergruppenmitgliedschaft", "idx_user_grp", "BenutzerID, BenutzerGruppenID", null);
+        }
+        if (!checkIfIndexExists("schritteberechtigtebenutzer", "idx_user_step")) {
+            createIndexOnTable("schritteberechtigtebenutzer", "idx_user_step", "BenutzerID, SchritteID", null);
+        }
+        if (!checkIfIndexExists("projektbenutzer", "idx_user_project")) {
+            createIndexOnTable("projektbenutzer", "idx_user_project", "BenutzerID, ProjekteID", null);
+        }
+        if (!checkIfIndexExists("schritte", "idx_status_process")) {
+            createIndexOnTable("schritte", "idx_status_process", "Bearbeitungsstatus, ProzesseID", null);
+        }
+        if (!checkIfIndexExists("prozesse", "idx_project_template")) {
+            createIndexOnTable("prozesse", "idx_project_template", "ProjekteID, IstTemplate", null);
+        }
+        if (!checkIfIndexExists("schritte", "idx_sort")) {
+            createIndexOnTable("schritte", "idx_sort", "Prioritaet, SchritteID", null);
+        }
+        if (!checkIfIndexExists("properties", "ft_value")) {
+            createIndexOnTable("properties", "ft_value", "property_value", "FULLTEXT");
+        }
+        // metadata.value already has the fulltext index idx_metadata_value since version 20
+        if (!checkIfIndexExists("metadata", "ft_meta") && !checkIfIndexExists("metadata", "idx_metadata_value")) {
+            createIndexOnTable("metadata", "ft_meta", "value", "FULLTEXT");
+        }
     }
 
     private static void updateToVersion60() throws SQLException {
