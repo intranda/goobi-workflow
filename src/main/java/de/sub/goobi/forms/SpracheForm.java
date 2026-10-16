@@ -39,6 +39,7 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
@@ -60,9 +61,11 @@ public class SpracheForm implements Serializable {
     private static final String DISPLAY_LANGUAGE_TRANSLATED = "displayLanguageTranslated";
 
     /**
-     * The constructor of this class loads the required MessageBundle.
+     * Set the default language after the bean was created. This is not done in the constructor, because the constructor is also called when the
+     * CDI client proxy gets created, which can happen outside of a JSF request (e.g. in automatic tasks).
      */
-    public SpracheForm() {
+    @PostConstruct
+    public void init() {
         String p = ConfigurationHelper.getInstance().getDefaultLanguage();
         if (p != null && p.length() > 0) {
             switchLanguage(p);
@@ -132,6 +135,10 @@ public class SpracheForm implements Serializable {
             locale = Locale.of(languageCode[0]);
         }
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        if (context == null || context.getViewRoot() == null) {
+            // no JSF request, e.g. in automatic tasks
+            return;
+        }
         context.getViewRoot().setLocale(locale);
         context.getExternalContext().getSessionMap().put(SESSION_LOCALE_FIELD_ID, locale);
     }
@@ -149,6 +156,10 @@ public class SpracheForm implements Serializable {
 
     public Locale getLocale() {
         FacesContext fac = FacesContextHelper.getCurrentFacesContext();
+        if (fac == null || fac.getViewRoot() == null) {
+            // no JSF request, e.g. in automatic tasks
+            return Locale.ENGLISH;
+        }
         @SuppressWarnings("rawtypes")
         Map session = fac.getExternalContext().getSessionMap();
         UIViewRoot frame = fac.getViewRoot();

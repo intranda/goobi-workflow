@@ -167,4 +167,15 @@ public class SpracheFormTest extends AbstractTest {
         }
     }
 
+    @Test
+    public void testWithoutFacesContext() {
+        // automatic tasks run without a JSF request
+        FacesContextHelper.reset();
+        ConfigurationHelper.getInstance().setParameter("language.force-default", "de");
+        SpracheForm form = new SpracheForm();
+        form.init();
+        form.switchLanguage("de");
+        assertEquals(Locale.ENGLISH, form.getLocale());
+    }
+
 }
