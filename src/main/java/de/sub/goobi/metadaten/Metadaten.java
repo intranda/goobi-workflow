@@ -5725,4 +5725,8 @@ public class Metadaten implements Serializable {
         return map;
     }
 
+    public int getMaxImageZoom() {
+        return ConfigurationHelper.getInstance().getMetsEditorImageMaxZoom();
+    }
+
 }

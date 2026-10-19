@@ -22,7 +22,7 @@ const settings = {
             rowMargin: 0
         },
 		zoom: {
-			max: 5
+			max: 5,
 		}
     }
 }
@@ -49,6 +49,12 @@ export const loadImage = function() {
         if(_debug)console.log("viewer already initialized");
         return loadedImage;
     }
+	
+	const maxZoom = getData(document.querySelector(settings.imageView.element), "maxZoom");
+	if(maxZoom) {
+		if(_debug)console.log("Setting max zoom to ", maxZoom);
+		settings.imageView.zoom.max = maxZoom;
+	}
 
     if(_debug)console.log("prepare image with  ", settings.imageView, document.querySelector(settings.imageView.element));
 
@@ -118,6 +124,16 @@ const getElement = function(obj) {
  export const getValue = function(input) {
     const element = getElement(input);
     return element?.value || element?.innerHTML;
+}
+
+const getData = function(elementSelector, dataField) {
+	const element = getElement(elementSelector);
+	if(element) {		
+		const dataValue = element.dataset[dataField];
+		return dataValue;
+	} else {
+		return undefined;
+	}
 }
 
 export const setValue = function(input, value, commit) {

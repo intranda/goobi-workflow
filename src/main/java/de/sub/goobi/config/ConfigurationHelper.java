@@ -1232,6 +1232,11 @@ public final class ConfigurationHelper implements Serializable {
         return (size) * factor;
     }
 
+    public int getMetsEditorImageMaxZoom() {
+        return getLocalInt("MetsEditorImageMaxZoom", 8);
+
+    }
+
     public List<Integer> getMetsEditorImageSizes() {
         return getLocalIntegerList("MetsEditorImageSize");
     }
@@ -1444,4 +1449,5 @@ public final class ConfigurationHelper implements Serializable {
     public List<String> getAdditionalCspFormActionDomains() {
         return getLocalList("cspFormActionAdditionalSources");
     }
+
 }
