@@ -255,7 +255,7 @@ public class EasyDBSearch {
      */
 
     public void prepare() {
-        String file = "plugin_metadata_easydb.xml";
+        String file = "goobi_metadata_fylr.xml";
         XMLConfiguration config = new XMLConfiguration();
         config.setDelimiterParsingDisabled(true);
         try {
