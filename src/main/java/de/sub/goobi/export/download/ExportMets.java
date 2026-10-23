@@ -46,11 +46,13 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.zip.DataFormatException;
 import java.util.zip.ZipEntry;
@@ -160,6 +162,7 @@ public class ExportMets {
 
     private static final String SHA_1 = "SHA-1";
     private static final String SHA_256 = "SHA-256";
+    private static final String SHA_512 = "SHA-512";
 
     /**
      * DMS-Export in das Benutzer-Homeverzeichnis.
@@ -324,6 +327,10 @@ public class ExportMets {
         //otherwise
         saveFinishedMetadata(myProzess, targetFileName, config, mm, addAnchorFile);
 
+        if (config.isExportCreateUUIDsAsFileIDs()) {
+            persistFileIds(myProzess, mm.getUsedFileIds());
+        }
+
         Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
         return true;
     }
@@ -343,6 +350,11 @@ public class ExportMets {
         DigitalDocument dd = gdzfile.getDigitalDocument();
 
         createPagination(myProzess, gdzfile, imageFolder, dd);
+
+        if (config.isExportCreateUUIDsAsFileIDs()) {
+            // re-use file identifiers from previous exports, the hidden metadata itself must not be exported
+            mm.setExistingFileIds(readAndRemoveFileIds(dd.getPhysicalDocStruct()));
+        }
 
         /*
          * get the topstruct element of the digital document depending on anchor property
@@ -696,6 +708,67 @@ public class ExportMets {
         }
     }
 
+    /**
+     * Read the persisted file identifiers from the hidden metadata of the physical docstruct and remove the metadata from it.
+     * 
+     * @param physical physical top docstruct
+     * @return map of file group name to a map of file name and identifier
+     */
+    private Map<String, Map<String, String>> readAndRemoveFileIds(DocStruct physical) {
+        Map<String, Map<String, String>> fileIds = new HashMap<>();
+        if (physical == null || physical.getAllMetadata() == null) {
+            return fileIds;
+        }
+        for (ugh.dl.Metadata md : new ArrayList<>(physical.getAllMetadata())) {
+            if (ExportFileformat.FILE_ID_METADATA.equals(md.getType().getName())) {
+                // value format: fileGroup|fileName|identifier, fileName is empty for single file groups
+                String[] parts = StringUtils.splitPreserveAllTokens(md.getValue(), '|');
+                if (parts != null && parts.length == 3 && StringUtils.isNoneBlank(parts[0], parts[2])) {
+                    fileIds.computeIfAbsent(parts[0], k -> new HashMap<>()).put(parts[1], parts[2]);
+                }
+                physical.removeMetadata(md, true);
+            }
+        }
+        return fileIds;
+    }
+
+    /**
+     * Store the file identifiers used in the export as hidden metadata in the physical docstruct of the metadata file. Identifiers of file groups not
+     * used in this export are kept, the metadata file is only written if something changed.
+     * 
+     * @param process the exported process
+     * @param usedFileIds map of file group name to a map of file name and identifier
+     */
+    private void persistFileIds(Process process, Map<String, Map<String, String>> usedFileIds) {
+        if (usedFileIds == null || usedFileIds.isEmpty()) {
+            return;
+        }
+        try {
+            Fileformat fileformat = process.readMetadataFile();
+            DocStruct physical = fileformat.getDigitalDocument().getPhysicalDocStruct();
+            if (physical == null) {
+                return;
+            }
+            Map<String, Map<String, String>> storedIds = readAndRemoveFileIds(physical);
+            Map<String, Map<String, String>> fileIds = new TreeMap<>(storedIds);
+            fileIds.putAll(usedFileIds);
+            if (fileIds.equals(storedIds)) {
+                return;
+            }
+            MetadataType type = process.getRegelsatz().getPreferences().getMetadataTypeByName(ExportFileformat.FILE_ID_METADATA);
+            for (Map.Entry<String, Map<String, String>> group : fileIds.entrySet()) {
+                for (Map.Entry<String, String> file : new TreeMap<>(group.getValue()).entrySet()) {
+                    ugh.dl.Metadata md = new ugh.dl.Metadata(type);
+                    md.setValue(group.getKey() + "|" + file.getKey() + "|" + file.getValue());
+                    physical.addMetadata(md);
+                }
+            }
+            process.writeMetadataFile(fileformat);
+        } catch (UGHException | IOException | SwapException e) {
+            log.error("Cannot store file identifiers for process {}", process.getId(), e);
+        }
+    }
+
     private void saveFinishedMetadata(Process myProzess, String targetFileName, ConfigurationHelper config, ExportFileformat mm,
             boolean addAnchorFile) throws IOException, WriteException, PreferencesException {
         String xmlEnding = ".xml";
@@ -933,7 +1006,7 @@ public class ExportMets {
         Element fixity = doc.createElementNS(PREMIS_NAMESPACE, ELEMENT_NAME_FIXITY);
         objectCharacteristics.appendChild(fixity);
 
-        addHash(doc, file, fixity, SHA_256);
+        addHash(doc, file, fixity, SHA_512);
 
         addSize(doc, file, objectCharacteristics);
 
@@ -1287,7 +1360,13 @@ public class ExportMets {
             while (sha256.length() < 64) {
                 sha256.insert(0, "0");
             }
-        } else {
+        } else if (SHA_512.equals(algorithmName)) {
+            while (sha256.length() < 128) {
+                sha256.insert(0, "0");
+            }
+        }
+
+        else {
             throw new NoSuchAlgorithmException("Only " + SHA_1 + " and " + SHA_256 + " supported");
         }
         return sha256.toString();
