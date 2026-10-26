@@ -38,19 +38,23 @@ import org.junit.jupiter.api.Test;
  */
 public class DecisionTreePackageBoundaryTest {
 
-    private static final Path SOURCES = Path.of("src/main/java/org/goobi/production/properties/decisiontree");
+    private static final Path ROOT = Path.of("src/main/java/org/goobi/production/properties/decisiontree");
+    /** Everything except the adapters to the core in the package integration. */
+    private static final List<String> HEADLESS = List.of("model", "parser", "engine", "writer", "view", "binding");
     private static final List<String> FORBIDDEN = List.of("import jakarta.faces", "import javax.faces", "import jakarta.servlet", "import javax.servlet",
             "import jakarta.enterprise", "import jakarta.inject", "import de.sub.goobi.persistence", "import org.goobi.managedbeans", "import org.goobi.beans");
 
     @Test
     public void packageDependsNeitherOnJsfNorOnPersistence() throws IOException {
-        try (Stream<Path> files = Files.walk(SOURCES)) {
-            List<Path> sources = files.filter(f -> f.toString().endsWith(".java")).toList();
-            assertTrue(sources.size() > 10, "sources not found: run the test from the module directory");
-            for (Path source : sources) {
-                String content = Files.readString(source);
-                for (String forbidden : FORBIDDEN) {
-                    assertTrue(!content.contains(forbidden), source + " must not contain '" + forbidden + "'");
+        for (String name : HEADLESS) {
+            try (Stream<Path> files = Files.walk(ROOT.resolve(name))) {
+                List<Path> sources = files.filter(f -> f.toString().endsWith(".java")).toList();
+                assertTrue(!sources.isEmpty(), "no sources in " + name + ": run the test from the module directory");
+                for (Path source : sources) {
+                    String content = Files.readString(source);
+                    for (String forbidden : FORBIDDEN) {
+                        assertTrue(!content.contains(forbidden), source + " must not contain '" + forbidden + "'");
+                    }
                 }
             }
         }
