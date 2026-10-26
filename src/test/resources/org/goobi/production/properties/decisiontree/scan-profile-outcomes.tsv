@@ -1,0 +1,23 @@
+# Scanner<TAB>Bit Depth<TAB>DPI<TAB>Format<TAB>Colour; expected distinct outcomes of the scan-profile tree (generated from examples/tools/profiles.py)
+Atiz BookDrive MkII (Canon r5 50MP)	16	≥400 dpi	TIFF (LZW)	Full, Adobe RGB (1998)
+Atiz BookDrive MkII (Canon r5 50MP)	8	≥400 dpi	TIFF (LZW)	Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2
+Copy Stand with backlight, Phase One XF iQ4 / iXH 150MP	16	≥1500 dpi	TIFF (LZW)	Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2
+Copy Stand with backlight, Phase One XF iQ4 / iXH 150MP	16	≥3000 dpi	TIFF (LZW)	Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2
+Copy Stand with backlight, Phase One XF iQ4 / iXH 150MP	16	≥400 dpi	TIFF (LZW)	Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2
+Copy Stand, Phase One XF iQ4 / iXH 150MP	16	≥400 dpi	TIFF (LZW)	Full, Adobe RGB (1998)
+Copy Stand, Phase One XF iQ4 / iXH 150MP	16	≥600 dpi	TIFF (LZW)	Full, Adobe RGB (1998)
+Copy Stand, Phase One XF iQ4 / iXH 150MP	8	≥400 dpi	TIFF (LZW)	Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2
+Epson XL (A3 Flatbed Scanner)	16	≥400 dpi	TIFF (LZW)	Full, Adobe RGB (1998)
+Epson XL (A3 Flatbed Scanner)	16	≥600 dpi	TIFF (LZW)	Full, Adobe RGB (1998)
+Epson XL (A3 Flatbed Scanner)	8	≥400 dpi	TIFF (LZW)	Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2
+Epson XL or Perfection flatbed with film mount	16	≥1500 dpi	TIFF (LZW)	Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2
+Epson XL or Perfection flatbed with film mount	16	≥3000 dpi	TIFF (LZW)	Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2
+Epson XL or Perfection flatbed with film mount	16	≥400 dpi	TIFF (LZW)	Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2
+Kodak Multi-sheet scanner (modern, robust material only)	8	≥300 dpi	TIFF (LZW)	Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2
+Phase One XF iQ4 150MP or Canon r5 50MP	16	≥450 dpi	TIFF (LZW)	Full, Adobe RGB (1998)
+Phase One XF iQ4 150MP or Canon r5 50MP	8	≥450 dpi	TIFF (LZW)	Full, Adobe RGB (1998)
+SMA ROBOSCAN V2 (Automated Book Scanner)	8	≥300 dpi	TIFF (LZW)	Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2
+STImaging Vuescan Microfilm Scanner	8 (native)	4000 dpi (calculated)	TIFF (LZW compressed)	Greyscale, Grey Gamma 2.2
+VERSASCAN 3650 (A0 Flatbed Scanner)	16	≥400 dpi	TIFF (LZW)	Full, Adobe RGB (1998)
+VERSASCAN 3650 (A0 Flatbed Scanner)	16	≥600 dpi	TIFF (LZW)	Full, Adobe RGB (1998)
+VERSASCAN 3650 (A0 Flatbed Scanner)	8	≥400 dpi	TIFF (LZW)	Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2
