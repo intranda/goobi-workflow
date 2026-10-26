@@ -126,7 +126,13 @@ public class TypeTest {
     }
 
     @Test
+    public void testGetTypeByNameDecisionTree() {
+        assertEquals(Type.DECISIONTREE, Type.getTypeByName("decisiontree"));
+        assertEquals(Type.DECISIONTREE, Type.getTypeByName("DecisionTree"));
+    }
+
+    @Test
     public void testEnumValuesCount() {
-        assertEquals(12, Type.values().length);
+        assertEquals(13, Type.values().length);
     }
 }

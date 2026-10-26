@@ -23,6 +23,7 @@ package org.goobi.production.properties.decisiontree.binding;
  * exception statement from your version.
  */
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -37,7 +38,9 @@ import java.util.Set;
  * @param pathProperty optional property that additionally stores the path (audit), may be null
  * @param fieldMap logical field name of the tree to the name of the target; fields that are not listed keep their name
  */
-public record BindingConfig(String treeId, String resultIdProperty, String pathProperty, Map<String, String> fieldMap) {
+public record BindingConfig(String treeId, String resultIdProperty, String pathProperty, Map<String, String> fieldMap) implements Serializable {
+
+    private static final long serialVersionUID = 4119356730093346271L;
 
     public BindingConfig {
         fieldMap = Collections.unmodifiableMap(new LinkedHashMap<>(fieldMap));

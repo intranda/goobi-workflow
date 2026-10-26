@@ -39,7 +39,9 @@ public enum Type {
     METADATA("metadata"),
     HTML("html"),
     VOCABULARYREFERENCE("vocabularyreference"),
-    VOCABULARYMULTIREFERENCE("vocabularymultireference");
+    VOCABULARYMULTIREFERENCE("vocabularymultireference"),
+    /** A decision tree. It has no stored value of its own: the value is derived from the result fields, see {@link DisplayProperty#isVirtual()}. */
+    DECISIONTREE("decisiontree");
 
     @Getter
     private String name;

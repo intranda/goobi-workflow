@@ -48,6 +48,7 @@ import org.goobi.production.cli.helper.StringPair;
  * exception statement from your version.
  */
 
+import org.goobi.production.properties.decisiontree.binding.BindingConfig;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 
@@ -124,6 +125,11 @@ public class DisplayProperty implements IProperty, Serializable {
     @Getter
     @Setter
     private String pattern = "dd.MM.yyyy";
+
+    /** Only set for the type DECISIONTREE: which tree, and where its result fields are written. */
+    @Getter
+    @Setter
+    private BindingConfig decisionTreeBinding;
 
     @Getter
     private FormInputMultiSelectBean normalSelectionBean;
@@ -235,6 +241,7 @@ public class DisplayProperty implements IProperty, Serializable {
         p.setPossibleValues(new ArrayList<>(getPossibleValues()));
         p.setProjects(new ArrayList<>(getProjects()));
         p.setCurrentStepAccessCondition(currentStepAccessCondition);
+        p.setDecisionTreeBinding(decisionTreeBinding);
         return p;
     }
 
@@ -245,9 +252,22 @@ public class DisplayProperty implements IProperty, Serializable {
      */
     @Override
     public void transfer() {
+        if (isVirtual()) {
+            return;
+        }
         this.prozesseigenschaft.setPropertyValue(value);
         this.prozesseigenschaft.setPropertyName(name);
         this.prozesseigenschaft.setContainer(this.container);
+    }
+
+    /**
+     * A virtual property has no property of its own in the database. Its value (and read value) is derived from other properties when the list is
+     * loaded; it is only there so that the access condition of the step and the finish check can work on it. It must never be transferred or saved.
+     *
+     * @return true for the type DECISIONTREE
+     */
+    public boolean isVirtual() {
+        return Type.DECISIONTREE.equals(type);
     }
 
     public List<String> getValueList() {

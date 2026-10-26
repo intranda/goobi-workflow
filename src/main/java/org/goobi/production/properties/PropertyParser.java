@@ -41,6 +41,8 @@ import org.goobi.beans.GoobiProperty;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.cli.helper.StringPair;
+import org.goobi.production.properties.decisiontree.binding.BindingParser;
+import org.goobi.production.properties.decisiontree.integration.DecisionTreeValues;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
@@ -187,7 +189,33 @@ public final class PropertyParser {
         }
     }
 
+    /**
+     * The properties of a step that are stored as properties of the process. Properties of the type decisiontree are not part of this list, see
+     * {@link #getDecisionTreePropertiesForStep(Step)}.
+     *
+     * @param mySchritt the step
+     * @return the properties to display and edit
+     */
     public List<DisplayProperty> getPropertiesForStep(Step mySchritt) {
+        // callers sort and change the list, so it must be modifiable
+        return new ArrayList<>(getAllPropertiesForStep(mySchritt).stream().filter(p -> !p.isVirtual()).toList());
+    }
+
+    /**
+     * The decision trees of a step. They have no property of their own; the value is derived from the result fields stored in the process, so that
+     * the access condition of the step (for example writeRequired) can be checked in the finish check.
+     *
+     * @param mySchritt the step
+     * @return the properties of the type decisiontree that apply to the step, with the derived value
+     */
+    public List<DisplayProperty> getDecisionTreePropertiesForStep(Step mySchritt) {
+        List<DisplayProperty> trees = getAllPropertiesForStep(mySchritt).stream().filter(DisplayProperty::isVirtual).toList();
+        List<GoobiProperty> stored = mySchritt.getProzess().getEigenschaftenList();
+        trees.forEach(p -> p.setValue(DecisionTreeValues.getInstance().derive(p.getDecisionTreeBinding(), stored)));
+        return new ArrayList<>(trees);
+    }
+
+    private List<DisplayProperty> getAllPropertiesForStep(Step mySchritt) {
 
         String stepTitle = mySchritt.getTitel();
         String projectTitle = mySchritt.getProzess().getProjekt().getTitel();
@@ -273,6 +301,9 @@ public final class PropertyParser {
                     pp.setValidation(config.getString(property + "/validation"));
                     // type
                     pp.setType(Type.getTypeByName(config.getString(property + "/type")));
+                    if (pp.isVirtual() && !readBinding(pp, property)) {
+                        continue;
+                    }
                     // pattern
                     pp.setPattern(config.getString(property + "/pattern", "dd.MM.yyyy"));
                     // (default) value
@@ -317,7 +348,7 @@ public final class PropertyParser {
         for (GoobiProperty pe : plist) {
 
             for (DisplayProperty pp : listClone) {
-                if (pe.getPropertyName() != null && pe.getPropertyName().equals(pp.getName())) {
+                if (!pp.isVirtual() && pe.getPropertyName() != null && pe.getPropertyName().equals(pp.getName())) {
 
                     // pp has no pe assigned
                     if (pp.getProzesseigenschaft() == null) {
@@ -337,6 +368,21 @@ public final class PropertyParser {
         }
         properties.forEach(this::addMissingVocabularyValues);
         return properties;
+    }
+
+    /**
+     * Reads the binding of a decision tree property.
+     *
+     * @return false if the binding is not valid; the error is logged and the property is left out
+     */
+    private boolean readBinding(DisplayProperty pp, String property) {
+        try {
+            pp.setDecisionTreeBinding(BindingParser.parse(config, property));
+            return true;
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid decision tree property in goobi_processProperties.xml: {}", e.getMessage());
+            return false;
+        }
     }
 
     public List<DisplayProperty> getPropertiesForProcess(Process process) {
@@ -411,6 +457,10 @@ public final class PropertyParser {
                 pp.setValidation(config.getString(property + "/validation"));
                 // type
                 pp.setType(Type.getTypeByName(config.getString(property + "/type")));
+                if (pp.isVirtual()) {
+                    // a decision tree is only shown in the task, not in process details
+                    continue;
+                }
                 // pattern
                 pp.setPattern(config.getString(property + "/pattern", "dd.MM.yyyy"));
                 // (default) value
@@ -535,6 +585,10 @@ public final class PropertyParser {
                 pp.setValidation(prop.getString("/validation"));
                 // type
                 pp.setType(Type.getTypeByName(prop.getString("/type")));
+                if (pp.isVirtual()) {
+                    // a decision tree is only shown in the task, not in process creation
+                    continue;
+                }
                 // pattern
                 pp.setPattern(prop.getString("/pattern", "dd.MM.yyyy"));
                 // (default) value

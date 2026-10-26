@@ -50,6 +50,23 @@
         <type>text</type>
         <defaultvalue>none</defaultvalue>
     </property>
+    <property name="Scan Profile" container="0">
+        <project>Decision tree</project>
+        <showStep name="decide" access="writeRequired" />
+        <type>decisiontree</type>
+        <tree>scan-profile</tree>
+        <map field="Bit Depth" to="BitDepth"/>
+    </property>
+    <property name="Broken Tree" container="0">
+        <project>Decision tree</project>
+        <showStep name="decide" access="write" />
+        <type>decisiontree</type>
+    </property>
+    <property name="Plain Text" container="0">
+        <project>Decision tree</project>
+        <showStep name="decide" access="write" />
+        <type>text</type>
+    </property>
     <metadata name="DocStruct">
         <project>*</project>
         <workflow>*</workflow>
