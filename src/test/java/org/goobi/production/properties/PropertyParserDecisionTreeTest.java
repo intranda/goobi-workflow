@@ -25,7 +25,6 @@ package org.goobi.production.properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -137,10 +136,18 @@ public class PropertyParserDecisionTreeTest extends AbstractTest {
 
     @Test
     public void processDetailsLeaveTheDecisionTreeOut() {
-        List<DisplayProperty> properties = PropertyParser.getInstance().getPropertiesForProcess(process());
-        assertFalse(names(properties).contains("Scan Profile"));
-        assertFalse(names(properties).contains("Broken Tree"));
-        assertNotNull(properties);
+        List<String> names = names(PropertyParser.getInstance().getPropertiesForProcess(process()));
+        assertTrue(names.contains("Plain Text"), "the other properties of the project are there");
+        assertFalse(names.contains("Scan Profile"));
+        assertFalse(names.contains("Broken Tree"));
+    }
+
+    @Test
+    public void processCreationLeavesTheDecisionTreeOut() {
+        List<String> names = names(PropertyParser.getInstance().getProcessCreationProperties(process(), "any template"));
+        assertTrue(names.contains("Plain Text"), "the other properties of the project are there");
+        assertFalse(names.contains("Scan Profile"));
+        assertFalse(names.contains("Broken Tree"));
     }
 
     @Test
