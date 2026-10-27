@@ -25,6 +25,7 @@ package org.goobi.production.properties.decisiontree.model;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
  * A label or hint with an optional translation per language ({@code label} and {@code label-de} in the tree file).
@@ -46,6 +47,34 @@ public record Text(String base, Map<String, String> byLanguage) {
         }
         if (base != null) {
             return base;
+        }
+        return byLanguage.values().stream().findFirst().orElse("");
+    }
+
+    /**
+     * The text for a locale, with a translator for the text without language.
+     *
+     * <p>
+     * Order: the text of the tree file for the language of the locale ({@code label-de}), then the translation of the text without language, then
+     * that text itself, then any translation. The translator gets the text as a key (for example a key of the messages files) and returns the text
+     * unchanged if it has no translation for it, so a tree without matching messages shows its own labels.
+     * </p>
+     *
+     * @param locale the language
+     * @param translator translates a text into the language, or returns it unchanged; may be null
+     * @return the text, an empty string if there is none
+     */
+    public String get(Locale locale, BiFunction<String, Locale, String> translator) {
+        String translated = locale == null ? null : byLanguage.get(locale.getLanguage());
+        if (translated != null) {
+            return translated;
+        }
+        if (base != null) {
+            if (translator == null || locale == null) {
+                return base;
+            }
+            String result = translator.apply(base, locale);
+            return result == null || result.isEmpty() ? base : result;
         }
         return byLanguage.values().stream().findFirst().orElse("");
     }

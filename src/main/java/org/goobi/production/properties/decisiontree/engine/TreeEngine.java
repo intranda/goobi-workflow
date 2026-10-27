@@ -31,11 +31,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 
 import org.goobi.production.properties.decisiontree.model.Answer;
 import org.goobi.production.properties.decisiontree.model.Node;
 import org.goobi.production.properties.decisiontree.model.Question;
 import org.goobi.production.properties.decisiontree.model.Result;
+import org.goobi.production.properties.decisiontree.model.Text;
 import org.goobi.production.properties.decisiontree.model.TreeDefinition;
 import org.goobi.production.properties.decisiontree.view.ViewState;
 import org.goobi.production.properties.decisiontree.view.ViewState.AnswerView;
@@ -59,6 +61,25 @@ public class TreeEngine {
 
     /** A way that fits stored fields. */
     public record Candidate(String resultId, int[] path, Map<String, String> fields) {
+    }
+
+    private final BiFunction<String, Locale, String> translator;
+
+    /** An engine that shows the labels of the tree file as they are. */
+    public TreeEngine() {
+        this(null);
+    }
+
+    /**
+     * @param translator translates a label (used as a key) into the language of a locale and returns it unchanged if it has no translation, for
+     *            example by the messages files; may be null
+     */
+    public TreeEngine(BiFunction<String, Locale, String> translator) {
+        this.translator = translator;
+    }
+
+    private String text(Text text, Locale locale) {
+        return text.get(locale, translator);
     }
 
     private record Step(Question question, int answerIndex, Answer answer) {
@@ -148,9 +169,9 @@ public class TreeEngine {
         }
         List<AnswerView> answers = new ArrayList<>();
         for (int i = 0; i < walk.open().answers().size(); i++) {
-            answers.add(new AnswerView(i, walk.open().answers().get(i).label().get(locale)));
+            answers.add(new AnswerView(i, text(walk.open().answers().get(i).label(), locale)));
         }
-        OpenQuestion open = new OpenQuestion(path.length, walk.open().id(), walk.open().label().get(locale), walk.open().hint().get(locale), answers);
+        OpenQuestion open = new OpenQuestion(path.length, walk.open().id(), text(walk.open().label(), locale), text(walk.open().hint(), locale), answers);
         return new ViewState(State.ANSWERING, pathSteps(walk, locale), open, null, null, messages);
     }
 
@@ -158,8 +179,8 @@ public class TreeEngine {
         List<PathStep> steps = new ArrayList<>();
         for (int i = 0; i < walk.steps().size(); i++) {
             Step step = walk.steps().get(i);
-            steps.add(new PathStep(i, step.question().id(), step.question().label().get(locale), step.answerIndex(),
-                    step.answer().label().get(locale), clean(step.answer().fields())));
+            steps.add(new PathStep(i, step.question().id(), text(step.question().label(), locale), step.answerIndex(),
+                    text(step.answer().label(), locale), clean(step.answer().fields())));
         }
         return steps;
     }

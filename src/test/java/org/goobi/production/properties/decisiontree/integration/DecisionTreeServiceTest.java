@@ -372,6 +372,30 @@ public class DecisionTreeServiceTest {
         assertTrue(store.values.isEmpty());
     }
 
+    // labels and the messages
+
+    @Test
+    public void serviceTranslatesLabelsButStoresTheLabelsAsWrittenInTheTree() throws Exception {
+        Path file = dir.resolve("goobi_decisionTrees.xml");
+        TreeRegistry registry = new TreeRegistry(file);
+        DecisionTreeService translating = new DecisionTreeService(registry,
+                (s, name) -> NAME.equals(name) ? Optional.of(property()) : Optional.empty(), p -> store,
+                (label, locale) -> "[" + locale.getLanguage() + "] " + label);
+        binding = new BindingConfig("scan-profile", null, "Scan Profile Path", Map.of());
+        LeafPath leaf = uniqueLeaf();
+
+        ViewState shown = translating.state(step, NAME, true, null, EN);
+        assertTrue(shown.open().label().startsWith("[en] "), shown.open().label());
+        assertTrue(shown.open().answers().get(0).label().startsWith("[en] "));
+
+        translating.confirm(step, NAME, true, leaf.path(), Locale.GERMAN);
+        String json = store.values.get("Scan Profile Path");
+        assertFalse(json.contains("[de]"), "the stored path must not depend on the language of the user: " + json);
+        assertFalse(json.contains("[en]"), json);
+        assertEquals(leaf.fields(), store.values.entrySet().stream()
+                .filter(e -> leaf.fields().containsKey(e.getKey())).collect(java.util.stream.Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    }
+
     // access
 
     @Test

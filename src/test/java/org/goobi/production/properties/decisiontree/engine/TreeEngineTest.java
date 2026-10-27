@@ -43,6 +43,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.BiFunction;
 
 import org.goobi.production.properties.decisiontree.engine.TreeEngine.Candidate;
 import org.goobi.production.properties.decisiontree.engine.TreeEngine.LeafPath;
@@ -166,6 +167,62 @@ public class TreeEngineTest {
         assertThrows(IllegalArgumentException.class, () -> engine.answer(tree, new int[0], -1, 0));
         assertThrows(IllegalArgumentException.class, () -> engine.view(tree, new int[] { 9 }, Locale.ENGLISH));
         assertThrows(IllegalArgumentException.class, () -> engine.view(tree, new int[] { 0, 0, 0 }, Locale.ENGLISH));
+    }
+
+    // labels and the messages
+
+    /** Translates a label like a messages file would: only known keys, everything else stays as it is. */
+    private static BiFunction<String, Locale, String> messages(Map<String, String> german) {
+        return (key, locale) -> Locale.GERMAN.getLanguage().equals(locale.getLanguage()) ? german.getOrDefault(key, key) : key;
+    }
+
+    @Test
+    public void labelsAreTranslatedWhenTheTranslatorKnowsThem() throws Exception {
+        TreeEngine translating = new TreeEngine(messages(Map.of("Colour?", "Farbe (Nachricht)?", "Yes", "Ja (Nachricht)", "Pick one", "Eins w\u00E4hlen")));
+        ViewState view = translating.view(small(), new int[0], Locale.GERMAN);
+        // the question has label-de in the file, which is more specific than a message
+        assertEquals("Farbe?", view.open().label());
+        // the hint and the answer without a language attribute come from the messages
+        assertEquals("Eins w\u00E4hlen", view.open().hint());
+        assertEquals("Ja", view.open().answers().get(0).label(), "label-de of the file wins over the message");
+        assertEquals("No", view.open().answers().get(1).label(), "no message: the label itself");
+    }
+
+    @Test
+    public void labelsWithoutLanguageAttributeUseTheMessageAsKey() throws Exception {
+        TreeEngine translating = new TreeEngine(messages(Map.of("No", "Nein", "Big", "Gro\u00DF", "Large?", "Gro\u00DF?")));
+        ViewState view = translating.view(small(), new int[] { 0 }, Locale.GERMAN);
+        assertEquals("Gro\u00DF?", view.open().label());
+        assertEquals("Gro\u00DF", view.open().answers().get(0).label());
+        assertEquals("Small", view.open().answers().get(1).label());
+        assertEquals("Ja", view.path().get(0).answerLabel());
+        // another language: the translator returns the label unchanged
+        assertEquals("Large?", translating.view(small(), new int[] { 0 }, Locale.ENGLISH).open().label());
+    }
+
+    @Test
+    public void emptyTranslationFallsBackToTheLabel() throws Exception {
+        TreeEngine translating = new TreeEngine((key, locale) -> "");
+        assertEquals("No", translating.view(small(), new int[0], Locale.ENGLISH).open().answers().get(1).label());
+        TreeEngine nullTranslating = new TreeEngine((key, locale) -> null);
+        assertEquals("No", nullTranslating.view(small(), new int[0], Locale.ENGLISH).open().answers().get(1).label());
+    }
+
+    @Test
+    public void withoutTranslatorTheLabelsAreShownAsTheyAre() throws Exception {
+        ViewState view = new TreeEngine().view(small(), new int[0], Locale.ENGLISH);
+        assertEquals("Colour?", view.open().label());
+        assertEquals("Yes", view.open().answers().get(0).label());
+    }
+
+    @Test
+    public void translationNeverChangesTheStoredFieldValues() throws Exception {
+        TreeEngine translating = new TreeEngine(messages(Map.of("Big", "Gro\u00DF", "600", "sechshundert", "Full", "Voll")));
+        TreeDefinition tree = small();
+        assertEquals(engine.fieldsOf(tree, new int[] { 0, 0 }), translating.fieldsOf(tree, new int[] { 0, 0 }));
+        ViewState view = translating.view(tree, new int[] { 0, 0 }, Locale.GERMAN);
+        assertEquals("600", view.result().fields().get("DPI"));
+        assertEquals("Full", view.path().get(0).decided().get("Colour"));
     }
 
     // 3. view state

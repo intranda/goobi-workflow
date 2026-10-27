@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +51,8 @@ import org.goobi.production.properties.decisiontree.writer.PropertyStore;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import de.sub.goobi.helper.Helper;
 
 /**
  * Everything a client can do with a decision tree of a task, in one place and without any UI: read the state, answer, change an answer, start
@@ -79,12 +82,24 @@ public class DecisionTreeService {
     private final TreeRegistry registry;
     private final PropertyLookup lookup;
     private final Function<Process, PropertyStore> stores;
-    private final TreeEngine engine = new TreeEngine();
+    private final TreeEngine engine;
+    /** Shows the labels untranslated, so what is stored does not depend on the language of the user. */
+    private final TreeEngine plainEngine = new TreeEngine();
 
     public DecisionTreeService(TreeRegistry registry, PropertyLookup lookup, Function<Process, PropertyStore> stores) {
+        this(registry, lookup, stores, null);
+    }
+
+    /**
+     * @param translator translates a label of the tree (used as a key) into the language of a locale and returns it unchanged if there is no
+     *            translation; may be null
+     */
+    public DecisionTreeService(TreeRegistry registry, PropertyLookup lookup, Function<Process, PropertyStore> stores,
+            BiFunction<String, Locale, String> translator) {
         this.registry = registry;
         this.lookup = lookup;
         this.stores = stores;
+        this.engine = new TreeEngine(translator);
     }
 
     /** @return the service that works on the configured properties and the properties in the database */
@@ -96,7 +111,9 @@ public class DecisionTreeService {
                             .stream()
                             .filter(p -> name.equals(p.getName()))
                             .findFirst(),
-                    ProcessPropertyStore::new);
+                    ProcessPropertyStore::new,
+                    // the label is the key: a message of the messages files if there is one, else the label itself
+                    (label, locale) -> Helper.getString(Locale.forLanguageTag(locale.getLanguage()), label));
         }
         return instance;
     }
@@ -237,7 +254,7 @@ public class DecisionTreeService {
         }
         ViewState chosen;
         try {
-            chosen = engine.view(bound.tree(), path == null ? new int[0] : path, Locale.ROOT);
+            chosen = plainEngine.view(bound.tree(), path == null ? new int[0] : path, Locale.ROOT);
         } catch (IllegalArgumentException e) {
             throw new DecisionTreeException(Reason.BAD_REQUEST, e.getMessage(), e);
         }
