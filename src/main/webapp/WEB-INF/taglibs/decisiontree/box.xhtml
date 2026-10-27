@@ -6,6 +6,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:section="http://goobi.io/section"
     xmlns:dl="http://goobi.io/dl"
+    xmlns:button="http://goobi.io/button"
     xmlns:util="http://goobi.io/util"
 >
     <!--
@@ -21,11 +22,11 @@
                 value="#{bean.trees}"
                 var="tree">
                 <h:form id="decisionTreeForm">
-                    <section:section type="outline">
+                    <section:section type="neutral">
                         <section:header
                             title="#{tree.name}"
                             icon="binary-tree" />
-                        <section:body padding="true">
+                        <section:body padding="false">
 
                             <!-- state for screen readers -->
                             <div
@@ -43,46 +44,52 @@
                             </ui:repeat>
 
                             <!-- answered questions -->
-                            <ol class="list-unstyled mb-3">
-                                <ui:repeat
-                                    value="#{tree.rows}"
-                                    var="row">
-                                    <li class="mb-2">
-                                        <span class="text-muted">#{row.step.stepIndex + 1}. #{row.step.label}</span>
-                                        <strong class="ms-2">#{row.step.answerLabel}</strong>
-                                        <button
-                                            type="button"
-                                            class="btn btn-link p-0 ms-2"
-                                            jsf:id="reopen"
-                                            jsf:action="#{bean.reopen(tree.name, row.step.stepIndex)}"
-                                            jsf:rendered="#{tree.view.state == 'ANSWERING' or tree.view.state == 'RESULT' or tree.view.state == 'CONFIRMED'}"
-                                            aria-label="#{msgs['decisiontree.change']}: #{row.step.label}">
-                                            #{msgs['decisiontree.change']}
-                                            <f:ajax
-                                                execute="@form"
-                                                render="@form" />
-                                        </button>
-                                        <div
-                                            class="small text-muted"
-                                            jsf:rendered="#{not empty row.decided}">
-                                            <span>#{msgs['decisiontree.decided']}:</span>
-                                            <ui:repeat
-                                                value="#{row.decided}"
-                                                var="field">
-                                                <span class="ms-2"><strong>#{field.name}</strong> #{field.value}</span>
-                                            </ui:repeat>
-                                        </div>
-                                    </li>
-                                </ui:repeat>
-                            </ol>
+                            <ui:fragment rendered="#{not empty tree.rows}">
+                                <dl:list>
+                                    <ui:repeat
+                                        value="#{tree.rows}"
+                                        var="row">
+                                        <dl:term>#{row.step.label}</dl:term>
+                                        <dl:description>
+                                            <span>#{row.step.answerLabel}</span>
+                                            <ui:fragment rendered="#{tree.view.state == 'ANSWERING' or tree.view.state == 'RESULT' or tree.view.state == 'CONFIRMED'}">
+                                                <button:row rowStyleClass="ms-auto my-auto ps-2">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-icon btn-blank"
+                                                        jsf:id="reopen"
+                                                        jsf:action="#{bean.reopen(tree.name, row.step.stepIndex)}"
+                                                        title="#{msgs['decisiontree.change']}"
+                                                        aria-label="#{msgs['decisiontree.change']}: #{row.step.label}">
+                                                        <util:icon icon="pencil" />
+                                                        <f:ajax
+                                                            execute="@form"
+                                                            render="@form" />
+                                                    </button>
+                                                </button:row>
+                                            </ui:fragment>
+                                        </dl:description>
+                                        <ui:fragment rendered="#{not empty row.decided}">
+                                            <dl:term>#{msgs['decisiontree.decided']}</dl:term>
+                                            <dl:description>
+                                                <ui:repeat
+                                                    value="#{row.decided}"
+                                                    var="field">
+                                                    <span class="ms-2"><strong>#{field.name}</strong> #{field.value}</span>
+                                                </ui:repeat>
+                                            </dl:description>
+                                        </ui:fragment>
+                                    </ui:repeat>
+                                </dl:list>
+                            </ui:fragment>
 
                             <!-- the open question -->
                             <fieldset
-                                class="mb-3"
+                                class="p-3 border-top"
                                 jsf:rendered="#{tree.view.state == 'ANSWERING'}">
                                 <legend
                                     class="h5"
-                                    tabindex="-1">#{tree.view.open.stepIndex + 1}. #{tree.view.open.label}</legend>
+                                    tabindex="-1">#{tree.view.open.label}</legend>
                                 <p
                                     class="text-muted"
                                     jsf:rendered="#{not empty tree.view.open.hint}">#{tree.view.open.hint}</p>
@@ -92,7 +99,7 @@
                                         var="answer">
                                         <button
                                             type="button"
-                                            class="btn btn-primary"
+                                            class="btn btn-blank"
                                             jsf:id="answer"
                                             jsf:action="#{bean.answer(tree.name, tree.view.open.stepIndex, answer.index)}">
                                             #{answer.label}
@@ -111,7 +118,7 @@
 
                             <!-- the result -->
                             <ui:fragment rendered="#{not empty tree.fields}">
-                                <h3 class="h5">
+                                <h3 class="h5 m-0 p-3 border-top border-bottom">
                                     #{msgs['decisiontree.result']}
                                     <strong jsf:rendered="#{tree.view.result.id != null}">#{tree.view.result.id}</strong>
                                 </h3>
@@ -119,54 +126,56 @@
                                     <ui:repeat
                                         value="#{tree.fields}"
                                         var="field">
-                                        <dt class="definition-list-term">#{field.name}</dt>
-                                        <dd class="definition-list-description">#{field.value}</dd>
+                                        <dl:term>#{field.name}</dl:term>
+                                        <dl:description>#{field.value}</dl:description>
                                     </ui:repeat>
                                 </dl:list>
                             </ui:fragment>
 
                             <!-- actions -->
-                            <div class="d-flex flex-wrap align-items-center gap-3 mt-3">
-                                <button
-                                    type="button"
-                                    class="btn btn-primary"
-                                    jsf:id="confirm"
-                                    jsf:action="#{bean.confirm(tree.name)}"
-                                    jsf:rendered="#{tree.view.state == 'RESULT'}">
-                                    #{msgs['decisiontree.confirm']}
-                                    <f:ajax
-                                        execute="@form"
-                                        render="@form" />
-                                </button>
-                                <span
-                                    class="text-muted"
-                                    jsf:rendered="#{tree.view.state == 'RESULT'}">#{msgs['decisiontree.nothingWritten']}</span>
+                            <ui:fragment rendered="#{tree.view.state == 'RESULT' or tree.view.state == 'CONFIRMED' or tree.view.state == 'MISMATCH' or tree.view.state == 'READ_ONLY'}">
+                                <div class="d-flex flex-wrap align-items-center gap-3 p-3 border-top">
+                                    <button
+                                        type="button"
+                                        class="btn btn-neutral-600"
+                                        jsf:id="confirm"
+                                        jsf:action="#{bean.confirm(tree.name)}"
+                                        jsf:rendered="#{tree.view.state == 'RESULT'}">
+                                        #{msgs['decisiontree.confirm']}
+                                        <f:ajax
+                                            execute="@form"
+                                            render="@form" />
+                                    </button>
+                                    <span
+                                        class="text-muted"
+                                        jsf:rendered="#{tree.view.state == 'RESULT'}">#{msgs['decisiontree.nothingWritten']}</span>
 
-                                <span
-                                    class="text-success"
-                                    jsf:rendered="#{tree.view.state == 'CONFIRMED'}">
-                                    <util:icon icon="circle-check" />
-                                    #{msgs['decisiontree.confirmed']}
-                                </span>
-                                <span
-                                    class="text-muted"
-                                    jsf:rendered="#{tree.view.state == 'READ_ONLY'}">
-                                    <util:icon icon="lock" />
-                                    #{msgs['decisiontree.readOnly']}
-                                </span>
+                                    <span
+                                        class="text-success"
+                                        jsf:rendered="#{tree.view.state == 'CONFIRMED'}">
+                                        <util:icon icon="circle-check" />
+                                        #{msgs['decisiontree.confirmed']}
+                                    </span>
+                                    <span
+                                        class="text-muted"
+                                        jsf:rendered="#{tree.view.state == 'READ_ONLY'}">
+                                        <util:icon icon="lock" />
+                                        #{msgs['decisiontree.readOnly']}
+                                    </span>
 
-                                <button
-                                    type="button"
-                                    class="btn btn-blank"
-                                    jsf:id="restart"
-                                    jsf:action="#{bean.restart(tree.name)}"
-                                    jsf:rendered="#{tree.view.state == 'CONFIRMED' or tree.view.state == 'MISMATCH'}">
-                                    #{msgs['decisiontree.restart']}
-                                    <f:ajax
-                                        execute="@form"
-                                        render="@form" />
-                                </button>
-                            </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-blank"
+                                        jsf:id="restart"
+                                        jsf:action="#{bean.restart(tree.name)}"
+                                        jsf:rendered="#{tree.view.state == 'CONFIRMED' or tree.view.state == 'MISMATCH'}">
+                                        #{msgs['decisiontree.restart']}
+                                        <f:ajax
+                                            execute="@form"
+                                            render="@form" />
+                                    </button>
+                                </div>
+                            </ui:fragment>
                         </section:body>
                     </section:section>
                 </h:form>
