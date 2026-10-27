@@ -1,0 +1,176 @@
+<ui:composition
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:section="http://goobi.io/section"
+    xmlns:dl="http://goobi.io/dl"
+    xmlns:util="http://goobi.io/util"
+>
+    <!--
+        The decision trees of a task, one box each. The answered questions are stacked above the open question; the open question offers its
+        answers as buttons that act at once. Nothing is written before the result is confirmed.
+
+        The parts that change with the state are inside ui:repeat and not c:forEach, so they are built when the page is rendered and not when the
+        view was built, before the action ran. The whole form is re-rendered after every action.
+    -->
+    <ui:fragment rendered="#{bean.available}">
+        <div class="decision-trees mb-3">
+            <ui:repeat
+                value="#{bean.trees}"
+                var="tree">
+                <h:form id="decisionTreeForm">
+                    <section:section type="outline">
+                        <section:header
+                            title="#{tree.name}"
+                            icon="binary-tree" />
+                        <section:body padding="true">
+
+                            <!-- state for screen readers -->
+                            <div
+                                class="visually-hidden"
+                                role="status"
+                                aria-live="polite">#{msgs['decisiontree.state.'.concat(tree.view.state)]}</div>
+
+                            <!-- hints, e.g. that the tree changed since the result was written -->
+                            <ui:repeat
+                                value="#{tree.view.messages}"
+                                var="message">
+                                <util:alert
+                                    type="#{message.level == 'WARN' ? 'warning' : 'info'}"
+                                    message="#{msgs[message.key]}" />
+                            </ui:repeat>
+
+                            <!-- answered questions -->
+                            <ol class="list-unstyled mb-3">
+                                <ui:repeat
+                                    value="#{tree.rows}"
+                                    var="row">
+                                    <li class="mb-2">
+                                        <span class="text-muted">#{row.step.stepIndex + 1}. #{row.step.label}</span>
+                                        <strong class="ms-2">#{row.step.answerLabel}</strong>
+                                        <button
+                                            type="button"
+                                            class="btn btn-link p-0 ms-2"
+                                            jsf:id="reopen"
+                                            jsf:action="#{bean.reopen(tree.name, row.step.stepIndex)}"
+                                            jsf:rendered="#{tree.view.state == 'ANSWERING' or tree.view.state == 'RESULT' or tree.view.state == 'CONFIRMED'}"
+                                            aria-label="#{msgs['decisiontree.change']}: #{row.step.label}">
+                                            #{msgs['decisiontree.change']}
+                                            <f:ajax
+                                                execute="@form"
+                                                render="@form" />
+                                        </button>
+                                        <div
+                                            class="small text-muted"
+                                            jsf:rendered="#{not empty row.decided}">
+                                            <span>#{msgs['decisiontree.decided']}:</span>
+                                            <ui:repeat
+                                                value="#{row.decided}"
+                                                var="field">
+                                                <span class="ms-2"><strong>#{field.name}</strong> #{field.value}</span>
+                                            </ui:repeat>
+                                        </div>
+                                    </li>
+                                </ui:repeat>
+                            </ol>
+
+                            <!-- the open question -->
+                            <fieldset
+                                class="mb-3"
+                                jsf:rendered="#{tree.view.state == 'ANSWERING'}">
+                                <legend
+                                    class="h5"
+                                    tabindex="-1">#{tree.view.open.stepIndex + 1}. #{tree.view.open.label}</legend>
+                                <p
+                                    class="text-muted"
+                                    jsf:rendered="#{not empty tree.view.open.hint}">#{tree.view.open.hint}</p>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <ui:repeat
+                                        value="#{tree.view.open.answers}"
+                                        var="answer">
+                                        <button
+                                            type="button"
+                                            class="btn btn-primary"
+                                            jsf:id="answer"
+                                            jsf:action="#{bean.answer(tree.name, tree.view.open.stepIndex, answer.index)}">
+                                            #{answer.label}
+                                            <f:ajax
+                                                execute="@form"
+                                                render="@form" />
+                                        </button>
+                                    </ui:repeat>
+                                </div>
+                            </fieldset>
+
+                            <!-- not decided yet, and the user cannot decide -->
+                            <p
+                                class="text-muted"
+                                jsf:rendered="#{tree.view.state == 'READ_ONLY' and tree.view.open != null}">#{msgs['decisiontree.notDecided']}</p>
+
+                            <!-- the result -->
+                            <ui:fragment rendered="#{not empty tree.fields}">
+                                <h3 class="h5">
+                                    #{msgs['decisiontree.result']}
+                                    <strong jsf:rendered="#{tree.view.result.id != null}">#{tree.view.result.id}</strong>
+                                </h3>
+                                <dl:list>
+                                    <ui:repeat
+                                        value="#{tree.fields}"
+                                        var="field">
+                                        <dt class="definition-list-term">#{field.name}</dt>
+                                        <dd class="definition-list-description">#{field.value}</dd>
+                                    </ui:repeat>
+                                </dl:list>
+                            </ui:fragment>
+
+                            <!-- actions -->
+                            <div class="d-flex flex-wrap align-items-center gap-3 mt-3">
+                                <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    jsf:id="confirm"
+                                    jsf:action="#{bean.confirm(tree.name)}"
+                                    jsf:rendered="#{tree.view.state == 'RESULT'}">
+                                    #{msgs['decisiontree.confirm']}
+                                    <f:ajax
+                                        execute="@form"
+                                        render="@form" />
+                                </button>
+                                <span
+                                    class="text-muted"
+                                    jsf:rendered="#{tree.view.state == 'RESULT'}">#{msgs['decisiontree.nothingWritten']}</span>
+
+                                <span
+                                    class="text-success"
+                                    jsf:rendered="#{tree.view.state == 'CONFIRMED'}">
+                                    <util:icon icon="circle-check" />
+                                    #{msgs['decisiontree.confirmed']}
+                                </span>
+                                <span
+                                    class="text-muted"
+                                    jsf:rendered="#{tree.view.state == 'READ_ONLY'}">
+                                    <util:icon icon="lock" />
+                                    #{msgs['decisiontree.readOnly']}
+                                </span>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-blank"
+                                    jsf:id="restart"
+                                    jsf:action="#{bean.restart(tree.name)}"
+                                    jsf:rendered="#{tree.view.state == 'CONFIRMED' or tree.view.state == 'MISMATCH'}">
+                                    #{msgs['decisiontree.restart']}
+                                    <f:ajax
+                                        execute="@form"
+                                        render="@form" />
+                                </button>
+                            </div>
+                        </section:body>
+                    </section:section>
+                </h:form>
+            </ui:repeat>
+        </div>
+    </ui:fragment>
+</ui:composition>

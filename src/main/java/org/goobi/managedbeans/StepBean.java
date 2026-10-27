@@ -169,6 +169,9 @@ public class StepBean extends BasicBean {
     @Getter
     private String container;
     private List<DisplayProperty> processPropertyList;
+    /** The decision trees of the step. They have no property of their own, so they are not part of the property list. */
+    @Getter
+    private List<DisplayProperty> decisionTreeProperties = new ArrayList<>();
     @Getter
     @Setter
     private DisplayProperty processProperty;
@@ -1200,6 +1203,7 @@ public class StepBean extends BasicBean {
         containerAccess = new HashMap<>();
         this.containers = new TreeMap<>();
         this.processPropertyList = PropertyParser.getInstance().getPropertiesForStep(this.mySchritt);
+        this.decisionTreeProperties = PropertyParser.getInstance().getDecisionTreePropertiesForStep(this.mySchritt);
 
         for (DisplayProperty pt : this.processPropertyList) {
 

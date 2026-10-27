@@ -11,7 +11,8 @@
     xmlns:util="http://goobi.io/util"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:properties="http://goobi.io/properties">
+    xmlns:properties="http://goobi.io/properties"
+    xmlns:decisiontree="http://goobi.io/decisiontree">
 
     <ui:param
         name="myPageTitle"
@@ -87,6 +88,9 @@
 	            		</intranda:box>
             		</h:panelGroup>
         			<!-- // IMAGE COMMENTS -->
+                    <!-- DECISION TREES -->
+                    <decisiontree:box bean="#{DecisionTreeForm}" />
+                    <!-- // DECISION TREES -->
                     <!-- PROPERTIES -->
                      <div class="#{AktuelleSchritteForm.containerList.size() gt 0 ? 'mb-3' : ''}">
                         <properties:wrapper bean="#{AktuelleSchritteForm}" />
