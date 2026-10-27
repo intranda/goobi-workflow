@@ -548,6 +548,9 @@ public class StepBean extends BasicBean {
                 }
             }
         }
+        if (!decisionTreesComplete()) {
+            return "";
+        }
         if (processPropertyList != null) {
             for (DisplayProperty prop : processPropertyList) {
                 if (AccessCondition.WRITEREQUIRED.equals(prop.getCurrentStepAccessCondition()) && StringUtils.isBlank(prop.getReadValue())) {
@@ -1199,6 +1202,38 @@ public class StepBean extends BasicBean {
         }
     }
 
+    /**
+     * Derives the values of the decision trees of the step again from the result fields that are stored. Needed after the fields changed, because
+     * the finish check and the display conditions work on the values that were derived when the properties were loaded.
+     */
+    public void refreshDecisionTrees() {
+        this.decisionTreeProperties = PropertyParser.getInstance().getDecisionTreePropertiesForStep(this.mySchritt);
+    }
+
+    /**
+     * Checks the decision trees that must have a result before the task can be finished. The values are derived again first, so the check does
+     * not depend on how old the loaded list is.
+     *
+     * @return false if a required decision tree has no confirmed result; the error message is set
+     */
+    boolean decisionTreesComplete() {
+        refreshDecisionTrees();
+        for (DisplayProperty tree : decisionTreeProperties) {
+            if (AccessCondition.WRITEREQUIRED.equals(tree.getCurrentStepAccessCondition()) && StringUtils.isBlank(tree.getReadValue())) {
+                Helper.setFehlerMeldung(Helper.getTranslation("Eigenschaft") + " " + tree.getName() + " " + Helper.getTranslation("requiredValue"));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /** The properties a display condition of another property can refer to: the plain properties and the decision trees. */
+    private List<DisplayProperty> conditionSources() {
+        List<DisplayProperty> sources = new ArrayList<>(processPropertyList);
+        sources.addAll(decisionTreeProperties);
+        return sources;
+    }
+
     private void loadProcessProperties() {
         containerAccess = new HashMap<>();
         this.containers = new TreeMap<>();
@@ -1213,7 +1248,7 @@ public class StepBean extends BasicBean {
                     // check if condition matches
                     match = false;
                     for (StringPair sp : cond.getDisplayCondition()) {
-                        for (DisplayProperty other : processPropertyList) {
+                        for (DisplayProperty other : conditionSources()) {
                             if (other.getName().equals(sp.getOne())) {
                                 Optional<String> otherValue = other.getConditionValue();
                                 if (otherValue.orElse("").equals(sp.getTwo())) {
@@ -1369,7 +1404,7 @@ public class StepBean extends BasicBean {
                         // check if condition matches
                         match = false;
                         for (StringPair sp : cond.getDisplayCondition()) {
-                            for (DisplayProperty other : processPropertyList) {
+                            for (DisplayProperty other : conditionSources()) {
                                 if (other.getName().equals(sp.getOne())) {
                                     Optional<String> otherValue = other.getConditionValue();
                                     if (otherValue.orElse("").equals(sp.getTwo())) {
@@ -1407,7 +1442,7 @@ public class StepBean extends BasicBean {
                             // check if condition matches
                             match = false;
                             for (StringPair sp : cond.getDisplayCondition()) {
-                                for (DisplayProperty other : processPropertyList) {
+                                for (DisplayProperty other : conditionSources()) {
                                     if (other.getName().equals(sp.getOne())) {
                                         Optional<String> otherValue = other.getConditionValue();
                                         if (otherValue.orElse("").equals(sp.getTwo())) {

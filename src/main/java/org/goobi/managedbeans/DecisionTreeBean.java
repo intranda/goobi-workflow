@@ -175,6 +175,8 @@ public class DecisionTreeBean implements Serializable {
         try {
             ViewState state = action.get();
             paths.put(name, state.path().stream().mapToInt(PathStep::answerIndex).toArray());
+            // the finish check and the display conditions read the value derived from the stored fields, which have just changed
+            stepBean.refreshDecisionTrees();
         } catch (DecisionTreeException e) {
             log.warn("Decision tree '{}': {}", name, e.getMessage());
             Helper.setFehlerMeldung("decisiontree.error." + e.getReason().name());

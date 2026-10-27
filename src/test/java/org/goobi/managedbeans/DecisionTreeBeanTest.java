@@ -208,6 +208,27 @@ public class DecisionTreeBeanTest {
     }
 
     @Test
+    public void everySuccessfulActionDerivesTheValuesOfTheStepAgain() {
+        Mockito.when(service.confirm(any(), eq(NAME), anyBoolean(), any(), any())).thenReturn(answering());
+        Mockito.when(service.restart(any(), eq(NAME), anyBoolean(), any())).thenReturn(answering());
+        Mockito.when(service.reopen(any(), eq(NAME), anyBoolean(), any(), anyInt(), any())).thenReturn(answering());
+        Mockito.when(service.answer(any(), eq(NAME), anyBoolean(), any(), anyInt(), anyInt(), any())).thenReturn(answering());
+        bean.answer(NAME, 0, 0);
+        bean.confirm(NAME);
+        bean.reopen(NAME, 0);
+        bean.restart(NAME);
+        Mockito.verify(stepBean, Mockito.times(4)).refreshDecisionTrees();
+    }
+
+    @Test
+    public void aRefusedActionDoesNotDeriveTheValuesAgain() {
+        Mockito.when(service.confirm(any(), eq(NAME), anyBoolean(), any(), any()))
+                .thenThrow(new DecisionTreeException(Reason.CONFLICT, "not a result"));
+        bean.confirm(NAME);
+        Mockito.verify(stepBean, Mockito.never()).refreshDecisionTrees();
+    }
+
+    @Test
     public void aRefusedActionShowsAMessageAndKeepsThePath() {
         Mockito.when(service.answer(any(), eq(NAME), anyBoolean(), any(), eq(0), eq(1), any())).thenReturn(answering(1));
         bean.answer(NAME, 0, 1);
