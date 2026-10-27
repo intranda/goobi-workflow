@@ -348,6 +348,30 @@ public class DecisionTreeServiceTest {
         assertTrue(store.values.isEmpty());
     }
 
+    @Test
+    public void restartWhileAnsweringDropsTheAnswersAndTouchesNothingStored() {
+        store.values.put("Unrelated", "keep");
+        LeafPath leaf = uniqueLeaf();
+        ViewState answered = service.answer(step, NAME, true, new int[0], 0, leaf.path()[0], EN);
+        assertEquals(1, answered.path().size());
+
+        ViewState state = service.restart(step, NAME, true, EN);
+        assertEquals(State.ANSWERING, state.state());
+        assertTrue(state.path().isEmpty());
+        assertEquals(0, state.open().stepIndex());
+        assertEquals(Map.of("Unrelated", "keep"), store.values);
+    }
+
+    @Test
+    public void restartAfterTheResultIsReachedButNotConfirmed() {
+        LeafPath leaf = uniqueLeaf();
+        assertEquals(State.RESULT, service.state(step, NAME, true, leaf.path(), EN).state());
+        ViewState state = service.restart(step, NAME, true, EN);
+        assertEquals(State.ANSWERING, state.state());
+        assertTrue(state.path().isEmpty());
+        assertTrue(store.values.isEmpty());
+    }
+
     // access
 
     @Test
