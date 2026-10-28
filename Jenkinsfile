@@ -18,7 +18,7 @@ pipeline {
   }
 
   parameters {
-    string(name: 'RUN_SONAR_ANALYSIS', defaultValue: 'false', description: 'Manually trigger sonar analysis (tags always do it nonetheless)')
+    booleanParam(name: 'RUN_SONAR_ANALYSIS', defaultValue: false, description: 'Manually trigger sonar analysis (tags always do it nonetheless)')
     booleanParam(name: 'BUILD_DOCKER_IMAGE', defaultValue: false, description: 'Build & push the Docker image')
   }
 
@@ -274,7 +274,7 @@ pipeline {
         anyOf {
           tag 'v*'
           branch 'release*'
-          expression { return params.RUN_SONAR_ANALYSIS == 'true' }
+          expression { return params.RUN_SONAR_ANALYSIS }
         }
       }
       steps {
