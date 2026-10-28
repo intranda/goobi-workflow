@@ -301,7 +301,6 @@ public class Metadaten implements Serializable {
     @Setter
     private boolean resetRepresentative = false;
 
-    private transient PhysicalObject lastAddedObject = null;
     @Getter
     private boolean enablePageArea;
 
@@ -2595,21 +2594,17 @@ public class Metadaten implements Serializable {
         }
 
         if (!"".equals(this.pagesStart) && !"".equals(this.pagesEnd)) {
-            if (lastAddedObject != null && pagesStart.equals(lastAddedObject.getLabel()) && pagesEnd.equals(lastAddedObject.getLabel())) {
-                ds.addReferenceTo(lastAddedObject.getDocStruct(), "logical_physical");
-            } else {
-                DocStruct temp = this.myDocStruct;
-                this.myDocStruct = ds;
-                this.ajaxSeiteStart = this.pagesStart;
-                this.ajaxSeiteEnde = this.pagesEnd;
-                try {
-                    this.noUpdateImageIndex = true;
-                    AjaxSeitenStartUndEndeSetzen();
-                } finally {
-                    this.noUpdateImageIndex = false;
-                }
-                this.myDocStruct = temp;
+            DocStruct temp = this.myDocStruct;
+            this.myDocStruct = ds;
+            this.ajaxSeiteStart = this.pagesStart;
+            this.ajaxSeiteEnde = this.pagesEnd;
+            try {
+                this.noUpdateImageIndex = true;
+                AjaxSeitenStartUndEndeSetzen();
+            } finally {
+                this.noUpdateImageIndex = false;
             }
+            this.myDocStruct = temp;
         }
 
         // if video section was selected, create it
