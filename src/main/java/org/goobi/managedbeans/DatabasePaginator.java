@@ -49,7 +49,7 @@ public class DatabasePaginator implements Serializable {
     protected String order = "";
     protected String filter = "";
     protected IManager manager;
-    private String returnPage;
+    private final String returnPage;
 
     protected transient List<Integer> idList = new ArrayList<>();
     protected Institution institution;

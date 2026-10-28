@@ -151,9 +151,9 @@ public class ProzesskopieForm implements Serializable {
 
     // selectable processes of the process creation page, loaded once per process creation
     private transient List<SelectItem> processTemplates;
-    private Helper help = new Helper();
-    private transient UghHelper ughHelper = new UghHelper();
-    private transient BeanHelper bHelper = new BeanHelper();
+    private final Helper help = new Helper();
+    private final transient UghHelper ughHelper = new UghHelper();
+    private final transient BeanHelper bHelper = new BeanHelper();
     private transient Fileformat myRdf;
     @Getter
     @Setter

@@ -378,7 +378,7 @@ public class Metadaten implements Serializable {
     private String addDocStructType1;
     private String addDocStructType2;
     private String zurueck = "Main";
-    private MetadatenSperrung sperrung = new MetadatenSperrung();
+    private final MetadatenSperrung sperrung = new MetadatenSperrung();
     @Getter
     @Setter
     private boolean nurLesenModus;
@@ -456,7 +456,7 @@ public class Metadaten implements Serializable {
     private boolean sizeChanged = false;
     private boolean noUpdateImageIndex = false;
 
-    private List<String> normdataList = new ArrayList<>();
+    private final List<String> normdataList = new ArrayList<>();
 
     @Getter
     @Setter

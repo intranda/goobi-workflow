@@ -95,7 +95,7 @@ public class BatchStepHelper implements Serializable {
     @Getter
     @Setter
     private Step currentStep;
-    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     @Setter
     private List<DisplayProperty> processPropertyList;
     @Getter
@@ -138,14 +138,14 @@ public class BatchStepHelper implements Serializable {
     @Getter
     @Setter
     private String script;
-    private WebDav myDav = new WebDav();
+    private final WebDav myDav = new WebDav();
     @Getter
     @Setter
     private List<String> processNameList = new ArrayList<>();
     @Getter
     private Map<String, List<String>> displayableMetadataMap;
 
-    private StepBean sb = Helper.getBeanByClass(StepBean.class);
+    private final StepBean sb = Helper.getBeanByClass(StepBean.class);
 
     public BatchStepHelper(List<Step> steps) {
         this.steps = steps;

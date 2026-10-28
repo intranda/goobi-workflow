@@ -138,7 +138,7 @@ public class StepBean extends BasicBean {
     @Getter
     @Setter
     private String modusBearbeiten = "";
-    private WebDav myDav = new WebDav();
+    private final WebDav myDav = new WebDav();
     private int gesamtAnzahlImages = 0;
     private int pageAnzahlImages = 0;
     @Getter
