@@ -82,6 +82,10 @@
                                                         aria-current="true"
                                                         aria-label="#{answer.label}, #{msgs['decisiontree.chosen']}"
                                                         jsf:rendered="#{answer.index == row.step.answerIndex}">
+                                                        <!-- only shown without the fill (high contrast mode, print), see _decision-tree.scss -->
+                                                        <util:icon
+                                                            icon="check"
+                                                            styleClass="dt-check" />
                                                         <span class="dt-label">#{answer.label}</span>
                                                     </div>
                                                     <!-- another answer: takes it at once and drops the way below -->

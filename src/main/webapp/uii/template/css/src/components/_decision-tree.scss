@@ -210,6 +210,26 @@
     width: auto;
   }
 
+  // The check mark of the chosen answer (util:icon, Tabler) is hidden. Without the fill (Windows high contrast mode overrides backgrounds, print
+  // leaves them out) the chosen answer would look like the others, so it is shown there. It takes the text colour. The start node has none.
+  .dt-check {
+    display: none;
+  }
+
+  @media (forced-colors: active), print {
+    .dt-check {
+      display: inline-flex;
+    }
+  }
+
+  @media print {
+    .dt-answer.is-chosen {
+      border-width: 2px;
+      background: none;
+      color: var(--clr-black, #000);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .dt-answer {
       transition: none;
