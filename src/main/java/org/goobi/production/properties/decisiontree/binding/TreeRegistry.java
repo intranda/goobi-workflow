@@ -55,13 +55,21 @@ public class TreeRegistry {
         this.file = file;
     }
 
-    /** @return the tree with this id, empty if there is none or it was rejected */
+    /**
+     * Looks up a tree.
+     *
+     * @param id id of the tree
+     * @return the tree with this id, empty if there is none or it was rejected
+     */
     public synchronized Optional<TreeDefinition> tree(String id) {
         reloadIfChanged();
         return Optional.ofNullable(report.trees().get(id));
     }
 
     /**
+     * Explains why a tree is not available.
+     *
+     * @param id id of the tree
      * @return why the tree is not available: the error of the file, the load errors of the tree, or that it does not exist; empty if the tree is
      *         usable
      */

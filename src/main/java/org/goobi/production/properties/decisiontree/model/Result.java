@@ -23,6 +23,10 @@ package org.goobi.production.properties.decisiontree.model;
  * exception statement from your version.
  */
 
-/** A leaf of the tree. The id identifies the result for diagnosis and display, it is not stored. Its fields are set on the answers leading to it. */
+/**
+ * A leaf of the tree. The id identifies the result for diagnosis and display, it is not stored. Its fields are set on the answers leading to it.
+ *
+ * @param id id of the result
+ */
 public record Result(String id) implements Node {
 }

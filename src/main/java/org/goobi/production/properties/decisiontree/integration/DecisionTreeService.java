@@ -86,11 +86,23 @@ public class DecisionTreeService {
     /** Shows the labels untranslated, so what is stored does not depend on the language of the user. */
     private final TreeEngine plainEngine = new TreeEngine();
 
+    /**
+     * Creates a service that shows the labels of the tree file as they are.
+     *
+     * @param registry the loaded trees
+     * @param lookup finds the decision tree property of a step
+     * @param stores gives the property store of a process
+     */
     public DecisionTreeService(TreeRegistry registry, PropertyLookup lookup, Function<Process, PropertyStore> stores) {
         this(registry, lookup, stores, null);
     }
 
     /**
+     * Creates a service.
+     *
+     * @param registry the loaded trees
+     * @param lookup finds the decision tree property of a step
+     * @param stores gives the property store of a process
      * @param translator translates a label of the tree (used as a key) into the language of a locale and returns it unchanged if there is no
      *            translation; may be null
      */
@@ -102,7 +114,11 @@ public class DecisionTreeService {
         this.engine = new TreeEngine(translator);
     }
 
-    /** @return the service that works on the configured properties and the properties in the database */
+    /**
+     * Gives the shared service.
+     *
+     * @return the service that works on the configured properties and the properties in the database
+     */
     public static synchronized DecisionTreeService getInstance() {
         if (instance == null) {
             instance = new DecisionTreeService(DecisionTreeValues.getInstance().getRegistry(),
@@ -164,6 +180,8 @@ public class DecisionTreeService {
     }
 
     /**
+     * Shows the current state.
+     *
      * @param step the task
      * @param propertyName name of the decision tree property
      * @param userMayEdit whether the user may change the task now; the access condition of the step is checked in addition
@@ -178,6 +196,14 @@ public class DecisionTreeService {
     /**
      * Chooses an answer at a step of the path; the answers below are dropped.
      *
+     * @param step the task
+     * @param propertyName name of the decision tree property
+     * @param userMayEdit whether the user may change the task now; the access condition of the step is checked in addition
+     * @param path the answers so far, only used while no result is stored
+     * @param stepIndex position in the path
+     * @param answerIndex index of the chosen answer
+     * @param locale language of the labels
+     * @return the new state of the tree
      * @throws DecisionTreeException FORBIDDEN if the tree cannot be changed, CONFLICT if a result is stored (change or start again first),
      *             BAD_REQUEST if the path or an index does not fit
      */
@@ -198,7 +224,13 @@ public class DecisionTreeService {
      * Changes an earlier answer: the answers from that step on are dropped, and a stored result is removed at once so the data never holds a
      * result that does not fit the answers.
      *
+     * @param step the task
+     * @param propertyName name of the decision tree property
+     * @param userMayEdit whether the user may change the task now; the access condition of the step is checked in addition
      * @param path the answers so far; ignored if a result is stored, because then the way is rebuilt from the stored fields
+     * @param stepIndex position in the path
+     * @param locale language of the labels
+     * @return the new state of the tree
      * @throws DecisionTreeException FORBIDDEN if the tree cannot be changed, CONFLICT if a result is stored but its way is not known (start again),
      *             BAD_REQUEST if the step does not exist
      */
@@ -231,7 +263,14 @@ public class DecisionTreeService {
      * Chooses another answer at an earlier step in one call (a click on another answer of a row above): the answers from that step on are
      * dropped, a stored result is removed at once, and the new answer is taken.
      *
+     * @param step the task
+     * @param propertyName name of the decision tree property
+     * @param userMayEdit whether the user may change the task now; the access condition of the step is checked in addition
      * @param path the answers so far; ignored if a result is stored
+     * @param stepIndex position in the path
+     * @param answerIndex index of the chosen answer
+     * @param locale language of the labels
+     * @return the new state of the tree
      * @throws DecisionTreeException as {@link #reopen} and {@link #answer}
      */
     public ViewState change(Step step, String propertyName, boolean userMayEdit, int[] path, int stepIndex, int answerIndex, Locale locale) {
@@ -243,6 +282,11 @@ public class DecisionTreeService {
     /**
      * Starts again from the top question; a stored result is removed, even if it fits no result of the tree.
      *
+     * @param step the task
+     * @param propertyName name of the decision tree property
+     * @param userMayEdit whether the user may change the task now; the access condition of the step is checked in addition
+     * @param locale language of the labels
+     * @return the new state of the tree
      * @throws DecisionTreeException FORBIDDEN if the tree cannot be changed
      */
     public ViewState restart(Step step, String propertyName, boolean userMayEdit, Locale locale) {
@@ -256,6 +300,12 @@ public class DecisionTreeService {
     /**
      * Writes the result the path leads to: every field of the tree is set or deleted, and the optional result id and path properties are written.
      *
+     * @param step the task
+     * @param propertyName name of the decision tree property
+     * @param userMayEdit whether the user may change the task now; the access condition of the step is checked in addition
+     * @param path the answers chosen
+     * @param locale language of the labels
+     * @return the new state of the tree
      * @throws DecisionTreeException FORBIDDEN if the tree cannot be changed, CONFLICT if the path does not end at a result or a result is already
      *             stored, BAD_REQUEST if the path does not fit
      */

@@ -59,11 +59,21 @@ public class DecisionTreeBean implements Serializable {
 
     private static final String VIEWS_ATTRIBUTE = DecisionTreeBean.class.getName() + ".views";
 
-    /** A name and its value, as the page lists fields. The page cannot iterate a map in a repeat, so the fields come as lists. */
+    /**
+     * A name and its value, as the page lists fields. The page cannot iterate a map in a repeat, so the fields come as lists.
+     *
+     * @param name name of the field
+     * @param value value of the field
+     */
     public record Field(String name, String value) {
     }
 
-    /** An answered question with the fields its answer decides. */
+    /**
+     * An answered question with the fields its answer decides.
+     *
+     * @param step the answered question
+     * @param decided the fields its answer decides
+     */
     public record Row(PathStep step, List<Field> decided) {
     }
 
@@ -147,31 +157,56 @@ public class DecisionTreeBean implements Serializable {
         return trees;
     }
 
-    /** Chooses an answer in the open question or at an earlier step. */
+    /**
+     * Chooses an answer in the open question or at an earlier step.
+     *
+     * @param name name of the property
+     * @param stepIndex position in the path
+     * @param answerIndex index of the chosen answer
+     */
     public void answer(String name, int stepIndex, int answerIndex) {
         run(name, () -> DecisionTreeService.getInstance()
                 .answer(step(), name, userMayEdit(), paths.get(name), stepIndex, answerIndex, Helper.getSessionLocale()));
     }
 
-    /** Changes an earlier answer: everything below it is dropped, and a stored result is removed. */
+    /**
+     * Changes an earlier answer: everything below it is dropped, and a stored result is removed.
+     *
+     * @param name name of the property
+     * @param stepIndex position in the path
+     */
     public void reopen(String name, int stepIndex) {
         run(name, () -> DecisionTreeService.getInstance()
                 .reopen(step(), name, userMayEdit(), paths.get(name), stepIndex, Helper.getSessionLocale()));
     }
 
-    /** Takes another answer at an earlier step in one click: everything below it is dropped, and a stored result is removed. */
+    /**
+     * Takes another answer at an earlier step in one click: everything below it is dropped, and a stored result is removed.
+     *
+     * @param name name of the property
+     * @param stepIndex position in the path
+     * @param answerIndex index of the chosen answer
+     */
     public void change(String name, int stepIndex, int answerIndex) {
         run(name, () -> DecisionTreeService.getInstance()
                 .change(step(), name, userMayEdit(), paths.get(name), stepIndex, answerIndex, Helper.getSessionLocale()));
     }
 
-    /** Writes the result the chosen answers lead to. */
+    /**
+     * Writes the result the chosen answers lead to.
+     *
+     * @param name name of the property
+     */
     public void confirm(String name) {
         run(name, () -> DecisionTreeService.getInstance()
                 .confirm(step(), name, userMayEdit(), paths.get(name), Helper.getSessionLocale()));
     }
 
-    /** Starts again from the first question; a stored result is removed. */
+    /**
+     * Starts again from the first question; a stored result is removed.
+     *
+     * @param name name of the property
+     */
     public void restart(String name) {
         run(name, () -> DecisionTreeService.getInstance().restart(step(), name, userMayEdit(), Helper.getSessionLocale()));
     }

@@ -31,12 +31,26 @@ import java.util.Set;
  */
 public interface PropertyStore {
 
-    /** @return the values of the properties with these names; properties that do not exist are missing */
+    /**
+     * Reads properties.
+     *
+     * @param names names of the properties
+     * @return the values of the properties with these names; properties that do not exist are missing
+     */
     Map<String, String> read(Set<String> names);
 
-    /** Creates or changes the property. */
+    /**
+     * Creates or changes the property.
+     *
+     * @param name name of the property
+     * @param value new value
+     */
     void save(String name, String value);
 
-    /** Deletes the property; it is no error if it does not exist. */
+    /**
+     * Deletes the property; it is no error if it does not exist.
+     *
+     * @param name name of the property
+     */
     void delete(String name);
 }

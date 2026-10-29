@@ -86,6 +86,8 @@ public class TreeFileParser {
     /**
      * Parses a trees file.
      *
+     * @param in the trees file
+     * @return the loaded trees and the messages about them
      * @throws TreeLoadException if the file is not well-formed or has the wrong root element
      */
     public LoadReport parse(InputStream in) throws TreeLoadException {
@@ -363,7 +365,8 @@ public class TreeFileParser {
         Set<String> reported = new LinkedHashSet<>();
         for (TreeEngine.LeafPath leaf : new TreeEngine().allPaths(tree)) {
             if (leaf.fields().isEmpty() && reported.add(leaf.result().id())) {
-                ctx.error(position + "/result[" + leaf.result().id() + "]", "the result has no fields on some path (after merging defaults and answers)");
+                ctx.error(position + "/result[" + leaf.result().id() + "]",
+                        "the result has no fields on some path (after merging defaults and answers)");
             }
         }
     }

@@ -32,12 +32,26 @@ import java.util.Set;
  */
 public interface ResultWriter {
 
-    /** @return the current values of the owned fields; fields that are not set are missing */
+    /**
+     * Reads the owned fields.
+     *
+     * @param owned names of the owned fields
+     * @return the current values of the owned fields; fields that are not set are missing
+     */
     Map<String, String> read(Set<String> owned);
 
-    /** Sets every owned field that is in fields and deletes every other owned field. */
+    /**
+     * Sets every owned field that is in fields and deletes every other owned field.
+     *
+     * @param fields the fields to set
+     * @param owned names of the owned fields
+     */
     void write(Map<String, String> fields, Set<String> owned);
 
-    /** Deletes all owned fields. */
+    /**
+     * Deletes all owned fields.
+     *
+     * @param owned names of the owned fields
+     */
     void clear(Set<String> owned);
 }

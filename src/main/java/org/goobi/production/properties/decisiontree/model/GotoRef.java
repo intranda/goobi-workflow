@@ -23,6 +23,10 @@ package org.goobi.production.properties.decisiontree.model;
  * exception statement from your version.
  */
 
-/** Continues at the question with this id, so that branches that merge are written once. */
+/**
+ * Continues at the question with this id, so that branches that merge are written once.
+ *
+ * @param ref id of the question to continue at
+ */
 public record GotoRef(String ref) implements Node {
 }

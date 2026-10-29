@@ -27,6 +27,12 @@ import java.util.List;
 
 /**
  * A question. The id is only required if a {@link GotoRef} points to it.
+ *
+ * @param id id of the question, may be null
+ * @param label label of the question
+ * @param hint hint of the question
+ * @param type type of the question, see {@link #TYPE_CHOICE}
+ * @param answers the possible answers
  */
 public record Question(String id, Text label, Text hint, String type, List<Answer> answers) implements Node {
 

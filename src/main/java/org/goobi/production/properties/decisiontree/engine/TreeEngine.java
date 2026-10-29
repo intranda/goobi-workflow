@@ -55,11 +55,23 @@ import org.goobi.production.properties.decisiontree.writer.ResultWriter;
  */
 public class TreeEngine {
 
-    /** A way from the top question to a result. */
+    /**
+     * A way from the top question to a result.
+     *
+     * @param path index of the chosen answer at each step
+     * @param result the result the way ends at
+     * @param fields the fields collected along the way
+     */
     public record LeafPath(int[] path, Result result, Map<String, String> fields) {
     }
 
-    /** A way that fits stored fields. */
+    /**
+     * A way that fits stored fields.
+     *
+     * @param resultId id of the result the way ends at
+     * @param path index of the chosen answer at each step
+     * @param fields the fields collected along the way
+     */
     public record Candidate(String resultId, int[] path, Map<String, String> fields) {
     }
 
@@ -126,12 +138,24 @@ public class TreeEngine {
         return result;
     }
 
-    /** @return the fields collected along the path: defaults, then the fields of the answers, then those of the result if a leaf is reached */
+    /**
+     * Collects the fields of a path.
+     *
+     * @param tree the tree
+     * @param path index of the chosen answer at each step
+     * @return the fields collected along the path: defaults, then the fields of the answers, then those of the result if a leaf is reached
+     */
     public Map<String, String> fieldsOf(TreeDefinition tree, int[] path) {
         return walk(tree, path).fields();
     }
 
     /**
+     * Chooses an answer at a step.
+     *
+     * @param tree the tree
+     * @param path index of the chosen answer at each step
+     * @param stepIndex position in the path
+     * @param answerIndex index of the chosen answer
      * @return the path after choosing an answer at a step; everything below the step is dropped
      * @throws IllegalArgumentException if the step is not an open or an answered question or the answer does not exist
      */
@@ -149,7 +173,13 @@ public class TreeEngine {
         return result;
     }
 
-    /** @return the path up to, but not including, the step; everything below is dropped */
+    /**
+     * Cuts a path.
+     *
+     * @param path index of the chosen answer at each step
+     * @param stepIndex position in the path
+     * @return the path up to, but not including, the step; everything below is dropped
+     */
     public int[] back(int[] path, int stepIndex) {
         if (stepIndex < 0 || stepIndex > path.length) {
             throw new IllegalArgumentException("No step " + stepIndex);
@@ -157,7 +187,14 @@ public class TreeEngine {
         return Arrays.copyOf(path, stepIndex);
     }
 
-    /** @return the view of a path: ANSWERING at an open question, RESULT at a leaf */
+    /**
+     * Shows a path.
+     *
+     * @param tree the tree
+     * @param path index of the chosen answer at each step
+     * @param locale language of the labels
+     * @return the view of a path: ANSWERING at an open question, RESULT at a leaf
+     */
     public ViewState view(TreeDefinition tree, int[] path, Locale locale) {
         Walk walk = walk(tree, path);
         List<Message> messages = List.of();
@@ -165,7 +202,8 @@ public class TreeEngine {
             return new ViewState(State.RESULT, pathSteps(walk, locale), null, new ResultView(walk.leaf().id(), walk.fields()), null, messages);
         }
         List<AnswerView> answers = answerViews(walk.open(), locale);
-        OpenQuestion open = new OpenQuestion(path.length, walk.open().id(), text(walk.open().label(), locale), text(walk.open().hint(), locale), answers);
+        OpenQuestion open = new OpenQuestion(path.length, walk.open().id(), text(walk.open().label(), locale), text(walk.open().hint(), locale),
+                answers);
         return new ViewState(State.ANSWERING, pathSteps(walk, locale), open, null, null, messages);
     }
 
@@ -188,6 +226,9 @@ public class TreeEngine {
     }
 
     /**
+     * Lists all ways of a tree.
+     *
+     * @param tree the tree
      * @return all ways from the top question to a result, goto resolved
      * @throws IllegalStateException if the tree has more than {@link TreeDefinition#MAX_PATHS} ways
      */
@@ -219,6 +260,8 @@ public class TreeEngine {
     /**
      * Rebuilds the state from stored fields: all ways whose collected fields equal the stored ones for every owned field.
      *
+     * @param tree the tree
+     * @param stored the stored fields
      * @return the ways that fit, none if the stored fields fit no result
      */
     public List<Candidate> match(TreeDefinition tree, Map<String, String> stored) {
@@ -242,6 +285,11 @@ public class TreeEngine {
     /**
      * The state when the task is opened: ANSWERING with an empty path if nothing is stored, CONFIRMED if the stored fields fit a result, MISMATCH
      * otherwise.
+     *
+     * @param tree the tree
+     * @param stored the stored fields
+     * @param locale language of the labels
+     * @return the state to show
      */
     public ViewState restore(TreeDefinition tree, Map<String, String> stored, Locale locale) {
         Map<String, String> normalized = clean(stored);
@@ -267,6 +315,9 @@ public class TreeEngine {
     /**
      * Writes the result: every owned field is set or deleted.
      *
+     * @param tree the tree
+     * @param path index of the chosen answer at each step
+     * @param writer where the fields are stored
      * @throws IllegalStateException if the path does not end at a result
      */
     public void confirm(TreeDefinition tree, int[] path, ResultWriter writer) {
@@ -277,7 +328,12 @@ public class TreeEngine {
         writer.write(walk.fields(), tree.ownedFields());
     }
 
-    /** Deletes the stored fields. */
+    /**
+     * Deletes the stored fields.
+     *
+     * @param tree the tree
+     * @param writer where the fields are stored
+     */
     public void clear(TreeDefinition tree, ResultWriter writer) {
         writer.clear(tree.ownedFields());
     }
@@ -286,6 +342,10 @@ public class TreeEngine {
      * Changes an earlier answer: the path is cut before the step and, if a result was stored, its fields are removed at once, so the data never
      * holds a result that does not fit the answers.
      *
+     * @param tree the tree
+     * @param path index of the chosen answer at each step
+     * @param stepIndex position of the answer to change
+     * @param writer where the fields are stored
      * @return the new path
      */
     public int[] reopen(TreeDefinition tree, int[] path, int stepIndex, ResultWriter writer) {
@@ -294,7 +354,13 @@ public class TreeEngine {
         return head;
     }
 
-    /** Starts again; stored fields are removed. */
+    /**
+     * Starts again; stored fields are removed.
+     *
+     * @param tree the tree
+     * @param writer where the fields are stored
+     * @return the empty path
+     */
     public int[] restart(TreeDefinition tree, ResultWriter writer) {
         clearIfStored(tree, writer);
         return new int[0];

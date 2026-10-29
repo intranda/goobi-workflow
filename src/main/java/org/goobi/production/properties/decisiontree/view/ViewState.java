@@ -85,6 +85,10 @@ public record ViewState(State state, List<PathStep> path, OpenQuestion open, Res
      * The open question.
      *
      * @param stepIndex position the answer will take in the path
+     * @param id id of the question, may be null
+     * @param label label of the question
+     * @param hint hint of the question, empty if there is none
+     * @param answers the possible answers
      */
     public record OpenQuestion(int stepIndex, String id, String label, String hint, List<AnswerView> answers) {
     }

@@ -80,7 +80,8 @@ public final class BindingParser {
             }
             String other = seen.put(to, entry.getKey());
             if (other != null) {
-                throw new IllegalArgumentException("The property '" + name + "' maps '" + other + "' and '" + entry.getKey() + "' to the same name '" + to + "'");
+                throw new IllegalArgumentException(
+                        "The property '" + name + "' maps '" + other + "' and '" + entry.getKey() + "' to the same name '" + to + "'");
             }
         }
         if (resultIdProperty != null && resultIdProperty.equals(pathProperty)) {

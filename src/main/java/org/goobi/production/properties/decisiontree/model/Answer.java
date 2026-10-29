@@ -27,6 +27,10 @@ import java.util.Map;
 
 /**
  * An answer. Its fields are collected along the path; next is a question, a result or a goto.
+ *
+ * @param label label of the answer
+ * @param fields fields that are set by choosing this answer
+ * @param next what follows: a question, a result or a goto
  */
 public record Answer(Text label, Map<String, String> fields, Node next) {
 
