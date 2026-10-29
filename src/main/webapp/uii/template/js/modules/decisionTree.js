@@ -78,7 +78,8 @@ function drawLinks(tree, rows, origin) {
             const x2 = b.left + b.width / 2 - origin.left;
             const y2 = b.top - origin.top;
             const chosen = to.classList.contains('is-chosen');
-            const path = `<path class="${chosen ? 'is-path' : ''}" d="M${f(x1)} ${f(y1)}V${f((y1 + y2) / 2)}H${f(x2)}V${f(y2)}"/>`;
+            const my = (y1 + y2) / 2;
+            const path = `<path class="${chosen ? 'is-path' : ''}" d="M${f(x1)} ${f(y1)}C${f(x1)} ${f(my)} ${f(x2)} ${f(my)} ${f(x2)} ${f(y2)}"/>`;
             if (chosen) {
                 dark += path;
             } else {
