@@ -59,15 +59,8 @@
                                     value="#{tree.rows}"
                                     var="row">
                                     <li class="dt-row">
-                                        <fieldset
-                                            class="dt-question"
-                                            aria-describedby="#{empty row.step.hint ? null : 'dt-hint-'.concat(treeStatus.index).concat('-').concat(row.step.stepIndex)}">
+                                        <fieldset class="dt-question">
                                             <legend class="dt-legend">#{row.step.label}</legend>
-                                            <ui:fragment rendered="#{not empty row.step.hint}">
-                                                <p
-                                                    class="dt-hint"
-                                                    id="dt-hint-#{treeStatus.index}-#{row.step.stepIndex}">#{row.step.hint}</p>
-                                            </ui:fragment>
                                             <div class="dt-answers">
                                                 <ui:repeat
                                                     value="#{row.step.answers}"
@@ -121,11 +114,6 @@
                                             class="dt-legend"
                                             tabindex="-1"
                                             data-focus-target="true">#{tree.view.open.label}</legend>
-                                        <ui:fragment rendered="#{not empty tree.view.open.hint}">
-                                            <p
-                                                class="dt-hint"
-                                                id="dt-hint-#{treeStatus.index}-open">#{tree.view.open.hint}</p>
-                                        </ui:fragment>
                                         <div class="dt-answers">
                                             <ui:repeat
                                                 value="#{tree.view.open.answers}"
@@ -143,6 +131,11 @@
                                                 </button>
                                             </ui:repeat>
                                         </div>
+                                        <ui:fragment rendered="#{not empty tree.view.open.hint}">
+                                            <p
+                                                class="dt-hint"
+                                                id="dt-hint-#{treeStatus.index}-open">#{tree.view.open.hint}</p>
+                                        </ui:fragment>
                                     </fieldset>
                                 </li>
                             </ol>
