@@ -55,6 +55,14 @@
                                 class="dt-tree"
                                 aria-label="#{msgs['decisiontree.path']}"
                                 jsf:rendered="#{not empty tree.rows or tree.view.state == 'ANSWERING'}">
+                                <!-- the start of the way: decorative, so it is hidden from assistive technology and in the compact form -->
+                                <li
+                                    class="dt-row dt-start"
+                                    aria-hidden="true">
+                                    <div class="dt-answers">
+                                        <div class="dt-answer is-chosen"><span class="dt-label">#{msgs['decisiontree.start']}</span></div>
+                                    </div>
+                                </li>
                                 <ui:repeat
                                     value="#{tree.rows}"
                                     var="row">

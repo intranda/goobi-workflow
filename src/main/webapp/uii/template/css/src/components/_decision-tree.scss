@@ -110,6 +110,10 @@
     }
   }
 
+  .dt-start .dt-label {
+    font-weight: 600;
+  }
+
   // the chosen answer that ends the way at a result
   .dt-answer.is-chosen.is-done {
     border-color: var(--clr-success, #007838);
@@ -170,6 +174,10 @@
 
   // compact form (the tree does not fit the box): no lines, no centring; every question with its answers wrapped below it, as a list
   .dt-tree.is-compact {
+    .dt-start {
+      display: none;
+    }
+
     .dt-row {
       width: auto;
     }

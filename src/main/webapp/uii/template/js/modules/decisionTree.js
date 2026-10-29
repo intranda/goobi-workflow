@@ -49,7 +49,8 @@ function layout(tree) {
     };
     for (let i = 1; i < rows.length; i++) {
         const parent = rows[i - 1].querySelector('.dt-answer.is-chosen');
-        if (parent) {
+        // the first question is not placed under the start box: the start is centred above it instead
+        if (parent && !rows[i - 1].classList.contains('dt-start')) {
             place(i, mid(parent));
         }
     }
