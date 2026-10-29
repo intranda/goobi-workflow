@@ -89,7 +89,12 @@ public record ViewState(State state, List<PathStep> path, OpenQuestion open, Res
     public record OpenQuestion(int stepIndex, String id, String label, String hint, List<AnswerView> answers) {
     }
 
-    public record AnswerView(int index, String label) {
+    /**
+     * @param index index of the answer in its question
+     * @param label label of the answer
+     * @param leaf whether the answer leads straight to a result, so a renderer can mark where a way ends
+     */
+    public record AnswerView(int index, String label, boolean leaf) {
     }
 
     /**

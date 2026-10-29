@@ -67,7 +67,7 @@
                                                     var="answer">
                                                     <!-- the chosen answer -->
                                                     <div
-                                                        class="dt-answer is-chosen"
+                                                        class="dt-answer is-chosen#{answer.leaf ? ' is-done' : ''}"
                                                         aria-current="true"
                                                         aria-label="#{answer.label}, #{msgs['decisiontree.chosen']}"
                                                         jsf:rendered="#{answer.index == row.step.answerIndex}">
@@ -89,16 +89,6 @@
                                                     </button>
                                                 </ui:repeat>
                                             </div>
-                                            <p
-                                                class="dt-decided"
-                                                jsf:rendered="#{not empty row.decided}">
-                                                <span class="visually-hidden">#{msgs['decisiontree.decided']}:</span>
-                                                <ui:repeat
-                                                    value="#{row.decided}"
-                                                    var="field">
-                                                    <span class="dt-decided-field"><strong>#{field.name}</strong> #{field.value}</span>
-                                                </ui:repeat>
-                                            </p>
                                         </fieldset>
                                     </li>
                                 </ui:repeat>
@@ -114,6 +104,11 @@
                                             class="dt-legend"
                                             tabindex="-1"
                                             data-focus-target="true">#{tree.view.open.label}</legend>
+                                        <ui:fragment rendered="#{not empty tree.view.open.hint}">
+                                            <p
+                                                class="dt-hint"
+                                                id="dt-hint-#{treeStatus.index}-open">#{tree.view.open.hint}</p>
+                                        </ui:fragment>
                                         <div class="dt-answers">
                                             <ui:repeat
                                                 value="#{tree.view.open.answers}"
@@ -131,11 +126,6 @@
                                                 </button>
                                             </ui:repeat>
                                         </div>
-                                        <ui:fragment rendered="#{not empty tree.view.open.hint}">
-                                            <p
-                                                class="dt-hint"
-                                                id="dt-hint-#{treeStatus.index}-open">#{tree.view.open.hint}</p>
-                                        </ui:fragment>
                                     </fieldset>
                                 </li>
                             </ol>

@@ -53,10 +53,11 @@
       outline-offset: 2px;
     }
 
-    // Bootstrap clears the element after a legend, which would push the answers below the question
-    + * {
-      clear: none;
-    }
+  }
+
+  // Bootstrap clears the element after a legend, which would push the answers below the question
+  .dt-answers {
+    clear: none;
   }
 
   // the open question is the active one
@@ -73,17 +74,14 @@
     gap: 0.75rem;
   }
 
-  // hints and decided fields belong to the row, under the answers
-  .dt-hint,
-  .dt-decided {
-    clear: both;
-    margin: 0.25rem 0 0 calc(var(--dt-q) + 0.75rem);
+  // the hint of the open question stands under the question, in the same column (a second left float; Bootstrap clears it below the legend)
+  .dt-hint {
+    float: left;
+    width: var(--dt-q);
+    margin: 0 0.75rem 0 0;
+    padding: 0 0.5rem 0 0;
     font-size: var(--fs-400);
     color: var(--clr-neutral-600);
-  }
-
-  .dt-decided-field + .dt-decided-field {
-    margin-left: 0.75rem;
   }
 
   .dt-answer {
@@ -110,6 +108,13 @@
       padding: 0.25rem 0.5rem;
       border: 2px solid var(--clr-black, #2a2a2a);
     }
+  }
+
+  // the chosen answer that ends the way at a result
+  .dt-answer.is-chosen.is-done {
+    border-color: var(--clr-success, #007838);
+    background: color-mix(in srgb, var(--clr-success, #007838) 10%, white);
+    color: color-mix(in srgb, var(--clr-success, #007838) 70%, black);
   }
 
   button.dt-answer {
@@ -192,9 +197,11 @@
       white-space: normal;
     }
 
-    .dt-hint,
-    .dt-decided {
-      margin-left: 0;
+    .dt-hint {
+      float: none;
+      width: auto;
+      margin: 0.375rem 0 0;
+      padding: 0;
     }
   }
 

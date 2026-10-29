@@ -175,7 +175,7 @@ public class TreeEngine {
     private List<AnswerView> answerViews(Question question, Locale locale) {
         List<AnswerView> answers = new ArrayList<>();
         for (int i = 0; i < question.answers().size(); i++) {
-            answers.add(new AnswerView(i, text(question.answers().get(i).label(), locale)));
+            answers.add(new AnswerView(i, text(question.answers().get(i).label(), locale), question.answers().get(i).next() instanceof Result));
         }
         return answers;
     }

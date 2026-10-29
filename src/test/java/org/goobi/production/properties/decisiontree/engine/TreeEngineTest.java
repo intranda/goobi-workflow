@@ -155,6 +155,16 @@ public class TreeEngineTest {
     }
 
     @Test
+    public void theLastAnswerOfAWayIsMarkedAsLeadingToAResult() {
+        LeafPath leaf = engine.allPaths(scan).get(0);
+        List<ViewState.PathStep> path = engine.view(scan, leaf.path(), Locale.ENGLISH).path();
+        for (int i = 0; i < path.size(); i++) {
+            ViewState.PathStep step = path.get(i);
+            assertEquals(i == path.size() - 1, step.answers().get(step.answerIndex()).leaf());
+        }
+    }
+
+    @Test
     public void gotoContinuesAtTheTargetQuestion() throws Exception {
         TreeDefinition tree = small();
         ViewState view = engine.view(tree, new int[] { 1 }, Locale.ENGLISH);
