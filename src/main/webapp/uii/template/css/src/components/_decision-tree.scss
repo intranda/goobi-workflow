@@ -1,0 +1,198 @@
+// The decision tree box of a task (decisiontree:box): the way as a family tree. Every row is a question with all its answers; the chosen answer
+// has a dark frame and a filled circle, the others a thin frame and an empty circle. No grey areas, so the contrast does not depend on a fill.
+// js/modules/decisionTree.js centres the answers under the chosen answer above, draws .dt-links and adds .is-stack to rows that do not fit.
+
+.decision-trees {
+  .dt-box {
+    container-type: inline-size;
+  }
+
+  .dt-tree {
+    --dt-q: 15rem; // width of the question column
+    --dt-gap: 2rem; // vertical distance between rows
+    --dt-line: var(--clr-neutral-300);
+
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 1rem;
+  }
+
+  .dt-row {
+    position: relative;
+    z-index: 1;
+    width: max-content; // no max-width: the script compares the natural width with the box to decide whether to stack
+  }
+
+  .dt-row + .dt-row {
+    margin-top: var(--dt-gap);
+  }
+
+  // The legend is a left float, not the rendered legend of the fieldset, so the question stands beside its answers.
+  .dt-question {
+    display: flow-root;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .dt-legend {
+    float: left;
+    width: var(--dt-q);
+    margin: 0 0.75rem 0 0;
+    padding: 0.25rem 0.5rem 0 0;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--clr-neutral-600);
+
+    &:focus-visible {
+      outline: 2px solid var(--clr-primary-600);
+      outline-offset: 2px;
+    }
+  }
+
+  // the open question is the active one
+  .dt-open .dt-legend {
+    font-weight: 600;
+    color: var(--clr-black, #2a2a2a);
+  }
+
+  .dt-answers {
+    position: relative; // decisionTree.js shifts it with `left`
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  // hints and decided fields belong to the row, under the answers
+  .dt-hint,
+  .dt-decided {
+    clear: both;
+    margin: 0.25rem 0 0 calc(var(--dt-q) + 0.75rem);
+    font-size: var(--fs-400);
+    color: var(--clr-neutral-600);
+  }
+
+  .dt-decided-field + .dt-decided-field {
+    margin-left: 0.75rem;
+  }
+
+  .dt-answer {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.375rem;
+    box-sizing: border-box;
+    min-height: 24px; // WCAG 2.5.8
+    padding: 0.3125rem 0.5625rem;
+    border: 1px solid var(--clr-neutral-600); // 3:1 to the surface (WCAG 1.4.11)
+    border-radius: 6px;
+    background: var(--clr-white, #fff);
+    color: var(--clr-black, #2a2a2a);
+    font: inherit;
+    font-size: var(--fs-400);
+    line-height: 1.3;
+    text-align: left;
+    white-space: nowrap;
+    transition:
+      border-color 0.25s,
+      color 0.25s;
+
+    &.is-chosen {
+      padding: 0.25rem 0.5rem;
+      border: 2px solid var(--clr-black, #2a2a2a);
+    }
+  }
+
+  button.dt-answer {
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--clr-primary-600);
+      color: var(--clr-primary-600);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--clr-primary-600);
+      outline-offset: 2px;
+    }
+  }
+
+  // the state without colour: filled circle = chosen, empty circle = not chosen
+  .dt-mark {
+    flex: none;
+    box-sizing: border-box;
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-top: 0.125rem;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+  }
+
+  .is-chosen .dt-mark {
+    background: currentColor;
+  }
+
+  // the connecting lines, drawn by decisionTree.js behind the boxes
+  .dt-links {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    overflow: visible;
+    pointer-events: none;
+
+    path {
+      fill: none;
+      stroke: var(--dt-line);
+      stroke-width: 2px;
+
+      &.is-path {
+        stroke: var(--clr-neutral-600);
+        stroke-width: 3px;
+      }
+    }
+  }
+
+  // answers below each other: the question above, the answers as a column indented under the chosen answer above
+  .dt-row.is-stack {
+    width: auto;
+
+    .dt-legend {
+      float: none; // back to the rendered legend: the question above its answers
+      width: auto;
+      max-width: 100%;
+      margin: 0 0 0.375rem;
+      padding: 0;
+    }
+
+    .dt-answers {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .dt-answer {
+      max-width: 100%;
+      white-space: normal;
+    }
+
+    .dt-hint,
+    .dt-decided {
+      margin-left: 0;
+    }
+  }
+
+  // without JavaScript the answers wrap instead of being centred
+  .dt-tree:not([data-dt-init]) .dt-answers {
+    flex-wrap: wrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dt-answer {
+      transition: none;
+    }
+  }
+}

@@ -14,6 +14,7 @@ import { initEditImageAreas } from './editImageAreas.js';
 import { initHotkeys } from './hotkeys.js';
 import { initImageFilters } from "./imageFilters.js";
 import { initGroupEditModal } from './groupEditModal.js';
+import { initDecisionTree } from './decisionTree.js';
 
 export const initFunctions = function initFunctions() {
     initializeResizeTable();
@@ -28,6 +29,7 @@ export const initFunctions = function initFunctions() {
     initHotkeys();
     toggleHelp();
     initGroupEditModal();
+    initDecisionTree();
 
     const zoomableImage = loadImage();
     initImageAreaCreation(zoomableImage);

@@ -20,7 +20,8 @@
         <div class="decision-trees mb-3">
             <ui:repeat
                 value="#{bean.trees}"
-                var="tree">
+                var="tree"
+                varStatus="treeStatus">
                 <h:form id="decisionTreeForm">
                     <section:section type="neutral">
                         <section:header
@@ -28,11 +29,11 @@
                             icon="binary-tree" />
                         <section:body padding="false">
 
-                            <!-- state for screen readers -->
+                            <!-- state for screen readers; the live region itself is kept by decisionTree.js outside this form -->
                             <div
-                                class="visually-hidden"
-                                role="status"
-                                aria-live="polite">#{msgs['decisiontree.state.'.concat(tree.view.state)]}</div>
+                                class="dt-box"
+                                data-dt="true"
+                                data-dt-status="#{msgs['decisiontree.state.'.concat(tree.view.state)]}">
 
                             <!-- hints, e.g. that the tree changed since the result was written -->
                             <ui:repeat
@@ -40,76 +41,111 @@
                                 var="message">
                                 <util:alert
                                     type="#{message.level == 'WARN' ? 'warning' : 'info'}"
-                                    message="#{msgs[message.key]}" />
+                                    message="#{msgs[message.key]}"
+                                    styleClass="mx-3 mt-3" />
                             </ui:repeat>
 
-                            <!-- answered questions -->
-                            <ui:fragment rendered="#{not empty tree.rows}">
-                                <dl:list>
-                                    <ui:repeat
-                                        value="#{tree.rows}"
-                                        var="row">
-                                        <dl:term>#{row.step.label}</dl:term>
-                                        <dl:description>
-                                            <span>#{row.step.answerLabel}</span>
-                                            <ui:fragment rendered="#{tree.view.state == 'ANSWERING' or tree.view.state == 'RESULT' or tree.view.state == 'CONFIRMED'}">
-                                                <button:row rowStyleClass="ms-auto my-auto ps-2">
+                            <!--
+                                The way as a family tree: every row is a question with all its answers. The chosen answer is marked (aria-current,
+                                filled circle) and is no control; every other answer is a button that takes that answer and drops the way below it.
+                                Without JavaScript this is a plain list; decisionTree.js adds the connecting lines and stacks narrow rows.
+                                In read-only mode only the chosen answers are shown, as text.
+                            -->
+                            <ol
+                                class="dt-tree"
+                                aria-label="#{msgs['decisiontree.path']}"
+                                jsf:rendered="#{not empty tree.rows or tree.view.state == 'ANSWERING'}">
+                                <ui:repeat
+                                    value="#{tree.rows}"
+                                    var="row">
+                                    <li class="dt-row">
+                                        <fieldset
+                                            class="dt-question"
+                                            aria-describedby="#{empty row.step.hint ? null : 'dt-hint-'.concat(treeStatus.index).concat('-').concat(row.step.stepIndex)}">
+                                            <legend class="dt-legend">#{row.step.label}</legend>
+                                            <ui:fragment rendered="#{not empty row.step.hint}">
+                                                <p
+                                                    class="dt-hint"
+                                                    id="dt-hint-#{treeStatus.index}-#{row.step.stepIndex}">#{row.step.hint}</p>
+                                            </ui:fragment>
+                                            <div class="dt-answers">
+                                                <ui:repeat
+                                                    value="#{row.step.answers}"
+                                                    var="answer">
+                                                    <!-- the chosen answer -->
+                                                    <div
+                                                        class="dt-answer is-chosen"
+                                                        aria-current="true"
+                                                        aria-label="#{answer.label}, #{msgs['decisiontree.chosen']}"
+                                                        jsf:rendered="#{answer.index == row.step.answerIndex}">
+                                                        <span class="dt-mark" aria-hidden="true"></span>
+                                                        <span class="dt-label">#{answer.label}</span>
+                                                    </div>
+                                                    <!-- another answer: takes it at once and drops the way below -->
                                                     <button
                                                         type="button"
-                                                        class="btn btn-icon btn-blank"
-                                                        jsf:id="reopen"
-                                                        jsf:action="#{bean.reopen(tree.name, row.step.stepIndex)}"
-                                                        title="#{msgs['decisiontree.change']}"
-                                                        aria-label="#{msgs['decisiontree.change']}: #{row.step.label}">
-                                                        <util:icon icon="pencil" />
+                                                        class="dt-answer"
+                                                        jsf:id="change"
+                                                        jsf:action="#{bean.change(tree.name, row.step.stepIndex, answer.index)}"
+                                                        jsf:rendered="#{answer.index != row.step.answerIndex and tree.view.state != 'READ_ONLY'}">
+                                                        <span class="dt-mark" aria-hidden="true"></span>
+                                                        <span class="dt-label">#{answer.label}</span>
                                                         <f:ajax
                                                             execute="@form"
                                                             render="@form" />
                                                     </button>
-                                                </button:row>
-                                            </ui:fragment>
-                                        </dl:description>
-                                        <ui:fragment rendered="#{not empty row.decided}">
-                                            <dl:term>#{msgs['decisiontree.decided']}</dl:term>
-                                            <dl:description>
+                                                </ui:repeat>
+                                            </div>
+                                            <p
+                                                class="dt-decided"
+                                                jsf:rendered="#{not empty row.decided}">
+                                                <span class="visually-hidden">#{msgs['decisiontree.decided']}:</span>
                                                 <ui:repeat
                                                     value="#{row.decided}"
                                                     var="field">
-                                                    <span class="ms-2"><strong>#{field.name}</strong> #{field.value}</span>
+                                                    <span class="dt-decided-field"><strong>#{field.name}</strong> #{field.value}</span>
                                                 </ui:repeat>
-                                            </dl:description>
-                                        </ui:fragment>
-                                    </ui:repeat>
-                                </dl:list>
-                            </ui:fragment>
+                                            </p>
+                                        </fieldset>
+                                    </li>
+                                </ui:repeat>
 
-                            <!-- the open question -->
-                            <fieldset
-                                class="p-3 border-top"
-                                jsf:rendered="#{tree.view.state == 'ANSWERING'}">
-                                <legend
-                                    class="h5"
-                                    tabindex="-1">#{tree.view.open.label}</legend>
-                                <p
-                                    class="text-muted"
-                                    jsf:rendered="#{not empty tree.view.open.hint}">#{tree.view.open.hint}</p>
-                                <div class="d-flex flex-wrap gap-2">
-                                    <ui:repeat
-                                        value="#{tree.view.open.answers}"
-                                        var="answer">
-                                        <button
-                                            type="button"
-                                            class="btn btn-blank"
-                                            jsf:id="answer"
-                                            jsf:action="#{bean.answer(tree.name, tree.view.open.stepIndex, answer.index)}">
-                                            #{answer.label}
-                                            <f:ajax
-                                                execute="@form"
-                                                render="@form" />
-                                        </button>
-                                    </ui:repeat>
-                                </div>
-                            </fieldset>
+                                <!-- the open question -->
+                                <li
+                                    class="dt-row dt-open"
+                                    jsf:rendered="#{tree.view.state == 'ANSWERING'}">
+                                    <fieldset
+                                        class="dt-question"
+                                        aria-describedby="#{empty tree.view.open.hint ? null : 'dt-hint-'.concat(treeStatus.index).concat('-open')}">
+                                        <legend
+                                            class="dt-legend"
+                                            tabindex="-1"
+                                            data-focus-target="true">#{tree.view.open.label}</legend>
+                                        <ui:fragment rendered="#{not empty tree.view.open.hint}">
+                                            <p
+                                                class="dt-hint"
+                                                id="dt-hint-#{treeStatus.index}-open">#{tree.view.open.hint}</p>
+                                        </ui:fragment>
+                                        <div class="dt-answers">
+                                            <ui:repeat
+                                                value="#{tree.view.open.answers}"
+                                                var="answer">
+                                                <button
+                                                    type="button"
+                                                    class="dt-answer"
+                                                    jsf:id="answer"
+                                                    jsf:action="#{bean.answer(tree.name, tree.view.open.stepIndex, answer.index)}">
+                                                    <span class="dt-mark" aria-hidden="true"></span>
+                                                    <span class="dt-label">#{answer.label}</span>
+                                                    <f:ajax
+                                                        execute="@form"
+                                                        render="@form" />
+                                                </button>
+                                            </ui:repeat>
+                                        </div>
+                                    </fieldset>
+                                </li>
+                            </ol>
 
                             <!-- not decided yet, and the user cannot decide -->
                             <p
@@ -118,7 +154,7 @@
 
                             <!-- the result -->
                             <ui:fragment rendered="#{not empty tree.fields}">
-                                <h3 class="h5 m-0 p-3 border-top border-bottom">
+                                <h3 class="h5 m-0 p-3 border-top border-bottom" tabindex="-1" data-focus-target="#{tree.view.state == 'RESULT'}">
                                     #{msgs['decisiontree.result']}
                                     <strong jsf:rendered="#{tree.view.result.id != null}">#{tree.view.result.id}</strong>
                                 </h3>
@@ -176,6 +212,7 @@
                                     </button>
                                 </div>
                             </ui:fragment>
+                            </div>
                         </section:body>
                     </section:section>
                 </h:form>
