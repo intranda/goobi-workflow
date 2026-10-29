@@ -159,6 +159,12 @@ public class DecisionTreeBean implements Serializable {
                 .reopen(step(), name, userMayEdit(), paths.get(name), stepIndex, Helper.getSessionLocale()));
     }
 
+    /** Takes another answer at an earlier step in one click: everything below it is dropped, and a stored result is removed. */
+    public void change(String name, int stepIndex, int answerIndex) {
+        run(name, () -> DecisionTreeService.getInstance()
+                .change(step(), name, userMayEdit(), paths.get(name), stepIndex, answerIndex, Helper.getSessionLocale()));
+    }
+
     /** Writes the result the chosen answers lead to. */
     public void confirm(String name) {
         run(name, () -> DecisionTreeService.getInstance()

@@ -167,20 +167,25 @@ public class TreeEngine {
         if (walk.leaf() != null) {
             return new ViewState(State.RESULT, pathSteps(walk, locale), null, new ResultView(walk.leaf().id(), walk.fields()), null, messages);
         }
-        List<AnswerView> answers = new ArrayList<>();
-        for (int i = 0; i < walk.open().answers().size(); i++) {
-            answers.add(new AnswerView(i, text(walk.open().answers().get(i).label(), locale)));
-        }
+        List<AnswerView> answers = answerViews(walk.open(), locale);
         OpenQuestion open = new OpenQuestion(path.length, walk.open().id(), text(walk.open().label(), locale), text(walk.open().hint(), locale), answers);
         return new ViewState(State.ANSWERING, pathSteps(walk, locale), open, null, null, messages);
+    }
+
+    private List<AnswerView> answerViews(Question question, Locale locale) {
+        List<AnswerView> answers = new ArrayList<>();
+        for (int i = 0; i < question.answers().size(); i++) {
+            answers.add(new AnswerView(i, text(question.answers().get(i).label(), locale)));
+        }
+        return answers;
     }
 
     private List<PathStep> pathSteps(Walk walk, Locale locale) {
         List<PathStep> steps = new ArrayList<>();
         for (int i = 0; i < walk.steps().size(); i++) {
             Step step = walk.steps().get(i);
-            steps.add(new PathStep(i, step.question().id(), text(step.question().label(), locale), step.answerIndex(),
-                    text(step.answer().label(), locale), clean(step.answer().fields())));
+            steps.add(new PathStep(i, step.question().id(), text(step.question().label(), locale), text(step.question().hint(), locale),
+                    step.answerIndex(), text(step.answer().label(), locale), answerViews(step.question(), locale), clean(step.answer().fields())));
         }
         return steps;
     }

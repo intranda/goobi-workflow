@@ -122,7 +122,7 @@ public class DecisionTreeBeanTest {
     private static ViewState answering(int... path) {
         PathStep[] steps = new PathStep[path.length];
         for (int i = 0; i < path.length; i++) {
-            steps[i] = new PathStep(i, "q" + i, "Question " + i, path[i], "Answer " + path[i], Map.of("Field" + i, "value" + i));
+            steps[i] = new PathStep(i, "q" + i, "Question " + i, "", path[i], "Answer " + path[i], List.of(), Map.of("Field" + i, "value" + i));
         }
         return new ViewState(State.ANSWERING, List.of(steps), null, null, null, List.of());
     }
@@ -218,6 +218,15 @@ public class DecisionTreeBeanTest {
         bean.reopen(NAME, 0);
         bean.restart(NAME);
         Mockito.verify(stepBean, Mockito.times(4)).refreshDecisionTrees();
+    }
+
+    @Test
+    public void changeTakesAnotherAnswerAtAnEarlierStepAndKeepsTheNewPath() {
+        Mockito.when(service.change(any(), eq(NAME), anyBoolean(), any(), eq(1), eq(0), any())).thenReturn(answering());
+        bean.change(NAME, 1, 0);
+        Mockito.verify(service).change(any(), eq(NAME), anyBoolean(), any(), eq(1), eq(0), any());
+        Mockito.verify(stepBean).refreshDecisionTrees();
+        assertTrue(requestAttributes.isEmpty());
     }
 
     @Test

@@ -229,6 +229,26 @@ public class DecisionTreeServiceTest {
     }
 
     @Test
+    public void changeTakesAnotherAnswerAtAnEarlierStepAndDropsTheRest() {
+        LeafPath leaf = uniqueLeaf();
+        int other = leaf.path()[0] == 0 ? 1 : 0;
+        ViewState state = service.change(step, NAME, true, leaf.path(), 0, other, EN);
+        assertEquals(1, state.path().size());
+        assertEquals(other, state.path().get(0).answerIndex());
+    }
+
+    @Test
+    public void changeAfterConfirmRemovesTheStoredFieldsAtOnce() {
+        LeafPath leaf = uniqueLeaf();
+        confirmed(leaf);
+        int other = leaf.path()[0] == 0 ? 1 : 0;
+        ViewState state = service.change(step, NAME, true, new int[0], 0, other, EN);
+        assertTrue(store.values.isEmpty(), "no result stays that does not fit the answers");
+        assertEquals(other, state.path().get(0).answerIndex());
+        assertReason(Reason.FORBIDDEN, () -> service.change(step, NAME, false, leaf.path(), 0, other, EN));
+    }
+
+    @Test
     public void confirmNeedsAResult() {
         LeafPath leaf = uniqueLeaf();
         assertReason(Reason.CONFLICT, () -> service.confirm(step, NAME, true, new int[0], EN));

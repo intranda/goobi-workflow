@@ -141,6 +141,20 @@ public class TreeEngineTest {
     }
 
     @Test
+    public void everyStepOfThePathListsAllAnswersOfItsQuestion() {
+        LeafPath leaf = engine.allPaths(scan).get(0);
+        ViewState view = engine.view(scan, leaf.path(), Locale.ENGLISH);
+        assertEquals(leaf.path().length, view.path().size());
+        for (ViewState.PathStep step : view.path()) {
+            assertTrue(step.answers().size() > 1, "the alternatives are listed");
+            assertEquals(step.answerLabel(), step.answers().get(step.answerIndex()).label());
+            for (int i = 0; i < step.answers().size(); i++) {
+                assertEquals(i, step.answers().get(i).index());
+            }
+        }
+    }
+
+    @Test
     public void gotoContinuesAtTheTargetQuestion() throws Exception {
         TreeDefinition tree = small();
         ViewState view = engine.view(tree, new int[] { 1 }, Locale.ENGLISH);

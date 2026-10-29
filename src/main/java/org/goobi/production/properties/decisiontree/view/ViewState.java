@@ -68,11 +68,17 @@ public record ViewState(State state, List<PathStep> path, OpenQuestion open, Res
      * @param stepIndex position in the path
      * @param questionId id of the question, may be null
      * @param label label of the question
+     * @param hint hint of the question, empty if there is none
      * @param answerIndex index of the chosen answer
      * @param answerLabel label of the chosen answer
+     * @param answers all answers of the question, the chosen one included, so a renderer can show the alternatives
      * @param decided fields the answer sets
      */
-    public record PathStep(int stepIndex, String questionId, String label, int answerIndex, String answerLabel, Map<String, String> decided) {
+    public record PathStep(int stepIndex, String questionId, String label, String hint, int answerIndex, String answerLabel,
+            List<AnswerView> answers, Map<String, String> decided) {
+        public PathStep {
+            answers = List.copyOf(answers);
+        }
     }
 
     /**

@@ -228,6 +228,19 @@ public class DecisionTreeService {
     }
 
     /**
+     * Chooses another answer at an earlier step in one call (a click on another answer of a row above): the answers from that step on are
+     * dropped, a stored result is removed at once, and the new answer is taken.
+     *
+     * @param path the answers so far; ignored if a result is stored
+     * @throws DecisionTreeException as {@link #reopen} and {@link #answer}
+     */
+    public ViewState change(Step step, String propertyName, boolean userMayEdit, int[] path, int stepIndex, int answerIndex, Locale locale) {
+        ViewState reopened = reopen(step, propertyName, userMayEdit, path, stepIndex, locale);
+        int[] head = reopened.path().stream().mapToInt(PathStep::answerIndex).toArray();
+        return answer(step, propertyName, userMayEdit, head, stepIndex, answerIndex, locale);
+    }
+
+    /**
      * Starts again from the top question; a stored result is removed, even if it fits no result of the tree.
      *
      * @throws DecisionTreeException FORBIDDEN if the tree cannot be changed
