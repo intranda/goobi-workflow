@@ -23,12 +23,6 @@ package org.goobi.production.properties.decisiontree.model;
  * exception statement from your version.
  */
 
-import java.util.Map;
-
-/** A leaf of the tree. The id identifies the result for diagnosis and display, it is not stored. */
-public record Result(String id, Map<String, String> fields) implements Node {
-
-    public Result {
-        fields = Ordered.copyOf(fields);
-    }
+/** A leaf of the tree. The id identifies the result for diagnosis and display, it is not stored. Its fields are set on the answers leading to it. */
+public record Result(String id) implements Node {
 }

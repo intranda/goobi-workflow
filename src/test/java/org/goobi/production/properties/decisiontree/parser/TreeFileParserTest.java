@@ -41,8 +41,8 @@ public class TreeFileParserTest {
 
     private static final String SAMPLE = "/org/goobi/production/properties/decisiontree/goobi_decisionTrees.xml";
 
-    private static final String TWO = "<answer label=\"Yes\"><result id=\"r1\"><field name=\"A\">1</field></result></answer>"
-            + "<answer label=\"No\"><result id=\"r2\"><field name=\"A\">2</field></result></answer>";
+    private static final String TWO = "<answer label=\"Yes\"><field name=\"A\">1</field><result id=\"r1\"/></answer>"
+            + "<answer label=\"No\"><field name=\"A\">2</field><result id=\"r2\"/></answer>";
 
     private LoadReport parse(String xml) throws TreeLoadException {
         return new TreeFileParser().parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
@@ -63,7 +63,13 @@ public class TreeFileParserTest {
     }
 
     private static String result(String id, String field, String value) {
-        return "<result id=\"" + id + "\"><field name=\"" + field + "\">" + value + "</field></result>";
+        return "<field name=\"" + field + "\">" + value + "</field><result id=\"" + id + "\"/>";
+    }
+
+    @Test
+    public void resultWithFieldsIsRejected() throws Exception {
+        assertRejected("<question label=\"Q\">" + answer("Yes", "<result id=\"r\"><field name=\"A\">1</field></result>") + answer("No", result("s", "A", "2"))
+                + "</question>", "must be empty");
     }
 
     @Test
@@ -229,8 +235,8 @@ public class TreeFileParserTest {
         String a;
         String b;
         if (i == count - 1) {
-            a = String.format(content, "a") + "<result id=\"ra\"><field name=\"Z\">z</field></result>";
-            b = String.format(content, "b") + "<result id=\"rb\"><field name=\"Z\">y</field></result>";
+            a = String.format(content, "a") + "<field name=\"Z\">z</field><result id=\"ra\"/>";
+            b = String.format(content, "b") + "<field name=\"Z\">y</field><result id=\"rb\"/>";
         } else {
             a = String.format(content, "a") + "<goto ref=\"q" + (i + 1) + "\"/>";
             b = String.format(content, "b") + levels(i + 1, count);

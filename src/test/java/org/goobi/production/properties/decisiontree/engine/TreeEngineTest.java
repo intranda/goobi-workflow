@@ -73,10 +73,10 @@ public class TreeEngineTest {
     private static final String SMALL = "<decisionTrees><decisionTree id=\"s\"><defaults><field name=\"Format\">TIFF</field></defaults>"
             + "<question id=\"q1\" label=\"Colour?\" label-de=\"Farbe?\" hint=\"Pick one\">"
             + "<answer label=\"Yes\" label-de=\"Ja\"><field name=\"Colour\">Full</field><question label=\"Large?\">"
-            + "<answer label=\"Big\"><result id=\"R1\"><field name=\"DPI\">600</field></result></answer>"
+            + "<answer label=\"Big\"><field name=\"DPI\">600</field><result id=\"R1\"/></answer>"
             + "<answer label=\"Small\"><question id=\"size\" label=\"Which?\">"
-            + "<answer label=\"x\"><result id=\"R3\"><field name=\"DPI\">400</field></result></answer>"
-            + "<answer label=\"y\"><result id=\"R4\"><field name=\"DPI\">400</field></result></answer></question></answer></question></answer>"
+            + "<answer label=\"x\"><field name=\"DPI\">400</field><result id=\"R3\"/></answer>"
+            + "<answer label=\"y\"><field name=\"DPI\">400</field><result id=\"R4\"/></answer></question></answer></question></answer>"
             + "<answer label=\"No\"><field name=\"Colour\">Gray</field><goto ref=\"size\"/></answer></question></decisionTree></decisionTrees>";
 
     @BeforeEach
@@ -476,8 +476,8 @@ public class TreeEngineTest {
 
     @Test
     public void blankFieldValuesAreNotWritten() throws Exception {
-        String xml = "<decisionTrees><decisionTree id=\"b\"><question label=\"Q\"><answer label=\"Yes\"><result id=\"r\"><field name=\"A\">1</field>"
-                + "<field name=\"B\">  </field></result></answer><answer label=\"No\"><result id=\"s\"><field name=\"A\">2</field><field name=\"B\">x</field></result></answer>"
+        String xml = "<decisionTrees><decisionTree id=\"b\"><question label=\"Q\"><answer label=\"Yes\"><field name=\"A\">1</field>"
+                + "<field name=\"B\">  </field><result id=\"r\"/></answer><answer label=\"No\"><field name=\"A\">2</field><field name=\"B\">x</field><result id=\"s\"/></answer>"
                 + "</question></decisionTree></decisionTrees>";
         TreeDefinition tree = new TreeFileParser().parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))).trees().get("b");
         InMemoryResultWriter writer = new InMemoryResultWriter();

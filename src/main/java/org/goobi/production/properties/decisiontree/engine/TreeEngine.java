@@ -112,9 +112,6 @@ public class TreeEngine {
         }
         Question open = tree.asQuestion(node);
         Result leaf = node instanceof Result r ? r : null;
-        if (leaf != null) {
-            fields.putAll(leaf.fields());
-        }
         return new Walk(steps, open, leaf, clean(fields));
     }
 
@@ -205,9 +202,7 @@ public class TreeEngine {
             if (paths.size() >= TreeDefinition.MAX_PATHS) {
                 throw new IllegalStateException("The tree " + tree.id() + " has more than " + TreeDefinition.MAX_PATHS + " paths");
             }
-            Map<String, String> all = new LinkedHashMap<>(fields);
-            all.putAll(result.fields());
-            paths.add(new LeafPath(path, result, clean(all)));
+            paths.add(new LeafPath(path, result, clean(fields)));
             return;
         }
         Question question = tree.asQuestion(node);

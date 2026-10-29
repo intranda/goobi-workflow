@@ -256,8 +256,10 @@ public class TreeFileParser {
         if (id == null) {
             ctx.error(position, "the result has no id");
         }
-        Map<String, String> fields = parseFields(element, position, ctx);
-        Result result = new Result(id, fields);
+        if (!element.getChildren().isEmpty()) {
+            ctx.error(position, "<result> must be empty, set <field> on the answer");
+        }
+        Result result = new Result(id);
         if (id != null && ctx.results.put(id, result) != null) {
             ctx.error(position, "the result id '" + id + "' is used more than once");
         }

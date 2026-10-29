@@ -46,8 +46,8 @@ public class TreeRegistryTest {
     }
 
     private static String tree(String id, String value) {
-        return "<decisionTree id=\"" + id + "\"><question label=\"Q\"><answer label=\"Yes\"><result id=\"r1\"><field name=\"A\">" + value
-                + "</field></result></answer><answer label=\"No\"><result id=\"r2\"><field name=\"A\">2</field></result></answer></question></decisionTree>";
+        return "<decisionTree id=\"" + id + "\"><question label=\"Q\"><answer label=\"Yes\"><field name=\"A\">" + value
+                + "</field><result id=\"r1\"/></answer><answer label=\"No\"><field name=\"A\">2</field><result id=\"r2\"/></answer></question></decisionTree>";
     }
 
     private Path write(String content, long millis) throws Exception {
@@ -88,9 +88,9 @@ public class TreeRegistryTest {
     public void changedFileIsReloaded() throws Exception {
         Path path = write(file(tree("one", "1")), 1000);
         TreeRegistry registry = new TreeRegistry(path);
-        assertEquals("1", registry.tree("one").orElseThrow().resultsById().get("r1").fields().get("A"));
+        assertEquals("1", registry.tree("one").orElseThrow().root().answers().get(0).fields().get("A"));
         write(file(tree("one", "changed")), 2000);
-        assertEquals("changed", registry.tree("one").orElseThrow().resultsById().get("r1").fields().get("A"));
+        assertEquals("changed", registry.tree("one").orElseThrow().root().answers().get(0).fields().get("A"));
     }
 
     @Test

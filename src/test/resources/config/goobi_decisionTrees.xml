@@ -13,18 +13,16 @@
         <field name="Scanner">Phase One XF iQ4 150MP or Canon r5 50MP</field>
         <question label="Is colour information paramount?" hint="Colour relevant to the interpretation of the item, e.g. colour in artworks, hand-coloured drawings, designs. Generally not text, unless faded or otherwise challenging to interpret.">
           <answer label="Yes">
-            <result id="ART-COLOUR">
-              <field name="Bit Depth">16</field>
-              <field name="DPI">≥450 dpi</field>
-              <field name="Colour">Full, Adobe RGB (1998)</field>
-            </result>
+            <field name="Bit Depth">16</field>
+            <field name="DPI">≥450 dpi</field>
+            <field name="Colour">Full, Adobe RGB (1998)</field>
+            <result id="ART-COLOUR" />
           </answer>
           <answer label="No">
-            <result id="ART-STD">
-              <field name="Bit Depth">8</field>
-              <field name="DPI">≥450 dpi</field>
-              <field name="Colour">Full, Adobe RGB (1998)</field>
-            </result>
+            <field name="Bit Depth">8</field>
+            <field name="DPI">≥450 dpi</field>
+            <field name="Colour">Full, Adobe RGB (1998)</field>
+            <result id="ART-STD" />
           </answer>
         </question>
       </answer>
@@ -34,18 +32,16 @@
             <field name="Scanner">Copy Stand, Phase One XF iQ4 / iXH 150MP</field>
             <question id="bound-colour" label="Is colour information paramount?" hint="Colour relevant to the interpretation of the item, e.g. colour in artworks, hand-coloured drawings, designs. Generally not text, unless faded or otherwise challenging to interpret.">
               <answer label="Yes">
-                <result id="BND-COLOUR">
-                  <field name="Bit Depth">16</field>
-                  <field name="DPI">≥400 dpi</field>
-                  <field name="Colour">Full, Adobe RGB (1998)</field>
-                </result>
+                <field name="Bit Depth">16</field>
+                <field name="DPI">≥400 dpi</field>
+                <field name="Colour">Full, Adobe RGB (1998)</field>
+                <result id="BND-COLOUR" />
               </answer>
               <answer label="No">
-                <result id="BND-STD">
-                  <field name="Bit Depth">8</field>
-                  <field name="DPI">≥400 dpi</field>
-                  <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
-                </result>
+                <field name="Bit Depth">8</field>
+                <field name="DPI">≥400 dpi</field>
+                <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
+                <result id="BND-STD" />
               </answer>
             </question>
           </answer>
@@ -59,11 +55,10 @@
                 <question label="Is the item modern textual material?" hint="Documents on modern office paper with well-defined printed type (typeset, typed, laser-printed) and moderate to high contrast between ink and paper.">
                   <answer label="Yes">
                     <field name="Scanner">SMA ROBOSCAN V2 (Automated Book Scanner)</field>
-                    <result id="BND-MODERN">
-                      <field name="Bit Depth">8</field>
-                      <field name="DPI">≥300 dpi</field>
-                      <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
-                    </result>
+                    <field name="Bit Depth">8</field>
+                    <field name="DPI">≥300 dpi</field>
+                    <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
+                    <result id="BND-MODERN" />
                   </answer>
                   <answer label="No">
                     <field name="Scanner">Atiz BookDrive MkII (Canon r5 50MP)</field>
@@ -81,27 +76,24 @@
             <field name="Scanner">Copy Stand, Phase One XF iQ4 / iXH 150MP</field>
             <question id="refl-print" label="Is the item a print/photograph?">
               <answer label="Yes">
-                <result id="REF-PRINT">
-                  <field name="Bit Depth">16</field>
-                  <field name="DPI">≥600 dpi</field>
-                  <field name="Colour">Full, Adobe RGB (1998)</field>
-                </result>
+                <field name="Bit Depth">16</field>
+                <field name="DPI">≥600 dpi</field>
+                <field name="Colour">Full, Adobe RGB (1998)</field>
+                <result id="REF-PRINT" />
               </answer>
               <answer label="No">
                 <question label="Is colour information paramount?" hint="Colour relevant to the interpretation of the item, e.g. colour in artworks, hand-coloured drawings, designs. Generally not text, unless faded or otherwise challenging to interpret.">
                   <answer label="Yes">
-                    <result id="REF-COLOUR">
-                      <field name="Bit Depth">16</field>
-                      <field name="DPI">≥400 dpi</field>
-                      <field name="Colour">Full, Adobe RGB (1998)</field>
-                    </result>
+                    <field name="Bit Depth">16</field>
+                    <field name="DPI">≥400 dpi</field>
+                    <field name="Colour">Full, Adobe RGB (1998)</field>
+                    <result id="REF-COLOUR" />
                   </answer>
                   <answer label="No">
-                    <result id="REF-STD">
-                      <field name="Bit Depth">8</field>
-                      <field name="DPI">≥400 dpi</field>
-                      <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
-                    </result>
+                    <field name="Bit Depth">8</field>
+                    <field name="DPI">≥400 dpi</field>
+                    <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
+                    <result id="REF-STD" />
                   </answer>
                 </question>
               </answer>
@@ -123,11 +115,10 @@
                     <question label="Are there large quantities of modern textual material?" hint="Documents on modern office paper with well-defined printed type (typeset, typed, laser-printed) and moderate to high contrast between ink and paper.">
                       <answer label="Yes">
                         <field name="Scanner">Kodak Multi-sheet scanner (modern, robust material only)</field>
-                        <result id="REF-BULK">
-                          <field name="Bit Depth">8</field>
-                          <field name="DPI">≥300 dpi</field>
-                          <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
-                        </result>
+                        <field name="Bit Depth">8</field>
+                        <field name="DPI">≥300 dpi</field>
+                        <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
+                        <result id="REF-BULK" />
                       </answer>
                       <answer label="No">
                         <field name="Scanner">Epson XL (A3 Flatbed Scanner)</field>
@@ -145,12 +136,11 @@
         <question label="Microfilm/fische?">
           <answer label="Yes">
             <field name="Scanner">STImaging Vuescan Microfilm Scanner</field>
-            <result id="TRN-MICROFILM">
-              <field name="Bit Depth">8 (native)</field>
-              <field name="DPI">4000 dpi (calculated)</field>
-              <field name="Format">TIFF (LZW compressed)</field>
-              <field name="Colour">Greyscale, Grey Gamma 2.2</field>
-            </result>
+            <field name="Bit Depth">8 (native)</field>
+            <field name="DPI">4000 dpi (calculated)</field>
+            <field name="Format">TIFF (LZW compressed)</field>
+            <field name="Colour">Greyscale, Grey Gamma 2.2</field>
+            <result id="TRN-MICROFILM" />
           </answer>
           <answer label="No">
             <question label="Is the transparency on glass?">
@@ -158,25 +148,22 @@
                 <field name="Scanner">Copy Stand with backlight, Phase One XF iQ4 / iXH 150MP</field>
                 <question id="trn-size" label="Transparency Size?">
                   <answer label="35mm to 4&quot;x5&quot;">
-                    <result id="TRN-S">
-                      <field name="Bit Depth">16</field>
-                      <field name="DPI">≥3000 dpi</field>
-                      <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
-                    </result>
+                    <field name="Bit Depth">16</field>
+                    <field name="DPI">≥3000 dpi</field>
+                    <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
+                    <result id="TRN-S" />
                   </answer>
                   <answer label="4&quot;x5&quot; to A4">
-                    <result id="TRN-M">
-                      <field name="Bit Depth">16</field>
-                      <field name="DPI">≥1500 dpi</field>
-                      <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
-                    </result>
+                    <field name="Bit Depth">16</field>
+                    <field name="DPI">≥1500 dpi</field>
+                    <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
+                    <result id="TRN-M" />
                   </answer>
                   <answer label="A4+ / X-ray">
-                    <result id="TRN-L">
-                      <field name="Bit Depth">16</field>
-                      <field name="DPI">≥400 dpi</field>
-                      <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
-                    </result>
+                    <field name="Bit Depth">16</field>
+                    <field name="DPI">≥400 dpi</field>
+                    <field name="Colour">Full / Gray, Adobe RGB (1998) / Gray Gamma 2.2</field>
+                    <result id="TRN-L" />
                   </answer>
                 </question>
               </answer>
