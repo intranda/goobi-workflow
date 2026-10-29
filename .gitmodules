@@ -23,16 +23,6 @@
 	url = ../goobi-plugin-step-imageqa
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-administration-exchange"]
-	path = plugins/goobi-plugin-administration-exchange
-	url = ../goobi-plugin-administration-exchange
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-command-intranda"]
-	path = plugins/goobi-plugin-command-intranda
-	url = ../goobi-plugin-command-intranda
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-dashboard-extended"]
 	path = plugins/goobi-plugin-dashboard-extended
 	url = ../goobi-plugin-dashboard-extended
@@ -51,11 +41,6 @@
 [submodule "plugins/goobi-plugin-step-display-metadata"]
 	path = plugins/goobi-plugin-step-display-metadata
 	url = ../goobi-plugin-step-display-metadata
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-rest-nle"]
-	path = plugins/goobi-plugin-rest-nle
-	url = ../goobi-plugin-rest-nle
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-step-pdf-extraction"]
@@ -78,11 +63,6 @@
 	url = ../goobi-plugin-step-representative-creation
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-step-pdf-upload"]
-	path = plugins/goobi-plugin-step-pdf-upload
-	url = ../goobi-plugin-step-pdf-upload
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-step-ocr-selector"]
 	path = plugins/goobi-plugin-step-ocr-selector
 	url = ../goobi-plugin-step-ocr-selector
@@ -101,11 +81,6 @@
 [submodule "plugins/goobi-plugin-step-change-workflow"]
 	path = plugins/goobi-plugin-step-change-workflow
 	url = ../goobi-plugin-step-change-workflow
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-analysis-imagename"]
-	path = plugins/goobi-plugin-step-analysis-imagename
-	url = ../goobi-plugin-step-analysis-imagename
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-step-ewig"]
@@ -128,11 +103,6 @@
 	url = ../goobi-plugin-step-yerusha-validation
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-opac-ead"]
-	path = plugins/goobi-plugin-opac-ead
-	url = ../goobi-plugin-opac-ead
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-opac-generic-xml"]
 	path = plugins/goobi-plugin-opac-generic-xml
 	url = ../goobi-plugin-opac-generic-xml
@@ -141,11 +111,6 @@
 [submodule "plugins/goobi-plugin-import-excel"]
 	path = plugins/goobi-plugin-import-excel
 	url = ../goobi-plugin-import-excel
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-export-fedora"]
-	path = plugins/goobi-plugin-export-fedora
-	url = ../goobi-plugin-export-fedora
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-export-fedora-prov"]
@@ -158,29 +123,14 @@
 	url = ../goobi-plugin-export-weimar-haab
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-workflow-excel-import"]
-	path = plugins/goobi-plugin-workflow-excel-import
-	url = ../goobi-plugin-workflow-excel-import
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-workflow-barcode-generator"]
 	path = plugins/goobi-plugin-workflow-barcode-generator
 	url = ../goobi-plugin-workflow-barcode-generator
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-import-wuwien"]
-	path = plugins/goobi-plugin-import-wuwien
-	url = ../goobi-plugin-import-wuwien
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-opac-json"]
 	path = plugins/goobi-plugin-opac-json
 	url = ../goobi-plugin-opac-json
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-opac-soutron"]
-	path = plugins/goobi-plugin-opac-soutron
-	url = ../goobi-plugin-opac-soutron
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-step-placeholder-creation"]
@@ -253,11 +203,6 @@
 	url = ../goobi-plugin-step-epic-pid
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-statistics-sudan-memory"]
-	path = plugins/goobi-plugin-statistics-sudan-memory
-	url = ../goobi-plugin-statistics-sudan-memory
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-step-transcription"]
 	path = plugins/goobi-plugin-step-transcription
 	url = ../goobi-plugin-step-transcription
@@ -273,16 +218,6 @@
 	url = ../goobi-plugin-step-image-metadata-extraction
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-import-sisis-sunrise-file"]
-	path = plugins/goobi-plugin-import-sisis-sunrise-file
-	url = ../goobi-plugin-import-sisis-sunrise-file
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-workflow-file-upload-process-creation"]
-	path = plugins/goobi-plugin-workflow-file-upload-process-creation
-	url = ../goobi-plugin-workflow-file-upload-process-creation
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-step-catalogue-request"]
 	path = plugins/goobi-plugin-step-catalogue-request
 	url = ../goobi-plugin-step-catalogue-request
@@ -291,16 +226,6 @@
 [submodule "plugins/goobi-plugin-step-metadata-update-field"]
 	path = plugins/goobi-plugin-step-metadata-update-field
 	url = ../goobi-plugin-step-metadata-update-field
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-administration-reset-pagination"]
-	path = plugins/goobi-plugin-administration-reset-pagination
-	url = ../goobi-plugin-administration-reset-pagination
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-administration-ruleset-compatibility"]
-	path = plugins/goobi-plugin-administration-ruleset-compatibility
-	url = ../goobi-plugin-administration-ruleset-compatibility
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-import-bka-bda"]
@@ -318,29 +243,9 @@
 	url = ../goobi-plugin-export-bda-single-image
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-step-batch-progress"]
-	path = plugins/goobi-plugin-step-batch-progress
-	url = ../goobi-plugin-step-batch-progress
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-workflow-aeon-process-creation"]
 	path = plugins/goobi-plugin-workflow-aeon-process-creation
 	url = ../goobi-plugin-workflow-aeon-process-creation
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-barcode-scanner"]
-	path = plugins/goobi-plugin-step-barcode-scanner
-	url = ../goobi-plugin-step-barcode-scanner
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-delete-first-image"]
-	path = plugins/goobi-plugin-step-delete-first-image
-	url = ../goobi-plugin-step-delete-first-image
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-image-manipulation"]
-	path = plugins/goobi-plugin-step-image-manipulation
-	url = ../goobi-plugin-step-image-manipulation
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-step-image-converter"]
@@ -351,11 +256,6 @@
 [submodule "plugins/goobi-plugin-opac-vocabulary"]
 	path = plugins/goobi-plugin-opac-vocabulary
 	url = ../goobi-plugin-opac-vocabulary
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-move-folder-to-master"]
-	path = plugins/goobi-plugin-step-move-folder-to-master
-	url = ../goobi-plugin-step-move-folder-to-master
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-step-user-assignment"]
@@ -408,36 +308,6 @@
 	url = ../goobi-plugin-import-actapro
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-import-basel"]
-	path = plugins/goobi-plugin-import-basel
-	url = ../goobi-plugin-import-basel
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-import-bsz"]
-	path = plugins/goobi-plugin-import-bsz
-	url = ../goobi-plugin-import-bsz
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-import-fulda"]
-	path = plugins/goobi-plugin-import-fulda
-	url = ../goobi-plugin-import-fulda
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-import-mpi-khi-tn"]
-	path = plugins/goobi-plugin-import-mpi-khi-tn
-	url = ../goobi-plugin-import-mpi-khi-tn
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-import-soton"]
-	path = plugins/goobi-plugin-import-soton
-	url = ../goobi-plugin-import-soton
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-mets-creation"]
-	path = plugins/goobi-plugin-step-mets-creation
-	url = ../goobi-plugin-step-mets-creation
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-step-fetch-images-from-metadata"]
 	path = plugins/goobi-plugin-step-fetch-images-from-metadata
 	url = ../goobi-plugin-step-fetch-images-from-metadata
@@ -451,11 +321,6 @@
 [submodule "plugins/goobi-plugin-step-create-full-pdf"]
 	path = plugins/goobi-plugin-step-create-full-pdf
 	url = ../goobi-plugin-step-create-full-pdf
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-update-process-title"]
-	path = plugins/goobi-plugin-step-update-process-title
-	url = ../goobi-plugin-step-update-process-title
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-opac-kalliope"]
@@ -473,19 +338,9 @@
 	url = ../goobi-plugin-opac-weimar-sru
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-opac-excel"]
-	path = plugins/goobi-plugin-opac-excel
-	url = ../goobi-plugin-opac-excel
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-opac-ariadne"]
 	path = plugins/goobi-plugin-opac-ariadne
 	url = ../goobi-plugin-opac-ariadne
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-opac-bsz"]
-	path = plugins/goobi-plugin-opac-bsz
-	url = ../goobi-plugin-opac-bsz
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-import-wellcome"]
@@ -493,19 +348,9 @@
 	url = ../goobi-plugin-import-wellcome
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-step-image-download-sim"]
-	path = plugins/goobi-plugin-step-image-download-sim
-	url = ../goobi-plugin-step-image-download-sim
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-step-image-size-validation"]
 	path = plugins/goobi-plugin-step-image-size-validation
 	url = ../goobi-plugin-step-image-size-validation
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-gei-eurviews"]
-	path = plugins/goobi-plugin-step-gei-eurviews
-	url = ../goobi-plugin-step-gei-eurviews
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-step-metadata-replacement"]
@@ -513,19 +358,9 @@
 	url = ../goobi-plugin-step-metadata-replacement
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-administration-metadata-backup"]
-	path = plugins/goobi-plugin-administration-metadata-backup
-	url = ../goobi-plugin-administration-metadata-backup
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-step-tei-import"]
 	path = plugins/goobi-plugin-step-tei-import
 	url = ../goobi-plugin-step-tei-import
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-mpi-fulltext-generation"]
-	path = plugins/goobi-plugin-step-mpi-fulltext-generation
-	url = ../goobi-plugin-step-mpi-fulltext-generation
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-step-cdstar"]
@@ -533,39 +368,14 @@
 	url = ../goobi-plugin-step-cdstar
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-step-download-docket"]
-	path = plugins/goobi-plugin-step-download-docket
-	url = ../goobi-plugin-step-download-docket
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-export-wiener-library"]
 	path = plugins/goobi-plugin-export-wiener-library
 	url = ../goobi-plugin-export-wiener-library
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-export-sword"]
-	path = plugins/goobi-plugin-export-sword
-	url = ../goobi-plugin-export-sword
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-import-journals"]
-	path = plugins/goobi-plugin-import-journals
-	url = ../goobi-plugin-import-journals
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-filename-import"]
-	path = plugins/goobi-plugin-step-filename-import
-	url = ../goobi-plugin-step-filename-import
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-step-alto-correction"]
 	path = plugins/goobi-plugin-step-alto-correction
 	url = ../goobi-plugin-step-alto-correction
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-ark"]
-	path = plugins/goobi-plugin-step-ark
-	url = ../goobi-plugin-step-ark
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-step-urn"]
@@ -593,19 +403,9 @@
 	url = ../goobi-plugin-administration-restore-archived-image-folders
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-step-geonames-auto-annotator"]
-	path = plugins/goobi-plugin-step-geonames-auto-annotator
-	url = ../goobi-plugin-step-geonames-auto-annotator
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-step-geonames-correction"]
 	path = plugins/goobi-plugin-step-geonames-correction
 	url = ../goobi-plugin-step-geonames-correction
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-delay-workflow-status"]
-	path = plugins/goobi-plugin-step-delay-workflow-status
-	url = ../goobi-plugin-step-delay-workflow-status
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-rest-wellcome-photos"]
@@ -633,24 +433,9 @@
 	url = ../goobi-plugin-step-file-delivery
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-workflow-oepma-importer"]
-	path = plugins/goobi-plugin-workflow-oepma-importer
-	url = ../goobi-plugin-workflow-oepma-importer
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-oepma-class-assignement"]
-	path = plugins/goobi-plugin-step-oepma-class-assignement
-	url = ../goobi-plugin-step-oepma-class-assignement
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-export-configurable"]
 	path = plugins/goobi-plugin-export-configurable
 	url = ../goobi-plugin-export-configurable
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-save-docket-file"]
-	path = plugins/goobi-plugin-step-save-docket-file
-	url = ../goobi-plugin-step-save-docket-file
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-administration-delivery-management"]
@@ -666,11 +451,6 @@
 [submodule "plugins/goobi-plugin-step-excel-metadata-enrichment"]
 	path = plugins/goobi-plugin-step-excel-metadata-enrichment
 	url = ../goobi-plugin-step-excel-metadata-enrichment
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-import-from-folder"]
-	path = plugins/goobi-plugin-step-import-from-folder
-	url = ../goobi-plugin-step-import-from-folder
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-step-kiel-archive-cleanup"]
@@ -696,11 +476,6 @@
 [submodule "plugins/goobi-plugin-dashboard-entity"]
 	path = plugins/goobi-plugin-dashboard-entity
 	url = ../goobi-plugin-dashboard-entity
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-administration-duplicates-fixer"]
-	path = plugins/goobi-plugin-administration-duplicates-fixer
-	url = ../goobi-plugin-administration-duplicates-fixer
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-workflow-process-inspection"]
@@ -738,11 +513,6 @@
 	url = ../goobi-plugin-step-marc-export
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-import-intranda"]
-	path = plugins/goobi-plugin-import-intranda
-	url = ../goobi-plugin-import-intranda
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-export-luxembourg-artist-dictionary"]
 	path = plugins/goobi-plugin-export-luxembourg-artist-dictionary
 	url = ../goobi-plugin-export-luxembourg-artist-dictionary
@@ -751,11 +521,6 @@
 [submodule "plugins/goobi-plugin-export-vlm"]
 	path = plugins/goobi-plugin-export-vlm
 	url = ../goobi-plugin-export-vlm
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-rename-process"]
-	path = plugins/goobi-plugin-step-rename-process
-	url = ../goobi-plugin-step-rename-process
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-export-zop"]
@@ -798,34 +563,14 @@
 	url = ../goobi-plugin-step-download-and-verify-assets
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-step-rename-files-before-rosetta"]
-	path = plugins/goobi-plugin-step-rename-files-before-rosetta
-	url = ../goobi-plugin-step-rename-files-before-rosetta
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-export-selected-images"]
 	path = plugins/goobi-plugin-export-selected-images
 	url = ../goobi-plugin-export-selected-images
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-step-ocr-to-metadata"]
-	path = plugins/goobi-plugin-step-ocr-to-metadata
-	url = ../goobi-plugin-step-ocr-to-metadata
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-step-bag-creation"]
 	path = plugins/goobi-plugin-step-bag-creation
 	url = ../goobi-plugin-step-bag-creation
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-workflow-import-json"]
-	path = plugins/goobi-plugin-workflow-import-json
-	url = ../goobi-plugin-workflow-import-json
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-workflow-newspaper-pages-importer"]
-	path = plugins/goobi-plugin-workflow-newspaper-pages-importer
-	url = ../goobi-plugin-workflow-newspaper-pages-importer
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-import-crown"]
@@ -856,11 +601,6 @@
 [submodule "plugins/goobi-plugin-import-eth-no-catalogue"]
 	path = plugins/goobi-plugin-import-eth-no-catalogue
 	url = ../goobi-plugin-import-eth-no-catalogue
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-import-mab"]
-	path = plugins/goobi-plugin-import-mab
-	url = ../goobi-plugin-import-mab
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-import-zbz-alma"]
@@ -908,11 +648,6 @@
 	url = ../goobi-plugin-step-create-structure-from-filenames
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-workflow-linked-process-creation"]
-	path = plugins/goobi-plugin-workflow-linked-process-creation
-	url = ../goobi-plugin-workflow-linked-process-creation
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-step-zbz-order-delivery"]
 	path = plugins/goobi-plugin-step-zbz-order-delivery
 	url = ../goobi-plugin-step-zbz-order-delivery
@@ -921,11 +656,6 @@
 [submodule "plugins/goobi-plugin-step-transkribus-collection"]
 	path = plugins/goobi-plugin-step-transkribus-collection
 	url = ../goobi-plugin-step-transkribus-collection
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-pdf-book-interchange-convert"]
-	path = plugins/goobi-plugin-step-pdf-book-interchange-convert
-	url = ../goobi-plugin-step-pdf-book-interchange-convert
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-step-generate-alto-ids"]
@@ -963,21 +693,6 @@
 	url = ../goobi-plugin-step-flex-editor
 	branch = master
 	ignore = all
-[submodule "plugins/goobi-plugin-step-vocabulary-enrichment"]
-	path = plugins/goobi-plugin-step-vocabulary-enrichment
-	url = ../goobi-plugin-step-vocabulary-enrichment
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-workflow-yerusha-aim25"]
-	path = plugins/goobi-plugin-workflow-yerusha-aim25
-	url = ../goobi-plugin-workflow-yerusha-aim25
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-workflow-close-step"]
-	path = plugins/goobi-plugin-workflow-close-step
-	url = ../goobi-plugin-workflow-close-step
-	branch = master
-	ignore = all
 [submodule "plugins/goobi-plugin-step-mets-enhancer"]
 	path = plugins/goobi-plugin-step-mets-enhancer
 	url = ../goobi-plugin-step-mets-enhancer
@@ -996,11 +711,6 @@
 [submodule "plugins/goobi-plugin-step-batch-assignment"]
 	path = plugins/goobi-plugin-step-batch-assignment
 	url = ../goobi-plugin-step-batch-assignment
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-display-content"]
-	path = plugins/goobi-plugin-step-display-content
-	url = ../goobi-plugin-step-display-content
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-generic-barcode-scanner"]
@@ -1071,11 +781,6 @@
 [submodule "plugins/goobi-plugin-step-mycore-ingest"]
 	path = plugins/goobi-plugin-step-mycore-ingest
 	url = ../goobi-plugin-step-mycore-ingest
-	branch = master
-	ignore = all
-[submodule "plugins/goobi-plugin-step-read-structure-from-csv"]
-	path = plugins/goobi-plugin-step-read-structure-from-csv
-	url = ../goobi-plugin-step-read-structure-from-csv
 	branch = master
 	ignore = all
 [submodule "plugins/goobi-plugin-step-nodecreation-and-split"]
