@@ -450,7 +450,7 @@ pipeline {
             fi
 
             if [ -n "$TAG_NAME" ]; then
-              PLATFORMS="linux/amd64,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x"
+              PLATFORMS="linux/amd64,linux/arm64/v8,linux/ppc64le"
             else
               PLATFORMS="linux/amd64,linux/arm64/v8"
             fi
