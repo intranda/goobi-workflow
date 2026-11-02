@@ -134,7 +134,7 @@
                                             <util:icon icon="trash" />
                                         </span>
                                         <h:outputText value="#{msgs.strukturelementLoeschen}"/>
-                                        <f:ajax execute="@form" render="@form :treeform :openseadragonform:pageareas #{Metadaten.image.type == 'video' or Metadaten.image.type == 'audio' ? ':openseadragonform:chapterVtt' : ''}"/>
+                                        <f:ajax execute="@form" render="@form :treeform :openseadragonform:pageareas #{Metadaten.image.type == 'video' ? ':openseadragonform:chapterVttVideo' : (Metadaten.image.type == 'audio' ? ':openseadragonform:chapterVttAudio' : '')}"/>
                                     </button>
                                 </li>
                                 <!-- DUPLICATE ELEMENT -->
