@@ -1,6 +1,6 @@
 import Plyr from 'plyr';
 import 'plyr/dist/plyr.css';
-import VideoChapters from './video/chapters.js';
+import { updateChapters } from './chapters/chapterSync.js';
 import '../../css/media/video-chapters.css';
 
 const initPlayer = () => {
@@ -118,15 +118,17 @@ const reinitTimestampButtons = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     initPlayer();
+    setTimeout(updateChapters, 200);
 });
 
 faces.ajax.addOnEvent((data) => {
     if (data.status === 'success') {
         const player = initPlayer();
-        // Re-initialize timestamp buttons after AJAX updates
-        if (player) {
-            setTimeout(() => reinitTimestampButtons(), 100);
-        }
+        setTimeout(() => {
+            // Re-initialize timestamp buttons after AJAX updates
+            if (player) reinitTimestampButtons();
+            updateChapters();
+        }, 100);
     }
 });
 

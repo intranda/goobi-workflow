@@ -382,7 +382,7 @@
                                 jsf:action="#{Metadaten.KnotenAdd}">
                                 #{msgs.strukturelementHinzufuegen}
                                 <f:ajax
-                                    render="@form :treeform :openseadragonform:pageareas #{Metadaten.image.type == 'video' ? ':openseadragonform:chapterVtt' : ''}"
+                                    render="@form :treeform :openseadragonform:pageareas #{Metadaten.image.type == 'video' or Metadaten.image.type == 'audio' ? ':openseadragonform:chapterVtt' : ''}"
                                     execute="@form" />
                             </button>
                         </section:footer>
