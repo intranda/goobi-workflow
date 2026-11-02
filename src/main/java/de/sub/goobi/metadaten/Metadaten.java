@@ -2395,7 +2395,8 @@ public class Metadaten implements Serializable {
                         .stream()
                         .map(Reference::getTarget)
                         .filter(Objects::nonNull)
-                        .filter(t -> StringUtils.isNotBlank(getMetadataValues(t, "_COORDS")))
+                        .filter(t -> StringUtils.isNotBlank(getMetadataValues(t, "_COORDS"))
+                                || StringUtils.isNotBlank(getMetadataValues(t, "_BEGIN")))
                         .collect(Collectors.toList());
                 for (DocStruct area : pageAreas) {
                     if (area.getAllFromReferences() != null) {
