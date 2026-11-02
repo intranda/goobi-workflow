@@ -150,7 +150,6 @@ const updateChapters = () => {
     if (!dataEl) return;
 
     const vttContent = dataEl.textContent.trim();
-    if (!vttContent) return;
 
     const video = document.getElementById('videoplayer');
     if (!video) return;

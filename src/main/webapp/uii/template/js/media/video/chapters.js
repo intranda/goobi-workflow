@@ -311,6 +311,13 @@ class VideoChapters extends HTMLElement {
     // Public API methods
     refresh() {
         this.cleanup();
+        this.currentChapterIndex = -1;
+
+        // waitForCues() would poll forever without cues, so clear the list directly
+        if (this.textTrack && !this.textTrack.cues?.length) {
+            this.buildChaptersList();
+            return;
+        }
         this.setupChapters();
     }
 
