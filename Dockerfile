@@ -1,13 +1,21 @@
-FROM maven:3-eclipse-temurin-21 AS build
-
 # you can use --build-arg build=false to skip workflow-core.war compilation, a workflow-core.war file needs to be available in target/workflow-core.war then
 ARG build=true
 
+# build war in container
+FROM --platform=$BUILDPLATFORM maven:3-eclipse-temurin-21 AS war-build-true
 COPY ./ /workflow/
 WORKDIR /workflow
-RUN echo $build; if [ "$build" = "true" ]; then mvn clean package; elif [ -f "/workflow/target/workflow-core.war" ]; then echo "using existing workflow-core.war"; else echo "not supposed to build, but no workflow-core.war found either"; exit 1; fi
-
+RUN mvn clean package
 RUN mkdir -p /workflow-exploded && cd /workflow-exploded && jar -xf /workflow/target/workflow-core.war
+
+
+# take pre-built war from file system
+FROM --platform=$BUILDPLATFORM busybox:stable AS war-build-false
+COPY target/workflow-core.war /tmp/workflow-core.war
+RUN mkdir -p /workflow-exploded && cd /workflow-exploded && unzip -q /tmp/workflow-core.war
+
+# switch for build target
+FROM war-build-${build} AS war
 
 # Build actual application container
 FROM tomcat:10-jre21 AS slim
@@ -43,7 +51,7 @@ RUN apt-get update && \
 
 RUN rm -rf ${CATALINA_HOME}/webapps/*
 
-COPY --from=build  /workflow-exploded/ ${CATALINA_HOME}/webapps/workflow
+COPY --from=war /workflow-exploded/ ${CATALINA_HOME}/webapps/workflow
 
 # Structure is also created again in the run.sh in case of a run bind mount to not crash the container
 RUN ["/bin/bash","-c", "mkdir -p /opt/digiverso/goobi/{activemq,config,lib,metadata,rulesets,scripts,static_assets,tmp,xslt,plugins/{administration,command,dashboard,export,GUI,import,opac,statistics,step,validation,workflow}}"]
