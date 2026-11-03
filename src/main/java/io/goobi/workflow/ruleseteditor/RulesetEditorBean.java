@@ -25,11 +25,15 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +51,7 @@ import javax.xml.validation.Validator;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Ruleset;
@@ -57,9 +62,12 @@ import org.xml.sax.SAXParseException;
 
 import com.google.common.base.Stopwatch;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.StorageProviderInterface;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import io.goobi.workflow.ruleseteditor.validation.FixAddMetadataType;
 import io.goobi.workflow.ruleseteditor.validation.FixChangeCardinality;
@@ -131,6 +139,16 @@ public class RulesetEditorBean implements Serializable {
 
     @Getter
     private boolean showMore = false;
+    
+    @Getter
+    private String lastValidation;
+
+    // number of processes per ruleset, read once each time the ruleset list is loaded
+    private Map<Integer, Integer> processCounts = new HashMap<>();
+
+    // the ruleset shown in the settings dialog, a fresh copy from the database or a new one
+    @Getter
+    private Ruleset settingsRuleset;
 
     /**
      * Constructor.
@@ -174,6 +192,23 @@ public class RulesetEditorBean implements Serializable {
 
     public void toggleShowMore() {
         showMore = !showMore;
+    }
+
+    /**
+     * Only INFO messages can be shown or hidden, so the toggle is offered only when there are some.
+     *
+     * @return true if the last validation produced at least one INFO message
+     */
+    public boolean isInfoMessagesAvailable() {
+        if (validationErrors == null) {
+            return false;
+        }
+        for (RulesetValidationError error : validationErrors) {
+            if ("INFO".equals(error.getSeverity())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void initRulesetDates() {
@@ -239,6 +274,7 @@ public class RulesetEditorBean implements Serializable {
 
     public List<Ruleset> getRulesets() {
         if (this.rulesets == null) {
+            processCounts.clear();
             this.rulesets = RulesetManager.getAllRulesets();
             this.initRulesetDates();
             this.initWritePermissionFlags();
@@ -248,6 +284,110 @@ public class RulesetEditorBean implements Serializable {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    public int getProcessCount(Ruleset ruleset) {
+        Integer count = processCounts.get(ruleset.getId());
+        if (count == null) {
+            count = ProcessManager.getNumberOfProcessesWithRuleset(ruleset.getId());
+            processCounts.put(ruleset.getId(), count);
+        }
+        return count;
+    }
+
+    /**
+     * Opens the settings dialog for a ruleset, or for a new one if null is passed. The dialog edits a fresh copy from the database, so cancelling
+     * leaves the list untouched.
+     *
+     * @param ruleset the ruleset to edit or null for a new one
+     */
+    public void openSettings(Ruleset ruleset) {
+        if (ruleset == null) {
+            settingsRuleset = new Ruleset();
+            return;
+        }
+        try {
+            settingsRuleset = RulesetManager.getRulesetById(ruleset.getId());
+        } catch (DAOException e) {
+            log.error(e);
+            settingsRuleset = null;
+        }
+    }
+
+    public void saveSettings() {
+        if (settingsRuleset == null) {
+            return;
+        }
+        if (StringUtils.isBlank(settingsRuleset.getDatei())) {
+            Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("RulesetNotSpecified"), "");
+            return;
+        }
+        Path file = Paths.get(ConfigurationHelper.getInstance().getRulesetFolder() + settingsRuleset.getDatei());
+        if (!StorageProvider.getInstance().isFileExists(file)) {
+            Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("RulesetNotFound"), "");
+            return;
+        }
+        try {
+            RulesetManager.saveRuleset(settingsRuleset);
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("fehlerNichtSpeicherbar"), e.getMessage());
+            return;
+        }
+        reloadRulesets();
+    }
+
+    public void deleteSettingsRuleset() {
+        if (settingsRuleset == null || settingsRuleset.getId() == null || getProcessCount(settingsRuleset) > 0) {
+            return;
+        }
+        try {
+            RulesetManager.deleteRuleset(settingsRuleset);
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("fehlerNichtLoeschbar"), e.getMessage());
+            return;
+        }
+        reloadRulesets();
+    }
+
+    /**
+     * Lists the ruleset files in the ruleset folder, for the file selection in the settings dialog.
+     *
+     * @return the names of all xml files in the ruleset folder
+     */
+    public List<String> getAvailableRulesetFiles() {
+        StorageProviderInterface storage = StorageProvider.getInstance();
+        List<String> fileNames = new ArrayList<>();
+        for (Path path : storage.listFiles(ConfigurationHelper.getInstance().getRulesetFolder())) {
+            String name = path.getFileName().toString();
+            if (name.endsWith(".xml")) {
+                fileNames.add(name);
+            }
+        }
+        return fileNames;
+    }
+
+    /**
+     * Reloads the list after a change in the settings dialog. The open ruleset stays open with its unsaved editor content, unless its file was
+     * changed or it was deleted.
+     */
+    private void reloadRulesets() {
+        Integer openId = currentRuleset == null ? null : currentRuleset.getId();
+        String openFile = currentRuleset == null ? null : currentRuleset.getDatei();
+        this.rulesets = null;
+        getRulesets();
+        for (int index = 0; index < this.rulesets.size(); index++) {
+            Ruleset ruleset = this.rulesets.get(index);
+            if (ruleset.getId().equals(openId)) {
+                if (ruleset.getDatei().equals(openFile)) {
+                    this.currentRulesetIndex = index;
+                    this.currentRuleset = ruleset;
+                } else {
+                    setRuleset(index);
+                }
+                return;
+            }
+        }
+        setRuleset(-1);
     }
 
     public void setCurrentRulesetIndex(int index) {
@@ -264,6 +404,7 @@ public class RulesetEditorBean implements Serializable {
 
     public void editRuleset(Ruleset ruleset) {
         validationErrors = null;
+        lastValidation = null;
         int index = this.findRulesetIndex(ruleset);
         if (this.hasFileContentChanged()) {
             this.rulesetContentChanged = true;
@@ -299,6 +440,8 @@ public class RulesetEditorBean implements Serializable {
         if (this.hasFileContentChanged()) {
             RulesetFileUtils.createBackup(this.currentRuleset.getDatei());
             RulesetFileUtils.writeFile(this.getCurrentRulesetFileName(), this.currentRulesetFileContent);
+            // refresh the dates, the editor shows when the file was saved last
+            this.initRulesetDates();
         }
 
         // Switch to an other file (rulesetIndexAfterSaveOrIgnore) when "Save" was clicked
@@ -316,6 +459,7 @@ public class RulesetEditorBean implements Serializable {
         validationErrors = new ArrayList<>();
         checkRulesetXsd(this.currentRulesetFileContent);
         checkRulesetValid(this.currentRulesetFileContent);
+        lastValidation = Helper.getLocalDateTimeAsFormattedString(LocalDateTime.now());
     }
 
     private boolean hasFileContentChanged() {

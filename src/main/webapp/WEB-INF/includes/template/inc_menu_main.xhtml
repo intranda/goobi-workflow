@@ -198,15 +198,6 @@
                                         rendered="#{LoginForm.myBenutzer.superAdmin}"
                                         icon="building"/>
 
-                                <!-- Regelsaetze -->
-                                <intranda:menuItem
-                                        id="a33"
-                                        parentMenu="menu_administration"
-                                        label="#{msgs.regelsaetze}"
-                                        action="#{RegelsaetzeForm.FilterKein}"
-                                        rendered="#{LoginForm.hasRole('Admin_Rulesets')}"
-                                        icon="gavel"/>
-
                                 <!-- Laufzettel -->
                                 <intranda:menuItem
                                         id="a34"
@@ -294,7 +285,7 @@
                                 <intranda:menuItem
                                         id="aRulesetEditor"
                                         parentMenu="menu_administration"
-                                        label="#{msgs.intranda_administration_ruleset_editor}"
+                                        label="#{msgs.regelsaetze}"
                                         action="ruleset_editor.xhtml"
                                         rendered="#{LoginForm.hasRole('Admin_ruleset_editor') and NavigationForm.showConfigEditor}"
                                         icon="file-pencil"/>

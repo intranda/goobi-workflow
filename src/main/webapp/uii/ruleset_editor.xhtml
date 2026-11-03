@@ -10,6 +10,9 @@
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:util="http://goobi.io/util"
 	xmlns:editor="http://goobi.io/editor"
+	xmlns:section="http://goobi.io/section"
+	xmlns:dialog="http://goobi.io/dialog"
+	xmlns:form="http://goobi.io/form"
 	>
 
 	<ui:param name="myPageTitle"
@@ -64,86 +67,138 @@
 								<h:dataTable id="ruleset_table"
 									styleClass="table table-bordered table-fixed table-hover"
 									var="item" value="#{rulesetEditorBean.rulesets}">
-									<h:column headerClass="gw-table-fixed__sizeXXS">
+									<!-- name with the file below -->
+									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.regelsatz}" />
 										</f:facet>
 										<h:outputText value="#{item.titel}" />
+										<br />
+										<small class="text-muted">
+											<h:outputText value="#{item.datei}" />
+										</small>
 									</h:column>
-									<h:column headerClass="gw-table-fixed__sizeXXS">
+									<!-- number of processes using the ruleset -->
+									<h:column headerClass="gw-table-fixed__sizeXXS text-end">
 										<f:facet name="header">
-											<h:outputText value="#{msgs.datei}" />
+											<h:outputText value="#{msgs.prozesse}" />
 										</f:facet>
-										<h:outputText value="#{item.datei}" />
-									</h:column>
-									<h:column headerClass="gw-table-fixed__sizeS">
-										<f:facet name="header">
-											<h:outputText value="#{msgs.zuletztBearbeitet}" />
-										</f:facet>
-										<h:outputText
-											value="#{rulesetEditorBean.getLastModifiedDateOfRuleset(item)}" />
+										<div class="text-end">
+											<h:outputText value="#{rulesetEditorBean.getProcessCount(item)}" />
+										</div>
 									</h:column>
 									<h:column headerClass="gw-table-fixed__sizeXXS">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
-										<!-- Edit-Ruleset-Button -->
-										<h:panelGroup
-											rendered="#{rulesetEditorBean.currentRuleset == null}">
+										<div class="gw-table__actions__container">
+											<!-- Edit-Ruleset-Button -->
+											<h:panelGroup
+												rendered="#{rulesetEditorBean.currentRuleset == null}">
+												<button
+													jsf:id="edit"
+													class="btn btn-icon #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
+													title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}"
+													jsf:rel="tooltip"
+													jsf:action="#{rulesetEditorBean.editRuleset(item)}">
+													<util:icon icon="#{rulesetEditorBean.isRulesetWritable(item) ? 'pencil' : 'eye'}" />
+												</button>
+											</h:panelGroup>
+											<h:panelGroup
+												rendered="#{rulesetEditorBean.currentRuleset != null}">
+												<button
+													jsf:id="edit2"
+													class="btn btn-icon #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
+													jsf:action="#{rulesetEditorBean.editRuleset(item)}"
+													title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}">
+													<util:icon icon="#{rulesetEditorBean.isRulesetWritable(item) ? 'pencil' : 'eye'}" />
+												</button>
+											</h:panelGroup>
+											<!-- Settings-Button: opens the settings dialog, sends only itself so unsaved editor content stays -->
 											<button
-												jsf:id="edit"
-												class="btn btn-icon #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
-												title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}"
+												jsf:id="settings"
+												type="button"
+												class="btn btn-icon btn-blank"
+												title="#{msgs.regelsatzBearbeiten}"
+												aria-label="#{msgs.regelsatzBearbeiten}"
 												jsf:rel="tooltip"
-												jsf:action="#{rulesetEditorBean.editRuleset(item)}">
-												<util:icon icon="#{rulesetEditorBean.isRulesetWritable(item) ? 'pencil' : 'eye'}" />
+												jsf:action="#{rulesetEditorBean.openSettings(item)}">
+												<util:icon icon="settings" />
+												<f:ajax execute="@this" render=":rulesetEditorForm:settingsDialogWrapper"
+													onevent="function(data) { if (data.status === 'success') { document.querySelector('#rulesetSettingsModal').showModal(); } }" />
 											</button>
-										</h:panelGroup>
-										<h:panelGroup
-											rendered="#{rulesetEditorBean.currentRuleset != null}">
-											<button
-												jsf:id="edit2"
-												class="btn btn-icon #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
-												jsf:action="#{rulesetEditorBean.editRuleset(item)}"
-												title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}">
-												<util:icon icon="#{rulesetEditorBean.isRulesetWritable(item) ? 'pencil' : 'eye'}" />
-											</button>
-										</h:panelGroup>
+										</div>
 									</h:column>
 								</h:dataTable>
 							</div>
 						</div>
 						<!-- // TABLE WITH FILE LIST -->
+						<!-- Add-Ruleset-Button: opens the settings dialog empty -->
+						<div class="p-3">
+							<button
+								jsf:id="addRuleset"
+								type="button"
+								class="btn btn-primary"
+								jsf:action="#{rulesetEditorBean.openSettings(null)}">
+								<util:icon icon="plus" />
+								<span>#{msgs.neuenRegelsatzAnlegen}</span>
+								<f:ajax execute="@this" render=":rulesetEditorForm:settingsDialogWrapper"
+									onevent="function(data) { if (data.status === 'success') { document.querySelector('#rulesetSettingsModal').showModal(); } }" />
+							</button>
+						</div>
 					</intranda:box>
 				<!-- // LEFT AREA -->
 
 
 				<!-- RIGHT AREA -->
 				<!-- // BOX WITH FILES -->
-
+				
 					<!-- BOX WITH VALIDATION RESULTS -->
-					<div class="mt-3" jsf:id="validationResultsWrapper">
-						<div jsf:rendered="#{rulesetEditorBean.validationErrors != null}">
-
-							<intranda:box boxType="outline" boxPadding="true"
-								boxTitle="false" id="validationResults">
-
-								<intranda:boxTitle
+					<ui:fragment rendered="#{rulesetEditorBean.currentRuleset != null}">
+						<div class="mt-3">
+							<section:section
+								id="validationSection"
+								type="outline"
+								collapsible="true"
+								collapsed="#{rulesetEditorBean.validationErrors == null}">
+								<section:header
 									title="#{msgs.plugin_administration_ruleset_editor_validation_result}"
-									icon="circle-check">
-									<div class="actions d-flex">
+									icon="circle-check" />
+								<section:body>
+									<!-- last validation and button -->
+									<div class="box__actions px-3 align-items-center">
+										<h:outputFormat
+											styleClass="me-auto"
+											value="#{msgs.ruleset_validation_last_run}"
+											rendered="#{rulesetEditorBean.lastValidation != null}">
+											<f:param value="#{rulesetEditorBean.lastValidation}" />
+										</h:outputFormat>
+										<h:outputText
+											styleClass="me-auto"
+											value="#{msgs.ruleset_validation_not_run}"
+											rendered="#{rulesetEditorBean.lastValidation == null}" />
+										<!-- show or hide INFO messages -->
 										<button jsf:id="buttonShowMore"
-											class="btn d-flex align-items-center btn--title-action-neutral"
-											jsf:rel="tooltip"
-											jsf:action="#{rulesetEditorBean.toggleShowMore}"
-											title="#{rulesetEditorBean.showMore ? msgs.ruleset_validation_show_more : msgs.ruleset_validation_show_less}">
-											<util:icon icon="#{rulesetEditorBean.showMore ? 'chevron-up' : 'chevron-down'}" />
-											<f:ajax render="validationResults" />
+											class="btn btn-blank"
+											jsf:rendered="#{rulesetEditorBean.infoMessagesAvailable}"
+											jsf:action="#{rulesetEditorBean.toggleShowMore}">
+											<span>#{rulesetEditorBean.showMore ? msgs.ruleset_validation_show_less : msgs.ruleset_validation_show_more}</span>
+											<f:ajax render="validationResults buttonShowMore" />
+										</button>
+										<button jsf:id="validate"
+											class="btn btn-primary"
+											jsf:action="#{rulesetEditorBean.validate}">
+											<util:icon icon="check" />
+											<span>#{msgs.validieren}</span>
 										</button>
 									</div>
-								</intranda:boxTitle>
+									<!-- results -->
+									<h:panelGroup
+										layout="block"
+										id="validationResults"
+										styleClass="px-3 pb-3"
+										rendered="#{rulesetEditorBean.validationErrors != null}">
 
-								<div class="p-2">
 									<h:outputText
 										rendered="#{rulesetEditorBean.validationErrors.size() == 0}"
 										styleClass="alert alert-info"
@@ -316,10 +371,11 @@
 
 										</h:panelGroup>
 	                                </ui:repeat>
-								</div>
-							</intranda:box>
+									</h:panelGroup>
+								</section:body>
+							</section:section>
 						</div>
-					</div>
+					</ui:fragment>
 					<!-- // BOX WITH VALIDATION RESULTS -->
 
 				</div>
@@ -334,21 +390,16 @@
 								<!-- The message area for saved-successfully-messages -->
 								<!-- Buttons on top of text editor -->
 								<div class="form-actions mt-0 mb-3">
+									<!-- date of the last save -->
+									<span class="me-auto align-self-center text-muted">
+										<h:outputText value="#{msgs.zuletztBearbeitet}: #{rulesetEditorBean.getLastModifiedDateOfRuleset(rulesetEditorBean.currentRuleset)}" />
+									</span>
 									<!-- Cancel-Button -->
 									<button jsf:id="cancel" class="btn btn-blank float-end"
 										jsf:action="#{rulesetEditorBean.cancel}"
 										title="#{msgs.cancel}">
 										<span>
 											<h:outputText value="#{msgs.cancel}" />
-										</span>
-									</button>
-									<!-- Validate-Button -->
-									<button jsf:id="validate" class="btn btn-primary float-end"
-										jsf:action="#{rulesetEditorBean.validate}"
-										title="#{msgs.validieren}">
-										<util:icon icon="check" />
-										<span>
-											#{msgs.validieren}
 										</span>
 									</button>
 									<!-- Save-Button -->
@@ -447,6 +498,75 @@
 					</script>
 				</div>
 			</div>
+
+			<!-- SETTINGS DIALOG -->
+			<h:panelGroup id="settingsDialogWrapper" layout="block">
+				<dialog:modal id="rulesetSettingsModal" width="wide">
+					<dialog:header
+						icon="settings"
+						title="#{rulesetEditorBean.settingsRuleset.id == null ? msgs.neuenRegelsatzAnlegen : msgs.regelsatzBearbeiten}" />
+					<ui:fragment rendered="#{rulesetEditorBean.settingsRuleset != null}">
+						<dialog:body>
+							<h:panelGroup layout="block" styleClass="w-100">
+							<form:field label="#{msgs.rulesetTitle}" required="true">
+								<h:inputText
+									id="settingsTitle"
+									styleClass="form-control"
+									value="#{rulesetEditorBean.settingsRuleset.titel}" />
+							</form:field>
+							<form:field label="#{msgs.rulesetFile}" required="true">
+								<h:selectOneMenu
+									id="settingsFile"
+									styleClass="form-select"
+									value="#{rulesetEditorBean.settingsRuleset.datei}">
+									<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+									<f:selectItems value="#{rulesetEditorBean.availableRulesetFiles}" />
+								</h:selectOneMenu>
+							</form:field>
+							<form:field label="#{msgs.rulesetOrderByFile}">
+								<h:selectBooleanCheckbox
+									id="settingsOrder"
+									styleClass="form-check-input"
+									value="#{rulesetEditorBean.settingsRuleset.orderMetadataByRuleset}" />
+							</form:field>
+							</h:panelGroup>
+						</dialog:body>
+						<!-- footer as the usual action bar: buttons right with gaps, delete on the left -->
+						<div class="box__actions px-3">
+							<!-- delete only rulesets without processes; the wrapper carries the tooltip because a disabled button gets no hover -->
+							<ui:fragment rendered="#{rulesetEditorBean.settingsRuleset.id != null}">
+								<span
+									class="d-inline-block me-auto"
+									data-bs-toggle="tooltip"
+									title="#{rulesetEditorBean.getProcessCount(rulesetEditorBean.settingsRuleset) > 0 ? msgs.RulesetInUse : ''}">
+									<button
+										jsf:id="settingsDelete"
+										class="btn btn-hot"
+										jsf:disabled="#{rulesetEditorBean.getProcessCount(rulesetEditorBean.settingsRuleset) > 0}"
+										jsf:action="#{rulesetEditorBean.deleteSettingsRuleset}">
+										<util:icon icon="trash" />
+										<span>#{msgs.loeschen}</span>
+									</button>
+								</span>
+							</ui:fragment>
+							<button
+								type="button"
+								class="btn btn-blank"
+								onclick="this.closest('dialog').close();">
+								<span>#{msgs.abbrechen}</span>
+							</button>
+							<button
+								jsf:id="settingsSave"
+								class="btn btn-success"
+								jsf:action="#{rulesetEditorBean.saveSettings}">
+								<util:icon icon="device-floppy" />
+								<span>#{msgs.speichern}</span>
+							</button>
+						</div>
+					</ui:fragment>
+				</dialog:modal>
+			</h:panelGroup>
+			<!-- // SETTINGS DIALOG -->
 		</h:form>
 	</ui:define>
 </ui:composition>
