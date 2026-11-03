@@ -13,6 +13,7 @@
 	xmlns:section="http://goobi.io/section"
 	xmlns:dialog="http://goobi.io/dialog"
 	xmlns:form="http://goobi.io/form"
+	xmlns:p="http://primefaces.org/ui"
 	>
 
 	<ui:param name="myPageTitle"
@@ -377,6 +378,157 @@
 						</div>
 					</ui:fragment>
 					<!-- // BOX WITH VALIDATION RESULTS -->
+
+					<!-- BOX FOR THE PROCESS CHECK -->
+					<ui:fragment rendered="#{rulesetEditorBean.currentRuleset != null}">
+						<div class="mt-3">
+							<section:section
+								id="processCheckSection"
+								type="outline"
+								collapsible="true"
+								collapsed="#{rulesetEditorBean.processCheck == null}">
+								<section:header
+									title="#{msgs.ruleset_process_check}"
+									icon="list-check" />
+								<section:body>
+									<!-- optional filter, same syntax as in the process list -->
+									<div class="px-3 pt-3">
+										<div class="input-group">
+											<span class="input-group-text">
+												<util:icon icon="search" />
+											</span>
+											<h:inputText
+												id="processCheckFilter"
+												styleClass="form-control"
+												value="#{rulesetEditorBean.processCheckFilter}"
+												pt:placeholder="#{msgs.ruleset_process_check_filter}"
+												pt:aria-label="#{msgs.ruleset_process_check_filter}" />
+										</div>
+									</div>
+									<!-- number of processes and buttons; start is a full submit so the unsaved editor content is sent along -->
+									<h:panelGroup layout="block" id="processCheckActions" styleClass="box__actions px-3 align-items-center">
+										<h:outputFormat
+											styleClass="me-auto"
+											value="#{msgs.ruleset_process_check_count}">
+											<f:param value="#{rulesetEditorBean.getProcessCount(rulesetEditorBean.currentRuleset)}" />
+										</h:outputFormat>
+										<button jsf:id="processCheckCancel"
+											class="btn btn-blank"
+											jsf:rendered="#{rulesetEditorBean.processCheck.running}"
+											jsf:action="#{rulesetEditorBean.cancelProcessCheck}">
+											<span>#{msgs.abbrechen}</span>
+										</button>
+										<button jsf:id="processCheckStart"
+											class="btn btn-primary"
+											jsf:disabled="#{rulesetEditorBean.processCheck.running}"
+											jsf:action="#{rulesetEditorBean.startProcessCheck}">
+											<util:icon icon="refresh" />
+											<span>#{rulesetEditorBean.processCheck == null ? msgs.ruleset_process_check_start : msgs.ruleset_process_check_again}</span>
+										</button>
+									</h:panelGroup>
+									<!-- result, refreshed every second while the check runs -->
+									<h:panelGroup
+										layout="block"
+										id="processCheckResults"
+										styleClass="px-3 pb-3 d-flex flex-column gap-2"
+										rendered="#{rulesetEditorBean.processCheck != null}">
+										<p:poll
+											interval="1"
+											update="processCheckResults processCheckActions"
+											rendered="#{rulesetEditorBean.processCheck.running}" />
+										<h:outputFormat
+											styleClass="text-muted"
+											value="#{msgs.ruleset_process_check_last_run}">
+											<f:param value="#{rulesetEditorBean.lastProcessCheck}" />
+										</h:outputFormat>
+										<ui:fragment rendered="#{rulesetEditorBean.processCheck.running}">
+											<div class="progress" role="progressbar"
+												aria-valuenow="#{rulesetEditorBean.processCheck.done}" aria-valuemin="0"
+												aria-valuemax="#{rulesetEditorBean.processCheck.total}">
+												<div class="progress-bar progress-bar-striped progress-bar-animated"
+													style="width: #{rulesetEditorBean.processCheck.total == 0 ? 0 : 100 * rulesetEditorBean.processCheck.done / rulesetEditorBean.processCheck.total}%">
+													#{rulesetEditorBean.processCheck.done} / #{rulesetEditorBean.processCheck.total}
+												</div>
+											</div>
+										</ui:fragment>
+										<h:outputFormat value="#{msgs.ruleset_process_check_summary}">
+											<f:param value="#{rulesetEditorBean.processCheck.done}" />
+											<f:param value="#{rulesetEditorBean.processCheck.done - rulesetEditorBean.processCheck.errors.size()}" />
+											<f:param value="#{rulesetEditorBean.processCheck.errors.size()}" />
+										</h:outputFormat>
+										<h:outputText
+											rendered="#{rulesetEditorBean.processCheckOutdated}"
+											styleClass="alert alert-warning d-block mb-0"
+											value="#{msgs.ruleset_process_check_outdated}" />
+										<h:outputText
+											rendered="#{!rulesetEditorBean.processCheck.running and empty rulesetEditorBean.processCheck.errors}"
+											styleClass="alert alert-info d-block mb-0"
+											value="#{msgs.ruleset_process_check_no_errors}" />
+										<!-- errors as they were found, not grouped -->
+										<ui:fragment rendered="#{not empty rulesetEditorBean.processCheck.errors}">
+											<div class="gw-table">
+												<div class="gw-table__wrapper">
+													<h:dataTable
+														id="processCheckErrors"
+														styleClass="table table-bordered table-hover"
+														var="error"
+														value="#{rulesetEditorBean.processCheck.errors}">
+														<h:column>
+															<f:facet name="header">
+																<h:outputText value="#{msgs.prozess}" />
+															</f:facet>
+															<h:outputText value="#{error.title}" />
+															<br />
+															<small class="text-muted">
+																<h:outputText value="#{error.project}" />
+															</small>
+														</h:column>
+														<h:column>
+															<f:facet name="header">
+																<h:outputText value="#{msgs.fehler}" />
+															</f:facet>
+															<h:outputText styleClass="text-danger" value="#{error.message}" />
+														</h:column>
+														<h:column headerClass="gw-table-fixed__sizeXXS">
+															<f:facet name="header">
+																<h:outputText value="#{msgs.auswahl}" />
+															</f:facet>
+															<div class="gw-table__actions__container">
+																<!-- metadata editor, as in the process list -->
+																<h:commandLink
+																	styleClass="btn btn-icon btn-blank"
+																	action="#{Metadaten.XMLlesen}"
+																	title="#{msgs.metadatenBearbeiten}"
+																	pt:aria-label="#{msgs.metadatenBearbeiten}"
+																	onclick="preventDoubleSubmit(this);">
+																	<util:icon icon="book" />
+																	<f:param name="ProzesseID" value="#{error.processId}" />
+																	<f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+																	<f:param name="zurueck" value="ruleset_editor" />
+																</h:commandLink>
+															</div>
+														</h:column>
+													</h:dataTable>
+												</div>
+											</div>
+											<div>
+												<button jsf:id="processCheckShowAll"
+													class="btn btn-primary"
+													jsf:rendered="#{!rulesetEditorBean.processCheck.running}"
+													jsf:action="#{rulesetEditorBean.showProcessCheckErrorsInProcessList}">
+													<util:icon icon="list" />
+													<h:outputFormat value="#{msgs.ruleset_process_check_show_in_process_list}">
+														<f:param value="#{rulesetEditorBean.processCheck.errors.size()}" />
+													</h:outputFormat>
+												</button>
+											</div>
+										</ui:fragment>
+									</h:panelGroup>
+								</section:body>
+							</section:section>
+						</div>
+					</ui:fragment>
+					<!-- // BOX FOR THE PROCESS CHECK -->
 
 				</div>
 				<div class="col-sm-12 col-md-8" id="rightarea">

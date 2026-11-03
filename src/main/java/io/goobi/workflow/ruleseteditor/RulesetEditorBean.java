@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -55,6 +56,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Ruleset;
+import org.goobi.managedbeans.ProcessBean;
+import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.jdom2.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -88,6 +91,8 @@ import jakarta.inject.Named;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import ugh.dl.Prefs;
+import ugh.exceptions.PreferencesException;
 
 @Named
 @WindowScoped
@@ -149,6 +154,21 @@ public class RulesetEditorBean implements Serializable {
     // the ruleset shown in the settings dialog, a fresh copy from the database or a new one
     @Getter
     private Ruleset settingsRuleset;
+
+    // optional process filter for the process check, same syntax as in the process list
+    @Getter
+    @Setter
+    private String processCheckFilter;
+
+    // the running or last process check of the open ruleset, null if none was started
+    @Getter
+    private transient RulesetProcessCheck processCheck;
+
+    // editor content and time of the last process check, to tell when the result is outdated
+    private String processCheckContent;
+
+    @Getter
+    private String lastProcessCheck;
 
     /**
      * Constructor.
@@ -367,6 +387,94 @@ public class RulesetEditorBean implements Serializable {
     }
 
     /**
+     * Starts the process check: every process of the open ruleset, optionally narrowed by the filter, is read with the content of the editor, also
+     * when it is not saved yet.
+     */
+    public void startProcessCheck() {
+        if (currentRuleset == null || (processCheck != null && processCheck.isRunning())) {
+            return;
+        }
+        Prefs prefs = readPrefsFromEditor();
+        if (prefs == null) {
+            return;
+        }
+        // the filter builder returns joins and the WHERE part like in the process list (no templates, only permitted projects),
+        // the ruleset is added as one more condition
+        String criteria = FilterHelper.criteriaBuilder(StringUtils.defaultString(processCheckFilter), false, null, null, null, true, false);
+        String rulesetCondition = "prozesse.MetadatenKonfigurationID = " + currentRuleset.getId();
+        int where = criteria.indexOf(" WHERE ");
+        String query;
+        if (where < 0) {
+            query = criteria + " WHERE " + rulesetCondition;
+        } else {
+            query = criteria.substring(0, where) + " WHERE (" + criteria.substring(where + " WHERE ".length()) + ") AND " + rulesetCondition;
+        }
+        List<Integer> processIds = ProcessManager.getIdsForFilter(query);
+        processCheck = new RulesetProcessCheck(processIds, prefs);
+        processCheckContent = currentRulesetFileContent;
+        lastProcessCheck = Helper.getLocalDateTimeAsFormattedString(LocalDateTime.now());
+        processCheck.start();
+    }
+
+    public void cancelProcessCheck() {
+        if (processCheck != null) {
+            processCheck.cancel();
+        }
+    }
+
+    /**
+     * @return true if the editor content was changed after the last process check
+     */
+    public boolean isProcessCheckOutdated() {
+        return processCheck != null && !processCheck.isRunning() && !StringUtils.equals(processCheckContent, currentRulesetFileContent);
+    }
+
+    /**
+     * Opens the process list filtered to the processes with errors, like the former ruleset compatibility plugin did.
+     *
+     * @return the navigation target of the process list
+     */
+    public String showProcessCheckErrorsInProcessList() {
+        StringBuilder filter = new StringBuilder("\"id:");
+        for (RulesetProcessCheck.ProcessError error : processCheck.getErrors()) {
+            filter.append(error.getProcessId()).append(' ');
+        }
+        filter.append('"');
+        ProcessBean processBean = Helper.getBeanByClass(ProcessBean.class);
+        processBean.setFilter(filter.toString());
+        processBean.setModusAnzeige("aktuell");
+        return processBean.FilterAlleStart();
+    }
+
+    /**
+     * Parses the content of the editor as a ruleset. ugh reads rulesets only from files, so the content goes through a temporary file.
+     *
+     * @return the parsed ruleset or null if the content is not a valid ruleset
+     */
+    private Prefs readPrefsFromEditor() {
+        Path tempFile = null;
+        try {
+            tempFile = Files.createTempFile("ruleset-check", ".xml");
+            Files.writeString(tempFile, currentRulesetFileContent, StandardCharsets.UTF_8);
+            Prefs prefs = new Prefs();
+            prefs.loadPrefs(tempFile.toString());
+            return prefs;
+        } catch (IOException | PreferencesException e) {
+            log.error(e);
+            Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("ruleset_process_check_invalid_ruleset"), e.getMessage());
+            return null;
+        } finally {
+            if (tempFile != null) {
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (IOException e) {
+                    log.error(e);
+                }
+            }
+        }
+    }
+
+    /**
      * Reloads the list after a change in the settings dialog. The open ruleset stays open with its unsaved editor content, unless its file was
      * changed or it was deleted.
      */
@@ -478,6 +586,11 @@ public class RulesetEditorBean implements Serializable {
     }
 
     private void setRuleset(int index) {
+        // a process check belongs to one ruleset, start over when another one is opened
+        cancelProcessCheck();
+        processCheck = null;
+        processCheckFilter = null;
+        lastProcessCheck = null;
         // Change the (saved or unchanged) file
         if (index >= 0 && index < this.rulesets.size()) {
             this.currentRulesetIndex = index;
