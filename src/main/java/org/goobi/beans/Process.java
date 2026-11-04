@@ -344,17 +344,9 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
 
         //if first fallback fails, fall back to largest thumbs folder if possible
         if (!StorageProvider.getInstance().isDirectory(Paths.get(dir.toString(), mediaFolder)) && useFallBack) {
-            //fall back to largest thumbnail image
-            java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(mediaFolder).entrySet()
-                    .stream()
-                    .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
-                    .map(Entry::getValue)
-                    .map(Paths::get)
-                    .filter(StorageProvider.getInstance()::isDirectory)
-                    .findFirst()
-                    .orElse(null);
+            String largestThumbnailDirectory = getLargestExistingThumbsDirectory(mediaFolder);
             if (largestThumbnailDirectory != null) {
-                return largestThumbnailDirectory.toString();
+                return largestThumbnailDirectory;
             }
         }
 
@@ -425,17 +417,9 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
 
             //if first fallback fails, fall back to largest thumbs folder if possible
             if (!StorageProvider.getInstance().isDirectory(Paths.get(dir.toString(), masterFolder)) && useFallBack) {
-                //fall back to largest thumbnail image
-                java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(masterFolder).entrySet()
-                        .stream()
-                        .sorted(Comparator.comparing(Entry::getKey))
-                        .map(Entry::getValue)
-                        .map(Paths::get)
-                        .filter(StorageProvider.getInstance()::isDirectory)
-                        .findFirst()
-                        .orElse(null);
+                String largestThumbnailDirectory = getLargestExistingThumbsDirectory(masterFolder);
                 if (largestThumbnailDirectory != null) {
-                    return largestThumbnailDirectory.toString();
+                    return largestThumbnailDirectory;
                 }
             }
 
@@ -688,6 +672,27 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
         } else {
             return null;
         }
+    }
+
+    /**
+     * Return the existing thumbnail directory for the given imageDirectory containing images of the largest size. If no such directory exists, null
+     * is returned
+     *
+     * @param imageDirectory The path of an image directory, either only the name or the entire path.
+     * @return The full path to the largest existing thumbnail directory or null if no matching directory was found
+     * @throws SwapException
+     * @throws IOException
+     */
+    private String getLargestExistingThumbsDirectory(String imageDirectory) throws IOException, SwapException {
+        return getThumbsDirectories(imageDirectory).entrySet()
+                .stream()
+                .sorted(Entry.comparingByKey(Comparator.reverseOrder()))
+                .map(Entry::getValue)
+                .map(Paths::get)
+                .filter(StorageProvider.getInstance()::isDirectory)
+                .map(Path::toString)
+                .findFirst()
+                .orElse(null);
     }
 
     /**

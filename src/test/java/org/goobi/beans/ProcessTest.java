@@ -28,17 +28,24 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.DocStruct;
@@ -51,6 +58,9 @@ public class ProcessTest extends AbstractTest {
      * testFortschritt2(), testFortschrittError() and testFortschritt3().
      */
     private static Process testProcess;
+
+    @TempDir
+    private Path tempDir;
 
     /**
      * This method prepares the process for the testFortschritt* methods. The test process contains multiple steps with different states, the states
@@ -490,7 +500,60 @@ public class ProcessTest extends AbstractTest {
         assertEquals(0, process.getSekundenGesperrt());
     }
 
-    // Note: 'getImagesTifDirectory()' can not be tested without storage provider and variable replacer
+    @Test
+    public void testGetImagesTifDirectoryFallsBackToLargestThumbsFolderWithMasterDirectory() throws Exception {
+        assertEquals(expectedThumbsDirectory("testprocess_media_1600"),
+                createProcessWithThumbsOnly(true, "testprocess_media").getImagesTifDirectory(true));
+    }
+
+    @Test
+    public void testGetImagesTifDirectoryFallsBackToLargestThumbsFolderWithoutMasterDirectory() throws Exception {
+        assertEquals(expectedThumbsDirectory("testprocess_media_1600"),
+                createProcessWithThumbsOnly(false, "testprocess_media").getImagesTifDirectory(true));
+    }
+
+    @Test
+    public void testGetImagesOrigDirectoryFallsBackToLargestThumbsFolderWithMasterDirectory() throws Exception {
+        assertEquals(expectedThumbsDirectory("testprocess_master_1600"),
+                createProcessWithThumbsOnly(true, "testprocess_master").getImagesOrigDirectory(true));
+    }
+
+    @Test
+    public void testGetImagesOrigDirectoryFallsBackToLargestThumbsFolderWithoutMasterDirectory() throws Exception {
+        assertEquals(expectedThumbsDirectory("testprocess_media_1600"),
+                createProcessWithThumbsOnly(false, "testprocess_media").getImagesOrigDirectory(true));
+    }
+
+    /**
+     * Creates a process whose images folder is empty and whose thumbs folder only contains the folders &lt;imageFolder&gt;_200, _800 and _1600.
+     */
+    private Process createProcessWithThumbsOnly(boolean useMasterDirectory, String imageFolder) throws IOException {
+        ConfigurationHelper.getInstance().setParameter("dataFolder", tempDir.toString() + FileSystems.getDefault().getSeparator());
+        ConfigurationHelper.getInstance().setParameter("script_createDirMeta", "");
+        ConfigurationHelper.getInstance().setParameter("useOrigFolder", String.valueOf(useMasterDirectory));
+        for (String size : new String[] { "200", "800", "1600" }) {
+            Files.createDirectories(tempDir.resolve("1").resolve("thumbs").resolve(imageFolder + "_" + size));
+        }
+        Process process = new Process();
+        process.setId(1);
+        process.setTitel("testprocess");
+        Project project = new Project();
+        project.setId(1);
+        project.setTitel("testproject");
+        process.setProjekt(project);
+        return process;
+    }
+
+    private String expectedThumbsDirectory(String thumbsFolder) {
+        return tempDir.resolve("1").resolve("thumbs").resolve(thumbsFolder).toString();
+    }
+
+    @AfterEach
+    public void resetImageDirectoryConfiguration() {
+        String goobiFolder = ConfigurationHelper.getInstance().getGoobiFolder();
+        ConfigurationHelper.resetConfigurationFile();
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
+    }
 
     @Test
     public void testGetTifDirectoryExists() {
@@ -522,8 +585,6 @@ public class ProcessTest extends AbstractTest {
         process.setSortHelperImages(1);
         assertTrue(process.getDisplayDMSButton());
     }
-
-    // Note: 'getImagesOrigDirectory()' can not be tested without storage provider and variable replacer
 
     @Test
     public void testGetMatchingImageDir() {
