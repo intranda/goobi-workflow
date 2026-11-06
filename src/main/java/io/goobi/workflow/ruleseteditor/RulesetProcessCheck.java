@@ -51,6 +51,8 @@ public class RulesetProcessCheck implements Runnable, Serializable {
         private String title;
         private String project;
         private String message;
+        // true if the metadata editor can open the process, i.e. the saved ruleset still fits
+        private boolean openable;
     }
 
     private final List<Integer> processIds;
@@ -105,9 +107,11 @@ public class RulesetProcessCheck implements Runnable, Serializable {
                 }
                 Process process = ProcessManager.getProcessById(processId);
                 if (process != null) {
-                    String message = readWithRuleset(process);
+                    String message = readWithRuleset(process, prefs);
                     if (message != null) {
-                        errors.add(new ProcessError(processId, process.getTitel(), process.getProjekt().getTitel(), message));
+                        // the metadata editor reads with the saved ruleset, so it can open the process only if that one still fits
+                        boolean openable = readWithRuleset(process, process.getRegelsatz().getPreferences()) == null;
+                        errors.add(new ProcessError(processId, process.getTitel(), process.getProjekt().getTitel(), message, openable));
                     }
                 }
                 done++;
@@ -121,9 +125,10 @@ public class RulesetProcessCheck implements Runnable, Serializable {
      * Reads the metadata file of a process with the ruleset, the same way the metadata editor does.
      *
      * @param process the process to read
+     * @param rulesetPrefs the ruleset to read with
      * @return null if the file can be read, otherwise the error message
      */
-    private String readWithRuleset(Process process) {
+    private String readWithRuleset(Process process, Prefs rulesetPrefs) {
         try {
             String path = process.getMetadataFilePath();
             String type = MetadatenHelper.getMetaFileType(path);
@@ -131,7 +136,7 @@ public class RulesetProcessCheck implements Runnable, Serializable {
             if (fileformat == null) {
                 return "Unknown metadata format: " + type;
             }
-            fileformat.setPrefs(prefs);
+            fileformat.setPrefs(rulesetPrefs);
             fileformat.read(path);
             return null;
         } catch (Exception e) {

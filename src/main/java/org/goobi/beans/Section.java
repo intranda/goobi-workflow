@@ -47,11 +47,6 @@ public class Section implements Serializable {
     }
 
     public void toggle(String sectionId, boolean defaultValue) {
-        Boolean currentState = isCollapsed(sectionId);
-        if (currentState == null) {
-            sections.put(sectionId, !defaultValue);
-        } else {
-            sections.put(sectionId, !currentState);
-        }
+        sections.put(sectionId, !isCollapsed(sectionId, defaultValue));
     }
 }

@@ -437,13 +437,30 @@ public class RulesetEditorBean implements Serializable {
     public String showProcessCheckErrorsInProcessList() {
         StringBuilder filter = new StringBuilder("\"id:");
         for (RulesetProcessCheck.ProcessError error : processCheck.getErrors()) {
-            filter.append(error.getProcessId()).append(' ');
+            // separate the ids with a space, but only once the first id is in the filter, so there is no space after the last one
+            if (filter.length() > "\"id:".length()) {
+                filter.append(' ');
+            }
+            filter.append(error.getProcessId());
         }
         filter.append('"');
         ProcessBean processBean = Helper.getBeanByClass(ProcessBean.class);
         processBean.setFilter(filter.toString());
         processBean.setModusAnzeige("aktuell");
         return processBean.FilterAlleStart();
+    }
+
+    /**
+     * Opens the details of a process from the error list, for processes the metadata editor cannot open.
+     *
+     * @param processId the process to open
+     * @return the navigation target of the process details
+     */
+    public String showProcessDetails(int processId) {
+        ProcessBean processBean = Helper.getBeanByClass(ProcessBean.class);
+        processBean.setMyProzess(ProcessManager.getProcessById(processId));
+        processBean.setModusAnzeige("aktuell");
+        return processBean.editProcess();
     }
 
     /**

@@ -497,6 +497,7 @@
 																<!-- metadata editor, as in the process list -->
 																<h:commandLink
 																	styleClass="btn btn-icon btn-blank"
+																	rendered="#{error.openable}"
 																	action="#{Metadaten.XMLlesen}"
 																	title="#{msgs.metadatenBearbeiten}"
 																	pt:aria-label="#{msgs.metadatenBearbeiten}"
@@ -506,6 +507,19 @@
 																	<f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
 																	<f:param name="zurueck" value="ruleset_editor" />
 																</h:commandLink>
+																<!-- process details, when the metadata editor cannot open the process -->
+																<button
+																	jsf:id="processDetails"
+																	class="btn btn-icon btn-blank"
+																	jsf:rendered="#{!error.openable and LoginForm.hasRole('Workflow_General_Details')}"
+																	jsf:action="#{rulesetEditorBean.showProcessDetails(error.processId)}"
+																	title="#{msgs.prozessBearbeiten}"
+																	aria-label="#{msgs.prozessBearbeiten}"
+																	jsf:rel="tooltip">
+																	<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a22" />
+																	<f:setPropertyActionListener target="#{NavigationForm.parentMenu}" value="menu_workflow" />
+																	<util:icon icon="pencil" />
+																</button>
 															</div>
 														</h:column>
 													</h:dataTable>
@@ -516,6 +530,9 @@
 													class="btn btn-primary"
 													jsf:rendered="#{!rulesetEditorBean.processCheck.running}"
 													jsf:action="#{rulesetEditorBean.showProcessCheckErrorsInProcessList}">
+													<!-- the process list belongs to the workflow menu, like the menu entry "Vorgänge" -->
+													<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a22" />
+													<f:setPropertyActionListener target="#{NavigationForm.parentMenu}" value="menu_workflow" />
 													<util:icon icon="list" />
 													<h:outputFormat value="#{msgs.ruleset_process_check_show_in_process_list}">
 														<f:param value="#{rulesetEditorBean.processCheck.errors.size()}" />
