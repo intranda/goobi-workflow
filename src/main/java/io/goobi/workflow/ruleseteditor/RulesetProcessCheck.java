@@ -127,10 +127,11 @@ public class RulesetProcessCheck implements Runnable, Serializable {
         try {
             String path = process.getMetadataFilePath();
             String type = MetadatenHelper.getMetaFileType(path);
-            Fileformat fileformat = MetadatenHelper.getFileformatByName(type, prefs);
+            Fileformat fileformat = MetadatenHelper.getFileformatByName(type, process.getRegelsatz());
             if (fileformat == null) {
                 return "Unknown metadata format: " + type;
             }
+            fileformat.setPrefs(prefs);
             fileformat.read(path);
             return null;
         } catch (Exception e) {

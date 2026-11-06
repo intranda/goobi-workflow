@@ -818,22 +818,11 @@ public class MetadatenHelper {
     }
 
     public static Fileformat getFileformatByName(String name, Ruleset ruleset) {
-        return getFileformatByName(name, ruleset.getPreferences());
-    }
-
-    /**
-     * Same as {@link #getFileformatByName(String, Ruleset)}, but with an already parsed ruleset, e.g. one that is not saved yet.
-     *
-     * @param name display name of the file format
-     * @param prefs the parsed ruleset
-     * @return the file format or null if none matches
-     */
-    public static Fileformat getFileformatByName(String name, Prefs prefs) {
         for (Class<? extends Fileformat> cl : getFileformatImplementations()) {
             try {
                 Fileformat ff = cl.getDeclaredConstructor().newInstance();
                 if (ff.isWritable() && ff.getDisplayName().equals(name)) {
-                    ff.setPrefs(prefs);
+                    ff.setPrefs(ruleset.getPreferences());
                     return ff;
                 }
             } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException | NoSuchMethodException
