@@ -558,6 +558,28 @@ public class FilterHelperTest extends AbstractTest {
     }
 
     @Test
+    public void testFilterRulesetWithoutNegate() {
+        try (MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String expectedQuery = " prozesse.MetadatenKonfigurationID in (SELECT MetadatenKonfigurationID FROM metadatenkonfigurationen"
+                    + " WHERE Titel like '%Standard%')";
+
+            assertEquals(expectedQuery, FilterHelper.filterRuleset("ruleset:Standard", false));
+        }
+    }
+
+    @Test
+    public void testFilterRulesetWithNegate() {
+        try (MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            String expectedQuery = " prozesse.MetadatenKonfigurationID not in (SELECT MetadatenKonfigurationID FROM metadatenkonfigurationen"
+                    + " WHERE Titel like '%Standard%')";
+
+            assertEquals(expectedQuery, FilterHelper.filterRuleset("ruleset:Standard", true));
+        }
+    }
+
+    @Test
     public void testFilterProjectWithNegate() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
                 MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {

@@ -94,6 +94,7 @@ import jakarta.inject.Named;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -161,6 +162,16 @@ public class RulesetEditorBean implements Serializable {
     @Getter
     private Ruleset settingsRuleset;
 
+    // a file uploaded in the settings dialog of a new ruleset, written to the ruleset folder when the dialog is saved
+    @Getter
+    @Setter
+    private transient Part settingsUploadedFile;
+    private String settingsUploadedContent;
+    @Getter
+    private String settingsUploadedFileName;
+    @Getter
+    private String settingsUploadError;
+
     // optional process filter for the process check, same syntax as in the process list
     @Getter
     @Setter
@@ -179,6 +190,11 @@ public class RulesetEditorBean implements Serializable {
     // the backup file chosen in the download menu
     @Setter
     private transient Path selectedFile;
+
+    // a file uploaded to replace the editor content, like in the config file editor
+    @Getter
+    @Setter
+    private transient Part uploadedFile;
 
     /**
      * Constructor.
@@ -332,6 +348,9 @@ public class RulesetEditorBean implements Serializable {
      * @param ruleset the ruleset to edit or null for a new one
      */
     public void openSettings(Ruleset ruleset) {
+        settingsUploadedContent = null;
+        settingsUploadedFileName = null;
+        settingsUploadError = null;
         if (ruleset == null) {
             settingsRuleset = new Ruleset();
             return;
@@ -353,6 +372,20 @@ public class RulesetEditorBean implements Serializable {
             return;
         }
         Path file = Paths.get(ConfigurationHelper.getInstance().getRulesetFolder() + settingsRuleset.getDatei());
+        // an uploaded file is written to the ruleset folder now, but never replaces an existing file
+        if (settingsUploadedFileName != null && settingsUploadedFileName.equals(settingsRuleset.getDatei())) {
+            if (StorageProvider.getInstance().isFileExists(file)) {
+                Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("fileExists", settingsUploadedFileName), "");
+                return;
+            }
+            try {
+                Files.writeString(file, settingsUploadedContent, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                log.error(e);
+                Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("uploadFailed"), e.getMessage());
+                return;
+            }
+        }
         if (!StorageProvider.getInstance().isFileExists(file)) {
             Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("RulesetNotFound"), "");
             return;
@@ -380,11 +413,101 @@ public class RulesetEditorBean implements Serializable {
     }
 
     /**
-     * Lists the ruleset files in the ruleset folder, for the file selection in the settings dialog.
+     * Takes the file uploaded in the settings dialog and selects it as the file of the new ruleset. It is written to the ruleset folder only when the
+     * dialog is saved, and only if no file with this name exists there.
+     */
+    public void uploadSettingsFile() {
+        settingsUploadError = null;
+        if (settingsUploadedFile == null || settingsRuleset == null) {
+            return;
+        }
+        String fileName = Paths.get(settingsUploadedFile.getSubmittedFileName()).getFileName().toString();
+        if (!fileName.endsWith(".xml")) {
+            settingsUploadError = Helper.getTranslation("ruleset_settings_upload_xml_only");
+            return;
+        }
+        Path file = Paths.get(ConfigurationHelper.getInstance().getRulesetFolder(), fileName);
+        if (StorageProvider.getInstance().isFileExists(file)) {
+            settingsUploadError = Helper.getTranslation("fileExists", fileName);
+            return;
+        }
+        try (InputStream inputStream = settingsUploadedFile.getInputStream()) {
+            settingsUploadedContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            settingsUploadError = Helper.getTranslation("uploadFailed");
+            return;
+        }
+        settingsUploadedFileName = fileName;
+        settingsRuleset.setDatei(fileName);
+    }
+
+    /**
+     * Duplicates a ruleset like other duplicates in Goobi: a copy of the file and a new ruleset, both with "_copy" in the name.
      *
-     * @return the names of all xml files in the ruleset folder
+     * @param ruleset the ruleset to duplicate
+     */
+    public void duplicateRuleset(Ruleset ruleset) {
+        StorageProviderInterface storage = StorageProvider.getInstance();
+        String folder = ConfigurationHelper.getInstance().getRulesetFolder();
+        // never overwrite a file, count up until the name is free
+        String baseName = StringUtils.removeEnd(ruleset.getDatei(), ".xml") + "_copy";
+        String fileName = baseName + ".xml";
+        int number = 2;
+        while (storage.isFileExists(Paths.get(folder, fileName))) {
+            fileName = baseName + "_" + number + ".xml";
+            number++;
+        }
+        try {
+            storage.copyFile(Paths.get(folder, ruleset.getDatei()), Paths.get(folder, fileName));
+            Ruleset copy = new Ruleset();
+            copy.setTitel(ruleset.getTitel() + "_copy");
+            copy.setDatei(fileName);
+            copy.setOrderMetadataByRuleset(ruleset.isOrderMetadataByRuleset());
+            RulesetManager.saveRuleset(copy);
+        } catch (IOException | DAOException e) {
+            log.error(e);
+            Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("fehlerNichtSpeicherbar"), e.getMessage());
+            return;
+        }
+        reloadRulesets();
+    }
+
+    /**
+     * Lists the ruleset files in the ruleset folder, for the file selection in the settings dialog. Only files no other ruleset uses are offered, the
+     * own file of an edited ruleset stays selectable. A file uploaded in the dialog is listed too, although it is written to the folder only when the
+     * dialog is saved.
+     *
+     * @return the names of the selectable xml files
      */
     public List<String> getAvailableRulesetFiles() {
+        List<String> fileNames = listRulesetFiles();
+        for (Ruleset ruleset : getRulesets()) {
+            if (settingsRuleset == null || !ruleset.getId().equals(settingsRuleset.getId())) {
+                fileNames.remove(ruleset.getDatei());
+            }
+        }
+        if (settingsUploadedFileName != null && !fileNames.contains(settingsUploadedFileName)) {
+            fileNames.add(settingsUploadedFileName);
+        }
+        return fileNames;
+    }
+
+    /**
+     * @return the xml files in the ruleset folder that no ruleset uses, shown below the ruleset list
+     */
+    public List<String> getUnusedRulesetFiles() {
+        List<String> fileNames = listRulesetFiles();
+        for (Ruleset ruleset : getRulesets()) {
+            fileNames.remove(ruleset.getDatei());
+        }
+        return fileNames;
+    }
+
+    /**
+     * @return the names of all xml files in the ruleset folder
+     */
+    private List<String> listRulesetFiles() {
         StorageProviderInterface storage = StorageProvider.getInstance();
         List<String> fileNames = new ArrayList<>();
         for (Path path : storage.listFiles(ConfigurationHelper.getInstance().getRulesetFolder())) {
@@ -461,6 +584,20 @@ public class RulesetEditorBean implements Serializable {
     }
 
     /**
+     * Opens the process list with all processes of a ruleset, using the ruleset filter of the process search.
+     *
+     * @param ruleset the ruleset whose processes are shown
+     * @return the navigation target of the process list
+     */
+    public String showProcessesOfRuleset(Ruleset ruleset) {
+        ProcessBean processBean = Helper.getBeanByClass(ProcessBean.class);
+        // in quotes, because ruleset titles may contain spaces
+        processBean.setFilter("\"ruleset:" + ruleset.getTitel() + "\"");
+        processBean.setModusAnzeige("aktuell");
+        return processBean.FilterAlleStart();
+    }
+
+    /**
      * Opens the details of a process from the error list, for processes the metadata editor cannot open.
      *
      * @param processId the process to open
@@ -484,6 +621,22 @@ public class RulesetEditorBean implements Serializable {
             downloadFiles.addAll(BackupFileManager.getBackupFilesSortedByAge(RulesetFileUtils.getBackupDirectory(), currentRuleset.getDatei()));
         }
         return downloadFiles;
+    }
+
+    /**
+     * Replaces the editor content with the uploaded file, like in the config file editor. The file is not saved until "Save" is clicked.
+     */
+    public void uploadFile() {
+        if (this.uploadedFile == null) {
+            Helper.setFehlerMeldung("noFileSelected");
+            return;
+        }
+        try (InputStream inputStream = this.uploadedFile.getInputStream()) {
+            currentRulesetFileContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            Helper.setFehlerMeldung("uploadFailed");
+        }
     }
 
     public void downloadCurrentRulesetFile() {

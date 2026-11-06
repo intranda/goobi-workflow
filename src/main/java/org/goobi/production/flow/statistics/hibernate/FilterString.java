@@ -40,6 +40,7 @@ public final class FilterString {
     public static final String STEPDONETITLE = "stepdonetitle:";
     public static final String STEPDONEUSER = "stepdoneuser:";
     public static final String PROJECT = "project:";
+    public static final String RULESET = "ruleset:";
     public static final String TEMPLATE = "template:";
     public static final String ID = "id:";
     public static final String PROCESS = "process:";

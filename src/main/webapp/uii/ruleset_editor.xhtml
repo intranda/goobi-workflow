@@ -52,6 +52,7 @@
 
 		<!-- With permission -->
 		<h:form id="rulesetEditorForm"
+			enctype="multipart/form-data"
 			rendered="#{LoginForm.hasRole('Admin_ruleset_editor')}">
 
 			<div class="row">
@@ -85,7 +86,19 @@
 											<h:outputText value="#{msgs.prozesse}" />
 										</f:facet>
 										<div class="text-end">
-											<h:outputText value="#{rulesetEditorBean.getProcessCount(item)}" />
+											<!-- links to the process list with these processes, the process search has a ruleset filter for this -->
+											<h:commandLink
+												rendered="#{rulesetEditorBean.getProcessCount(item) > 0}"
+												action="#{rulesetEditorBean.showProcessesOfRuleset(item)}"
+												title="#{msgs.ruleset_show_processes}"
+												pt:aria-label="#{msgs.ruleset_show_processes}">
+												<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a22" />
+												<f:setPropertyActionListener target="#{NavigationForm.parentMenu}" value="menu_workflow" />
+												<h:outputText value="#{rulesetEditorBean.getProcessCount(item)}" />
+											</h:commandLink>
+											<h:outputText
+												rendered="#{rulesetEditorBean.getProcessCount(item) == 0}"
+												value="0" />
 										</div>
 									</h:column>
 									<h:column headerClass="gw-table-fixed__sizeXXS">
@@ -128,6 +141,16 @@
 												<f:ajax execute="@this" render=":rulesetEditorForm:settingsDialogWrapper"
 													onevent="function(data) { if (data.status === 'success') { document.querySelector('#rulesetSettingsModal').showModal(); } }" />
 											</button>
+											<!-- Duplicate-Button: copies file and ruleset with "_copy", as in the project and user group lists, without asking because nothing is overwritten -->
+											<button
+												jsf:id="duplicate"
+												class="btn btn-icon btn-blank"
+												jsf:action="#{rulesetEditorBean.duplicateRuleset(item)}"
+												title="#{msgs.duplicate}"
+												aria-label="#{msgs.duplicate}"
+												jsf:rel="tooltip">
+												<util:icon icon="clipboard" />
+											</button>
 										</div>
 									</h:column>
 								</h:dataTable>
@@ -146,6 +169,17 @@
 								<f:ajax execute="@this" render=":rulesetEditorForm:settingsDialogWrapper"
 									onevent="function(data) { if (data.status === 'success') { document.querySelector('#rulesetSettingsModal').showModal(); } }" />
 							</button>
+							<!-- files in the ruleset folder that no ruleset uses yet -->
+							<ui:fragment rendered="#{not empty rulesetEditorBean.unusedRulesetFiles}">
+								<div class="text-muted mt-2">
+									<h:outputFormat value="#{msgs.ruleset_unused_files}">
+										<f:param value="#{rulesetEditorBean.unusedRulesetFiles.size()}" />
+									</h:outputFormat>
+									<ui:repeat var="fileName" value="#{rulesetEditorBean.unusedRulesetFiles}" varStatus="status">
+										<h:outputText value="#{fileName}" />#{status.last ? '' : ', '}
+									</ui:repeat>
+								</div>
+							</ui:fragment>
 						</div>
 					</intranda:box>
 				<!-- // LEFT AREA -->
@@ -563,6 +597,20 @@
 									<span class="me-auto align-self-center text-muted">
 										<h:outputText value="#{msgs.zuletztBearbeitet}: #{rulesetEditorBean.getLastModifiedDateOfRuleset(rulesetEditorBean.currentRuleset)}" />
 									</span>
+									<!-- upload a new file, replace the editor content with it, as in the config file editor -->
+									<label class="btn btn-blank">
+										<h:outputText value="#{msgs.fileUpload}" />
+										<h:inputFile
+											id="fileupload"
+											value="#{rulesetEditorBean.uploadedFile}"
+											storage="file"
+											style="display:none"
+											required="false">
+											<f:ajax
+												listener="#{rulesetEditorBean.uploadFile}"
+												render="@form" />
+										</h:inputFile>
+									</label>
 									<!-- Button to download the current file, or a backup from the menu, as in the config file editor -->
 									<div class="btn-group">
 										<button
@@ -660,10 +708,10 @@
 				</div>
 				<!-- // RIGHT AREA -->
 
-				<!-- MODAL TO ASK FOR SAVING -->
+				<!-- MODAL TO ASK FOR SAVING, a plain div so it keeps its id -->
+				<ui:fragment rendered="#{rulesetEditorBean.rulesetContentChanged}">
 				<div class="modal fade" id="saveDialog" tabindex="-1" role="modal"
-					aria-labelledby="myDialogLabel"
-					jsf:rendered="#{rulesetEditorBean.rulesetContentChanged}">
+					aria-labelledby="myDialogLabel">
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
 
@@ -700,14 +748,12 @@
 						</div>
 					</div>
 				</div>
+				<script>
+					// bootstrap adds .modal() to jQuery only after the page has loaded, so open the dialog with the bootstrap API
+					bootstrap.Modal.getOrCreateInstance(document.getElementById('saveDialog')).show();
+				</script>
+				</ui:fragment>
 				<!-- // MODAL TO ASK FOR SAVING -->
-
-				<div jsf:id="test"
-					jsf:rendered="#{rulesetEditorBean.rulesetContentChanged}">
-					<script>
-						$('#saveDialog').modal('show')
-					</script>
-				</div>
 			</div>
 
 			<!-- SETTINGS DIALOG -->
@@ -726,13 +772,46 @@
 									value="#{rulesetEditorBean.settingsRuleset.titel}" />
 							</form:field>
 							<form:field label="#{msgs.rulesetFile}" required="true">
-								<h:selectOneMenu
-									id="settingsFile"
-									styleClass="form-select"
-									value="#{rulesetEditorBean.settingsRuleset.datei}">
-									<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
-									<f:selectItems value="#{rulesetEditorBean.availableRulesetFiles}" />
-								</h:selectOneMenu>
+								<!-- refreshed after an upload, the rest of the dialog keeps what was typed -->
+								<h:panelGroup id="settingsFileField" layout="block" styleClass="w-100">
+									<!-- file selection, for a new ruleset with the upload attached to it like other fields with a button; the upload is written to the ruleset folder on save -->
+									<div class="input-group">
+										<!-- without a free file in the ruleset folder a new ruleset can only bring its own file -->
+										<h:selectOneMenu
+											id="settingsFile"
+											styleClass="form-select"
+											rendered="#{not empty rulesetEditorBean.availableRulesetFiles}"
+											value="#{rulesetEditorBean.settingsRuleset.datei}">
+											<!-- "please select" like other Goobi dropdowns, only shown, never chosen -->
+											<f:selectItem
+												itemLabel="#{msgs.bitteAuswaehlen}"
+												itemValue=""
+												noSelectionOption="true"
+												itemDisabled="true" />
+											<f:selectItems value="#{rulesetEditorBean.availableRulesetFiles}" />
+										</h:selectOneMenu>
+										<ui:fragment rendered="#{rulesetEditorBean.settingsRuleset.id == null}">
+											<label class="btn btn-action text-nowrap">
+												<util:icon icon="upload" />
+												<h:outputText value="#{msgs.fileUpload}" />
+												<h:inputFile
+													id="settingsUpload"
+													value="#{rulesetEditorBean.settingsUploadedFile}"
+													storage="file"
+													style="display:none"
+													required="false">
+													<f:ajax
+														listener="#{rulesetEditorBean.uploadSettingsFile}"
+														render="settingsFileField" />
+												</h:inputFile>
+											</label>
+										</ui:fragment>
+									</div>
+									<h:outputText
+										styleClass="text-danger d-block mt-1"
+										rendered="#{rulesetEditorBean.settingsUploadError != null}"
+										value="#{rulesetEditorBean.settingsUploadError}" />
+								</h:panelGroup>
 							</form:field>
 							<form:field label="#{msgs.rulesetOrderByFile}">
 								<h:selectBooleanCheckbox

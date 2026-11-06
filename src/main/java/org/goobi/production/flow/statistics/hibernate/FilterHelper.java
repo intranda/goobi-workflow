@@ -405,6 +405,23 @@ public final class FilterHelper {
     }
 
     /**
+     * Filter processes by the title of their ruleset
+     *
+     * @param tok part of filter string to use
+     * @param negate true to get the processes of all other rulesets
+     ****************************************************************************/
+    protected static String filterRuleset(String tok, boolean negate) {
+        /* the ruleset table is not joined, so a subquery finds the matching ruleset ids */
+        String rulesets = "(SELECT MetadatenKonfigurationID FROM metadatenkonfigurationen WHERE Titel like '" + leftTruncationCharacter
+                + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+        if (!negate) {
+            return " prozesse.MetadatenKonfigurationID in " + rulesets;
+        } else {
+            return " prozesse.MetadatenKonfigurationID not in " + rulesets;
+        }
+    }
+
+    /**
      * Filter processes by scan template
      * 
      * @param tok part of filter string to use
@@ -992,6 +1009,10 @@ public final class FilterHelper {
                 whereClause = checkStringBuilder(whereClause, true);
                 whereClause.append(FilterHelper.filterProject(tok, false));
 
+            } else if (tok.toLowerCase().startsWith(FilterString.RULESET)) {
+                whereClause = checkStringBuilder(whereClause, true);
+                whereClause.append(FilterHelper.filterRuleset(tok, false));
+
             } else if (tok.toLowerCase().startsWith(FilterString.TEMPLATE) || tok.toLowerCase().startsWith(FilterString.VORLAGE)) {
                 whereClause = checkStringBuilder(whereClause, true);
                 whereClause.append(FilterHelper.filterScanTemplate(tok, false));
@@ -1091,6 +1112,10 @@ public final class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-" + FilterString.PROJECT) || tok.toLowerCase().startsWith("-" + FilterString.PROJEKT)) {
                 whereClause = checkStringBuilder(whereClause, true);
                 whereClause.append(FilterHelper.filterProject(tok, true));
+
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.RULESET)) {
+                whereClause = checkStringBuilder(whereClause, true);
+                whereClause.append(FilterHelper.filterRuleset(tok, true));
 
             } else if (tok.toLowerCase().startsWith("-" + FilterString.TEMPLATE) || tok.toLowerCase().startsWith("-" + FilterString.VORLAGE)) {
                 whereClause = checkStringBuilder(whereClause, true);
@@ -1194,6 +1219,10 @@ public final class FilterHelper {
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROJECT) || tok.toLowerCase().startsWith("|" + FilterString.PROJEKT)) {
                 whereClause = checkStringBuilder(whereClause, false);
                 whereClause.append(FilterHelper.filterProject(tok, false));
+
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.RULESET)) {
+                whereClause = checkStringBuilder(whereClause, false);
+                whereClause.append(FilterHelper.filterRuleset(tok, false));
 
             } else if (tok.toLowerCase().startsWith("|" + FilterString.TEMPLATE) || tok.toLowerCase().startsWith("|" + FilterString.VORLAGE)) {
                 whereClause = checkStringBuilder(whereClause, false);
