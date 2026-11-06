@@ -85,6 +85,20 @@ public class SectionTest {
     }
 
     @Test
+    public void testToggleOpensSectionThatStartsCollapsed() {
+        // a section that starts collapsed is open after the first click, also when the page is rendered again
+        section.toggle("section", true);
+        assertFalse(section.isCollapsed("section", true));
+    }
+
+    @Test
+    public void testToggleTwiceCollapsesSectionThatStartsCollapsed() {
+        section.toggle("section", true);
+        section.toggle("section", true);
+        assertTrue(section.isCollapsed("section", true));
+    }
+
+    @Test
     public void testMultipleSections() {
         section.toggle("A");
         section.toggle("B");
