@@ -3,6 +3,7 @@ package io.goobi.workflow.api.vocabulary;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,40 +51,63 @@ public final class VocabularyAPIManager {
     }
 
     public void versionCheck() {
-        MonitoringResult monitoringResult = this.api.get(MONITORING_ENDPOINT, MonitoringResult.class);
-        String version = monitoringResult.versions().core().version();
+        checkVersion(this.api.get(MONITORING_ENDPOINT, MonitoringResult.class));
+    }
+
+    static void checkVersion(MonitoringResult monitoringResult) {
+        String version = extractCoreVersion(monitoringResult);
         if ("unknown".equals(version)) {
             log.warn("You are working on a development version of the vocabulary server, version check will not work!");
             return;
         }
-        if (!versionIsAtLeast(MIN_REQUIRED_VERSION, version)) {
+        Optional<Version> current = Version.parse(version);
+        if (current.isEmpty()) {
+            log.warn("Vocabulary server reports an unparseable version \"{}\", skipping version check! Required minimum version: {}", version,
+                    MIN_REQUIRED_VERSION);
+            return;
+        }
+        Version min = Version.parse(MIN_REQUIRED_VERSION).orElseThrow();
+        if (current.get().compareTo(min) < 0) {
             throw new IllegalStateException("Vocabulary server doesn't meet required minimum version! minimum version=" + MIN_REQUIRED_VERSION
                     + ", current version=" + version);
         }
     }
 
-    private boolean versionIsAtLeast(String minVersion, String version) {
-        String[] minVersionParts = minVersion.split("\\.");
-        String[] versionParts = version.split("\\.");
-        if (minVersionParts.length != 3 || versionParts.length != 3) {
-            throw new IllegalArgumentException("Wrong vocabulary server version format: " + minVersion + " :: " + version + "!");
+    private static String extractCoreVersion(MonitoringResult monitoringResult) {
+        if (monitoringResult == null || monitoringResult.versions() == null || monitoringResult.versions().core() == null) {
+            return null;
         }
-        for (int i = 0; i < 3; i++) {
-            int min = Integer.parseInt(minVersionParts[i]);
-            int current;
-            if (i == 2 && versionParts[i].contains("-SNAPSHOT")) {
-                current = Integer.parseInt(versionParts[i].replace("-SNAPSHOT", "")) - 1;
-            } else {
-                current = Integer.parseInt(versionParts[i]);
+        return monitoringResult.versions().core().version();
+    }
+
+    /**
+     * Semantic version MAJOR.MINOR.PATCH with optional qualifier (e.g. "-SNAPSHOT", "-rc1"). A qualified version is a pre-release and counts as
+     * one patch level below its release.
+     */
+    private record Version(int major, int minor, int patch) implements Comparable<Version> {
+        private static final Pattern VERSION_PATTERN = Pattern.compile("^(\\d{1,9})\\.(\\d{1,9})\\.(\\d{1,9})(-[0-9A-Za-z.-]+)?$");
+        private static final Comparator<Version> ORDER =
+                Comparator.comparingInt(Version::major).thenComparingInt(Version::minor).thenComparingInt(Version::patch);
+
+        static Optional<Version> parse(String version) {
+            if (version == null) {
+                return Optional.empty();
             }
-            if (current > min) {
-                return true;
+            Matcher matcher = VERSION_PATTERN.matcher(version.strip());
+            if (!matcher.matches()) {
+                return Optional.empty();
             }
-            if (current < min) {
-                return false;
+            int patch = Integer.parseInt(matcher.group(3));
+            if (matcher.group(4) != null) {
+                patch--;
             }
+            return Optional.of(new Version(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)), patch));
         }
-        return true;
+
+        @Override
+        public int compareTo(Version other) {
+            return ORDER.compare(this, other);
+        }
     }
 
     public static synchronized VocabularyAPIManager getInstance() {
