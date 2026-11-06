@@ -1,5 +1,6 @@
 package io.goobi.workflow.api.vocabulary.helper;
 
+import static io.goobi.vocabulary.exception.VocabularyException.ErrorCode.DataIntegrityViolation;
 import static io.goobi.vocabulary.exception.VocabularyException.ErrorCode.EntityNotFound;
 import static io.goobi.vocabulary.exception.VocabularyException.ErrorCode.FieldInstanceIsEmpty;
 import static io.goobi.vocabulary.exception.VocabularyException.ErrorCode.FieldTypeSelectableValuesDoNotMatchSpecifiedValidationRegex;
@@ -208,35 +209,177 @@ public class APIExceptionExtractorTest {
         assertEquals("Selectable value(s) \"a, b\" do not match the validation regex \"^\\d{1}$\"", message);
     }
 
-    // d. Identical sibling blocks are collapsed (option B: all levels stay)
+    // d. Breadcrumbs: one line per distinct error path, header = top level, count for repeated lines
 
-    @Test
-    public void identicalSiblingBlocksAreShownOnceWithCount() {
-        VocabularyException title = ex(GenericValidation, null, ex(FieldValueIsBlank, Map.of("definitionId", "3", "definitionName", "Title")));
-        VocabularyException name = ex(GenericValidation, null, ex(FieldValueIsBlank, Map.of("definitionId", "4", "definitionName", "Name")));
-        VocabularyException importError = ex(RecordImport, null, title, title, name, title);
+    private static final VocabularyException NON_SELECTABLE = ex(ErrorCode.FieldValuesAreNonSelectableValues,
+            Map.of("definitionId", "5", "definitionName", "authority", "values", "VIAF", "selectableValues", "geonames,viaf"));
+    private static final VocabularyException TITLE_BLANK = ex(FieldValueIsBlank, Map.of("definitionId", "3", "definitionName", "title"));
+    private static final VocabularyException REFERENCE_MISSING = ex(ErrorCode.FieldValueReferencedRecordIssues, null,
+            ex(EntityNotFound, Map.of("type", "VocabularyRecordEntity", "id", "7")));
 
-        String message = render(Locale.ENGLISH, importError);
+    /** Per field: field instance validator > FieldInstanceValueIssues > per value: field value validator > leaf. */
+    private static VocabularyException fieldWithValueErrors(VocabularyException... valueErrors) {
+        VocabularyException[] perValue = Arrays.stream(valueErrors).map(e -> ex(GenericValidation, null, e)).toArray(VocabularyException[]::new);
+        return ex(GenericValidation, null, ex(ErrorCode.FieldInstanceValueIssues, null, perValue));
+    }
 
-        assertEquals(String.join("\n",
-                "Error(s) during record import",
-                "Some issues occurred during the validation phase (3×)",
-                "The value of field \"Title\" must not be blank",
-                "Some issues occurred during the validation phase",
-                "The value of field \"Name\" must not be blank"), message);
+    /** Per record: record validator > FieldInstanceIssues > fields. */
+    private static VocabularyException recordWithFields(VocabularyException... fields) {
+        return ex(GenericValidation, null, ex(ErrorCode.FieldInstanceIssues, Map.of("vocabularyId", "1", "vocabularyName", "Places"), fields));
+    }
+
+    private static VocabularyException recordImport(VocabularyException... records) {
+        return ex(RecordImport, null, records);
+    }
+
+    private static String lines(String... lines) {
+        return String.join("\n", lines);
     }
 
     @Test
-    public void collapsingWorksOnNestedLevels() {
-        VocabularyException blank = ex(FieldValueIsBlank, Map.of("definitionId", "3", "definitionName", "Title"));
-        VocabularyException record = ex(GenericValidation, null, blank, blank);
+    public void importWithIdenticalErrorsShowsOneBreadcrumbLineWithCount() {
+        VocabularyException[] records = new VocabularyException[59];
+        Arrays.fill(records, recordWithFields(fieldWithValueErrors(NON_SELECTABLE)));
 
-        String message = render(Locale.ENGLISH, ex(RecordImport, null, record));
+        assertEquals(lines("Error(s) during record import",
+                "59× Field \"authority\" › Value(s) \"VIAF\" not among the selectable values: geonames,viaf"),
+                render(Locale.ENGLISH, recordImport(records)));
+    }
 
-        assertEquals(String.join("\n",
-                "Error(s) during record import",
-                "Some issues occurred during the validation phase",
-                "The value of field \"Title\" must not be blank (2×)"), message);
+    @Test
+    public void importWithMixedErrorsShowsDistinctLinesInFirstOccurrenceOrder() {
+        VocabularyException nonSelectable = recordWithFields(fieldWithValueErrors(NON_SELECTABLE));
+        VocabularyException missingTitle = ex(GenericValidation, null, ex(ErrorCode.RecordValidationMissingRequiredFields,
+                Map.of("missingFieldIds", "3", "missingFieldNames", "title", "providedFieldIds", "5", "providedFieldNames", "authority")));
+        VocabularyException undefinedParent = ex(RecordImport, Map.of("parentId", "17"));
+
+        assertEquals(lines("Error(s) during record import",
+                "3× Field \"authority\" › Value(s) \"VIAF\" not among the selectable values: geonames,viaf",
+                "2× The following required fields were not provided: title",
+                "Unknown parent record ID \"17\""),
+                render(Locale.ENGLISH, recordImport(nonSelectable, missingTitle, nonSelectable, undefinedParent, missingTitle, nonSelectable)));
+    }
+
+    @Test
+    public void subRecordImportNamesTheParentRecordInclChildren() {
+        VocabularyException subRecord = ex(RecordValidation, Map.of("recordId", "12"), recordWithFields(fieldWithValueErrors(TITLE_BLANK)));
+
+        assertEquals(lines("Error(s) during record import",
+                "Record [12] incl. child records › Field \"title\" › The value must not be blank"),
+                render(Locale.ENGLISH, recordImport(subRecord)));
+    }
+
+    @Test
+    public void subRecordImportWithoutIdUsesNewRecordLabel() {
+        VocabularyException subRecord = ex(RecordValidation, Map.of("recordId", "null"), recordWithFields(fieldWithValueErrors(TITLE_BLANK)));
+
+        assertEquals(lines("Error(s) during record import",
+                "New record incl. child records › Field \"title\" › The value must not be blank"),
+                render(Locale.ENGLISH, recordImport(subRecord)));
+    }
+
+    @Test
+    public void savingASingleRecordShowsGenericHeaderAndFieldBreadcrumb() {
+        assertEquals(lines("Some issues occurred during the validation phase",
+                "Field \"title\" › The value must not be blank"),
+                render(Locale.ENGLISH, recordWithFields(fieldWithValueErrors(TITLE_BLANK))));
+    }
+
+    @Test
+    public void parsingErrorsAreTheTopLevel() {
+        VocabularyException rowError = ex(ErrorCode.RecordImportFieldCountIssue, Map.of("expectedSize", "3", "realSize", "2"));
+
+        assertEquals(lines("Error(s) during record parsing",
+                "2× Malformed tabular data, number of fields does not match the header: Header size \"3\", data row size \"2\""),
+                render(Locale.ENGLISH, ex(ErrorCode.RecordImportParsingIssues, null, rowError, rowError)));
+    }
+
+    @Test
+    public void fieldWithOnlyReferenceErrorsHasUnnamedFieldLabel() {
+        assertEquals(lines("Error(s) during record import",
+                "Field › Referenced records › VocabularyRecordEntity with ID \"7\" not found"),
+                render(Locale.ENGLISH, recordImport(recordWithFields(fieldWithValueErrors(REFERENCE_MISSING)))));
+    }
+
+    @Test
+    public void fieldNameIsTakenFromAnyLeafOfTheField() {
+        assertEquals(lines("Error(s) during record import",
+                "Field \"title\" › Referenced records › VocabularyRecordEntity with ID \"7\" not found",
+                "Field \"title\" › The value must not be blank"),
+                render(Locale.ENGLISH, recordImport(recordWithFields(fieldWithValueErrors(REFERENCE_MISSING, TITLE_BLANK)))));
+    }
+
+    @Test
+    public void wrapperWithEmptyCausesPrintsItsOwnText() {
+        VocabularyException emptyWrapper = ex(GenericValidation, null);
+        emptyWrapper.setCauses(List.of());
+
+        assertEquals(lines("Error(s) during record import", "Some issues occurred during the validation phase"),
+                render(Locale.ENGLISH, recordImport(emptyWrapper)));
+    }
+
+    @Test
+    public void wrapperWithoutTypeUsesServerMessageAsLabel() {
+        VocabularyException mystery = ex(null, null, "Mystery level\nsecond line", TITLE_BLANK);
+
+        assertEquals(lines("Error(s) during record import", "Mystery level › The value must not be blank"),
+                render(Locale.ENGLISH, recordImport(mystery)));
+    }
+
+    @Test
+    public void wrapperWithoutLabelKeepsItsOwnText() {
+        VocabularyException unusual = ex(DataIntegrityViolation, Map.of("reason", "duplicate key"), TITLE_BLANK);
+
+        assertEquals(lines("Error(s) during record import",
+                "A data integrity violation has occurred: duplicate key › The value must not be blank"),
+                render(Locale.ENGLISH, recordImport(unusual)));
+    }
+
+    @Test
+    public void nullCauseElementsAreSkipped() {
+        VocabularyException top = ex(RecordImport, null);
+        top.setCauses(Arrays.asList(null, TITLE_BLANK));
+
+        assertEquals(lines("Error(s) during record import", "The value must not be blank"), render(Locale.ENGLISH, top));
+    }
+
+    @Test
+    public void everyLabelHasAnEnglishText() {
+        assertEveryLabelIsTranslated(Locale.ENGLISH, APIExceptionExtractorTest::rawText);
+    }
+
+    @Test
+    public void everyLabelHasAGermanText() {
+        assertEveryLabelIsTranslated(Locale.GERMAN, (locale, key) -> Locale.GERMAN.equals(locale) ? rawText(locale, key) : ENGLISH_FALLBACK);
+    }
+
+    /**
+     * The own text of a labelled wrapper is replaced by a sentinel, so a missing label (which falls back to the own text) is detected.
+     */
+    private void assertEveryLabelIsTranslated(Locale locale, BiFunction<Locale, String, String> texts) {
+        String ownTextSentinel = "OWN_TEXT_INSTEAD_OF_LABEL";
+        List<VocabularyException> wrappers = List.of(
+                ex(ErrorCode.FieldInstanceValueIssues, null, TITLE_BLANK),
+                ex(ErrorCode.FieldInstanceValueIssues, null, ex(FieldInstanceIsEmpty, null)),
+                ex(ErrorCode.FieldValueReferencedRecordIssues, null, TITLE_BLANK),
+                ex(RecordValidation, Map.of("recordId", "12"), TITLE_BLANK),
+                ex(RecordValidation, Map.of("recordId", "null"), TITLE_BLANK),
+                ex(ErrorCode.RecordValidationHierarchyIssues, null, TITLE_BLANK),
+                ex(ErrorCode.SchemaValidationDefinitionIssues, null, TITLE_BLANK),
+                ex(ErrorCode.VocabularyValidationMetadataSchemaIssues, Map.of("metadataSchemaId", "4"), TITLE_BLANK));
+        List<String> problems = new ArrayList<>();
+        for (VocabularyException wrapper : wrappers) {
+            String ownKeyPrefix = "vocabularyManager_exception_" + wrapper.getErrorType();
+            BiFunction<Locale, String, String> withoutOwnText = (l, key) -> key.startsWith(ownKeyPrefix) ? ownTextSentinel : texts.apply(l, key);
+            String message = render(locale, recordImport(wrapper), withoutOwnText);
+            if (message.contains(ownTextSentinel) || message.contains(ENGLISH_FALLBACK) || message.contains(SERVER_FALLBACK)
+                    || message.contains("vocabularyManager_exception_") || PLACEHOLDER.matcher(message).find()) {
+                problems.add(wrapper.getErrorType() + " " + wrapper.getParams() + " -> " + message);
+            }
+        }
+        if (!problems.isEmpty()) {
+            fail(problems.size() + " untranslated label(s) in " + locale + ":\n" + String.join("\n", problems));
+        }
     }
 
     // e. Missing data never breaks rendering
@@ -268,14 +411,14 @@ public class APIExceptionExtractorTest {
     @Test
     public void germanLocaleUsesGermanTexts() {
         String message = render(Locale.GERMAN, ex(FieldValueIsBlank, Map.of("definitionId", "3", "definitionName", "Titel")));
-        assertEquals("Der Wert des Feldes \"Titel\" darf nicht leer sein", message);
+        assertEquals("Der Wert darf nicht leer sein", message);
     }
 
     @Test
     public void textMissingInRequestedLocaleFallsBackToEnglish() {
         BiFunction<Locale, String, String> noFrench = (locale, key) -> Locale.FRENCH.equals(locale) ? key : rawText(locale, key);
         String message = render(Locale.FRENCH, ex(FieldValueIsBlank, Map.of("definitionId", "3", "definitionName", "Titre")), noFrench);
-        assertEquals("The value of field \"Titre\" must not be blank", message);
+        assertEquals("The value must not be blank", message);
     }
 
     // g. Contract: every error type and every param set the server sends has a real text in English and German

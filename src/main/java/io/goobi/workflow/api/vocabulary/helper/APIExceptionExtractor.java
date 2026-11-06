@@ -60,6 +60,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.regex.Matcher;
@@ -74,6 +75,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class APIExceptionExtractor {
     private static final String MESSAGE_PREFIX = "vocabularyManager_exception_";
+    private static final String LABEL_PREFIX = MESSAGE_PREFIX + "label_";
     private static final String UNKNOWN_KEY = MESSAGE_PREFIX + "Unknown";
     private static final String UNKNOWN_FALLBACK = "Unknown vocabulary server error";
     private static final Pattern PLACEHOLDER = Pattern.compile("\\{(\\d+)}");
@@ -186,41 +188,90 @@ public class APIExceptionExtractor {
     }
 
     /**
-     * Renders the own text of the exception followed by the blocks of its causes. Identical sibling blocks are shown once with a counter.
+     * Renders the own text of the top exception as header, followed by one breadcrumb line per leaf cause: the labels of the wrapping levels
+     * and the text of the leaf, joined by " \u203A ". Identical lines are shown once, prefixed with their number of occurrences ("3\u00D7 ").
      */
-    private String render(VocabularyException ex, Locale locale) {
-        List<String> blocks = new ArrayList<>();
-        String ownText = ownText(ex, locale);
-        if (!ownText.isBlank()) {
-            blocks.add(ownText);
-        }
-        blocks.addAll(collapseIdenticalBlocks(renderCauses(ex, locale)));
-        return String.join("\n", blocks);
-    }
-
-    private List<String> renderCauses(VocabularyException ex, Locale locale) {
-        return Optional.ofNullable(ex.getCauses())
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(cause -> render(cause, locale))
-                .filter(block -> !block.isBlank())
-                .toList();
-    }
-
-    private List<String> collapseIdenticalBlocks(List<String> blocks) {
+    private String render(VocabularyException top, Locale locale) {
+        List<String> lines = new ArrayList<>();
+        collectLines(top, List.of(), locale, lines);
         Map<String, Integer> counts = new LinkedHashMap<>();
-        blocks.forEach(block -> counts.merge(block, 1, Integer::sum));
-        return counts.entrySet().stream().map(e -> e.getValue() > 1 ? appendCount(e.getKey(), e.getValue()) : e.getKey()).toList();
+        lines.forEach(line -> counts.merge(line, 1, Integer::sum));
+        List<String> result = new ArrayList<>();
+        result.add(ownText(top, locale));
+        counts.forEach((line, count) -> result.add(count > 1 ? count + "\u00D7 " + line : line));
+        return String.join("\n", result);
     }
 
-    private String appendCount(String block, int count) {
-        int firstLineEnd = block.indexOf('\n');
-        String counter = " (" + count + "\u00D7)";
-        return firstLineEnd < 0 ? block + counter : block.substring(0, firstLineEnd) + counter + block.substring(firstLineEnd);
+    private void collectLines(VocabularyException node, List<String> breadcrumb, Locale locale, List<String> lines) {
+        for (VocabularyException cause : causes(node)) {
+            List<String> path = new ArrayList<>(breadcrumb);
+            if (causes(cause).isEmpty()) {
+                path.add(ownText(cause, locale));
+                lines.add(String.join(" \u203A ", path));
+            } else {
+                String segment = segment(cause, locale);
+                if (!segment.isBlank()) {
+                    path.add(segment);
+                }
+                collectLines(cause, path, locale, lines);
+            }
+        }
+    }
+
+    private List<VocabularyException> causes(VocabularyException node) {
+        return Optional.ofNullable(node.getCauses()).orElse(Collections.emptyList()).stream().filter(Objects::nonNull).toList();
+    }
+
+    private Map<String, String> params(VocabularyException node) {
+        return Optional.ofNullable(node.getParams()).orElse(Collections.emptyMap());
+    }
+
+    /**
+     * The breadcrumb segment of a wrapping level: a label, nothing for purely technical levels, else the own text.
+     */
+    private String segment(VocabularyException node, Locale locale) {
+        ErrorCode errorType = node.getErrorType();
+        if (errorType == null) {
+            return ownText(node, locale);
+        }
+        Map<String, String> params = params(node);
+        Optional<String> label = switch (errorType) {
+            case GenericValidation, FieldInstanceIssues -> Optional.of("");
+            case FieldInstanceValueIssues -> findDefinitionName(node)
+                    .map(name -> label("FieldNamed", locale, name))
+                    .orElseGet(() -> label("Field", locale));
+            case FieldValueReferencedRecordIssues -> label("FieldValueReferencedRecordIssues", locale);
+            case RecordValidation -> isPresent(params.get("recordId"))
+                    ? label("RecordValidation", locale, params.get("recordId"))
+                    : label("RecordValidationWithoutId", locale);
+            case RecordValidationHierarchyIssues -> label("RecordValidationHierarchyIssues", locale);
+            case SchemaValidationDefinitionIssues -> label("SchemaValidationDefinitionIssues", locale);
+            case VocabularyValidationMetadataSchemaIssues -> isPresent(params.get("metadataSchemaId"))
+                    ? label("VocabularyValidationMetadataSchemaIssues", locale, params.get("metadataSchemaId"))
+                    : Optional.empty();
+            default -> Optional.empty();
+        };
+        return label.orElseGet(() -> ownText(node, locale));
+    }
+
+    private Optional<String> label(String keySuffix, Locale locale, String... values) {
+        return template(LABEL_PREFIX + keySuffix, locale).map(template -> fillPlaceholders(template, List.of(values)));
+    }
+
+    /** The definition name of the first leaf below the node that has one. */
+    private Optional<String> findDefinitionName(VocabularyException node) {
+        for (VocabularyException cause : causes(node)) {
+            Optional<String> name = causes(cause).isEmpty() ? Optional.ofNullable(params(cause).get("definitionName")).filter(this::isPresent)
+                    : findDefinitionName(cause);
+            if (name.isPresent()) {
+                return name;
+            }
+        }
+        return Optional.empty();
     }
 
     private String ownText(VocabularyException ex, Locale locale) {
-        Map<String, String> params = Optional.ofNullable(ex.getParams()).orElse(Collections.emptyMap());
+        Map<String, String> params = params(ex);
         return translate(ex.getErrorType(), params, locale).orElseGet(() -> fallbackText(ex, params, locale));
     }
 
