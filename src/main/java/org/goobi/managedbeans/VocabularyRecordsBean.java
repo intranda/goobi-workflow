@@ -150,7 +150,7 @@ public class VocabularyRecordsBean implements Serializable {
             loadFirstRecord();
         } catch (APIException e) {
             APIExceptionExtractor extractor = new APIExceptionExtractor(e);
-            Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
+            Helper.setFehlerMeldungUntranslated(extractor.getLocalizedMessage(Helper.getSessionLocale()));
         }
     }
 
@@ -167,7 +167,7 @@ public class VocabularyRecordsBean implements Serializable {
             edit(newExtendedRecord);
         } catch (APIException e) {
             APIExceptionExtractor extractor = new APIExceptionExtractor(e);
-            Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
+            Helper.setFehlerMeldungUntranslated(extractor.getLocalizedMessage(Helper.getSessionLocale()));
             this.currentRecord = new ExtendedVocabularyRecord(rec);
         }
     }
@@ -208,7 +208,7 @@ public class VocabularyRecordsBean implements Serializable {
             return load(this.vocabulary);
         } catch (APIException e) {
             APIExceptionExtractor extractor = new APIExceptionExtractor(e);
-            Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
+            Helper.setFehlerMeldungUntranslated(extractor.getLocalizedMessage(Helper.getSessionLocale()));
         } catch (IOException e) {
             String message = "Failed to import vocabulary records";
             log.error(message, e);

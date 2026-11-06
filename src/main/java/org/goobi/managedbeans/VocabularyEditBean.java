@@ -91,7 +91,7 @@ public class VocabularyEditBean implements Serializable {
                 API.vocabularyRecords().save(metadataRecord);
             } catch (APIException e) {
                 APIExceptionExtractor extractor = new APIExceptionExtractor(e);
-                Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
+                Helper.setFehlerMeldungUntranslated(extractor.getLocalizedMessage(Helper.getSessionLocale()));
                 metadataRecord.setId(recordId);
                 metadataRecord.setVocabularyId(vocabulary.getId());
                 metadataRecord.setMetadata(true);
@@ -107,7 +107,7 @@ public class VocabularyEditBean implements Serializable {
             API.vocabularies().delete(vocabulary);
         } catch (APIException e) {
             APIExceptionExtractor extractor = new APIExceptionExtractor(e);
-            Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
+            Helper.setFehlerMeldungUntranslated(extractor.getLocalizedMessage(Helper.getSessionLocale()));
             return "";
         }
         return cancel();

@@ -74,7 +74,7 @@ public class VocabularyBean implements Serializable {
             return RETURN_PAGE_OVERVIEW;
         } catch (APIException e) {
             APIExceptionExtractor extractor = new APIExceptionExtractor(e);
-            Helper.setFehlerMeldung(extractor.getLocalizedMessage(Helper.getSessionLocale()));
+            Helper.setFehlerMeldungUntranslated(extractor.getLocalizedMessage(Helper.getSessionLocale()));
             return "index";
         }
     }
