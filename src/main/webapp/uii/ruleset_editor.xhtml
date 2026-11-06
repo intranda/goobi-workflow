@@ -563,6 +563,48 @@
 									<span class="me-auto align-self-center text-muted">
 										<h:outputText value="#{msgs.zuletztBearbeitet}: #{rulesetEditorBean.getLastModifiedDateOfRuleset(rulesetEditorBean.currentRuleset)}" />
 									</span>
+									<!-- Button to download the current file, or a backup from the menu, as in the config file editor -->
+									<div class="btn-group">
+										<button
+											jsf:id="downloadFile"
+											jsf:action="#{rulesetEditorBean.downloadCurrentRulesetFile}"
+											class="btn btn-blank"
+											title="#{msgs.downloadFile}">
+											<span>
+												<h:outputText value="#{msgs.downloadFile}" />
+											</span>
+										</button>
+										<ui:fragment rendered="#{rulesetEditorBean.downloadFileAndBackups.size() > 0}">
+											<div
+												data-bs-toggle="tooltip"
+												title="Toggle Dropdown">
+												<button
+													type="button"
+													class="btn btn-blank dropdown-toggle dropdown-toggle-split"
+													data-bs-toggle="dropdown"
+													aria-expanded="false">
+													<span class="visually-hidden">Toggle Dropdown</span>
+												</button>
+												<ul class="dropdown-menu">
+													<ui:repeat
+														var="backupFile"
+														value="#{rulesetEditorBean.downloadFileAndBackups}">
+														<li>
+															<button
+																jsf:id="downloadBackup"
+																jsf:action="#{rulesetEditorBean.downloadBackupFile}"
+																class="dropdown-item">
+																<h:outputText value="#{backupFile.fileName}" />
+																<f:setPropertyActionListener
+																	target="#{rulesetEditorBean.selectedFile}"
+																	value="#{backupFile}" />
+															</button>
+														</li>
+													</ui:repeat>
+												</ul>
+											</div>
+										</ui:fragment>
+									</div>
 									<!-- Cancel-Button -->
 									<button jsf:id="cancel" class="btn btn-blank float-end"
 										jsf:action="#{rulesetEditorBean.cancel}"

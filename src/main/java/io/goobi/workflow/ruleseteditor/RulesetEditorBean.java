@@ -56,6 +56,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Ruleset;
+import org.goobi.io.BackupFileManager;
 import org.goobi.managedbeans.ProcessBean;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.jdom2.Element;
@@ -66,6 +67,7 @@ import org.xml.sax.SAXParseException;
 import com.google.common.base.Stopwatch;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.StorageProviderInterface;
@@ -87,7 +89,11 @@ import io.goobi.workflow.ruleseteditor.validation.ValidateTranslations;
 import io.goobi.workflow.ruleseteditor.validation.ValidateUnusedButDefinedData;
 import io.goobi.workflow.ruleseteditor.validation.ValidateUsedButUndefinedData;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -169,6 +175,10 @@ public class RulesetEditorBean implements Serializable {
 
     @Getter
     private String lastProcessCheck;
+
+    // the backup file chosen in the download menu
+    @Setter
+    private transient Path selectedFile;
 
     /**
      * Constructor.
@@ -461,6 +471,54 @@ public class RulesetEditorBean implements Serializable {
         processBean.setMyProzess(ProcessManager.getProcessById(processId));
         processBean.setModusAnzeige("aktuell");
         return processBean.editProcess();
+    }
+
+    /**
+     * Lists the backups of the open ruleset for the download menu, like in the config file editor.
+     *
+     * @return the backup files, newest first
+     */
+    public List<Path> getDownloadFileAndBackups() {
+        List<Path> downloadFiles = new ArrayList<>();
+        if (currentRuleset != null) {
+            downloadFiles.addAll(BackupFileManager.getBackupFilesSortedByAge(RulesetFileUtils.getBackupDirectory(), currentRuleset.getDatei()));
+        }
+        return downloadFiles;
+    }
+
+    public void downloadCurrentRulesetFile() {
+        downloadSelectedFile(Paths.get(RulesetFileUtils.getRulesetDirectory(), currentRuleset.getDatei()));
+    }
+
+    public void downloadBackupFile() {
+        downloadSelectedFile(selectedFile);
+    }
+
+    /**
+     * Sends a file to the browser as download, same as in the config file editor.
+     *
+     * @param file the file to download
+     */
+    private void downloadSelectedFile(Path file) {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(file.getFileName().toString());
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + file.getFileName().toString() + "\"");
+
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                Files.copy(file, out);
+                out.flush();
+            } catch (IOException e) {
+                log.error("IOException while downloading the ruleset file", e);
+            }
+
+            facesContext.responseComplete();
+        }
     }
 
     /**

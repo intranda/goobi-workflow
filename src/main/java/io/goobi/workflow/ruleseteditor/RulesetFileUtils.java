@@ -101,7 +101,8 @@ public abstract class RulesetFileUtils {
         try {
             Charset charset = RulesetFileUtils.standardCharset;
             FileUtils.write(new File(fileName), content, charset);
-            Helper.setMeldung("rulesetEditor", Helper.getTranslation("plugin_administration_ruleset_editor_saved_ruleset_file"), "");
+            // global, so the template shows it in the notification bar like the config file editor
+            Helper.setMeldung(Helper.getTranslation("plugin_administration_ruleset_editor_saved_ruleset_file"), "");
         } catch (IOException | IllegalArgumentException e) {
             String message = "RulesetEditorAdministrationPlugin could not write file " + fileName;
             log.error(message, e);
