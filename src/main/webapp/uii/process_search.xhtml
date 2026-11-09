@@ -187,7 +187,8 @@
 											value="#{row.institutionName}"
 											rendered="#{row.fieldName == 'INSTITUTION'}"
 											styleClass="form-select"
-											id="institution">
+											id="institution"
+											pt:aria-label="#{msgs.institution}">
 											<f:selectItems
 												value="#{SearchForm.institutionNames}"
 												var="institutionNames"
@@ -206,7 +207,8 @@
 										<h:selectOneMenu
 											value="#{row.processPropertyName}"
 											styleClass="form-select"
-											id="propertyName">
+											id="propertyName"
+											pt:aria-label="#{msgs.processProperties} #{msgs.name}">
 											<f:selectItems
 												value="#{SearchForm.processPropertyTitles}"
 												var="proc"
@@ -223,7 +225,8 @@
 										<h:inputText
 											value="#{row.processPropertyValue}"
 											styleClass="form-control"
-											id="propertyValue">
+											id="propertyValue"
+											pt:aria-label="#{msgs.processProperties} #{msgs.wert}">
 										</h:inputText>
 									</h:panelGroup>
 
@@ -233,7 +236,8 @@
 										<h:selectOneMenu
 											value="#{row.templatePropertyName}"
 											styleClass="form-select"
-											id="propertyName2">
+											id="propertyName2"
+											pt:aria-label="#{msgs.templateProperties} #{msgs.name}">
 											<f:selectItems
 												value="#{SearchForm.templatePropertyTitles}"
 												var="proc"
@@ -250,7 +254,8 @@
 										<h:inputText
 											value="#{row.templatePropertyValue}"
 											styleClass="form-control"
-											id="propertyValue2">
+											id="propertyValue2"
+											pt:aria-label="#{msgs.templateProperties} #{msgs.wert}">
 										</h:inputText>
 									</h:panelGroup>
 
@@ -260,7 +265,8 @@
 										<h:selectOneMenu
 											value="#{row.masterpiecePropertyName}"
 											styleClass="form-select"
-											id="propertyName3">
+											id="propertyName3"
+											pt:aria-label="#{msgs.masterpieceProperties} #{msgs.name}">
 											<f:selectItems
 												value="#{SearchForm.masterpiecePropertyTitles}"
 												var="proc"
@@ -277,7 +283,8 @@
 										<h:inputText
 											value="#{row.masterpiecePropertyValue}"
 											styleClass="form-control"
-											id="propertyValue3">
+											id="propertyValue3"
+											pt:aria-label="#{msgs.masterpieceProperties} #{msgs.wert}">
 										</h:inputText>
 
 									</h:panelGroup>

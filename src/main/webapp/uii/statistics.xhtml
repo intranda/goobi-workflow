@@ -504,9 +504,6 @@
                                               var="item"
                                               itemLabel="#{item}"
                                               itemValue="#{item}" />
-                                          <f:passThroughAttribute
-                                              name="aria-label"
-                                              value="#{ProjekteForm.projectProgressInterface.selectedSteps}" />
                                       </h:selectManyListbox>
                                   </div>
                               </div>
@@ -524,7 +521,7 @@
                                               itemValue="#{unit}" />
                                           <f:passThroughAttribute
                                               name="aria-label"
-                                              value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}" />
+                                              value="#{msgs.einheit}" />
                                       </h:selectOneMenu>
                                       <div class="form-check__wrapper">
                                       <h:selectBooleanCheckbox

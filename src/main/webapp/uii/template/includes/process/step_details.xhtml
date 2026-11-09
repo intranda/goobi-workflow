@@ -479,6 +479,7 @@
 							<editor:code>
 								<h:inputTextarea
 									id="ThumbSettings"
+									pt:aria-label="#{msgs.typeThumbnailStep}"
 									rows="8"
 									value="#{ProzessverwaltungForm.mySchritt.automaticThumbnailSettingsYaml}"
 									styleClass="form-control"
@@ -518,7 +519,8 @@
 								</div>
 
 								<div class="col-12">
-									<h:selectOneMenu id="nameautomatisch" forceId="true"
+									<h:selectOneMenu id="nameautomatisch"
+									pt:aria-label="#{msgs.script} 1" forceId="true"
 									                 styleClass="form-select col-12"
 									                 value="#{ProzessverwaltungForm.mySchritt.scriptname1}">
 										<f:selectItem itemValue="" itemLabel="#{msgs.none}" />
@@ -530,7 +532,8 @@
 								</div>
 
 								<div class="col-12">
-									<h:selectOneMenu id="nameautomatisch2" forceId="true"
+									<h:selectOneMenu id="nameautomatisch2"
+									pt:aria-label="#{msgs.script} 2" forceId="true"
 									                 styleClass="form-select col-12"
 									                 value="#{ProzessverwaltungForm.mySchritt.scriptname2}">
 										<f:selectItem itemValue="" itemLabel="#{msgs.none}" />
@@ -542,7 +545,8 @@
 								</div>
 
 								<div class="col-12">
-									<h:selectOneMenu id="nameautomatisch3" forceId="true"
+									<h:selectOneMenu id="nameautomatisch3"
+									pt:aria-label="#{msgs.script} 3" forceId="true"
 									                 styleClass="form-select col-12"
 									                 value="#{ProzessverwaltungForm.mySchritt.scriptname3}">
 										<f:selectItem itemValue="" itemLabel="#{msgs.none}" />
@@ -554,7 +558,8 @@
 								</div>
 
 								<div class="col-12">
-									<h:selectOneMenu id="nameautomatisch4" forceId="true"
+									<h:selectOneMenu id="nameautomatisch4"
+									pt:aria-label="#{msgs.script} 4" forceId="true"
 									                 styleClass="form-select col-12"
 									                 value="#{ProzessverwaltungForm.mySchritt.scriptname4}">
 										<f:selectItem itemValue="" itemLabel="#{msgs.none}" />
@@ -566,7 +571,8 @@
 								</div>
 
 								<div class="col-12">
-									<h:selectOneMenu id="nameautomatisch5" forceId="true"
+									<h:selectOneMenu id="nameautomatisch5"
+									pt:aria-label="#{msgs.script} 5" forceId="true"
 									                 styleClass="form-select col-12"
 									                 value="#{ProzessverwaltungForm.mySchritt.scriptname5}">
 										<f:selectItem itemValue="" itemLabel="#{msgs.none}" />
@@ -637,7 +643,7 @@
 								</div>
 
 								<div class="d-flex flex-column gap-1">
-									<label>#{msgs.httpMethod}</label>
+									<label for="httpMethod">#{msgs.httpMethod}</label>
 									<h:selectOneMenu
 										id="httpMethod"
 										forceId="true"
@@ -648,7 +654,7 @@
 									</h:selectOneMenu>
 								</div>
 								<div class="d-flex flex-column gap-1">
-									<label>#{msgs.httpUrl}</label>
+									<label for="httpUrl">#{msgs.httpUrl}</label>
 									<h:inputText
 										id="httpUrl"
 										forceId="true"
@@ -668,6 +674,7 @@
 										<h:inputTextarea
 											styleClass="form-control"
 											value="#{ProzessverwaltungForm.mySchritt.httpJsonBody}"
+											pt:aria-label="#{msgs.httpBody}"
 											onkeyup="checkJSON(event)"></h:inputTextarea>
 									</div>
 									<h:outputText

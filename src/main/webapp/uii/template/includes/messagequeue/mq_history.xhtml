@@ -6,6 +6,7 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:util="http://goobi.io/util"
     >
 
@@ -27,8 +28,9 @@
                             <h:inputText
                                 id="searchfield"
                                 styleClass="form-control searchfield"
-                                value="#{messageQueueBean.filter}">
-                            </h:inputText>
+                                value="#{messageQueueBean.filter}"
+                                pt:placeholder="#{msgs.filter}"
+                                pt:aria-label="#{msgs.filter}" />
                             <button
                                 jsf:id="FilterAlle2"
                                 jsf:forceId="true"

@@ -751,6 +751,7 @@
 							<div class="controls">
 								<h:selectOneMenu
                                     id="selectSolveStep"
+                                    pt:aria-label="#{msgs.meldungUeberProblemloesungAnNachchfolgendeStationSenden}"
                                     rendered="#{!isBatchStep}"
                                     styleClass="form-control"
                                     value="#{AktuelleSchritteForm.mySolutionID}">
@@ -763,6 +764,7 @@
 
                                 <h:selectOneMenu
 									id="selectSolveStepBatch"
+									pt:aria-label="#{msgs.meldungUeberProblemloesungAnNachchfolgendeStationSenden}"
                                     rendered="#{isBatchStep}"
 									styleClass="form-control"
 									value="#{AktuelleSchritteForm.batchHelper.mySolutionStep}">
@@ -822,11 +824,13 @@
 								<form:grow-wrap>
 									<h:inputTextarea
 										id="addComment"
+										pt:aria-label="#{msgs.bemerkung}"
 										rendered="#{!isBatchStep}"
 										styleClass="form-control"
 										value="#{AktuelleSchritteForm.solutionMessage}" />
 									<h:inputTextarea
 										id="addCommentBatch"
+										pt:aria-label="#{msgs.bemerkung}"
 										rendered="#{isBatchStep}"
 										styleClass="form-control"
 										value="#{AktuelleSchritteForm.batchHelper.solutionMessage}" />
