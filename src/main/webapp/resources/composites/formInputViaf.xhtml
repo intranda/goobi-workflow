@@ -261,6 +261,7 @@
                                                         <h:selectOneMenu
                                                             styleClass="form-control"
                                                             id="select_databases"
+                                                            pt:aria-label="#{msgs.NORM_SOURCE}"
                                                             value="#{filter.searchValue}">
                                                             <f:selectItems
                                                                 value="#{cc.attrs.field.viafSearch.searchSources}"
@@ -293,6 +294,8 @@
                                                 </strong>
                                                 <h:selectOneRadio
                                                     value="#{group.conjunctive}"
+                                                    pt:role="radiogroup"
+                                                    pt:aria-label="#{msgs.NORM_filterconjunction}"
                                                     styleClass="table__radio">
                                                     <f:selectItem
                                                         itemValue="true"
@@ -328,7 +331,9 @@
 
                                             <h:selectOneRadio
                                                 styleClass="select-radio"
-                                                value="#{cc.attrs.field.viafSearch.viafSearchRequest.conjunctive}">
+                                                value="#{cc.attrs.field.viafSearch.viafSearchRequest.conjunctive}"
+                                                pt:role="radiogroup"
+                                                pt:aria-label="#{msgs.NORM_groupconjunction}">
                                                 <f:selectItem
                                                     itemValue="true"
                                                     itemLabel="#{msgs.NORM_conjunctive}" />
@@ -345,7 +350,9 @@
 
                                         <h:selectOneRadio
                                             styleClass="select-radio"
-                                            value="#{cc.attrs.field.viafSearch.sorting}">
+                                            value="#{cc.attrs.field.viafSearch.sorting}"
+                                            pt:role="radiogroup"
+                                            pt:aria-label="#{msgs.NORM_authorityViafSortOrder}">
                                             <f:selectItem
                                                 itemValue="true"
                                                 itemLabel="#{msgs.NORM_authorityViafSortOptionDefault}" />

@@ -84,7 +84,12 @@
                                 <label>#{msgs.paginierung}:</label>
                             </div>
                             <div class="form-input">
-                                <h:selectOneRadio id="insertMode" styleClass="select-radio select-radio-horizontal" value="#{Metadaten.fileManipulation.insertMode}">
+                                <h:selectOneRadio
+                                    id="insertMode"
+                                    pt:role="radiogroup"
+                                    pt:aria-label="#{msgs.paginierung}"
+                                    styleClass="select-radio select-radio-horizontal"
+                                    value="#{Metadaten.fileManipulation.insertMode}">
                                     <f:selectItem itemValue="uncounted" itemLabel="#{msgs.insertAsUncounted}" />
                                     <f:selectItem itemValue="insertIntoPagination" itemLabel="#{msgs.insertIntoPagination}" />
                                 </h:selectOneRadio>

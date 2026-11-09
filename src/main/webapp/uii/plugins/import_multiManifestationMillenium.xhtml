@@ -3,6 +3,7 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:util="http://goobi.io/util"
@@ -38,6 +39,7 @@
 							<td>
 								<h:selectOneMenu
 									value="#{docstruct.docStruct}"
+									pt:aria-label="#{msgs.manifestationType}"
 									styleClass="form-control">
 									<f:selectItems
 										value="#{MassImportForm.plugin.possibleDocstructs}"
@@ -50,6 +52,7 @@
 							<td>
 								<h:inputText
 									value="#{docstruct.order}"
+									pt:aria-label="#{msgs.reihenfolge}"
 									styleClass="form-control" />
 							</td>
 
@@ -57,6 +60,7 @@
 								<h:selectOneMenu
 									value="#{docstruct.volumeProperty.value}"
 									id="prpvw15_2"
+									pt:aria-label="#{msgs.volume}"
 									styleClass="form-control">
 									<f:selectItems
 										id="prpvw15_2_2"
@@ -71,6 +75,7 @@
 								<h:selectOneMenu
 									value="#{docstruct.copyProperty.value}"
 									id="prpvw15_1"
+									pt:aria-label="#{msgs.copy}"
 									styleClass="form-control">
 									<f:selectItems
 										id="prpvw15_1_2"

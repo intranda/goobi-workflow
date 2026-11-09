@@ -68,20 +68,27 @@
                                                 value="#{group.filters}"
                                                 varStatus="status">
                                                 <div class="input-group flex-nowrap">
-                                                    <h:selectOneMenu value="#{filter.field}" styleClass="form-select w-25">
+                                                    <h:selectOneMenu
+                                                        value="#{filter.field}"
+                                                        pt:aria-label="#{msgs.fieldname}"
+                                                        styleClass="form-select w-25">
                                                         <f:selectItems
                                                             value="#{Metadaten.currentMetadataToPerformSearch.possibleFields}"
                                                             var="field"
                                                             itemValue="#{field}"
                                                             itemLabel="#{msgs[field]}" />
                                                     </h:selectOneMenu>
-                                                    <h:selectOneMenu value="#{filter.relation}" styleClass="form-select">
+                                                    <h:selectOneMenu
+                                                        value="#{filter.relation}"
+                                                        pt:aria-label="#{msgs.operand}"
+                                                        styleClass="form-select">
                                                         <f:selectItems value="#{filter.operators}" />
                                                     </h:selectOneMenu>
                                                     <h:inputText
                                                         value="#{filter.value}"
                                                         styleClass="form-control input w-50"
-                                                        id="input_processes" />
+                                                        id="input_processes"
+                                                        pt:aria-label="#{msgs.wert}" />
                                                     <button
                                                         jsf:id="delete"
                                                         jsf:action="#{group.deleteFilter(status.index)}"
@@ -102,6 +109,8 @@
                                                         </strong>
                                                         <h:selectOneRadio
                                                             value="#{group.conjunctive}"
+                                                            pt:role="radiogroup"
+                                                            pt:aria-label="#{msgs.NORM_filterconjunction}"
                                                             styleClass="table__radio">
                                                             <f:selectItem
                                                                 itemValue="true"
@@ -136,7 +145,11 @@
                                                     <strong>
                                                         <h:outputText value="#{msgs.NORM_groupconjunction}:" />
                                                     </strong>
-                                                    <h:selectOneRadio styleClass="table__radio" value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataConjunctive}">
+                                                    <h:selectOneRadio
+                                                        styleClass="table__radio"
+                                                        value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataConjunctive}"
+                                                        pt:role="radiogroup"
+                                                        pt:aria-label="#{msgs.NORM_groupconjunction}">
                                                         <f:selectItem
                                                             itemValue="true"
                                                             itemLabel="#{msgs.NORM_conjunctive}" />

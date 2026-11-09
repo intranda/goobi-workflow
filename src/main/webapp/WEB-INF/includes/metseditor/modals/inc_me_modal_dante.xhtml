@@ -47,6 +47,7 @@
                         <div id="dante_search_area" class="metadata-search-row">
                             <h:inputText
                                 id="danteInput"
+                                pt:aria-label="#{msgs.search}"
                                 styleClass="form-control"
                                 value="#{Metadaten.danteSearchValue}" />
                             <util:ajax-loader />
@@ -100,7 +101,10 @@
                                                     <h:outputText value="#{msgs.NORM_dantePreferredValue}" />
                                                 </div>
                                                 <div class="col-8">
-                                                    <h:selectOneMenu styleClass="form-select" value="#{normdataRecord.preferredValue}">
+                                                    <h:selectOneMenu
+                                                        styleClass="form-select"
+                                                        value="#{normdataRecord.preferredValue}"
+                                                        pt:aria-label="#{msgs.NORM_dantePreferredValue}">
                                                         <f:selectItems value="#{normdataRecord.valueList}" />
                                                     </h:selectOneMenu>
                                                 </div>

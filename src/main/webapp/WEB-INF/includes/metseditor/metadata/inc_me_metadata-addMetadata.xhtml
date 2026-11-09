@@ -44,6 +44,7 @@
                                     <form:grow-wrap>
                                         <h:inputTextarea
                                             id="myTextarea"
+                                            pt:aria-label="#{msgs.wert}"
                                             styleClass="form-control"
                                             value="#{Metadaten.metadatum.value}"
                                             disabled="#{Metadaten.metadatum.disableMetadataField}"
@@ -52,12 +53,25 @@
                                     </form:grow-wrap>
                                 </h:panelGroup>
                                 <!-- TEXTAREA FOR HTML -->
-                                <h:inputTextarea id="textareaHtml" styleClass="form-control textarea-html" value="#{Metadaten.metadatum.value}" disabled="#{Metadaten.metadatum.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}" rendered="#{Metadaten.outputType == 'htmlInput'}">
+                                <h:inputTextarea
+                                    id="textareaHtml"
+                                    pt:aria-label="#{msgs.wert}"
+                                    styleClass="form-control textarea-html"
+                                    value="#{Metadaten.metadatum.value}"
+                                    disabled="#{Metadaten.metadatum.disableMetadataField}"
+                                    readonly="#{Metadaten.nurLesenModus}"
+                                    rendered="#{Metadaten.outputType == 'htmlInput'}">
                                 </h:inputTextarea>
                                 <!-- SELECT -->
                                 <ui:fragment rendered="#{(Metadaten.outputType == 'select1' or                                         Metadaten.outputType == 'vocabularyList')}">
                                     <div class="form-control form-control--select">
-                                        <h:selectOneMenu id="mySelect1" styleClass="form-select" value="#{Metadaten.metadatum.selectedItem}" disabled="#{Metadaten.metadatum.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}">
+                                        <h:selectOneMenu
+                                            id="mySelect1"
+                                            pt:aria-label="#{msgs.wert}"
+                                            styleClass="form-select"
+                                            value="#{Metadaten.metadatum.selectedItem}"
+                                            disabled="#{Metadaten.metadatum.disableMetadataField}"
+                                            readonly="#{Metadaten.nurLesenModus}">
                                             <f:selectItems value="#{Metadaten.metadatum.items}"/>
                                         </h:selectOneMenu>
                                     </div>
@@ -73,10 +87,22 @@
                                     <div class="input-group">
                                         <h:inputText id="myInput1" pt:aria-label="#{msgs.wert}" styleClass="form-control w-25" value="#{Metadaten.metadatum.value}" disabled="#{Metadaten.metadatum.disableMetadataField}" readonly="#{Metadaten.nurLesenModus}">
                                         </h:inputText>
-                                        <h:selectOneMenu id="selectNoDante" styleClass="form-select" disabled="#{Metadaten.metadatum.disableIdentifierField or (Metadaten.outputType == 'readonly')}" value="#{Metadaten.metadatum.normDatabase}" readonly="#{Metadaten.nurLesenModus}">
+                                        <h:selectOneMenu
+                                            id="selectNoDante"
+                                            pt:aria-label="#{msgs.database}"
+                                            styleClass="form-select"
+                                            disabled="#{Metadaten.metadatum.disableIdentifierField or (Metadaten.outputType == 'readonly')}"
+                                            value="#{Metadaten.metadatum.normDatabase}"
+                                            readonly="#{Metadaten.nurLesenModus}">
                                             <f:selectItems value="#{Metadaten.metadatum.possibleDatabases}" var="database" itemLabel="#{database}" itemValue="#{database}"/>
                                         </h:selectOneMenu>
-                                        <h:inputText id="inputTextNoDante" styleClass="form-control w-50" disabled="#{Metadaten.metadatum.disableIdentifierField or (Metadaten.outputType == 'readonly')}" value="#{Metadaten.metadatum.normdataValue}" readonly="#{Metadaten.nurLesenModus}">
+                                        <h:inputText
+                                            id="inputTextNoDante"
+                                            pt:aria-label="#{msgs.identifier}"
+                                            styleClass="form-control w-50"
+                                            disabled="#{Metadaten.metadatum.disableIdentifierField or (Metadaten.outputType == 'readonly')}"
+                                            value="#{Metadaten.metadatum.normdataValue}"
+                                            readonly="#{Metadaten.nurLesenModus}">
                                         </h:inputText>
                                     </div>
                                     <!--  buttons -->
@@ -107,7 +133,13 @@
                                     <div class="form-group form-group--inside">
                                         <div class="row">
                                             <div class="col">
-                                                <h:inputText id="danteValue" styleClass="form-control" disabled="#{Metadaten.metadatum.disableIdentifierField}" value="#{Metadaten.metadatum.normdataValue}" readonly="#{Metadaten.nurLesenModus}">
+                                                <h:inputText
+                                                    id="danteValue"
+                                                    pt:aria-label="#{msgs.wert}"
+                                                    styleClass="form-control"
+                                                    disabled="#{Metadaten.metadatum.disableIdentifierField}"
+                                                    value="#{Metadaten.metadatum.normdataValue}"
+                                                    readonly="#{Metadaten.nurLesenModus}">
                                                 </h:inputText>
                                             </div>
                                             <div class="col-1" style="text-align: center;">

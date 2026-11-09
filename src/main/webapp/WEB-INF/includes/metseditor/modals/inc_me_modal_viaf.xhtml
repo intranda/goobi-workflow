@@ -95,6 +95,7 @@
                                                     <ui:fragment rendered="#{filter.searchField == 'local.sources'}">
                                                         <h:selectOneMenu
                                                             id="select_databases"
+                                                            pt:aria-label="#{msgs.NORM_SOURCE}"
                                                             value="#{filter.searchValue}"
                                                             styleClass="form-select flex-grow-1">
                                                             <f:selectItems
@@ -124,7 +125,11 @@
                                                         <strong>
                                                             <h:outputText value="#{msgs.NORM_filterconjunction}:" />
                                                         </strong>
-                                                        <h:selectOneRadio value="#{group.conjunctive}" styleClass="table__radio">
+                                                        <h:selectOneRadio
+                                                            value="#{group.conjunctive}"
+                                                            pt:role="radiogroup"
+                                                            pt:aria-label="#{msgs.NORM_filterconjunction}"
+                                                            styleClass="table__radio">
                                                             <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
                                                             <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
                                                             <f:ajax />
@@ -157,7 +162,9 @@
 
                                                     <h:selectOneRadio
                                                         styleClass="select-radio"
-                                                        value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.conjunctive}">
+                                                        value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.viafSearchRequest.conjunctive}"
+                                                        pt:role="radiogroup"
+                                                        pt:aria-label="#{msgs.NORM_groupconjunction}">
                                                         <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_conjunctive}" />
                                                         <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_disjunctive}" />
                                                         <f:ajax />
@@ -169,7 +176,9 @@
 
                                                 <h:selectOneRadio
                                                     styleClass="select-radio"
-                                                    value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.sorting}">
+                                                    value="#{Metadaten.currentMetadataToPerformSearch.viafSearch.sorting}"
+                                                    pt:role="radiogroup"
+                                                    pt:aria-label="#{msgs.NORM_authorityViafSortOrder}">
                                                     <f:selectItem itemValue="true" itemLabel="#{msgs.NORM_authorityViafSortOptionDefault}" />
                                                     <f:selectItem itemValue="false" itemLabel="#{msgs.NORM_authorityViafSortOptionHoldingCount}" />
                                                     <f:ajax />
