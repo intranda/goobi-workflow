@@ -108,3 +108,19 @@ video-chapters {
   margin-right: 0.5rem;
   font-size: 0.75rem;
 }
+
+/* Caption appearance, values are set by captionSettings.js */
+#video-track-container {
+  --gw-caption-color: #fff;
+  --gw-caption-bg: rgba(0, 0, 0, 0.8);
+  --gw-caption-size-factor: 1;
+}
+
+#video-track-container .plyr__captions {
+  font-size: calc(var(--plyr-font-size-base, 15px) * var(--gw-caption-size-factor));
+}
+
+#video-track-container .plyr__captions .plyr__caption {
+  color: var(--gw-caption-color);
+  background: var(--gw-caption-bg);
+}

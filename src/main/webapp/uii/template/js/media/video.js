@@ -3,6 +3,7 @@ import 'plyr/dist/plyr.css';
 import './chapters/chapters.js';
 import { updateChapters } from './chapters/chapterSync.js';
 import '../../css/media/video-chapters.css';
+import { initCaptionSettings } from './captionSettings.js';
 
 const initPlayer = () => {
     const videoElement = document.getElementById('videoplayer');
@@ -11,8 +12,11 @@ const initPlayer = () => {
         return;
     }
 
+    const trackContainer = document.getElementById('video-track-container');
+
     // Return existing instance if Plyr is already set up on this exact element
     if (videoElement.plyr) {
+        initCaptionSettings(trackContainer, videoElement.plyr);
         return videoElement.plyr;
     }
 
@@ -30,6 +34,7 @@ const initPlayer = () => {
         });
 
         initTimestampButtons(player);
+        initCaptionSettings(trackContainer, player);
 
         return player;
     } catch (error) {

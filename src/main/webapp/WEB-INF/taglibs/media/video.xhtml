@@ -40,6 +40,36 @@
                     </ui:repeat>
                 </video>
 
+                <!-- Options and labels for the caption panels in the Plyr menu (see captionSettings.js) -->
+                <div class="video-caption-settings" hidden="hidden">
+                    <label for="video-caption-color">
+                        <span>#{msgs.captionColor}</span>
+                        <select id="video-caption-color" class="form-select form-select-sm w-auto" data-caption-setting="color">
+                            <option value="#ffffff" selected="selected">#{msgs.captionColorWhite}</option>
+                            <option value="#ffeb3b">#{msgs.captionColorYellow}</option>
+                            <option value="#000000">#{msgs.captionColorBlack}</option>
+                        </select>
+                    </label>
+                    <label for="video-caption-background">
+                        <span>#{msgs.captionBackground}</span>
+                        <select id="video-caption-background" class="form-select form-select-sm w-auto" data-caption-setting="background">
+                            <option value="rgba(0, 0, 0, 0.8)" selected="selected">#{msgs.captionBackgroundBlack}</option>
+                            <option value="#000000">#{msgs.captionBackgroundBlackOpaque}</option>
+                            <option value="#ffffff">#{msgs.captionBackgroundWhite}</option>
+                            <option value="transparent">#{msgs.captionBackgroundNone}</option>
+                        </select>
+                    </label>
+                    <label for="video-caption-size">
+                        <span>#{msgs.captionFontSize}</span>
+                        <select id="video-caption-size" class="form-select form-select-sm w-auto" data-caption-setting="size">
+                            <option value="1" selected="selected">#{msgs.captionFontSizeNormal}</option>
+                            <option value="1.25">#{msgs.captionFontSizeLarge}</option>
+                            <option value="1.5">#{msgs.captionFontSizeLarger}</option>
+                            <option value="2">#{msgs.captionFontSizeLargest}</option>
+                        </select>
+                    </label>
+                </div>
+
                 <figcaption>
                     <video-chapters video-id="videoplayer" label="#{msgs.chapters}"></video-chapters>
                 </figcaption>
