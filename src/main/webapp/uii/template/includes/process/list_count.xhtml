@@ -6,7 +6,8 @@
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-	xmlns:util="http://goobi.io/util">
+	xmlns:util="http://goobi.io/util"
+	xmlns:dl="http://goobi.io/dl">
 
 	<composite:interface>
 	</composite:interface>
@@ -28,39 +29,22 @@
 							<div class="gw-table__wrapper">
 
 								<!-- TABLE -->
-								<table role="grid"
-									class="table table-bordered table-fixed table-hover">
-									<tbody>
-										<tr>
-											<td>#{msgs.baendeGesamt}:</td>
-											<td>#{ProzessverwaltungForm.myAnzahlSummary.sumProcesses}</td>
-										</tr>
-										<tr>
-											<td>#{msgs.imagesGesamt}:</td>
-											<td>#{ProzessverwaltungForm.myAnzahlSummary.sumImages}</td>
-										</tr>
-										<tr>
-											<td>#{msgs.imagesDurchschnitt}:</td>
-											<td>#{ProzessverwaltungForm.myAnzahlSummary.averageImages}</td>
-										</tr>
-										<tr>
-											<td>#{msgs.docstructsGesamt}:</td>
-											<td>#{ProzessverwaltungForm.myAnzahlSummary.sumDocstructs}</td>
-										</tr>
-										<tr>
-											<td>#{msgs.docstructsDurchschnitt}:</td>
-											<td>#{ProzessverwaltungForm.myAnzahlSummary.averageDocstructs}</td>
-										</tr>
-										<tr>
-											<td>#{msgs.metadataGesamt}:</td>
-											<td>#{ProzessverwaltungForm.myAnzahlSummary.sumMetadata}</td>
-										</tr>
-										<tr>
-											<td>#{msgs.metadataDurchschnitt}:</td>
-											<td>#{ProzessverwaltungForm.myAnzahlSummary.averageMetadata}</td>
-										</tr>
-									</tbody>
-								</table>
+								<dl:list>
+									<dl:term>#{msgs.baendeGesamt}:</dl:term>
+									<dl:description>#{ProzessverwaltungForm.myAnzahlSummary.sumProcesses}</dl:description>
+									<dl:term>#{msgs.imagesGesamt}:</dl:term>
+									<dl:description>#{ProzessverwaltungForm.myAnzahlSummary.sumImages}</dl:description>
+									<dl:term>#{msgs.imagesDurchschnitt}:</dl:term>
+									<dl:description>#{ProzessverwaltungForm.myAnzahlSummary.averageImages}</dl:description>
+									<dl:term>#{msgs.docstructsGesamt}:</dl:term>
+									<dl:description>#{ProzessverwaltungForm.myAnzahlSummary.sumDocstructs}</dl:description>
+									<dl:term>#{msgs.docstructsDurchschnitt}:</dl:term>
+									<dl:description>#{ProzessverwaltungForm.myAnzahlSummary.averageDocstructs}</dl:description>
+									<dl:term>#{msgs.metadataGesamt}:</dl:term>
+									<dl:description>#{ProzessverwaltungForm.myAnzahlSummary.sumMetadata}</dl:description>
+									<dl:term>#{msgs.metadataDurchschnitt}:</dl:term>
+									<dl:description>#{ProzessverwaltungForm.myAnzahlSummary.averageMetadata}</dl:description>
+								</dl:list>
 							</div>
 						</div>
 

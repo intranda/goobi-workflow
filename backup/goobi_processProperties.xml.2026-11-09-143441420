@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config_processProperties>
+
+    <property name="Linking to external source" container="1">
+        <project>*</project>
+        <showStep name="Get manuscript from book depot" access="write"/>
+         <showProcessGroup access="write"/>
+        <type>Link</type>
+        <defaultvalue>http://goobi.intranda.com</defaultvalue>
+    </property>
+
+    <property name="Comment for depot status" container="1">
+        <project>*</project>
+        <showStep name="Get manuscript from book depot" access="write"/>
+        <showStep name="Bring manuscript back to book depot" access="write" />
+        <type>Text</type>
+        <defaultvalue></defaultvalue>
+    </property>
+
+    <property name="Placeholder card stored in depot" container="1">
+        <project>*</project>
+        <showStep name="Get manuscript from book depot" access="write"/>
+        <showProcessGroup access="write"/>
+        <type>Boolean</type>
+    </property>
+
+    <property name="Placeholder card removed from depot" container="1">
+        <project>*</project>
+        <showStep name="Bring manuscript back to book depot" access="write"/>
+        <showProcessGroup access="write"/>
+        <type>Boolean</type>
+    </property>
+
+    <property name="Kommentar" container="1">
+        <project>*</project>
+        <type>textarea</type>
+    </property>
+
+    <property name="Deadline" container="1">
+        <project>*</project>
+        <type>date</type>
+    </property>
+
+    <!--property name="HTML Eigenschaft" container="0">
+        <project>*</project>
+        <showProcessCreation template="*" access="write"/>
+        <type>HTML</type>
+    </property-->
+
+    <property name="Crop mode" container="1">
+        <project>Cropping_Project</project>
+        <showStep name="Scanning" access="writeRequired"/>
+        <showStep name="Quality control" access="write"/>
+        <showStep name="LayoutWizzard" access="read"/>
+        <type>List</type>
+        <!--<defaultvalue>180 degrees</defaultvalue>-->
+        <value>SinglePages</value>
+        <value>DoublePages</value>
+        <value>DoublePagesWithCovers</value>
+        <value>SingleSheets</value>
+    </property>
+
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+
+    <!--property name="Rechnungsadresse" container="Finanzbuchhaltung">
+        <project>*</project>
+        <showProcessCreation template="*" access="write">
+            <display property="Rechnungsform" value="Post"/>
+        </showProcessCreation>
+        <showStep name="*" access="read">
+            <display property="Rechnungsform" value="Post"/>
+        </showStep>
+        <type>Text</type>
+    </property>
+    <property name="Steuernummer" container="Finanzbuchhaltung">
+        <project>*</project>
+        <showProcessCreation template="*" access="writeRequired"/>
+        <showStep name="*" access="read"/>
+        <type>Text</type>
+    </property>
+    <property name="Rechnungsform" container="Finanzbuchhaltung">
+        <project>*</project>
+        <showProcessCreation template="*" access="write"/>
+        <showStep name="*" access="write"/>
+        <type>list</type>
+        <value>Mail</value>
+        <value>Post</value>
+        <value>Fax</value>
+        <value>Depesche</value>
+    </property-->
+
+    <property name="Alternativtitel Property" container="0">
+        <project>*</project>
+        <showProcessGroup access="write"/>
+        <type>vocabularyreference</type>
+        <vocabulary>Alternative Title Type</vocabulary>
+    </property>
+
+    <property name="Alternativtitel Property Multi" container="0">
+        <project>*</project>
+        <showProcessGroup access="write"/>
+        <type>vocabularymultireference</type>
+        <vocabulary>Alternative Title Type</vocabulary>
+    </property>
+    <property name="Zuschneidekonfiguration" container="0">
+        <project>*</project>
+        <showStep name="Scanning" access="write"/>
+        <showStep name="Quality control" access="write"/>
+        <showStep name="LayoutWizzard" access="write"/>
+        <showStep name="Metadata enrichment" access="readonly"/>
+        <type>List</type>
+        <defaultvalue>bound_book_single_pages</defaultvalue>
+        <value>bound_book_single_pages</value>
+        <value>bound_book_double_pages</value>
+        <value>bound_book_double_pages_convers</value>
+        <value>single_sheets</value>
+        <value>no_cropping</value>
+    </property>
+    <property name="Zuschneidekonfiguration1" container="0">
+        <project>*</project>
+        <showStep name="Scanning" access="write"/>
+        <showStep name="Quality control" access="write"/>
+        <showStep name="LayoutWizzard" access="read"/>
+        <showStep name="Metadata enrichment" access="readonly"/>
+        <type>List</type>
+        <defaultvalue>bound_book_single_pages</defaultvalue>
+        <value>bound_book_single_pages</value>
+        <value>bound_book_double_pages</value>
+        <value>bound_book_double_pages_convers</value>
+        <value>single_sheets</value>
+        <value>no_cropping</value>
+    </property>
+    <!-- <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property>
+    <property name="1" container="Lange Testgruppe">
+        <project>*</project>
+        <showStep name="Rechnung erstellen" access="write"/>
+        <type>Text</type>
+    </property> -->
+
+        <!-- Decision Tree: Scan-Profil. Der Baum (id "scan-profile") liegt in goobi_decisionTrees.xml. -->
+    <property name="Scan Profile" container="0">
+        <project>*</project>
+        <showStep name="Metadaten anreichern" access="writeRequired"/>
+        <type>decisiontree</type>
+        <tree>scan-profile</tree>
+        <!-- optional, schreibt zusätzlich die Ergebnis-ID und den Weg (Nachweis): -->
+        <resultIdProperty>Scan Profile Id</resultIdProperty>
+        <pathProperty>Scan Profile Path</pathProperty>
+        <!-- optional, nur wenn die Property anders heißen soll als das Feld im Baum:
+        <map field="Bit Depth" to="BitDepth"/> -->
+    </property>
+
+    <!-- <property name="Scan Profile Id" container="0">
+        <project>*</project>
+        <showStep name="Metadaten anreichern" access="read"/>
+        <type>Text</type>
+    </property>
+    <property name="Scan Profile Path" container="0">
+        <project>*</project>
+        <showStep name="Metadaten anreichern" access="read"/>
+        <type>Text</type>
+    </property> -->
+
+    <!-- Ergebnisfelder: nur für den Folgeschritt, schreibgeschützt. NICHT für den Entscheidungsschritt deklarieren. -->
+    <property name="Scanner" container="0">
+        <project>*</project>
+        <showStep name="Bilder einspielen" access="read"/>
+        <type>Text</type>
+    </property>
+    <property name="Bit Depth" container="0">
+        <project>*</project>
+        <showStep name="Bilder einspielen" access="read"/>
+        <type>Text</type>
+    </property>
+    <property name="DPI" container="0">
+        <project>*</project>
+        <showStep name="Bilder einspielen" access="read"/>
+        <type>Text</type>
+    </property>
+    <property name="Format" container="0">
+        <project>*</project>
+        <showStep name="Bilder einspielen" access="read"/>
+        <type>Text</type>
+    </property>
+    <property name="Colour" container="0">
+        <project>*</project>
+        <showStep name="Bilder einspielen" access="read"/>
+        <type>Text</type>
+    </property>
+
+
+</config_processProperties>

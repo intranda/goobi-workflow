@@ -492,28 +492,26 @@
                                                                 title="#{msgs.badgeCorrection}"
                                                                 icon="speakerphone"
                                                                 boxScope="bg-white">
-                                                                <table
-                                                                    class="table table-hover table-bordered"
-                                                                    jsf:rendered="#{item.eigenschaftenSize!=0}">
-                                                                    <ui:repeat
-                                                                        value="#{item.eigenschaftenList}"
-                                                                        var="intern">
-                                                                        <tr>
-                                                                            <td>
+                                                                <ui:fragment rendered="#{item.eigenschaftenSize!=0}">
+                                                                    <dl:list>
+                                                                        <ui:repeat
+                                                                                value="#{item.eigenschaftenList}"
+                                                                                var="intern">
+                                                                            <dl:term>
                                                                                 <h:outputText value="#{intern.titel}" /><br/>
                                                                                 <h:outputText styleClass="font-light" value="#{intern.normalizedDate}">
                                                                                     <f:convertDateTime
-                                                                                        type="both"
-                                                                                        dateStyle="long"
-                                                                                        timeStyle="medium" />
+                                                                                            type="both"
+                                                                                            dateStyle="long"
+                                                                                            timeStyle="medium" />
                                                                                 </h:outputText>
-                                                                            </td>
-                                                                            <td>
+                                                                            </dl:term>
+                                                                            <dl:description>
                                                                                 <h:outputText value="#{intern.wert}" />
-                                                                            </td>
-                                                                        </tr>
-                                                                    </ui:repeat>
-                                                                </table>
+                                                                            </dl:description>
+                                                                        </ui:repeat>
+                                                                    </dl:list>
+                                                                </ui:fragment>
                                                             </intranda:box>
                                                         </p:overlayPanel>
                                                     </td>

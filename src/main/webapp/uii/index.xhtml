@@ -5,6 +5,7 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     template="/uii/template/template.html"
     xmlns:util="http://goobi.io/util"
+    xmlns:dl="http://goobi.io/dl"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
@@ -68,28 +69,16 @@
                     icon="chart-bar"
                     title="#{msgs.statistikDatenbank}">
 
-                    <table class="table table-hover responsive">
-                        <tbody>
-                            <tr>
-                                <td>#{msgs.benutzer}:</td>
-                                <td>#{StatistikForm.anzahlBenutzer}</td>
-                            </tr>
-                            <tr>
-                                <td>#{msgs.benutzergruppen}:</td>
-                                <td>#{StatistikForm.anzahlBenutzergruppen}</td>
-
-                            </tr>
-                            <tr>
-                                <td>#{msgs.prozesse}:</td>
-                                <td>#{StatistikForm.anzahlProzesse}</td>
-                            </tr>
-                            <tr>
-                                <td>#{msgs.schritte}:</td>
-                                <td>#{StatistikForm.anzahlSchritte}</td>
-                            </tr>
-          
-                        </tbody>
-                    </table>
+                    <dl:list>
+                        <dl:term>#{msgs.benutzer}:</dl:term>
+                        <dl:description>#{StatistikForm.anzahlBenutzer}</dl:description>
+                        <dl:term>#{msgs.benutzergruppen}:</dl:term>
+                        <dl:description>#{StatistikForm.anzahlBenutzergruppen}</dl:description>
+                        <dl:term>#{msgs.prozesse}:</dl:term>
+                        <dl:description>#{StatistikForm.anzahlProzesse}</dl:description>
+                        <dl:term>#{msgs.schritte}:</dl:term>
+                        <dl:description>#{StatistikForm.anzahlSchritte}</dl:description>
+                    </dl:list>
                 </intranda:box>
             </div>
             <!-- // SOME STATISTICS -->
