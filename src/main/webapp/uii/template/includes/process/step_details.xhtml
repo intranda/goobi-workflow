@@ -2,6 +2,7 @@
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:dl="http://goobi.io/dl"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
@@ -66,218 +67,235 @@
 				<!-- // BOX HEAD -->
 
 				<!-- BOX CONTENT -->
-				<h:panelGrid
-
-					columns="2"
-					styleClass="table table-hover table-bordered">
-
+				<dl:list>
 					<!-- TITLE -->
-					<h:outputText value="#{msgs.titel}:" />
-					<span
-						title="#{ProzessverwaltungForm.mySchritt.titel}"
-						data-toggle="tooltip">#{ProzessverwaltungForm.mySchritt.titelLokalisiert}</span>
+					<dl:term>
+						<h:outputText value="#{msgs.titel}:" />
+					</dl:term>
+					<dl:description>
+						<span
+							title="#{ProzessverwaltungForm.mySchritt.titel}"
+							data-toggle="tooltip">#{ProzessverwaltungForm.mySchritt.titelLokalisiert}</span>
+					</dl:description>
 					<!-- // TITLE -->
-
 					<!-- ID -->
-					<h:outputText value="#{msgs.id}:" />
-					<h:outputText value="#{ProzessverwaltungForm.mySchritt.id}" />
+					<dl:term>
+						<h:outputText value="#{msgs.id}:" />
+					</dl:term>
+					<dl:description>
+						<h:outputText value="#{ProzessverwaltungForm.mySchritt.id}" />
+					</dl:description>
 					<!-- // ID -->
-
 					<!-- ORDER -->
-					<h:outputText value="#{msgs.reihenfolge}:" />
-					<h:outputText
-						value="#{ProzessverwaltungForm.mySchritt.reihenfolge}" />
+					<dl:term>
+						<h:outputText value="#{msgs.reihenfolge}:" />
+					</dl:term>
+					<dl:description>
+						<h:outputText
+							value="#{ProzessverwaltungForm.mySchritt.reihenfolge}" />
+					</dl:description>
 					<!-- // ORDER -->
-
 					<!-- PRIORITY -->
-					<h:outputText value="#{msgs.prioritaet}:" />
-					<h:panelGroup>
-						<h:panelGroup
-							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 0}">
-							<span class="badge badge-intranda-ultralight">
-								#{msgs.normalePrioritaet} </span>
-						</h:panelGroup>
+					<dl:term>
+						<h:outputText value="#{msgs.prioritaet}:" />
+					</dl:term>
+					<dl:description>
+						<h:panelGroup>
+							<h:panelGroup
+								rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 0}">
+								<span class="badge badge-intranda-ultralight">
+									#{msgs.normalePrioritaet} </span>
+							</h:panelGroup>
 
-						<h:panelGroup
-							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 1}">
-							<span class="badge badge-intranda-orange">
-								<util:icon icon="bulb" />
-								#{msgs.badgePriority1}
-							</span>
-						</h:panelGroup>
+							<h:panelGroup
+								rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 1}">
+								<span class="badge badge-intranda-orange">
+									<util:icon icon="bulb" />
+									#{msgs.badgePriority1}
+								</span>
+							</h:panelGroup>
 
-						<h:panelGroup
-							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 2}">
-							<span class="badge badge-intranda-orange">
-								<util:icon icon="bulb" />
-								#{msgs.badgePriority2}
-							</span>
-						</h:panelGroup>
+							<h:panelGroup
+								rendered="#{ProzessverwaltungForm.mySchritt.prioritaet == 2}">
+								<span class="badge badge-intranda-orange">
+									<util:icon icon="bulb" />
+									#{msgs.badgePriority2}
+								</span>
+							</h:panelGroup>
 
-						<h:panelGroup
-							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 2 and ProzessverwaltungForm.mySchritt.prioritaet lt 10}">
-							<span class="badge badge-intranda-orange">
-								<util:icon icon="bulb" />
-								#{msgs.badgePriority3}
-							</span>
-						</h:panelGroup>
+							<h:panelGroup
+								rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 2 and ProzessverwaltungForm.mySchritt.prioritaet lt 10}">
+								<span class="badge badge-intranda-orange">
+									<util:icon icon="bulb" />
+									#{msgs.badgePriority3}
+								</span>
+							</h:panelGroup>
 
-						<h:panelGroup
-							rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 9}">
-							<span class="badge badge-intranda-red">
-								<util:icon icon="speakerphone" />
-								#{msgs.badgeCorrection}
-							</span>
+							<h:panelGroup
+								rendered="#{ProzessverwaltungForm.mySchritt.prioritaet gt 9}">
+								<span class="badge badge-intranda-red">
+									<util:icon icon="speakerphone" />
+									#{msgs.badgeCorrection}
+								</span>
+							</h:panelGroup>
 						</h:panelGroup>
-					</h:panelGroup>
+					</dl:description>
 					<!-- // PRIORITY -->
-
 					<!-- TYPE -->
-					<h:outputText
-						value="#{msgs.typ}:"
-						rendered="#{ProzessverwaltungForm.mySchritt.typeSpecified}" />
-					<h:panelGroup
-						rendered="#{ProzessverwaltungForm.mySchritt.typeSpecified}">
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.metadaten}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typMetadaten}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.importMittelsFileUpload}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typImportFileUpload}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.exportDMS}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typExportDMS}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.schrittBeimAnnehmenAbschliessen}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenAbschliessen}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.beimAnnehmenModulStarten}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModul}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModulUndAbschliessen}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.imagesLesen}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typImagesLesen}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.imagesSchreiben}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typImagesSchreiben}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.beimAbschliessenVerifizieren}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typBeimAbschliessenVerifizieren}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.automatischerSchritt}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typAutomatisch}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.typeThumbnailStep}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typAutomaticThumbnail}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.typScriptStep}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.modulSchritt}: #{ProzessverwaltungForm.mySchritt.typModulName}"
-							rendered="#{ProzessverwaltungForm.mySchritt.typModulName!=null and ProzessverwaltungForm.mySchritt.typModulName!=''}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.stepPlugin}: #{ProzessverwaltungForm.mySchritt.stepPlugin}"
-							rendered="#{ProzessverwaltungForm.mySchritt.stepPlugin!=null and ProzessverwaltungForm.mySchritt.stepPlugin!=''}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.validationPlugin}"
-							rendered="#{ProzessverwaltungForm.mySchritt.validationPlugin!=null and ProzessverwaltungForm.mySchritt.validationPlugin!=''}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.timeDelayPlugin}"
-							rendered="#{ProzessverwaltungForm.mySchritt.delayStep!=null and ProzessverwaltungForm.mySchritt.delayStep!='' and ProzessverwaltungForm.mySchritt.delayStep}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.batchStep}"
-							rendered="#{ProzessverwaltungForm.mySchritt.batchStep}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.updateMetadataIndex}"
-							rendered="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.process_generateDocket}"
-							rendered="#{ProzessverwaltungForm.mySchritt.generateDocket}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs.httpStep}"
-							rendered="#{ProzessverwaltungForm.mySchritt.httpStep}" />
-						<h:outputText
-							styleClass="d-block"
-							value="#{msgs['queue_'.concat(ProzessverwaltungForm.mySchritt.messageQueue.toString())]}"
-							rendered="#{ProzessverwaltungForm.mySchritt.messageQueue ne 'NONE'}" />
-					</h:panelGroup>
+					<ui:fragment rendered="#{ProzessverwaltungForm.mySchritt.typeSpecified}">
+						<dl:term>
+							<h:outputText
+							value="#{msgs.typ}:" />
+						</dl:term>
+						<dl:description>
+							<h:panelGroup>
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.metadaten}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typMetadaten}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.importMittelsFileUpload}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typImportFileUpload}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.exportDMS}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typExportDMS}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.schrittBeimAnnehmenAbschliessen}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenAbschliessen}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.beimAnnehmenModulStarten}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModul}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typBeimAnnehmenModulUndAbschliessen}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.imagesLesen}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typImagesLesen}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.imagesSchreiben}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typImagesSchreiben}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.beimAbschliessenVerifizieren}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typBeimAbschliessenVerifizieren}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.automatischerSchritt}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typAutomatisch}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.typeThumbnailStep}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typAutomaticThumbnail}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.typScriptStep}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.modulSchritt}: #{ProzessverwaltungForm.mySchritt.typModulName}"
+								rendered="#{ProzessverwaltungForm.mySchritt.typModulName!=null and ProzessverwaltungForm.mySchritt.typModulName!=''}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.stepPlugin}: #{ProzessverwaltungForm.mySchritt.stepPlugin}"
+								rendered="#{ProzessverwaltungForm.mySchritt.stepPlugin!=null and ProzessverwaltungForm.mySchritt.stepPlugin!=''}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.validationPlugin}"
+								rendered="#{ProzessverwaltungForm.mySchritt.validationPlugin!=null and ProzessverwaltungForm.mySchritt.validationPlugin!=''}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.timeDelayPlugin}"
+								rendered="#{ProzessverwaltungForm.mySchritt.delayStep!=null and ProzessverwaltungForm.mySchritt.delayStep!='' and ProzessverwaltungForm.mySchritt.delayStep}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.batchStep}"
+								rendered="#{ProzessverwaltungForm.mySchritt.batchStep}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.updateMetadataIndex}"
+								rendered="#{ProzessverwaltungForm.mySchritt.updateMetadataIndex}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.process_generateDocket}"
+								rendered="#{ProzessverwaltungForm.mySchritt.generateDocket}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs.httpStep}"
+								rendered="#{ProzessverwaltungForm.mySchritt.httpStep}" />
+							<h:outputText
+								styleClass="d-block"
+								value="#{msgs['queue_'.concat(ProzessverwaltungForm.mySchritt.messageQueue.toString())]}"
+								rendered="#{ProzessverwaltungForm.mySchritt.messageQueue ne 'NONE'}" />
+						</h:panelGroup>
+						</dl:description>
+					</ui:fragment>
 					<!-- // TYPE -->
-
 					<!-- SCRIPTS -->
-					<h:outputText
-						value="#{msgs.script}:"
-						rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and ProzessverwaltungForm.mySchritt.hasScripts}" />
-					<h:panelGroup
-						rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and ProzessverwaltungForm.mySchritt.hasScripts}">
-						<h:panelGroup styleClass="d-block">
+					<ui:fragment rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and ProzessverwaltungForm.mySchritt.hasScripts}">
+						<dl:term>
 							<h:outputText
-								id="nameautomatisch"
-								value="#{ProzessverwaltungForm.mySchritt.scriptname1}" />
-						</h:panelGroup>
+							value="#{msgs.script}:" />
+						</dl:term>
+						<dl:description>
+							<h:panelGroup>
+							<h:panelGroup styleClass="d-block">
+								<h:outputText
+									id="nameautomatisch"
+									value="#{ProzessverwaltungForm.mySchritt.scriptname1}" />
+							</h:panelGroup>
 
-						<h:panelGroup styleClass="d-block">
-							<h:outputText
-								id="nameautomatisch2"
-								value="#{ProzessverwaltungForm.mySchritt.scriptname2}" />
-						</h:panelGroup>
+							<h:panelGroup styleClass="d-block">
+								<h:outputText
+									id="nameautomatisch2"
+									value="#{ProzessverwaltungForm.mySchritt.scriptname2}" />
+							</h:panelGroup>
 
-						<h:panelGroup styleClass="d-block">
-							<h:outputText
-								id="nameautomatisch3"
-								value="#{ProzessverwaltungForm.mySchritt.scriptname3}" />
-						</h:panelGroup>
+							<h:panelGroup styleClass="d-block">
+								<h:outputText
+									id="nameautomatisch3"
+									value="#{ProzessverwaltungForm.mySchritt.scriptname3}" />
+							</h:panelGroup>
 
-						<h:panelGroup styleClass="d-block">
-							<h:outputText
-								id="nameautomatisch4"
-								value="#{ProzessverwaltungForm.mySchritt.scriptname4}" />
-						</h:panelGroup>
+							<h:panelGroup styleClass="d-block">
+								<h:outputText
+									id="nameautomatisch4"
+									value="#{ProzessverwaltungForm.mySchritt.scriptname4}" />
+							</h:panelGroup>
 
-						<h:panelGroup styleClass="d-block">
-							<h:outputText
-								id="nameautomatisch5"
-								value="#{ProzessverwaltungForm.mySchritt.scriptname5}" />
+							<h:panelGroup styleClass="d-block">
+								<h:outputText
+									id="nameautomatisch5"
+									value="#{ProzessverwaltungForm.mySchritt.scriptname5}" />
+							</h:panelGroup>
 						</h:panelGroup>
-					</h:panelGroup>
+						</dl:description>
+					</ui:fragment>
 					<!-- // SCRIPTS -->
-
 					<!-- STATUS -->
-					<h:outputText value="#{msgs.status}:" />
-					<h:panelGroup>
-						<div title="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}"
-							rel="tooltip"
-							data-toggle="tooltip"
-							class="d-inline-block align-middle statusRectangle #{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.color}"/>
-						<div class="ms-2 d-inline-block align-middle">
-						<h:outputText
-							value="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}" />
-						</div>
-					</h:panelGroup>
+					<dl:term>
+						<h:outputText value="#{msgs.status}:" />
+					</dl:term>
+					<dl:description>
+						<h:panelGroup>
+							<div title="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}"
+								rel="tooltip"
+								data-toggle="tooltip"
+								class="d-inline-block align-middle statusRectangle #{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.color}"/>
+							<div class="ms-2 d-inline-block align-middle">
+							<h:outputText
+								value="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}" />
+							</div>
+						</h:panelGroup>
+					</dl:description>
 					<!-- // STATUS -->
-
-				</h:panelGrid>
+				</dl:list>
 				<!-- // BOX CONTENT -->
 
 			</intranda:box>

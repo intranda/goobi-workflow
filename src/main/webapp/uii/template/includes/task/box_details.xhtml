@@ -3,6 +3,7 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:dl="http://goobi.io/dl"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
 
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
@@ -46,102 +47,122 @@
 
                 <!-- DETAILS ONLY -->
                 <h:panelGroup rendered="#{NavigationForm.uiStatus.task_viewWorkflow ne 'full'}">
-                    <h:panelGrid
-                        columnClasses="border-end"
-                        columns="2"
-                        class="table table-hover table-width">
-
+                    <dl:list>
                         <!-- PROCESS -->
-                        <h:outputText value="#{msgs.prozess}:" />
-                        <h:panelGroup>
-                            <h:outputText value="#{currentStep.prozess.titel}" />
-                        </h:panelGroup>
+                        <dl:term>
+                            <h:outputText value="#{msgs.prozess}:" />
+                        </dl:term>
+                        <dl:description>
+                            <h:panelGroup>
+                                <h:outputText value="#{currentStep.prozess.titel}" />
+                            </h:panelGroup>
+                        </dl:description>
                         <!-- // PROCESS -->
-
                         <!-- STEP TITLE -->
-                        <h:outputText value="#{msgs.arbeitsschritt}:" />
-                        <h:panelGroup styleClass="icon-text">
-                            <util:icon icon="#{currentStep.typAutomatisch ? 'settings-automation' : 'user'}" title="#{currentStep.typAutomatisch ? msgs.automatischerSchritt : msgs.normalerSchritt}" />
-                            <span><h:outputText value="#{currentStep.titel}" /></span>
-                        </h:panelGroup>
+                        <dl:term>
+                            <h:outputText value="#{msgs.arbeitsschritt}:" />
+                        </dl:term>
+                        <dl:description>
+                            <h:panelGroup styleClass="icon-text">
+                                <util:icon icon="#{currentStep.typAutomatisch ? 'settings-automation' : 'user'}" title="#{currentStep.typAutomatisch ? msgs.automatischerSchritt : msgs.normalerSchritt}" />
+                                <span><h:outputText value="#{currentStep.titel}" /></span>
+                            </h:panelGroup>
+                        </dl:description>
                         <!-- // STEP TITLE -->
-
                         <!-- PRIORITY -->
-                        <h:outputText value="#{msgs.prioritaet}:" />
-                        <h:panelGroup>
+                        <dl:term>
+                            <h:outputText value="#{msgs.prioritaet}:" />
+                        </dl:term>
+                        <dl:description>
+                            <h:panelGroup>
 
-                            <h:panelGroup rendered="#{currentStep.prioritaet == 0}">
-                                <span class="badge badge-intranda-light"> #{msgs.badgePriority0} </span>
-                            </h:panelGroup>
+                                <h:panelGroup rendered="#{currentStep.prioritaet == 0}">
+                                    <span class="badge badge-intranda-light"> #{msgs.badgePriority0} </span>
+                                </h:panelGroup>
 
-                            <h:panelGroup rendered="#{currentStep.prioritaet == 1}">
-                                <span class="badge badge-intranda-orange"> <util:icon icon="bulb" />
-                                    #{msgs.badgePriority1}
-                                </span>
-                            </h:panelGroup>
+                                <h:panelGroup rendered="#{currentStep.prioritaet == 1}">
+                                    <span class="badge badge-intranda-orange"> <util:icon icon="bulb" />
+                                        #{msgs.badgePriority1}
+                                    </span>
+                                </h:panelGroup>
 
-                            <h:panelGroup rendered="#{currentStep.prioritaet == 2}">
-                                <span class="badge badge-intranda-orange"> <util:icon icon="bulb" />
-                                    #{msgs.badgePriority2}
-                                </span>
-                            </h:panelGroup>
+                                <h:panelGroup rendered="#{currentStep.prioritaet == 2}">
+                                    <span class="badge badge-intranda-orange"> <util:icon icon="bulb" />
+                                        #{msgs.badgePriority2}
+                                    </span>
+                                </h:panelGroup>
 
-                            <h:panelGroup rendered="#{currentStep.prioritaet gt 2 and currentStep.prioritaet lt 10}">
-                                <span class="badge badge-intranda-orange"> <util:icon icon="bulb" />
-                                    #{msgs.badgePriority3}
-                                </span>
-                            </h:panelGroup>
+                                <h:panelGroup rendered="#{currentStep.prioritaet gt 2 and currentStep.prioritaet lt 10}">
+                                    <span class="badge badge-intranda-orange"> <util:icon icon="bulb" />
+                                        #{msgs.badgePriority3}
+                                    </span>
+                                </h:panelGroup>
 
-                            <h:panelGroup rendered="#{currentStep.prioritaet gt 9}">
-                                <span class="badge badge-intranda-red"> <util:icon icon="speakerphone" />
-                                    #{msgs.badgeCorrection}
-                                </span>
+                                <h:panelGroup rendered="#{currentStep.prioritaet gt 9}">
+                                    <span class="badge badge-intranda-red"> <util:icon icon="speakerphone" />
+                                        #{msgs.badgeCorrection}
+                                    </span>
+                                </h:panelGroup>
                             </h:panelGroup>
-                        </h:panelGroup>
+                        </dl:description>
                         <!-- // PRIORITY -->
-
                         <!-- STATUS -->
-                        <h:outputText value="#{msgs.status}:" />
-                        <h:outputText value="#{currentStep.bearbeitungsstatusEnum.title}" />
+                        <dl:term>
+                            <h:outputText value="#{msgs.status}:" />
+                        </dl:term>
+                        <dl:description>
+                            <h:outputText value="#{currentStep.bearbeitungsstatusEnum.title}" />
+                        </dl:description>
                         <!-- // STATUS -->
-
                         <!-- USER -->
-                        <h:outputText
-                            value="#{msgs.bearbeiter}:"
-                            rendered="#{!HelperForm.anonymized}" />
-                        <h:outputText
-                            value="#{currentStep.bearbeitungsbenutzer!=null and currentStep.bearbeitungsbenutzer.id!=0?(currentStep.bearbeitungsbenutzer.vorname).concat(' ').concat(currentStep.bearbeitungsbenutzer.nachname):''}"
-                            rendered="#{!HelperForm.anonymized}" />
+                        <ui:fragment rendered="#{!HelperForm.anonymized}">
+                            <dl:term>
+                                <h:outputText
+                                value="#{msgs.bearbeiter}:" />
+                            </dl:term>
+                            <dl:description>
+                                <h:outputText
+                                value="#{currentStep.bearbeitungsbenutzer!=null and currentStep.bearbeitungsbenutzer.id!=0?(currentStep.bearbeitungsbenutzer.vorname).concat(' ').concat(currentStep.bearbeitungsbenutzer.nachname):''}" />
+                            </dl:description>
+                        </ui:fragment>
                         <!-- // USER -->
-
                         <!-- EDIT START -->
-                        <h:outputText
-                            value="#{msgs.bearbeitungsbeginn}:"
-                            rendered="#{currentStep.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
-                        <h:outputText
-                            value="#{currentStep.bearbeitungsbeginnAsFormattedString}"
-                            rendered="#{currentStep.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
-                            <!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
-                        </h:outputText>
+                        <ui:fragment rendered="#{currentStep.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
+                            <dl:term>
+                                <h:outputText
+                                value="#{msgs.bearbeitungsbeginn}:" />
+                            </dl:term>
+                            <dl:description>
+                                <h:outputText
+                                value="#{currentStep.bearbeitungsbeginnAsFormattedString}">
+                                <!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
+                            </h:outputText>
+                            </dl:description>
+                        </ui:fragment>
                         <!-- // EDIT START -->
-
                         <!-- EDIT END -->
-                        <h:outputText
-                            value="#{msgs.zuletztBearbeitet}:"
-                            rendered="#{currentStep.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
-                        <h:outputText
-                            value="#{currentStep.bearbeitungszeitpunktAsFormattedString}"
-                            rendered="#{currentStep.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
-                            <!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
-                        </h:outputText>
+                        <ui:fragment rendered="#{currentStep.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
+                            <dl:term>
+                                <h:outputText
+                                value="#{msgs.zuletztBearbeitet}:" />
+                            </dl:term>
+                            <dl:description>
+                                <h:outputText
+                                value="#{currentStep.bearbeitungszeitpunktAsFormattedString}">
+                                <!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
+                            </h:outputText>
+                            </dl:description>
+                        </ui:fragment>
                         <!-- // EDIT END -->
-
                         <!-- PROJECT -->
-                        <h:outputText value="#{msgs.projekt}:" />
-                        <h:outputText value="#{currentStep.prozess.projekt.titel}" />
+                        <dl:term>
+                            <h:outputText value="#{msgs.projekt}:" />
+                        </dl:term>
+                        <dl:description>
+                            <h:outputText value="#{currentStep.prozess.projekt.titel}" />
+                        </dl:description>
                         <!-- // PROJECT -->
-
-                    </h:panelGrid>
+                    </dl:list>
                 </h:panelGroup>
                 <!-- // DETAILS ONLY -->
 
@@ -179,68 +200,81 @@
 
                                         <div class="col-8">
 
-                                            <h:panelGrid
-                                                class="table table-bordered border"
-                                                columns="2">
-                                                <h:outputText value="#{msgs.prioritaet}:" />
+                                            <dl:list>
+                                                <dl:term>
+                                                    <h:outputText value="#{msgs.prioritaet}:" />
+                                                </dl:term>
+                                                <dl:description>
+                                                    <h:panelGroup>
 
-                                                <h:panelGroup>
+                                                        <h:panelGroup rendered="#{currentStep.prioritaet == 0}">
+                                                            <span class="badge badge-intranda-light">
+                                                                #{msgs.badgePriority0} </span>
+                                                        </h:panelGroup>
 
-                                                    <h:panelGroup rendered="#{currentStep.prioritaet == 0}">
-                                                        <span class="badge badge-intranda-light">
-                                                            #{msgs.badgePriority0} </span>
+                                                        <h:panelGroup rendered="#{currentStep.prioritaet == 1}">
+                                                            <span class="badge badge-intranda-orange"> <util:icon icon="bulb" /> #{msgs.badgePriority1}
+                                                            </span>
+                                                        </h:panelGroup>
+
+                                                        <h:panelGroup rendered="#{currentStep.prioritaet == 2}">
+                                                            <span class="badge badge-intranda-orange"> <util:icon icon="bulb" /> #{msgs.badgePriority2}
+                                                            </span>
+                                                        </h:panelGroup>
+
+                                                        <h:panelGroup
+                                                            rendered="#{currentStep.prioritaet gt 2 and currentStep.prioritaet lt 10}">
+                                                            <span class="badge badge-intranda-orange"> <util:icon icon="bulb" /> #{msgs.badgePriority3}
+                                                            </span>
+                                                        </h:panelGroup>
+
+                                                        <h:panelGroup rendered="#{currentStep.prioritaet gt 9}">
+                                                            <span class="badge badge-intranda-red"> <util:icon icon="speakerphone" /> #{msgs.badgeCorrection}
+                                                            </span>
+                                                        </h:panelGroup>
                                                     </h:panelGroup>
-
-                                                    <h:panelGroup rendered="#{currentStep.prioritaet == 1}">
-                                                        <span class="badge badge-intranda-orange"> <util:icon icon="bulb" /> #{msgs.badgePriority1}
-                                                        </span>
-                                                    </h:panelGroup>
-
-                                                    <h:panelGroup rendered="#{currentStep.prioritaet == 2}">
-                                                        <span class="badge badge-intranda-orange"> <util:icon icon="bulb" /> #{msgs.badgePriority2}
-                                                        </span>
-                                                    </h:panelGroup>
-
-                                                    <h:panelGroup
-                                                        rendered="#{currentStep.prioritaet gt 2 and currentStep.prioritaet lt 10}">
-                                                        <span class="badge badge-intranda-orange"> <util:icon icon="bulb" /> #{msgs.badgePriority3}
-                                                        </span>
-                                                    </h:panelGroup>
-
-                                                    <h:panelGroup rendered="#{currentStep.prioritaet gt 9}">
-                                                        <span class="badge badge-intranda-red"> <util:icon icon="speakerphone" /> #{msgs.badgeCorrection}
-                                                        </span>
-                                                    </h:panelGroup>
-                                                </h:panelGroup>
-
-                                                <h:outputText value="#{msgs.status}:" />
-                                                <h:outputText value="#{currentStep.bearbeitungsstatusEnum.title}" />
-                                                <h:outputText
-                                                    value="#{msgs.bearbeiter}:"
-                                                    rendered="#{!HelperForm.anonymized}" />
-                                                <h:outputText
-                                                    value="#{currentStep.bearbeitungsbenutzer!=null and currentStep.bearbeitungsbenutzer.id!=0?(currentStep.bearbeitungsbenutzer.vorname).concat(' ').concat(currentStep.bearbeitungsbenutzer.nachname):''}"
-                                                    rendered="#{!HelperForm.anonymized}" />
-
-                                                <h:outputText
-                                                    value="#{msgs.bearbeitungsbeginn}:"
-                                                    rendered="#{currentStep.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
-                                                <h:outputText
-                                                    value="#{currentStep.bearbeitungsbeginnAsFormattedString}"
-                                                    rendered="#{currentStep.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
-                                                    <!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
-                                                </h:outputText>
-
-                                                <h:outputText
-                                                    value="#{msgs.zuletztBearbeitet}:"
-                                                    rendered="#{currentStep.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
-                                                <h:outputText
-                                                    value="#{currentStep.bearbeitungszeitpunktAsFormattedString}"
-                                                    rendered="#{currentStep.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
-                                                    <!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
-                                                </h:outputText>
-
-                                            </h:panelGrid>
+                                                </dl:description>
+                                                <dl:term>
+                                                    <h:outputText value="#{msgs.status}:" />
+                                                </dl:term>
+                                                <dl:description>
+                                                    <h:outputText value="#{currentStep.bearbeitungsstatusEnum.title}" />
+                                                </dl:description>
+                                                <ui:fragment rendered="#{!HelperForm.anonymized}">
+                                                    <dl:term>
+                                                        <h:outputText
+                                                        value="#{msgs.bearbeiter}:" />
+                                                    </dl:term>
+                                                    <dl:description>
+                                                        <h:outputText
+                                                        value="#{currentStep.bearbeitungsbenutzer!=null and currentStep.bearbeitungsbenutzer.id!=0?(currentStep.bearbeitungsbenutzer.vorname).concat(' ').concat(currentStep.bearbeitungsbenutzer.nachname):''}" />
+                                                    </dl:description>
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{currentStep.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
+                                                    <dl:term>
+                                                        <h:outputText
+                                                        value="#{msgs.bearbeitungsbeginn}:" />
+                                                    </dl:term>
+                                                    <dl:description>
+                                                        <h:outputText
+                                                        value="#{currentStep.bearbeitungsbeginnAsFormattedString}">
+                                                        <!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
+                                                    </h:outputText>
+                                                    </dl:description>
+                                                </ui:fragment>
+                                                <ui:fragment rendered="#{currentStep.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
+                                                    <dl:term>
+                                                        <h:outputText
+                                                        value="#{msgs.zuletztBearbeitet}:" />
+                                                    </dl:term>
+                                                    <dl:description>
+                                                        <h:outputText
+                                                        value="#{currentStep.bearbeitungszeitpunktAsFormattedString}">
+                                                        <!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/> -->
+                                                    </h:outputText>
+                                                    </dl:description>
+                                                </ui:fragment>
+                                            </dl:list>
                                         </div>
 
                                     </div>

@@ -2,6 +2,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:dl="http://goobi.io/dl"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
@@ -114,64 +115,96 @@
                             <div
                                 class="gw-table-fixed"
                                 tabindex="0">
-                                <h:panelGrid
-                                    columns="2"
-                                    styleClass="table table-hover table-bordered"
-                                    columnClasses="visible, tableColumnMaxWidthLong">
-
-                                    <h:outputText value="#{msgs.prozessTitel}:" />
-                                    <h:outputText value="#{ProzesskopieForm.existingProcess.titel}" />
-
-                                    <h:outputText value="#{msgs.projekt}:" />
-                                    <h:outputText value="#{ProzesskopieForm.existingProcess.projekt.titel}" />
-
-                                    <h:outputText value="#{msgs.erstellungsdatum}:" />
-                                    <h:outputText value="#{ProzesskopieForm.existingProcess.erstellungsdatum}" />
-
-                                    <h:outputText value="#{msgs.regelsatz}:" />
-                                    <h:outputText
-                                        value="#{ProzesskopieForm.existingProcess.regelsatz.titel}"
-                                        title="#{ProzesskopieForm.existingProcess.regelsatz.datei}" />
-
-                                    <h:outputText value="#{msgs.docket}:" />
-                                    <h:outputText value="#{ProzesskopieForm.existingProcess.docket.name}" />
-
-                                    <h:outputText value="#{msgs.exportValidation}:" />
-                                    <h:outputText
-                                        value="#{ProzesskopieForm.existingProcess.exportValidator.label != null ? ProzesskopieForm.existingProcess.exportValidator.label : msgs.noValidation}" />
-
-                                    <h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
-                                    <util:icon icon="#{ProzesskopieForm.existingProcess.inAuswahllisteAnzeigen?'square-check':'square'}" />
-
-                                    <h:outputText value="#{msgs.istTemplate}:" />
-                                    <util:icon icon="#{ProzesskopieForm.existingProcess.istTemplate?'square-check':'square'}" />
-                                    <h:outputText value="#{msgs.pauseAutomaticExecution}:" />
-                                    <util:icon icon="#{ProzesskopieForm.existingProcess.pauseAutomaticExecution?'square-check':'square'}" />
-
-                                    <h:outputText
-                                        value="#{msgs.id}:"
-                                        styleClass="font-light" />
-                                    <h:outputText
-                                        value="#{ProzesskopieForm.existingProcess.id}"
-                                        styleClass="font-light" />
-
-                                    <h:outputText
-                                        value="#{msgs.batch}:"
-                                        styleClass="font-light" />
-                                    <h:outputText
-                                        value=""
-                                        rendered="#{ProzesskopieForm.existingProcess.batch==null}"
-                                        styleClass="font-light" />
-                                    <h:outputText
-                                        value="#{ProzesskopieForm.existingProcess.batch.batchId}"
-                                        rendered="#{ProzesskopieForm.existingProcess.batch!=null and ProzesskopieForm.existingProcess.batch.batchName ==null}"
-                                        styleClass="font-light" />
-                                    <h:outputText
-                                        value="#{ProzesskopieForm.existingProcess.batch.batchId} (#{ProzesskopieForm.existingProcess.batch.batchName})"
-                                        rendered="#{ProzesskopieForm.existingProcess.batch!=null and ProzesskopieForm.existingProcess.batch.batchName !=null}"
-                                        styleClass="font-light" />
-
-                                </h:panelGrid>
+                                <dl:list>
+                                    <dl:term>
+                                        <h:outputText value="#{msgs.prozessTitel}:" />
+                                    </dl:term>
+                                    <dl:description>
+                                        <h:outputText value="#{ProzesskopieForm.existingProcess.titel}" />
+                                    </dl:description>
+                                    <dl:term>
+                                        <h:outputText value="#{msgs.projekt}:" />
+                                    </dl:term>
+                                    <dl:description>
+                                        <h:outputText value="#{ProzesskopieForm.existingProcess.projekt.titel}" />
+                                    </dl:description>
+                                    <dl:term>
+                                        <h:outputText value="#{msgs.erstellungsdatum}:" />
+                                    </dl:term>
+                                    <dl:description>
+                                        <h:outputText value="#{ProzesskopieForm.existingProcess.erstellungsdatum}" />
+                                    </dl:description>
+                                    <dl:term>
+                                        <h:outputText value="#{msgs.regelsatz}:" />
+                                    </dl:term>
+                                    <dl:description>
+                                        <h:outputText
+                                            value="#{ProzesskopieForm.existingProcess.regelsatz.titel}"
+                                            title="#{ProzesskopieForm.existingProcess.regelsatz.datei}" />
+                                    </dl:description>
+                                    <dl:term>
+                                        <h:outputText value="#{msgs.docket}:" />
+                                    </dl:term>
+                                    <dl:description>
+                                        <h:outputText value="#{ProzesskopieForm.existingProcess.docket.name}" />
+                                    </dl:description>
+                                    <dl:term>
+                                        <h:outputText value="#{msgs.exportValidation}:" />
+                                    </dl:term>
+                                    <dl:description>
+                                        <h:outputText
+                                            value="#{ProzesskopieForm.existingProcess.exportValidator.label != null ? ProzesskopieForm.existingProcess.exportValidator.label : msgs.noValidation}" />
+                                    </dl:description>
+                                    <dl:term>
+                                        <h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
+                                    </dl:term>
+                                    <dl:description>
+                                        <util:icon icon="#{ProzesskopieForm.existingProcess.inAuswahllisteAnzeigen?'square-check':'square'}" />
+                                    </dl:description>
+                                    <dl:term>
+                                        <h:outputText value="#{msgs.istTemplate}:" />
+                                    </dl:term>
+                                    <dl:description>
+                                        <util:icon icon="#{ProzesskopieForm.existingProcess.istTemplate?'square-check':'square'}" />
+                                    </dl:description>
+                                    <dl:term>
+                                        <h:outputText value="#{msgs.pauseAutomaticExecution}:" />
+                                    </dl:term>
+                                    <dl:description>
+                                        <util:icon icon="#{ProzesskopieForm.existingProcess.pauseAutomaticExecution?'square-check':'square'}" />
+                                    </dl:description>
+                                    <dl:term>
+                                        <h:outputText
+                                            value="#{msgs.id}:"
+                                            styleClass="font-light" />
+                                    </dl:term>
+                                    <dl:description>
+                                        <h:outputText
+                                            value="#{ProzesskopieForm.existingProcess.id}"
+                                            styleClass="font-light" />
+                                    </dl:description>
+                                    <dl:term>
+                                        <h:outputText
+                                            value="#{msgs.batch}:"
+                                            styleClass="font-light" />
+                                    </dl:term>
+                                    <dl:description>
+                                        <h:panelGroup>
+                                            <h:outputText
+                                                value=""
+                                                rendered="#{ProzesskopieForm.existingProcess.batch==null}"
+                                                styleClass="font-light" />
+                                            <h:outputText
+                                                value="#{ProzesskopieForm.existingProcess.batch.batchId}"
+                                                rendered="#{ProzesskopieForm.existingProcess.batch!=null and ProzesskopieForm.existingProcess.batch.batchName ==null}"
+                                                styleClass="font-light" />
+                                            <h:outputText
+                                                value="#{ProzesskopieForm.existingProcess.batch.batchId} (#{ProzesskopieForm.existingProcess.batch.batchName})"
+                                                rendered="#{ProzesskopieForm.existingProcess.batch!=null and ProzesskopieForm.existingProcess.batch.batchName !=null}"
+                                                styleClass="font-light" />
+                                        </h:panelGroup>
+                                    </dl:description>
+                                </dl:list>
                             </div>
 
                         </intranda:box>
@@ -306,50 +339,42 @@
                                 class="gw-table-fixed"
                                 tabindex="0">
                                 <h:panelGroup rendered="#{ProzesskopieForm.existingProcess.journal.size()>0}">
-                                    <table class="table table-hover table-bordered pt-2 pb-2">
+                                    <dl:list>
                                         <ui:repeat
-                                            var="entry"
-                                            value="#{ProzesskopieForm.existingProcess.journal}"
-                                            varStatus="row">
-                                            <!--
-			                                    <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
-			                                    -->
-                                            <h:panelGroup>
-                                                <tr class="first-row">
-                                                    <td>
-                                                        <h:outputText
-                                                            value="#{entry.formattedCreationDate}"
-                                                            styleClass="log_color_#{entry.type.title}">
-                                                        </h:outputText>
-                                                        <br />
-                                                        <h:outputText
-                                                            value="#{msgs[entry.userName]}"
-                                                            styleClass="log_color_#{entry.type.title}" />
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex">
-                                                            <h:outputText
-                                                                value="#{entry.formattedContent}"
-                                                                styleClass="log_color_#{entry.type.title}"
-                                                                escape="false" />
-                                                            <h:panelGroup rendered="#{entry.type.title == 'file'}">
-                                                                <button
-                                                                    jsf:id="downloadFile"
-                                                                    class="log_file ms-2"
-                                                                    jsf:action="#{ProzesskopieForm.existingProcess.downloadFile(entry)}"
-                                                                    title="#{msgs.downloadFile}">
-                                                                    <util:icon icon="#{entry.externalFile ? 'world' : 'paperclip'}" styleClass="me-1" />
-                                                                    <span>
-                                                                        <h:outputText value="#{entry.basename}" />
-                                                                    </span>
-                                                                </button>
-                                                            </h:panelGroup>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </h:panelGroup>
+                                                var="entry"
+                                                value="#{ProzesskopieForm.existingProcess.journal}"
+                                                varStatus="row">
+                                            <dl:term>
+                                                <h:outputText
+                                                        value="#{entry.formattedCreationDate}"
+                                                        styleClass="log_color_#{entry.type.title}" />
+                                                <br />
+                                                <h:outputText
+                                                        value="#{msgs[entry.userName]}"
+                                                        styleClass="log_color_#{entry.type.title}" />
+                                            </dl:term>
+                                            <dl:description>
+                                                <div class="d-flex">
+                                                    <h:outputText
+                                                            value="#{entry.formattedContent}"
+                                                            styleClass="log_color_#{entry.type.title}"
+                                                            escape="false" />
+                                                    <h:panelGroup rendered="#{entry.type.title == 'file'}">
+                                                        <button
+                                                                jsf:id="downloadFile"
+                                                                class="log_file ms-2"
+                                                                jsf:action="#{ProzesskopieForm.existingProcess.downloadFile(entry)}"
+                                                                title="#{msgs.downloadFile}">
+                                                            <util:icon icon="#{entry.externalFile ? 'world' : 'paperclip'}" styleClass="me-1" />
+                                                            <span>
+                                                                <h:outputText value="#{entry.basename}" />
+                                                            </span>
+                                                        </button>
+                                                    </h:panelGroup>
+                                                </div>
+                                            </dl:description>
                                         </ui:repeat>
-                                    </table>
+                                    </dl:list>
                                 </h:panelGroup>
                             </div>
                         </intranda:box>

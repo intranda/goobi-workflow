@@ -3,6 +3,7 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:dl="http://goobi.io/dl"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:util="http://goobi.io/util"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
@@ -239,224 +240,254 @@
 												icon="table"
 												title="#{msgs.eigenschaften}">
 
-												<h:panelGrid
-													columns="2"
-													class="table table-hover table-bordered #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}"
-                                                    columnClasses="gw-width7, gw-width9">
+												<dl:list>
+													<dl:term>
+														<h:outputText value="#{msgs.titel}:" />
+													</dl:term>
+													<dl:description>
+														<h:outputText value="#{item.titelLokalisiert}" />
+													</dl:description>
+													<dl:term>
+														<h:outputText value="#{msgs.prioritaet}:" />
+													</dl:term>
+													<dl:description>
+														<h:panelGroup>
+															<h:panelGroup rendered="#{item.prioritaet == 0}">
+																<span class="badge badge-intranda-light">
+																	#{msgs.badgePriority0} </span>
+															</h:panelGroup>
 
-													<h:outputText value="#{msgs.titel}:" />
-													<h:outputText value="#{item.titelLokalisiert}" />
-													<h:outputText value="#{msgs.prioritaet}:" />
-													<h:panelGroup>
-														<h:panelGroup rendered="#{item.prioritaet == 0}">
-															<span class="badge badge-intranda-light">
-																#{msgs.badgePriority0} </span>
+															<h:panelGroup rendered="#{item.prioritaet == 1}">
+																<span class="badge badge-intranda-orange">
+																	<util:icon-text icon="bulb" text="#{msgs.badgePriority1}" />
+																</span>
+															</h:panelGroup>
+
+															<h:panelGroup rendered="#{item.prioritaet == 2}">
+																<span class="badge badge-intranda-orange">
+																	<util:icon-text icon="bulb" text="#{msgs.badgePriority2}" />
+																</span>
+															</h:panelGroup>
+
+															<h:panelGroup
+																rendered="#{item.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
+																<span class="badge badge-intranda-orange">
+																	<util:icon-text icon="bulb" text="#{msgs.badgePriority3}" />
+																</span>
+															</h:panelGroup>
+
+															<h:panelGroup rendered="#{item.prioritaet gt 9}">
+																<span class="badge badge-intranda-red">
+																	<util:icon-text icon="speakerphone" text="#{msgs.badgeCorrection}" />
+																</span>
+															</h:panelGroup>
 														</h:panelGroup>
-
-														<h:panelGroup rendered="#{item.prioritaet == 1}">
-															<span class="badge badge-intranda-orange">
-																<util:icon-text icon="bulb" text="#{msgs.badgePriority1}" />
-															</span>
-														</h:panelGroup>
-
-														<h:panelGroup rendered="#{item.prioritaet == 2}">
-															<span class="badge badge-intranda-orange">
-																<util:icon-text icon="bulb" text="#{msgs.badgePriority2}" />
-															</span>
-														</h:panelGroup>
-
-														<h:panelGroup
-															rendered="#{item.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
-															<span class="badge badge-intranda-orange">
-																<util:icon-text icon="bulb" text="#{msgs.badgePriority3}" />
-															</span>
-														</h:panelGroup>
-
-														<h:panelGroup rendered="#{item.prioritaet gt 9}">
-															<span class="badge badge-intranda-red">
-																<util:icon-text icon="speakerphone" text="#{msgs.badgeCorrection}" />
-															</span>
-														</h:panelGroup>
-													</h:panelGroup>
-
-													<h:outputText
-														value="#{msgs.bearbeitungsbeginn}:"
-														rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}" />
-													<h:outputText
-														value="#{item.bearbeitungsbeginnAsFormattedString}"
-														rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
-													</h:outputText>
-
-													<h:outputText
-														value="#{msgs.zuletztBearbeitet}:"
-														rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}" />
-													<h:outputText
-														value="#{item.bearbeitungszeitpunktAsFormattedString}"
-														rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
-													</h:outputText>
-
-													<h:outputText
-														value="#{msgs.letzteAktualisierungDurch}:"
-														rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
-													<h:outputText
-														value="#{item.bearbeitungsbenutzer.nachVorname}"
-														rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}" />
-
-													<h:outputText value="#{msgs.aktualisierungstyp}:" />
-													<h:outputText value="#{item.editTypeEnum.title}" />
-
-													<h:outputText
-														value="#{msgs.typ}:"
-														rendered="#{item.typeSpecified}" />
-													<h:panelGroup rendered="#{item.typeSpecified}">
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.metadaten}"
-															rendered="#{item.typMetadaten}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.importMittelsFileUpload}"
-															rendered="#{item.typImportFileUpload}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.exportDMS}"
-															rendered="#{item.typExportDMS}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.schrittBeimAnnehmenAbschliessen}"
-															rendered="#{item.typBeimAnnehmenAbschliessen}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.beimAnnehmenModulStarten}"
-															rendered="#{item.typBeimAnnehmenModul}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}"
-															rendered="#{item.typBeimAnnehmenModulUndAbschliessen}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.imagesLesen}"
-															rendered="#{item.typImagesLesen}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.imagesSchreiben}"
-															rendered="#{item.typImagesSchreiben}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.beimAbschliessenVerifizieren}"
-															rendered="#{item.typBeimAbschliessenVerifizieren}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.automatischerSchritt}"
-															rendered="#{item.typAutomatisch}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.typeThumbnailStep}"
-															rendered="#{item.typAutomaticThumbnail}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.typScriptStep}"
-															rendered="#{item.typScriptStep}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.modulSchritt}: #{item.typModulName}"
-															rendered="#{item.typModulName!=null and item.typModulName!=''}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.stepPlugin}: #{item.stepPlugin}"
-															rendered="#{item.stepPlugin!=null and item.stepPlugin!=''}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.validationPlugin}"
-															rendered="#{item.validationPlugin!=null and item.validationPlugin!=''}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.timeDelayPlugin}"
-															rendered="#{item.delayStep}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.batchStep}"
-															rendered="#{item.batchStep}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.updateMetadataIndex}"
-															rendered="#{item.updateMetadataIndex}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.process_generateDocket}"
-															rendered="#{item.generateDocket}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs.httpStep}"
-															rendered="#{item.httpStep}" />
-														<h:outputText
-															styleClass="d-block"
-															value="#{msgs['queue_'.concat(item.messageQueue.name)]}"
-															rendered="#{item.messageQueue ne 'NONE'}" />
-
-													</h:panelGroup>
-
-													<h:outputText
-														value="#{msgs.typScriptStep}:"
-														rendered="#{item.typScriptStep and item.hasScripts}" />
-													<h:panelGroup
-														rendered="#{item.typScriptStep and item.hasScripts}">
-
-														<h:panelGroup
-															styleClass="d-block"
-															rendered="#{item.scriptname1 != null and item.scriptname1 != ''}">
-															<h:outputText value="#{item.scriptname1}" />
-														</h:panelGroup>
-
-														<h:panelGroup
-															styleClass="d-block"
-															rendered="#{item.scriptname2 != null and item.scriptname2 != ''}">
-															<h:outputText value="#{item.scriptname2}" />
-														</h:panelGroup>
-
-														<h:panelGroup
-															styleClass="d-block"
-															rendered="#{item.scriptname3 != null and item.scriptname3 != ''}">
-															<h:outputText value="#{item.scriptname3}" />
-														</h:panelGroup>
-
-														<h:panelGroup
-															styleClass="d-block"
-															rendered="#{item.scriptname4 != null and item.scriptname4 != ''}">
-															<h:outputText value="#{item.scriptname4}" />
-														</h:panelGroup>
-
-														<h:panelGroup
-															styleClass="d-block"
-															rendered="#{item.scriptname5 != null and item.scriptname5 != ''}">
-															<h:outputText value="#{item.scriptname5}" />
-														</h:panelGroup>
-
-													</h:panelGroup>
-
-													<h:outputText
-														value="#{msgs.module}:"
-														rendered="#{item.typModulName != null and item.typModulName != ''}" />
-													<h:outputText
-														value="#{item.typModulName}"
-														rendered="#{item.typModulName != null and item.typModulName != ''}" />
-
-													<h:outputText
-														value="#{msgs.usergroup_assignedRoles}:"
-														rendered="#{not empty item.benutzergruppen}" />
-													<h:panelGroup rendered="#{not empty item.benutzergruppen}">
-														<ui:repeat
-															value="#{item.benutzergruppen}"
-															var="group"
-															varStatus="userGroup">
+													</dl:description>
+													<ui:fragment rendered="#{item.bearbeitungsbeginn !=null and !HelperForm.anonymized}">
+														<dl:term>
 															<h:outputText
-																value=","
-																rendered="#{!userGroup.first}"></h:outputText>
-															<br jsf:rendered="#{!userGroup.first}" />
-															<h:outputText value="#{group.titel}" />
-														</ui:repeat>
-													</h:panelGroup>
-												</h:panelGrid>
+															value="#{msgs.bearbeitungsbeginn}:" />
+														</dl:term>
+														<dl:description>
+															<h:outputText
+															value="#{item.bearbeitungsbeginnAsFormattedString}">
+														</h:outputText>
+														</dl:description>
+													</ui:fragment>
+													<ui:fragment rendered="#{item.bearbeitungszeitpunkt !=null and !HelperForm.anonymized}">
+														<dl:term>
+															<h:outputText
+															value="#{msgs.zuletztBearbeitet}:" />
+														</dl:term>
+														<dl:description>
+															<h:outputText
+															value="#{item.bearbeitungszeitpunktAsFormattedString}">
+														</h:outputText>
+														</dl:description>
+													</ui:fragment>
+													<ui:fragment rendered="#{item.bearbeitungsbenutzer.id !=0 and item.bearbeitungsbenutzer !=null and !HelperForm.anonymized}">
+														<dl:term>
+															<h:outputText
+															value="#{msgs.letzteAktualisierungDurch}:" />
+														</dl:term>
+														<dl:description>
+															<h:outputText
+															value="#{item.bearbeitungsbenutzer.nachVorname}" />
+														</dl:description>
+													</ui:fragment>
+													<dl:term>
+														<h:outputText value="#{msgs.aktualisierungstyp}:" />
+													</dl:term>
+													<dl:description>
+														<h:outputText value="#{item.editTypeEnum.title}" />
+													</dl:description>
+													<ui:fragment rendered="#{item.typeSpecified}">
+														<dl:term>
+															<h:outputText
+															value="#{msgs.typ}:" />
+														</dl:term>
+														<dl:description>
+															<h:panelGroup>
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.metadaten}"
+																rendered="#{item.typMetadaten}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.importMittelsFileUpload}"
+																rendered="#{item.typImportFileUpload}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.exportDMS}"
+																rendered="#{item.typExportDMS}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.schrittBeimAnnehmenAbschliessen}"
+																rendered="#{item.typBeimAnnehmenAbschliessen}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.beimAnnehmenModulStarten}"
+																rendered="#{item.typBeimAnnehmenModul}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.beimAnnehmenModulStartenUndSchrittAbschliessen}"
+																rendered="#{item.typBeimAnnehmenModulUndAbschliessen}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.imagesLesen}"
+																rendered="#{item.typImagesLesen}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.imagesSchreiben}"
+																rendered="#{item.typImagesSchreiben}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.beimAbschliessenVerifizieren}"
+																rendered="#{item.typBeimAbschliessenVerifizieren}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.automatischerSchritt}"
+																rendered="#{item.typAutomatisch}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.typeThumbnailStep}"
+																rendered="#{item.typAutomaticThumbnail}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.typScriptStep}"
+																rendered="#{item.typScriptStep}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.modulSchritt}: #{item.typModulName}"
+																rendered="#{item.typModulName!=null and item.typModulName!=''}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.stepPlugin}: #{item.stepPlugin}"
+																rendered="#{item.stepPlugin!=null and item.stepPlugin!=''}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.validationPlugin}"
+																rendered="#{item.validationPlugin!=null and item.validationPlugin!=''}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.timeDelayPlugin}"
+																rendered="#{item.delayStep}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.batchStep}"
+																rendered="#{item.batchStep}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.updateMetadataIndex}"
+																rendered="#{item.updateMetadataIndex}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.process_generateDocket}"
+																rendered="#{item.generateDocket}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs.httpStep}"
+																rendered="#{item.httpStep}" />
+															<h:outputText
+																styleClass="d-block"
+																value="#{msgs['queue_'.concat(item.messageQueue.name)]}"
+																rendered="#{item.messageQueue ne 'NONE'}" />
+
+														</h:panelGroup>
+														</dl:description>
+													</ui:fragment>
+													<ui:fragment rendered="#{item.typScriptStep and item.hasScripts}">
+														<dl:term>
+															<h:outputText
+															value="#{msgs.typScriptStep}:" />
+														</dl:term>
+														<dl:description>
+															<h:panelGroup>
+
+															<h:panelGroup
+																styleClass="d-block"
+																rendered="#{item.scriptname1 != null and item.scriptname1 != ''}">
+																<h:outputText value="#{item.scriptname1}" />
+															</h:panelGroup>
+
+															<h:panelGroup
+																styleClass="d-block"
+																rendered="#{item.scriptname2 != null and item.scriptname2 != ''}">
+																<h:outputText value="#{item.scriptname2}" />
+															</h:panelGroup>
+
+															<h:panelGroup
+																styleClass="d-block"
+																rendered="#{item.scriptname3 != null and item.scriptname3 != ''}">
+																<h:outputText value="#{item.scriptname3}" />
+															</h:panelGroup>
+
+															<h:panelGroup
+																styleClass="d-block"
+																rendered="#{item.scriptname4 != null and item.scriptname4 != ''}">
+																<h:outputText value="#{item.scriptname4}" />
+															</h:panelGroup>
+
+															<h:panelGroup
+																styleClass="d-block"
+																rendered="#{item.scriptname5 != null and item.scriptname5 != ''}">
+																<h:outputText value="#{item.scriptname5}" />
+															</h:panelGroup>
+
+														</h:panelGroup>
+														</dl:description>
+													</ui:fragment>
+													<ui:fragment rendered="#{item.typModulName != null and item.typModulName != ''}">
+														<dl:term>
+															<h:outputText
+															value="#{msgs.module}:" />
+														</dl:term>
+														<dl:description>
+															<h:outputText
+															value="#{item.typModulName}" />
+														</dl:description>
+													</ui:fragment>
+													<ui:fragment rendered="#{not empty item.benutzergruppen}">
+														<dl:term>
+															<h:outputText
+															value="#{msgs.usergroup_assignedRoles}:" />
+														</dl:term>
+														<dl:description>
+															<h:panelGroup>
+															<ui:repeat
+																value="#{item.benutzergruppen}"
+																var="group"
+																varStatus="userGroup">
+																<h:outputText
+																	value=","
+																	rendered="#{!userGroup.first}"></h:outputText>
+																<br jsf:rendered="#{!userGroup.first}" />
+																<h:outputText value="#{group.titel}" />
+															</ui:repeat>
+														</h:panelGroup>
+														</dl:description>
+													</ui:fragment>
+												</dl:list>
 
 											</intranda:box>
 

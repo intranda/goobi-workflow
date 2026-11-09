@@ -2,6 +2,7 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:dl="http://goobi.io/dl"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
@@ -154,25 +155,34 @@
                             </intranda:boxTitle>
 
                             <div class="box__body">
-                                <h:panelGrid
-                                    columns="2"
-                                    styleClass="table table-hover table-bordered"
-                                    columnClasses="columnLabel, columnValue"
-                                    rendered="#{NavigationForm.uiStatus.batch_edit != 'edit'}">
-
-                                    <h:outputText value="#{msgs.id}" />
-                                    <h:outputText value="#{BatchForm.batchHelper.batch.batchId}" />
-
-                                    <h:outputText value="#{msgs.name}" />
-                                    <h:outputText value="#{BatchForm.batchHelper.batch.batchName}" />
-
-                                    <h:outputText value="#{msgs.startdate}" />
-                                    <h:outputText value="#{BatchForm.batchHelper.batch.startDateAsString}" />
-
-                                    <h:outputText value="#{msgs.enddate}" />
-                                    <h:outputText value="#{BatchForm.batchHelper.batch.endDateAsString}" />
-
-                                </h:panelGrid>
+                                <ui:fragment rendered="#{NavigationForm.uiStatus.batch_edit != 'edit'}">
+                                    <dl:list>
+                                        <dl:term>
+                                            <h:outputText value="#{msgs.id}" />
+                                        </dl:term>
+                                        <dl:description>
+                                            <h:outputText value="#{BatchForm.batchHelper.batch.batchId}" />
+                                        </dl:description>
+                                        <dl:term>
+                                            <h:outputText value="#{msgs.name}" />
+                                        </dl:term>
+                                        <dl:description>
+                                            <h:outputText value="#{BatchForm.batchHelper.batch.batchName}" />
+                                        </dl:description>
+                                        <dl:term>
+                                            <h:outputText value="#{msgs.startdate}" />
+                                        </dl:term>
+                                        <dl:description>
+                                            <h:outputText value="#{BatchForm.batchHelper.batch.startDateAsString}" />
+                                        </dl:description>
+                                        <dl:term>
+                                            <h:outputText value="#{msgs.enddate}" />
+                                        </dl:term>
+                                        <dl:description>
+                                            <h:outputText value="#{BatchForm.batchHelper.batch.endDateAsString}" />
+                                        </dl:description>
+                                    </dl:list>
+                                </ui:fragment>
                             </div>
 
                         </intranda:box>
