@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 69 69" width="69" height="69" role="img">
+  <!--
+    Loading indicator: a segment running along an infinity sign (same look as the
+    former ajaxloader2.gif). The animation is switched off for users who prefer
+    reduced motion (WCAG 2.2.2 / EN 301 549, 9.2.2.2); the full sign is then shown
+    statically.
+  -->
+  <style>
+    .runner { stroke-dasharray: 65 35; animation: run 1.75s linear infinite; }
+    @keyframes run { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -100; } }
+    @media (prefers-reduced-motion: reduce) {
+      .runner { animation: none; stroke-dasharray: none; }
+    }
+  </style>
+  <path class="runner" pathLength="100" fill="none" stroke="#ccc" stroke-width="4.5" stroke-linecap="butt"
+        d="M34.5 34.5 C41 15.5 66 15.5 66 34.5 C66 53.5 41 53.5 34.5 34.5 C28 15.5 3 15.5 3 34.5 C3 53.5 28 53.5 34.5 34.5 Z"/>
+</svg>
