@@ -234,13 +234,11 @@
                     return;
                 }
                 if (element.getAttribute('type') === 'text' || element.localName === 'textarea') {
-                    const nextInput = element.closest('.row').nextElementSibling.querySelector('select, input, textarea');
+                    const nextInput = element.closest('.row')?.nextElementSibling?.querySelector('select, input, textarea');
                     nextInput?.focus();
                     return;
                 }
-                if (element) {
-                    element.focus();
-                }
+                element.focus();
             };
         </script>
     </composite:implementation>
