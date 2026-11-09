@@ -52,13 +52,13 @@
         							</script>
     								<div class="mb-3">
     									<h:inputText id="login" pt:aria-label="#{msgs.login}" forceId="true" styleClass="form-control p-2"
-    										value="#{LoginForm.login}" >
+    										value="#{LoginForm.login}" pt:autocomplete="username" >
     										<f:passThroughAttribute name="placeholder" value="#{msgs.login}" />
     									</h:inputText>
     								</div>
         							<div class="mb-3">
     									<h:inputSecret id="passwort" pt:aria-label="#{msgs.passwort}" forceId="true" styleClass="form-control p-2"
-    										value="#{LoginForm.passwort}" autocomplete="off" >
+    										value="#{LoginForm.passwort}" pt:autocomplete="current-password" >
     										<f:passThroughAttribute name="placeholder" value="#{msgs.passwort}" />
     									</h:inputSecret>
     								</div>

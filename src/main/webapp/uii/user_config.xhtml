@@ -159,6 +159,7 @@
                                     <h:inputText
                                         id="firstname"
                                         class="form-control"
+                                        pt:autocomplete="given-name"
                                         value="#{LoginForm.myBenutzer.vorname}"
                                         readonly="false"
                                         required="true" />
@@ -171,6 +172,7 @@
                                     <h:inputText
                                         id="lastname"
                                         class="form-control"
+                                        pt:autocomplete="family-name"
                                         value="#{LoginForm.myBenutzer.nachname}"
                                         readonly="false" />
                                     <form:message target="lastname" />
@@ -192,6 +194,7 @@
                                     <h:inputText
                                         id="email"
                                         class="form-control"
+                                        pt:autocomplete="email"
                                         value="#{LoginForm.myBenutzer.email}"
                                         readonly="true" />
                                     <form:message target="email" />
@@ -421,7 +424,7 @@
                                     field="#{LoginForm.myBenutzer.displayLastEditionDate}"
                                     help="#{msgs.helpDisplayLastEditionDate}"
                                     name="displayLastEditionDate" />
-                                    
+
                                 <h:panelGroup rendered="#{HelperForm.showEditionDataEnabled}">
                                     <intranda:formInputCheckBox
                                         id="displayLastEditionUser"
