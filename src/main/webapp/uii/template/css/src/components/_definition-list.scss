@@ -66,3 +66,22 @@
         border-inline: 1px solid var(--clr-neutral-300);
     }
 }
+
+// Compact variant: terms and descriptions always sit side by side, independent of the
+// container width (e.g. metadata overviews inside narrow table cells or grid tiles).
+.dl-inline {
+    .definition-list {
+        grid-template-columns: max-content 1fr;
+        column-gap: 0.5rem;
+    }
+    .definition-list-term,
+    .definition-list-description {
+        grid-column: auto;
+        padding: 0.125rem 0;
+    }
+    .definition-list-term {
+        font-weight: 700;
+        white-space: nowrap;
+        min-width: 70px;
+    }
+}
