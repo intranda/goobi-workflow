@@ -19,6 +19,13 @@
                             rendered="#{process.imageComments.size()>0}">
                             <table style="width: 100%"
                                 class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="visually-hidden">#{msgs.directory}</th>
+                                        <th scope="col" class="visually-hidden">#{msgs.image}</th>
+                                        <th scope="col" class="visually-hidden">#{msgs.comment}</th>
+                                    </tr>
+                                </thead>
                                 <ui:repeat var="entry"
                                     value="#{process.imageComments}"
                                     varStatus="row">

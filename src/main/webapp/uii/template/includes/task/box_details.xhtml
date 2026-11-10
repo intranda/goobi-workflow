@@ -169,6 +169,13 @@
                 <!-- ENTIRE WORKFLOW -->
                 <h:panelGroup rendered="#{NavigationForm.uiStatus.task_viewWorkflow eq 'full'}">
                     <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="visually-hidden">#{msgs.step}</th>
+                                <th scope="col" class="visually-hidden">#{msgs.bearbeiter}</th>
+                                <th scope="col" class="visually-hidden">#{msgs.bearbeitungsende}</th>
+                            </tr>
+                        </thead>
                         <ui:repeat
                             var="step"
                             value="#{currentStep.prozess.schritteList}"

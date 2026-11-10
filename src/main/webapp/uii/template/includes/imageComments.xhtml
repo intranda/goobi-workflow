@@ -17,6 +17,14 @@
                         <h:panelGroup
                             rendered="#{bean.imageComments.size()>0}">
                             <table class="table table-hover table-bordered w-100">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="visually-hidden">#{msgs.date} / #{msgs.bearbeiter}</th>
+                                        <th scope="col" class="visually-hidden">#{msgs.step}</th>
+                                        <th scope="col" class="visually-hidden">#{msgs.image}</th>
+                                        <th scope="col" class="visually-hidden">#{msgs.comment}</th>
+                                    </tr>
+                                </thead>
                                 <ui:repeat var="entry"
                                     value="#{bean.imageComments}"
                                     varStatus="row">

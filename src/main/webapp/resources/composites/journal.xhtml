@@ -408,6 +408,12 @@
                         <table
                             style="width: 100%"
                             class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="visually-hidden">#{msgs.filename}</th>
+                                    <th scope="col" class="visually-hidden">#{msgs.moeglicheAktionen}</th>
+                                </tr>
+                            </thead>
                             <ui:repeat
                                 var="entry"
                                 value="#{cc.attrs.bean.filesInSelectedFolder}"
