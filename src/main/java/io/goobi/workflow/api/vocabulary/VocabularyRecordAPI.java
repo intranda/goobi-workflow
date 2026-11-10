@@ -161,6 +161,25 @@ public class VocabularyRecordAPI {
         return restApi.get(INSTANCE_ENDPOINT, VocabularyRecord.class, id);
     }
 
+    /**
+     * Creates or updates the given record (or the vocabulary metadata record, if it is one) on the vocabulary server.
+     *
+     * <p>
+     * Before sending, empty translations, values and fields are removed from the passed record <b>in place</b>. Its {@code fields} set and every
+     * {@code values} and {@code translations} list must therefore be modifiable. Unmodifiable collections such as {@code List.of(..)},
+     * {@code Set.of(..)}, {@code Stream.toList()} or {@code Collections.unmodifiableList(..)} make this method throw an
+     * {@link UnsupportedOperationException}. Collections are cleaned up in place on purpose: the vocabulary editor shares them with
+     * {@code ExtendedFieldInstance} and {@code ExtendedFieldValue}.
+     * </p>
+     *
+     * <p>
+     * While the request runs, the record's {@code id}, {@code vocabularyId}, {@code parentId} or {@code metadata} values may be set to
+     * {@code null}; they are restored afterwards (for metadata records only if the request succeeds).
+     * </p>
+     *
+     * @param vocabularyRecord the record to save; modified as described above
+     * @return a new record built from the server response, not the passed instance
+     */
     public ExtendedVocabularyRecord save(VocabularyRecord vocabularyRecord) {
         cleanUpRecord(vocabularyRecord);
         if (Boolean.TRUE.equals(vocabularyRecord.getMetadata())) {
