@@ -6,6 +6,7 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:util="http://goobi.io/util"
+    xmlns:dl="http://goobi.io/dl"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
@@ -66,45 +67,43 @@
                                 <h:outputText value="#{item.titel}" />
                             </h4>
 
-                            <table class="table table-borderless border-top border-bottom mt-3 mb-3">
+                            <div class="d-flex align-items-center gap-2 p-2 border-top border-bottom mt-3 mb-3">
+                                <!-- PROJECT -->
+                                <div class="dl-inline flex-grow-1">
+                                    <dl:list bordered="false">
+                                        <dl:term>
+                                            <h:outputText value="#{msgs.process_grid_project}:" />
+                                        </dl:term>
+                                        <dl:description>
+                                            <h:outputText value="#{item.projekt.titel}" />
+                                        </dl:description>
+                                    </dl:list>
+                                </div>
+                                <!-- // PROJECT -->
+                                <div class="gw-width7 flex-shrink-0">
+                                    <!-- EXPAND AND COLLAPSE BUTTON -->
+                                    <button
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:id="grid_show_tasks"
+                                        jsf:rel="tooltip"
+                                        title="#{msgs.process_grid_details}"
+                                        class="btn btn-blank">
+                                        <util:icon icon="#{item.panelAusgeklappt?'chevron-down':'chevron-right'}" />
+                                        <f:setPropertyActionListener
+                                            target="#{item.panelAusgeklappt}"
+                                            value="#{not item.panelAusgeklappt}" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:ajax render="steptable @this" />
+                                    </button>
+                                    <!-- // EXPAND AND COLLAPSE BUTTON -->
 
-                                <!-- FIRST TABLE ROW -->
-                                <tr class="border-start-0 border-end-0">
-                                    <!-- PROJECT -->
-                                    <td>
-                                        <h:outputText value="#{msgs.process_grid_project}:" />
-                                    </td>
-                                    <td>
-                                        <h:outputText value="#{item.projekt.titel}" />
-                                    </td>
-                                    <!-- // PROJECT -->
-
-                                    <td class="gw-width7">
-                                        <!-- EXPAND AND COLLAPSE BUTTON -->
-                                        <button
-                                            jsf:action="#{NavigationForm.Reload}"
-                                            jsf:id="grid_show_tasks"
-                                            jsf:rel="tooltip"
-                                            title="#{msgs.process_grid_details}"
-                                            class="btn btn-blank">
-                                            <util:icon icon="#{item.panelAusgeklappt?'chevron-down':'chevron-right'}" />
-                                            <f:setPropertyActionListener
-                                                target="#{item.panelAusgeklappt}"
-                                                value="#{not item.panelAusgeklappt}" />
-                                            <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
-                                            <f:ajax render="steptable @this" />
-                                        </button>
-                                        <!-- // EXPAND AND COLLAPSE BUTTON -->
-
-                                        <!-- DROPDOWN BUTTON -->
-                                        <ui:include src="list_optionDropdownButton.xhtml" />
-                                        <!-- // DROPDOWN BUTTON -->
-                                    </td>
-                                </tr>
-                                <!-- // SECOND TABLE ROW -->
-                            </table>
+                                    <!-- DROPDOWN BUTTON -->
+                                    <ui:include src="list_optionDropdownButton.xhtml" />
+                                    <!-- // DROPDOWN BUTTON -->
+                                </div>
+                            </div>
 
                             <h:panelGroup
                                 id="steptable"
@@ -222,43 +221,26 @@
                                     id="thumbnail-#{item.id}">
                                 </canvas>
                             </div>
-                            <table class="process-grid-table table table-borderless">
-                                <tr class="border-start-0 border-end-0">
-
-                                    <!-- METADATA -->
-                                    <td style="vertical-align: top;">
-                                        <table class="table table-borderless">
-                                            <ui:repeat
-                                                var="metadata"
-                                                value="#{item.metadataList}"
-                                                varStatus="metadatastatus"
-                                                id="grid_metadatalist">
-                                                <h:panelGroup
-                                                    rendered="#{metadata.one == 'TitleDocMain'
-                                            or metadata.one == 'Author'
-                                            or metadata.one == 'PlaceOfPublication'
-                                            or metadata.one == 'PublicationYear'
-                                            or metadata.one == 'PublisherName'
-                                            or metadata.one == 'CatalogIDDigital'
-                                            or metadata.one == 'shelfmarksource'}">
-                                                    <tr class="border-start-0 border-end-0">
-                                                        <td class="gw-width6">
-                                                            <h:outputText
-                                                                value="#{msgs['process_grid_'.concat(metadata.one)]}:" />
-                                                        </td>
-                                                        <td>
-                                                            <h:outputText value="#{metadata.two}" />
-                                                        </td>
-                                                    </tr>
-                                                </h:panelGroup>
-                                            </ui:repeat>
-                                        </table>
-                                    </td>
-                                    <!-- // METADATA -->
-
-
-                                </tr>
-                            </table>
+                            <div class="process-grid-table">
+                                <div class="dl-inline">
+                                    <dl:list bordered="false">
+                                        <ui:repeat
+                                            var="metadata"
+                                            value="#{item.metadataList}"
+                                            varStatus="metadatastatus"
+                                            id="grid_metadatalist">
+                                            <ui:fragment rendered="#{metadata.one == 'TitleDocMain' or metadata.one == 'Author' or metadata.one == 'PlaceOfPublication' or metadata.one == 'PublicationYear' or metadata.one == 'PublisherName' or metadata.one == 'CatalogIDDigital' or metadata.one == 'shelfmarksource'}">
+                                                <dl:term>
+                                                    <h:outputText value="#{msgs['process_grid_'.concat(metadata.one)]}:" />
+                                                </dl:term>
+                                                <dl:description>
+                                                    <h:outputText value="#{metadata.two}" />
+                                                </dl:description>
+                                            </ui:fragment>
+                                        </ui:repeat>
+                                    </dl:list>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

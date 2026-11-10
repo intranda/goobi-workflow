@@ -10,7 +10,8 @@
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:util="http://goobi.io/util">
+	xmlns:util="http://goobi.io/util"
+	xmlns:dl="http://goobi.io/dl">
 
 	<ui:param
 		name="myPageTitle"
@@ -366,32 +367,24 @@
 													<td
 														data-label="#{msgs.metadataList}"
 														jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
-														<table class="metadata-nested-table no-borders">
-															<ui:repeat
-																var="metadata"
-																value="#{item.metadataList}"
-																varStatus="metadatastatus"
-																id="metadatalist">
-																<h:panelGroup
-																	rendered="#{metadata.one == 'TitleDocMain'
-						                                              or metadata.one == 'Author'
-						                                              or metadata.one == 'PlaceOfPublication'
-						                                              or metadata.one == 'PublicationYear'
-						                                              or metadata.one == 'PublisherName'
-						                                              or metadata.one == 'CatalogIDDigital'
-						                                              or metadata.one == 'shelfmarksource'}">
-																	<tr>
-																		<td class="data-key">
-																			<h:outputText
-																				value="#{msgs['process_grid_'.concat(metadata.one)]}:" />
-																		</td>
-																		<td>
+														<div class="dl-inline">
+															<dl:list bordered="false">
+																<ui:repeat
+																	var="metadata"
+																	value="#{item.metadataList}"
+																	varStatus="metadatastatus"
+																	id="metadatalist">
+																	<ui:fragment rendered="#{metadata.one == 'TitleDocMain' or metadata.one == 'Author' or metadata.one == 'PlaceOfPublication' or metadata.one == 'PublicationYear' or metadata.one == 'PublisherName' or metadata.one == 'CatalogIDDigital' or metadata.one == 'shelfmarksource'}">
+																		<dl:term>
+																			<h:outputText value="#{msgs['process_grid_'.concat(metadata.one)]}:" />
+																		</dl:term>
+																		<dl:description>
 																			<h:outputText value="#{metadata.two}" />
-																		</td>
-																	</tr>
-																</h:panelGroup>
-															</ui:repeat>
-														</table>
+																		</dl:description>
+																	</ui:fragment>
+																</ui:repeat>
+															</dl:list>
+														</div>
 													</td>
 
 													<!-- Batch id -->
