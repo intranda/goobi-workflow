@@ -405,15 +405,16 @@ public final class FilterHelper {
     }
 
     /**
-     * Filter processes by the title of their ruleset
+     * Filter processes by the exact title of their ruleset. Unlike project titles it is not truncated, so "Standard" does not find the processes of
+     * "Standard (copy)" as well; the ruleset editor links the processes of a ruleset this way.
      *
      * @param tok part of filter string to use
      * @param negate true to get the processes of all other rulesets
      ****************************************************************************/
     protected static String filterRuleset(String tok, boolean negate) {
-        /* the ruleset table is not joined, so a subquery finds the matching ruleset ids */
-        String rulesets = "(SELECT MetadatenKonfigurationID FROM metadatenkonfigurationen WHERE Titel like '" + leftTruncationCharacter
-                + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+        /* the ruleset table is not joined, so a subquery finds the matching ruleset id */
+        String rulesets = "(SELECT MetadatenKonfigurationID FROM metadatenkonfigurationen WHERE Titel = '"
+                + MySQLHelper.escapeSql(tok.substring(tok.indexOf(":") + 1)) + "')";
         if (!negate) {
             return " prozesse.MetadatenKonfigurationID in " + rulesets;
         } else {

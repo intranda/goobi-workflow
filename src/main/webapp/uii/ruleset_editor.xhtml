@@ -63,123 +63,143 @@
 						icon="files"
 						title="#{msgs.plugin_administration_ruleset_editor_ruleset_selection}">
 
-						<!-- TABLE WITH FILE LIST -->
+						<!-- TABLE WITH FILE LIST: the rulesets, then the files in the ruleset folder that no ruleset uses yet -->
 						<div class="gw-table gw-table-fixed">
 							<div class="gw-table__wrapper">
-								<h:dataTable id="ruleset_table"
-									styleClass="table table-bordered table-fixed table-hover"
-									var="item" value="#{rulesetEditorBean.rulesets}">
-									<!-- name with the file below -->
-									<h:column>
-										<f:facet name="header">
-											<h:outputText value="#{msgs.regelsatz}" />
-										</f:facet>
-										<h:outputText value="#{item.titel}" />
-										<br />
-										<small class="text-muted">
-											<h:outputText value="#{item.datei}" />
-										</small>
-									</h:column>
-									<!-- number of processes using the ruleset -->
-									<h:column headerClass="gw-table-fixed__sizeXXS text-end">
-										<f:facet name="header">
-											<h:outputText value="#{msgs.prozesse}" />
-										</f:facet>
-										<div class="text-end">
-											<!-- links to the process list with these processes, the process search has a ruleset filter for this -->
-											<h:commandLink
-												rendered="#{rulesetEditorBean.getProcessCount(item) > 0}"
-												action="#{rulesetEditorBean.showProcessesOfRuleset(item)}"
-												title="#{msgs.ruleset_show_processes}"
-												pt:aria-label="#{msgs.ruleset_show_processes}">
-												<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a22" />
-												<f:setPropertyActionListener target="#{NavigationForm.parentMenu}" value="menu_workflow" />
-												<h:outputText value="#{rulesetEditorBean.getProcessCount(item)}" />
-											</h:commandLink>
-											<h:outputText
-												rendered="#{rulesetEditorBean.getProcessCount(item) == 0}"
-												value="0" />
-										</div>
-									</h:column>
-									<h:column headerClass="gw-table-fixed__sizeXXS">
-										<f:facet name="header">
-											<h:outputText value="#{msgs.auswahl}" />
-										</f:facet>
-										<div class="gw-table__actions__container">
-											<!-- Edit-Ruleset-Button -->
-											<h:panelGroup
-												rendered="#{rulesetEditorBean.currentRuleset == null}">
-												<button
-													jsf:id="edit"
-													class="btn btn-icon #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
-													title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}"
-													jsf:rel="tooltip"
-													jsf:action="#{rulesetEditorBean.editRuleset(item)}">
-													<util:icon icon="#{rulesetEditorBean.isRulesetWritable(item) ? 'pencil' : 'eye'}" />
-												</button>
-											</h:panelGroup>
-											<h:panelGroup
-												rendered="#{rulesetEditorBean.currentRuleset != null}">
-												<button
-													jsf:id="edit2"
-													class="btn btn-icon #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
-													jsf:action="#{rulesetEditorBean.editRuleset(item)}"
-													title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}">
-													<util:icon icon="#{rulesetEditorBean.isRulesetWritable(item) ? 'pencil' : 'eye'}" />
-												</button>
-											</h:panelGroup>
-											<!-- Settings-Button: opens the settings dialog, sends only itself so unsaved editor content stays -->
-											<button
-												jsf:id="settings"
-												type="button"
-												class="btn btn-icon btn-blank"
-												title="#{msgs.regelsatzBearbeiten}"
-												aria-label="#{msgs.regelsatzBearbeiten}"
-												jsf:rel="tooltip"
-												jsf:action="#{rulesetEditorBean.openSettings(item)}">
-												<util:icon icon="settings" />
-												<f:ajax execute="@this" render=":rulesetEditorForm:settingsDialogWrapper"
-													onevent="function(data) { if (data.status === 'success') { document.querySelector('#rulesetSettingsModal').showModal(); } }" />
-											</button>
-											<!-- Duplicate-Button: copies file and ruleset with "_copy", as in the project and user group lists, without asking because nothing is overwritten -->
-											<button
-												jsf:id="duplicate"
-												class="btn btn-icon btn-blank"
-												jsf:action="#{rulesetEditorBean.duplicateRuleset(item)}"
-												title="#{msgs.duplicate}"
-												aria-label="#{msgs.duplicate}"
-												jsf:rel="tooltip">
-												<util:icon icon="clipboard" />
-											</button>
-										</div>
-									</h:column>
-								</h:dataTable>
+								<table jsf:id="ruleset_table" class="table table-bordered table-fixed table-hover">
+									<thead>
+										<tr>
+											<th>#{msgs.regelsatz}</th>
+											<th class="gw-table-fixed__sizeXXS text-end">#{msgs.prozesse}</th>
+											<th class="gw-table-fixed__sizeXXS">#{msgs.auswahl}</th>
+										</tr>
+									</thead>
+									<tbody>
+										<ui:repeat var="item" value="#{rulesetEditorBean.rulesets}">
+											<tr>
+												<!-- name with the file below -->
+												<td>
+													<h:outputText value="#{item.titel}" />
+													<br />
+													<small class="text-muted">
+														<h:outputText value="#{item.datei}" />
+													</small>
+												</td>
+												<!-- number of processes, links to the process list with these processes via the ruleset filter of the process search -->
+												<td class="text-end">
+													<h:commandLink
+														rendered="#{rulesetEditorBean.getProcessCount(item) > 0}"
+														action="#{rulesetEditorBean.showProcessesOfRuleset(item)}"
+														title="#{msgs.ruleset_show_processes}"
+														pt:aria-label="#{msgs.ruleset_show_processes}">
+														<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a22" />
+														<f:setPropertyActionListener target="#{NavigationForm.parentMenu}" value="menu_workflow" />
+														<h:outputText value="#{rulesetEditorBean.getProcessCount(item)}" />
+													</h:commandLink>
+													<h:outputText
+														rendered="#{rulesetEditorBean.getProcessCount(item) == 0}"
+														value="0" />
+												</td>
+												<td>
+													<div class="gw-table__actions__container">
+														<!-- Edit-Ruleset-Button -->
+														<button
+															jsf:id="edit"
+															class="btn btn-icon #{rulesetEditorBean.isActiveRuleset(item) ? 'btn-primary' : 'btn-blank'}"
+															title="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}"
+															aria-label="#{rulesetEditorBean.isRulesetWritable(item) ? msgs.regelsatzBearbeiten : msgs.plugin_administration_ruleset_editor_show_ruleset}"
+															jsf:rel="tooltip"
+															jsf:action="#{rulesetEditorBean.editRuleset(item)}">
+															<util:icon icon="#{rulesetEditorBean.isRulesetWritable(item) ? 'pencil' : 'eye'}" />
+														</button>
+														<!-- Settings-Button: opens the settings dialog, sends only itself so unsaved editor content stays -->
+														<button
+															jsf:id="settings"
+															type="button"
+															class="btn btn-icon btn-blank"
+															title="#{msgs.ruleset_settings}"
+															aria-label="#{msgs.ruleset_settings}"
+															jsf:rel="tooltip"
+															jsf:action="#{rulesetEditorBean.openSettings(item)}">
+															<util:icon icon="settings" />
+															<f:ajax execute="@this" render=":rulesetEditorForm:settingsDialogWrapper"
+																onevent="function(data) { if (data.status === 'success') { document.querySelector('#rulesetSettingsModal').showModal(); } }" />
+														</button>
+														<!-- Duplicate-Button: opens the create dialog for a copy -->
+														<button
+															jsf:id="duplicate"
+															type="button"
+															class="btn btn-icon btn-blank"
+															title="#{msgs.duplicate}"
+															aria-label="#{msgs.duplicate}"
+															jsf:rel="tooltip"
+															jsf:action="#{rulesetEditorBean.openCreateDuplicate(item)}">
+															<util:icon icon="clipboard" />
+															<f:ajax execute="@this" render=":rulesetEditorForm:createDialogWrapper"
+																onevent="function(data) { if (data.status === 'success') { document.querySelector('#rulesetCreateModal').showModal(); } }" />
+														</button>
+													</div>
+												</td>
+											</tr>
+										</ui:repeat>
+										<!-- files in the ruleset folder that no ruleset uses yet, with the one action to make a ruleset of them -->
+										<ui:fragment rendered="#{not empty rulesetEditorBean.unusedRulesetFiles}">
+											<tr class="table-light">
+												<td colspan="3" class="small text-muted">
+													<util:icon icon="file-dots" />
+													<h:outputText value=" #{msgs.ruleset_unused_files}" />
+												</td>
+											</tr>
+											<ui:repeat var="fileName" value="#{rulesetEditorBean.unusedRulesetFiles}">
+												<tr class="text-muted">
+													<td><span class="font-monospace small"><h:outputText value="#{fileName}" /></span></td>
+													<td class="text-end">–</td>
+													<td>
+														<div class="gw-table__actions__container">
+															<button
+																jsf:id="createFromFile"
+																type="button"
+																class="btn btn-icon btn-blank"
+																title="#{msgs.ruleset_create_from_file}"
+																aria-label="#{fileName}: #{msgs.ruleset_create_from_file}"
+																jsf:rel="tooltip"
+																jsf:action="#{rulesetEditorBean.openCreateFromFile(fileName)}">
+																<util:icon icon="file-plus" />
+																<f:ajax execute="@this" render=":rulesetEditorForm:createDialogWrapper"
+																	onevent="function(data) { if (data.status === 'success') { document.querySelector('#rulesetCreateModal').showModal(); } }" />
+															</button>
+														</div>
+													</td>
+												</tr>
+											</ui:repeat>
+										</ui:fragment>
+									</tbody>
+								</table>
 							</div>
 						</div>
 						<!-- // TABLE WITH FILE LIST -->
-						<!-- Add-Ruleset-Button: opens the settings dialog empty -->
-						<div class="p-3">
+						<!-- create a new ruleset: empty or from an uploaded file -->
+						<div class="p-3 d-flex flex-wrap gap-2 justify-content-end">
 							<button
-								jsf:id="addRuleset"
+								jsf:id="createEmpty"
 								type="button"
 								class="btn btn-primary"
-								jsf:action="#{rulesetEditorBean.openSettings(null)}">
+								jsf:action="#{rulesetEditorBean.openCreateEmpty}">
 								<util:icon icon="plus" />
-								<span>#{msgs.neuenRegelsatzAnlegen}</span>
-								<f:ajax execute="@this" render=":rulesetEditorForm:settingsDialogWrapper"
-									onevent="function(data) { if (data.status === 'success') { document.querySelector('#rulesetSettingsModal').showModal(); } }" />
+								<span>#{msgs.ruleset_create_empty}</span>
+								<f:ajax execute="@this" render=":rulesetEditorForm:createDialogWrapper"
+									onevent="function(data) { if (data.status === 'success') { document.querySelector('#rulesetCreateModal').showModal(); } }" />
 							</button>
-							<!-- files in the ruleset folder that no ruleset uses yet -->
-							<ui:fragment rendered="#{not empty rulesetEditorBean.unusedRulesetFiles}">
-								<div class="text-muted mt-2">
-									<h:outputFormat value="#{msgs.ruleset_unused_files}">
-										<f:param value="#{rulesetEditorBean.unusedRulesetFiles.size()}" />
-									</h:outputFormat>
-									<ui:repeat var="fileName" value="#{rulesetEditorBean.unusedRulesetFiles}" varStatus="status">
-										<h:outputText value="#{fileName}" />#{status.last ? '' : ', '}
-									</ui:repeat>
-								</div>
-							</ui:fragment>
+							<button
+								jsf:id="createUpload"
+								type="button"
+								class="btn btn-blank"
+								jsf:action="#{rulesetEditorBean.openCreateUpload}">
+								<util:icon icon="upload" />
+								<span>#{msgs.ruleset_create_upload}</span>
+								<f:ajax execute="@this" render=":rulesetEditorForm:createDialogWrapper"
+									onevent="function(data) { if (data.status === 'success') { document.querySelector('#rulesetCreateModal').showModal(); } }" />
+							</button>
 						</div>
 					</intranda:box>
 				<!-- // LEFT AREA -->
@@ -187,7 +207,7 @@
 
 				<!-- RIGHT AREA -->
 				<!-- // BOX WITH FILES -->
-				
+
 					<!-- BOX WITH VALIDATION RESULTS -->
 					<ui:fragment rendered="#{rulesetEditorBean.currentRuleset != null}">
 						<div class="mt-3">
@@ -756,61 +776,42 @@
 				<!-- // MODAL TO ASK FOR SAVING -->
 			</div>
 
-			<!-- SETTINGS DIALOG -->
+			<!-- SETTINGS DIALOG: name, file and order of an existing ruleset -->
 			<h:panelGroup id="settingsDialogWrapper" layout="block">
 				<dialog:modal id="rulesetSettingsModal" width="wide">
 					<dialog:header
 						icon="settings"
-						title="#{rulesetEditorBean.settingsRuleset.id == null ? msgs.neuenRegelsatzAnlegen : msgs.regelsatzBearbeiten}" />
+						title="#{msgs.ruleset_settings}" />
 					<ui:fragment rendered="#{rulesetEditorBean.settingsRuleset != null}">
 						<dialog:body>
 							<h:panelGroup layout="block" styleClass="w-100">
 							<form:field label="#{msgs.rulesetTitle}" required="true">
-								<h:inputText
-									id="settingsTitle"
-									styleClass="form-control"
-									value="#{rulesetEditorBean.settingsRuleset.titel}" />
+								<h:panelGroup layout="block" styleClass="w-100">
+									<h:inputText
+										id="settingsTitle"
+										styleClass="form-control"
+										value="#{rulesetEditorBean.settingsRuleset.titel}">
+										<f:ajax event="keyup" delay="300" execute="@this" render="settingsNameHint settingsSave" />
+									</h:inputText>
+									<h:panelGroup id="settingsNameHint" layout="block" styleClass="form-text text-danger">
+										<h:outputText value="#{rulesetEditorBean.settingsNameProblem}" />
+									</h:panelGroup>
+								</h:panelGroup>
 							</form:field>
+							<!-- a changed file name renames the file and its backups on save -->
 							<form:field label="#{msgs.rulesetFile}" required="true">
-								<!-- refreshed after an upload, the rest of the dialog keeps what was typed -->
-								<h:panelGroup id="settingsFileField" layout="block" styleClass="w-100">
-									<!-- file selection, for a new ruleset with the upload attached to it like other fields with a button; the upload is written to the ruleset folder on save -->
-									<div class="input-group">
-										<!-- without a free file in the ruleset folder a new ruleset can only bring its own file -->
-										<h:selectOneMenu
-											id="settingsFile"
-											styleClass="form-select"
-											rendered="#{not empty rulesetEditorBean.availableRulesetFiles}"
-											value="#{rulesetEditorBean.settingsRuleset.datei}">
-											<!-- "please select" like other Goobi dropdowns, only shown, never chosen -->
-											<f:selectItem
-												itemLabel="#{msgs.bitteAuswaehlen}"
-												itemValue=""
-												noSelectionOption="true"
-												itemDisabled="true" />
-											<f:selectItems value="#{rulesetEditorBean.availableRulesetFiles}" />
-										</h:selectOneMenu>
-										<ui:fragment rendered="#{rulesetEditorBean.settingsRuleset.id == null}">
-											<label class="btn btn-action text-nowrap">
-												<util:icon icon="upload" />
-												<h:outputText value="#{msgs.fileUpload}" />
-												<h:inputFile
-													id="settingsUpload"
-													value="#{rulesetEditorBean.settingsUploadedFile}"
-													storage="file"
-													style="display:none"
-													required="false">
-													<f:ajax
-														listener="#{rulesetEditorBean.uploadSettingsFile}"
-														render="settingsFileField" />
-												</h:inputFile>
-											</label>
-										</ui:fragment>
-									</div>
-									<h:outputText
-										styleClass="text-danger d-block mt-1"
-										rendered="#{rulesetEditorBean.settingsUploadError != null}"
-										value="#{rulesetEditorBean.settingsUploadError}" />
+								<h:panelGroup layout="block" styleClass="w-100">
+									<h:inputText
+										id="settingsFile"
+										styleClass="form-control font-monospace"
+										value="#{rulesetEditorBean.settingsFileName}"
+										pt:autocomplete="off"
+										pt:spellcheck="false">
+										<f:ajax event="keyup" delay="300" execute="@this" render="settingsFileHint settingsSave" />
+									</h:inputText>
+									<h:panelGroup id="settingsFileHint" layout="block" styleClass="form-text text-danger">
+										<h:outputText value="#{rulesetEditorBean.settingsFileProblem}" />
+									</h:panelGroup>
 								</h:panelGroup>
 							</form:field>
 							<form:field label="#{msgs.rulesetOrderByFile}">
@@ -824,21 +825,19 @@
 						<!-- footer as the usual action bar: buttons right with gaps, delete on the left -->
 						<div class="box__actions px-3">
 							<!-- delete only rulesets without processes; the wrapper carries the tooltip because a disabled button gets no hover -->
-							<ui:fragment rendered="#{rulesetEditorBean.settingsRuleset.id != null}">
-								<span
-									class="d-inline-block me-auto"
-									data-bs-toggle="tooltip"
-									title="#{rulesetEditorBean.getProcessCount(rulesetEditorBean.settingsRuleset) > 0 ? msgs.RulesetInUse : ''}">
-									<button
-										jsf:id="settingsDelete"
-										class="btn btn-hot"
-										jsf:disabled="#{rulesetEditorBean.getProcessCount(rulesetEditorBean.settingsRuleset) > 0}"
-										jsf:action="#{rulesetEditorBean.deleteSettingsRuleset}">
-										<util:icon icon="trash" />
-										<span>#{msgs.loeschen}</span>
-									</button>
-								</span>
-							</ui:fragment>
+							<span
+								class="d-inline-block me-auto"
+								data-bs-toggle="tooltip"
+								title="#{rulesetEditorBean.getProcessCount(rulesetEditorBean.settingsRuleset) > 0 ? msgs.RulesetInUse : ''}">
+								<button
+									jsf:id="settingsDelete"
+									class="btn btn-hot"
+									jsf:disabled="#{rulesetEditorBean.getProcessCount(rulesetEditorBean.settingsRuleset) > 0}"
+									jsf:action="#{rulesetEditorBean.deleteSettingsRuleset}">
+									<util:icon icon="trash" />
+									<span>#{msgs.loeschen}</span>
+								</button>
+							</span>
 							<button
 								type="button"
 								class="btn btn-blank"
@@ -848,6 +847,7 @@
 							<button
 								jsf:id="settingsSave"
 								class="btn btn-success"
+								jsf:disabled="#{!rulesetEditorBean.settingsPossible}"
 								jsf:action="#{rulesetEditorBean.saveSettings}">
 								<util:icon icon="device-floppy" />
 								<span>#{msgs.speichern}</span>
@@ -857,6 +857,106 @@
 				</dialog:modal>
 			</h:panelGroup>
 			<!-- // SETTINGS DIALOG -->
+
+			<!-- CREATE DIALOG: one dialog for the four ways to create a ruleset, only the origin differs -->
+			<h:panelGroup id="createDialogWrapper" layout="block">
+				<ui:param name="createMode" value="#{rulesetEditorBean.createMode}" />
+				<dialog:modal id="rulesetCreateModal" width="wide">
+					<dialog:header
+						icon="#{createMode == 'upload' ? 'upload' : createMode == 'file' ? 'file-plus' : createMode == 'duplicate' ? 'clipboard' : 'plus'}"
+						title="#{createMode == 'upload' ? msgs.ruleset_create_upload : createMode == 'file' ? msgs.ruleset_create_from_file : createMode == 'duplicate' ? msgs.ruleset_create_duplicate : msgs.ruleset_create_empty}" />
+					<ui:fragment rendered="#{createMode != null}">
+						<dialog:body>
+							<h:panelGroup layout="block" styleClass="w-100">
+							<!-- upload: the file from the computer comes first, it suggests the name -->
+							<ui:fragment rendered="#{createMode == 'upload'}">
+								<form:field label="#{msgs.datei}" required="true">
+									<h:panelGroup id="createUploadField" layout="block" styleClass="w-100">
+										<div class="input-group">
+											<input
+												class="form-control font-monospace"
+												readonly="readonly"
+												value="#{rulesetEditorBean.createUploadedFileName}"
+												placeholder="#{msgs.ruleset_create_no_file}"
+												aria-label="#{msgs.datei}" />
+											<label class="btn btn-action text-nowrap">
+												<util:icon icon="upload" />
+												<h:outputText value="#{msgs.fileUpload}" />
+												<h:inputFile
+													id="createUploadedFile"
+													value="#{rulesetEditorBean.createUploadedFile}"
+													storage="file"
+													style="display:none"
+													required="false">
+													<f:ajax
+														listener="#{rulesetEditorBean.uploadCreateFile}"
+														render="createUploadField createName createHint createSubmit" />
+												</h:inputFile>
+											</label>
+										</div>
+										<h:outputText
+											styleClass="text-danger d-block mt-1"
+											rendered="#{rulesetEditorBean.createUploadError != null}"
+											value="#{rulesetEditorBean.createUploadError}" />
+									</h:panelGroup>
+								</form:field>
+							</ui:fragment>
+							<!-- duplicate: the ruleset the copy is made from -->
+							<ui:fragment rendered="#{createMode == 'duplicate'}">
+								<form:field label="#{msgs.ruleset_create_source}">
+									<h:outputText value="#{rulesetEditorBean.createSource.titel} (#{rulesetEditorBean.createSource.datei})" />
+								</form:field>
+							</ui:fragment>
+							<!-- the name; for all but an existing file it also names the file, which can be renamed later in the settings, so problems with that file are shown here -->
+							<form:field label="#{msgs.rulesetTitle}" required="true">
+								<h:panelGroup layout="block" styleClass="w-100">
+									<h:inputText
+										id="createName"
+										styleClass="form-control"
+										value="#{rulesetEditorBean.createName}"
+										pt:autocomplete="off">
+										<f:ajax event="keyup" delay="300" execute="@this" render="createHint createSubmit" />
+									</h:inputText>
+									<h:panelGroup id="createHint" layout="block" styleClass="form-text text-danger">
+										<h:outputText value="#{rulesetEditorBean.createProblem}" />
+									</h:panelGroup>
+								</h:panelGroup>
+							</form:field>
+							<!-- an existing file: it is the content of the new ruleset -->
+							<ui:fragment rendered="#{createMode == 'file'}">
+								<form:field label="#{msgs.rulesetFile}">
+									<h:outputText styleClass="font-monospace" value="#{rulesetEditorBean.createFile}" />
+								</form:field>
+							</ui:fragment>
+							<form:field label="#{msgs.rulesetOrderByFile}">
+								<h:selectBooleanCheckbox
+									id="createOrder"
+									styleClass="form-check-input"
+									value="#{rulesetEditorBean.createOrderByRuleset}" />
+							</form:field>
+							</h:panelGroup>
+						</dialog:body>
+						<div class="box__actions px-3">
+							<button
+								type="button"
+								class="btn btn-blank"
+								onclick="this.closest('dialog').close();">
+								<span>#{msgs.abbrechen}</span>
+							</button>
+							<!-- a full submit: the new ruleset opens in the editor afterwards, unsaved editor content is sent along for the usual question -->
+							<button
+								jsf:id="createSubmit"
+								class="btn btn-success"
+								jsf:disabled="#{!rulesetEditorBean.createPossible}"
+								jsf:action="#{rulesetEditorBean.createRuleset}">
+								<util:icon icon="device-floppy" />
+								<span>#{msgs.ruleset_create_submit}</span>
+							</button>
+						</div>
+					</ui:fragment>
+				</dialog:modal>
+			</h:panelGroup>
+			<!-- // CREATE DIALOG -->
 		</h:form>
 	</ui:define>
 </ui:composition>

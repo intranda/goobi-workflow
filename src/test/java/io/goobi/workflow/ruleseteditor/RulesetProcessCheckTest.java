@@ -126,6 +126,38 @@ public class RulesetProcessCheckTest extends AbstractTest {
     }
 
     @Test
+    public void testBrokenSavedRulesetRepairedInEditor() throws Exception {
+        // the saved ruleset file is broken, so it gives no preferences; the editor content is fine again
+        Process process = createProcess(1, testFile(META_FILE).toString());
+        Mockito.when(process.getRegelsatz().getPreferences()).thenReturn(null);
+        try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            processManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), savedPrefs);
+            check.run();
+
+            assertTrue(check.getErrors().isEmpty());
+        }
+    }
+
+    @Test
+    public void testBrokenSavedRulesetMakesProcessNotOpenable() throws Exception {
+        // editor content does not fit and the saved ruleset is broken: the metadata editor cannot open the process
+        Process process = createProcess(1, testFile(META_FILE).toString());
+        Mockito.when(process.getRegelsatz().getPreferences()).thenReturn(null);
+        try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            processManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), editorPrefs);
+            check.run();
+
+            assertEquals(1, check.getErrors().size());
+            assertTrue(check.getErrors().get(0).getMessage().contains("PlaceOfPublication"));
+            assertFalse(check.getErrors().get(0).isOpenable());
+        }
+    }
+
+    @Test
     public void testDeletedProcessIsSkipped() throws Exception {
         try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
             processManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(null);

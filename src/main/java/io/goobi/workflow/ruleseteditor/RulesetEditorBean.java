@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,9 +53,11 @@ import javax.xml.validation.Validator;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
 import org.goobi.io.BackupFileManager;
 import org.goobi.managedbeans.ProcessBean;
@@ -106,6 +109,30 @@ import ugh.exceptions.PreferencesException;
 @Log4j2
 public class RulesetEditorBean implements Serializable {
 
+    // the four ways to create a ruleset, see openCreate...
+    public static final String CREATE_EMPTY = "empty";
+    public static final String CREATE_UPLOAD = "upload";
+    public static final String CREATE_FILE = "file";
+    public static final String CREATE_DUPLICATE = "duplicate";
+
+    // content of an empty ruleset: valid and loadable, one structure type with a main title as a start
+    private static final String EMPTY_RULESET = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <Preferences>
+              <MetadataType>
+                <Name>TitleDocMain</Name>
+                <language name="de">Haupttitel</language>
+                <language name="en">Main title</language>
+              </MetadataType>
+              <DocStrctType topStruct="true">
+                <Name>Monograph</Name>
+                <language name="de">Monografie</language>
+                <language name="en">Monograph</language>
+                <metadata num="1m">TitleDocMain</metadata>
+              </DocStrctType>
+            </Preferences>
+            """;
+
     private static final long serialVersionUID = 2073532676953677578L;
 
     private static final String CONFIGURATION_FILE = "goobi_ruleseteditor.xml";
@@ -151,26 +178,52 @@ public class RulesetEditorBean implements Serializable {
 
     @Getter
     private boolean showMore = false;
-    
+
     @Getter
     private String lastValidation;
 
     // number of processes per ruleset, read once each time the ruleset list is loaded
     private Map<Integer, Integer> processCounts = new HashMap<>();
 
-    // the ruleset shown in the settings dialog, a fresh copy from the database or a new one
+    // the ruleset shown in the settings dialog, a fresh copy from the database
     @Getter
     private Ruleset settingsRuleset;
 
-    // a file uploaded in the settings dialog of a new ruleset, written to the ruleset folder when the dialog is saved
+    // the file name typed in the settings dialog; if it differs from the file of the ruleset, the file is renamed on save
     @Getter
     @Setter
-    private transient Part settingsUploadedFile;
-    private String settingsUploadedContent;
+    private String settingsFileName;
+
+    // the create dialog: how the new ruleset comes about, one of the CREATE_ constants
     @Getter
-    private String settingsUploadedFileName;
+    private String createMode;
+
+    // name and order setting typed in the create dialog
     @Getter
-    private String settingsUploadError;
+    @Setter
+    private String createName;
+    @Getter
+    @Setter
+    private boolean createOrderByRuleset;
+
+    // for duplicating: the ruleset the copy is made from
+    @Getter
+    private Ruleset createSource;
+
+    // for creating from an existing file: that file in the ruleset folder
+    @Getter
+    private String createFile;
+
+    // for uploading: the uploaded file, its content and the name it suggested, written to the ruleset folder only when the ruleset is created
+    @Getter
+    @Setter
+    private transient Part createUploadedFile;
+    private String createUploadedContent;
+    @Getter
+    private String createUploadedFileName;
+    private String createSuggestedName;
+    @Getter
+    private String createUploadError;
 
     // optional process filter for the process check, same syntax as in the process list
     @Getter
@@ -342,61 +395,97 @@ public class RulesetEditorBean implements Serializable {
     }
 
     /**
-     * Opens the settings dialog for a ruleset, or for a new one if null is passed. The dialog edits a fresh copy from the database, so cancelling
-     * leaves the list untouched.
+     * Opens the settings dialog of a ruleset. The dialog edits a fresh copy from the database, so cancelling leaves the list untouched. New rulesets
+     * are made in the create dialog, see openCreateEmpty and the others.
      *
-     * @param ruleset the ruleset to edit or null for a new one
+     * @param ruleset the ruleset to edit
      */
     public void openSettings(Ruleset ruleset) {
-        settingsUploadedContent = null;
-        settingsUploadedFileName = null;
-        settingsUploadError = null;
-        if (ruleset == null) {
-            settingsRuleset = new Ruleset();
-            return;
-        }
         try {
             settingsRuleset = RulesetManager.getRulesetById(ruleset.getId());
+            settingsFileName = settingsRuleset.getDatei();
         } catch (DAOException e) {
             log.error(e);
             settingsRuleset = null;
         }
     }
 
+    /**
+     * Saves the settings dialog. A changed file name renames the file and its backups; the name and the file name must be free.
+     */
     public void saveSettings() {
-        if (settingsRuleset == null) {
+        if (settingsRuleset == null || !isSettingsPossible()) {
             return;
         }
-        if (StringUtils.isBlank(settingsRuleset.getDatei())) {
-            Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("RulesetNotSpecified"), "");
-            return;
-        }
-        Path file = Paths.get(ConfigurationHelper.getInstance().getRulesetFolder() + settingsRuleset.getDatei());
-        // an uploaded file is written to the ruleset folder now, but never replaces an existing file
-        if (settingsUploadedFileName != null && settingsUploadedFileName.equals(settingsRuleset.getDatei())) {
-            if (StorageProvider.getInstance().isFileExists(file)) {
-                Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("fileExists", settingsUploadedFileName), "");
-                return;
+        String oldFileName = settingsRuleset.getDatei();
+        String newFileName = settingsFileName.trim();
+        boolean renamed = !newFileName.equals(oldFileName);
+        try {
+            if (renamed) {
+                renameRulesetFile(oldFileName, newFileName);
+                settingsRuleset.setDatei(newFileName);
             }
-            try {
-                Files.writeString(file, settingsUploadedContent, StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                log.error(e);
-                Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("uploadFailed"), e.getMessage());
-                return;
-            }
-        }
-        if (!StorageProvider.getInstance().isFileExists(file)) {
-            Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("RulesetNotFound"), "");
+        } catch (IOException e) {
+            log.error(e);
+            Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("fehlerNichtSpeicherbar"), e.getMessage());
             return;
         }
+        settingsRuleset.setTitel(settingsRuleset.getTitel().trim());
         try {
             RulesetManager.saveRuleset(settingsRuleset);
         } catch (DAOException e) {
+            log.error(e);
+            // the database still knows the old file name, so the file gets it back, otherwise the ruleset could not be opened anymore
+            if (renamed) {
+                try {
+                    renameRulesetFile(newFileName, oldFileName);
+                } catch (IOException renameException) {
+                    log.error(renameException);
+                }
+                settingsRuleset.setDatei(oldFileName);
+            }
             Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("fehlerNichtSpeicherbar"), e.getMessage());
             return;
         }
         reloadRulesets();
+    }
+
+    /**
+     * Renames a ruleset file and its backups, which are named after the file.
+     */
+    private void renameRulesetFile(String oldFileName, String newFileName) throws IOException {
+        StorageProviderInterface storage = StorageProvider.getInstance();
+        storage.move(Paths.get(ConfigurationHelper.getInstance().getRulesetFolder(), oldFileName),
+                Paths.get(ConfigurationHelper.getInstance().getRulesetFolder(), newFileName));
+        for (Path backup : BackupFileManager.getBackupFilesSortedByAge(RulesetFileUtils.getBackupDirectory(), oldFileName)) {
+            String backupName = backup.getFileName().toString();
+            storage.renameTo(backup, newFileName + backupName.substring(oldFileName.length()));
+        }
+    }
+
+    /**
+     * @return why the name in the settings dialog cannot be saved, or null
+     */
+    public String getSettingsNameProblem() {
+        if (settingsRuleset == null || StringUtils.isBlank(settingsRuleset.getTitel())) {
+            return null;
+        }
+        return nameProblem(settingsRuleset.getTitel(), settingsRuleset.getId());
+    }
+
+    /**
+     * @return why the file name in the settings dialog cannot be saved, or null; the own file is always fine
+     */
+    public String getSettingsFileProblem() {
+        if (settingsRuleset == null || StringUtils.isBlank(settingsFileName) || settingsFileName.trim().equals(settingsRuleset.getDatei())) {
+            return null;
+        }
+        return fileProblem(settingsFileName.trim(), settingsRuleset.getId(), "ruleset_");
+    }
+
+    public boolean isSettingsPossible() {
+        return settingsRuleset != null && StringUtils.isNotBlank(settingsRuleset.getTitel()) && StringUtils.isNotBlank(settingsFileName)
+                && getSettingsNameProblem() == null && getSettingsFileProblem() == null;
     }
 
     public void deleteSettingsRuleset() {
@@ -412,89 +501,250 @@ public class RulesetEditorBean implements Serializable {
         reloadRulesets();
     }
 
-    /**
-     * Takes the file uploaded in the settings dialog and selects it as the file of the new ruleset. It is written to the ruleset folder only when the
-     * dialog is saved, and only if no file with this name exists there.
-     */
-    public void uploadSettingsFile() {
-        settingsUploadError = null;
-        if (settingsUploadedFile == null || settingsRuleset == null) {
-            return;
-        }
-        String fileName = Paths.get(settingsUploadedFile.getSubmittedFileName()).getFileName().toString();
-        if (!fileName.endsWith(".xml")) {
-            settingsUploadError = Helper.getTranslation("ruleset_settings_upload_xml_only");
-            return;
-        }
-        Path file = Paths.get(ConfigurationHelper.getInstance().getRulesetFolder(), fileName);
-        if (StorageProvider.getInstance().isFileExists(file)) {
-            settingsUploadError = Helper.getTranslation("fileExists", fileName);
-            return;
-        }
-        try (InputStream inputStream = settingsUploadedFile.getInputStream()) {
-            settingsUploadedContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            settingsUploadError = Helper.getTranslation("uploadFailed");
-            return;
-        }
-        settingsUploadedFileName = fileName;
-        settingsRuleset.setDatei(fileName);
+    public void openCreateEmpty() {
+        resetCreate(CREATE_EMPTY);
+    }
+
+    public void openCreateUpload() {
+        resetCreate(CREATE_UPLOAD);
     }
 
     /**
-     * Duplicates a ruleset like other duplicates in Goobi: a copy of the file and a new ruleset, both with "_copy" in the name.
+     * Opens the create dialog for a file in the ruleset folder that no ruleset uses yet. The name is suggested from the file name.
      *
-     * @param ruleset the ruleset to duplicate
+     * @param fileName the existing file
      */
-    public void duplicateRuleset(Ruleset ruleset) {
-        StorageProviderInterface storage = StorageProvider.getInstance();
-        String folder = ConfigurationHelper.getInstance().getRulesetFolder();
-        // never overwrite a file, count up until the name is free
-        String baseName = StringUtils.removeEnd(ruleset.getDatei(), ".xml") + "_copy";
-        String fileName = baseName + ".xml";
+    public void openCreateFromFile(String fileName) {
+        resetCreate(CREATE_FILE);
+        createFile = fileName;
+        createName = StringUtils.removeEndIgnoreCase(fileName, ".xml");
+    }
+
+    /**
+     * Opens the create dialog for a copy of a ruleset with the same order setting. The suggested name is always free: "(copy)", then "(copy 2)" and
+     * so on, until neither the name nor its file is taken.
+     *
+     * @param ruleset the ruleset to copy
+     */
+    public void openCreateDuplicate(Ruleset ruleset) {
+        resetCreate(CREATE_DUPLICATE);
+        createSource = ruleset;
+        createOrderByRuleset = ruleset.isOrderMetadataByRuleset();
+        createName = Helper.getTranslation("ruleset_create_copy_name", ruleset.getTitel());
         int number = 2;
-        while (storage.isFileExists(Paths.get(folder, fileName))) {
-            fileName = baseName + "_" + number + ".xml";
+        while (getCreateProblem() != null && number < 100) {
+            createName = Helper.getTranslation("ruleset_create_copy_name_number", ruleset.getTitel(), String.valueOf(number));
             number++;
         }
+    }
+
+    private void resetCreate(String mode) {
+        createMode = mode;
+        createName = "";
+        createOrderByRuleset = false;
+        createSource = null;
+        createFile = null;
+        createUploadedContent = null;
+        createUploadedFileName = null;
+        createSuggestedName = null;
+        createUploadError = null;
+    }
+
+    /**
+     * Takes the uploaded file of the create dialog. It must be a ruleset ugh can read. Its name suggests the name of the new ruleset, as long as the
+     * name field is empty or still holds the name the previous upload suggested.
+     */
+    public void uploadCreateFile() {
+        createUploadError = null;
+        if (createUploadedFile == null) {
+            return;
+        }
+        // some browsers send the whole path, also with Windows separators, which Paths would keep on Linux
+        String fileName = FilenameUtils.getName(createUploadedFile.getSubmittedFileName());
+        String content;
+        try (InputStream inputStream = createUploadedFile.getInputStream()) {
+            content = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            createUploadError = Helper.getTranslation("uploadFailed");
+            return;
+        }
         try {
-            storage.copyFile(Paths.get(folder, ruleset.getDatei()), Paths.get(folder, fileName));
-            Ruleset copy = new Ruleset();
-            copy.setTitel(ruleset.getTitel() + "_copy");
-            copy.setDatei(fileName);
-            copy.setOrderMetadataByRuleset(ruleset.isOrderMetadataByRuleset());
-            RulesetManager.saveRuleset(copy);
+            parseRuleset(content);
+        } catch (IOException | PreferencesException e) {
+            createUploadError = Helper.getTranslation("ruleset_create_upload_invalid", fileName);
+            return;
+        }
+        String suggested = StringUtils.removeEndIgnoreCase(fileName, ".xml");
+        if (StringUtils.isBlank(createName) || createName.equals(createSuggestedName)) {
+            createName = suggested;
+        }
+        createSuggestedName = suggested;
+        createUploadedContent = content;
+        createUploadedFileName = fileName;
+    }
+
+    /**
+     * @return the file the new ruleset gets: the existing file when created from one, otherwise a file named after the ruleset. It can be renamed
+     *         later in the settings dialog.
+     */
+    public String getCreateFileName() {
+        if (CREATE_FILE.equals(createMode)) {
+            return createFile;
+        }
+        return fileNameFor(createName);
+    }
+
+    /**
+     * Derives the file name of a new ruleset from its name: lower case, umlauts written out, accents removed, everything else but letters and
+     * digits as "_".
+     *
+     * @param name the name of the ruleset
+     * @return the file name, or an empty string if the name has no letters or digits
+     */
+    static String fileNameFor(String name) {
+        String fileName = StringUtils.defaultString(name).trim().toLowerCase()
+                .replace("ä", "ae")
+                .replace("ö", "oe")
+                .replace("ü", "ue")
+                .replace("ß", "ss");
+        // other accented letters keep their base letter, "café" becomes "cafe"
+        fileName = StringUtils.stripAccents(fileName)
+                .replaceAll("[^a-z0-9]+", "_")
+                .replaceAll("^_+|_+$", "");
+        return fileName.isEmpty() ? "" : fileName + ".xml";
+    }
+
+    /**
+     * Explains why the ruleset cannot be created with the current name, shown below the name field: the name is taken, or the file named after it
+     * belongs to another ruleset or already lies in the ruleset folder. An existing file to create from is always fine.
+     *
+     * @return the explanation, or null if the name is fine or still empty
+     */
+    public String getCreateProblem() {
+        if (StringUtils.isBlank(createName)) {
+            return null;
+        }
+        String problem = nameProblem(createName, null);
+        if (problem == null && !CREATE_FILE.equals(createMode)) {
+            if (getCreateFileName().isEmpty()) {
+                // a name of only special characters gives no file name
+                problem = Helper.getTranslation("ruleset_create_name_no_file");
+            } else {
+                problem = fileProblem(getCreateFileName(), null, "ruleset_create_");
+            }
+        }
+        return problem;
+    }
+
+    /**
+     * @param name a ruleset name
+     * @param ownId the ruleset that may already carry the name, null for a new one
+     * @return a message if another ruleset has this name, compared without case, otherwise null
+     */
+    private String nameProblem(String name, Integer ownId) {
+        for (Ruleset ruleset : getRulesets()) {
+            if (!ruleset.getId().equals(ownId) && ruleset.getTitel().equalsIgnoreCase(name.trim())) {
+                return Helper.getTranslation("ruleset_create_name_exists");
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Explains why a file name cannot be used for a new or renamed ruleset file: its form, the ruleset it belongs to, or that it already lies in the
+     * ruleset folder.
+     *
+     * @param fileName the file name
+     * @param ownId the ruleset that is renamed, null for a new one
+     * @param keyPrefix "ruleset_create_" in the create dialog, where the file follows the name, "ruleset_" in the settings dialog
+     * @return the explanation, or null if the file name is free
+     */
+    private String fileProblem(String fileName, Integer ownId, String keyPrefix) {
+        if (!isValidFileName(fileName)) {
+            return Helper.getTranslation("ruleset_file_invalid");
+        }
+        for (Ruleset ruleset : getRulesets()) {
+            if (!ruleset.getId().equals(ownId) && ruleset.getDatei().equals(fileName)) {
+                return Helper.getTranslation(keyPrefix + "file_used", fileName, ruleset.getTitel());
+            }
+        }
+        if (StorageProvider.getInstance().isFileExists(Paths.get(ConfigurationHelper.getInstance().getRulesetFolder(), fileName))) {
+            return Helper.getTranslation(keyPrefix + "file_unused", fileName);
+        }
+        return null;
+    }
+
+    /**
+     * @return true for a plain xml file name: letters, digits, dot, hyphen and underscore, ending with .xml
+     */
+    static boolean isValidFileName(String fileName) {
+        return fileName != null && fileName.matches("[A-Za-z0-9._-]+\\.xml");
+    }
+
+    /**
+     * @return true if everything needed is there: a name without problem, a file name, and for uploading a valid uploaded file
+     */
+    public boolean isCreatePossible() {
+        if (createMode == null || StringUtils.isBlank(createName) || getCreateFileName().isEmpty() || getCreateProblem() != null) {
+            return false;
+        }
+        return !CREATE_UPLOAD.equals(createMode) || createUploadedContent != null;
+    }
+
+    /**
+     * Creates the ruleset of the create dialog: writes its file (empty, uploaded or copied; an existing file stays as it is), saves the ruleset and
+     * opens it in the editor. If the open ruleset has unsaved changes, the usual question comes first.
+     */
+    public void createRuleset() {
+        if (!isCreatePossible()) {
+            return;
+        }
+        String fileName = getCreateFileName();
+        Path file = Paths.get(ConfigurationHelper.getInstance().getRulesetFolder(), fileName);
+        // the file is only written when it does not exist yet, so a file that appeared after the check is never overwritten
+        boolean fileWritten = false;
+        try {
+            if (CREATE_EMPTY.equals(createMode)) {
+                Files.writeString(file, EMPTY_RULESET, StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
+                fileWritten = true;
+            } else if (CREATE_UPLOAD.equals(createMode)) {
+                Files.writeString(file, createUploadedContent, StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
+                fileWritten = true;
+            } else if (CREATE_DUPLICATE.equals(createMode)) {
+                Files.copy(Paths.get(ConfigurationHelper.getInstance().getRulesetFolder(), createSource.getDatei()), file);
+                fileWritten = true;
+            }
+            Ruleset ruleset = new Ruleset();
+            ruleset.setTitel(createName.trim());
+            ruleset.setDatei(fileName);
+            ruleset.setOrderMetadataByRuleset(createOrderByRuleset);
+            RulesetManager.saveRuleset(ruleset);
         } catch (IOException | DAOException e) {
             log.error(e);
+            // without the ruleset in the database the new file would be left over as an unused file and block the name
+            if (fileWritten) {
+                try {
+                    Files.deleteIfExists(file);
+                } catch (IOException deleteException) {
+                    log.error(deleteException);
+                }
+            }
             Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("fehlerNichtSpeicherbar"), e.getMessage());
             return;
         }
+        createMode = null;
         reloadRulesets();
-    }
-
-    /**
-     * Lists the ruleset files in the ruleset folder, for the file selection in the settings dialog. Only files no other ruleset uses are offered, the
-     * own file of an edited ruleset stays selectable. A file uploaded in the dialog is listed too, although it is written to the folder only when the
-     * dialog is saved.
-     *
-     * @return the names of the selectable xml files
-     */
-    public List<String> getAvailableRulesetFiles() {
-        List<String> fileNames = listRulesetFiles();
-        for (Ruleset ruleset : getRulesets()) {
-            if (settingsRuleset == null || !ruleset.getId().equals(settingsRuleset.getId())) {
-                fileNames.remove(ruleset.getDatei());
+        for (Ruleset ruleset : this.rulesets) {
+            if (ruleset.getDatei().equals(fileName)) {
+                editRuleset(ruleset);
+                return;
             }
         }
-        if (settingsUploadedFileName != null && !fileNames.contains(settingsUploadedFileName)) {
-            fileNames.add(settingsUploadedFileName);
-        }
-        return fileNames;
     }
 
     /**
-     * @return the xml files in the ruleset folder that no ruleset uses, shown below the ruleset list
+     * @return the xml files in the ruleset folder that no ruleset uses, shown at the end of the ruleset list
      */
     public List<String> getUnusedRulesetFiles() {
         List<String> fileNames = listRulesetFiles();
@@ -604,8 +854,14 @@ public class RulesetEditorBean implements Serializable {
      * @return the navigation target of the process details
      */
     public String showProcessDetails(int processId) {
+        Process process = ProcessManager.getProcessById(processId);
+        if (process == null) {
+            // deleted since the check
+            Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("ruleset_process_not_found", String.valueOf(processId)), "");
+            return "";
+        }
         ProcessBean processBean = Helper.getBeanByClass(ProcessBean.class);
-        processBean.setMyProzess(ProcessManager.getProcessById(processId));
+        processBean.setMyProzess(process);
         processBean.setModusAnzeige("aktuell");
         return processBean.editProcess();
     }
@@ -680,17 +936,30 @@ public class RulesetEditorBean implements Serializable {
      * @return the parsed ruleset or null if the content is not a valid ruleset
      */
     private Prefs readPrefsFromEditor() {
-        Path tempFile = null;
         try {
-            tempFile = Files.createTempFile("ruleset-check", ".xml");
-            Files.writeString(tempFile, currentRulesetFileContent, StandardCharsets.UTF_8);
-            Prefs prefs = new Prefs();
-            prefs.loadPrefs(tempFile.toString());
-            return prefs;
+            return parseRuleset(currentRulesetFileContent);
         } catch (IOException | PreferencesException e) {
             log.error(e);
             Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("ruleset_process_check_invalid_ruleset"), e.getMessage());
             return null;
+        }
+    }
+
+    /**
+     * Parses a ruleset given as text. ugh reads rulesets only from files, so the content goes through a temporary file.
+     *
+     * @param content the ruleset as text
+     * @return the parsed ruleset
+     * @throws PreferencesException if the content is not a ruleset ugh can read
+     */
+    private static Prefs parseRuleset(String content) throws IOException, PreferencesException {
+        Path tempFile = null;
+        try {
+            tempFile = Files.createTempFile("ruleset-check", ".xml");
+            Files.writeString(tempFile, content, StandardCharsets.UTF_8);
+            Prefs prefs = new Prefs();
+            prefs.loadPrefs(tempFile.toString());
+            return prefs;
         } finally {
             if (tempFile != null) {
                 try {
@@ -703,23 +972,18 @@ public class RulesetEditorBean implements Serializable {
     }
 
     /**
-     * Reloads the list after a change in the settings dialog. The open ruleset stays open with its unsaved editor content, unless its file was
-     * changed or it was deleted.
+     * Reloads the list after a change in a dialog. The open ruleset stays open with its unsaved editor content, also when its file was renamed,
+     * unless it was deleted.
      */
     private void reloadRulesets() {
         Integer openId = currentRuleset == null ? null : currentRuleset.getId();
-        String openFile = currentRuleset == null ? null : currentRuleset.getDatei();
         this.rulesets = null;
         getRulesets();
         for (int index = 0; index < this.rulesets.size(); index++) {
             Ruleset ruleset = this.rulesets.get(index);
             if (ruleset.getId().equals(openId)) {
-                if (ruleset.getDatei().equals(openFile)) {
-                    this.currentRulesetIndex = index;
-                    this.currentRuleset = ruleset;
-                } else {
-                    setRuleset(index);
-                }
+                this.currentRulesetIndex = index;
+                this.currentRuleset = ruleset;
                 return;
             }
         }
