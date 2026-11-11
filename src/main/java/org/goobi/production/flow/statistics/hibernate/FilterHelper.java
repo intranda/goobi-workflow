@@ -523,6 +523,10 @@ public final class FilterHelper {
 
     private static String filterProperty(String tok, boolean negate, String propertyType) {
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
+        if (ts.length > 1 && "%".equals(ts[0])) {
+            // a wildcard as property name ('*', escaped to '%') searches the value in all properties
+            ts = new String[] { ts[1] };
+        }
         StringBuilder sb = new StringBuilder();
         // property names are compared exactly, a leading wildcard would prevent the use of the index on property_name
         if (!negate) {
@@ -600,9 +604,13 @@ public final class FilterHelper {
         if (ts.length > 1) {
             title = ts[0];
             value = ts[1];
+            if ("%".equals(title)) {
+                title = "";
+            }
         } else {
             value = ts[0];
         }
+
         if (!negate) {
             // use performant fulltext search
             if (ConfigurationHelper.getInstance().isUseFulltextSearch()) {
@@ -633,16 +641,16 @@ public final class FilterHelper {
                         + MySQLHelper.escapeSql(title) + "' AND metadata.value like '" + leftTruncationCharacter
                         + MySQLHelper.escapeSql(value) + rightTruncationCharacter + "' )";
             } else {
-                return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name = '"
-                        + MySQLHelper.escapeSql(value) + "') ";
+                return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.value like '"
+                        + leftTruncationCharacter + MySQLHelper.escapeSql(value) + rightTruncationCharacter + "') ";
             }
         } else if (StringUtils.isNotBlank(title)) {
             return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name = '"
                     + MySQLHelper.escapeSql(title) + "' AND metadata.value like '" + leftTruncationCharacter
                     + MySQLHelper.escapeSql(value) + rightTruncationCharacter + "' )";
         } else {
-            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name = '"
-                    + MySQLHelper.escapeSql(value) + "' )";
+            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.value like '"
+                    + leftTruncationCharacter + MySQLHelper.escapeSql(value) + rightTruncationCharacter + "') ";
         }
     }
 

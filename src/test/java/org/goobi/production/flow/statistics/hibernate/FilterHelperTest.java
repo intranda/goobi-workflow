@@ -735,6 +735,47 @@ public class FilterHelperTest extends AbstractTest {
         }
     }
 
+    private static String processListCriteria(String searchFilter) {
+        try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
+                MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
+            mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
+            mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
+            // the search filter is escaped like in the process list, '*' becomes '%'
+            mockedMySQLHelper.when(() -> MySQLHelper.escapeString(Mockito.anyString())).thenCallRealMethod();
+            return FilterHelper.criteriaBuilder(searchFilter, false, null, null, null, true, false);
+        }
+    }
+
+    @Test
+    public void testProcessPropertyWithWildcardNameSearchesAllProperties() {
+        String criteria = processListCriteria("processproperty:*:Podcast");
+
+        assertEquals(processListCriteria("processproperty:Podcast"), criteria);
+        assertFalse(criteria.contains("property_name"), criteria);
+    }
+
+    @Test
+    public void testMetadataWithWildcardNameSearchesAllMetadataFields() {
+        String criteria = processListCriteria("meta:*:Value");
+
+        assertEquals(processListCriteria("meta:Value"), criteria);
+        assertFalse(criteria.contains("metadata.name"), criteria);
+    }
+
+    @Test
+    public void testNegatedProcessPropertyWithWildcardNameSearchesAllProperties() {
+        String criteria = processListCriteria("-processproperty:*:Podcast");
+
+        assertEquals(processListCriteria("-processproperty:Podcast"), criteria);
+        assertFalse(criteria.contains("property_name"), criteria);
+    }
+
+    @Test
+    public void testProcessPropertyWithNameStillFiltersTheName() {
+        assertTrue(processListCriteria("processproperty:DocType:Podcast").contains("property_name = 'DocType'"));
+    }
+
     @Test
     public void testFilterProcessPropertyFulltextMatchesExactName() {
         assertEquals("prozesse.ProzesseID IN (select object_id from properties where object_type = 'process' AND property_name = 'Title' "
@@ -760,18 +801,18 @@ public class FilterHelperTest extends AbstractTest {
     }
 
     @Test
-    public void testFilterMetadataNameOnlyMatchesExactName() {
+    public void testFilterMetadataWithoutNameSearchesTheValue() {
         try (MockedStatic<Helper> mockedHelper = Mockito.mockStatic(Helper.class);
                 MockedStatic<MySQLHelper> mockedMySQLHelper = Mockito.mockStatic(MySQLHelper.class)) {
             mockedHelper.when(() -> Helper.getLoginBean()).thenReturn(null);
             mockedHelper.when(() -> Helper.getCurrentUser()).thenReturn(null);
             mockedMySQLHelper.when(() -> MySQLHelper.escapeSql(Mockito.anyString())).thenAnswer(i -> i.getArguments()[0]);
 
-            // "meta:Title" finds processes having metadata 'Title'
-            assertEquals("prozesse.ProzesseID in (select distinct processid from metadata where metadata.name = 'Title') ",
-                    FilterHelper.filterMetadataValue("meta:Title", false));
-            assertEquals("prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name = 'Title' )",
-                    FilterHelper.filterMetadataValue("meta:Title", true));
+            // "meta:Value" finds processes having the value 'Value' in any metadata
+            assertEquals("prozesse.ProzesseID in (select distinct processid from metadata where metadata.value like '%Value%') ",
+                    FilterHelper.filterMetadataValue("meta:Value", false));
+            assertEquals("prozesse.ProzesseID not in (select distinct processid from metadata where metadata.value like '%Value%') ",
+                    FilterHelper.filterMetadataValue("meta:Value", true));
         }
     }
 
