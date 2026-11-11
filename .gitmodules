@@ -693,6 +693,11 @@
 	url = ../goobi-plugin-step-flex-editor
 	branch = master
 	ignore = all
+[submodule "plugins/goobi-plugin-step-vocabulary-enrichment"]
+	path = plugins/goobi-plugin-step-vocabulary-enrichment
+	url = ../goobi-plugin-step-vocabulary-enrichment
+	branch = master
+	ignore = all
 [submodule "plugins/goobi-plugin-step-mets-enhancer"]
 	path = plugins/goobi-plugin-step-mets-enhancer
 	url = ../goobi-plugin-step-mets-enhancer

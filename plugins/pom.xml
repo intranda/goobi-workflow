@@ -161,6 +161,7 @@
     <module>goobi-plugin-step-update-archive-node</module>
     <module>goobi-plugin-step-urn</module>
     <module>goobi-plugin-step-user-assignment</module>
+    <module>goobi-plugin-step-vocabulary-enrichment</module>
     <module>goobi-plugin-step-wait-for-others</module>
     <module>goobi-plugin-step-xmp-header</module>
     <module>goobi-plugin-step-yerusha-validation</module>
