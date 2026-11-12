@@ -176,6 +176,24 @@ public class ExtendedFieldValueTest {
     }
 
     @Test
+    public void givenTranslationWithoutLanguageNextToTranslatedOneWhenConstructedSortTranslationWithoutLanguageFirst() {
+        FieldValue value = new FieldValue();
+        TranslationInstance english = new TranslationInstance();
+        english.setLanguage("eng");
+        english.setValue("english");
+        TranslationInstance withoutLanguage = new TranslationInstance();
+        withoutLanguage.setValue("without language");
+        value.setTranslations(new ArrayList<>(List.of(english, withoutLanguage)));
+        TranslationDefinition tdEng = new TranslationDefinition();
+        tdEng.setLanguage("eng");
+
+        ExtendedFieldValue subject = new ExtendedFieldValue(value, Set.of(tdEng));
+
+        assertEquals("without language", subject.getExtendedTranslations().get(0).getValue());
+        assertEquals("english", subject.getExtendedTranslations().get(1).getValue());
+    }
+
+    @Test
     public void givenNothingWhenGetLanguageAbbreviationReturnCorrectValue() {
         assertEquals("eng", ExtendedTranslationInstance.transformToThreeCharacterAbbreviation("en"));
         assertEquals("ger", ExtendedTranslationInstance.transformToThreeCharacterAbbreviation("de"));

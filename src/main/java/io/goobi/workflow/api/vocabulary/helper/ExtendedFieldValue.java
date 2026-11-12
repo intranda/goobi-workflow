@@ -72,7 +72,7 @@ public class ExtendedFieldValue extends FieldValue {
                 .collect(Collectors.toMap(TranslationDefinition::getLanguage, Function.identity()));
         this.extendedTranslations = getTranslations().stream()
                 .map(t -> new ExtendedTranslationInstance(t, lookup.getOrDefault(t.getLanguage(), null)))
-                .sorted(Comparator.comparing(TranslationInstance::getLanguage))
+                .sorted(Comparator.comparing(TranslationInstance::getLanguage, Comparator.nullsFirst(Comparator.naturalOrder())))
                 .collect(Collectors.toList());
     }
 
