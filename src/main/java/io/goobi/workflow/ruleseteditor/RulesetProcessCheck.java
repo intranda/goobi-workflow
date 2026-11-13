@@ -19,12 +19,16 @@
 package io.goobi.workflow.ruleseteditor;
 
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.goobi.beans.Process;
 
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.AllArgsConstructor;
@@ -34,7 +38,8 @@ import ugh.dl.Prefs;
 
 /**
  * Checks which processes can no longer be read with a ruleset, e.g. the unsaved content of the ruleset editor. Used by the ruleset editor, runs in
- * its own thread and keeps the first error of every process.
+ * its own thread and keeps the first error of every process. Processes the user cannot access are checked too, but only their ruleset error is
+ * kept (with the metadata folder masked), no title, project or link.
  */
 public class RulesetProcessCheck implements Runnable, Serializable {
 
@@ -53,9 +58,11 @@ public class RulesetProcessCheck implements Runnable, Serializable {
         private String message;
         // true if the metadata editor can open the process, i.e. the saved ruleset still fits
         private boolean openable;
+        private boolean accessible;
     }
 
     private final List<Integer> processIds;
+    private final Set<Integer> accessibleIds;
     private final transient Prefs prefs;
 
     @Getter
@@ -72,8 +79,15 @@ public class RulesetProcessCheck implements Runnable, Serializable {
 
     private final List<ProcessError> errors = Collections.synchronizedList(new ArrayList<>());
 
-    public RulesetProcessCheck(List<Integer> processIds, Prefs prefs) {
+    /**
+     * @param processIds the processes to check
+     * @param accessibleIds the processes the user can access, the others only show the ruleset error
+     * @param prefs the ruleset to check with
+     */
+    public RulesetProcessCheck(List<Integer> processIds, Set<Integer> accessibleIds, Prefs prefs) {
         this.processIds = processIds;
+        // read by the check thread
+        this.accessibleIds = Set.copyOf(accessibleIds);
         this.prefs = prefs;
         this.total = processIds.size();
     }
@@ -98,6 +112,13 @@ public class RulesetProcessCheck implements Runnable, Serializable {
         }
     }
 
+    /**
+     * @return a copy of the errors of the processes the user can access, in the order they were found
+     */
+    public List<ProcessError> getAccessibleErrors() {
+        return getErrors().stream().filter(ProcessError::isAccessible).toList();
+    }
+
     @Override
     public void run() {
         try {
@@ -107,12 +128,7 @@ public class RulesetProcessCheck implements Runnable, Serializable {
                 }
                 Process process = ProcessManager.getProcessById(processId);
                 if (process != null) {
-                    String message = readWithRuleset(process, prefs);
-                    if (message != null) {
-                        // the metadata editor reads with the saved ruleset, so it can open the process only if that one still fits
-                        boolean openable = readWithRuleset(process, process.getRegelsatz().getPreferences()) == null;
-                        errors.add(new ProcessError(processId, process.getTitel(), process.getProjekt().getTitel(), message, openable));
-                    }
+                    checkProcess(processId, process);
                 }
                 done++;
             }
@@ -121,16 +137,52 @@ public class RulesetProcessCheck implements Runnable, Serializable {
         }
     }
 
+    private void checkProcess(int processId, Process process) {
+        boolean accessible = accessibleIds.contains(processId);
+        String path;
+        try {
+            path = process.getMetadataFilePath();
+        } catch (Exception e) {
+            // every reason why the file cannot be read is a result here, not an error of the check
+            addError(processId, process, accessible, e.getMessage() != null ? e.getMessage() : e.toString(), null);
+            return;
+        }
+        String message = readWithRuleset(path, prefs);
+        if (message == null) {
+            return;
+        }
+        addError(processId, process, accessible, message, path);
+    }
+
+    private void addError(int processId, Process process, boolean accessible, String message, String path) {
+        if (accessible) {
+            // the metadata editor reads with the saved ruleset, so it can open the process only if that one still fits
+            boolean openable = path != null && readWithRuleset(path, process.getRegelsatz().getPreferences()) == null;
+            errors.add(new ProcessError(processId, process.getTitel(), process.getProjekt().getTitel(), message, openable, true));
+        } else {
+            // nothing about the process is shown, and the message must not reveal where its metadata is stored
+            errors.add(new ProcessError(processId, null, null, maskFolder(message, path), false, false));
+        }
+    }
+
+    private static String maskFolder(String message, String path) {
+        if (path == null) {
+            // the path itself could not be determined, so there is nothing to mask and the message may name the process folder
+            return Helper.getTranslation("ruleset_process_metadata_unreadable");
+        }
+        Path folder = Paths.get(path).getParent();
+        return folder == null ? message : message.replace(folder.toString(), "\u2026");
+    }
+
     /**
      * Reads the metadata file of a process with the ruleset, the same way the metadata editor does.
      *
-     * @param process the process to read
+     * @param path the metadata file to read
      * @param rulesetPrefs the ruleset to read with
      * @return null if the file can be read, otherwise the error message
      */
-    private String readWithRuleset(Process process, Prefs rulesetPrefs) {
+    private String readWithRuleset(String path, Prefs rulesetPrefs) {
         try {
-            String path = process.getMetadataFilePath();
             String type = MetadatenHelper.getMetaFileType(path);
             // not getFileformatByName: it loads the saved ruleset, which may be the broken one that is being repaired in the editor
             Fileformat fileformat = MetadatenHelper.getFileformatForPrefs(type, rulesetPrefs);

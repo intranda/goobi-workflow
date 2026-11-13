@@ -36,6 +36,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -835,8 +836,9 @@ public class RulesetEditorBean implements Serializable {
     }
 
     /**
-     * Starts the process check: every process of the open ruleset, optionally narrowed by the filter, is read with the content of the editor, also
-     * when it is not saved yet.
+     * Starts the process check: the processes of the open ruleset are read with the content of the editor, also when it is not saved yet. Without
+     * a filter every process (no templates) is checked, and the ones the user cannot access show only their ruleset error. With a filter only the
+     * processes the user can access are checked, so the filter cannot reveal anything about the others.
      */
     public void startProcessCheck() {
         if (currentRuleset == null || (processCheck != null && processCheck.isRunning())) {
@@ -846,22 +848,47 @@ public class RulesetEditorBean implements Serializable {
         if (prefs == null) {
             return;
         }
-        // the filter builder returns joins and the WHERE part like in the process list (no templates, only permitted projects),
-        // the ruleset is added as one more condition
-        String criteria = FilterHelper.criteriaBuilder(StringUtils.defaultString(processCheckFilter), false, null, null, null, true, false);
         String rulesetCondition = "prozesse.MetadatenKonfigurationID = " + currentRuleset.getId();
+        User user = Helper.getCurrentUser();
+        List<Integer> processIds;
+        Set<Integer> accessibleIds;
+        if (StringUtils.isNotBlank(processCheckFilter)) {
+            processIds = ProcessManager.getIdsForFilter(getAccessibleProcessesQuery(processCheckFilter, rulesetCondition, user));
+            accessibleIds = Set.copyOf(processIds);
+        } else {
+            processIds = ProcessManager.getIdsForFilter(" WHERE prozesse.istTemplate = false AND " + rulesetCondition);
+            if (user == null || user.isSuperAdmin()) {
+                // sees every process anyway
+                accessibleIds = Set.copyOf(processIds);
+            } else {
+                accessibleIds = Set.copyOf(ProcessManager.getIdsForFilter(getAccessibleProcessesQuery("", rulesetCondition, user)));
+            }
+        }
+        processCheck = new RulesetProcessCheck(processIds, accessibleIds, prefs);
+        processCheckContent = currentRulesetFileContent;
+        lastProcessCheck = Helper.getLocalDateTimeAsFormattedString(LocalDateTime.now());
+        processCheck.start();
+    }
+
+    /**
+     * Builds the query for the processes of a ruleset that the user can access, like the process list: the filter builder returns joins and the
+     * WHERE part (no templates, only permitted projects), the ruleset is added as one more condition, and the institution for users who are not
+     * superadmins.
+     */
+    private static String getAccessibleProcessesQuery(String filter, String rulesetCondition, User user) {
+        String criteria = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
         int where = criteria.indexOf(" WHERE ");
         String query;
         if (where < 0) {
             query = criteria + " WHERE " + rulesetCondition;
         } else {
+            // in brackets, so the ruleset condition does not weaken an OR in the filter
             query = criteria.substring(0, where) + " WHERE (" + criteria.substring(where + " WHERE ".length()) + ") AND " + rulesetCondition;
         }
-        List<Integer> processIds = ProcessManager.getIdsForFilter(query);
-        processCheck = new RulesetProcessCheck(processIds, prefs);
-        processCheckContent = currentRulesetFileContent;
-        lastProcessCheck = Helper.getLocalDateTimeAsFormattedString(LocalDateTime.now());
-        processCheck.start();
+        if (user != null && !user.isSuperAdmin() && user.getInstitution() != null) {
+            query += " AND projekte.institution_id = " + user.getInstitution().getId();
+        }
+        return query;
     }
 
     public void cancelProcessCheck() {
@@ -878,13 +905,20 @@ public class RulesetEditorBean implements Serializable {
     }
 
     /**
-     * Opens the process list filtered to the processes with errors, like the former ruleset compatibility plugin did.
+     * Opens the process list filtered to the processes with errors that the user can access, like the former ruleset compatibility plugin did.
      *
-     * @return the navigation target of the process list
+     * @return the navigation target of the process list, or "" to stay in the editor when no such process exists
      */
     public String showProcessCheckErrorsInProcessList() {
+        List<RulesetProcessCheck.ProcessError> errors = processCheck.getErrors()
+                .stream()
+                .filter(RulesetProcessCheck.ProcessError::isAccessible)
+                .toList();
+        if (errors.isEmpty()) {
+            return "";
+        }
         StringBuilder filter = new StringBuilder("\"id:");
-        for (RulesetProcessCheck.ProcessError error : processCheck.getErrors()) {
+        for (RulesetProcessCheck.ProcessError error : errors) {
             // separate the ids with a space, but only once the first id is in the filter, so there is no space after the last one
             if (filter.length() > "\"id:".length()) {
                 filter.append(' ');

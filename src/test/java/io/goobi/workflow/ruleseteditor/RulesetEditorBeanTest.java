@@ -34,6 +34,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.lang3.StringUtils;
@@ -47,6 +48,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentCaptor;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -72,6 +74,8 @@ public class RulesetEditorBeanTest extends AbstractTest {
     @TempDir
     Path rulesetFolder;
 
+    private static final String SCAN = " WHERE prozesse.istTemplate = false AND prozesse.MetadatenKonfigurationID = 5";
+
     private static final String RULESET = "src/test/resources/rulesets/ruleset.xml";
 
     private RulesetEditorBean bean;
@@ -82,16 +86,51 @@ public class RulesetEditorBeanTest extends AbstractTest {
     }
 
     @Test
-    public void testProcessCheckQueryWithoutFilter() throws Exception {
-        assertEquals(" WHERE prozesse.MetadatenKonfigurationID = 5", startProcessCheckAndGetQuery(""));
+    public void testProcessCheckWithoutFilterScansAllProcesses() throws Exception {
+        // without a user (system call) every process is accessible, so no second query is needed
+        StartedCheck check = startProcessCheck("", "", null);
+
+        assertEquals(List.of(SCAN), check.queries());
+        assertEquals(List.of(1, 2, 3), check.processIds());
+        assertEquals(Set.of(1, 2, 3), check.accessibleIds());
     }
 
     @Test
-    public void testProcessCheckQueryKeepsTheFilterInBrackets() throws Exception {
+    public void testProcessCheckWithoutFilterMarksTheAccessibleProcesses() throws Exception {
+        StartedCheck check = startProcessCheck("", "", user(7, 3, false));
+
+        // all processes are checked, the second query is the one the check used before: permitted projects and the institution
+        assertEquals(List.of(SCAN, " WHERE prozesse.MetadatenKonfigurationID = 5 AND projekte.institution_id = 3"), check.queries());
+        assertEquals(List.of(1, 2, 3), check.processIds());
+        assertEquals(Set.of(2), check.accessibleIds());
+    }
+
+    @Test
+    public void testProcessCheckOfASuperadminNeedsNoAccessQuery() throws Exception {
+        StartedCheck check = startProcessCheck("", "", user(7, 3, true));
+
+        assertEquals(List.of(SCAN), check.queries());
+        assertEquals(Set.of(1, 2, 3), check.accessibleIds());
+    }
+
+    @Test
+    public void testProcessCheckWithFilterKeepsTheFilterInBrackets() throws Exception {
         // the ruleset condition must not weaken an OR in the filter, so the filter stays in brackets
         String criteria = "left join schritte ON prozesse.ProzesseID = schritte.ProzesseID WHERE a = 1 OR b = 2";
-        assertEquals("left join schritte ON prozesse.ProzesseID = schritte.ProzesseID WHERE (a = 1 OR b = 2) AND prozesse.MetadatenKonfigurationID = 5",
-                startProcessCheckAndGetQuery(criteria));
+        StartedCheck check = startProcessCheck("stepopen:Scanning", criteria, null);
+
+        assertEquals(List.of("left join schritte ON prozesse.ProzesseID = schritte.ProzesseID WHERE (a = 1 OR b = 2) AND prozesse.MetadatenKonfigurationID = 5"),
+                check.queries());
+    }
+
+    @Test
+    public void testProcessCheckWithFilterChecksOnlyAccessibleProcesses() throws Exception {
+        // a filter must not reveal which hidden processes match it, so only accessible processes are checked
+        StartedCheck check = startProcessCheck("stepopen:Scanning", "", user(7, 3, false));
+
+        assertEquals(List.of(" WHERE prozesse.MetadatenKonfigurationID = 5 AND projekte.institution_id = 3"), check.queries());
+        assertEquals(List.of(2), check.processIds());
+        assertEquals(Set.of(2), check.accessibleIds());
     }
 
     @Test
@@ -116,6 +155,23 @@ public class RulesetEditorBeanTest extends AbstractTest {
     @Test
     public void testShowErrorsInProcessListWithOneError() throws Exception {
         assertEquals("\"id:7\"", showErrorsInProcessListAndGetFilter(7));
+    }
+
+    @Test
+    public void testShowErrorsInProcessListOnlyWithAccessibleProcesses() throws Exception {
+        assertEquals("\"id:1 3\"", showErrorsInProcessListAndGetFilter(1, -2, 3));
+    }
+
+    @Test
+    public void testShowErrorsInProcessListWithoutAccessibleProcessesStaysInTheEditor() throws Exception {
+        RulesetProcessCheck check = Mockito.mock(RulesetProcessCheck.class);
+        Mockito.when(check.getErrors()).thenReturn(List.of(new RulesetProcessCheck.ProcessError(2, null, null, "message", false, false)));
+        setField("processCheck", check);
+        try (MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class)) {
+            assertEquals("", bean.showProcessCheckErrorsInProcessList());
+
+            helper.verify(() -> Helper.getBeanByClass(ProcessBean.class), Mockito.never());
+        }
     }
 
     @Test
@@ -746,32 +802,56 @@ public class RulesetEditorBeanTest extends AbstractTest {
     }
 
     /**
-     * Starts the process check for ruleset 5 with a valid ruleset in the editor and returns the query that reaches the database.
+     * What a started process check got: the queries that reached the database, the processes to check and the accessible ones.
      */
-    private String startProcessCheckAndGetQuery(String criteria) throws Exception {
-        setField("currentRuleset", createRuleset(5));
-        setField("currentRulesetFileContent", readRuleset());
-        try (MockedStatic<FilterHelper> filterHelper = Mockito.mockStatic(FilterHelper.class);
-                MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
-            filterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.any(), Mockito.any(),
-                    Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn(criteria);
-            processManager.when(() -> ProcessManager.getIdsForFilter(Mockito.anyString())).thenReturn(new ArrayList<>());
-
-            bean.startProcessCheck();
-
-            ArgumentCaptor<String> query = ArgumentCaptor.forClass(String.class);
-            processManager.verify(() -> ProcessManager.getIdsForFilter(query.capture()));
-            return query.getValue();
-        }
+    private record StartedCheck(List<String> queries, List<Integer> processIds, Set<Integer> accessibleIds) {
     }
 
     /**
-     * Opens the process list for a finished check with the given failed processes and returns the filter passed to the process list.
+     * Starts the process check for ruleset 5 with a valid ruleset in the editor. The scan of all processes finds 1, 2 and 3, every other query
+     * finds 2.
+     *
+     * @param filterText the filter typed into the process check
+     * @param criteria what the filter builder returns
+     * @param user the logged in user, null for none
+     */
+    @SuppressWarnings("unchecked")
+    private StartedCheck startProcessCheck(String filterText, String criteria, User user) throws Exception {
+        setField("currentRuleset", createRuleset(5));
+        setField("currentRulesetFileContent", readRuleset());
+        bean.setProcessCheckFilter(filterText);
+        List<String> queries = new ArrayList<>();
+        List<Object> arguments = new ArrayList<>();
+        try (MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class, Mockito.CALLS_REAL_METHODS);
+                MockedStatic<FilterHelper> filterHelper = Mockito.mockStatic(FilterHelper.class);
+                MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class);
+                MockedConstruction<RulesetProcessCheck> checks = Mockito.mockConstruction(RulesetProcessCheck.class,
+                        (mock, context) -> arguments.addAll(context.arguments()))) {
+            if (user != null) {
+                helper.when(Helper::getCurrentUser).thenReturn(user);
+            }
+            filterHelper.when(() -> FilterHelper.criteriaBuilder(Mockito.anyString(), Mockito.anyBoolean(), Mockito.any(), Mockito.any(),
+                    Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean())).thenReturn(criteria);
+            processManager.when(() -> ProcessManager.getIdsForFilter(Mockito.anyString())).thenAnswer(invocation -> {
+                String query = invocation.getArgument(0);
+                queries.add(query);
+                return SCAN.equals(query) ? List.of(1, 2, 3) : List.of(2);
+            });
+
+            bean.startProcessCheck();
+        }
+        return new StartedCheck(queries, (List<Integer>) arguments.get(0), (Set<Integer>) arguments.get(1));
+    }
+
+    /**
+     * Opens the process list for a finished check with the given failed processes and returns the filter passed to the process list. A negative
+     * id stands for a process the user cannot access.
      */
     private String showErrorsInProcessListAndGetFilter(Integer... processIds) throws Exception {
         List<RulesetProcessCheck.ProcessError> errors = new ArrayList<>();
         for (Integer processId : Arrays.asList(processIds)) {
-            errors.add(new RulesetProcessCheck.ProcessError(processId, "title", "project", "message", true));
+            boolean accessible = processId > 0;
+            errors.add(new RulesetProcessCheck.ProcessError(Math.abs(processId), "title", "project", "message", true, accessible));
         }
         RulesetProcessCheck check = Mockito.mock(RulesetProcessCheck.class);
         Mockito.when(check.getErrors()).thenReturn(errors);

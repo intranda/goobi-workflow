@@ -522,14 +522,15 @@
 												pt:placeholder="#{msgs.ruleset_process_check_filter}"
 												pt:aria-label="#{msgs.ruleset_process_check_filter}" />
 										</div>
+										<div class="small text-muted mt-1">#{msgs.ruleset_process_check_filter_hint}</div>
 									</div>
 									<!-- number of processes and buttons; start is a full submit so the unsaved editor content is sent along -->
 									<h:panelGroup layout="block" id="processCheckActions" styleClass="box__actions px-3 align-items-center">
-										<h:outputFormat
-											styleClass="me-auto"
-											value="#{msgs.ruleset_process_check_count}">
-											<f:param value="#{rulesetEditorBean.getProcessCount(rulesetEditorBean.currentRuleset)}" />
-										</h:outputFormat>
+										<div class="me-auto">
+											<h:outputFormat value="#{msgs.ruleset_process_check_count}">
+												<f:param value="#{rulesetEditorBean.getUsage(rulesetEditorBean.currentRuleset).processes}" />
+											</h:outputFormat>
+										</div>
 										<button jsf:id="processCheckCancel"
 											class="btn btn-blank"
 											jsf:rendered="#{rulesetEditorBean.processCheck.running}"
@@ -595,11 +596,17 @@
 															<f:facet name="header">
 																<h:outputText value="#{msgs.prozess}" />
 															</f:facet>
-															<h:outputText value="#{error.title}" />
-															<br />
-															<small class="text-muted">
-																<h:outputText value="#{error.project}" />
-															</small>
+															<ui:fragment rendered="#{error.accessible}">
+																<h:outputText value="#{error.title}" />
+																<br />
+																<small class="text-muted">
+																	<h:outputText value="#{error.project}" />
+																</small>
+															</ui:fragment>
+															<h:outputText
+																rendered="#{!error.accessible}"
+																styleClass="text-muted fst-italic"
+																value="#{msgs.ruleset_process_not_accessible}" />
 														</h:column>
 														<h:column>
 															<f:facet name="header">
@@ -615,7 +622,7 @@
 																<!-- metadata editor, as in the process list -->
 																<h:commandLink
 																	styleClass="btn btn-icon btn-blank"
-																	rendered="#{error.openable}"
+																	rendered="#{error.openable and error.accessible}"
 																	action="#{Metadaten.XMLlesen}"
 																	title="#{msgs.metadatenBearbeiten}"
 																	pt:aria-label="#{msgs.metadatenBearbeiten}"
@@ -629,7 +636,7 @@
 																<button
 																	jsf:id="processDetails"
 																	class="btn btn-icon btn-blank"
-																	jsf:rendered="#{!error.openable and LoginForm.hasRole('Workflow_General_Details')}"
+																	jsf:rendered="#{error.accessible and !error.openable and LoginForm.hasRole('Workflow_General_Details')}"
 																	jsf:action="#{rulesetEditorBean.showProcessDetails(error.processId)}"
 																	title="#{msgs.prozessBearbeiten}"
 																	aria-label="#{msgs.prozessBearbeiten}"
@@ -646,14 +653,14 @@
 											<div>
 												<button jsf:id="processCheckShowAll"
 													class="btn btn-primary"
-													jsf:rendered="#{!rulesetEditorBean.processCheck.running}"
+													jsf:rendered="#{!rulesetEditorBean.processCheck.running and not empty rulesetEditorBean.processCheck.accessibleErrors}"
 													jsf:action="#{rulesetEditorBean.showProcessCheckErrorsInProcessList}">
 													<!-- the process list belongs to the workflow menu, like the menu entry "Vorgänge" -->
 													<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a22" />
 													<f:setPropertyActionListener target="#{NavigationForm.parentMenu}" value="menu_workflow" />
 													<util:icon icon="list" />
 													<h:outputFormat value="#{msgs.ruleset_process_check_show_in_process_list}">
-														<f:param value="#{rulesetEditorBean.processCheck.errors.size()}" />
+														<f:param value="#{rulesetEditorBean.processCheck.accessibleErrors.size()}" />
 													</h:outputFormat>
 												</button>
 											</div>

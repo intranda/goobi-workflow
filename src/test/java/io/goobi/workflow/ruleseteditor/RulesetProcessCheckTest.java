@@ -21,14 +21,17 @@ package io.goobi.workflow.ruleseteditor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
@@ -74,7 +77,7 @@ public class RulesetProcessCheckTest extends AbstractTest {
         try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
             processManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
 
-            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), savedPrefs);
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), Set.of(1), savedPrefs);
             check.run();
 
             assertTrue(check.getErrors().isEmpty());
@@ -90,7 +93,7 @@ public class RulesetProcessCheckTest extends AbstractTest {
         try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
             processManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
 
-            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), editorPrefs);
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), Set.of(1), editorPrefs);
             check.run();
 
             List<RulesetProcessCheck.ProcessError> errors = check.getErrors();
@@ -117,7 +120,7 @@ public class RulesetProcessCheckTest extends AbstractTest {
         try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
             processManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
 
-            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), editorPrefs);
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), Set.of(1), editorPrefs);
             check.run();
 
             assertEquals(1, check.getErrors().size());
@@ -133,7 +136,7 @@ public class RulesetProcessCheckTest extends AbstractTest {
         try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
             processManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
 
-            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), savedPrefs);
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), Set.of(1), savedPrefs);
             check.run();
 
             assertTrue(check.getErrors().isEmpty());
@@ -148,7 +151,7 @@ public class RulesetProcessCheckTest extends AbstractTest {
         try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
             processManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
 
-            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), editorPrefs);
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), Set.of(1), editorPrefs);
             check.run();
 
             assertEquals(1, check.getErrors().size());
@@ -162,7 +165,7 @@ public class RulesetProcessCheckTest extends AbstractTest {
         try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
             processManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(null);
 
-            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), savedPrefs);
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), Set.of(1), savedPrefs);
             check.run();
 
             assertTrue(check.getErrors().isEmpty());
@@ -173,13 +176,98 @@ public class RulesetProcessCheckTest extends AbstractTest {
     @Test
     public void testCancelBeforeRun() throws Exception {
         try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
-            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1, 2), savedPrefs);
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1, 2), Set.of(1, 2), savedPrefs);
             check.cancel();
             check.run();
 
             assertEquals(0, check.getDone());
             assertTrue(check.isCancelled());
             processManager.verifyNoInteractions();
+        }
+    }
+
+    @Test
+    public void testInaccessibleProcessShowsOnlyTheError() throws Exception {
+        Process process = createProcess(1, testFile(META_FILE).toString());
+        try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            processManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(process);
+
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1), Set.of(), editorPrefs);
+            check.run();
+
+            RulesetProcessCheck.ProcessError error = check.getErrors().get(0);
+            assertFalse(error.isAccessible());
+            assertTrue(error.getMessage().contains("PlaceOfPublication"));
+            // nothing about the process itself, and no way to open it
+            assertNull(error.getTitle());
+            assertNull(error.getProject());
+            assertFalse(error.isOpenable());
+            // so the saved ruleset is not read a second time either
+            Mockito.verify(process, Mockito.never()).getRegelsatz();
+        }
+    }
+
+    @Test
+    public void testFolderIsMaskedForInaccessibleProcess() throws Exception {
+        // the file does not exist, so the message names its path, which contains the process id
+        Path folder = tempFolder.resolve("42");
+        Process process = createProcess(42, folder.resolve("meta.xml").toString());
+        try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            processManager.when(() -> ProcessManager.getProcessById(42)).thenReturn(process);
+
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(42), Set.of(), savedPrefs);
+            check.run();
+
+            String message = check.getErrors().get(0).getMessage();
+            assertFalse(message.contains(folder.toString()), message);
+        }
+    }
+
+    @Test
+    public void testNoFolderWhenThePathOfAnInaccessibleProcessFails() throws Exception {
+        // without the path there is nothing to mask, and the exception may name the process folder itself
+        Process process = createProcess(42, "unused");
+        Mockito.when(process.getMetadataFilePath()).thenThrow(new IOException("/opt/digiverso/goobi/metadata/42 cannot be read"));
+        try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            processManager.when(() -> ProcessManager.getProcessById(42)).thenReturn(process);
+
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(42), Set.of(), savedPrefs);
+            check.run();
+
+            String message = check.getErrors().get(0).getMessage();
+            assertFalse(message.contains("metadata/42"), message);
+        }
+    }
+
+    @Test
+    public void testFolderIsKeptForAccessibleProcess() throws Exception {
+        Path folder = tempFolder.resolve("42");
+        Process process = createProcess(42, folder.resolve("meta.xml").toString());
+        try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            processManager.when(() -> ProcessManager.getProcessById(42)).thenReturn(process);
+
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(42), Set.of(42), savedPrefs);
+            check.run();
+
+            String message = check.getErrors().get(0).getMessage();
+            assertTrue(message.contains(folder.toString()), message);
+        }
+    }
+
+    @Test
+    public void testAccessibleErrors() throws Exception {
+        Process first = createProcess(1, testFile(META_FILE).toString());
+        Process second = createProcess(2, testFile(META_FILE).toString());
+        try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            processManager.when(() -> ProcessManager.getProcessById(1)).thenReturn(first);
+            processManager.when(() -> ProcessManager.getProcessById(2)).thenReturn(second);
+
+            RulesetProcessCheck check = new RulesetProcessCheck(Arrays.asList(1, 2), Set.of(2), editorPrefs);
+            check.run();
+
+            assertEquals(2, check.getErrors().size());
+            assertEquals(1, check.getAccessibleErrors().size());
+            assertEquals(2, check.getAccessibleErrors().get(0).getProcessId());
         }
     }
 
