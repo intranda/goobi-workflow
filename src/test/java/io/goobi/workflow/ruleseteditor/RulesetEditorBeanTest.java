@@ -20,10 +20,12 @@ package io.goobi.workflow.ruleseteditor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -46,6 +48,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import jakarta.servlet.http.Part;
+import ugh.dl.Prefs;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -387,6 +390,19 @@ public class RulesetEditorBeanTest extends AbstractTest {
     }
 
     @Test
+    public void testEmptyRulesetIsALoadableRuleset() throws Exception {
+        Path file = rulesetFolder.resolve("leer.xml");
+        try (InputStream emptyRuleset = RulesetEditorBean.class.getResourceAsStream("/ruleset_empty.xml")) {
+            assertNotNull(emptyRuleset);
+            Files.copy(emptyRuleset, file);
+        }
+        Prefs prefs = new Prefs();
+        prefs.loadPrefs(file.toString());
+        assertNotNull(prefs.getDocStrctTypeByName("Monograph"));
+        assertNotNull(prefs.getMetadataTypeByName("TitleDocMain"));
+    }
+
+    @Test
     public void testCreatedFileIsRemovedWhenSavingFails() throws Exception {
         bean.openCreateEmpty();
         bean.setCreateName("Zeitungen");
@@ -397,7 +413,7 @@ public class RulesetEditorBeanTest extends AbstractTest {
     @Test
     public void testCopyIsRemovedWhenSavingFails() throws Exception {
         Files.writeString(rulesetFolder.resolve("ruleset.xml"), "vorlage");
-        setField("createMode", "duplicate");
+        setField("createMode", RulesetCreateMode.DUPLICATE);
         setField("createSource", rulesetFor("Standard", "ruleset.xml"));
         bean.setCreateName("Standard Kopie");
         createAndGetSaved(true);

@@ -134,6 +134,23 @@ public class MetadatenHelperTest extends AbstractTest {
     }
 
     @Test
+    public void testGetFileformatForPrefsReadsWithTheGivenPrefs() throws Exception {
+        Fileformat fileformat = MetadatenHelper.getFileformatForPrefs("Mets", createRulesetMock().getPreferences());
+        assertInstanceOf(MetsMods.class, fileformat);
+        // reading needs the ruleset, so this works only if the given one was set
+        String metaFile = "src/test/resources/metadata/1/meta.xml";
+        if (!Paths.get(metaFile).toFile().exists()) {
+            metaFile = "target/test-classes/metadata/1/meta.xml"; // when run from the command line
+        }
+        assertTrue(fileformat.read(metaFile));
+    }
+
+    @Test
+    public void testGetFileformatForPrefsWithUnknownName() throws PreferencesException {
+        assertNull(MetadatenHelper.getFileformatForPrefs("unknown format", createRulesetMock().getPreferences()));
+    }
+
+    @Test
     public void testGetFileformatByUnknownName() {
         assertNull(MetadatenHelper.getFileformatByName("unknown format", Mockito.mock(Ruleset.class)));
     }

@@ -818,11 +818,23 @@ public class MetadatenHelper {
     }
 
     public static Fileformat getFileformatByName(String name, Ruleset ruleset) {
+        return getFileformatForPrefs(name, ruleset.getPreferences());
+    }
+
+    /**
+     * Like getFileformatByName, but with a ruleset that is not saved. Used by the process check of the ruleset editor, which reads with the editor
+     * content and must not load the saved ruleset: it may be the broken one that is being repaired.
+     *
+     * @param name the display name of the file format, e.g. "Mets"
+     * @param prefs the ruleset to read with
+     * @return the file format with the ruleset, or null if there is no such format or it does not accept the ruleset
+     */
+    public static Fileformat getFileformatForPrefs(String name, Prefs prefs) {
         for (Class<? extends Fileformat> cl : getFileformatImplementations()) {
             try {
                 Fileformat ff = cl.getDeclaredConstructor().newInstance();
                 if (ff.isWritable() && ff.getDisplayName().equals(name)) {
-                    ff.setPrefs(ruleset.getPreferences());
+                    ff.setPrefs(prefs);
                     return ff;
                 }
             } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException | NoSuchMethodException

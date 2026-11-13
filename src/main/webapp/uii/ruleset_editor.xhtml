@@ -862,14 +862,15 @@
 			<h:panelGroup id="createDialogWrapper" layout="block">
 				<ui:param name="createMode" value="#{rulesetEditorBean.createMode}" />
 				<dialog:modal id="rulesetCreateModal" width="wide">
+					<!-- the header shows its icon only if one is set when the page is built, before the dialog is opened, so there is always one -->
 					<dialog:header
-						icon="#{createMode == 'upload' ? 'upload' : createMode == 'file' ? 'file-plus' : createMode == 'duplicate' ? 'clipboard' : 'plus'}"
-						title="#{createMode == 'upload' ? msgs.ruleset_create_upload : createMode == 'file' ? msgs.ruleset_create_from_file : createMode == 'duplicate' ? msgs.ruleset_create_duplicate : msgs.ruleset_create_empty}" />
+						icon="#{createMode != null ? createMode.icon : 'plus'}"
+						title="#{msgs[createMode.titleKey]}" />
 					<ui:fragment rendered="#{createMode != null}">
 						<dialog:body>
 							<h:panelGroup layout="block" styleClass="w-100">
 							<!-- upload: the file from the computer comes first, it suggests the name -->
-							<ui:fragment rendered="#{createMode == 'upload'}">
+							<ui:fragment rendered="#{createMode == 'UPLOAD'}">
 								<form:field label="#{msgs.datei}" required="true">
 									<h:panelGroup id="createUploadField" layout="block" styleClass="w-100">
 										<div class="input-group">
@@ -879,7 +880,8 @@
 												value="#{rulesetEditorBean.createUploadedFileName}"
 												placeholder="#{msgs.ruleset_create_no_file}"
 												aria-label="#{msgs.datei}" />
-											<label class="btn btn-action text-nowrap">
+											<!-- align-self-stretch: labels are aligned to the top by default, so the button would be lower than the field -->
+											<label class="btn btn-action text-nowrap align-self-stretch">
 												<util:icon icon="upload" />
 												<h:outputText value="#{msgs.fileUpload}" />
 												<h:inputFile
@@ -902,7 +904,7 @@
 								</form:field>
 							</ui:fragment>
 							<!-- duplicate: the ruleset the copy is made from -->
-							<ui:fragment rendered="#{createMode == 'duplicate'}">
+							<ui:fragment rendered="#{createMode == 'DUPLICATE'}">
 								<form:field label="#{msgs.ruleset_create_source}">
 									<h:outputText value="#{rulesetEditorBean.createSource.titel} (#{rulesetEditorBean.createSource.datei})" />
 								</form:field>
@@ -923,7 +925,7 @@
 								</h:panelGroup>
 							</form:field>
 							<!-- an existing file: it is the content of the new ruleset -->
-							<ui:fragment rendered="#{createMode == 'file'}">
+							<ui:fragment rendered="#{createMode == 'FILE'}">
 								<form:field label="#{msgs.rulesetFile}">
 									<h:outputText styleClass="font-monospace" value="#{rulesetEditorBean.createFile}" />
 								</form:field>

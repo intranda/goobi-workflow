@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Content of a new empty ruleset in the ruleset editor: the smallest ruleset ugh loads, so it can be opened and checked right away -->
+<Preferences>
+  <MetadataType>
+    <Name>TitleDocMain</Name>
+    <language name="de">Haupttitel</language>
+    <language name="en">Main title</language>
+  </MetadataType>
+  <DocStrctType topStruct="true">
+    <Name>Monograph</Name>
+    <language name="de">Monografie</language>
+    <language name="en">Monograph</language>
+    <metadata num="1m">TitleDocMain</metadata>
+  </DocStrctType>
+</Preferences>

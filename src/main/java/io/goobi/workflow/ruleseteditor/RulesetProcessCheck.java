@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.goobi.beans.Process;
-import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -130,18 +129,11 @@ public class RulesetProcessCheck implements Runnable, Serializable {
      * @return null if the file can be read, otherwise the error message
      */
     private String readWithRuleset(Process process, Prefs rulesetPrefs) {
-        // the file format gets the ruleset to check right away, the saved ruleset of the process must not be loaded:
-        // it may be the broken one that is being repaired in the editor
-        Ruleset ruleset = new Ruleset() {
-            @Override
-            public Prefs getPreferences() {
-                return rulesetPrefs;
-            }
-        };
         try {
             String path = process.getMetadataFilePath();
             String type = MetadatenHelper.getMetaFileType(path);
-            Fileformat fileformat = MetadatenHelper.getFileformatByName(type, ruleset);
+            // not getFileformatByName: it loads the saved ruleset, which may be the broken one that is being repaired in the editor
+            Fileformat fileformat = MetadatenHelper.getFileformatForPrefs(type, rulesetPrefs);
             if (fileformat == null) {
                 return "Unknown metadata format: " + type;
             }

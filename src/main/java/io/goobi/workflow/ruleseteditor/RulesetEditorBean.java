@@ -109,29 +109,8 @@ import ugh.exceptions.PreferencesException;
 @Log4j2
 public class RulesetEditorBean implements Serializable {
 
-    // the four ways to create a ruleset, see openCreate...
-    public static final String CREATE_EMPTY = "empty";
-    public static final String CREATE_UPLOAD = "upload";
-    public static final String CREATE_FILE = "file";
-    public static final String CREATE_DUPLICATE = "duplicate";
-
-    // content of an empty ruleset: valid and loadable, one structure type with a main title as a start
-    private static final String EMPTY_RULESET = """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <Preferences>
-              <MetadataType>
-                <Name>TitleDocMain</Name>
-                <language name="de">Haupttitel</language>
-                <language name="en">Main title</language>
-              </MetadataType>
-              <DocStrctType topStruct="true">
-                <Name>Monograph</Name>
-                <language name="de">Monografie</language>
-                <language name="en">Monograph</language>
-                <metadata num="1m">TitleDocMain</metadata>
-              </DocStrctType>
-            </Preferences>
-            """;
+    // content of a new empty ruleset, the smallest ruleset ugh loads
+    private static final String EMPTY_RULESET = "/ruleset_empty.xml";
 
     private static final long serialVersionUID = 2073532676953677578L;
 
@@ -194,9 +173,9 @@ public class RulesetEditorBean implements Serializable {
     @Setter
     private String settingsFileName;
 
-    // the create dialog: how the new ruleset comes about, one of the CREATE_ constants
+    // the create dialog: how the new ruleset comes about, null while the dialog is closed
     @Getter
-    private String createMode;
+    private RulesetCreateMode createMode;
 
     // name and order setting typed in the create dialog
     @Getter
@@ -502,11 +481,11 @@ public class RulesetEditorBean implements Serializable {
     }
 
     public void openCreateEmpty() {
-        resetCreate(CREATE_EMPTY);
+        resetCreate(RulesetCreateMode.EMPTY);
     }
 
     public void openCreateUpload() {
-        resetCreate(CREATE_UPLOAD);
+        resetCreate(RulesetCreateMode.UPLOAD);
     }
 
     /**
@@ -515,7 +494,7 @@ public class RulesetEditorBean implements Serializable {
      * @param fileName the existing file
      */
     public void openCreateFromFile(String fileName) {
-        resetCreate(CREATE_FILE);
+        resetCreate(RulesetCreateMode.FILE);
         createFile = fileName;
         createName = StringUtils.removeEndIgnoreCase(fileName, ".xml");
     }
@@ -527,7 +506,7 @@ public class RulesetEditorBean implements Serializable {
      * @param ruleset the ruleset to copy
      */
     public void openCreateDuplicate(Ruleset ruleset) {
-        resetCreate(CREATE_DUPLICATE);
+        resetCreate(RulesetCreateMode.DUPLICATE);
         createSource = ruleset;
         createOrderByRuleset = ruleset.isOrderMetadataByRuleset();
         createName = Helper.getTranslation("ruleset_create_copy_name", ruleset.getTitel());
@@ -538,7 +517,7 @@ public class RulesetEditorBean implements Serializable {
         }
     }
 
-    private void resetCreate(String mode) {
+    private void resetCreate(RulesetCreateMode mode) {
         createMode = mode;
         createName = "";
         createOrderByRuleset = false;
@@ -589,7 +568,7 @@ public class RulesetEditorBean implements Serializable {
      *         later in the settings dialog.
      */
     public String getCreateFileName() {
-        if (CREATE_FILE.equals(createMode)) {
+        if (createMode == RulesetCreateMode.FILE) {
             return createFile;
         }
         return fileNameFor(createName);
@@ -626,7 +605,7 @@ public class RulesetEditorBean implements Serializable {
             return null;
         }
         String problem = nameProblem(createName, null);
-        if (problem == null && !CREATE_FILE.equals(createMode)) {
+        if (problem == null && createMode != RulesetCreateMode.FILE) {
             if (getCreateFileName().isEmpty()) {
                 // a name of only special characters gives no file name
                 problem = Helper.getTranslation("ruleset_create_name_no_file");
@@ -689,7 +668,7 @@ public class RulesetEditorBean implements Serializable {
         if (createMode == null || StringUtils.isBlank(createName) || getCreateFileName().isEmpty() || getCreateProblem() != null) {
             return false;
         }
-        return !CREATE_UPLOAD.equals(createMode) || createUploadedContent != null;
+        return createMode != RulesetCreateMode.UPLOAD || createUploadedContent != null;
     }
 
     /**
@@ -705,13 +684,18 @@ public class RulesetEditorBean implements Serializable {
         // the file is only written when it does not exist yet, so a file that appeared after the check is never overwritten
         boolean fileWritten = false;
         try {
-            if (CREATE_EMPTY.equals(createMode)) {
-                Files.writeString(file, EMPTY_RULESET, StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
+            if (createMode == RulesetCreateMode.EMPTY) {
+                try (InputStream emptyRuleset = RulesetEditorBean.class.getResourceAsStream(EMPTY_RULESET)) {
+                    if (emptyRuleset == null) {
+                        throw new IOException("Missing resource " + EMPTY_RULESET);
+                    }
+                    Files.copy(emptyRuleset, file);
+                }
                 fileWritten = true;
-            } else if (CREATE_UPLOAD.equals(createMode)) {
+            } else if (createMode == RulesetCreateMode.UPLOAD) {
                 Files.writeString(file, createUploadedContent, StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
                 fileWritten = true;
-            } else if (CREATE_DUPLICATE.equals(createMode)) {
+            } else if (createMode == RulesetCreateMode.DUPLICATE) {
                 Files.copy(Paths.get(ConfigurationHelper.getInstance().getRulesetFolder(), createSource.getDatei()), file);
                 fileWritten = true;
             }
