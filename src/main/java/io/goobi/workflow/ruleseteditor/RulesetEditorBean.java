@@ -459,7 +459,7 @@ public class RulesetEditorBean implements Serializable {
         if (settingsRuleset == null || StringUtils.isBlank(settingsFileName) || settingsFileName.trim().equals(settingsRuleset.getDatei())) {
             return null;
         }
-        return fileProblem(settingsFileName.trim(), settingsRuleset.getId(), "ruleset_");
+        return fileProblem(settingsFileName.trim(), settingsRuleset.getId());
     }
 
     public boolean isSettingsPossible() {
@@ -564,14 +564,26 @@ public class RulesetEditorBean implements Serializable {
     }
 
     /**
-     * @return the file the new ruleset gets: the existing file when created from one, otherwise a file named after the ruleset. It can be renamed
-     *         later in the settings dialog.
+     * @return the file the new ruleset gets: the existing file when created from one, otherwise a file named after the ruleset. If that file
+     *         belongs to another ruleset or already lies in the ruleset folder, the next free one: name_2.xml, name_3.xml and so on. It can be
+     *         renamed later in the settings dialog.
      */
     public String getCreateFileName() {
         if (createMode == RulesetCreateMode.FILE) {
             return createFile;
         }
-        return fileNameFor(createName);
+        String suggested = fileNameFor(createName);
+        if (suggested.isEmpty()) {
+            return suggested;
+        }
+        String fileName = suggested;
+        int number = 2;
+        // the limit only guards against a ruleset folder that reports every file as existing, creating never overwrites a file anyway
+        while (fileProblem(fileName, null) != null && number < 1000) {
+            fileName = StringUtils.removeEnd(suggested, ".xml") + "_" + number + ".xml";
+            number++;
+        }
+        return fileName;
     }
 
     /**
@@ -595,8 +607,8 @@ public class RulesetEditorBean implements Serializable {
     }
 
     /**
-     * Explains why the ruleset cannot be created with the current name, shown below the name field: the name is taken, or the file named after it
-     * belongs to another ruleset or already lies in the ruleset folder. An existing file to create from is always fine.
+     * Explains why the ruleset cannot be created with the current name, shown below the name field: another ruleset has this name, or it has no
+     * letters or digits for a file name. A taken file never blocks the name, the new ruleset gets the next free file then.
      *
      * @return the explanation, or null if the name is fine or still empty
      */
@@ -605,13 +617,9 @@ public class RulesetEditorBean implements Serializable {
             return null;
         }
         String problem = nameProblem(createName, null);
-        if (problem == null && createMode != RulesetCreateMode.FILE) {
-            if (getCreateFileName().isEmpty()) {
-                // a name of only special characters gives no file name
-                problem = Helper.getTranslation("ruleset_create_name_no_file");
-            } else {
-                problem = fileProblem(getCreateFileName(), null, "ruleset_create_");
-            }
+        if (problem == null && createMode != RulesetCreateMode.FILE && fileNameFor(createName).isEmpty()) {
+            // a name of only special characters gives no file name
+            problem = Helper.getTranslation("ruleset_create_name_no_file");
         }
         return problem;
     }
@@ -636,20 +644,19 @@ public class RulesetEditorBean implements Serializable {
      *
      * @param fileName the file name
      * @param ownId the ruleset that is renamed, null for a new one
-     * @param keyPrefix "ruleset_create_" in the create dialog, where the file follows the name, "ruleset_" in the settings dialog
      * @return the explanation, or null if the file name is free
      */
-    private String fileProblem(String fileName, Integer ownId, String keyPrefix) {
+    private String fileProblem(String fileName, Integer ownId) {
         if (!isValidFileName(fileName)) {
             return Helper.getTranslation("ruleset_file_invalid");
         }
         for (Ruleset ruleset : getRulesets()) {
             if (!ruleset.getId().equals(ownId) && ruleset.getDatei().equals(fileName)) {
-                return Helper.getTranslation(keyPrefix + "file_used", fileName, ruleset.getTitel());
+                return Helper.getTranslation("ruleset_file_used", fileName, ruleset.getTitel());
             }
         }
         if (StorageProvider.getInstance().isFileExists(Paths.get(ConfigurationHelper.getInstance().getRulesetFolder(), fileName))) {
-            return Helper.getTranslation(keyPrefix + "file_unused", fileName);
+            return Helper.getTranslation("ruleset_file_unused", fileName);
         }
         return null;
     }

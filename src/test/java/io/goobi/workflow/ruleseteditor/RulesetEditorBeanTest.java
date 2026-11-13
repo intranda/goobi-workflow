@@ -220,19 +220,23 @@ public class RulesetEditorBeanTest extends AbstractTest {
     public void testCreateFileNameComesFromTheName() throws Exception {
         bean.openCreateEmpty();
         assertNull(typeName("Zeitungen 19. Jh."));
-        assertEquals("zeitungen_19_jh.xml", bean.getCreateFileName());
+        assertEquals("zeitungen_19_jh.xml", withRulesets(bean::getCreateFileName));
     }
 
     @Test
-    public void testCreateProblemForFileOfAnotherRuleset() throws Exception {
+    public void testCreateTakesNextFileWhenTheFileBelongsToAnotherRuleset() throws Exception {
         bean.openCreateEmpty();
-        assertEquals("ruleset_create_file_used", typeName("Ruleset"));
+        // ruleset.xml belongs to "Standard", but the name "Ruleset" is free and must not be blocked by a file nobody sees in the dialog
+        assertNull(typeName("Ruleset"));
+        assertEquals("ruleset_2.xml", withRulesets(bean::getCreateFileName));
+        assertTrue(withRulesets(bean::isCreatePossible));
     }
 
     @Test
-    public void testCreateProblemForUnusedFile() throws Exception {
+    public void testCreateTakesNextFileWhenTheFileLiesInTheFolder() throws Exception {
         bean.openCreateEmpty();
-        assertEquals("ruleset_create_file_unused", typeName("Alt 2019"));
+        assertNull(typeName("Alt 2019"));
+        assertEquals("alt_2019_2.xml", withRulesets(bean::getCreateFileName));
     }
 
     @Test
@@ -248,18 +252,18 @@ public class RulesetEditorBeanTest extends AbstractTest {
     public void testDuplicateSuggestsCopyName() throws Exception {
         Ruleset zeitschriften = rulesetFor("Zeitschriften", "zeitschriften.xml");
         zeitschriften.setOrderMetadataByRuleset(true);
-        duplicate(zeitschriften);
+        assertEquals("zeitschriften_kopie.xml", duplicate(zeitschriften));
         assertEquals("Zeitschriften (Kopie)", bean.getCreateName());
-        assertEquals("zeitschriften_kopie.xml", bean.getCreateFileName());
         assertTrue(bean.isCreateOrderByRuleset());
     }
 
     @Test
     public void testDuplicateCountsUpWhenTheCopyExists() throws Exception {
-        // "Standard (Kopie)" exists as a ruleset, its file standard_kopie_2.xml lies unused in the folder, so the third copy is suggested
-        duplicate(rulesetFor("Standard", "ruleset.xml"), rulesetFor("Standard (Kopie)", "standard_kopie.xml"));
-        assertEquals("Standard (Kopie 3)", bean.getCreateName());
-        assertEquals("standard_kopie_3.xml", bean.getCreateFileName());
+        // "Standard (Kopie)" exists as a ruleset, so the second copy is suggested; its file standard_kopie_2.xml lies unused in the folder,
+        // which only changes the file, not the name
+        String fileName = duplicate(rulesetFor("Standard", "ruleset.xml"), rulesetFor("Standard (Kopie)", "standard_kopie.xml"));
+        assertEquals("Standard (Kopie 2)", bean.getCreateName());
+        assertEquals("standard_kopie_2_2.xml", fileName);
     }
 
     @Test
@@ -267,7 +271,7 @@ public class RulesetEditorBeanTest extends AbstractTest {
         bean.openCreateUpload();
         assertNull(typeName("Zeitungen"));
         // a free name is not enough, the uploaded file is missing
-        assertFalse(bean.isCreatePossible());
+        assertFalse(withRulesets(bean::isCreatePossible));
     }
 
     @Test
@@ -485,8 +489,10 @@ public class RulesetEditorBeanTest extends AbstractTest {
 
     /**
      * Opens the create dialog for a copy with the given rulesets, the unused file standard_kopie_2.xml in the folder and German copy names.
+     *
+     * @return the file the copy would get
      */
-    private void duplicate(Ruleset source, Ruleset... others) throws Exception {
+    private String duplicate(Ruleset source, Ruleset... others) throws Exception {
         List<Ruleset> rulesets = new ArrayList<>();
         rulesets.add(source);
         rulesets.addAll(Arrays.asList(others));
@@ -509,6 +515,7 @@ public class RulesetEditorBeanTest extends AbstractTest {
                 MockedStatic<StorageProvider> storageProvider = Mockito.mockStatic(StorageProvider.class)) {
             storageProvider.when(StorageProvider::getInstance).thenReturn(storage);
             bean.openCreateDuplicate(source);
+            return bean.getCreateFileName();
         }
     }
 
