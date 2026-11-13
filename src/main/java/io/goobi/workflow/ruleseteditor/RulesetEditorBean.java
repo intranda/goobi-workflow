@@ -59,8 +59,11 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
+import org.goobi.beans.User;
 import org.goobi.io.BackupFileManager;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.managedbeans.ProcessBean;
+import org.goobi.production.enums.UserRole;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.jdom2.Element;
 import org.xml.sax.InputSource;
@@ -162,7 +165,10 @@ public class RulesetEditorBean implements Serializable {
     private String lastValidation;
 
     // number of processes per ruleset, read once each time the ruleset list is loaded
-    private Map<Integer, Integer> processCounts = new HashMap<>();
+    private Map<Integer, RulesetUsage> usageCache = new HashMap<>();
+
+    // request in which reading the usage of a ruleset failed, so the failure is reported once per request
+    private transient Map<Integer, FacesContext> failedUsageRequests = new HashMap<>();
 
     // the ruleset shown in the settings dialog, a fresh copy from the database
     @Getter
@@ -352,7 +358,7 @@ public class RulesetEditorBean implements Serializable {
 
     public List<Ruleset> getRulesets() {
         if (this.rulesets == null) {
-            processCounts.clear();
+            usageCache.clear();
             this.rulesets = RulesetManager.getAllRulesets();
             this.initRulesetDates();
             this.initWritePermissionFlags();
@@ -364,13 +370,81 @@ public class RulesetEditorBean implements Serializable {
         }
     }
 
-    public int getProcessCount(Ruleset ruleset) {
-        Integer count = processCounts.get(ruleset.getId());
-        if (count == null) {
-            count = ProcessManager.getNumberOfProcessesWithRuleset(ruleset.getId());
-            processCounts.put(ruleset.getId(), count);
+    /**
+     * Returns how many processes use a ruleset and how many of them the current user can open or check. The result is cached until the ruleset list
+     * is reloaded. When the database cannot be read, an error message is shown and an unknown usage is returned, which is not cached so the next
+     * call asks the database again.
+     *
+     * @param ruleset the ruleset
+     * @return the usage, never null
+     */
+    public RulesetUsage getUsage(Ruleset ruleset) {
+        if (ruleset.getId() == null) {
+            // not saved yet, so no process can use it
+            return RulesetUsage.of(List.of(), RulesetUsage.Viewer.ALL);
         }
-        return count;
+        RulesetUsage usage = usageCache.get(ruleset.getId());
+        if (usage != null) {
+            return usage;
+        }
+        // the page asks many times per request; after a failure, ask the database and report the error only once per request
+        FacesContext request = FacesContextHelper.getCurrentFacesContext();
+        if (failedUsageRequests == null) {
+            // transient, gone after the session was restored
+            failedUsageRequests = new HashMap<>();
+        }
+        if (request != null && failedUsageRequests.get(ruleset.getId()) == request) {
+            return RulesetUsage.unknown();
+        }
+        User user = Helper.getCurrentUser();
+        try {
+            List<RulesetUsageGroup> groups = ProcessManager.getRulesetUsage(ruleset.getId(), user == null ? 0 : user.getId());
+            usage = RulesetUsage.of(groups, getViewer(user));
+        } catch (DAOException e) {
+            log.error("Cannot read the usage of ruleset " + ruleset.getId(), e);
+            Helper.setFehlerMeldung("rulesetEditor", Helper.getTranslation("ruleset_usage_error"), e.getMessage());
+            if (request != null) {
+                failedUsageRequests.put(ruleset.getId(), request);
+            }
+            return RulesetUsage.unknown();
+        }
+        failedUsageRequests.remove(ruleset.getId());
+        usageCache.put(ruleset.getId(), usage);
+        return usage;
+    }
+
+    /**
+     * Describes what the user sees in the process list, the same way the process list limits its results. Without a user (system calls) everything
+     * is visible.
+     */
+    private RulesetUsage.Viewer getViewer(User user) {
+        if (user == null) {
+            return RulesetUsage.Viewer.ALL;
+        }
+        Integer institutionId = user.isSuperAdmin() || user.getInstitution() == null ? null : user.getInstitution().getId();
+        LoginBean login = Helper.getLoginBean();
+        boolean allProjects = hasRole(login, UserRole.Workflow_General_Show_All_Projects);
+        // the list toggles start from the display settings of the user, so they count like the roles
+        ProcessBean processBean = Helper.getBeanByClass(ProcessBean.class);
+        boolean showClosed = hasRole(login, UserRole.Workflow_Processes_Show_Finished)
+                || (processBean != null && processBean.isShowClosedProcesses());
+        boolean showArchived = hasRole(login, UserRole.Workflow_Processes_Show_Deactivated_Projects)
+                || (processBean != null && processBean.isShowArchivedProjects());
+        return new RulesetUsage.Viewer(institutionId, allProjects, showArchived, showClosed);
+    }
+
+    private static boolean hasRole(LoginBean login, UserRole role) {
+        return login != null && login.hasRole(role.name());
+    }
+
+    /**
+     * Returns the number of processes (without templates) that use a ruleset.
+     *
+     * @param ruleset the ruleset
+     * @return the number of processes, 0 if unknown
+     */
+    public int getProcessCount(Ruleset ruleset) {
+        return getUsage(ruleset).getProcesses();
     }
 
     /**
@@ -468,7 +542,7 @@ public class RulesetEditorBean implements Serializable {
     }
 
     public void deleteSettingsRuleset() {
-        if (settingsRuleset == null || settingsRuleset.getId() == null || getProcessCount(settingsRuleset) > 0) {
+        if (settingsRuleset == null || settingsRuleset.getId() == null || getUsage(settingsRuleset).isInUse()) {
             return;
         }
         try {
@@ -832,6 +906,16 @@ public class RulesetEditorBean implements Serializable {
      */
     public String showProcessesOfRuleset(Ruleset ruleset) {
         ProcessBean processBean = Helper.getBeanByClass(ProcessBean.class);
+        // the process bean lives as long as the window, an old additional filter would rewrite the ruleset filter
+        processBean.setAdditionalFilter(null);
+        // closed processes and archived projects are switched on only for users with the roles, others could not switch them off in the list
+        LoginBean login = Helper.getLoginBean();
+        if (hasRole(login, UserRole.Workflow_Processes_Show_Finished)) {
+            processBean.setShowClosedProcesses(true);
+        }
+        if (hasRole(login, UserRole.Workflow_Processes_Show_Deactivated_Projects)) {
+            processBean.setShowArchivedProjects(true);
+        }
         // in quotes, because ruleset titles may contain spaces
         processBean.setFilter("\"ruleset:" + ruleset.getTitel() + "\"");
         processBean.setModusAnzeige("aktuell");

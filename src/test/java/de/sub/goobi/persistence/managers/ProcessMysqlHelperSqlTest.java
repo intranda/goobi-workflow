@@ -84,6 +84,26 @@ public class ProcessMysqlHelperSqlTest extends AbstractTest {
         }
     }
 
+    @Test
+    public void testRulesetUsageQuery() throws Exception {
+        try (SqlCapture capture = new SqlCapture(new ArrayList<>())) {
+            ProcessMysqlHelper.getRulesetUsage(5, 7);
+            String sql = capture.lastStatement().replaceAll("\\s+", " ");
+
+            // membership via join, not via a correlated subquery, which strict GROUP BY modes reject
+            assertTrue(sql.contains("LEFT JOIN projektbenutzer pb ON pb.ProjekteID = projekte.ProjekteID AND pb.BenutzerID = ?"), sql);
+            assertFalse(sql.toUpperCase().contains("EXISTS"), sql);
+            assertTrue(sql.contains("WHERE prozesse.MetadatenKonfigurationID = ?"), sql);
+            assertTrue(sql.contains("GROUP BY"), sql);
+            // unknown values count as hidden, like in the process list
+            assertTrue(sql.contains("COALESCE(projekte.projectIsArchived, TRUE)"), sql);
+            assertTrue(sql.contains("NOT COALESCE(prozesse.sortHelperStatus <> '100000000', FALSE)"), sql);
+            // the first parameter is the result handler
+            assertEquals(7, capture.lastParameters()[1]);
+            assertEquals(5, capture.lastParameters()[2]);
+        }
+    }
+
     private static void assertJoinBeforeWhere(String sql) {
         int where = sql.indexOf("WHERE prozesse.istTemplate");
         assertTrue(where >= 0, sql);

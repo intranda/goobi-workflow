@@ -36,6 +36,7 @@ import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import io.goobi.workflow.ruleseteditor.RulesetUsageGroup;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -318,6 +319,22 @@ public class ProcessManager implements IManager {
             log.error("Cannot not load information about ruleset with id " + rulesetId, e);
         }
         return answer;
+    }
+
+    /**
+     * Counts the processes of a ruleset, grouped by everything that decides whether a user can see them.
+     *
+     * @param rulesetId the ruleset
+     * @param userId the user whose project memberships are read, 0 for none
+     * @return the groups, empty if no process uses the ruleset
+     * @throws DAOException if the database cannot be read
+     */
+    public static List<RulesetUsageGroup> getRulesetUsage(int rulesetId, int userId) throws DAOException {
+        try {
+            return ProcessMysqlHelper.getRulesetUsage(rulesetId, userId);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 
     public static int getNumberOfProcessesWithDocket(int docketId) {

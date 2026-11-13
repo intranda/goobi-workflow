@@ -45,6 +45,7 @@ import org.joda.time.LocalDate;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.MySQLHelper.SQLTYPE;
+import io.goobi.workflow.ruleseteditor.RulesetUsageGroup;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -746,6 +747,41 @@ final class ProcessMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { rulesetId };
             return new QueryRunner().query(connection, query, MySQLHelper.resultSetToIntegerHandler, param);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    /**
+     * Counts the processes of a ruleset in one query, grouped by template, archived project, closed status, institution and membership of the user.
+     * NULLs count like in the process list: an unknown archived flag as archived, an unknown status as closed.
+     *
+     * @param rulesetId the ruleset
+     * @param userId the user whose project memberships are read
+     * @return the groups
+     * @throws SQLException if the query fails
+     */
+    public static List<RulesetUsageGroup> getRulesetUsage(int rulesetId, int userId) throws SQLException {
+        String query = "SELECT prozesse.istTemplate AS template, COALESCE(projekte.projectIsArchived, TRUE) AS archived, "
+                + "NOT COALESCE(prozesse.sortHelperStatus <> '100000000', FALSE) AS closed, projekte.institution_id AS institution, "
+                + "pb.BenutzerID IS NOT NULL AS member, COUNT(1) AS number "
+                + "FROM prozesse INNER JOIN projekte ON prozesse.ProjekteID = projekte.ProjekteID "
+                + "LEFT JOIN projektbenutzer pb ON pb.ProjekteID = projekte.ProjekteID AND pb.BenutzerID = ? "
+                + "WHERE prozesse.MetadatenKonfigurationID = ? GROUP BY template, archived, closed, institution, member";
+        ResultSetHandler<List<RulesetUsageGroup>> handler = rs -> {
+            List<RulesetUsageGroup> groups = new ArrayList<>();
+            while (rs.next()) {
+                groups.add(new RulesetUsageGroup(rs.getBoolean("template"), rs.getBoolean("archived"), rs.getBoolean("closed"),
+                        rs.getInt("institution"), rs.getBoolean("member"), rs.getInt("number")));
+            }
+            return groups;
+        };
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            return new QueryRunner().query(connection, query, handler, userId, rulesetId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

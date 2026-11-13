@@ -70,7 +70,7 @@
 									<thead>
 										<tr>
 											<th>#{msgs.regelsatz}</th>
-											<th class="gw-table-fixed__sizeXXS text-end">#{msgs.prozesse}</th>
+											<th class="gw-table-fixed__sizeS text-end">#{msgs.prozesse}</th>
 											<th class="gw-table-fixed__sizeXXS">#{msgs.auswahl}</th>
 										</tr>
 									</thead>
@@ -85,20 +85,84 @@
 														<h:outputText value="#{item.datei}" />
 													</small>
 												</td>
-												<!-- number of processes, links to the process list with these processes via the ruleset filter of the process search -->
+												<!-- number of processes: a dropdown with the processes the user may open (link to the process list via the ruleset filter) and, as plain text, how many are hidden and why -->
 												<td class="text-end">
-													<h:commandLink
-														rendered="#{rulesetEditorBean.getProcessCount(item) > 0}"
-														action="#{rulesetEditorBean.showProcessesOfRuleset(item)}"
-														title="#{msgs.ruleset_show_processes}"
-														pt:aria-label="#{msgs.ruleset_show_processes}">
-														<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a22" />
-														<f:setPropertyActionListener target="#{NavigationForm.parentMenu}" value="menu_workflow" />
-														<h:outputText value="#{rulesetEditorBean.getProcessCount(item)}" />
-													</h:commandLink>
 													<h:outputText
-														rendered="#{rulesetEditorBean.getProcessCount(item) == 0}"
+														rendered="#{rulesetEditorBean.getUsage(item).unknown}"
+														value="?"
+														title="#{msgs.ruleset_usage_unknown}"
+														pt:aria-label="#{msgs.ruleset_usage_unknown}" />
+													<h:outputText
+														rendered="#{!rulesetEditorBean.getUsage(item).unknown and rulesetEditorBean.getUsage(item).processes == 0}"
 														value="0" />
+													<h:panelGroup layout="block" styleClass="dropdown"
+														rendered="#{!rulesetEditorBean.getUsage(item).unknown and rulesetEditorBean.getUsage(item).processes > 0}">
+														<button type="button" class="btn btn-link p-0 align-baseline"
+															data-bs-toggle="dropdown"
+															aria-haspopup="true"
+															aria-expanded="false"
+															data-bs-popper-config='{"strategy":"fixed"}'>
+															<h:outputText value="#{rulesetEditorBean.getUsage(item).processes}" />
+															<h:outputFormat styleClass="visually-hidden" value="#{msgs.ruleset_processes_details}">
+																<f:param value="#{rulesetEditorBean.getUsage(item).processes}" />
+															</h:outputFormat>
+														</button>
+														<ul class="dropdown-menu dropdown-menu-end">
+															<li jsf:rendered="#{rulesetEditorBean.getUsage(item).visible > 0}">
+																<h:commandLink
+																	styleClass="dropdown-item"
+																	action="#{rulesetEditorBean.showProcessesOfRuleset(item)}">
+																	<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a22" />
+																	<f:setPropertyActionListener target="#{NavigationForm.parentMenu}" value="menu_workflow" />
+																	<h:outputFormat value="#{msgs.ruleset_processes_visible}">
+																		<f:param value="#{rulesetEditorBean.getUsage(item).visible}" />
+																	</h:outputFormat>
+																</h:commandLink>
+															</li>
+															<ui:fragment rendered="#{rulesetEditorBean.getUsage(item).hidden > 0}">
+																<li>
+																	<hr class="dropdown-divider" jsf:rendered="#{rulesetEditorBean.getUsage(item).visible > 0}" />
+																</li>
+																<li>
+																	<div class="dropdown-item-text small text-muted">
+																		<h:outputFormat value="#{msgs.ruleset_processes_hidden}">
+																			<f:param value="#{rulesetEditorBean.getUsage(item).hidden}" />
+																		</h:outputFormat>
+																		<ul class="mb-0 ps-3">
+																			<li jsf:rendered="#{rulesetEditorBean.getUsage(item).hiddenInstitution > 0}">
+																				<h:outputFormat value="#{msgs.ruleset_hidden_institution}">
+																					<f:param value="#{rulesetEditorBean.getUsage(item).hiddenInstitution}" />
+																				</h:outputFormat>
+																			</li>
+																			<li jsf:rendered="#{rulesetEditorBean.getUsage(item).hiddenProject > 0}">
+																				<h:outputFormat value="#{msgs.ruleset_hidden_project}">
+																					<f:param value="#{rulesetEditorBean.getUsage(item).hiddenProject}" />
+																				</h:outputFormat>
+																			</li>
+																			<li jsf:rendered="#{rulesetEditorBean.getUsage(item).hiddenArchived > 0}">
+																				<h:outputFormat value="#{msgs.ruleset_hidden_archived}">
+																					<f:param value="#{rulesetEditorBean.getUsage(item).hiddenArchived}" />
+																				</h:outputFormat>
+																			</li>
+																			<li jsf:rendered="#{rulesetEditorBean.getUsage(item).hiddenClosed > 0}">
+																				<h:outputFormat value="#{msgs.ruleset_hidden_closed}">
+																					<f:param value="#{rulesetEditorBean.getUsage(item).hiddenClosed}" />
+																				</h:outputFormat>
+																			</li>
+																		</ul>
+																	</div>
+																</li>
+															</ui:fragment>
+														</ul>
+													</h:panelGroup>
+													<h:panelGroup rendered="#{rulesetEditorBean.getUsage(item).templates > 0}">
+														<br />
+														<small class="text-muted">
+															<h:outputFormat value="#{msgs.ruleset_template_count}">
+																<f:param value="#{rulesetEditorBean.getUsage(item).templates}" />
+															</h:outputFormat>
+														</small>
+													</h:panelGroup>
 												</td>
 												<td>
 													<div class="gw-table__actions__container">
@@ -828,11 +892,11 @@
 							<span
 								class="d-inline-block me-auto"
 								data-bs-toggle="tooltip"
-								title="#{rulesetEditorBean.getProcessCount(rulesetEditorBean.settingsRuleset) > 0 ? msgs.RulesetInUse : ''}">
+								title="#{rulesetEditorBean.getUsage(rulesetEditorBean.settingsRuleset).inUse ? msgs.RulesetInUse : ''}">
 								<button
 									jsf:id="settingsDelete"
 									class="btn btn-hot"
-									jsf:disabled="#{rulesetEditorBean.getProcessCount(rulesetEditorBean.settingsRuleset) > 0}"
+									jsf:disabled="#{rulesetEditorBean.getUsage(rulesetEditorBean.settingsRuleset).inUse}"
 									jsf:action="#{rulesetEditorBean.deleteSettingsRuleset}">
 									<util:icon icon="trash" />
 									<span>#{msgs.loeschen}</span>

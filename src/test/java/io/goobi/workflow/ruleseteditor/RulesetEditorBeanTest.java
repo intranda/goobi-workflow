@@ -37,7 +37,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.goobi.beans.Institution;
 import org.goobi.beans.Ruleset;
+import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
 import org.goobi.managedbeans.ProcessBean;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,11 +50,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+import jakarta.faces.context.FacesContext;
 import jakarta.servlet.http.Part;
 import ugh.dl.Prefs;
 
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.StorageProviderInterface;
@@ -123,6 +128,185 @@ public class RulesetEditorBeanTest extends AbstractTest {
         }
         // in quotes, otherwise the filter would end at the space
         Mockito.verify(processBean).setFilter("\"ruleset:Standard (Kopie)\"");
+    }
+
+    @Test
+    public void testUsageForAUserWithoutRoles() throws Exception {
+        User user = user(7, 3, false);
+        LoginBean loginBean = Mockito.mock(LoginBean.class);
+        ProcessBean processBean = Mockito.mock(ProcessBean.class);
+        // the user switched on closed processes in the display settings
+        Mockito.when(processBean.isShowClosedProcesses()).thenReturn(true);
+        List<RulesetUsageGroup> groups = Arrays.asList(
+                new RulesetUsageGroup(false, false, true, 3, true, 1),
+                new RulesetUsageGroup(false, true, false, 3, true, 1),
+                new RulesetUsageGroup(false, false, false, 3, false, 1),
+                new RulesetUsageGroup(false, false, false, 9, true, 1));
+        try (MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            helper.when(Helper::getCurrentUser).thenReturn(user);
+            helper.when(Helper::getLoginBean).thenReturn(loginBean);
+            helper.when(() -> Helper.getBeanByClass(ProcessBean.class)).thenReturn(processBean);
+            processManager.when(() -> ProcessManager.getRulesetUsage(5, 7)).thenReturn(groups);
+
+            RulesetUsage usage = bean.getUsage(createRuleset(5));
+
+            assertEquals(4, usage.getProcesses());
+            assertEquals(1, usage.getVisible());
+            assertEquals(1, usage.getHiddenInstitution());
+            assertEquals(1, usage.getHiddenProject());
+            assertEquals(1, usage.getHiddenArchived());
+            assertEquals(0, usage.getHiddenClosed());
+        }
+    }
+
+    @Test
+    public void testUsageForAUserWithAllRoles() throws Exception {
+        User user = user(7, 3, false);
+        LoginBean loginBean = Mockito.mock(LoginBean.class);
+        Mockito.when(loginBean.hasRole(Mockito.anyString())).thenReturn(true);
+        List<RulesetUsageGroup> groups = Arrays.asList(new RulesetUsageGroup(false, true, true, 3, false, 1),
+                new RulesetUsageGroup(false, false, false, 9, true, 1));
+        try (MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            helper.when(Helper::getCurrentUser).thenReturn(user);
+            helper.when(Helper::getLoginBean).thenReturn(loginBean);
+            helper.when(() -> Helper.getBeanByClass(ProcessBean.class)).thenReturn(Mockito.mock(ProcessBean.class));
+            processManager.when(() -> ProcessManager.getRulesetUsage(5, 7)).thenReturn(groups);
+
+            RulesetUsage usage = bean.getUsage(createRuleset(5));
+
+            // the roles show all projects, closed processes and archived projects, but not other institutions
+            assertEquals(1, usage.getVisible());
+            assertEquals(1, usage.getHiddenInstitution());
+        }
+    }
+
+    @Test
+    public void testUsageForASuperadminIncludesOtherInstitutions() throws Exception {
+        User user = user(7, 3, true);
+        LoginBean loginBean = Mockito.mock(LoginBean.class);
+        Mockito.when(loginBean.hasRole(Mockito.anyString())).thenReturn(true);
+        try (MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            helper.when(Helper::getCurrentUser).thenReturn(user);
+            helper.when(Helper::getLoginBean).thenReturn(loginBean);
+            helper.when(() -> Helper.getBeanByClass(ProcessBean.class)).thenReturn(Mockito.mock(ProcessBean.class));
+            processManager.when(() -> ProcessManager.getRulesetUsage(5, 7))
+                    .thenReturn(List.of(new RulesetUsageGroup(false, false, false, 9, false, 1)));
+
+            assertEquals(1, bean.getUsage(createRuleset(5)).getVisible());
+        }
+    }
+
+    @Test
+    public void testUsageWithoutUserShowsEverything() throws Exception {
+        try (MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            processManager.when(() -> ProcessManager.getRulesetUsage(5, 0))
+                    .thenReturn(List.of(new RulesetUsageGroup(false, true, true, 9, false, 1)));
+
+            assertEquals(1, bean.getUsage(createRuleset(5)).getVisible());
+        }
+    }
+
+    @Test
+    public void testUsageIsReadOncePerRuleset() throws Exception {
+        try (MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            processManager.when(() -> ProcessManager.getRulesetUsage(5, 0)).thenReturn(new ArrayList<>());
+
+            bean.getUsage(createRuleset(5));
+            bean.getUsage(createRuleset(5));
+
+            processManager.verify(() -> ProcessManager.getRulesetUsage(5, 0), Mockito.times(1));
+        }
+    }
+
+    @Test
+    public void testUsageIsUnknownWhenTheDatabaseFails() throws Exception {
+        try (MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            processManager.when(() -> ProcessManager.getRulesetUsage(5, 0)).thenThrow(new DAOException("database down"));
+
+            RulesetUsage usage = bean.getUsage(createRuleset(5));
+            bean.getUsage(createRuleset(5));
+
+            // in use, so the ruleset cannot be deleted while its usage is unknown; not cached, so the next request tries again
+            assertTrue(usage.isUnknown());
+            assertTrue(usage.isInUse());
+            processManager.verify(() -> ProcessManager.getRulesetUsage(5, 0), Mockito.times(2));
+            helper.verify(() -> Helper.setFehlerMeldung(Mockito.eq("rulesetEditor"), Mockito.any(), Mockito.anyString()), Mockito.atLeastOnce());
+        }
+    }
+
+    @Test
+    public void testDatabaseErrorIsReportedOncePerRequest() throws Exception {
+        // the page asks for the usage of a ruleset many times while rendering
+        FacesContext request = Mockito.mock(FacesContext.class);
+        try (MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class);
+                MockedStatic<FacesContextHelper> facesContext = Mockito.mockStatic(FacesContextHelper.class);
+                MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            facesContext.when(FacesContextHelper::getCurrentFacesContext).thenReturn(request);
+            processManager.when(() -> ProcessManager.getRulesetUsage(5, 0)).thenThrow(new DAOException("database down"));
+
+            assertTrue(bean.getUsage(createRuleset(5)).isUnknown());
+            assertTrue(bean.getUsage(createRuleset(5)).isUnknown());
+
+            processManager.verify(() -> ProcessManager.getRulesetUsage(5, 0), Mockito.times(1));
+            helper.verify(() -> Helper.setFehlerMeldung(Mockito.eq("rulesetEditor"), Mockito.any(), Mockito.anyString()), Mockito.times(1));
+
+            // the next request asks the database again
+            facesContext.when(FacesContextHelper::getCurrentFacesContext).thenReturn(Mockito.mock(FacesContext.class));
+            bean.getUsage(createRuleset(5));
+            processManager.verify(() -> ProcessManager.getRulesetUsage(5, 0), Mockito.times(2));
+        }
+    }
+
+    @Test
+    public void testRulesetWithoutIdIsNotInUse() throws Exception {
+        // a ruleset that is not saved yet cannot have processes
+        try (MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class)) {
+            assertFalse(bean.getUsage(new Ruleset()).isInUse());
+            processManager.verifyNoInteractions();
+        }
+    }
+
+    @Test
+    public void testRulesetWithOnlyTemplatesIsNotDeleted() throws Exception {
+        setField("settingsRuleset", createRuleset(5));
+        try (MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class);
+                MockedStatic<ProcessManager> processManager = Mockito.mockStatic(ProcessManager.class);
+                MockedStatic<RulesetManager> rulesetManager = Mockito.mockStatic(RulesetManager.class)) {
+            processManager.when(() -> ProcessManager.getRulesetUsage(5, 0))
+                    .thenReturn(List.of(new RulesetUsageGroup(true, false, false, 1, true, 2)));
+
+            bean.deleteSettingsRuleset();
+
+            rulesetManager.verify(() -> RulesetManager.deleteRuleset(Mockito.any()), Mockito.never());
+        }
+    }
+
+    @Test
+    public void testShowProcessesOfRulesetShowsClosedAndArchivedWithRoles() throws Exception {
+        ProcessBean processBean = showProcessesOfRulesetWithRoles(true);
+        Mockito.verify(processBean).setShowClosedProcesses(true);
+        Mockito.verify(processBean).setShowArchivedProjects(true);
+    }
+
+    @Test
+    public void testShowProcessesOfRulesetKeepsTogglesWithoutRoles() throws Exception {
+        // without the roles the user could not switch them off again in the process list
+        ProcessBean processBean = showProcessesOfRulesetWithRoles(false);
+        Mockito.verify(processBean, Mockito.never()).setShowClosedProcesses(Mockito.anyBoolean());
+        Mockito.verify(processBean, Mockito.never()).setShowArchivedProjects(Mockito.anyBoolean());
+    }
+
+    @Test
+    public void testShowProcessesOfRulesetClearsTheAdditionalFilter() throws Exception {
+        // otherwise a filter left in the process list would change the ruleset filter
+        ProcessBean processBean = showProcessesOfRulesetWithRoles(false);
+        Mockito.verify(processBean).setAdditionalFilter(null);
     }
 
     @Test
@@ -603,6 +787,30 @@ public class RulesetEditorBeanTest extends AbstractTest {
             Mockito.verify(processBean).setFilter(filter.capture());
             return filter.getValue();
         }
+    }
+
+    private User user(int id, int institutionId, boolean superAdmin) {
+        Institution institution = new Institution();
+        institution.setId(institutionId);
+        User user = Mockito.mock(User.class);
+        Mockito.when(user.getId()).thenReturn(id);
+        Mockito.when(user.getInstitution()).thenReturn(institution);
+        Mockito.when(user.isSuperAdmin()).thenReturn(superAdmin);
+        return user;
+    }
+
+    private ProcessBean showProcessesOfRulesetWithRoles(boolean hasRoles) throws Exception {
+        ProcessBean processBean = Mockito.mock(ProcessBean.class);
+        LoginBean loginBean = Mockito.mock(LoginBean.class);
+        Mockito.when(loginBean.hasRole("Workflow_Processes_Show_Finished")).thenReturn(hasRoles);
+        Mockito.when(loginBean.hasRole("Workflow_Processes_Show_Deactivated_Projects")).thenReturn(hasRoles);
+        try (MockedStatic<Helper> helper = Mockito.mockStatic(Helper.class)) {
+            helper.when(() -> Helper.getBeanByClass(ProcessBean.class)).thenReturn(processBean);
+            helper.when(Helper::getLoginBean).thenReturn(loginBean);
+
+            bean.showProcessesOfRuleset(rulesetFor("Standard", "ruleset.xml"));
+        }
+        return processBean;
     }
 
     private Ruleset createRuleset(int id) {
