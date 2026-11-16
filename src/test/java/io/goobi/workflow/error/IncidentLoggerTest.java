@@ -66,4 +66,27 @@ class IncidentLoggerTest {
 
         assertTrue(text.contains("user:     -"), text);
     }
+
+    @Test
+    void throwingGetMessageStillFormats() {
+        Throwable bad = new RuntimeException() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String getMessage() {
+                throw new IllegalStateException("no message");
+            }
+        };
+        ResolvedError error = new ResolvedError(ErrorCatalogue.UNEXPECTED, java.util.List.of(), Map.of(), bad);
+        ErrorReport report = new ErrorReport(error, "GW-AAAAA", Instant.now(), null);
+        String text = IncidentLogger.format(report, new IncidentLogger.RequestInfo(null, null, null, null, null, false, null));
+        assertTrue(text.contains("Incident GW-AAAAA"), text);
+    }
+
+    @Test
+    void logFollowUpWithoutIncidentDoesNotThrow() {
+        ResolvedError error = new ResolvedError(ErrorCatalogue.NOT_FOUND, java.util.List.of(), Map.of(), null);
+        ErrorReport report = new ErrorReport(error, null, Instant.now(), null);
+        org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> IncidentLogger.logFollowUp(report, new RuntimeException("second")));
+    }
 }

@@ -25,6 +25,7 @@
  */
 package io.goobi.workflow.error;
 
+import static org.mockito.Mockito.doThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -98,5 +99,30 @@ class ErrorReportingTest {
         String text = IncidentLogger.format(report, info);
         assertTrue(text.contains("ajax: yes"), text);
         assertTrue(text.contains("jschmidt (id 12)"), text);
+    }
+
+    @Test
+    void throwingRequestStillReports() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getAttribute(anyString())).thenThrow(new IllegalStateException("gone"));
+        doThrow(new IllegalStateException("gone")).when(request).setAttribute(anyString(), org.mockito.ArgumentMatchers.any());
+        ErrorReport report = ErrorReporting.report(request, new NullPointerException(), 500);
+        assertNotNull(report);
+        assertNotNull(report.incidentId());
+    }
+
+    @Test
+    void nullRequestStillReports() {
+        ErrorReport report = ErrorReporting.report(null, new NullPointerException(), 500);
+        assertNotNull(report);
+        assertNotNull(report.incidentId());
+    }
+
+    @Test
+    void errorRequestUriIsPreferred() {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("jakarta.servlet.error.request_uri", "/goobi/original.xhtml");
+        IncidentLogger.RequestInfo info = ErrorReporting.requestInfo(request(attributes), null);
+        assertEquals("/goobi/original.xhtml", info.uri());
     }
 }

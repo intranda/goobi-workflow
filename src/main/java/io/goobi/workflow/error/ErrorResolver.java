@@ -81,7 +81,7 @@ public class ErrorResolver {
         }
         for (Throwable t : chain) {
             for (ErrorMapper mapper : mappers) {
-                Optional<ErrorEntry> entry = mapper.map(t);
+                Optional<ErrorEntry> entry = mapSafely(mapper, t);
                 if (entry.isPresent()) {
                     return new ResolvedError(entry.get(), List.of(), Map.of(), throwable);
                 }
@@ -98,7 +98,17 @@ public class ErrorResolver {
         return new ResolvedError(entry, List.of(), Map.of(), throwable);
     }
 
-    private static List<Throwable> chainOf(Throwable throwable) {
+    private static Optional<ErrorEntry> mapSafely(ErrorMapper mapper, Throwable t) {
+        try {
+            Optional<ErrorEntry> result = mapper.map(t);
+            return result == null ? Optional.empty() : result;
+        } catch (RuntimeException e) { //NOSONAR a broken mapper must not break the error path
+            log.warn("Error mapper {} failed and is skipped: {}", mapper.getClass().getName(), e.toString());
+            return Optional.empty();
+        }
+    }
+
+    static List<Throwable> chainOf(Throwable throwable) {
         Set<Throwable> seen = Collections.newSetFromMap(new IdentityHashMap<>());
         List<Throwable> chain = new ArrayList<>();
         for (Throwable t = throwable; t != null && seen.add(t); t = t.getCause()) {

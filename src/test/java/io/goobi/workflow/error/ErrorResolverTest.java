@@ -167,4 +167,13 @@ class ErrorResolverTest {
     void entryIsSerializable() {
         assertTrue(java.io.Serializable.class.isAssignableFrom(ErrorEntry.class));
     }
+
+    @Test
+    void mapperThatThrowsIsSkipped() {
+        ErrorMapper broken = t -> {
+            throw new IllegalStateException("broken mapper");
+        };
+        ErrorResolver r = new ErrorResolver(List.of(broken, new DatabaseUnavailableMapper()));
+        assertSame(ErrorCatalogue.DATABASE_UNAVAILABLE, r.resolve(new SQLException("x", "08001"), null).entry());
+    }
 }

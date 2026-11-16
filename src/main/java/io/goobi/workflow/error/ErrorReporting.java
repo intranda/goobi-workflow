@@ -26,6 +26,8 @@
 package io.goobi.workflow.error;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 import org.goobi.beans.User;
 
@@ -54,16 +56,47 @@ public final class ErrorReporting {
      * @return the report of this request, created and logged on first call
      */
     public static ErrorReport report(HttpServletRequest request, Throwable throwable, Integer httpStatus, User user) {
-        Object existing = request.getAttribute(REQUEST_ATTRIBUTE);
+        Object existing = attribute(request);
         if (existing instanceof ErrorReport report) {
             return report;
         }
-        ResolvedError error = ErrorResolver.fromServiceLoader().resolve(throwable, httpStatus);
-        String incidentId = error.entry().incident() ? IncidentIds.next() : null;
-        ErrorReport report = new ErrorReport(error, incidentId, Instant.now(), expiredViewId(throwable));
-        IncidentLogger.log(report, requestInfo(request, user));
-        request.setAttribute(REQUEST_ATTRIBUTE, report);
+        ErrorReport report;
+        try {
+            ResolvedError error = ErrorResolver.fromServiceLoader().resolve(throwable, httpStatus);
+            if (error == null || error.entry() == null) {
+                throw new IllegalStateException("no error resolved");
+            }
+            String incidentId = error.entry().incident() ? IncidentIds.next() : null;
+            report = new ErrorReport(error, incidentId, Instant.now(), expiredViewId(throwable));
+        } catch (RuntimeException e) { //NOSONAR the error path must never fail
+            ResolvedError error = new ResolvedError(ErrorCatalogue.UNEXPECTED, List.of(), Map.of(), throwable);
+            report = new ErrorReport(error, IncidentIds.next(), Instant.now(), null);
+        }
+        try {
+            IncidentLogger.log(report, requestInfo(request, user));
+        } catch (RuntimeException e) { //NOSONAR the error path must never fail
+            // best effort
+        }
+        store(request, report);
         return report;
+    }
+
+    private static Object attribute(HttpServletRequest request) {
+        try {
+            return request == null ? null : request.getAttribute(REQUEST_ATTRIBUTE);
+        } catch (RuntimeException e) { //NOSONAR the error path must never fail
+            return null;
+        }
+    }
+
+    private static void store(HttpServletRequest request, ErrorReport report) {
+        try {
+            if (request != null) {
+                request.setAttribute(REQUEST_ATTRIBUTE, report);
+            }
+        } catch (RuntimeException e) { //NOSONAR the error path must never fail
+            // best effort
+        }
     }
 
     public static ErrorReport report(HttpServletRequest request, Throwable throwable, Integer httpStatus) {
@@ -71,8 +104,7 @@ public final class ErrorReporting {
     }
 
     private static String expiredViewId(Throwable throwable) {
-        int depth = 0;
-        for (Throwable t = throwable; t != null && depth < 50; t = t.getCause(), depth++) {
+        for (Throwable t : ErrorResolver.chainOf(throwable)) {
             if (t instanceof ViewExpiredException vee) {
                 return vee.getViewId();
             }

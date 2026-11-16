@@ -50,8 +50,17 @@ public final class IncidentLogger {
     }
 
     private static String headline(ErrorReport report) {
+        String key = report.error().entry().key();
         Throwable cause = report.error().cause();
-        return cause != null && cause.getMessage() != null ? cause.getMessage() : report.error().entry().key();
+        if (cause == null) {
+            return key;
+        }
+        try {
+            String message = cause.getMessage();
+            return message != null ? message : key;
+        } catch (RuntimeException e) { //NOSONAR the error path must never fail
+            return key;
+        }
     }
 
     /**
@@ -82,11 +91,11 @@ public final class IncidentLogger {
      */
     public static void log(ErrorReport report, RequestInfo info) {
         ErrorEntry entry = report.error().entry();
-        String text = format(report, info);
         if (report.incidentId() != null) {
             ThreadContext.put(THREAD_CONTEXT_KEY, report.incidentId());
         }
         try {
+            String text = format(report, info);
             if (entry.incident()) {
                 log.error(text, report.error().cause());
             } else if (entry == ErrorCatalogue.NOT_FOUND) {
