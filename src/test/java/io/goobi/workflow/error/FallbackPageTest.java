@@ -81,4 +81,18 @@ class FallbackPageTest {
         assertTrue(partial.contains("GW-ABCDE"));
         assertTrue(partial.endsWith("]]></update></changes></partial-response>"));
     }
+
+    @Test
+    void genericTextsForNonDatabaseEntries() {
+        ErrorReport generic = new ErrorReport(new ResolvedError(ErrorCatalogue.UNEXPECTED, List.of(), Map.of(), null), "GW-ABCDE", Instant.now(), null);
+        String en = FallbackPage.render(generic, Locale.ENGLISH);
+        assertTrue(en.contains("Goobi workflow could not show this page"));
+        assertTrue(en.contains("the error page could not be displayed either"));
+        assertFalse(en.contains("database"));
+        assertTrue(en.contains("GW-ABCDE"));
+        String de = FallbackPage.render(generic, Locale.GERMAN);
+        assertTrue(de.contains("Goobi workflow konnte diese Seite nicht anzeigen"));
+        assertFalse(de.contains("${"));
+        assertTrue(FallbackPage.render(report("GW-ABCDE"), Locale.ENGLISH).contains("not available right now"));
+    }
 }

@@ -28,6 +28,7 @@ package io.goobi.workflow.error;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -83,6 +84,24 @@ public final class FallbackPage {
                     "reload", "Seite neu laden",
                     "incident", "Vorfall"));
 
+    private static final String ICON_DATABASE = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12.983 8.978C16.938 8.796 20 7.532 20 6c0-1.657-3.582-3-8-3-1.661 0-3.204.19-4.483.515M4.734 4.743C4.263 5.125 4 5.551 4 6c0 1.22 1.944 2.271 4.734 2.74\"/><path d=\"M4 6v6c0 1.657 3.582 3 8 3 .986 0 1.93-.067 2.802-.19m3.187-.82C19.24 13.46 20 12.762 20 12V6\"/><path d=\"M4 12v6c0 1.657 3.582 3 8 3 3.217 0 5.991-.712 7.261-1.74M20 16v-4M3 3l18 18\"/></svg>";
+    private static final String ICON_GENERIC = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m12.802 2.165 5.575 2.389c.48.206.863.589 1.07 1.07l2.388 5.574c.22.512.22 1.092 0 1.604l-2.389 5.575c-.206.48-.589.863-1.07 1.07l-5.574 2.388c-.512.22-1.092.22-1.604 0l-5.575-2.389a2.036 2.036 0 0 1-1.07-1.07l-2.388-5.574a2.036 2.036 0 0 1 0-1.604l2.389-5.575c.206-.48.589-.863 1.07-1.07l5.574-2.388a2.036 2.036 0 0 1 1.604 0zM12 8v4M12 16h.01\"/></svg>";
+
+    private static final Map<String, Map<String, String>> GENERIC_TEXTS = Map.of(
+            "en", Map.of(
+                    "title", "Goobi workflow could not show this page",
+                    "what", "An unexpected error occurred, and the error page could not be displayed either.",
+                    "why", "The cause has been recorded so that an administrator can look into it.",
+                    "how1", "Reload the page or go back and try again.",
+                    "how2", "If it happens again, tell an administrator and give them the incident number below."),
+            "de", Map.of(
+                    "title", "Goobi workflow konnte diese Seite nicht anzeigen",
+                    "what", "Es ist ein unerwarteter Fehler aufgetreten, und auch die Fehlerseite konnte nicht angezeigt werden.",
+                    "why", "Die Ursache wurde protokolliert, damit ein Administrator sie pr\u00fcfen kann.",
+                    "how1", "Laden Sie die Seite neu oder gehen Sie zur\u00fcck und versuchen Sie es erneut.",
+                    "how2", "Wenn es erneut passiert, informieren Sie einen Administrator und nennen Sie dabei die unten angezeigte "
+                            + "Vorfallnummer."));
+
     private static final String COPIED_EN = "Copied";
     private static final String COPIED_DE = "Kopiert";
 
@@ -98,9 +117,15 @@ public final class FallbackPage {
      */
     public static String render(ErrorReport report, Locale locale) {
         String lang = locale != null && "de".equals(locale.getLanguage()) ? "de" : "en";
-        Map<String, String> texts = TEXTS.get(lang);
-        Map<String, String> values = new java.util.HashMap<>();
+        boolean database = report != null && report.error() != null && report.error().entry() != null
+                && ErrorCatalogue.DATABASE_UNAVAILABLE.key().equals(report.error().entry().key());
+        Map<String, String> texts = new HashMap<>(TEXTS.get(lang));
+        if (!database) {
+            texts.putAll(GENERIC_TEXTS.get(lang));
+        }
+        Map<String, String> values = new HashMap<>();
         values.put("lang", lang);
+        values.put("iconSvg", database ? ICON_DATABASE : ICON_GENERIC);
         for (String key : new String[] { "title", "what", "whyHeading", "why", "howHeading", "reload" }) {
             values.put(key, escape(texts.get(key)));
         }

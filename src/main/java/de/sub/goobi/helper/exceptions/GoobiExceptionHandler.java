@@ -38,13 +38,13 @@ import org.omnifaces.context.OmniPartialViewContext;
 import org.omnifaces.util.Hacks;
 
 import de.sub.goobi.helper.FacesContextHelper;
-import de.sub.goobi.helper.Helper;
 import io.goobi.workflow.error.ErrorCatalogue;
 import io.goobi.workflow.error.ErrorEntry;
 import io.goobi.workflow.error.ErrorReport;
 import io.goobi.workflow.error.ErrorReporting;
 import io.goobi.workflow.error.FallbackPage;
 import io.goobi.workflow.error.IncidentLogger;
+import io.goobi.workflow.error.SessionUser;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.component.UIViewRoot;
@@ -54,7 +54,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
-import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.event.PreRenderViewEvent;
 import jakarta.faces.view.ViewDeclarationLanguage;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
@@ -134,9 +134,15 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
     private void handleAjax(FacesContext context, Throwable throwable) {
         ExternalContext external = context.getExternalContext();
         HttpServletRequest request = (HttpServletRequest) external.getRequest();
-        User user = Helper.getCurrentUser();
+        User user = SessionUser.find(request);
         ErrorReport report = ErrorReporting.report(request, throwable, null, user);
         try {
+            if (external.isResponseCommitted()) {
+                // too late to replace the response: log once and close what Faces already started
+                IncidentLogger.logFollowUp(report, new IllegalStateException("response already committed"));
+                closePartialResponse(context);
+                return;
+            }
             switch (decide(true, report.error().entry(), user != null)) {
                 case LOGIN_REDIRECT -> {
                     external.redirect(external.getRequestContextPath() + "/uii/index.xhtml?loginExpired=true");
@@ -155,10 +161,27 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
         }
     }
 
+    private static void closePartialResponse(FacesContext context) {
+        try {
+            OmniPartialViewContext.getCurrentInstance(context).closePartialResponse();
+        } catch (RuntimeException e) {
+            log.debug("Could not close the partial response", e);
+        }
+        context.responseComplete();
+    }
+
     private static void renderErrorView(FacesContext context, HttpServletRequest request, Throwable throwable, ErrorReport report)
             throws IOException {
         request.setAttribute(ATTRIBUTE_EXCEPTION, throwable);
         request.setAttribute(ATTRIBUTE_STATUS, report.error().entry().httpStatus());
+        try {
+            renderErrorPage(context);
+        } finally {
+            request.removeAttribute(ATTRIBUTE_EXCEPTION);
+        }
+    }
+
+    private static void renderErrorPage(FacesContext context) throws IOException {
         resetResponse(context);
         ViewHandler viewHandler = context.getApplication().getViewHandler();
         UIViewRoot viewRoot = viewHandler.createView(context, ERROR_VIEW_ID);
@@ -167,7 +190,7 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
         context.getPartialViewContext().setRenderAll(true);
         ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(context, ERROR_VIEW_ID);
         vdl.buildView(context, viewRoot);
-        context.getApplication().publishEvent(context, PostAddToViewEvent.class, viewRoot);
+        context.getApplication().publishEvent(context, PreRenderViewEvent.class, viewRoot);
         vdl.renderView(context, viewRoot);
         context.responseComplete();
     }

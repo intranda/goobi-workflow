@@ -184,9 +184,12 @@ class ErrorPageFilterTest {
     @Test
     void xhrOutsideJsfGetsPartialResponse() throws IOException, ServletException {
         when(request.getHeader("Faces-Request")).thenReturn("partial/ajax");
+        when(request.getHeader("Accept")).thenReturn("application/xml, text/xml, */*; q=0.01");
         error(new NullPointerException("x"), 500);
         filter(user()).doFilter(request, response, chain);
         assertTrue(body.toString().startsWith("<?xml"));
+        verify(response).setStatus(200);
+        verify(response, never()).setStatus(500);
         verify(chain, never()).doFilter(any(), any());
     }
 

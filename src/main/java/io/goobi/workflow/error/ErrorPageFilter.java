@@ -30,7 +30,6 @@ import java.util.function.Function;
 
 import org.goobi.beans.User;
 
-import de.sub.goobi.helper.Helper;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.RequestDispatcher;
@@ -39,7 +38,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -53,7 +51,7 @@ public class ErrorPageFilter implements Filter {
     private static final String CONTENT_TYPE_HTML = "text/html;charset=UTF-8";
     private static final String CONTENT_TYPE_TEXT = "text/plain;charset=UTF-8";
 
-    private Function<HttpServletRequest, User> userLookup = ErrorPageFilter::userFromSession;
+    private Function<HttpServletRequest, User> userLookup = SessionUser::find;
 
     /** @param userLookup finds the logged in user of a request without creating a session */
     void setUserLookup(Function<HttpServletRequest, User> userLookup) {
@@ -73,13 +71,19 @@ public class ErrorPageFilter implements Filter {
                 (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE), user);
         ErrorEntry entry = report.error().entry();
 
-        if (isNonPageClient(request, contextPath)) {
+        if (isNonPageUri(request, contextPath)) {
             writePlainText(request, response, report);
             return;
         }
         if ("partial/ajax".equals(request.getHeader("Faces-Request"))) {
+            // faces.js and PrimeFaces discard the body of a non-2xx response, so the partial response is sent as 200
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("text/xml;charset=UTF-8");
             response.getWriter().write(FallbackPage.renderPartial(report, request.getLocale()));
+            return;
+        }
+        if (!acceptsHtml(request)) {
+            writePlainText(request, response, report);
             return;
         }
         if (user == null && ErrorCatalogue.FORBIDDEN.key().equals(entry.key())) {
@@ -111,15 +115,16 @@ public class ErrorPageFilter implements Filter {
         }
     }
 
-    private static boolean isNonPageClient(HttpServletRequest request, String contextPath) {
+    private static boolean isNonPageUri(HttpServletRequest request, String contextPath) {
         Object original = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
         String uri = original != null ? original.toString() : request.getRequestURI();
-        if (uri != null && (uri.startsWith(contextPath + "/api/") || uri.startsWith(contextPath + "/plugins/") || uri.equals(contextPath + "/wi")
-                || uri.equals(contextPath + "/ps"))) {
-            return true;
-        }
+        return uri != null && (uri.startsWith(contextPath + "/api/") || uri.startsWith(contextPath + "/plugins/")
+                || uri.equals(contextPath + "/wi") || uri.equals(contextPath + "/ps"));
+    }
+
+    private static boolean acceptsHtml(HttpServletRequest request) {
         String accept = request.getHeader("Accept");
-        return accept == null || !accept.contains("text/html");
+        return accept != null && accept.contains("text/html");
     }
 
     private static void writePlainText(HttpServletRequest request, HttpServletResponse response, ErrorReport report) throws IOException {
@@ -140,12 +145,4 @@ public class ErrorPageFilter implements Filter {
         }
     }
 
-    private static User userFromSession(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            return null;
-        }
-        var login = Helper.getLoginBeanFromSession(session);
-        return login == null ? null : login.getMyBenutzer();
-    }
 }
