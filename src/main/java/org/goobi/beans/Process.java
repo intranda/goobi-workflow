@@ -40,8 +40,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -121,6 +121,7 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
     private static final long serialVersionUID = -6503348094655786275L;
 
     private static final String META_FILE = "meta.xml";
+    private static final String ANCHOR_FILE = "meta_anchor.xml";
     private static final String META_ANCHOR_FILE = "meta_anchor.xml";
     private static final String TEMP_FILE = "temp.xml";
     private static final String TEMP_ANCHOR_FILE = "temp_anchor.xml";
@@ -977,8 +978,11 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
         // TODO check for younger temp files
 
         /* prüfen, welches Format die Metadaten haben (Mets, xstream oder rdf */
+        if (isMetadataFileEmpty()) {
+            throw metadataUnreadable("empty or unknown format", null);
+        }
         String type = MetadatenHelper.getMetaFileType(getMetadataFilePath());
-        if ("-".equals(type) || isMetadataFileEmpty()) {
+        if ("-".equals(type)) {
             throw metadataUnreadable("empty or unknown format", null);
         }
         Fileformat ff = MetadatenHelper.getFileformatByName(type, getRegelsatz());
@@ -1012,21 +1016,31 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
         return message != null && (message.startsWith("Error parsing") || message.startsWith("Parse error"));
     }
 
-    private GoobiUserFacingException metadataUnreadable(String reason, Throwable cause) {
-        return new GoobiUserFacingException(ErrorCatalogue.METADATA_UNREADABLE, "Metadata file of process " + id + " cannot be read", cause,
-                List.of(titel == null ? "" : titel, String.valueOf(id)), metadataLogContext(reason));
+    private static boolean concernsAnchorFile(Throwable cause) {
+        for (Throwable t = cause; t != null; t = t.getCause() == t ? null : t.getCause()) {
+            String message = t.getMessage();
+            if (message != null && (message.contains(ANCHOR_FILE) || message.startsWith("Can't read Anchor file"))) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private Map<String, String> metadataLogContext(String reason) {
+    private GoobiUserFacingException metadataUnreadable(String reason, Throwable cause) {
+        return new GoobiUserFacingException(ErrorCatalogue.METADATA_UNREADABLE, "Metadata file of process " + id + " cannot be read", cause,
+                List.of(titel == null ? "" : titel, String.valueOf(id)), metadataLogContext(reason, concernsAnchorFile(cause) ? ANCHOR_FILE : META_FILE));
+    }
+
+    private Map<String, String> metadataLogContext(String reason, String fileName) {
         Map<String, String> context = new LinkedHashMap<>();
-        context.put("process", id + " " + titel);
+        context.put("process", id + " " + (titel == null ? "-" : titel));
         try {
-            Path file = Paths.get(getMetadataFilePath());
+            Path file = Paths.get(getProcessDataDirectory() + fileName);
             context.put("file", file.toAbsolutePath().toString());
             context.put("size", String.valueOf(Files.size(file)));
             context.put("modified", LocalDateTime.ofInstant(Files.getLastModifiedTime(file).toInstant(), ZoneId.systemDefault()).toString());
             context.put("reason", reason);
-            List<String> backups = new ArrayList<>(BackupFileManager.getBackupFilesSortedByAge(getProcessDataDirectory(), META_FILE)
+            List<String> backups = new ArrayList<>(BackupFileManager.getBackupFilesSortedByAge(getProcessDataDirectory(), fileName)
                     .stream()
                     .map(b -> b.getFileName().toString())
                     .toList());

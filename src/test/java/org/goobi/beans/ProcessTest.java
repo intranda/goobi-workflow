@@ -21,27 +21,25 @@ package org.goobi.beans;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import io.goobi.workflow.error.ErrorCatalogue;
-import io.goobi.workflow.error.GoobiUserFacingException;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -53,6 +51,8 @@ import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
+import io.goobi.workflow.error.ErrorCatalogue;
+import io.goobi.workflow.error.GoobiUserFacingException;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.exceptions.ReadException;
@@ -837,6 +837,36 @@ public class ProcessTest extends AbstractTest {
         GoobiUserFacingException e = readFails(process);
         assertEquals("meta.xml.2026-11-12-174102311, meta.xml.2026-11-11-091544027", e.getLogContext().get("backups"));
         assertTrue(e.getLogContext().get("file").endsWith("/4711/meta.xml"));
+    }
+
+    @Test
+    public void brokenAnchorIsNamedInLogContext() throws Exception {
+        String xml = testMetaXml();
+        String withAnchor = xml.replace("<goobi:metadata name=\"CatalogIDDigital\">", "<goobi:metadata anchorId=\"true\" name=\"CatalogIDDigital\">")
+                .replace("<mets:div DMDID=\"DMDLOG_0000\" ID=\"LOG_0000\" TYPE=\"Monograph\">",
+                        "<mets:div ID=\"LOG_ANCHOR\" TYPE=\"MultiVolumeWork\"><mets:mptr LOCTYPE=\"URL\" xlink:href=\"anchor\"/>"
+                                + "<mets:div DMDID=\"DMDLOG_0000\" ID=\"LOG_0000\" TYPE=\"Volume\">")
+                .replace("<goobi:metadata name=\"_directionRTL\">false</goobi:metadata>", "")
+                .replaceFirst("</mets:div>\\s*</mets:structMap>", "</mets:div></mets:div></mets:structMap>");
+        assertNotEquals(xml, withAnchor);
+        Process process = processWithMetaXml(withAnchor);
+        Path dir = tempDir.resolve("4711");
+        Files.writeString(dir.resolve("meta_anchor.xml"), "<mets:mets xmlns:mets=\"http://www.loc.gov/METS/\"><mets:dmdSec");
+        Files.writeString(dir.resolve("meta_anchor.xml.2026-11-11-091544027"), "x");
+        Files.writeString(dir.resolve("meta_anchor.xml.2026-11-12-174102311"), "x");
+        GoobiUserFacingException e = readFails(process);
+        assertUnreadable(e, "XML parse error");
+        assertTrue(e.getLogContext().get("file").endsWith("/4711/meta_anchor.xml"));
+        assertEquals("meta_anchor.xml.2026-11-12-174102311, meta_anchor.xml.2026-11-11-091544027", e.getLogContext().get("backups"));
+        assertEquals(String.valueOf(Files.size(dir.resolve("meta_anchor.xml"))), e.getLogContext().get("size"));
+        assertFalse(e.getMessage().contains("meta_anchor"));
+    }
+
+    @Test
+    public void nullTitleIsDashInProcessContext() throws Exception {
+        Process process = processWithMetaXml("");
+        process.setTitel(null);
+        assertEquals("4711 -", readFails(process).getLogContext().get("process"));
     }
 
     @Test
