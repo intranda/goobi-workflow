@@ -870,9 +870,27 @@ public class ProcessTest extends AbstractTest {
     }
 
     @Test
-    public void getReplacedVariableFailsLoudlyOnCorruptFile() throws Exception {
+    public void getReplacedVariableToleratesCorruptFile() throws Exception {
         Process process = processWithMetaXml("");
-        assertThrows(GoobiUserFacingException.class, () -> process.getReplacedVariable("{meta.TitleDocMain}"));
+        assertEquals("", process.getReplacedVariable("{meta.TitleDocMain}"));
+    }
+
+    @Test
+    public void changeProcessTitleStopsBeforeMovingFoldersWhenMetadataIsCorrupt() throws Exception {
+        Process process = processWithMetaXml("");
+        GoobiProperty property = new GoobiProperty(PropertyOwnerType.PROCESS);
+        property.setPropertyValue("unrelated");
+        process.setEigenschaften(new ArrayList<>(List.of(property)));
+        Path images = tempDir.resolve("4711").resolve("images");
+        Path oldFolder = images.resolve("testprocess_media");
+        Files.createDirectories(oldFolder);
+        String oldTitle = process.getTitel();
+
+        assertThrows(GoobiUserFacingException.class, () -> process.changeProcessTitle("newtitle"));
+
+        assertTrue(Files.isDirectory(oldFolder));
+        assertFalse(Files.exists(images.resolve("newtitle_media")));
+        assertEquals(oldTitle, process.getTitel());
     }
 
     @Test

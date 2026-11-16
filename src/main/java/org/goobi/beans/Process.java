@@ -121,7 +121,6 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
     private static final long serialVersionUID = -6503348094655786275L;
 
     private static final String META_FILE = "meta.xml";
-    private static final String ANCHOR_FILE = "meta_anchor.xml";
     private static final String META_ANCHOR_FILE = "meta_anchor.xml";
     private static final String TEMP_FILE = "temp.xml";
     private static final String TEMP_ANCHOR_FILE = "temp_anchor.xml";
@@ -1019,7 +1018,7 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
     private static boolean concernsAnchorFile(Throwable cause) {
         for (Throwable t = cause; t != null; t = t.getCause() == t ? null : t.getCause()) {
             String message = t.getMessage();
-            if (message != null && (message.contains(ANCHOR_FILE) || message.startsWith("Can't read Anchor file"))) {
+            if (message != null && (message.contains(META_ANCHOR_FILE) || message.startsWith("Can't read Anchor file"))) {
                 return true;
             }
         }
@@ -1028,7 +1027,8 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
 
     private GoobiUserFacingException metadataUnreadable(String reason, Throwable cause) {
         return new GoobiUserFacingException(ErrorCatalogue.METADATA_UNREADABLE, "Metadata file of process " + id + " cannot be read", cause,
-                List.of(titel == null ? "" : titel, String.valueOf(id)), metadataLogContext(reason, concernsAnchorFile(cause) ? ANCHOR_FILE : META_FILE));
+                List.of(titel == null ? "" : titel, String.valueOf(id)),
+                metadataLogContext(reason, concernsAnchorFile(cause) ? META_ANCHOR_FILE : META_FILE));
     }
 
     private Map<String, String> metadataLogContext(String reason, String fileName) {
@@ -1762,6 +1762,9 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
                     try {
                         Fileformat gdzfile = readMetadataFile();
                         dd = gdzfile.getDigitalDocument();
+                    } catch (GoobiUserFacingException e) {
+                        // a list column must not break because of one corrupt file, the variable resolves to an empty value
+                        log.warn("metadata file of process {} cannot be read, variable {} resolves to an empty value", id, inVariable);
                     } catch (UGHException | IOException | SwapException e) {
                         log.error("error reading METS file for process " + id, e);
                     }
@@ -1946,6 +1949,17 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
      */
 
     public boolean changeProcessTitle(String newTitle) {
+
+        // a corrupt metadata file must stop the rename before any folder is moved, so title and folders never get out of step
+        if (!this.isIstTemplate()) {
+            try {
+                if (checkForMetadataFile()) {
+                    readMetadataFile();
+                }
+            } catch (IOException | SwapException | ReadException e) {
+                log.debug("could not check the metadata file before renaming", e);
+            }
+        }
 
         /* Prozesseigenschaften */
         if (getEigenschaftenList() != null && !getEigenschaftenList().isEmpty()) {
