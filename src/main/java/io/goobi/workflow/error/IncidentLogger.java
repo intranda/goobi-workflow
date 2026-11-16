@@ -38,7 +38,17 @@ public final class IncidentLogger {
     private static final String DASH = "-";
     private static final String THREAD_CONTEXT_KEY = "incident";
 
-    /** Details of the request that failed, any value may be null. */
+    /**
+     * Details of the request that failed, any value may be null.
+     *
+     * @param userLogin login of the user
+     * @param userId database id of the user
+     * @param method HTTP method
+     * @param uri request URI
+     * @param viewId JSF view id
+     * @param ajax true for an ajax request
+     * @param sessionIdShort shortened session id
+     */
     public record RequestInfo(String userLogin, Integer userId, String method, String uri, String viewId, boolean ajax, String sessionIdShort) {
     }
 

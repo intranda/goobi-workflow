@@ -90,6 +90,13 @@ class ErrorPageBeanTest {
     }
 
     @Test
+    void openAgainOnlyForLocalViewIds() {
+        for (String viewId : new String[] { "//evil.example/x", "http://evil.example/x", "uii/process_all.xhtml", "" }) {
+            assertNull(bean(ErrorCatalogue.VIEW_EXPIRED, List.of(), null, viewId, false, true).getOpenAgainUrl(), viewId);
+        }
+    }
+
+    @Test
     void loggedOutUsesBlankTemplateAndLoginButton() {
         ErrorPageBean bean = bean(ErrorCatalogue.UNEXPECTED, false, false);
         assertEquals("/uii/template/template_blank.html", bean.getTemplate());

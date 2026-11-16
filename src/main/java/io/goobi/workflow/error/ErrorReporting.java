@@ -37,8 +37,10 @@ import jakarta.faces.context.FacesContext;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.log4j.Log4j2;
 
 /** Creates, logs and stores the error report of a request, once per request. */
+@Log4j2
 public final class ErrorReporting {
 
     public static final String REQUEST_ATTRIBUTE = "io.goobi.workflow.error.report";
@@ -69,6 +71,7 @@ public final class ErrorReporting {
             String incidentId = error.entry().incident() ? IncidentIds.next() : null;
             report = new ErrorReport(error, incidentId, Instant.now(), expiredViewId(throwable));
         } catch (RuntimeException e) { //NOSONAR the error path must never fail
+            log.warn("Could not resolve the error, reporting it as unexpected", e);
             ResolvedError error = new ResolvedError(ErrorCatalogue.UNEXPECTED, List.of(), Map.of(), throwable);
             report = new ErrorReport(error, IncidentIds.next(), Instant.now(), null);
         }

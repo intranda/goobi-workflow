@@ -36,6 +36,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import org.goobi.beans.User;
+import org.goobi.managedbeans.LoginBean;
+
 import de.sub.goobi.helper.Helper;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
@@ -43,6 +46,7 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 
 /** View model of the error page {@code uii/error.xhtml}. */
@@ -98,9 +102,20 @@ public class ErrorPageBean implements Serializable {
             }
             return;
         }
-        loggedIn = Helper.getCurrentUser() != null;
-        admin = Helper.getLoginBean() != null && Helper.getLoginBean().hasRole("Admin_Menu");
-        report = ErrorReporting.report(request, exception, status, Helper.getCurrentUser());
+        User user = SessionUser.find(request);
+        loggedIn = user != null;
+        admin = loggedIn && isAdmin(request);
+        report = ErrorReporting.report(request, exception, status, user);
+    }
+
+    private static boolean isAdmin(HttpServletRequest request) {
+        try {
+            HttpSession session = request.getSession(false);
+            LoginBean login = session == null ? null : Helper.getLoginBeanFromSession(session);
+            return login != null && login.hasRole("Admin_Menu");
+        } catch (RuntimeException e) { //NOSONAR the error page must never fail
+            return false;
+        }
     }
 
     private ErrorEntry entry() {
@@ -146,7 +161,12 @@ public class ErrorPageBean implements Serializable {
         return translate(entry().titleKey());
     }
 
-    /** One piece of the context line, the name of the object is {@code strong}. */
+    /**
+     * One piece of the context line.
+     *
+     * @param text the text of the piece
+     * @param strong true if the piece is the name of the object and is emphasised
+     */
     public record ContextSegment(String text, boolean strong) {
     }
 
@@ -271,8 +291,9 @@ public class ErrorPageBean implements Serializable {
     }
 
     public String getOpenAgainUrl() {
-        if (ErrorCatalogue.VIEW_EXPIRED.key().equals(entry().key()) && report().expiredViewId() != null) {
-            return contextPath + report().expiredViewId();
+        String viewId = report().expiredViewId();
+        if (ErrorCatalogue.VIEW_EXPIRED.key().equals(entry().key()) && viewId != null && viewId.startsWith("/") && !viewId.startsWith("//")) {
+            return contextPath + viewId;
         }
         return null;
     }
