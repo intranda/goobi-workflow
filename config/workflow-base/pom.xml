@@ -1640,11 +1640,6 @@
       <artifactId>unirest-objectmapper-jackson</artifactId>
       <version>4.2.9</version>
     </dependency>
-        <!-- needed for google-vision-api -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-vision</artifactId>
-    </dependency>
     <dependency>
         <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
         <artifactId>owasp-java-html-sanitizer</artifactId>
