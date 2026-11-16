@@ -1,0 +1,266 @@
+/* ========================================
+ * Styles for
+ *
+ * error.xhtml
+ * ====================================== */
+
+.error-page {
+  --error-tint-primary: #f4f8fc;
+  --error-border-primary: #dbe8f5;
+  --error-border: #e1e5ea;
+
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 16px 0 40px;
+  text-align: center;
+
+  &__art {
+    width: 120px;
+    margin: 0 auto 10px;
+  }
+
+  &__illustration {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 108px;
+    height: 108px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: #eaf3fc;
+    color: var(--clr-primary);
+
+    svg {
+      width: 52px;
+      height: 52px;
+    }
+
+    &--danger {
+      background: #fdecea;
+      color: var(--clr-danger);
+    }
+
+    &--warn {
+      background: #fdf3e2;
+      color: #b76a00;
+    }
+  }
+
+  &__title {
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  &__context {
+    margin: -6px 0 14px;
+    color: #666;
+  }
+
+  &__lead {
+    max-width: 56ch;
+    margin: 0 auto 20px;
+    font-size: 1rem;
+    color: #333;
+  }
+
+  &__cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 16px;
+    margin-top: 8px;
+    text-align: start;
+  }
+
+  &__col {
+    padding: 16px 18px;
+    border: 1px solid var(--error-border);
+    background: #fff;
+
+    &--todo {
+      border-color: var(--error-border-primary);
+      background: var(--error-tint-primary);
+    }
+  }
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #555;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      color: var(--clr-primary);
+    }
+  }
+
+  &__admin {
+    margin-top: 16px;
+    padding: 16px 18px;
+    border: 1px solid #f3d9a8;
+    background: #fff8ec;
+    text-align: start;
+
+    .error-page__heading svg {
+      color: #8a4b00;
+    }
+  }
+
+  &__steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: start;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  }
+
+  &__step-number {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    border-radius: 50%;
+    background: var(--clr-primary);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  &__foot {
+    margin-top: 22px;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    border: 1px solid #dde2e7;
+    background: #f4f6f8;
+    font-size: 0.8125rem;
+    color: #333;
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--clr-primary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--clr-primary);
+      outline-offset: 1px;
+    }
+
+    svg {
+      width: 15px;
+      height: 15px;
+      color: #666;
+    }
+  }
+
+  &__chip-label {
+    color: #666;
+  }
+
+  &__chip-id {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+
+  &__feedback {
+    min-height: 1.4em;
+    margin-top: 6px;
+    font-size: 0.8125rem;
+    color: #666;
+  }
+
+  // Logged-out variant: login screen look, stacked content
+  &--login {
+    position: relative;
+    max-width: none;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+
+    .login-logout {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      padding-inline: 16px;
+    }
+
+    .login-logout-body {
+      width: 36rem;
+      max-width: 100%;
+    }
+
+    .login-logout-box {
+      max-height: none;
+    }
+
+    .error-page__content {
+      width: 100%;
+      text-align: center;
+
+      > p,
+      .error-page__steps {
+        text-align: start;
+      }
+    }
+
+    .error-page__heading {
+      margin-top: 18px;
+    }
+
+    .error-page__icon {
+      width: 84px;
+      height: 84px;
+      margin-bottom: 12px;
+
+      svg {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    .error-page__title {
+      font-size: 1.4rem;
+    }
+
+    .error-page__lead {
+      max-width: none;
+      margin-bottom: 0;
+    }
+  }
+}

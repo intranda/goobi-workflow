@@ -1,81 +1,189 @@
 <ui:composition
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-  xmlns:h="http://xmlns.jcp.org/jsf/html"
-  xmlns:f="http://xmlns.jcp.org/jsf/core"
-  xmlns:o="http://omnifaces.org/ui"
-  xmlns:of="http://omnifaces.org/functions"
-  template="/uii/template/template.html"
-  >
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:util="http://goobi.io/util"
+    template="#{ErrorPageBean.template}">
 
-  <ui:param name="myPageTitle" value="#{msgs.failure}" />
-
-
-
+    <ui:param name="myPageTitle" value="#{ErrorPageBean.pageTitle}" />
 
     <ui:define name="content">
+
         <script type="text/javascript">
-					function show_txt() {
-            if (document
-              .getElementById('errorForm:stacktrace').style.display == 'block') {
-              document
-                .getElementById('errorForm:stacktrace').style.display = "none";
-            } else {
-              document
-                .getElementById('errorForm:stacktrace').style.display = "block";
+            function copyIncident(button) {
+                var text = button.getAttribute('data-copy-text');
+                var feedback = document.getElementById('error-page-feedback');
+                var done = function () {
+                    feedback.textContent = button.getAttribute('data-copied-label');
+                };
+                var select = function () {
+                    var id = button.querySelector('.error-page__chip-id');
+                    var range = document.createRange();
+                    range.selectNodeContents(id);
+                    var selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                };
+                if (navigator.clipboard &amp;&amp; navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(done, select);
+                } else {
+                    select();
+                }
             }
-          }
         </script>
 
-        <h:form styleClass="formError" id="errorForm">
-            <p>
-                #{msgs.generalError}
-                <h:outputLink value="#{HelperForm.servletPathAsUrl}/uii/index.xhtml">
-                    <h:outputText value="#{msgs.returnHome}" />
-                </h:outputLink>
-            </p>
-            <br />
-
-            <h2>
-                <h:outputText value="#{msgs.details}" />
-            </h2>
-
-            <h:outputText value="#{msgs.errorText}" styleClass="mb-4"/>
-            <p style="padding: 10px; border: 1px dashed red;" class="mt-2">#{errorDetails}</p>
-            <br />
-
-            <h2>
-                <h:outputText value="#{msgs.errorReport}" />
-            </h2>
-            <p>
-                <h:outputText value="#{msgs.errorReportDescription}" />
-            </p>
-            <br />
-            <h:button onclick="show_txt(); return false;" title="#{msgs.showErrorDetails}" value="#{msgs.showErrorDetails}"
-                styleClass="btn btn-primary" />
-            <br />
-            <br />
-            <h:panelGroup id="stacktrace" style="display:none;">
-                <div style="padding: 10px; border: 1px dashed red;">
-                    <h:outputText value="#{errorDetails}" />
-                    <br />
-                    <br />
-                    <ui:repeat value="#{stacktrace}" var="e" rowIndexVar="row">
-
-                        <h:outputText value="#{e}" rendered="#{row == 0}" />
-
-                        <h:outputText value="#{e}" style="position:relative; left: 50px;" rendered="#{row != 0 and row lt 15}" />
-
-                        <h:panelGroup rendered="#{row lt 15}">
-                            <br />
-                        </h:panelGroup>
-                    </ui:repeat>
+        <!-- LOGGED IN: normal Goobi template -->
+        <ui:fragment rendered="#{ErrorPageBean.loggedIn}">
+            <div class="error-page">
+                <div class="error-page__head">
+                    <div class="error-page__art">
+                        <ui:fragment rendered="#{ErrorPageBean.illustrationUrl != null}">
+                            <img class="error-page__illustration" src="#{ErrorPageBean.illustrationUrl}" alt="" />
+                        </ui:fragment>
+                        <ui:fragment rendered="#{ErrorPageBean.illustrationUrl == null}">
+                            <div class="error-page__icon error-page__icon--#{ErrorPageBean.severityCss}">
+                                <util:icon icon="#{ErrorPageBean.icon}" />
+                            </div>
+                        </ui:fragment>
+                    </div>
+                    <h2 class="error-page__title">#{ErrorPageBean.title}</h2>
+                    <ui:fragment rendered="#{ErrorPageBean.context != null}">
+                        <p class="error-page__context">#{ErrorPageBean.context}</p>
+                    </ui:fragment>
+                    <p class="error-page__lead">#{ErrorPageBean.what}</p>
                 </div>
 
-            </h:panelGroup>
+                <div class="error-page__cols">
+                    <div class="error-page__col">
+                        <h3 class="error-page__heading">
+                            <util:icon icon="help" />
+                            #{msgs.error_whyHeading}
+                        </h3>
+                        <p class="mb-0">#{ErrorPageBean.why}</p>
+                    </div>
+                    <div class="error-page__col error-page__col--todo">
+                        <h3 class="error-page__heading">
+                            <util:icon icon="lifebuoy" />
+                            #{msgs.error_howHeading}
+                        </h3>
+                        <ol class="error-page__steps">
+                            <ui:repeat value="#{ErrorPageBean.howSteps}" var="step" varStatus="status">
+                                <li>
+                                    <span class="error-page__step-number" aria-hidden="true">#{status.index + 1}</span>
+                                    <span>#{step}</span>
+                                </li>
+                            </ui:repeat>
+                        </ol>
+                    </div>
+                </div>
 
+                <ui:fragment rendered="#{ErrorPageBean.showAdmin}">
+                    <div class="error-page__admin">
+                        <h3 class="error-page__heading">
+                            <util:icon icon="user-shield" />
+                            #{msgs.error_adminHeading}
+                        </h3>
+                        <ol class="error-page__steps">
+                            <ui:repeat value="#{ErrorPageBean.adminSteps}" var="step" varStatus="status">
+                                <li>
+                                    <span class="error-page__step-number" aria-hidden="true">#{status.index + 1}</span>
+                                    <span>#{step}</span>
+                                </li>
+                            </ui:repeat>
+                        </ol>
+                    </div>
+                </ui:fragment>
 
-        </h:form>
+                <div class="error-page__buttons">
+                    <ui:fragment rendered="#{ErrorPageBean.openAgainUrl != null}">
+                        <a class="btn btn-primary" href="#{ErrorPageBean.openAgainUrl}">
+                            <util:icon icon="refresh" styleClass="me-1" />
+                            <span>#{msgs.error_openAgain}</span>
+                        </a>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{ErrorPageBean.showBack}">
+                        <button type="button" class="btn btn-primary" onclick="window.history.back()">
+                            <util:icon icon="arrow-left" styleClass="me-1" />
+                            <span>#{ErrorPageBean.backLabel}</span>
+                        </button>
+                    </ui:fragment>
+                    <a class="btn btn-blank" href="#{ErrorPageBean.startUrl}">
+                        <util:icon icon="home" styleClass="me-1" />
+                        <span>#{ErrorPageBean.startLabel}</span>
+                    </a>
+                </div>
+
+                <ui:fragment rendered="#{ErrorPageBean.incidentId != null}">
+                    <div class="error-page__foot">
+                        <button type="button" class="error-page__chip" onclick="copyIncident(this)"
+                            data-copy-text="#{ErrorPageBean.copyText}" data-copied-label="#{msgs.error_copied}"
+                            title="#{msgs.error_copy}">
+                            <span class="error-page__chip-label">#{msgs.error_incident}</span>
+                            <span class="error-page__chip-id">#{ErrorPageBean.incidentId}</span>
+                            <util:icon icon="copy" />
+                        </button>
+                        <div class="error-page__feedback" id="error-page-feedback" aria-live="polite"></div>
+                    </div>
+                </ui:fragment>
+            </div>
+        </ui:fragment>
+
+        <!-- LOGGED OUT: login screen look -->
+        <ui:fragment rendered="#{!ErrorPageBean.loggedIn}">
+            <div class="login error-page error-page--login">
+                <main>
+                    <div class="login-logout">
+                        <div class="login-logout-body">
+                            <h1><a href="#{ErrorPageBean.startUrl}">Goobi workflow</a></h1>
+                            <div class="login-logout-box mt-3 mb-3 p-5">
+                                <div class="error-page__content">
+                                    <div class="error-page__icon error-page__icon--#{ErrorPageBean.severityCss}">
+                                        <util:icon icon="#{ErrorPageBean.icon}" />
+                                    </div>
+                                    <h2 class="error-page__title">#{ErrorPageBean.title}</h2>
+                                    <p class="error-page__lead">#{ErrorPageBean.what}</p>
+                                    <h3 class="error-page__heading">
+                                        <util:icon icon="help" />
+                                        #{msgs.error_whyHeading}
+                                    </h3>
+                                    <p>#{ErrorPageBean.why}</p>
+                                    <h3 class="error-page__heading">
+                                        <util:icon icon="lifebuoy" />
+                                        #{msgs.error_howHeading}
+                                    </h3>
+                                    <ol class="error-page__steps">
+                                        <ui:repeat value="#{ErrorPageBean.howSteps}" var="step" varStatus="status">
+                                            <li>
+                                                <span class="error-page__step-number" aria-hidden="true">#{status.index + 1}</span>
+                                                <span>#{step}</span>
+                                            </li>
+                                        </ui:repeat>
+                                    </ol>
+                                    <div class="error-page__buttons">
+                                        <a class="btn btn-primary" href="#{ErrorPageBean.startUrl}">
+                                            <util:icon icon="arrow-left" styleClass="me-1" />
+                                            <span>#{ErrorPageBean.startLabel}</span>
+                                        </a>
+                                    </div>
+                                    <ui:fragment rendered="#{ErrorPageBean.incidentId != null}">
+                                        <div class="error-page__foot">
+                                            <button type="button" class="error-page__chip" onclick="copyIncident(this)"
+                                                data-copy-text="#{ErrorPageBean.copyText}" data-copied-label="#{msgs.error_copied}"
+                                                title="#{msgs.error_copy}">
+                                                <span class="error-page__chip-label">#{msgs.error_incident}</span>
+                                                <span class="error-page__chip-id">#{ErrorPageBean.incidentId}</span>
+                                                <util:icon icon="copy" />
+                                            </button>
+                                            <div class="error-page__feedback" id="error-page-feedback" aria-live="polite"></div>
+                                        </div>
+                                    </ui:fragment>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </ui:fragment>
 
     </ui:define>
 </ui:composition>
