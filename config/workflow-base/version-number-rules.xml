@@ -22,11 +22,6 @@
                 <ignoreVersion>4.3</ignoreVersion>
             </ignoreVersions>
         </rule>
-        <rule groupId="opensymphony" artifactId="oscache" comparisonMethod="maven">
-            <ignoreVersions>
-                <ignoreVersion>2.4.1</ignoreVersion>
-            </ignoreVersions>
-        </rule>
 
         <!-- This is Jakarta EE 11, Tomcat 11 ...-->
         <rule groupId="jakarta.servlet" artifactId="jakarta.servlet-api">
