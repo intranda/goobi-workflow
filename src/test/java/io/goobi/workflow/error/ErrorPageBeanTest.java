@@ -147,10 +147,35 @@ class ErrorPageBeanTest {
     }
 
     @Test
-    void copyTextHasNoTechnicalData() {
+    void reportTextHasNoTechnicalData() {
         ErrorPageBean bean = bean(ErrorCatalogue.UNEXPECTED, List.of(), new IllegalStateException("/opt/secret/path"), null, true, true);
-        assertFalse(bean.getCopyText().contains("/opt/secret/path"));
+        assertFalse(bean.getReportText().contains("/opt/secret/path"));
         assertEquals("13 Nov 2026, 10:42:17", bean.getIncidentTime());
-        assertEquals("Incident GW-7K3F9, 13 Nov 2026, 10:42:17, T:error_unexpected_title", bean.getCopyText());
+        String text = bean.getReportText();
+        assertTrue(text.startsWith("Incident: GW-7K3F9\nTime: 13 Nov 2026, 10:42:17\nError: unexpected\nTitle: T:error_unexpected_title\n"));
+    }
+
+    @Test
+    void reportTextNamesTheProcessForMetadataEntry() {
+        ErrorPageBean bean = bean(ErrorCatalogue.METADATA_UNREADABLE, List.of("book_1", "4711"), null, null, false, true);
+        assertTrue(bean.getReportText().contains("Object: T:error_context_process book_1|4711\n"));
+    }
+
+    @Test
+    void mailtoEncodesSubjectAndBodyAndNeedsAValidAddress() {
+        ErrorPageBean bean = bean(ErrorCatalogue.UNEXPECTED, false, true);
+        assertNull(bean.getSupportMailto());
+
+        bean.setSupportMail("support@example.org");
+        String mailto = bean.getSupportMailto();
+        assertTrue(mailto.startsWith("mailto:support@example.org?subject=Goobi%20GW-7K3F9%3A%20T%3Aerror_unexpected_title&body=Incident%3A%20GW-7K3F9%0A"));
+        assertFalse(mailto.contains(" ") || mailto.contains("+") || mailto.contains("\n"));
+
+        bean.setSupportMail("");
+        assertNull(bean.getSupportMailto());
+        bean.setSupportMail("a@b.org?cc=c@d.org");
+        assertNull(bean.getSupportMailto());
+        bean.setSupportMail("two words@b.org");
+        assertNull(bean.getSupportMailto());
     }
 }

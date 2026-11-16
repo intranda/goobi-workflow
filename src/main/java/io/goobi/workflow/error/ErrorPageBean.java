@@ -27,6 +27,8 @@ package io.goobi.workflow.error;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -35,10 +37,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.regex.Pattern;
 
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 
+import org.goobi.production.GoobiVersion;
+
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
@@ -59,6 +65,9 @@ public class ErrorPageBean implements Serializable {
 
     private static final String ATTRIBUTE_EXCEPTION = "jakarta.servlet.error.exception";
     private static final String ATTRIBUTE_STATUS = "jakarta.servlet.error.status_code";
+    private static final String ATTRIBUTE_REQUEST_URI = "jakarta.servlet.error.request_uri";
+    /** a plain address only, so a misconfigured value can neither break the mailto link nor add header fields */
+    private static final Pattern MAIL_ADDRESS = Pattern.compile("[^\\s@?&,;<>:\"]+@[^\\s@?&,;<>:\"]+");
     private static final String START_PAGE = "/uii/index.xhtml";
     private static final String TIME_PATTERN = "dd MMM yyyy, HH:mm:ss";
 
@@ -66,6 +75,8 @@ public class ErrorPageBean implements Serializable {
     private boolean admin;
     private boolean loggedIn;
     private String contextPath = "";
+    private String requestPath;
+    private String supportMail;
     private Locale locale;
     private ZoneId zone = ZoneId.systemDefault();
     private transient BiFunction<String, String[], String> translate = Helper::getTranslation;
@@ -91,6 +102,8 @@ public class ErrorPageBean implements Serializable {
         ExternalContext external = context.getExternalContext();
         HttpServletRequest request = (HttpServletRequest) external.getRequest();
         contextPath = external.getRequestContextPath();
+        requestPath = (String) request.getAttribute(ATTRIBUTE_REQUEST_URI);
+        supportMail = ConfigurationHelper.getInstance().getErrorSupportMail();
         Throwable exception = (Throwable) request.getAttribute(ATTRIBUTE_EXCEPTION);
         Integer status = (Integer) request.getAttribute(ATTRIBUTE_STATUS);
         if (exception == null && status == null && request.getAttribute(ErrorReporting.REQUEST_ATTRIBUTE) == null) {
@@ -276,9 +289,55 @@ public class ErrorPageBean implements Serializable {
         return DateTimeFormatter.ofPattern(TIME_PATTERN, locale()).withZone(zone).format(report().time());
     }
 
-    /** @return text for support, only incident number, time and title and never technical details */
-    public String getCopyText() {
-        return "Incident " + getIncidentId() + ", " + getIncidentTime() + ", " + getTitle();
+    /**
+     * @return the details a support ticket needs, one per line. Contains the incident number, time, error kind, title, the affected process and the
+     *         page path, but never technical details such as the exception, a stack trace, the query string or the user.
+     */
+    public String getReportText() {
+        StringBuilder text = new StringBuilder();
+        text.append("Incident: ").append(getIncidentId()).append('\n');
+        text.append("Time: ").append(getIncidentTime()).append('\n');
+        text.append("Error: ").append(entry().key()).append('\n');
+        text.append("Title: ").append(getTitle()).append('\n');
+        String context = getContext();
+        if (context != null) {
+            text.append("Object: ").append(context).append('\n');
+        }
+        if (requestPath != null) {
+            text.append("Page: ").append(requestPath).append('\n');
+        }
+        String version = goobiVersion();
+        if (version != null) {
+            text.append("Goobi version: ").append(version).append('\n');
+        }
+        return text.toString();
+    }
+
+    private static String goobiVersion() {
+        try {
+            return GoobiVersion.getVersion();
+        } catch (RuntimeException e) { //NOSONAR the error page must never fail
+            return null;
+        }
+    }
+
+    /** Package-private so tests can set the support address without the configuration. */
+    void setSupportMail(String supportMail) {
+        this.supportMail = supportMail;
+    }
+
+    /** @return a mailto link to the support with the report text as body, or null if no valid support address is configured */
+    public String getSupportMailto() {
+        if (supportMail == null || !MAIL_ADDRESS.matcher(supportMail.trim()).matches()) {
+            return null;
+        }
+        return "mailto:" + supportMail.trim() + "?subject=" + encode("Goobi " + getIncidentId() + ": " + getTitle()) + "&body="
+                + encode(getReportText());
+    }
+
+    private static String encode(String value) {
+        // URLEncoder writes a space as +, which a mail client would show literally
+        return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
     }
 
     public String getBackLabel() {

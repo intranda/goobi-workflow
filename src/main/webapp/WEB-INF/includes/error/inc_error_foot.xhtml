@@ -1,0 +1,47 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:util="http://goobi.io/util">
+
+    <!-- Incident number and the ways to hand it to the support; used by error.xhtml for logged in and logged out users -->
+    <ui:fragment rendered="#{ErrorPageBean.incidentId != null}">
+        <div class="error-page__foot">
+            <div class="error-page__foot-actions">
+                <button
+                    type="button"
+                    class="error-page__chip"
+                    data-copy-text="#{ErrorPageBean.incidentId}"
+                    data-copied-label="#{msgs.error_copied}"
+                    data-copy-failed-label="#{msgs.error_copyFailed}"
+                    data-feedback-target="error-page-feedback"
+                    title="#{msgs.error_copy}">
+                    <span class="error-page__chip-label">#{msgs.error_incident}</span>
+                    <span class="error-page__chip-id">#{ErrorPageBean.incidentId}</span>
+                    <util:icon icon="copy" />
+                </button>
+                <button
+                    type="button"
+                    class="error-page__chip"
+                    data-copy-text="#{ErrorPageBean.reportText}"
+                    data-copied-label="#{msgs.error_copied}"
+                    data-copy-failed-label="#{msgs.error_copyFailed}"
+                    data-feedback-target="error-page-feedback">
+                    <util:icon icon="clipboard-text" />
+                    <span>#{msgs.error_copyReport}</span>
+                </button>
+                <ui:fragment rendered="#{ErrorPageBean.supportMailto != null}">
+                    <a
+                        class="error-page__chip"
+                        href="#{ErrorPageBean.supportMailto}">
+                        <util:icon icon="mail" />
+                        <span>#{msgs.error_mailSupport}</span>
+                    </a>
+                </ui:fragment>
+            </div>
+            <div
+                class="error-page__feedback"
+                id="error-page-feedback"
+                aria-live="polite"></div>
+        </div>
+    </ui:fragment>
+</ui:composition>

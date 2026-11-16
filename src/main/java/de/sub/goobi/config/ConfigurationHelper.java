@@ -1,20 +1,20 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
+ *
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  */
 package de.sub.goobi.config;
 
@@ -209,6 +209,11 @@ public final class ConfigurationHelper implements Serializable {
         return getLocalString("ApplicationTitle", "http://goobi.io");
     }
 
+    /** @return the address the error page offers for reporting an error by mail, empty if the button should not be shown */
+    public String getErrorSupportMail() {
+        return getLocalString("ErrorSupportMail", "support@intranda.com");
+    }
+
     public String getApplicationHeaderTitle() {
         return getLocalString("ApplicationHeaderTitle", "Goobi workflow");
     }
@@ -235,7 +240,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * den absoluten Pfad für die temporären Images zurückgeben.
-     * 
+     *
      * @return image tmp path
      */
     public static String getTempImagesPathAsCompleteDirectory() {
@@ -467,7 +472,7 @@ public final class ConfigurationHelper implements Serializable {
     /**
      * @deprecated This method is deprecated. The information was moved to the user table in the database. The method is still needed during the
      *             migration.
-     * 
+     *
      * @return The name of the dashboard plugin or null in case of no configured plugin
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -513,7 +518,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return ldap url
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -523,7 +528,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return ldap admin login
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -533,7 +538,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return ldap admin pw
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -543,7 +548,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return attribute name
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -553,7 +558,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return attribute value
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -563,7 +568,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return nextFreeUnixId
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -573,7 +578,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return cert
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -583,7 +588,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return cert pw
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -593,7 +598,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return encryption type
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -603,7 +608,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return ssl connection
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -613,7 +618,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return ldap_readonly
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -623,7 +628,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return ldap_readDirectoryAnonymous
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -633,7 +638,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return useLocalDirectory
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -643,7 +648,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return ldap_homeDirectory
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -653,7 +658,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return ldap_useTLS
      */
     @Deprecated(since = "23.05", forRemoval = false)
@@ -1060,7 +1065,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * @deprecated This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
+     *
      * @return goobiModuleServerPort
      */
     @Deprecated(since = "23.05", forRemoval = true)
@@ -1354,7 +1359,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * This field is written into the mets:agent on export. Leave it blank, if this is not wanted
-     * 
+     *
      * @return instance name
      */
     public String getGoobiInstanceName() {
@@ -1396,7 +1401,7 @@ public final class ConfigurationHelper implements Serializable {
 
     /**
      * Returns the memory size of the given unit in bytes
-     * 
+     *
      * @param unit The text representing the data size unit
      * @return the memory size of the given unit in bytes
      */

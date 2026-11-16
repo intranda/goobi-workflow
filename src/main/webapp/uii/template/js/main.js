@@ -12,6 +12,7 @@ import { initAutosave } from './modules/metseditor/autosave';
 import { initRaceGuard } from './modules/metseditor/raceGuard';
 import { AjaxButtonManager } from './modules/ajax/buttonManager';
 import { initNotificationToggle } from './modules/notificationToggle';
+import { initCopyToClipboard } from './modules/copyToClipboard';
 import { focusOnLoad } from './modules/gwFocusOnLoad';
 
 // Initialize AjaxButtonManager
@@ -19,6 +20,9 @@ const ajaxButtonManager = new AjaxButtonManager();
 
 // Register notification toggle once
 initNotificationToggle();
+
+// Register copy-to-clipboard buttons once
+initCopyToClipboard();
 
 // Initialize all functions on initial page load
 document.addEventListener('DOMContentLoaded', () => {
