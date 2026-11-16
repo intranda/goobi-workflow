@@ -149,4 +149,49 @@ public class ConfigOpacTest extends AbstractTest {
         assertNull(doctype);
     }
 
+    @Test
+    public void testGetDoctypeByMappingUsesFirstSpecialMapping() {
+        // 'Monograph' maps to doctype 'monograph' in <doctypes>; the special mapping must win
+        ConfigOpacDoctype doctype = ConfigOpac.getInstance().getDoctypeByMapping("Monograph", "SpecialMappingTest");
+        assertNotNull(doctype);
+        assertEquals("periodical", doctype.getTitle());
+    }
+
+    @Test
+    public void testGetDoctypeByMappingUsesLaterSpecialMapping() {
+        // 'Periodical' maps to doctype 'periodical' in <doctypes>; the second special mapping must win
+        ConfigOpacDoctype doctype = ConfigOpac.getInstance().getDoctypeByMapping("Periodical", "SpecialMappingTest");
+        assertNotNull(doctype);
+        assertEquals("monograph", doctype.getTitle());
+    }
+
+    @Test
+    public void testGetDoctypeByMappingFallsBackToDoctypesWithoutSpecialMapping() {
+        ConfigOpacDoctype doctype = ConfigOpac.getInstance().getDoctypeByMapping("Ab", "SpecialMappingTest");
+        assertNotNull(doctype);
+        assertEquals("periodical", doctype.getTitle());
+    }
+
+    @Test
+    public void testGetDoctypeByMappingSkipsCatalogueWithoutTitle() {
+        // the catalogue without title maps 'Aa' to 'periodical'; it must not apply to an unknown catalogue
+        ConfigOpacDoctype doctype = ConfigOpac.getInstance().getDoctypeByMapping("Aa", "NON_EXISTENT");
+        assertNotNull(doctype);
+        assertEquals("monograph", doctype.getTitle());
+    }
+
+    @Test
+    public void testGetCatalogueByNameSkipsCatalogueWithoutTitle() {
+        assertNull(ConfigOpac.getInstance().getCatalogueByName(""));
+        assertNull(ConfigOpac.getInstance().getCatalogueByName(null));
+    }
+
+    @Test
+    public void testGetDoctypeByMappingIgnoresSpecialMappingOfCatalogueWithoutTitle() {
+        // the catalogue without title maps 'Aa' to 'periodical'; a lookup without catalogue must not pick it up
+        ConfigOpacDoctype doctype = ConfigOpac.getInstance().getDoctypeByMapping("Aa", null);
+        assertNotNull(doctype);
+        assertEquals("monograph", doctype.getTitle());
+    }
+
 }

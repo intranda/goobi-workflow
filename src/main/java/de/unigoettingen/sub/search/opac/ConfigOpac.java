@@ -120,7 +120,7 @@ public class ConfigOpac {
         int countCatalogues = this.config.getMaxIndex("catalogue");
         for (int index = 0; index <= countCatalogues; index++) {
             String title = this.config.getString("catalogue(" + index + ")[@title]");
-            if (title.equals(inTitle)) {
+            if (title != null && title.equals(inTitle)) {
                 String description = this.config.getString("catalogue(" + index + ").config[@description]");
                 String address = this.config.getString("catalogue(" + index + ").config[@address]");
                 String database = this.config.getString("catalogue(" + index + ").config[@database]");
@@ -219,15 +219,15 @@ public class ConfigOpac {
         int countCatalogues = this.config.getMaxIndex("catalogue");
         for (int index = 0; index <= countCatalogues; index++) {
             String title = this.config.getString("catalogue(" + index + ")[@title]");
-            if (title.equals(inCatalogue)) {
+            if (title != null && title.equals(inCatalogue)) {
                 /* ---------------------
                  * alle speziell gemappten DocTypes eines Kataloges einlesen
                  * -------------------*/
                 Map<String, String> labels = new HashMap<>();
                 int countLabels = this.config.getMaxIndex("catalogue(" + index + ").specialmapping");
                 for (int j = 0; j <= countLabels; j++) {
-                    String type = this.config.getString("catalogue(" + index + ").specialmapping[@type]");
-                    String value = this.config.getString("catalogue(" + index + ").specialmapping");
+                    String type = this.config.getString("catalogue(" + index + ").specialmapping(" + j + ")[@type]");
+                    String value = this.config.getString("catalogue(" + index + ").specialmapping(" + j + ")");
                     labels.put(value, type);
                 }
                 if (labels.containsKey(inMapping)) {
@@ -258,7 +258,7 @@ public class ConfigOpac {
         int countCatalogues = this.config.getMaxIndex("doctypes.type");
         for (int index = 0; index <= countCatalogues; index++) {
             String title = this.config.getString("doctypes.type(" + index + ")[@title]");
-            if (title.equals(inTitle)) {
+            if (title != null && title.equals(inTitle)) {
                 /* Sprachen erfassen */
                 Map<String, String> labels = new HashMap<>();
                 int countLabels = this.config.getMaxIndex("doctypes.type(" + index + ").label");

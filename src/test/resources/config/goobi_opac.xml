@@ -21,7 +21,19 @@
 
     <catalogue title="KXP">
       <config address="kxp.k10plus.de" database="2.1" description="Gemeinsamer Bibliotheksverbund" iktlist="IKTLIST-GBV.xml" port="80" ucnf="UCNF=NFC&amp;XPNOFF=1" charset="utf-8"/>
-  
+
+    </catalogue>
+
+    <catalogue title="SpecialMappingTest">
+      <config address="example.org" database="1" description="Catalogue with several special mappings" port="80" charset="utf-8" opacType="NONE"/>
+      <specialmapping type="periodical">Monograph</specialmapping>
+      <specialmapping type="monograph">Periodical</specialmapping>
+    </catalogue>
+
+    <!-- catalogue without title, must be skipped by all lookups -->
+    <catalogue>
+      <config address="example.org" database="1" description="Catalogue without title" port="80" charset="utf-8" opacType="NONE"/>
+      <specialmapping type="periodical">Aa</specialmapping>
     </catalogue>
 
 
