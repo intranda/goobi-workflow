@@ -143,7 +143,6 @@
     <cron-expression-descriptor.version>1.2.10</cron-expression-descriptor.version>
     <antlr4.version>4.13.2</antlr4.version>
     <avalon-framework.version>4.3.1</avalon-framework.version>
-    <oscache.version>2.4.1</oscache.version>
     <shiro.version>2.2.0</shiro.version>
     <activemq.version>6.2.6</activemq.version>
     <aspectj.version>1.9.25.1</aspectj.version>
@@ -211,11 +210,6 @@
       <groupId>de.intranda.js.content-view</groupId>
       <artifactId>content-view</artifactId>
       <version>0.6.1</version>
-    </dependency>
-    <dependency>
-      <groupId>io.goobi.workflow</groupId>
-      <artifactId>workflow-maven-config</artifactId>
-      <version>${revision}</version>
     </dependency>
     <dependency>
       <groupId>de.intranda.ugh</groupId>
@@ -483,16 +477,6 @@
       <groupId>commons-dbutils</groupId>
       <artifactId>commons-dbutils</artifactId>
       <version>1.8.1</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-el</groupId>
-      <artifactId>commons-el</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-fileupload2-jakarta-servlet6</artifactId>
-      <version>2.0.0-M2</version>
     </dependency>
     <dependency>
       <groupId>com.github.jgonian</groupId>
@@ -1041,17 +1025,6 @@
       <version>${poi.version}</version>
     </dependency>
     <dependency>
-      <groupId>opensymphony</groupId>
-      <artifactId>oscache</artifactId>
-      <version>${oscache.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.jms</groupId>
-          <artifactId>jms</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
       <version>${poi.version}</version>
@@ -1102,11 +1075,6 @@
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-core</artifactId>
       <version>${shiro.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.taglibs</groupId>
-      <artifactId>taglibs-standard-impl</artifactId>
-      <version>1.2.5</version>
     </dependency>
     <dependency>
       <groupId>de.schlichtherle</groupId>
