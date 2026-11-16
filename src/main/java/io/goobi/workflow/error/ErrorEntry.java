@@ -25,6 +25,8 @@
  */
 package io.goobi.workflow.error;
 
+import java.io.Serializable;
+
 /**
  * One kind of error page. All texts are message keys derived from {@link #key()}.
  *
@@ -39,7 +41,7 @@ package io.goobi.workflow.error;
  * @param standalone whether the error is rendered only as static fallback page
  */
 public record ErrorEntry(String key, ErrorSeverity severity, String icon, String illustration, boolean incident, int httpStatus,
-        int howSteps, int adminSteps, boolean standalone) {
+        int howSteps, int adminSteps, boolean standalone) implements Serializable {
 
     private String prefix() {
         return "error_" + key;

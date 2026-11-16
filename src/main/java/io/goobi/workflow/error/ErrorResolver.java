@@ -34,7 +34,10 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import lombok.extern.log4j.Log4j2;
+
 /** Resolves a throwable or an HTTP status to an error catalogue entry. */
+@Log4j2
 public class ErrorResolver {
 
     private final List<ErrorMapper> mappers;
@@ -44,10 +47,19 @@ public class ErrorResolver {
     }
 
     private static final class Holder {
-        private static final ErrorResolver INSTANCE = new ErrorResolver(
-                ServiceLoader.load(ErrorMapper.class, ErrorMapper.class.getClassLoader()).stream().map(ServiceLoader.Provider::get).toList());
+        private static final ErrorResolver INSTANCE = load();
 
         private Holder() {
+        }
+    }
+
+    private static ErrorResolver load() {
+        try {
+            return new ErrorResolver(
+                    ServiceLoader.load(ErrorMapper.class, ErrorMapper.class.getClassLoader()).stream().map(ServiceLoader.Provider::get).toList());
+        } catch (RuntimeException | Error e) { //NOSONAR the error path must never fail because of a broken mapper
+            log.error("Could not load error mappers, using the built-in ones", e);
+            return new ErrorResolver(List.of(new ViewExpiredMapper(), new DatabaseUnavailableMapper()));
         }
     }
 

@@ -27,9 +27,12 @@ package io.goobi.workflow.error;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
+import java.sql.SQLTransientConnectionException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -117,5 +120,51 @@ class ErrorResolverTest {
     @Test
     void serviceLoaderFindsCoreMappers() {
         assertEquals(ErrorCatalogue.VIEW_EXPIRED, ErrorResolver.fromServiceLoader().resolve(new ViewExpiredException(), null).entry());
+    }
+
+    @Test
+    void serviceLoaderFindsDatabaseMapper() {
+        assertEquals(ErrorCatalogue.DATABASE_UNAVAILABLE,
+                ErrorResolver.fromServiceLoader().resolve(new SQLException("x", "08001"), null).entry());
+    }
+
+    @Test
+    void nestedMapperHitWinsWhenOuterUnknown() {
+        Throwable t = new IllegalStateException(new RuntimeException(new SQLTransientConnectionException("x")));
+        assertEquals(ErrorCatalogue.DATABASE_UNAVAILABLE, resolver.resolve(t, null).entry());
+    }
+
+    @Test
+    void nullSqlStateIsUnexpected() {
+        assertEquals(ErrorCatalogue.UNEXPECTED, resolver.resolve(new SQLException("x"), null).entry());
+    }
+
+    @Test
+    void nullParamsBecomeEmptyStrings() {
+        GoobiUserFacingException e = new GoobiUserFacingException(ErrorCatalogue.UNEXPECTED, "m", null, Arrays.asList("a", null), null);
+        assertEquals(List.of("a", ""), e.getParams());
+    }
+
+    @Test
+    void nullLogContextValuesBecomeDash() {
+        Map<String, String> ctx = new java.util.HashMap<>();
+        ctx.put("k", null);
+        GoobiUserFacingException e = new GoobiUserFacingException(ErrorCatalogue.UNEXPECTED, "m", null, null, ctx);
+        assertEquals("-", e.getLogContext().get("k"));
+    }
+
+    @Test
+    void messageIsKeptVerbatim() {
+        assertEquals("msg", new GoobiUserFacingException(ErrorCatalogue.UNEXPECTED, "msg", null, null, null).getMessage());
+    }
+
+    @Test
+    void entryIsRequired() {
+        assertThrows(NullPointerException.class, () -> new GoobiUserFacingException(null, "m", null, null, null));
+    }
+
+    @Test
+    void entryIsSerializable() {
+        assertTrue(java.io.Serializable.class.isAssignableFrom(ErrorEntry.class));
     }
 }

@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * An exception that is shown to the user as a specific error page. The message is for logs only and must not contain details that are not meant for
@@ -38,15 +39,19 @@ public class GoobiUserFacingException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    private final transient ErrorEntry entry;
+    private final ErrorEntry entry;
     private final List<String> params;
     private final Map<String, String> logContext;
 
     public GoobiUserFacingException(ErrorEntry entry, String message, Throwable cause, List<String> params, Map<String, String> logContext) {
         super(message, cause);
-        this.entry = entry;
-        this.params = params == null ? List.of() : List.copyOf(params);
-        this.logContext = logContext == null ? Map.of() : Collections.unmodifiableMap(new LinkedHashMap<>(logContext));
+        this.entry = Objects.requireNonNull(entry, "entry");
+        this.params = params == null ? List.of() : params.stream().map(p -> p == null ? "" : p).toList();
+        Map<String, String> copy = new LinkedHashMap<>();
+        if (logContext != null) {
+            logContext.forEach((k, v) -> copy.put(k, v == null ? "-" : v));
+        }
+        this.logContext = Collections.unmodifiableMap(copy);
     }
 
     public ErrorEntry getEntry() {
