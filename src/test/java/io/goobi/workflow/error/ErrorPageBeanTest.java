@@ -47,7 +47,7 @@ class ErrorPageBeanTest {
             boolean loggedIn) {
         ErrorReport report = new ErrorReport(new ResolvedError(entry, params, Map.of(), cause), entry.incident() ? "GW-7K3F9" : null, TIME,
                 expiredViewId);
-        return new ErrorPageBean(report, admin, loggedIn, "/goobi", Locale.ENGLISH, ZoneId.of("UTC"), (k, p) -> "T:" + k);
+        return new ErrorPageBean(report, admin, loggedIn, "/goobi", Locale.ENGLISH, ZoneId.of("UTC"), (k, p) -> "T:" + k + (p.length == 0 ? "" : " " + String.join("|", p)));
     }
 
     private static ErrorPageBean bean(ErrorEntry entry, boolean admin, boolean loggedIn) {
@@ -132,7 +132,10 @@ class ErrorPageBeanTest {
     @Test
     void contextNamesTheProcessOnlyForMetadataEntry() {
         ErrorPageBean metadata = bean(ErrorCatalogue.METADATA_UNREADABLE, List.of("book_1", "4711"), null, null, false, true);
-        assertEquals("T:process book_1 (ID 4711)", metadata.getContext());
+        assertEquals("T:error_context_process book_1|4711", metadata.getContext());
+        assertEquals(List.of("T:error_context_process ", "book_1", "|", "4711"),
+                metadata.getContextSegments().stream().map(ErrorPageBean.ContextSegment::text).toList());
+        assertEquals(List.of(false, true, false, false), metadata.getContextSegments().stream().map(ErrorPageBean.ContextSegment::strong).toList());
         assertNull(bean(ErrorCatalogue.UNEXPECTED, false, true).getContext());
     }
 

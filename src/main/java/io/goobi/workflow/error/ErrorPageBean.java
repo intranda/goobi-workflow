@@ -62,7 +62,7 @@ public class ErrorPageBean implements Serializable {
     private boolean admin;
     private boolean loggedIn;
     private String contextPath = "";
-    private Locale locale = Locale.ENGLISH;
+    private Locale locale;
     private ZoneId zone = ZoneId.systemDefault();
     private transient BiFunction<String, String[], String> translate = Helper::getTranslation;
 
@@ -101,9 +101,6 @@ public class ErrorPageBean implements Serializable {
         loggedIn = Helper.getCurrentUser() != null;
         admin = Helper.getLoginBean() != null && Helper.getLoginBean().hasRole("Admin_Menu");
         report = ErrorReporting.report(request, exception, status, Helper.getCurrentUser());
-        if (context.getViewRoot() != null && context.getViewRoot().getLocale() != null) {
-            locale = context.getViewRoot().getLocale();
-        }
     }
 
     private ErrorEntry entry() {
@@ -117,6 +114,17 @@ public class ErrorPageBean implements Serializable {
                     Instant.now(), null);
         }
         return report;
+    }
+
+    private Locale locale() {
+        if (locale != null) {
+            return locale;
+        }
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context != null && context.getViewRoot() != null && context.getViewRoot().getLocale() != null) {
+            return context.getViewRoot().getLocale();
+        }
+        return Locale.ENGLISH;
     }
 
     private String translate(String key, String... params) {
@@ -138,13 +146,52 @@ public class ErrorPageBean implements Serializable {
         return translate(entry().titleKey());
     }
 
+    /** One piece of the context line, the name of the object is {@code strong}. */
+    public record ContextSegment(String text, boolean strong) {
+    }
+
+    private static final String MARK_NAME = "\u0001";
+    private static final String MARK_ID = "\u0002";
+
+    private boolean hasContext() {
+        List<String> params = report().error().params();
+        return ErrorCatalogue.METADATA_UNREADABLE.key().equals(entry().key()) && params != null && params.size() >= 2;
+    }
+
     /** @return the affected object, for example the process, or null */
     public String getContext() {
-        List<String> params = report().error().params();
-        if (ErrorCatalogue.METADATA_UNREADABLE.key().equals(entry().key()) && params != null && params.size() >= 2) {
-            return translate("process") + " " + params.get(0) + " (ID " + params.get(1) + ")";
+        if (!hasContext()) {
+            return null;
         }
-        return null;
+        List<String> params = report().error().params();
+        return translate("error_context_process", params.get(0), params.get(1));
+    }
+
+    /** @return the context line in pieces so the view can emphasise the name without unescaped output, empty if there is none */
+    public List<ContextSegment> getContextSegments() {
+        List<ContextSegment> segments = new ArrayList<>();
+        if (!hasContext()) {
+            return segments;
+        }
+        List<String> params = report().error().params();
+        String template = translate("error_context_process", MARK_NAME, MARK_ID);
+        StringBuilder text = new StringBuilder();
+        for (char c : template.toCharArray()) {
+            if (c == MARK_NAME.charAt(0) || c == MARK_ID.charAt(0)) {
+                if (!text.isEmpty()) {
+                    segments.add(new ContextSegment(text.toString(), false));
+                    text.setLength(0);
+                }
+                boolean name = c == MARK_NAME.charAt(0);
+                segments.add(new ContextSegment(params.get(name ? 0 : 1), name));
+            } else {
+                text.append(c);
+            }
+        }
+        if (!text.isEmpty()) {
+            segments.add(new ContextSegment(text.toString(), false));
+        }
+        return segments;
     }
 
     public String getWhat() {
@@ -206,7 +253,7 @@ public class ErrorPageBean implements Serializable {
     }
 
     public String getIncidentTime() {
-        return DateTimeFormatter.ofPattern(TIME_PATTERN, locale).withZone(zone).format(report().time());
+        return DateTimeFormatter.ofPattern(TIME_PATTERN, locale()).withZone(zone).format(report().time());
     }
 
     /** @return text for support, only incident number, time and title and never technical details */

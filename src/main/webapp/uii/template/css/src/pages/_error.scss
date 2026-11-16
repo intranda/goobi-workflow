@@ -207,22 +207,24 @@
 
   // Logged-out variant: login screen look, stacked content
   &--login {
-    position: relative;
+    // The page scrolls instead of clipping the box on small screens
+    position: static;
     max-width: none;
     min-height: 100vh;
     margin: 0;
-    padding: 0;
+    padding: 24px 0;
 
     .login-logout {
-      position: absolute;
-      inset: 0;
-      width: 100%;
+      position: static;
+      min-height: calc(100vh - 48px);
+      height: auto;
       padding-inline: 16px;
     }
 
     .login-logout-body {
       width: 36rem;
       max-width: 100%;
+      max-height: none;
     }
 
     .login-logout-box {

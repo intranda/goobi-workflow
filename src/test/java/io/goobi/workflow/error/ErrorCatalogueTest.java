@@ -46,7 +46,7 @@ class ErrorCatalogueTest {
 
     private static final List<String> SHARED_KEYS = List.of("error_back", "error_startPage", "error_goToLogin", "error_openAgain",
             "error_reload", "error_whyHeading", "error_howHeading", "error_adminHeading", "error_incident", "error_copy", "error_copied",
-            "error_pageTitleGeneric", "error_metadataUnreadable_back", "error_loginExpired", "error_unexpected_anonHow_1",
+            "error_pageTitleGeneric", "error_metadataUnreadable_back", "error_loginExpired", "error_context_process", "error_unexpected_anonHow_1",
             "error_unexpected_anonHow_2", "error_unexpected_anonWhat", "error_notFound_anonHow_1", "error_notFound_anonHow_2");
 
     private static Properties load(String lang) throws IOException {

@@ -14,7 +14,10 @@
                 var text = button.getAttribute('data-copy-text');
                 var feedback = document.getElementById('error-page-feedback');
                 var done = function () {
-                    feedback.textContent = button.getAttribute('data-copied-label');
+                    feedback.textContent = '';
+                    window.setTimeout(function () {
+                        feedback.textContent = button.getAttribute('data-copied-label');
+                    }, 50);
                 };
                 var select = function () {
                     var id = button.querySelector('.error-page__chip-id');
@@ -48,7 +51,7 @@
                     </div>
                     <h2 class="error-page__title">#{ErrorPageBean.title}</h2>
                     <ui:fragment rendered="#{ErrorPageBean.context != null}">
-                        <p class="error-page__context">#{ErrorPageBean.context}</p>
+                        <p class="error-page__context"><ui:repeat value="#{ErrorPageBean.contextSegments}" var="segment"><h:outputText value="#{segment.text}" rendered="#{!segment.strong}" /><strong><h:outputText value="#{segment.text}" rendered="#{segment.strong}" /></strong></ui:repeat></p>
                     </ui:fragment>
                     <p class="error-page__lead">#{ErrorPageBean.what}</p>
                 </div>
@@ -134,7 +137,11 @@
                 <main>
                     <div class="login-logout">
                         <div class="login-logout-body">
-                            <h1><a href="#{ErrorPageBean.startUrl}">Goobi workflow</a></h1>
+                            <h1>
+                                <h:outputLink value="#{ErrorPageBean.startUrl}">
+                                    <h:outputText escape="false" value="#{HelperForm.applicationHeaderTitle}" />
+                                </h:outputLink>
+                            </h1>
                             <div class="login-logout-box mt-3 mb-3 p-5">
                                 <div class="error-page__content">
                                     <div class="error-page__icon error-page__icon--#{ErrorPageBean.severityCss}">
