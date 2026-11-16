@@ -9,9 +9,10 @@
   --error-border-primary: #dbe8f5;
   --error-border: #e1e5ea;
 
+  background: var(--bs-body-bg);
   max-width: 860px;
   margin: 0 auto;
-  padding: 16px 0 40px;
+  padding: 1rem;
   text-align: center;
 
   &__art {
