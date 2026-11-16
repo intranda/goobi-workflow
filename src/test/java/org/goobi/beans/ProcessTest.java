@@ -24,7 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -32,11 +34,14 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import io.goobi.workflow.error.ErrorCatalogue;
+import io.goobi.workflow.error.GoobiUserFacingException;
 import org.goobi.beans.GoobiProperty.PropertyOwnerType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -50,6 +55,7 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
+import ugh.exceptions.ReadException;
 
 public class ProcessTest extends AbstractTest {
 
@@ -757,6 +763,86 @@ public class ProcessTest extends AbstractTest {
         assertNotNull(ff);
         DocStruct logical = ff.getDigitalDocument().getLogicalDocStruct();
         assertEquals("Monograph", logical.getType().getName());
+    }
+
+    private Process processWithMetaXml(String content) throws Exception {
+        Process process = MockProcess.createProcess();
+        process.setId(4711);
+        ConfigurationHelper.getInstance().setParameter("dataFolder", tempDir + "/");
+        Path dir = tempDir.resolve("4711");
+        Files.createDirectories(dir);
+        Files.writeString(dir.resolve("meta.xml"), content, StandardCharsets.UTF_8);
+        return process;
+    }
+
+    private static String testMetaXml() throws IOException {
+        return Files.readString(Path.of("src/test/resources/metadata/1/meta.xml"), StandardCharsets.UTF_8);
+    }
+
+    private static GoobiUserFacingException readFails(Process process) {
+        return assertThrows(GoobiUserFacingException.class, process::readMetadataFile);
+    }
+
+    private static void assertUnreadable(GoobiUserFacingException e, String reason) {
+        assertSame(ErrorCatalogue.METADATA_UNREADABLE, e.getEntry());
+        assertEquals(List.of("testprocess", "4711"), e.getParams());
+        assertEquals(reason, e.getLogContext().get("reason"));
+    }
+
+    @Test
+    public void emptyMetaXmlThrowsUserFacingException() throws Exception {
+        GoobiUserFacingException e = readFails(processWithMetaXml(""));
+        assertUnreadable(e, "empty or unknown format");
+        assertNull(e.getCause());
+    }
+
+    @Test
+    public void truncatedBeforeHeaderThrowsUserFacingException() throws Exception {
+        GoobiUserFacingException e = readFails(processWithMetaXml(testMetaXml().substring(0, 100)));
+        assertUnreadable(e, "empty or unknown format");
+    }
+
+    @Test
+    public void truncatedMetaXmlThrowsUserFacingException() throws Exception {
+        String xml = testMetaXml();
+        GoobiUserFacingException e = readFails(processWithMetaXml(xml.substring(0, xml.length() / 2)));
+        assertUnreadable(e, "XML parse error");
+        assertInstanceOf(ReadException.class, e.getCause());
+    }
+
+    @Test
+    public void malformedMetaXmlThrowsUserFacingException() throws Exception {
+        String xml = testMetaXml();
+        int idx = xml.indexOf("</mods:mods>");
+        assertTrue(idx > 0);
+        String broken = xml.substring(0, idx) + xml.substring(idx + "</mods:mods>".length());
+        GoobiUserFacingException e = readFails(processWithMetaXml(broken));
+        assertUnreadable(e, "XML parse error");
+        assertInstanceOf(ReadException.class, e.getCause());
+    }
+
+    @Test
+    public void messageContainsNoPath() throws Exception {
+        GoobiUserFacingException e = readFails(processWithMetaXml(""));
+        assertFalse(e.getMessage().contains(tempDir.toString()));
+        assertFalse(e.getMessage().contains("meta.xml"));
+    }
+
+    @Test
+    public void logContextListsBackups() throws Exception {
+        Process process = processWithMetaXml("");
+        Path dir = tempDir.resolve("4711");
+        Files.writeString(dir.resolve("meta.xml.2026-11-11-091544027"), "x");
+        Files.writeString(dir.resolve("meta.xml.2026-11-12-174102311"), "x");
+        GoobiUserFacingException e = readFails(process);
+        assertEquals("meta.xml.2026-11-12-174102311, meta.xml.2026-11-11-091544027", e.getLogContext().get("backups"));
+        assertTrue(e.getLogContext().get("file").endsWith("/4711/meta.xml"));
+    }
+
+    @Test
+    public void getReplacedVariableFailsLoudlyOnCorruptFile() throws Exception {
+        Process process = processWithMetaXml("");
+        assertThrows(GoobiUserFacingException.class, () -> process.getReplacedVariable("{meta.TitleDocMain}"));
     }
 
     @Test

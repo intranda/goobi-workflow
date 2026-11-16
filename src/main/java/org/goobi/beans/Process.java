@@ -33,11 +33,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +90,8 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
+import io.goobi.workflow.error.ErrorCatalogue;
+import io.goobi.workflow.error.GoobiUserFacingException;
 import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import io.goobi.workflow.xslt.XsltPreparatorMetadata;
 import io.goobi.workflow.xslt.XsltToPdf;
@@ -973,6 +978,9 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
 
         /* prüfen, welches Format die Metadaten haben (Mets, xstream oder rdf */
         String type = MetadatenHelper.getMetaFileType(getMetadataFilePath());
+        if ("-".equals(type) || isMetadataFileEmpty()) {
+            throw metadataUnreadable("empty or unknown format", null);
+        }
         Fileformat ff = MetadatenHelper.getFileformatByName(type, getRegelsatz());
         if (ff == null) {
             String[] parameter = { titel, type };
@@ -982,13 +990,53 @@ public class Process extends AbstractJournal implements DatabaseObject, Comparab
         try {
             ff.read(getMetadataFilePath());
         } catch (ReadException e) {
-            if (e.getMessage().startsWith("Parse error at line -1")) {
-                Helper.setFehlerMeldung("metadataCorrupt");
-            } else {
-                throw e;
+            if (isParseFailure(e)) {
+                throw metadataUnreadable("XML parse error", e);
             }
+            throw e;
         }
         return ff;
+    }
+
+    private boolean isMetadataFileEmpty() throws IOException, SwapException {
+        return Files.size(Paths.get(getMetadataFilePath())) == 0;
+    }
+
+    private static boolean isParseFailure(ReadException e) {
+        for (Throwable t = e; t != null; t = t.getCause() == t ? null : t.getCause()) {
+            if (t instanceof org.apache.xmlbeans.XmlException || t instanceof org.xml.sax.SAXException) {
+                return true;
+            }
+        }
+        String message = e.getMessage();
+        return message != null && (message.startsWith("Error parsing") || message.startsWith("Parse error"));
+    }
+
+    private GoobiUserFacingException metadataUnreadable(String reason, Throwable cause) {
+        return new GoobiUserFacingException(ErrorCatalogue.METADATA_UNREADABLE, "Metadata file of process " + id + " cannot be read", cause,
+                List.of(titel == null ? "" : titel, String.valueOf(id)), metadataLogContext(reason));
+    }
+
+    private Map<String, String> metadataLogContext(String reason) {
+        Map<String, String> context = new LinkedHashMap<>();
+        context.put("process", id + " " + titel);
+        try {
+            Path file = Paths.get(getMetadataFilePath());
+            context.put("file", file.toAbsolutePath().toString());
+            context.put("size", String.valueOf(Files.size(file)));
+            context.put("modified", LocalDateTime.ofInstant(Files.getLastModifiedTime(file).toInstant(), ZoneId.systemDefault()).toString());
+            context.put("reason", reason);
+            List<String> backups = new ArrayList<>(BackupFileManager.getBackupFilesSortedByAge(getProcessDataDirectory(), META_FILE)
+                    .stream()
+                    .map(b -> b.getFileName().toString())
+                    .toList());
+            Collections.reverse(backups);
+            context.put("backups", backups.isEmpty() ? "none" : String.join(", ", backups));
+        } catch (IOException | SwapException e) {
+            context.putIfAbsent("reason", reason);
+            context.putIfAbsent("backups", "unknown");
+        }
+        return context;
     }
 
     private boolean checkForMetadataFile() throws IOException, SwapException {
