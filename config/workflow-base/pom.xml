@@ -31,6 +31,14 @@
   </pluginRepositories>
   <dependencyManagement>
     <dependencies>
+      <!-- Netty comes in through the AWS SDK (async S3 HTTP client); pinned for CVE-2026-75595 -->
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-bom</artifactId>
+        <version>4.1.140.Final</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>com.google.cloud</groupId>
         <artifactId>libraries-bom</artifactId>
