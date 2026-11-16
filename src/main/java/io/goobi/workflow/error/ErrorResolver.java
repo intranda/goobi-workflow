@@ -1,0 +1,97 @@
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
+package io.goobi.workflow.error;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceLoader;
+import java.util.Set;
+
+/** Resolves a throwable or an HTTP status to an error catalogue entry. */
+public class ErrorResolver {
+
+    private final List<ErrorMapper> mappers;
+
+    public ErrorResolver(List<ErrorMapper> mappers) {
+        this.mappers = List.copyOf(mappers);
+    }
+
+    private static final class Holder {
+        private static final ErrorResolver INSTANCE = new ErrorResolver(
+                ServiceLoader.load(ErrorMapper.class, ErrorMapper.class.getClassLoader()).stream().map(ServiceLoader.Provider::get).toList());
+
+        private Holder() {
+        }
+    }
+
+    public static ErrorResolver fromServiceLoader() {
+        return Holder.INSTANCE;
+    }
+
+    /**
+     * @param throwable the failure, may be null
+     * @param httpStatus the HTTP status, may be null
+     * @return the resolved error, never null
+     */
+    public ResolvedError resolve(Throwable throwable, Integer httpStatus) {
+        List<Throwable> chain = chainOf(throwable);
+        for (Throwable t : chain) {
+            if (t instanceof GoobiUserFacingException ufe) {
+                return new ResolvedError(ufe.getEntry(), ufe.getParams(), ufe.getLogContext(), throwable);
+            }
+        }
+        for (Throwable t : chain) {
+            for (ErrorMapper mapper : mappers) {
+                Optional<ErrorEntry> entry = mapper.map(t);
+                if (entry.isPresent()) {
+                    return new ResolvedError(entry.get(), List.of(), Map.of(), throwable);
+                }
+            }
+        }
+        ErrorEntry entry = ErrorCatalogue.UNEXPECTED;
+        if (throwable == null && httpStatus != null) {
+            if (httpStatus == 404) {
+                entry = ErrorCatalogue.NOT_FOUND;
+            } else if (httpStatus == 403) {
+                entry = ErrorCatalogue.FORBIDDEN;
+            }
+        }
+        return new ResolvedError(entry, List.of(), Map.of(), throwable);
+    }
+
+    private static List<Throwable> chainOf(Throwable throwable) {
+        Set<Throwable> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        List<Throwable> chain = new ArrayList<>();
+        for (Throwable t = throwable; t != null && seen.add(t); t = t.getCause()) {
+            chain.add(t);
+        }
+        return chain;
+    }
+}
