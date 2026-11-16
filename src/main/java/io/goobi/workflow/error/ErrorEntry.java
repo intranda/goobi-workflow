@@ -84,4 +84,9 @@ public record ErrorEntry(String key, ErrorSeverity severity, String icon, String
     public String anonHowKey(int n) {
         return prefix() + "_anonHow_" + n;
     }
+
+    /** Optional key for the description shown to logged-out visitors, the page falls back to {@link #whatKey()}. */
+    public String anonWhatKey() {
+        return prefix() + "_anonWhat";
+    }
 }

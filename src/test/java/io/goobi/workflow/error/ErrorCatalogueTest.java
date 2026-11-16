@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -48,7 +47,7 @@ class ErrorCatalogueTest {
     private static final List<String> SHARED_KEYS = List.of("error_back", "error_startPage", "error_goToLogin", "error_openAgain",
             "error_reload", "error_whyHeading", "error_howHeading", "error_adminHeading", "error_incident", "error_copy", "error_copied",
             "error_pageTitleGeneric", "error_metadataUnreadable_back", "error_loginExpired", "error_unexpected_anonHow_1",
-            "error_unexpected_anonHow_2", "error_notFound_anonHow_1", "error_notFound_anonHow_2");
+            "error_unexpected_anonHow_2", "error_unexpected_anonWhat", "error_notFound_anonHow_1", "error_notFound_anonHow_2");
 
     private static Properties load(String lang) throws IOException {
         Properties props = new Properties();
@@ -105,11 +104,17 @@ class ErrorCatalogueTest {
     }
 
     @Test
-    void metadataUnreadableUsesIllustration() {
-        ErrorEntry e = ErrorCatalogue.METADATA_UNREADABLE;
-        assertEquals("metadata-unreadable", e.illustration());
-        assertEquals(500, e.httpStatus());
-        assertTrue(e.incident());
+    void entriesMatchTheSpecifiedTable() {
+        // key, severity, icon, illustration, incident, status, howSteps, adminSteps, standalone
+        List<ErrorEntry> expected = List.of(
+                new ErrorEntry("unexpected", ErrorSeverity.ERROR, "alert-octagon", null, true, 500, 2, 2, false),
+                new ErrorEntry("metadataUnreadable", ErrorSeverity.ERROR, "file-broken", "metadata-unreadable", true, 500, 3, 3, false),
+                new ErrorEntry("notFound", ErrorSeverity.INFO, "search", null, false, 404, 2, 0, false),
+                new ErrorEntry("forbidden", ErrorSeverity.WARNING, "lock", null, false, 403, 1, 0, false),
+                new ErrorEntry("viewExpired", ErrorSeverity.INFO, "clock", null, false, 200, 2, 0, false),
+                new ErrorEntry("databaseUnavailable", ErrorSeverity.ERROR, "database-off", null, true, 503, 2, 2, true));
+        assertEquals(expected, ErrorCatalogue.all());
+        assertEquals("metadata-unreadable", ErrorCatalogue.METADATA_UNREADABLE.illustration());
     }
 
     @Test
@@ -118,6 +123,7 @@ class ErrorCatalogueTest {
         assertEquals("error_notFound_title", e.titleKey());
         assertEquals("error_notFound_how_2", e.howKey(2));
         assertEquals("error_notFound_anonHow_1", e.anonHowKey(1));
+        assertEquals("error_notFound_anonWhat", e.anonWhatKey());
         assertEquals("danger", ErrorSeverity.ERROR.cssModifier());
     }
 }
