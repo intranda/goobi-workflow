@@ -26,10 +26,19 @@
 package de.sub.goobi.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.apache.deltaspike.jsf.spi.scope.window.ClientWindowConfig.ClientWindowRenderMode;
 import org.junit.jupiter.api.Test;
+
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class GoobiJsfModuleConfigTest {
 
@@ -38,5 +47,36 @@ public class GoobiJsfModuleConfigTest {
         GoobiJsfModuleConfig fixture = new GoobiJsfModuleConfig();
         assertNotNull(fixture);
         assertEquals(ClientWindowRenderMode.LAZY, fixture.getDefaultWindowMode());
+    }
+
+    @Test
+    public void initialRedirectStaysEnabledForNormalRequests() {
+        GoobiJsfModuleConfig fixture = new GoobiJsfModuleConfig();
+        assertTrue(fixture.isInitialRedirectEnabled(contextFor(DispatcherType.REQUEST)));
+        assertTrue(fixture.isInitialRedirectEnabled(contextFor(DispatcherType.FORWARD)));
+    }
+
+    @Test
+    public void initialRedirectIsDisabledWhileRenderingAnErrorPage() {
+        // a redirect here would leave the error dispatch and lose status and error details
+        GoobiJsfModuleConfig fixture = new GoobiJsfModuleConfig();
+        assertFalse(fixture.isInitialRedirectEnabled(contextFor(DispatcherType.ERROR)));
+    }
+
+    @Test
+    public void initialRedirectStaysEnabledWithoutFacesContext() {
+        GoobiJsfModuleConfig fixture = new GoobiJsfModuleConfig();
+        assertTrue(fixture.isInitialRedirectEnabled(null));
+        assertTrue(fixture.isInitialRedirectEnabled());
+    }
+
+    private static FacesContext contextFor(DispatcherType type) {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getDispatcherType()).thenReturn(type);
+        ExternalContext externalContext = mock(ExternalContext.class);
+        when(externalContext.getRequest()).thenReturn(request);
+        FacesContext facesContext = mock(FacesContext.class);
+        when(facesContext.getExternalContext()).thenReturn(externalContext);
+        return facesContext;
     }
 }

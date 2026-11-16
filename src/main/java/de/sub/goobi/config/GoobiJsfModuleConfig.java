@@ -28,6 +28,9 @@ import org.apache.deltaspike.jsf.api.config.JsfModuleConfig;
 import org.apache.deltaspike.jsf.spi.scope.window.ClientWindowConfig;
 
 import jakarta.enterprise.inject.Specializes;
+import jakarta.faces.context.FacesContext;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Specializes
 public class GoobiJsfModuleConfig extends JsfModuleConfig {
@@ -40,6 +43,27 @@ public class GoobiJsfModuleConfig extends JsfModuleConfig {
     @Override
     public ClientWindowConfig.ClientWindowRenderMode getDefaultWindowMode() {
         return ClientWindowConfig.ClientWindowRenderMode.LAZY;
+    }
+
+    /**
+     * The LAZY window mode redirects every GET without a window id to the same URL plus a new id. On an error dispatch this redirect leaves the
+     * error page: status and error details are lost, and a visitor who is not logged in ends up on the login page. Error pages therefore render
+     * with a fresh window id and no redirect.
+     */
+    @Override
+    public boolean isInitialRedirectEnabled() {
+        return isInitialRedirectEnabled(FacesContext.getCurrentInstance());
+    }
+
+    boolean isInitialRedirectEnabled(FacesContext facesContext) {
+        if (facesContext == null || facesContext.getExternalContext() == null) {
+            return super.isInitialRedirectEnabled();
+        }
+        if (facesContext.getExternalContext().getRequest() instanceof HttpServletRequest request
+                && request.getDispatcherType() == DispatcherType.ERROR) {
+            return false;
+        }
+        return super.isInitialRedirectEnabled();
     }
 
 }
