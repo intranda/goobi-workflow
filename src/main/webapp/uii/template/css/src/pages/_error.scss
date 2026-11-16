@@ -18,8 +18,6 @@
   --gw-clr-error-admin-bg: #fff8ec;
   --gw-clr-error-admin-border: #f3d9a8;
   --gw-clr-error-admin-text: #8a4b00;
-  --gw-clr-error-chip-bg: #f4f6f8;
-  --gw-clr-error-chip-border: #dde2e7;
 
   background: var(--bs-body-bg);
   max-width: 860px;
@@ -181,40 +179,11 @@
     gap: 8px;
   }
 
-  &__chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 10px;
-    border: 1px solid var(--gw-clr-error-chip-border);
-    background: var(--gw-clr-error-chip-bg);
-    font-size: 0.8125rem;
-    color: var(--gw-clr-error-text);
-    cursor: pointer;
-    text-decoration: none; // the chip is also used as a link
-
-    &:hover {
-      border-color: var(--clr-primary);
-      color: var(--gw-clr-error-text);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--clr-primary);
-      outline-offset: 1px;
-    }
-
-    svg {
-      width: 15px;
-      height: 15px;
-      color: var(--clr-neutral-600);
-    }
-  }
-
-  &__chip-label {
+  &__incident-label {
     color: var(--clr-neutral-600);
   }
 
-  &__chip-id {
+  &__incident-id {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-weight: 600;
     letter-spacing: 0.03em;

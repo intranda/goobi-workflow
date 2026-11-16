@@ -9,19 +9,19 @@
             <div class="error-page__foot-actions">
                 <button
                     type="button"
-                    class="error-page__chip"
+                    class="btn btn-blank"
                     data-copy-text="#{ErrorPageBean.incidentId}"
                     data-copied-label="#{msgs.error_copied}"
                     data-copy-failed-label="#{msgs.error_copyFailed}"
                     data-feedback-target="error-page-feedback"
                     title="#{msgs.error_copy}">
-                    <span class="error-page__chip-label">#{msgs.error_incident}</span>
-                    <span class="error-page__chip-id">#{ErrorPageBean.incidentId}</span>
                     <util:icon icon="copy" />
+                    <span class="error-page__incident-label">#{msgs.error_incident}</span>
+                    <span class="error-page__incident-id">#{ErrorPageBean.incidentId}</span>
                 </button>
                 <button
                     type="button"
-                    class="error-page__chip"
+                    class="btn btn-blank"
                     data-copy-text="#{ErrorPageBean.reportText}"
                     data-copied-label="#{msgs.error_copied}"
                     data-copy-failed-label="#{msgs.error_copyFailed}"
@@ -31,7 +31,7 @@
                 </button>
                 <ui:fragment rendered="#{ErrorPageBean.supportMailto != null}">
                     <a
-                        class="error-page__chip"
+                        class="btn btn-blank"
                         href="#{ErrorPageBean.supportMailto}">
                         <util:icon icon="mail" />
                         <span>#{msgs.error_mailSupport}</span>
