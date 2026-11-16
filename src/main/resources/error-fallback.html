@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="${lang}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${title}</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body.login { background-color: #368ee0; font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #000; }
+.login-logout { display: flex; justify-content: center; align-items: center; color: #fff; min-height: 100vh; width: 100%; padding: 24px 16px; }
+.login-logout-body { width: 36rem; max-width: 100%; }
+.login-logout-body > h1 { text-align: center; font-size: 3rem; margin: 0; font-weight: 300; padding: 2px 0; color: #fff; }
+.login-logout-box { background-color: #fff; color: #000; display: flex; justify-content: center; align-items: center; margin: 1rem 0; padding: 3rem; }
+.content { width: 100%; text-align: center; }
+.icon { display: grid; place-items: center; width: 84px; height: 84px; margin: 0 auto 12px; border-radius: 50%; background: #fdecea; color: #e51400; }
+.icon svg { width: 40px; height: 40px; }
+h2.title { font-size: 1.4rem; font-weight: 600; margin: 0 0 10px; text-wrap: balance; color: #000; }
+.lead { text-align: center; color: #333; margin: 0; }
+h3 { display: flex; align-items: center; gap: 6px; margin: 18px 0 8px; text-align: start; font-size: .75rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #555; }
+h3 svg { width: 16px; height: 16px; color: #368ee0; flex: none; }
+.content > p { text-align: start; margin-top: 0; }
+.lead { text-align: center !important; }
+ol.steps { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; text-align: start; }
+ol.steps li { display: flex; gap: 10px; align-items: flex-start; }
+ol.steps li::before { counter-increment: step; content: counter(step); flex: none; width: 22px; height: 22px; border-radius: 50%; background: #368ee0; color: #fff; display: grid; place-items: center; font-size: .75rem; font-weight: 600; margin-top: 1px; }
+ol.steps { counter-reset: step; }
+.buttons { display: flex; justify-content: center; margin-top: 16px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid #368ee0; background: #368ee0; color: #fff; font: inherit; cursor: pointer; text-decoration: none; }
+.btn:hover { background: #2a7cc9; }
+.btn svg { width: 16px; height: 16px; }
+.foot { margin-top: 22px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px; border: 1px solid #dde2e7; background: #f4f6f8; font: inherit; font-size: .8125rem; color: #333; cursor: pointer; }
+.chip:hover { border-color: #368ee0; }
+.chip svg { width: 15px; height: 15px; color: #666; }
+.chip-label { color: #666; }
+.chip-id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 600; letter-spacing: .03em; }
+.feedback { min-height: 1.4em; margin-top: 6px; font-size: .8125rem; color: #666; }
+.btn:focus-visible, .chip:focus-visible { outline: 2px solid #1f4f80; outline-offset: 2px; }
+@media (max-width: 600px) { .login-logout-box { padding: 1.5rem; } .login-logout-body > h1 { font-size: 2.2rem; } }
+</style>
+</head>
+<body class="login">
+<main>
+<div class="login-logout">
+<div class="login-logout-body">
+<h1>Goobi workflow</h1>
+<div class="login-logout-box">
+<div class="content">
+<div class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.983 8.978C16.938 8.796 20 7.532 20 6c0-1.657-3.582-3-8-3-1.661 0-3.204.19-4.483.515M4.734 4.743C4.263 5.125 4 5.551 4 6c0 1.22 1.944 2.271 4.734 2.74"/><path d="M4 6v6c0 1.657 3.582 3 8 3 .986 0 1.93-.067 2.802-.19m3.187-.82C19.24 13.46 20 12.762 20 12V6"/><path d="M4 12v6c0 1.657 3.582 3 8 3 3.217 0 5.991-.712 7.261-1.74M20 16v-4M3 3l18 18"/></svg></div>
+<h2 class="title">${title}</h2>
+<p class="lead">${what}</p>
+<h3><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 1 0-18 0M12 17v.01"/><path d="M12 13.5a1.5 1.5 0 0 1 1-1.5 2.6 2.6 0 1 0-3-4"/></svg>${whyHeading}</h3>
+<p>${why}</p>
+<h3><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12a4 4 0 1 0 8 0 4 4 0 1 0-8 0"/><path d="M3 12a9 9 0 1 0 18 0 9 9 0 1 0-18 0M15 15l3.35 3.35M9 15l-3.35 3.35M5.65 5.65 9 9M18.35 5.65 15 9"/></svg>${howHeading}</h3>
+<ol class="steps">
+${how}
+</ol>
+<div class="buttons"><button type="button" class="btn" onclick="window.location.reload()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11A8.1 8.1 0 0 0 4.5 9M4 5v4h4M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"/></svg><span>${reload}</span></button></div>
+${incident}
+</div>
+</div>
+</div>
+</div>
+</main>
+</body>
+</html>

@@ -11,6 +11,11 @@
     </context-param>
 
     <context-param>
+        <param-name>jakarta.faces.FACELETS_BUFFER_SIZE</param-name>
+        <param-value>262144</param-value>
+    </context-param>
+
+    <context-param>
         <param-name>jakarta.faces.FACELETS_VIEW_MAPPINGS</param-name>
         <param-value>*.xhtml;*.html</param-value>
     </context-param>
@@ -100,6 +105,15 @@
         <filter-name>SecurityCheckFilter</filter-name>
         <url-pattern>*.xhtml</url-pattern>
     </filter-mapping>
+    <filter>
+        <filter-name>ErrorPageFilter</filter-name>
+        <filter-class>io.goobi.workflow.error.ErrorPageFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>ErrorPageFilter</filter-name>
+        <url-pattern>/uii/error.xhtml</url-pattern>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
     <!--
     <filter>
         <filter-name>SparkFilter</filter-name>
@@ -148,6 +162,23 @@
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/uii/error.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/uii/error.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/uii/error.xhtml</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/uii/error.xhtml</location>
+    </error-page>
 
     <resource-ref>
         <res-ref-name>goobi</res-ref-name>

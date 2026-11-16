@@ -29,28 +29,62 @@
 
 package de.sub.goobi.helper.exceptions;
 
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
+import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.Locale;
+
+import org.goobi.beans.User;
+import org.omnifaces.context.OmniPartialViewContext;
+import org.omnifaces.util.Hacks;
 
 import de.sub.goobi.helper.FacesContextHelper;
+import de.sub.goobi.helper.Helper;
+import io.goobi.workflow.error.ErrorCatalogue;
+import io.goobi.workflow.error.ErrorEntry;
+import io.goobi.workflow.error.ErrorReport;
+import io.goobi.workflow.error.ErrorReporting;
+import io.goobi.workflow.error.FallbackPage;
+import io.goobi.workflow.error.IncidentLogger;
 import jakarta.faces.FacesException;
-import jakarta.faces.application.NavigationHandler;
-import jakarta.faces.application.ViewExpiredException;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExceptionHandlerWrapper;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ExceptionQueuedEvent;
 import jakarta.faces.event.ExceptionQueuedEventContext;
+import jakarta.faces.event.PostAddToViewEvent;
+import jakarta.faces.view.ViewDeclarationLanguage;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 
+/**
+ * Handles exceptions of ajax requests by rendering the error page into the partial response. Exceptions of all other requests stay in the queue, so
+ * the wrapped handler throws them to the container, which dispatches to the error page declared in web.xml.
+ */
 @Log4j2
 public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
-    private ExceptionHandler exceptionHandler;
+
+    /** What to do with an exception. */
+    enum Decision {
+        /** Throw it to the servlet container (web.xml error page). */
+        CONTAINER,
+        /** Send the visitor to the login page. */
+        LOGIN_REDIRECT,
+        /** Write the static fallback page into the partial response. */
+        FALLBACK,
+        /** Render the error page view into the partial response. */
+        RENDER_ERROR_VIEW
+    }
+
+    private static final String ERROR_VIEW_ID = "/uii/error.xhtml";
+    private static final String ATTRIBUTE_EXCEPTION = "jakarta.servlet.error.exception";
+    private static final String ATTRIBUTE_STATUS = "jakarta.servlet.error.status_code";
+    private static final String PARTIAL_CONTENT_TYPE = "text/xml";
+    private static final String ENCODING = "UTF-8";
+
+    private final ExceptionHandler exceptionHandler;
 
     @SuppressWarnings("deprecation")
     public GoobiExceptionHandler(ExceptionHandler exceptionHandler) {
@@ -62,55 +96,104 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
         return this.exceptionHandler;
     }
 
+    static Decision decide(boolean ajax, ErrorEntry entry, boolean loggedIn) {
+        if (!ajax) {
+            return Decision.CONTAINER;
+        }
+        if (!loggedIn && ErrorCatalogue.VIEW_EXPIRED.key().equals(entry.key())) {
+            return Decision.LOGIN_REDIRECT;
+        }
+        if (entry.standalone()) {
+            return Decision.FALLBACK;
+        }
+        return Decision.RENDER_ERROR_VIEW;
+    }
+
     @Override
     public void handle() throws FacesException {
-        for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext();) {
-            ExceptionQueuedEvent event = i.next();
-            ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
-            Throwable t = context.getException();
-
-            // Handle ViewExpiredExceptions here ... or even others :)
-            if (!t.getClass().equals(ViewExpiredException.class)) {
-                log.error("CLASS: " + t.getClass().getName(), t);
-            }
-            FacesContext fc = FacesContextHelper.getCurrentFacesContext();
-            Map<String, Object> requestMap = fc.getExternalContext().getRequestMap();
-            NavigationHandler nav = fc.getApplication().getNavigationHandler();
-
-            if (t instanceof ViewExpiredException) {
-                ViewExpiredException vee = (ViewExpiredException) t;
-                try {
-                    // Push some useful stuff to the request scope for use in the page
-                    requestMap.put("currentViewId", vee.getViewId());
-                    nav.handleNavigation(fc, null, "index");
-                    fc.renderResponse();
-                } finally {
-                    i.remove();
-                }
-            } else {
-                log.error(t.getMessage(), t);
-                try {
-                    // Push some useful stuff to the request scope for use in the page
-                    requestMap.put("errorDetails", sdf.format(new Date()) + ": " + t.getMessage());
-
-                    // get root cause
-                    while (t.getCause() != null) {
-                        t = t.getCause();
-                    }
-                    List<StackTraceElement> trace = Arrays.asList(t.getStackTrace());
-
-                    requestMap.put("stacktrace", trace);
-
-                    nav.handleNavigation(fc, null, "error");
-                    fc.renderResponse();
-                } finally {
-                    i.remove();
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        if (context != null && isAjax(context)) {
+            for (Iterator<ExceptionQueuedEvent> i = getUnhandledExceptionQueuedEvents().iterator(); i.hasNext();) {
+                ExceptionQueuedEvent event = i.next();
+                Throwable throwable = ((ExceptionQueuedEventContext) event.getSource()).getException();
+                i.remove();
+                if (!context.getResponseComplete()) {
+                    handleAjax(context, throwable);
                 }
             }
         }
-        // At this point, the queue will not contain any ViewExpiredEvents.
-        // Therefore, let the parent handle them.
+        // everything left (all non-ajax exceptions) is thrown to the container
         getWrapped().handle();
+    }
 
+    private static boolean isAjax(FacesContext context) {
+        return context.getPartialViewContext() != null && context.getPartialViewContext().isAjaxRequest();
+    }
+
+    @SuppressWarnings("java:S1141")
+    private void handleAjax(FacesContext context, Throwable throwable) {
+        ExternalContext external = context.getExternalContext();
+        HttpServletRequest request = (HttpServletRequest) external.getRequest();
+        User user = Helper.getCurrentUser();
+        ErrorReport report = ErrorReporting.report(request, throwable, null, user);
+        try {
+            switch (decide(true, report.error().entry(), user != null)) {
+                case LOGIN_REDIRECT -> {
+                    external.redirect(external.getRequestContextPath() + "/uii/index.xhtml?loginExpired=true");
+                    context.responseComplete();
+                }
+                case FALLBACK -> writeFallback(context, report);
+                default -> renderErrorView(context, request, throwable, report);
+            }
+        } catch (Exception | LinkageError e) { //NOSONAR the error path must never fail
+            IncidentLogger.logFollowUp(report, e);
+            try {
+                writeFallback(context, report);
+            } catch (Exception | LinkageError second) { //NOSONAR the error path must never fail
+                IncidentLogger.logFollowUp(report, second);
+            }
+        }
+    }
+
+    private static void renderErrorView(FacesContext context, HttpServletRequest request, Throwable throwable, ErrorReport report)
+            throws IOException {
+        request.setAttribute(ATTRIBUTE_EXCEPTION, throwable);
+        request.setAttribute(ATTRIBUTE_STATUS, report.error().entry().httpStatus());
+        resetResponse(context);
+        ViewHandler viewHandler = context.getApplication().getViewHandler();
+        UIViewRoot viewRoot = viewHandler.createView(context, ERROR_VIEW_ID);
+        Hacks.removeResourceDependencyState(context);
+        context.setViewRoot(viewRoot);
+        context.getPartialViewContext().setRenderAll(true);
+        ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(context, ERROR_VIEW_ID);
+        vdl.buildView(context, viewRoot);
+        context.getApplication().publishEvent(context, PostAddToViewEvent.class, viewRoot);
+        vdl.renderView(context, viewRoot);
+        context.responseComplete();
+    }
+
+    private static void writeFallback(FacesContext context, ErrorReport report) throws IOException {
+        resetResponse(context);
+        ExternalContext external = context.getExternalContext();
+        external.setResponseContentType(PARTIAL_CONTENT_TYPE);
+        external.setResponseCharacterEncoding(ENCODING);
+        Locale locale = context.getViewRoot() != null ? context.getViewRoot().getLocale() : null;
+        external.getResponseOutputWriter().write(FallbackPage.renderPartial(report, locale));
+        context.responseComplete();
+    }
+
+    /** Throws away what was written so far and restores content type and encoding, which a reset drops. */
+    private static void resetResponse(FacesContext context) {
+        ExternalContext external = context.getExternalContext();
+        String contentType = external.getResponseContentType();
+        String encoding = external.getResponseCharacterEncoding();
+        external.responseReset();
+        try {
+            OmniPartialViewContext.getCurrentInstance(context).resetPartialResponse();
+        } catch (RuntimeException e) {
+            log.debug("No OmniFaces partial response to reset", e);
+        }
+        external.setResponseContentType(contentType != null ? contentType : PARTIAL_CONTENT_TYPE);
+        external.setResponseCharacterEncoding(encoding != null ? encoding : ENCODING);
     }
 }
