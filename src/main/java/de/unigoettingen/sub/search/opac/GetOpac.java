@@ -500,9 +500,12 @@ public class GetOpac {
         // for some unknown reason the line break/record separator is
         // sometimes different
         String recordSeperator = "<br />";
+        if (picaXmlRecord.indexOf(recordSeperator) == -1 && picaXmlRecord.indexOf("<br/>") != -1) {
+            recordSeperator = "<br/>";
+        }
         if (picaXmlRecord.indexOf(recordSeperator) != -1) {
             while (nextField != endField) {
-                startField = picaXmlRecord.indexOf(recordSeperator, startField) + 6;
+                startField = picaXmlRecord.indexOf(recordSeperator, startField) + recordSeperator.length();
                 nextField = picaXmlRecord.indexOf(recordSeperator, startField);
                 if (nextField == -1) {
                     nextField = endField;
